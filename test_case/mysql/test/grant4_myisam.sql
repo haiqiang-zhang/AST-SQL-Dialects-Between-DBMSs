@@ -1,0 +1,10 @@
+drop database if exists mysqltest_db1;
+let $MYSQLD_DATADIR = `SELECT @@datadir`;
+create database mysqltest_db1;
+create table mysqltest_db1.t1 (a int, key(a)) engine=myisam;
+create table mysqltest_db1.t2 (b int);
+insert into mysqltest_db1.t1 values (1), (2);
+insert into mysqltest_db1.t2 values (1);
+create user mysqltest_u1@localhost;
+drop database mysqltest_db1;
+drop user mysqltest_u1@localhost;

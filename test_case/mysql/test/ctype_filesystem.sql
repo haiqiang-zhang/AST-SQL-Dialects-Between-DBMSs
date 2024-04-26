@@ -1,0 +1,2 @@
+SET CHARACTER SET utf8mb3;
+SET CHARACTER SET default;

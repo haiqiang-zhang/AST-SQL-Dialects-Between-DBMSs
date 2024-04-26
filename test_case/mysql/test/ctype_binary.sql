@@ -1,0 +1,9 @@
+
+set names binary;
+
+--
+-- Bugs#12635232: VALGRIND WARNINGS: IS_IPV6, IS_IPV4, INET6_ATON,
+-- INET6_NTOA + MULTIBYTE CHARSET.
+--
+
+SET NAMES binary;

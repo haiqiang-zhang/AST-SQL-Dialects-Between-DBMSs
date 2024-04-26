@@ -1,0 +1,10 @@
+CREATE USER u1@localhost IDENTIFIED BY 'foo';
+CREATE USER u2@localhost IDENTIFIED BY 'foo';
+CREATE ROLE r1, r2;
+SET ROLE r1;
+SET GLOBAL binlog_cache_size=100;
+SET GLOBAL binlog_cache_size=DEFAULT;
+SET ROLE r2;
+SET GLOBAL binlog_cache_size=100;
+DROP USER u1@localhost, u2@localhost;
+DROP ROLE r2,r1;
