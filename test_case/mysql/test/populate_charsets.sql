@@ -1,0 +1,3 @@
+CREATE TABLE t1 (pk INTEGER) COLLATE utf8mb3_phone_ci;
+DROP TABLE t1;
+CREATE TABLE t1 (pk INTEGER) COLLATE utf8mb3_phone_ci;

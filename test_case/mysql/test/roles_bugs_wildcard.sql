@@ -1,0 +1,21 @@
+
+CREATE USER u1;
+CREATE ROLE r1;
+SET ROLE r1;
+
+CREATE DATABASE db_name;
+DROP DATABASE db_name;
+
+CREATE DATABASE db1name;
+DROP DATABASE db1name;
+DROP ROLE r1;
+DROP USER u1;
+
+CREATE DATABASE db_name;
+CREATE USER testuser;
+CREATE ROLE abc_all_ro_role;
+SET DEFAULT ROLE ALL TO testuser;
+USE db_name;
+DROP ROLE abc_all_ro_role;
+DROP USER testuser;
+DROP DATABASE db_name;

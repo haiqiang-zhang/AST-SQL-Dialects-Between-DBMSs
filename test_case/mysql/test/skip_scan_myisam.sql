@@ -1,0 +1,2 @@
+
+let $engine=myisam;
