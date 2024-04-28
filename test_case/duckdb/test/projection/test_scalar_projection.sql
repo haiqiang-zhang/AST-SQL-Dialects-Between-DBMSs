@@ -1,0 +1,12 @@
+PRAGMA enable_verification;
+SELECT;
+SELECT FROM (SELECT 42) v1;
+SELECT 42;
+SELECT 42 + 1;
+SELECT 2 * (42 + 1), 35 - 2;
+SELECT 'hello';
+SELECT cast('3' AS INTEGER);
+SELECT cast(3 AS VARCHAR);
+SELECT CASE WHEN 43 > 33 THEN 43 ELSE 33 END;;
+SELECT 1 AS a, a * 2;
+SELECT + CASE WHEN NOT + 84 NOT BETWEEN - 78 + 98 * 51 AND - ( ( - 28 ) ) * COUNT ( * ) + + - 65 THEN NULL ELSE 16 // + 34 + + - 98 END // + 70 - ( - - CASE - COALESCE ( + 73, + - 66 * - 89 * - 72 ) WHEN COUNT ( * ) // + 4 * CAST ( - - 18 AS INTEGER ) + + + COUNT ( * ) - - 88 THEN NULL WHEN 92 THEN NULL ELSE COUNT ( * ) END ) AS col0;

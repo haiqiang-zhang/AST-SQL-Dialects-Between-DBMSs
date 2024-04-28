@@ -1,0 +1,16 @@
+CREATE TABLE collate_test(s VARCHAR COLLATE NOCASE);
+INSERT INTO collate_test VALUES ('hello'), ('WoRlD'), ('world'), ('Mühleisen');
+CREATE TABLE collate_join_table(s VARCHAR, i INTEGER);
+INSERT INTO collate_join_table VALUES ('HeLlO', 1), ('mÜHLEISEN', 3);
+DROP TABLE collate_test;
+CREATE TABLE collate_test(s VARCHAR COLLATE NOCASE);
+INSERT INTO collate_test VALUES ('Hallo'), ('ham'), ('HELLO'), ('hElp');
+DROP TABLE collate_test;
+CREATE TABLE collate_test(s VARCHAR COLLATE NOCASE);
+INSERT INTO collate_test VALUES ('Hallo'), ('hallo');
+SELECT * FROM collate_test WHERE s='HeLlo';
+SELECT * FROM collate_test WHERE s='MÜhleisen';
+SELECT * FROM collate_test WHERE s='world';
+SELECT collate_test.s, collate_join_table.s, i FROM collate_test JOIN collate_join_table ON (collate_test.s=collate_join_table.s) ORDER BY i;
+SELECT * FROM collate_test ORDER BY s;
+SELECT DISTINCT s FROM collate_test;

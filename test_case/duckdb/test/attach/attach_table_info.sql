@@ -1,0 +1,11 @@
+PRAGMA enable_verification;
+ATTACH DATABASE ':memory:' AS new_database;;
+CREATE TABLE new_database.integers(i INTEGER);
+CREATE SCHEMA new_database.new_schema;
+CREATE TABLE new_database.new_schema.integers(i INTEGER);
+USE new_database.new_schema;
+PRAGMA table_info('new_database.integers');;
+PRAGMA table_info('new_database.new_schema.integers');;
+SELECT current_database();
+PRAGMA table_info('integers');;
+SELECT current_database();

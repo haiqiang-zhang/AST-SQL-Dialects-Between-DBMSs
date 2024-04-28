@@ -1,0 +1,17 @@
+PRAGMA enable_verification;
+SELECT * FROM duckdb_columns();;
+SELECT * FROM duckdb_columns;;
+CREATE TABLE integers(i INTEGER);
+CREATE TABLE test(i INTEGER NOT NULL, j DECIMAL(18, 3), k VARCHAR DEFAULT 'hello');
+create view v1 as select * from test;
+alter table test rename column j to renamed;
+alter table test rename column renamed to j;
+create or replace view v1 (a, b) as select * from test;;
+alter table test rename column j to renamed;
+alter table test rename column k to not_k;
+select cols.database_name, tables.table_name, column_name, data_type, column_default, is_nullable, numeric_precision, numeric_precision_radix, numeric_scale from duckdb_columns cols join duckdb_tables tables using (table_oid) ORDER BY 1, 2, 3;;
+select table_name, column_name from duckdb_columns where table_name = 'v1';
+select table_name, column_name from duckdb_columns where table_name = 'v1';
+select table_name, column_name from duckdb_columns where table_name = 'v1';
+select table_name, column_name from duckdb_columns where table_name = 'v1';
+select table_name, column_name from duckdb_columns where table_name = 'v1';

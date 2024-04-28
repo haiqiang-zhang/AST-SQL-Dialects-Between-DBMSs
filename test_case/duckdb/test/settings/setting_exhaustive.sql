@@ -1,0 +1,15 @@
+SET debug_window_mode='unknown';;
+SET default_order='${default_order}';;
+SELECT * FROM duckdb_settings();;
+SET default_order='unknown';;
+SET enable_external_access=true;
+SET profile_output='__TEST_DIR__/profile_output';
+SET enable_profiling='${enable_profiling}';;
+SELECT * FROM duckdb_settings();;
+SET enable_profiling='unknown';;
+PRAGMA disable_print_progress_bar;
+SET enable_progress_bar=true;;
+SET GLOBAL enable_progress_bar=true;;
+SET explain_output='${explain_output}';;
+SELECT * FROM duckdb_settings();;
+SET explain_output='unknown';;

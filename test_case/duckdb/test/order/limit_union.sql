@@ -1,0 +1,3 @@
+PRAGMA enable_verification;
+SELECT * FROM range(5) UNION ALL SELECT * FROM range(5) LIMIT 7;
+SELECT COUNT(*) FROM (SELECT * FROM range(5) UNION ALL SELECT * FROM range(5) LIMIT 7) tbl;

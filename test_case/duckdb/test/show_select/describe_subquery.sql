@@ -1,0 +1,8 @@
+PRAGMA enable_verification;
+(DESCRIBE SELECT 42 AS a);
+CREATE TABLE t AS SELECT 42 AS a;
+FROM (SHOW databases) t;
+SELECT column_name FROM (DESCRIBE SELECT 42 AS a);
+SELECT t.column_name FROM (DESCRIBE SELECT 42 AS a) t;
+SELECT t.column_name FROM (DESCRIBE t) t;
+SELECT column_name FROM (DESCRIBE ( DESCRIBE SELECT * FROM (SELECT 32 as a)));;

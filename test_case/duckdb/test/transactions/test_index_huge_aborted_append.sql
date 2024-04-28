@@ -1,0 +1,12 @@
+PRAGMA enable_verification;
+CREATE TABLE integers(i INTEGER PRIMARY KEY);;
+INSERT INTO integers VALUES (1);;
+BEGIN TRANSACTION;
+INSERT INTO integers SELECT i FROM range(2, 131068, 1) t1(i);
+INSERT INTO integers VALUES (1);
+ROLLBACK;
+INSERT INTO integers VALUES (2);;
+INSERT INTO integers VALUES (3);;
+INSERT INTO integers VALUES (4);;
+SELECT * FROM integers;
+SELECT * FROM integers ORDER BY 1;

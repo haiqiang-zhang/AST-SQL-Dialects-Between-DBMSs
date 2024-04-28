@@ -1,0 +1,18 @@
+pragma enable_verification;;
+create table "a.b.c" (x int);;
+create schema defg;;
+drop table "a.b.c";;
+create table defg."a.b.c" (x int);;
+drop table defg."a.b.c";;
+create table defg.abc (x int);;
+drop table defg.abc;;
+drop schema defg;;
+create schema "d.e.f.g";;
+create table "d.e.f.g"."a.b.c" (x int);;
+drop table "d.e.f.g"."a.b.c";
+create table "d.e.f.g".abc (x int);;
+describe "a.b.c";;
+describe defg."a.b.c";;
+describe defg.abc;;
+describe "d.e.f.g"."a.b.c";;
+describe "d.e.f.g".abc;;

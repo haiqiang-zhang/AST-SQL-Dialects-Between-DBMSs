@@ -1,0 +1,15 @@
+PRAGMA enable_verification;
+CREATE TABLE integers(i INTEGER UNIQUE);;
+BEGIN TRANSACTION;;
+BEGIN TRANSACTION;;
+INSERT INTO integers SELECT -10 + i FROM RANGE(${i}) tbl(i);;
+INSERT INTO integers SELECT case when i%2=0 then null else i end FROM range(2, 2049, 1) t1(i);
+INSERT INTO integers VALUES (-10);;
+COMMIT;;
+COMMIT;;
+BEGIN TRANSACTION;;
+INSERT INTO integers SELECT i FROM range(2, 2049, 1) t1(i);
+COMMIT;;
+DROP TABLE integers;;
+SELECT COUNT(*)=${i} FROM integers;
+SELECT (COUNT(*)-2047)=${i}, MIN(i), MAX(i), (COUNT(i)-2047)=${i} FROM integers ORDER BY 1;

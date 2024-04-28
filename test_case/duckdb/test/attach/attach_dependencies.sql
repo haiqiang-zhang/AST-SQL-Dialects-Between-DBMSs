@@ -1,0 +1,13 @@
+CREATE TABLE pk_tbl (id INTEGER PRIMARY KEY, name VARCHAR UNIQUE);;
+CREATE TABLE fk_tbl (id INTEGER REFERENCES pk_tbl(id));;
+CREATE TABLE tbl_alter_column (id INT, other INT, nn_col INT NOT NULL, rm INT, rename_c INT, my_def INT, drop_def INT DEFAULT 10, new_null_col INT);;
+ALTER TABLE tbl_alter_column ADD COLUMN k INTEGER;;
+ALTER TABLE tbl_alter_column ALTER other SET DATA TYPE VARCHAR USING concat(other, '_', 'yay');;
+ALTER TABLE tbl_alter_column ALTER COLUMN nn_col DROP NOT NULL;;
+ALTER TABLE tbl_alter_column DROP rm;;
+ALTER TABLE tbl_alter_column RENAME rename_c TO my_new_col;;
+ALTER TABLE tbl_alter_column ALTER COLUMN my_def SET DEFAULT 10;;
+ALTER TABLE tbl_alter_column ALTER COLUMN drop_def DROP DEFAULT;;
+ALTER TABLE tbl_alter_column ALTER COLUMN new_null_col SET NOT NULL;;
+ATTACH '__TEST_DIR__/fk.db';;
+ATTACH '__TEST_DIR__/alter_column.db';;

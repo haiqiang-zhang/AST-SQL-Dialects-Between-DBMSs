@@ -1,0 +1,9 @@
+CREATE TABLE integers(i INTEGER PRIMARY KEY, j INTEGER);
+INSERT INTO integers VALUES (1, 1), (2, 2), (3, 3);
+BEGIN TRANSACTION;
+UPDATE integers SET j=4 WHERE i=1;
+ROLLBACK;
+SELECT j FROM integers WHERE i=1;
+SELECT j FROM integers WHERE i=1;
+SELECT j FROM integers WHERE i=1;
+SELECT j FROM integers WHERE i=1;

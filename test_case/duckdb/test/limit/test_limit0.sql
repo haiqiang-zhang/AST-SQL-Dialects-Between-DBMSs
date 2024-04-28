@@ -1,0 +1,2 @@
+PRAGMA explain_output='OPTIMIZED_ONLY';
+SELECT * FROM (SELECT SUM(i) FROM range(100000000000) tbl(i)) LIMIT 0;;

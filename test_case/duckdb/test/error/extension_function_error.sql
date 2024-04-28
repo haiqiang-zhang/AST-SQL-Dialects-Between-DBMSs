@@ -1,0 +1,11 @@
+SELECT dbgen();;
+SELECT DBGEN();;
+SELECT * FROM dbgen();;
+CALL dbgen(sf=0.1);;
+SELECT * FROM dbgen;
+SET TimeZone='UTC';
+SELECT * FROM TimeZone;
+SELECT dbgen();
+CALL dbge();
+SET TimeZon='UTC';
+SET TimeZone='UTC';

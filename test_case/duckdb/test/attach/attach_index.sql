@@ -1,0 +1,11 @@
+ATTACH '__TEST_DIR__/index_db.db';
+USE index_db;
+CREATE TABLE tbl_a (a_id INTEGER PRIMARY KEY, value VARCHAR NOT NULL);
+CREATE INDEX idx_tbl_a ON tbl_a (value);
+INSERT INTO tbl_a VALUES(1, 'x');
+INSERT INTO tbl_a VALUES(2, 'y');
+USE memory;
+DETACH index_db;
+ATTACH '__TEST_DIR__/index_db.db';
+SELECT * FROM tbl_a WHERE a_id=2;
+SELECT * FROM index_db.tbl_a WHERE a_id=2;

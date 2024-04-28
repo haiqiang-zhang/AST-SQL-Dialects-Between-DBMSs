@@ -1,0 +1,12 @@
+PRAGMA enable_verification;
+CREATE TABLE integers(i INTEGER PRIMARY KEY);
+INSERT INTO integers VALUES (1), (2);
+BEGIN TRANSACTION;
+SELEC 42;
+SELECT * FROM nonexistanttable;
+UPDATE integers SET i=2;
+SELECT 42;
+ROLLBACK;
+SELECT 42;
+SELECT 42;
+SELECT * FROM integers ORDER BY 1;

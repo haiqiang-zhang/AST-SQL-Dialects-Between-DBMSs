@@ -1,0 +1,11 @@
+PRAGMA enable_verification;
+SELECT host(a) from (values ('127.0.0.1/17')) t(a);;
+SELECT INET '0.0.0.0' - 32;;
+select INET '255.255.255.255' + 1;
+SELECT host(INET '127.0.0.1/17');
+SELECT host('127.0.0.1/17');
+SELECT family('127.0.0.1/17');;
+SELECT INET '127.0.0.255' - 32;;
+SELECT INET '127.0.0.255' + 0;;
+SELECT INET '127.0.0.31' - 32;;
+SELECT INET '127.0.0.31' - -32;;

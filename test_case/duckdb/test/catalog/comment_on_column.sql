@@ -1,0 +1,15 @@
+CREATE TABLE test_table as SELECT 1 as test_table_column;
+COMMENT ON COLUMN test_table.test_table_column IS 'very gezellige column';
+CREATE VIEW test_view AS SELECT test_table_column as test_view_column FROM test_table;;
+COMMENT ON COLUMN test_view.test_view_column IS 'very gezellige view column';
+COMMENT ON COLUMN bla.bloe.blie.blo IS NULL;
+COMMENT ON COLUMN blie.blo IS NULL;
+COMMENT ON COLUMN test_view.test_table_column IS NULL;
+COMMENT ON COLUMN test_table.test_view_column IS NULL;
+select comment from duckdb_columns() where column_name='test_table_column';;
+select comment from duckdb_columns() where column_name='test_table_column';;
+select comment from duckdb_columns() where column_name='test_table_column';;
+select comment from duckdb_columns() where column_name='test_view_column';;
+select comment from duckdb_columns() where column_name='test_view_column';;
+select comment from duckdb_columns() where column_name='test_view_column';;
+SELECT database_name, table_name, column_name, comment FROM duckdb_columns() where internal is false;

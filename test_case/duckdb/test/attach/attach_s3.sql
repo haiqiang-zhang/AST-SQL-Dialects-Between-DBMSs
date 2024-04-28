@@ -1,0 +1,15 @@
+CREATE SECRET (
+    TYPE S3,
+    PROVIDER config,
+    KEY_ID '${AWS_ACCESS_KEY_ID}',
+    SECRET '${AWS_SECRET_ACCESS_KEY}',
+    REGION '${AWS_DEFAULT_REGION}',
+    ENDPOINT '${DUCKDB_S3_ENDPOINT}',
+    USE_SSL '${DUCKDB_S3_USE_SSL}'
+);
+ATTACH '${S3_ATTACH_DB}' AS db (READONLY 1);;
+CREATE TABLE db.integers(i INTEGER);;
+SELECT * FROM db.all_types;
+SELECT * FROM db.all_typez;
+DETACH db;
+SELECT * FROM db.integral_values;

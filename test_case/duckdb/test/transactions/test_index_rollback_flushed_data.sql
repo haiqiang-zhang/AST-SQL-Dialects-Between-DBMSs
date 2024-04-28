@@ -1,0 +1,11 @@
+PRAGMA enable_verification;
+CREATE TABLE integers(i INTEGER UNIQUE);;
+BEGIN TRANSACTION;;
+BEGIN TRANSACTION;;
+INSERT INTO integers VALUES (-10);;
+INSERT INTO integers SELECT range FROM range(2, 4097, 1);;
+INSERT INTO integers VALUES (-10);;
+COMMIT;;
+COMMIT;;
+INSERT INTO integers SELECT i FROM range(2, 4097, 1) t1(i);
+SELECT MAX(i) FROM integers;

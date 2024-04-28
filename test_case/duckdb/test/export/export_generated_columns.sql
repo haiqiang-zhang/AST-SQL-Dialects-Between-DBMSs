@@ -1,0 +1,14 @@
+BEGIN TRANSACTION;
+CREATE TABLE tbl (
+	x INTEGER,
+	gen_x AS (x + 5)
+);;
+INSERT INTO tbl VALUES(5);;
+INSERT INTO tbl VALUES(2,3);
+ALTER TABLE tbl DROP COLUMN x;;
+EXPORT DATABASE '__TEST_DIR__/export_generated_columns' (FORMAT CSV);;
+ROLLBACK;
+IMPORT DATABASE '__TEST_DIR__/export_generated_columns';
+INSERT INTO tbl VALUES(2,3);
+ALTER TABLE tbl DROP COLUMN x;;
+SELECT * FROM tbl;

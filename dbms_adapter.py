@@ -1,10 +1,17 @@
 import os
 import sqlite3
 from typing import List
+import threading
 
+ECHO = False
+
+setup_query_keyword = [
+    "create table",
+    "insert into",
+    "drop table"
+]
 
 class SQLITE3:
-
     def __init__(self, filename:str="sqlite_test") -> None:
         # check if sqlite_test.dbe exists. If it does, delete it, then create a new one
         if os.path.exists(filename):
@@ -28,25 +35,37 @@ class SQLITE3:
             #     print(f"[Setup Error] Error setup database in '{filename}': {e}")
             #     continue
 
-    def query(self, sql_query:List, filename:str):
+    def interrupt_connection(self, query:str):
+        self.conn.interrupt()
+        raise TimeoutError(f"Query timed out: '{query}'")
+
+    def query(self, sql_queries:List, filename:str, timeout_duration=2):
         # Execute the SQL query
 
         combined_result = []
-        for query in sql_query:
+        for query in sql_queries:
+            timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[query])
             try:
-                print(query)
+                # print(query)
+                timer.start()
                 self.cursor.execute(query)
                 self.conn.commit()
                 result = self.cursor.fetchall()
-                combined_result.append((True, result))
-                print(result)
-                print("=================================")
+                # keyword include in query
+                if any(keyword in query.lower() for keyword in setup_query_keyword):
+                    combined_result.append((True, result))
+
+                # print(result)
+                # print("=================================")
 
             except Exception as e:
-                combined_result.append((False, ["Error executing test case '{filename}': {e}"]))
+                if any(keyword in query.lower() for keyword in setup_query_keyword):
+                    combined_result.append((False, ["Error executing test case '{filename}': {e}"]))
                 print(f"Error executing test case '{filename}': {e}")
                 print("=================================")
                 continue
+            finally:
+                timer.cancel()
             
         self.close_connection()
         return combined_result

@@ -1,0 +1,15 @@
+PRAGMA enable_verification;
+create table a(i integer);;
+insert into a values (42), (44);;
+UPDATE a SET rowid=5;
+INSERT INTO a (rowid, i)  VALUES (5, 6);
+create table b(rowid integer);;
+insert into b values (42), (22);;
+UPDATE b SET rowid=5;
+INSERT INTO b (rowid) VALUES (5);
+SELECT rowid, * FROM a;
+SELECT rowid+1 FROM a WHERE CASE WHEN i=42 THEN rowid=0 ELSE rowid=1 END;;
+SELECT * FROM a;
+SELECT * FROM b ORDER BY 1;
+SELECT rowid FROM b ORDER BY 1;
+SELECT * FROM b;

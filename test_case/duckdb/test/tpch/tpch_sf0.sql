@@ -1,0 +1,6 @@
+CALL dbgen(sf=0);;
+PRAGMA tpch(${i});
+PRAGMA tpch(-1);
+PRAGMA tpch(3290819023812038903);
+PRAGMA tpch(32908301298);
+PRAGMA tpch(1.1);

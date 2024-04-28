@@ -7,6 +7,8 @@ DBMS_ADAPTERS = {
     "sqlite3": SQLITE3
 }
 
+encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
+
 def clean_query(query)->List[str]:
     # split sql_query with ';'
     sql_query = query.split(';')
@@ -37,8 +39,17 @@ def run_setup_in_all_dbms(setup_paths:str):
 
 def run_test_in_all_dbms(test_paths:str, filename:str)->pd.DataFrame:
     # Read the contents of the test case file
-    with open(test_paths, 'r') as file:
-        sql_query = file.read()
+    sql_query = None
+    for encoding in encodings:
+        try:
+            with open(test_paths, 'r', encoding=encoding) as file:
+                sql_query = file.read()
+        except UnicodeDecodeError as e:
+            continue
+    
+    if not sql_query:
+        raise ValueError(f"Error decode sql file '{filename}'")
+        
 
     # clean the query
     sql_query = clean_query(sql_query)
