@@ -11,9 +11,9 @@ drop table if exists t1;
 set global myisam_data_pointer_size=2;
 CREATE TABLE t1 (a int auto_increment primary key not null, b longtext) ENGINE=MyISAM;
 let $1= 303;
-{
-  INSERT INTO t1 SET b=repeat('a',200);
-  dec $1;
+
+INSERT INTO t1 SET b=repeat('a',200);
+dec $1;
 
 DELETE FROM t1 WHERE a=1 or a=5;
 INSERT INTO t1 SET b=repeat('a',600);
