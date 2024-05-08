@@ -21,7 +21,7 @@ for dbms in os.listdir(test_case_path):
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
     for dirpath, dirnames, filenames in os.walk(test_folder):
         for filename in filenames:
-            if filename.endswith('bug58669.sql'):
+            if filename.endswith('.sql'):
                 test_paths = os.path.join(dirpath, filename)
                 # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)
                 # result_paths = os.path.join(test_case_path, dbmss, test_group, 'result', filename)

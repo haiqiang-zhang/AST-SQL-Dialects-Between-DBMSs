@@ -10,7 +10,7 @@ ECHO = False
 config = {
     'host': 'localhost',
     'user': 'root',
-    'password': '1234567',
+    'password': '123456',
     # 'database': 'your_database',
 }
 
@@ -84,41 +84,36 @@ class MYSQL:
         self.conn.interrupt()
         raise TimeoutError(f"Query timed out: '{query}'")
 
-    def query(self, sql_queries:List, filename:str, timeout_duration=2):
+    def query(self, sql_query:str, filename:str, timeout_duration=5):
         # Execute the SQL query
+        combined_result = None
+        timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
+        try:
+            # print(query)
+            timer.start()
+            self.cursor.execute(sql_query)
+            self.conn.commit()
+            result = self.cursor.fetchall()
+            # keyword include in query
+            # if any(keyword in query.lower() for keyword in setup_query_keyword):
+            # timer.join()
+            combined_result = (True, result)
+            # print(result)
+            # print("=================================")
 
-        combined_result = []
-        for query in sql_queries:
-            timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[query])
-            try:
-                # print(query)
-                timer.start()
-                self.cursor.execute(query)
-                self.conn.commit()
-                result = self.cursor.fetchall()
-                # keyword include in query
-                if any(keyword in query.lower() for keyword in setup_query_keyword):
-                    combined_result.append((True, result))
-
-                # print(result)
-                # print("=================================")
-
-            except Exception as e:
-                if any(keyword in query.lower() for keyword in setup_query_keyword):
-                    combined_result.append((False, ["Error executing test case '{filename}': {e}"]))
-                print(f"Error executing test case '{filename}': {e}")
-                print("=================================")
-                continue
-            finally:
-                timer.cancel()
+        except Exception as e:
+            # if any(keyword in query.lower() for keyword in setup_query_keyword):
+            combined_result = (False, ["Error executing test case '{filename}': {e}"])
+            print(f"Error executing test case '{filename}': {e}")
+            print("=================================")
+        finally:
+            timer.cancel()
         
-        print("============", self.conn.is_connected())
-        self.reset_mysql()
-        self.close_connection()
         return combined_result
 
     def close_connection(self):
         # Close the database connection
+        self.reset_mysql()
         self.conn.close()
     
         
