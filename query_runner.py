@@ -1,15 +1,17 @@
 import os
 from typing import List
 from adapter.sqlite import SQLITE3
+from adapter.mysql_adapter import MYSQL
 import pandas as pd
 
 DBMS_ADAPTERS = {
-    "sqlite3": SQLITE3
+    # "sqlite3": SQLITE3,
+    "mysql": MYSQL
 }
 
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
 
-def clean_query(query)->List[str]:
+def clean_query(query):
     # split sql_query with ';'
     sql_query = query.split(';')
     sql_query.pop()
@@ -37,7 +39,7 @@ def run_setup_in_all_dbms(setup_paths:str):
             DBMS_ADAPTERS[dbms].run_setup(setup_query, setup_paths)
 
 
-def run_test_in_all_dbms(test_paths:str, filename:str)->pd.DataFrame:
+def run_test_in_all_dbms(test_paths:str, filename:str):
     # Read the contents of the test case file
     sql_query = None
     for encoding in encodings:
@@ -72,7 +74,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str)->pd.DataFrame:
     return success_counter, failure_counter, df
 
 
-def run_all(test_paths:str, filename:str, setup_paths:str="")->pd.DataFrame:
+def run_all(test_paths:str, filename:str, setup_paths:str=""):
     if setup_paths:
         run_setup_in_all_dbms(setup_paths)
     return run_test_in_all_dbms(test_paths, filename)

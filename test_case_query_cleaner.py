@@ -1,11 +1,13 @@
 import os
 from typing import List
 from adapter.sqlite import SQLITE3
+from adapter.mysql_adapter import MYSQL
 import pandas as pd
 from query_runner import clean_query
 
 DBMS_ADAPTERS = {
-    "sqlite3": SQLITE3
+    # "sqlite3": SQLITE3,
+    "mysql": MYSQL
 }
 
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']

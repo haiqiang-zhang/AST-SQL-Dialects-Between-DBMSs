@@ -3,12 +3,9 @@ import os
 from query_runner import run_all
 
 
-
-
 test_case_path = './test_case'
-dbms_test_case_used = ['sqlite']
-
-
+# dbms_test_case_used = ['sqlite', 'mysql']
+dbms_test_case_used = ['mysql']
 
 
 # Iterate over the test case files in the folder (it is a multi-level folder)
@@ -26,10 +23,14 @@ for dbms in os.listdir(test_case_path):
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
     for dirpath, dirnames, filenames in os.walk(test_folder):
         for filename in filenames:
-            if filename.endswith('.sql'):
+            if filename.endswith('bug58669.sql'):
                 test_paths = os.path.join(dirpath, filename)
                 # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)
                 # result_paths = os.path.join(test_case_path, dbmss, test_group, 'result', filename)
+                
+                if os.path.getsize(test_paths) == 0:
+                    continue
+                
                 try:
                     success_counter, failure_counter, df = run_all(test_paths, filename)
                     file_counter += 1
