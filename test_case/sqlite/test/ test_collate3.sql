@@ -1,0 +1,28 @@
+CREATE TABLE collate3t1(c1 UNIQUE);
+DROP TABLE collate3t1;
+PRAGMA integrity_check;
+REINDEX;
+CREATE TABLE t1(a);
+INSERT INTO t1 VALUES('Abc2');
+INSERT INTO t1 VALUES('abc1');
+INSERT INTO t1 VALUES('aBc3');
+REINDEX;
+PRAGMA integrity_check;
+REINDEX;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+DROP TABLE t1;
+PRAGMA integrity_check;
+CREATE TABLE collate3t1(a, b);
+INSERT INTO collate3t1 VALUES('hello', NULL);
+DROP TABLE collate3t1;
+CREATE TABLE collate3t1(a, b);
+INSERT INTO collate3t1 VALUES('2', NULL);
+INSERT INTO collate3t1 VALUES('101', NULL);
+INSERT INTO collate3t1 VALUES('12', NULL);
+CREATE VIEW collate3v1 AS SELECT * FROM collate3t1 
+        ORDER BY 1 COLLATE user_defined;
+DROP TABLE collate3t1;
+CREATE TABLE collate3t1(a);
+INSERT INTO collate3t1 VALUES(10);
+DROP TABLE collate3t1;

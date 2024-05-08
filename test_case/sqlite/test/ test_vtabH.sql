@@ -1,0 +1,2 @@
+CREATE TABLE t6(a, b TEXT);
+CREATE INDEX i6 ON t6(b, a);

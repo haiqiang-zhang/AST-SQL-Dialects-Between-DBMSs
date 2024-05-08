@@ -7,6 +7,11 @@ log_path = "/Users/larryzhang/Project/sqlite/testrunner.log"
 test_case_path = "./test_case/sqlite/test"
 
 
+except_query = [
+    "savepoint",
+]
+
+
 except_files = [
     "mmap2"
 ]
@@ -50,7 +55,12 @@ with open(log_path, "r") as f:
             sqls = []
             for sql in sqls_before_clean:
                 temp_sql = sql.split("--*--")[0]
+
+                if any(keyword.lower() in temp_sql.lower() for keyword in except_query):
+                    continue
+
                 temp_sql = temp_sql.strip()
+
                 if temp_sql == "":
                     continue
                 if not temp_sql.endswith(";"):

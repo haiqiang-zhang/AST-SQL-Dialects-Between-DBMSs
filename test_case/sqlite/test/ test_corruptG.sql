@@ -1,0 +1,8 @@
+PRAGMA page_size=512;
+CREATE TABLE t1(a,b,c);
+INSERT INTO t1(rowid,a,b,c) VALUES(52,'abc','xyz','123');
+CREATE INDEX t1abc ON t1(a,b,c);
+SELECT c FROM t1 WHERE a>'abc';
+PRAGMA integrity_check;
+SELECT c FROM t1 ORDER BY a;
+SELECT rowid FROM t1 WHERE a='abc' and b='xyz123456789XYZ';

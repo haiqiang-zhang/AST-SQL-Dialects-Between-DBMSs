@@ -1,0 +1,5 @@
+CREATE TABLE t1(a, b VARCHAR, c INTEGER);
+DROP TABLE t1;
+CREATE TABLE t1_base(a, b, c);
+INSERT INTO t1_base VALUES(1, 2, 3);
+CREATE TABLE y_base(a, b, c);

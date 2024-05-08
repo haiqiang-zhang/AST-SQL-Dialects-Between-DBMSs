@@ -1,13 +1,11 @@
 import sqlite3
 import os
-from query_runner import run_all
-
+from utils import run_all, clean_test_garbage
 
 
 
 test_case_path = './test_case'
 dbms_test_case_used = ['sqlite']
-
 
 
 
@@ -49,5 +47,4 @@ for dbms in os.listdir(test_case_path):
 
 
 
-if os.path.exists('sqlite_test.db'):
-    os.remove('sqlite_test.db')
+clean_test_garbage()

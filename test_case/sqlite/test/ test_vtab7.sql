@@ -1,0 +1,15 @@
+CREATE TABLE abc(a, b, c);
+CREATE TABLE log(msg);
+SELECT * FROM log;
+INSERT INTO log VALUES('xSync');
+SELECT * FROM log;
+INSERT INTO log VALUES('xSync');
+SELECT * FROM log;
+INSERT INTO log VALUES('xSync');
+SELECT name FROM sqlite_master ORDER BY name;
+CREATE TABLE newtab(d, e, f);
+SELECT name FROM sqlite_master ORDER BY name;
+DROP TABLE newtab;
+ATTACH 'test2.db' AS db2;
+CREATE TABLE def(d, e, f);
+SELECT name FROM sqlite_master ORDER BY name;

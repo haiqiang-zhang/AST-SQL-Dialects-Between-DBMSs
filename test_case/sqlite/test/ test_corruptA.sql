@@ -1,0 +1,7 @@
+CREATE TABLE t1(x);
+INSERT INTO t1(x) VALUES(1);
+PRAGMA integrity_check;
+SELECT * FROM t1;
+SELECT * FROM t1;
+SELECT * FROM t1;
+SELECT * FROM t1;

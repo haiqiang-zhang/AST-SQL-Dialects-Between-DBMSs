@@ -1,0 +1,10 @@
+ATTACH 'file.db' AS aux;
+CREATE TABLE t1(x, y);
+CREATE TEMP TABLE t1(x, y);
+CREATE TABLE aux.t1(x, y);
+DROP TABLE t1;
+SELECT * FROM main.t1;
+SELECT * FROM aux.t1;
+DROP TABLE t1;
+SELECT * FROM aux.t1;
+DROP TABLE t1;

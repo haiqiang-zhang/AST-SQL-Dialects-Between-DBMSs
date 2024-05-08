@@ -1,0 +1,15 @@
+PRAGMA fullfsync=OFF;
+CREATE TABLE t1(a,b);
+ATTACH DATABASE 'test2.db' AS db2;
+PRAGMA main.synchronous=on;
+PRAGMA db2.synchronous=on;
+BEGIN;
+INSERT INTO t1 VALUES(1,2);
+PRAGMA main.synchronous=full;
+PRAGMA db2.synchronous=full;
+BEGIN;
+INSERT INTO t1 VALUES(3,4);
+PRAGMA main.synchronous=off;
+PRAGMA db2.synchronous=off;
+BEGIN;
+INSERT INTO t1 VALUES(5,6);

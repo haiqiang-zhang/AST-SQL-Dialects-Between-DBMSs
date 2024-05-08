@@ -1,0 +1,37 @@
+CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c);
+INSERT INTO t1 VALUES(1, 4, X'1234567800');
+INSERT INTO t1 VALUES(2, 'test', 8.1);
+DELETE FROM t1;
+INSERT INTO t1 VALUES(13, 'hello
+world', 13);
+CREATE TABLE t2(i INTEGER PRIMARY KEY AUTOINCREMENT, b, c);
+INSERT INTO t2 VALUES(NULL, 1, 2);
+INSERT INTO t2 VALUES(NULL, 3, 4);
+INSERT INTO t2 VALUES(NULL, 5, 6);
+CREATE TABLE t3(i INTEGER PRIMARY KEY AUTOINCREMENT, b, c);
+INSERT INTO t3 VALUES(NULL, 1, 2);
+INSERT INTO t3 VALUES(NULL, 3, 4);
+INSERT INTO t3 VALUES(NULL, 5, 6);
+DELETE FROM t2;
+PRAGMA auto_vacuum = 0;
+INSERT INTO t1 VALUES(1, 2, 3);
+INSERT INTO t1 VALUES(4, 5, 6);
+INSERT INTO t1 VALUES(7, 8, 9);
+PRAGMA writable_schema = 1;
+DELETE FROM sqlite_master WHERE name='t1';
+SELECT name FROM sqlite_master;
+SELECT name FROM sqlite_master;
+CREATE TABLE lost_and_found(a, b, c);
+SELECT name FROM sqlite_master;
+SELECT name FROM sqlite_master;
+CREATE TABLE lost_and_found_0(a, b, c);
+SELECT name FROM sqlite_master;
+SELECT name FROM sqlite_master;
+CREATE TABLE x1(a, b, c);
+WITH s(i) AS (
+    SELECT 1 UNION ALL SELECT i+1 FROM s WHERE i<100
+  )
+  INSERT INTO x1 SELECT i, i, hex(randomblob(500)) FROM s;
+DROP TABLE x1;
+SELECT name FROM sqlite_master;
+SELECT name FROM sqlite_master;

@@ -1,0 +1,20 @@
+PRAGMA foreign_keys = 1;
+CREATE TABLE s1(a PRIMARY KEY, b);
+CREATE TABLE par(a, b REFERENCES s1, c UNIQUE, PRIMARY KEY(a));
+CREATE TABLE c1(a, b REFERENCES par);
+CREATE TABLE c2(a, b REFERENCES par);
+CREATE TABLE c3(a, b REFERENCES par(c));
+CREATE TABLE pX(x PRIMARY KEY);
+CREATE TABLE cX(a INTEGER PRIMARY KEY, b REFERENCES pX);
+PRAGMA foreign_keys = true;
+CREATE TABLE parent(
+    p PRIMARY KEY
+  );
+CREATE TABLE child(
+    c UNIQUE REFERENCES parent(p)
+  );
+SELECT * FROM child;
+PRAGMA foreign_key_check;
+INSERT INTO parent VALUES(123);
+SELECT * FROM child;
+PRAGMA foreign_key_check;
