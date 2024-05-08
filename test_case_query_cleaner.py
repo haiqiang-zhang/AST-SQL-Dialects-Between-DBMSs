@@ -1,11 +1,13 @@
 import os
 from typing import List
-from dbms_adapter import SQLITE3
+from adapter.sqlite import SQLITE3
+from adapter.mysql_adapter import MYSQL
 import pandas as pd
 from utils import clean_query, clean_test_garbage, SQLFileEmptyError
 
 DBMS_ADAPTERS = {
-    "sqlite": SQLITE3
+    # "sqlite": SQLITE3,
+    "mysql": MYSQL
 }
 
 test_case_path = './test_case'
