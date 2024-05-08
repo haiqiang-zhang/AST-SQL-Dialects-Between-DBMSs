@@ -12,7 +12,7 @@ setup_query_keyword = [
 ]
 
 class SQLITE3:
-    def __init__(self, filename:str="sqlite_test") -> None:
+    def __init__(self, filename:str="sqlite_test.db") -> None:
         # check if sqlite_test.dbe exists. If it does, delete it, then create a new one
         if os.path.exists(filename):
             os.remove(filename)

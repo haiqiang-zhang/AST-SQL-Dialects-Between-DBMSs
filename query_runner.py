@@ -68,9 +68,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str)->pd.DataFrame:
             else:
                 failure_counter += 1
         df.apply(lambda x: x.append([dbms, result[0], result[1]]), axis=1)
-    
-
-    
+        
     return success_counter, failure_counter, df
 
 
