@@ -1,6 +1,6 @@
 import os
 from typing import List
-from dbms_adapter import SQLITE3
+from adapter.sqlite import SQLITE3
 import pandas as pd
 from query_runner import clean_query
 
