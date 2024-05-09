@@ -1,69 +1,30 @@
---
-
---enable_metadata
--- PS protocol gives slightly different metadata
---disable_ps_protocol
-
---
--- First some simple tests
---
-
 select 1, 1.0, -1, "hello", NULL;
-
 create table t1 (a tinyint, b smallint, c mediumint, d int, e bigint, f float(3,2), g double(4,3), h decimal(5,4), i year, j date, k timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, l datetime, m enum('a','b'), n set('a','b'), o char(10));
 select * from t1;
 select a b, b c from t1 as t2;
 drop table t1;
-
---
--- Test metadata from ORDER BY (Bug #2654)
---
-
 CREATE TABLE t1 (id tinyint(3) default NULL, data varchar(255) default NULL);
 INSERT INTO t1 VALUES (1,'male'),(2,'female');
 CREATE TABLE t2 (id tinyint(3) unsigned default NULL, data char(3) default '0');
 INSERT INTO t2 VALUES (1,'yes'),(2,'no');
-
 select t1.id, t1.data, t2.data from t1, t2 where t1.id = t2.id;
 select t1.id, t1.data, t2.data from t1, t2 where t1.id = t2.id order by t1.id;
 select t1.id from t1 union select t2.id from t2;
 drop table t1,t2;
-
---
--- variables union and derived tables metadata test
---
 create table t1 ( a int, b varchar(30), primary key(a));
 insert into t1 values (1,'one');
 insert into t1 values (2,'two');
-set @arg00=1 ;
 select @arg00 FROM t1 where a=1 union distinct select 1 FROM t1 where a=1;
 select * from (select @arg00) aaa;
 select 1 union select 1;
 select * from (select 1 union select 1) aaa;
 drop table t1;
-
---
--- Bug #11688: Bad mysql_info() results in multi-results
---
---enable_info
-delimiter //;
 create table t1 (i int);
 insert into t1 values (1),(2),(3);
 select * from t1 where i = 2;
 drop table t1;
-
---
--- Bug #28492: subselect returns LONG in >5.0.24a and LONGLONG in <=5.0.24a
---
---enable_metadata
 select a.* from (select 2147483648 as v_large) a;
 select a.* from (select 214748364 as v_small) a;
-
---
--- Bug #28898: table alias and database name of VIEW columns is empty in the
--- metadata of # SELECT statement where join is executed via temporary table.
---
-
 CREATE TABLE t1 (c1 CHAR(1));
 CREATE TABLE t2 (c2 CHAR(1));
 CREATE VIEW v1 AS SELECT t1.c1 FROM t1;
@@ -74,35 +35,18 @@ SELECT v1.c1 FROM v1 JOIN t2 ON c1=c2 ORDER BY 1;
 SELECT v1.c1, v2.c2 FROM v1 JOIN v2 ON c1=c2;
 SELECT v1.c1, v2.c2 FROM v1 JOIN v2 ON c1=c2 GROUP BY v1.c1;
 SELECT v1.c1, v2.c2 FROM v1 JOIN v2 ON c1=c2 GROUP BY v1.c1 ORDER BY v2.c2;
-
 DROP VIEW v1,v2;
 DROP TABLE t1,t2;
-
---
--- Bug #39283: Date returned as VARBINARY to client for queries
---             with COALESCE and JOIN
---
-
 CREATE TABLE t1 (i INT, d DATE);
 INSERT INTO t1 VALUES (1, '2008-01-01'), (2, '2008-01-02'), (3, '2008-01-03');
-SELECT COALESCE(d, d), IFNULL(d, d), IF(i, d, d),
-       CASE i WHEN i THEN d ELSE d END, GREATEST(d, d), LEAST(d, d)
-  FROM t1 ORDER BY RAND();
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 INT);
 CREATE VIEW v1 AS SELECT f1 FROM t1;
 SELECT f1 FROM v1 va;
-
 DROP VIEW v1;
 DROP TABLE t1;
-
--- Verify that column metadata is correct for all possible data types.
--- Originally about BUG#42980 "Client doesn't set NUM_FLAG for DECIMAL"
-
 create table t1(
--- numeric types
+# numeric types
 bool_col bool,
 boolean_col boolean,
 bit_col bit(5),
@@ -117,7 +61,7 @@ int_col_uns int unsigned,
 big bigint,
 big_uns bigint unsigned,
 decimal_col decimal(10,5),
--- synonyms of DECIMAL
+# synonyms of DECIMAL
 numeric_col numeric(10),
 fixed_col fixed(10),
 dec_col dec(10),
@@ -127,13 +71,13 @@ fcol_uns float unsigned,
 dcol double,
 double_precision_col double precision,
 dcol_uns double unsigned,
--- date/time types
+# date/time types
 date_col date,
 time_col time,
 timestamp_col timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 year_col year,
 datetime_col datetime,
--- string types
+# string types
 char_col char(5),
 varchar_col varchar(10),
 binary_col binary(10),
@@ -149,28 +93,7 @@ enum_col enum("A","B","C"),
 set_col set("F","E","D")
 );
 select * from t1;
-
 drop table t1;
-SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
-CREATE TABLE t1 (
-  t6 TIME(6), t5 TIME(5), t4 TIME(4),
-  t3 TIME(3), t2 TIME(2), t1 TIME(1),
-  t0 TIME,
-  dt6 DATETIME(6), dt5 DATETIME(5), dt4 DATETIME(4),
-  dt3 DATETIME(3), dt2 DATETIME(2), dt1 DATETIME(1),
-  dt0 DATETIME,
-  ts6 TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  ts5 TIMESTAMP(5) NOT NULL DEFAULT '0000-00-00 00:00:00', 
-  ts4 TIMESTAMP(4) NOT NULL DEFAULT '0000-00-00 00:00:00',
-  ts3 TIMESTAMP(3) NOT NULL DEFAULT '0000-00-00 00:00:00',
-  ts2 TIMESTAMP(2) NOT NULL DEFAULT '0000-00-00 00:00:00',
-  ts1 TIMESTAMP(1) NOT NULL DEFAULT '0000-00-00 00:00:00',
-  ts0 TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'
-);
-SELECT * FROM t1;
-DROP TABLE t1;
-SET sql_mode = default;
-
 CREATE TABLE t1 (f1 INTEGER, f2 CHAR(1));
 INSERT INTO t1 VALUES (10, 'A');
 CREATE VIEW v1 AS SELECT f1, f2 FROM t1;
@@ -185,31 +108,22 @@ SELECT * FROM v1;
 SELECT * FROM v2;
 SELECT * FROM (SELECT * FROM v1) AS dt;
 SELECT * FROM (SELECT * FROM v2) AS dt;
-
 DROP VIEW v1,v2;
 DROP TABLE t1;
-
 create table t(a int);
 create view v as select a as d, 2*a as two from t;
 select a as d from t limit 1;
-
 select * from (select a as d, 2*a as two from t) dt;
 select d, two from (select a as d, 2*a as two from t) dt;
 select d as e, two as f from (select a as d, 2*a as two from t) dt;
-
 select * from v;
 select d, two from v;
 select d as e, two as f from v;
-
-set optimizer_switch="derived_merge=off";
-
 select * from (select a as d, 2*a as two from t) dt;
 select d from (select a as d, 2*a as two from t) dt;
 select d as e from (select a as d, 2*a as two from t) dt;
-
 select * from v;
 select d, two from v;
 select d as e, two as f from v;
-set optimizer_switch=default;
 drop view v;
 drop table t;

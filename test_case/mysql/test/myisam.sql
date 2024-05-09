@@ -1,18 +1,8 @@
---
-
--- Initialise
---disable_warnings
 drop table if exists t1,t2;
-SET SQL_WARNINGS=1;
-SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
-SET @default_table_open_cache = @@table_open_cache;
---
-
 CREATE TABLE t1 (
   STRING_DATA char(255) default NULL,
   KEY string_data (STRING_DATA)
 ) charset latin1 ENGINE=MyISAM;
-
 INSERT INTO t1 VALUES ('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 INSERT INTO t1 VALUES ('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
 INSERT INTO t1 VALUES ('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
@@ -20,51 +10,20 @@ INSERT INTO t1 VALUES ('FGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 INSERT INTO t1 VALUES ('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
 INSERT INTO t1 VALUES ('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
 drop table t1;
-
---
--- Test problem with rows that are 65517-65520 bytes long
---
-
 create table t1 (a tinyint not null auto_increment, b blob not null, primary key (a));
-
-let $1=100;
-SET SQL_WARNINGS=0;
-{
-  eval insert into t1 (b) values(repeat(char(65+$1),65550-$1));
-  dec $1;
-SET SQL_WARNINGS=1;
 delete from t1 where (a & 1);
 drop table t1;
-
---
--- Test bug: Two optimize in a row reset index cardinality
---
-
 create table t1 (a int not null auto_increment, b int not null, primary key (a), index(b));
 insert into t1 (b) values (1),(2),(2),(2),(2);
 drop table t1;
-
---
--- Test of how ORDER BY works when doing it on the whole table
---
-
 create table t1 (a int not null, b int not null, c int not null, primary key (a),key(b)) engine=myisam;
 insert into t1 values (3,3,3),(1,1,1),(2,2,2),(4,4,4);
 drop table t1;
-
---
--- Test of OPTIMIZE of locked and modified tables
---
 CREATE TABLE t1 (a INT);
 INSERT INTO  t1 VALUES (1), (2), (3);
+LOCK TABLES t1 WRITE;
 INSERT INTO  t1 VALUES (1), (2), (3);
 DROP TABLE t1;
-
---
--- Test of optimize, when only mi_sort_index (but not mi_repair*) is done
--- in ha_myisam::repair, and index size is changed (decreased).
---
-
 create table t1 ( t1 char(255), key(t1(250)));
 insert t1 values ('137513751375137513751375137513751375137569516951695169516951695169516951695169');
 insert t1 values ('178417841784178417841784178417841784178403420342034203420342034203420342034203');
@@ -96,11 +55,6 @@ insert t1 values ('70'), ('84'), ('60'), ('20'), ('76'), ('89'), ('49'), ('50'),
 ('88'), ('61'), ('42'), ('98'), ('39'), ('30'), ('25'), ('66'), ('61'), ('48'),
 ('80'), ('84'), ('98'), ('19'), ('91'), ('42'), ('47');
 drop table t1;
-
---
--- test of myisam with huge number of packed fields
---
-
 create table t1 (i1 int, i2 int, i3 int, i4 int, i5 int, i6 int, i7 int, i8
 int, i9 int, i10 int, i11 int, i12 int, i13 int, i14 int, i15 int, i16 int, i17
 int, i18 int, i19 int, i20 int, i21 int, i22 int, i23 int, i24 int, i25 int,
@@ -270,70 +224,18 @@ update t1 set i1=0, i2=0, i3=0, i4=0, i5=0, i6=0, i7=0;
 delete from t1 where i8=1;
 select i1,i2 from t1;
 drop table t1;
-
---
--- Test of REPAIR that once failed
---
-CREATE TABLE `t1` (
-  `post_id` mediumint(8) unsigned NOT NULL auto_increment,
-  `topic_id` mediumint(8) unsigned NOT NULL default '0',
-  `post_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `post_text` text NOT NULL,
-  `icon_url` varchar(10) NOT NULL default '',
-  `sign` tinyint(1) unsigned NOT NULL default '0',
-  `post_edit` varchar(150) NOT NULL default '',
-  `poster_login` varchar(35) NOT NULL default '',
-  `ip` varchar(15) NOT NULL default '',
-  PRIMARY KEY  (`post_id`),
-  KEY `post_time` (`post_time`),
-  KEY `ip` (`ip`),
-  KEY `poster_login` (`poster_login`),
-  KEY `topic_id` (`topic_id`),
-  FULLTEXT KEY `post_text` (`post_text`)
-) ENGINE=MyISAM;
-
-INSERT INTO t1 (post_text) VALUES ('ceci est un test'),('ceci est un test'),('ceci est un test'),('ceci est un test'),('ceci est un test');
-drop table t1;
-
---
--- Test of creating table with too long key
---
-
---error 1071
-CREATE TABLE t1 (a varchar(255), b varchar(255), c varchar(255), d varchar(255), e varchar(255), KEY t1 (a, b, c, d, e));
 CREATE TABLE t1 (a varchar(255), b varchar(255), c varchar(255), d varchar(255), e varchar(255));
-ALTER TABLE t1 ADD INDEX t1 (a, b, c, d, e);
 DROP TABLE t1;
-
---
--- Test of cardinality of keys with NULL
---
-
 CREATE TABLE t1 (a int not null, b int, c int, key(b), key(c), key(a,b), key(c,a));
 INSERT into t1 values (0, null, 0), (0, null, 1), (0, null, 2), (0, null,3), (1,1,4);
 create table t2 (a int not null, b int, c int, key(b), key(c), key(a));
 INSERT into t2 values (1,1,1), (2,2,2);
 drop table t1,t2;
-
---
--- Test bug when updating a split dynamic row where keys are not changed
---
-
 create table t1 (a int not null auto_increment primary key, b varchar(255));
 insert into t1 (b) values (repeat('a',100)),(repeat('b',100)),(repeat('c',100));
 update t1 set b=repeat(left(b,1),200) where a=1;
 delete from t1 where (a & 1)= 0;
 update t1 set b=repeat('e',200) where a=1;
-
---
--- check updating with keys
---
-
-disable_query_log;
-let $1 = 100;
-{
-  eval insert into t1 (b) values (repeat(char(($1 & 32)+65), $1));
-  dec $1;
 update t1 set b=repeat(left(b,1),255) where a between 1 and 5;
 update t1 set b=repeat(left(b,1),10) where a between 32 and 43;
 update t1 set b=repeat(left(b,1),2) where a between 64 and 66;
@@ -341,10 +243,6 @@ update t1 set b=repeat(left(b,1),65) where a between 67 and 70;
 insert into t1 (b) values (repeat('z',100));
 update t1 set b="test" where left(b,1) > 'n';
 drop table t1;
-
---
--- two bugs in myisam-space-stripping feature
---
 create table t1 ( a text collate latin1_swedish_ci not null, key a (a(20)));
 insert into t1 values ('aaa   '),('aaa'),('aa');
 select concat(a,'.') from t1 where a='aaa';
@@ -352,31 +250,18 @@ select concat(a,'.') from t1 where binary a='aaa';
 update t1 set a='bbb' where a='aaa';
 select concat(a,'.') from t1;
 drop table t1;
-
---
--- Third bug in the same code (BUG#2295)
---
-
 create table t1(a text not null, b text not null, c text not null, index (a(10),b(10),c(10)));
 insert into t1 values('807780', '477', '165');
 insert into t1 values('807780', '477', '162');
 insert into t1 values('807780', '472', '162');
 select * from t1 where a='807780' and b='477' and c='165';
 drop table t1;
-
---
--- space-stripping in _mi_prefix_search: BUG#5284
---
 CREATE TABLE t1 (a varchar(150) NOT NULL, KEY (a)) charset latin1;
 INSERT t1 VALUES ("can \tcan");
 INSERT t1 VALUES ("can   can");
 INSERT t1 VALUES ("can");
 SELECT * FROM t1;
 DROP TABLE t1;
-
---
--- Verify blob handling
---
 create table t1 (a blob);
 insert into t1 values('a '),('a');
 select concat(a,'.') from t1 where a='a';
@@ -385,37 +270,20 @@ alter table t1 add key(a(2));
 select concat(a,'.') from t1 where a='a';
 select concat(a,'.') from t1 where a='a ';
 drop table t1;
-
---
--- Test text and unique
---
 create table t1 (a int not null auto_increment primary key, b text not null, unique b (b(20)));
 insert into t1 (b) values ('a'),('b'),('c');
 select concat(b,'.') from t1;
 update t1 set b='b\b' where a=2;
-update t1 set b='B' where a > 1;
-insert into t1 (b) values ('b');
 select * from t1;
 delete from t1 where b='b';
 select a,concat(b,'.') from t1;
 drop table t1;
-
---
--- Test keys with 0 segments. (Bug #3203)
---
 create table t1 (a int not null);
 create table t2 (a int not null, primary key (a));
 insert into t1 values (1);
 insert into t2 values (1),(2);
-
-select sql_big_result distinct t1.a from t1,t2 order by t2.a;
-select distinct t1.a from t1,t2 order by t2.a;
 select sql_big_result distinct t1.a from t1,t2;
 drop table t1,t2;
-
---
--- Bug#14616 - Freshly imported table returns error 124 when using LIMIT
---
 create table t1 (
   c1 varchar(32),
   key (c1)
@@ -424,122 +292,67 @@ alter table t1 disable keys;
 insert into t1 values ('a'), ('b');
 select c1 from t1 order by c1 limit 1;
 drop table t1;
-
---
--- Bug #14400  Join could miss concurrently inserted row
---
--- Partial key.
 create table t1 (a int not null, primary key(a));
 create table t2 (a int not null, b int not null, primary key(a,b));
 insert into t1 values (1),(2),(3),(4),(5),(6);
 insert into t2 values (1,1),(2,1);
+lock tables t1 read local, t2 read local;
 select straight_join * from t1,t2 force index (primary) where t1.a=t2.a;
-insert into t2 values(2,0);
 select straight_join * from t1,t2 force index (primary) where t1.a=t2.a;
+unlock tables;
 drop table t1,t2;
 CREATE TABLE t1 (c1 varchar(250) NOT NULL);
 CREATE TABLE t2 (c1 varchar(250) NOT NULL, PRIMARY KEY (c1));
 INSERT INTO t1 VALUES ('test000001'), ('test000002'), ('test000003');
 INSERT INTO t2 VALUES ('test000002'), ('test000003'), ('test000004');
+LOCK TABLES t1 READ LOCAL, t2 READ LOCAL;
 SELECT t1.c1 AS t1c1, t2.c1 AS t2c1 FROM t1, t2
   WHERE t1.c1 = t2.c1 HAVING t1c1 != t2c1;
-INSERT INTO t2 VALUES ('test000001'), ('test000005');
 SELECT t1.c1 AS t1c1, t2.c1 AS t2c1 FROM t1, t2
   WHERE t1.c1 = t2.c1 HAVING t1c1 != t2c1;
+UNLOCK TABLES;
 DROP TABLE t1,t2;
-
--- End of 4.0 tests
-
---
--- Test RTREE index
---
---error ER_SPATIAL_MUST_HAVE_GEOM_COL
-CREATE TABLE t1 (`a` int(11) NOT NULL default '0', `b` int(11) NOT NULL default '0', UNIQUE KEY `a` USING RTREE (`a`,`b`)) ENGINE=MyISAM;
-
 create table t1 (a int, b varchar(200), c text not null) checksum=1;
 create table t2 (a int, b varchar(200), c text not null) checksum=0;
 insert t1 values (1, "aaa", "bbb"), (NULL, "", "ccccc"), (0, NULL, "");
 insert t2 select * from t1;
 drop table t1,t2;
-
 create table t1 (a int, key (a));
 alter table t1 disable keys;
 create table t2 (a int);
-let $i=1000;
-set @@rand_seed1=31415926,@@rand_seed2=2718281828;
-{
-  dec $i;
-  insert t2 values (rand()*100000);
 insert t1 select * from t2;
 alter table t1 enable keys;
 alter table t1 engine=heap;
 alter table t1 disable keys;
 drop table t1,t2;
-
---
--- index search for NULL in blob. Bug #4816
---
 create table t1 ( a tinytext, b char(1), index idx (a(1),b) );
 insert into t1 values (null,''), (null,'');
 select count(*) from t1 where a is null;
 drop table t1;
-
---
--- bug9188 - Corruption Cannot open file: 'table.MYI' (errno: 145)
---
 create table t1 (c1 int, c2 varchar(4) not null default '',
                  key(c2(3))) default charset=utf8mb3;
 insert into t1 values (1,'A'), (2, 'B'), (3, 'A');
 update t1 set c2='A  B' where c1=2;
 drop table t1;
-
-
---
--- Bug#12296 - CHECKSUM TABLE reports 0 for the table
--- This happened if the first record was marked as deleted.
---
 create table t1 (c1 int);
 insert into t1 values (1),(2),(3),(4);
 delete from t1 where c1 = 1;
 create table t2 as select * from t1;
 drop table t1, t2;
-
---
--- BUG#12232: New myisam_stats_method variable.
---
-
-show variables like 'myisam_stats_method';
-
 create table t1 (a int, key(a));
 insert into t1 values (0),(1),(2),(3),(4);
 insert into t1 select NULL from t1;
-
--- default: NULLs considered inequal
-analyze table t1;
 insert into t1 values (11);
 delete from t1 where a=11;
-
--- Set nulls to be equal:
-set myisam_stats_method=nulls_equal;
 insert into t1 values (11);
 delete from t1 where a=11;
-
 insert into t1 values (11);
 delete from t1 where a=11;
-
--- Set nulls back to be equal 
-set myisam_stats_method=DEFAULT;
 insert into t1 values (11);
 delete from t1 where a=11;
-
 insert into t1 values (11);
 delete from t1 where a=11;
-
 drop table t1;
-
--- WL#2609, CSC#XXXX: MyISAM 
-set myisam_stats_method=nulls_ignored;
-
 create table t1 (
   a char(3), b char(4), c char(5), d char(6),
   key(a,b,c,d)
@@ -549,19 +362,13 @@ insert into t1 values ('bcd','def2', NULL, 'zz');
 insert into t1 values ('bce','def1', 'yuu', NULL);
 insert into t1 values ('bce','def2', NULL, 'quux');
 delete from t1;
-
-set myisam_stats_method=DEFAULT;
 drop table t1;
-
--- BUG#13814 - key value packed incorrectly for TINYBLOBs
-
 create table t1(
   cip INT NOT NULL,
   time TIME NOT NULL,
   score INT NOT NULL DEFAULT 0,
   bob TINYBLOB
 );
-
 insert into t1 (cip, time) VALUES (1, '00:01'), (2, '00:02'), (3,'00:03');
 insert into t1 (cip, bob, time) VALUES (4, 'a', '00:04'), (5, 'b', '00:05'), 
                                        (6, 'c', '00:06');
@@ -569,10 +376,6 @@ select * from t1 where bob is null and cip=1;
 create index bug on t1 (bob(22), cip, time);
 select * from t1 where bob is null and cip=1;
 drop table t1;
-
---
--- Bug#14980 - COUNT(*) incorrect on MyISAM table with certain INDEX
---
 create table t1 (
   id1 int not null auto_increment,
   id2 int not null default '0',
@@ -587,11 +390,6 @@ insert into t1 (id2, t) values
 select count(*)   from t1 where id2 = 10;
 select count(id1) from t1 where id2 = 10;
 drop table t1;
-
---
--- BUG##20357 - Got error 124 from storage engine using MIN and MAX functions
---              in queries
---
 CREATE TABLE t1(a TINYINT, KEY(a)) ENGINE=MyISAM;
 INSERT INTO t1 VALUES(1);
 SELECT MAX(a) FROM t1 IGNORE INDEX(a);
@@ -599,21 +397,11 @@ ALTER TABLE t1 DISABLE KEYS;
 SELECT MAX(a) FROM t1;
 SELECT MAX(a) FROM t1 IGNORE INDEX(a);
 DROP TABLE t1;
-
---
--- BUG#18036 - update of table joined to self reports table as crashed
---
 CREATE TABLE t1(a CHAR(9), b VARCHAR(7)) ENGINE=MyISAM;
 INSERT INTO t1(a) VALUES('xxxxxxxxx'),('xxxxxxxxx');
 UPDATE t1 AS ta1,t1 AS ta2 SET ta1.b='aaaaaa',ta2.b='bbbbbb';
 SELECT * FROM t1;
 DROP TABLE t1;
-
---
--- Bug#8283 - OPTIMIZE TABLE causes data loss
---
---
--- Test OPTIMIZE. This creates a new data file.
 CREATE TABLE t1 (
   `_id` int(11) NOT NULL default '0',
   `url` text,
@@ -676,37 +464,18 @@ SELECT _id FROM t1;
 DELETE FROM t1 WHERE _id < 8;
 SELECT _id FROM t1;
 DROP TABLE t1;
---
-
---
--- BUG#21310 - Trees in SQL causing a "crashed" table with MyISAM storage
---             engine
---
-
--- A simplified test case that reflect crashed table issue.
 CREATE TABLE t1(a VARCHAR(16));
 INSERT INTO t1 VALUES('aaaaaaaa'),(NULL);
 UPDATE t1 AS ta1, t1 AS ta2 SET ta1.a='aaaaaaaaaaaaaaaa';
 SELECT * FROM t1;
 DROP TABLE t1;
-
--- A test case that reflect wrong result set.
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES(1),(2);
 UPDATE t1,t1 AS t2 SET t1.a=t1.a+2 WHERE t1.a=t2.a-1;
 SELECT * FROM t1 ORDER BY a;
 DROP TABLE t1;
-
---
--- Bug#24607 - MyISAM pointer size determined incorrectly
---
 CREATE TABLE t1 (c1 TEXT) AVG_ROW_LENGTH=70100 MAX_ROWS=4100100100;
 DROP TABLE t1;
-
---
--- Bug#26231 - select count(*) on myisam table returns wrong value
---             when index is used
---
 CREATE TABLE t1 (c1 TEXT NOT NULL, KEY c1 (c1(10))) charset latin1 ENGINE=MyISAM;
 INSERT INTO t1 VALUES
   (CHAR(9,65)), (CHAR(9,65)), (CHAR(9,65)), (CHAR(9,65)),
@@ -845,83 +614,36 @@ SELECT DISTINCT COUNT(*) FROM t1 IGNORE INDEX (c1) WHERE c1 = '';
 SELECT DISTINCT length(c1), c1 FROM t1 IGNORE INDEX (c1) WHERE c1 = '';
 SELECT DISTINCT length(c1), c1 FROM t1 ORDER BY c1;
 DROP TABLE t1;
-
-
--- Test varchar
---
-
-let $default=`select @@default_storage_engine`;
-set default_storage_engine=MyISAM;
-
---
--- Some errors/warnings on create
---
-
-create table t1 (v varchar(65530), key(v)) charset latin1;
 drop table if exists t1;
-create table t1 (v varchar(65536));
-drop table t1;
-create table t1 (v varchar(65530) character set utf8mb3);
-drop table t1;
-
--- MyISAM specific varchar tests
---error 1118
-create table t1 (v varchar(65535)) charset latin1;
-
---
--- Test concurrent insert
--- First with static record length
---
-set @save_concurrent_insert=@@concurrent_insert;
-set global concurrent_insert=1;
 create table t1 (a int);
 insert into t1 values (1),(2),(3),(4),(5);
-insert into t1 values(6),(7);
+lock table t1 read local;
+unlock tables;
 delete from t1 where a>=3 and a<=4;
-set global concurrent_insert=2;
-insert into t1 values (8),(9);
+lock table t1 read local;
+unlock tables;
 insert into t1 values (10),(11),(12);
 select * from t1;
 drop table t1;
-
--- Same test with dynamic record length
 create table t1 (a int, b varchar(30) default "hello");
 insert into t1 (a) values (1),(2),(3),(4),(5);
-insert into t1 (a) values(6),(7);
+lock table t1 read local;
+unlock tables;
 delete from t1 where a>=3 and a<=4;
-set global concurrent_insert=2;
-insert into t1 (a) values (8),(9);
+lock table t1 read local;
+unlock tables;
 insert into t1 (a) values (10),(11),(12);
 select a from t1;
 drop table t1;
-set global concurrent_insert=@save_concurrent_insert;
-
-
--- BUG#9622 - ANALYZE TABLE and ALTER TABLE .. ENABLE INDEX produce
--- different statistics on the same table with NULL values.
 create table t1 (a int, key(a));
-
 insert into t1 values (1),(2),(3),(4),(NULL),(NULL),(NULL),(NULL);
-
 alter table t1 disable keys;
 alter table t1 enable keys;
-
 drop table t1;
-
-
---
--- Bug#10056 - PACK_KEYS option take values greater than 1 while creating table
---
 create table t1 (c1 int) engine=myisam pack_keys=0;
 create table t2 (c1 int) engine=myisam pack_keys=1;
 create table t3 (c1 int) engine=myisam pack_keys=default;
-create table t4 (c1 int) engine=myisam pack_keys=2;
 drop table t1, t2, t3;
-
-
---
--- Bug#28476: force index on a disabled myisam index gives error 124
---
 CREATE TABLE t1(a INT, b INT, KEY inx (a), UNIQUE KEY uinx (b)) ENGINE=MyISAM;
 INSERT INTO t1(a,b) VALUES (1,1),(2,2),(3,3),(4,4),(5,5);
 SELECT a FROM t1 FORCE INDEX (inx) WHERE a=1;
@@ -934,10 +656,6 @@ SELECT a FROM t1 FORCE INDEX (inx,uinx) WHERE a=1;
 ALTER TABLE t1 ENABLE KEYS;
 SELECT a FROM t1 FORCE INDEX (inx) WHERE a=1;
 DROP TABLE t1;
-
---
--- Bug#4692 - DISABLE/ENABLE KEYS waste a space
---
 CREATE TABLE t1 (c1 INT, c2 INT, UNIQUE INDEX (c1), INDEX (c2)) ENGINE=MYISAM;
 INSERT INTO t1 VALUES (1,1);
 ALTER TABLE t1 DISABLE KEYS;
@@ -947,28 +665,15 @@ ALTER TABLE t1 ENABLE KEYS;
 ALTER TABLE t1 DISABLE KEYS;
 ALTER TABLE t1 ENABLE KEYS;
 DROP TABLE t1;
-
---
--- Bug#28837: MyISAM storage engine error (134) doing delete with self-join
---
-
 CREATE TABLE t1 (id int NOT NULL, ref int NOT NULL, INDEX (id)) ENGINE=MyISAM;
 CREATE TABLE t2 LIKE t1;
-
 INSERT INTO t2 (id, ref) VALUES (1,3), (2,1), (3,2), (4,5), (4,4);
 INSERT INTO t1 SELECT * FROM t2;
-
 SELECT * FROM t1 AS a INNER JOIN t1 AS b USING (id) WHERE a.ref < b.ref;
 SELECT * FROM t1;
 DELETE FROM a USING t1 AS a INNER JOIN t1 AS b USING (id) WHERE a.ref < b.ref;
 SELECT * FROM t1;
-
 DROP TABLE t1, t2;
-
-
---
--- Bug#37310: 'on update CURRENT_TIMESTAMP' option crashes the table
---
 CREATE TABLE t1 (a INT) ENGINE=MyISAM CHECKSUM=1 ROW_FORMAT=DYNAMIC;
 INSERT INTO t1 VALUES (0);
 UPDATE t1 SET a=1;
@@ -983,108 +688,29 @@ f VARCHAR(1), g VARCHAR(1), h VARCHAR(1),
 i VARCHAR(1), j VARCHAR(1), k VARCHAR(1)) CHECKSUM=1;
 INSERT INTO t1 VALUES('', '', '', '', '', '', '', '', '');
 DROP TABLE t1;
-SET GLOBAL table_open_cache=3;
 CREATE TABLE t1(a INT);
 SELECT 1 FROM t1 AS a1, t1 AS a2, t1 AS a3, t1 AS a4 FOR UPDATE;
 SELECT TABLE_ROWS, DATA_LENGTH FROM INFORMATION_SCHEMA.TABLES
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
 DROP TABLE t1;
-SET GLOBAL table_open_cache= @default_table_open_cache;
-
-
---
--- Test of key_block_size
---
-
 create table t1 (a int not null, key `a` (a) key_block_size=1024);
 drop table t1;
-
 create table t1 (a int not null, key `a` (a) key_block_size=2048);
 drop table t1;
-
-create table t1 (a varchar(2048), key `a` (a));
-drop table t1;
-
-create table t1 (a varchar(2048), key `a` (a) key_block_size=1024);
-drop table t1;
-
-create table t1 (a int not null, b varchar(2048), key (a), key(b)) key_block_size=1024;
-alter table t1 key_block_size=2048;
-alter table t1 add c int, add key (c);
-alter table t1 key_block_size=0;
-alter table t1 add d int, add key (d);
-drop table t1;
-
-create table t1 (a int not null, b varchar(2048), key (a), key(b)) key_block_size=8192;
-drop table t1;
-
-create table t1 (a int not null, b varchar(2048), key (a) key_block_size=1024, key(b)) key_block_size=8192;
-drop table t1;
-
-create table t1 (a int not null, b int, key (a) key_block_size=1024, key(b) key_block_size=8192) key_block_size=16384;
-drop table t1;
-
-
--- Test limits and errors of key_block_size
-
 create table t1 (a int not null, key `a` (a) key_block_size=512);
 drop table t1;
-
-create table t1 (a varchar(2048), key `a` (a) key_block_size=1000000000000000000);
-drop table t1;
-
 create table t1 (a int not null, key `a` (a) key_block_size=1025);
 drop table t1;
-create table t1 (a int not null, key key_block_size=1024 (a));
-create table t1 (a int not null, key `a` key_block_size=1024 (a));
-
---
--- Bug#22119 - Changing MI_KEY_BLOCK_LENGTH makes a wrong myisamchk
---
 CREATE TABLE t1 (
   c1 INT,
   c2 VARCHAR(300),
   KEY (c1) KEY_BLOCK_SIZE 1024,
   KEY (c2) KEY_BLOCK_SIZE 8192
   ) charset latin1;
-INSERT INTO t1 VALUES (10, REPEAT('a', CEIL(RAND(10) * 300))),
-  (11, REPEAT('b', CEIL(RAND() * 300))),
-  (12, REPEAT('c', CEIL(RAND() * 300))),
-  (13, REPEAT('d', CEIL(RAND() * 300))),
-  (14, REPEAT('e', CEIL(RAND() * 300))),
-  (15, REPEAT('f', CEIL(RAND() * 300))),
-  (16, REPEAT('g', CEIL(RAND() * 300))),
-  (17, REPEAT('h', CEIL(RAND() * 300))),
-  (18, REPEAT('i', CEIL(RAND() * 300))),
-  (19, REPEAT('j', CEIL(RAND() * 300))),
-  (20, REPEAT('k', CEIL(RAND() * 300))),
-  (21, REPEAT('l', CEIL(RAND() * 300))),
-  (22, REPEAT('m', CEIL(RAND() * 300))),
-  (23, REPEAT('n', CEIL(RAND() * 300))),
-  (24, REPEAT('o', CEIL(RAND() * 300))),
-  (25, REPEAT('p', CEIL(RAND() * 300))),
-  (26, REPEAT('q', CEIL(RAND() * 300))),
-  (27, REPEAT('r', CEIL(RAND() * 300))),
-  (28, REPEAT('s', CEIL(RAND() * 300))),
-  (29, REPEAT('t', CEIL(RAND() * 300))),
-  (30, REPEAT('u', CEIL(RAND() * 300))),
-  (31, REPEAT('v', CEIL(RAND() * 300))),
-  (32, REPEAT('w', CEIL(RAND() * 300))),
-  (33, REPEAT('x', CEIL(RAND() * 300))),
-  (34, REPEAT('y', CEIL(RAND() * 300))),
-  (35, REPEAT('z', CEIL(RAND() * 300)));
 INSERT INTO t1 SELECT * FROM t1;
 INSERT INTO t1 SELECT * FROM t1;
 DELETE FROM t1 WHERE c1 >= 10;
 DROP TABLE t1;
-
---
--- Bug#33222 - myisam-table drops rows when column is added
---             and a char-field > 128 exists
---
--- Test #1 - CHECK TABLE sees wrong record, REPAR TABLE deletes it.
--- Using a CHAR column that can have > 127 characters.
--- Using a VARCHAR to create a table with dynamic row format.
 CREATE TABLE t1 (
   c1 CHAR(130),
   c2 VARCHAR(1)
@@ -1117,10 +743,7 @@ CREATE TABLE t1 (
   c2 VARCHAR(1),
   KEY (c1)
 ) ENGINE=MyISAM;
-let $count= 100;
-{
-  INSERT INTO t1 VALUES ('a', 'b');
-  dec $count;
+INSERT INTO t1 VALUES ('a', 'b');
 UPDATE t1 SET c1=REPEAT("a",128) LIMIT 90;
 SELECT COUNT(*) FROM t1;
 ALTER TABLE t1 ENGINE=MyISAM;
@@ -1158,19 +781,12 @@ CREATE TABLE t1 (
   c2 VARCHAR(1),
   KEY (c1)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8mb3;
-let $count= 100;
-{
-  INSERT INTO t1 VALUES ('a', 'b');
-  dec $count;
+INSERT INTO t1 VALUES ('a', 'b');
 UPDATE t1 SET c1=REPEAT(_utf8mb3 x'e0ae85',43) LIMIT 90;
 SELECT COUNT(*) FROM t1;
 ALTER TABLE t1 ENGINE=MyISAM;
 SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
-
---
--- Bug#29182 - MyISAMCHK reports wrong character set
---
 CREATE TABLE t1 (
   c1 VARCHAR(10) NOT NULL,
   c2 CHAR(10) DEFAULT NULL,
@@ -1178,12 +794,7 @@ CREATE TABLE t1 (
   KEY (c1),
   KEY (c2)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 PACK_KEYS=0;
-let $MYSQLD_DATADIR= `select @@datadir`;
 DROP TABLE t1;
-
---
--- Bug#43737: Select query return bad result
---
 CREATE TABLE t1 (
   c INT,
   d bit(1),
@@ -1199,25 +810,13 @@ INSERT INTO t1 VALUES
   ( 10, 1, 2, 'a', 0, 1 ),
   ( 10, 1, 3, 'a', 0, 1 ),
   ( 10, 1, 4, 'a', 0, 1 );
-
 SELECT f FROM t1 WHERE d = 1 AND e = 2 AND g = 0 AND h = 1;
-
 SELECT h+0, d + 0, e, g + 0 FROM t1;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (line LINESTRING NOT NULL) engine=myisam;
-INSERT INTO t1 VALUES (ST_GeomFromText("POINT(0 0)"));
 CREATE TABLE t2 (line LINESTRING NOT NULL) engine=myisam;
-INSERT INTO t2 VALUES (ST_GeomFromText("POINT(0 0)"));
 CREATE TABLE t3 select * from t1;
 drop table t1,t2,t3;
-
-
---
--- BUG#47073 - valgrind errs, corruption,failed repair of partition,
---             low myisam_sort_buffer_size
---
 CREATE TABLE t1(a INT, b CHAR(10), KEY(a), KEY(b)) charset latin1;
 INSERT INTO t1 VALUES(1,'0'),(2,'0'),(3,'0'),(4,'0'),(5,'0'),
                      (6,'0'),(7,'0');
@@ -1231,18 +830,8 @@ INSERT INTO t1 SELECT a+640,b FROM t1;
 INSERT INTO t1 SELECT a+1280,b FROM t1;
 INSERT INTO t1 SELECT a+2560,b FROM t1;
 INSERT INTO t1 SELECT a+5120,b FROM t1;
-SET myisam_sort_buffer_size=4;
-
--- May report different values depending on threads activity.
---disable_result_log
-REPAIR TABLE t1;
-SET myisam_sort_buffer_size=@@global.myisam_sort_buffer_size;
 DROP TABLE t1;
 CREATE TABLE t1(a INT, b LONGTEXT, UNIQUE(a));
-(1, REPEAT('a', 129015)),(1, NULL),
-(2, NULL),(3, NULL),(4, NULL),(5, NULL),(6, NULL),(7, NULL),
-(1, REPEAT('b', 129016)),(1, NULL),
-(1, REPEAT('c', 129015)),(1, REPEAT('d', 129015));
 DROP TABLE t1;
 CREATE TABLE t1(a INT, b BIT(1));
 INSERT INTO t1 VALUES(1, 0), (2, 1);
@@ -1250,7 +839,6 @@ CREATE TABLE t2 SELECT * FROM t1;
 DROP TABLE t1, t2;
 CREATE TABLE t1(a CHAR(255), KEY(a)) charset latin1;
 SELECT * FROM t1, t1 AS a1;
-SET myisam_sort_buffer_size=4;
 INSERT INTO t1 VALUES
 ('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),
 ('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),
@@ -1268,62 +856,49 @@ INSERT INTO t1 VALUES
 ('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),
 ('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),('0'),
 ('0'),('0'),('0'),('0'),('0'),('0'),('0');
-SET myisam_sort_buffer_size=@@global.myisam_sort_buffer_size;
 INSERT INTO t1 VALUES('1');
 SELECT * FROM t1, t1 AS a1 WHERE t1.a=1 AND a1.a=1;
 DROP TABLE t1;
-SET GLOBAL myisam_use_mmap=1;
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES(1),(2);
 DELETE FROM t1 WHERE a=1;
+LOCK TABLE t1 WRITE;
 INSERT INTO t1 VALUES(3);
+UNLOCK TABLES;
 SELECT * FROM t1;
 DROP TABLE t1;
-SET GLOBAL myisam_use_mmap=default;
 CREATE TABLE t1(a INT, KEY(a));
 ALTER TABLE t1 DISABLE KEYS;
-let $MYSQLD_DATADIR= `select @@datadir`;
-SET @before:= (SELECT MAX_DATA_LENGTH FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='t1' AND TABLE_SCHEMA='test');
-SET @after:= (SELECT MAX_DATA_LENGTH FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='t1' AND TABLE_SCHEMA='test');
 SELECT @before=@after;
 DROP TABLE t1;
 CREATE TABLE t1 (
   a int NOT NULL
 ) engine= myisam;
-
 CREATE TABLE t2 (
   a int NOT NULL,
   b int NOT NULL,
   filler char(100) DEFAULT NULL,
   KEY a (a,b)
 ) engine= myisam;
-
 insert into t1 values (0),(1),(2),(3),(4);
 insert into t2 select A.a + 10 *B.a, 1, 'filler' from t1 A, t1 B;
 select * from t1, t2 where t2.a=t1.a and t2.b + 1;
-
 drop table t1,t2;
-
-let $MYSQLD_DATADIR = `SELECT @@datadir`;
 SELECT @@global.myisam_recover_options;
 CREATE TABLE t1 (a INT, KEY (a)) ENGINE=MyISAM;
 INSERT INTO t1 VALUES (1), (2);
 ALTER TABLE t1 ENGINE = MyISAM;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 year, key k1(f1)) ENGINE=MYISAM;
 INSERT INTO t1 VALUES(0000),(0000);
 SELECT * FROM t1 FORCE INDEX(k1) WHERE f1 = 'lhsi';
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   col1 VARCHAR(255) DEFAULT NULL,
   col1_id INT(11) DEFAULT NULL,
   KEY col1 (col1),
   KEY col1_id (col1_id)
 ) charset latin1 ENGINE=MyISAM;
-
 INSERT INTO t1 (col1, col1_id) VALUES
   ('5cm', 10000), ('people', 10000), ('king', 10000), ('queen', 10000),
   ('minister', 10000), ('servent', 13000);
@@ -1343,7 +918,6 @@ SELECT count(*) FROM t1 WHERE col1_id= 1414;
 DELETE FROM t1 WHERE col1= '5cm';
 SELECT count(*) FROM t1 WHERE col1= '5cm';
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   col1 VARCHAR(255) DEFAULT NULL,
   col1_dummy VARCHAR(25) DEFAULT NULL,
@@ -1353,7 +927,6 @@ CREATE TABLE t1 (
   KEY col1 (col1, col1_dummy),
   KEY col1_id (col1, col1_id_dummy)
 ) charset latin1 ENGINE=MyISAM;
-
 INSERT INTO t1 (col1, col1_dummy, col1_id, col1_id_dummy) VALUES
   ('5cm', '5cm' , 10000, 100), ('people', 'people', 10000, 100),
   ('king', 'king' , 10000, 100), ('queen', 'queen', 10000, 100),
@@ -1377,4 +950,3 @@ SELECT count(*) FROM t1 WHERE col1_id= 1414;
 DELETE FROM t1 WHERE col1= '5cm' AND col1_dummy= '5cm';
 SELECT count(*) FROM t1 WHERE col1= '5cm';
 DROP TABLE t1;
-SET sql_mode = default;

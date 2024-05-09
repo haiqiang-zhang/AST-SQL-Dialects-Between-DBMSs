@@ -34,155 +34,116 @@ CREATE TABLE all_types (
   col_enum ENUM('red', 'black', 'pink', 'white', 'purple'),
   col_set SET('one', 'two', 'three'));
 INSERT INTO all_types VALUES (
-  NULL,     -- BOOLEAN
-  NULL,     -- BIT
-  NULL,     -- TINYINT
-  NULL,     -- SMALLINT
-  NULL,     -- MEDIUMINT
-  NULL,     -- INTEGER
-  NULL,     -- BIGINT
-  NULL,     -- TINYINT_UNSIGNED
-  NULL,     -- SMALLINT_UNSIGNED
-  NULL,     -- MEDIUMINT_UNSIGNED
-  NULL,     -- INTEGER_UNSIGNED
-  NULL,     -- BIGINT_UNSIGNED
-  NULL,     -- FLOAT
-  NULL,     -- DOUBLE
-  NULL,     -- DECIMAL(65, 2)
-  NULL,     -- DATE
-  NULL,     -- TIME
-  NULL,     -- YEAR
-  NULL,     -- DATETIME
-  NULL,     -- TIMESTAMP
-  NULL,     -- CHAR
-  NULL,     -- VARCHAR
-  NULL,     -- TINYTEXT
-  NULL,     -- TEXT
-  NULL,     -- MEDIUMTEXT
-  NULL,     -- LONGTEXT
-  NULL,     -- BINARY
-  NULL,     -- VARBINARY
-  NULL,     -- TINYBLOB
-  NULL,     -- BLOB
-  NULL,     -- MEDIUMBLOB
-  NULL,     -- LONGBLOB
-  NULL,     -- ENUM
+  NULL,     # BOOLEAN
+  NULL,     # BIT
+  NULL,     # TINYINT
+  NULL,     # SMALLINT
+  NULL,     # MEDIUMINT
+  NULL,     # INTEGER
+  NULL,     # BIGINT
+  NULL,     # TINYINT_UNSIGNED
+  NULL,     # SMALLINT_UNSIGNED
+  NULL,     # MEDIUMINT_UNSIGNED
+  NULL,     # INTEGER_UNSIGNED
+  NULL,     # BIGINT_UNSIGNED
+  NULL,     # FLOAT
+  NULL,     # DOUBLE
+  NULL,     # DECIMAL(65, 2)
+  NULL,     # DATE
+  NULL,     # TIME
+  NULL,     # YEAR
+  NULL,     # DATETIME
+  NULL,     # TIMESTAMP
+  NULL,     # CHAR
+  NULL,     # VARCHAR
+  NULL,     # TINYTEXT
+  NULL,     # TEXT
+  NULL,     # MEDIUMTEXT
+  NULL,     # LONGTEXT
+  NULL,     # BINARY
+  NULL,     # VARBINARY
+  NULL,     # TINYBLOB
+  NULL,     # BLOB
+  NULL,     # MEDIUMBLOB
+  NULL,     # LONGBLOB
+  NULL,     # ENUM
   NULL);
-
 INSERT INTO all_types VALUES (
-  FALSE,                                                               -- BOOLEAN
-  b'0000000000000000000000000000000000000000000000000000000000000000', -- BIT
-  -128,                                                                -- TINYINT
-  -32768,                                                              -- SMALLINT
-  -8388608,                                                            -- MEDIUMINT
-  -2147483648,                                                         -- INTEGER
-  -9223372036854775808,                                                -- BIGINT
-  0,                                                                   -- TINYINT_UNSIGNED
-  0,                                                                   -- SMALLINT_UNSIGNED
-  0,                                                                   -- MEDIUMINT_UNSIGNED
-  0,                                                                   -- INTEGER_UNSIGNED
-  0,                                                                   -- BIGINT_UNSIGNED
-  -3.402823466E+38,                                                    -- FLOAT
-  -1.7976931348623157E+308,                                            -- DOUBLE
-  -999999999999999999999999999999999999999999999999999999999999999.99, -- DECIMAL(65, 2)
-  '1000-01-01',                                                        -- DATE
-  '-838:59:59.000000',                                                 -- TIME
-  1901,                                                                -- YEAR
-  '1000-01-01 00:00:00',                                               -- DATETIME
-  '1970-01-02 00:00:01',                                               -- TIMESTAMP
-  '',                                                                  -- CHAR
-  '',                                                                  -- VARCHAR
-  '',                                                                  -- TINYTEXT
-  '',                                                                  -- TEXT
-  '',                                                                  -- MEDIUMTEXT
-  '',                                                                  -- LONGTEXT
-  '',                                                                  -- BINARY
-  '',                                                                  -- VARBINARY
-  '',                                                                  -- TINYBLOB
-  '',                                                                  -- BLOB
-  '',                                                                  -- MEDIUMBLOB
-  '',                                                                  -- LONGBLOB
-  'red',                                                               -- ENUM
+  FALSE,                                                               # BOOLEAN
+  b'0000000000000000000000000000000000000000000000000000000000000000', # BIT
+  -128,                                                                # TINYINT
+  -32768,                                                              # SMALLINT
+  -8388608,                                                            # MEDIUMINT
+  -2147483648,                                                         # INTEGER
+  -9223372036854775808,                                                # BIGINT
+  0,                                                                   # TINYINT_UNSIGNED
+  0,                                                                   # SMALLINT_UNSIGNED
+  0,                                                                   # MEDIUMINT_UNSIGNED
+  0,                                                                   # INTEGER_UNSIGNED
+  0,                                                                   # BIGINT_UNSIGNED
+  -3.402823466E+38,                                                    # FLOAT
+  -1.7976931348623157E+308,                                            # DOUBLE
+  -999999999999999999999999999999999999999999999999999999999999999.99, # DECIMAL(65, 2)
+  '1000-01-01',                                                        # DATE
+  '-838:59:59.000000',                                                 # TIME
+  1901,                                                                # YEAR
+  '1000-01-01 00:00:00',                                               # DATETIME
+  '1970-01-02 00:00:01',                                               # TIMESTAMP
+  '',                                                                  # CHAR
+  '',                                                                  # VARCHAR
+  '',                                                                  # TINYTEXT
+  '',                                                                  # TEXT
+  '',                                                                  # MEDIUMTEXT
+  '',                                                                  # LONGTEXT
+  '',                                                                  # BINARY
+  '',                                                                  # VARBINARY
+  '',                                                                  # TINYBLOB
+  '',                                                                  # BLOB
+  '',                                                                  # MEDIUMBLOB
+  '',                                                                  # LONGBLOB
+  'red',                                                               # ENUM
   '');
-
 INSERT INTO all_types VALUES (
-  TRUE,                                                                -- BOOLEAN
-  b'1111111111111111111111111111111111111111111111111111111111111111', -- BIT
-  127,                                                                 -- TINYINT
-  32767,                                                               -- SMALLINT
-  8388607,                                                             -- MEDIUMINT
-  2147483647,                                                          -- INTEGER
-  9223372036854775807,                                                 -- BIGINT
-  255,                                                                 -- TINYINT_UNSIGNED
-  65535,                                                               -- SMALLINT_UNSIGNED
-  16777215,                                                            -- MEDIUMINT_UNSIGNED
-  4294967295,                                                          -- INTEGER_UNSIGNED
-  18446744073709551615,                                                -- BIGINT_UNSIGNED
-  3.402823466E+38,                                                     -- FLOAT
-  1.7976931348623157E+308,                                             -- DOUBLE
-  999999999999999999999999999999999999999999999999999999999999999.99,  -- DECIMAL(65, 2)
-  '9999-12-31',                                                        -- DATE
-  '838:59:59.000000',                                                  -- TIME
-  2155,                                                                -- YEAR
-  '9999-12-31 23:59:59',                                               -- DATETIME
-  '2038-01-19 03:14:07',                                               -- TIMESTAMP
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- CHAR
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- VARCHAR
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- TINYTEXT
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- TEXT
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- MEDIUMTEXT
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- LONGTEXT
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- BINARY
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- VARBINARY
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- TINYBLOB
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- BLOB
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- MEDIUMBLOB
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     -- LONGBLOB
-  'purple',                                                            -- ENUM
+  TRUE,                                                                # BOOLEAN
+  b'1111111111111111111111111111111111111111111111111111111111111111', # BIT
+  127,                                                                 # TINYINT
+  32767,                                                               # SMALLINT
+  8388607,                                                             # MEDIUMINT
+  2147483647,                                                          # INTEGER
+  9223372036854775807,                                                 # BIGINT
+  255,                                                                 # TINYINT_UNSIGNED
+  65535,                                                               # SMALLINT_UNSIGNED
+  16777215,                                                            # MEDIUMINT_UNSIGNED
+  4294967295,                                                          # INTEGER_UNSIGNED
+  18446744073709551615,                                                # BIGINT_UNSIGNED
+  3.402823466E+38,                                                     # FLOAT
+  1.7976931348623157E+308,                                             # DOUBLE
+  999999999999999999999999999999999999999999999999999999999999999.99,  # DECIMAL(65, 2)
+  '9999-12-31',                                                        # DATE
+  '838:59:59.000000',                                                  # TIME
+  2155,                                                                # YEAR
+  '9999-12-31 23:59:59',                                               # DATETIME
+  '2038-01-19 03:14:07',                                               # TIMESTAMP
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # CHAR
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # VARCHAR
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # TINYTEXT
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # TEXT
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # MEDIUMTEXT
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # LONGTEXT
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # BINARY
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # VARBINARY
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # TINYBLOB
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # BLOB
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # MEDIUMBLOB
+  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',                     # LONGBLOB
+  'purple',                                                            # ENUM
   'three');
-
-
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
-
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
-                                            col_bit,
-                                            col_tinyint,
-                                            col_smallint,
-                                            col_mediumint,
-                                            col_integer,
-                                            col_bigint,
-                                            col_tinyint_unsigned,
-                                            col_smallint_unsigned,
-                                            col_mediumint_unsigned,
-                                            col_integer_unsigned,
-                                            col_bigint_unsigned,
-                                            col_float,
-                                            col_double,
-                                            col_decimal,
-                                            col_date,
-                                            col_time,
-                                            col_year,
-                                            col_datetime,
-                                            col_timestamp,
-                                            col_char,
-                                            col_varchar,
-                                            col_tinytext,
-                                            col_text,
-                                            col_mediumtext,
-                                            col_longtext,
-                                            col_binary,
-                                            col_varbinary,
-                                            col_tinyblob,
-                                            col_blob,
-                                            col_mediumblob,
-                                            col_longblob,
-                                            col_enum,
-                                            col_set WITH 1024 BUCKETS;
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE all_types;
-
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
 CREATE TABLE unsupported_types (col_geometry GEOMETRY,
                                 col_point POINT,
@@ -193,19 +154,8 @@ CREATE TABLE unsupported_types (col_geometry GEOMETRY,
                                 col_multipolygon MULTIPOLYGON,
                                 col_geometrycollection GEOMETRYCOLLECTION,
                                 col_json JSON);
-                                                    col_point,
-                                                    col_linestring,
-                                                    col_polygon,
-                                                    col_multipoint,
-                                                    col_multilinestring,
-                                                    col_multipolygon,
-                                                    col_geometrycollection,
-                                                    col_json WITH 100 BUCKETS;
-
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
-
 DROP TABLE unsupported_types;
-
 CREATE TABLE t1 (col_integer INT);
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
@@ -218,13 +168,9 @@ DROP VIEW my_view;
 ALTER TABLE t1 ADD COLUMN virtual_generated INT AS (col_integer + 10) VIRTUAL,
                ADD COLUMN stored_generated INT AS (col_integer + 20) STORED;
 INSERT INTO t1 (col_integer) VALUES (10), (20), (30);
-                                     virtual_generated,
-                                     stored_generated
-                 WITH 100 BUCKETS;
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 DROP COLUMN virtual_generated, DROP COLUMN stored_generated;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
@@ -236,7 +182,6 @@ FROM information_schema.COLUMN_STATISTICS;
 SELECT schema_name, table_name, column_name,
        JSON_EXTRACT(histogram, '$."histogram-type"') AS should_be_equiheight
 FROM information_schema.COLUMN_STATISTICS;
-
 DROP TABLE t1;
 CREATE TABLE t1 (col1 INT PRIMARY KEY,
                  col2 INT,
@@ -268,19 +213,18 @@ WHERE schema_name = 'test' AND table_name = 't1' AND column_name = 'col1';
 SELECT JSON_LENGTH(histogram->'$.buckets') <= 255
 FROM information_schema.COLUMN_STATISTICS
 WHERE schema_name = 'test' AND table_name = 't1' AND column_name = 'col1';
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (c1 INT);
 INSERT INTO t1 (c1) VALUES (10), (20), (30);
 CREATE TABLE t2 (c2 INT);
 INSERT INTO t2 (c2) VALUES (10), (20), (30);
+LOCK TABLES t2 READ;
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
+UNLOCK TABLES;
 DROP TABLES t1, t2;
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
-
 CREATE TABLE t1 (col1 INT, col2 VARCHAR(255));
 INSERT INTO t1 VALUES (1, "1"), (2, "2"), (3, "3"), (4, "4"), (5, "5"),
                       (6, "6"), (7, "7"), (8, "8"), (9, "9"), (10, "10");
@@ -297,27 +241,25 @@ FROM information_schema.COLUMN_STATISTICS;
 CREATE TEMPORARY TABLE temp_table (col1 INT);
 DROP TABLE temp_table;
 CREATE TABLE t2 (col1 INT);
-
 DROP TABLE t1, t2;
-
 CREATE TABLE t1 (c1 INT);
 INSERT INTO t1 (c1) VALUES (10), (20), (30);
 CREATE TABLE t2 (c2 INT);
 INSERT INTO t2 (c2) VALUES (10), (20), (30);
+LOCK TABLES t2 READ;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
+UNLOCK TABLES;
 DROP TABLES t1, t2;
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
 CREATE TABLE t1 (col1 INT);
-
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE t1;
 SELECT COUNT(*) AS should_be_0 FROM information_schema.COLUMN_STATISTICS;
 CREATE TABLE t1 (col1 INT, col2 INT);
-
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1 CHANGE COLUMN col1 col1_renamed INT;
@@ -338,7 +280,6 @@ FROM information_schema.COLUMN_STATISTICS;
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
-ALTER TABLE t1_renamed RENAME TO t1;
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
@@ -360,7 +301,6 @@ FROM information_schema.COLUMN_STATISTICS;
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
-DROP TABLE t1_renamed;
 CREATE DATABASE histogram_db;
 CREATE TABLE histogram_db.t1 (col1 INT);
 SELECT schema_name, table_name, column_name
@@ -368,19 +308,14 @@ FROM information_schema.COLUMN_STATISTICS;
 DROP DATABASE histogram_db;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-CREATE TABLE t1 (col1 VARCHAR(255), col2 CHAR(10), col3 TEXT, col4 INT,
-                 col5 BLOB) CHARACTER SET latin1;
-                 WITH 10 BUCKETS;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1 CONVERT TO CHARACTER SET utf8mb4;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-                 WITH 10 BUCKETS;
 ALTER TABLE t1 MODIFY COLUMN col1 VARCHAR(255) CHARACTER SET latin1;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 DROP TABLE t1;
 CREATE TABLE t1 (col1 INT);
 SELECT schema_name, table_name, column_name
@@ -391,56 +326,44 @@ FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1 DROP COLUMN col2;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 DROP TABLE t1;
 CREATE TABLE t1 (col1 INT, col2 INT);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 DROP COLUMN COL1;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 DROP TABLE t1;
 CREATE TABLE t(x INT);
+PREPARE ps FROM 'ANALYZE TABLE t UPDATE HISTOGRAM ON x WITH 10 BUCKETS';
 DROP TABLE t;
 CREATE TABLE t1 (col1 INT, col2 INT, col3 INT, col4 INT, col5 INT, col6 INT);
-                 WITH 4 BUCKETS;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 ADD UNIQUE INDEX (col1);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 ADD UNIQUE INDEX (col2), ALGORITHM = INPLACE;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 ADD UNIQUE INDEX (col3), ALGORITHM = COPY;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 ADD PRIMARY KEY (col4);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1 ADD UNIQUE INDEX (col5, col6);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 CREATE UNIQUE INDEX index_col5 ON t1 (col5);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 CREATE INDEX index_col6 ON t1 (col6);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
 ALTER TABLE t1 MODIFY COLUMN col6 INT UNIQUE;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-SET GLOBAL read_only = 1;
-SET GLOBAL read_only = 0;
-
 DROP TABLE t1;
 CREATE TABLE t1 (
 c1 int(11) DEFAULT NULL,
@@ -451,7 +374,6 @@ ALTER TABLE t1 ADD UNIQUE INDEX i (c2);
 ALTER TABLE t1 DROP KEY i;
 DROP TABLE t1;
 CREATE TABLE t1 (col1 INT);
-ALTER TABLE t1 DROP COLUMN foobar, CHANGE COLUMN col1 col2 INT;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE t1;
@@ -462,7 +384,6 @@ INSERT INTO foo (col1) VALUES (1);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE foo;
-
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 SELECT 1;
 INSERT INTO t1 SELECT col1 + 1 FROM t1;
@@ -498,31 +419,17 @@ SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 DROP SCHEMA foo;
 DROP SCHEMA bar;
-
 CREATE TABLE not_encrypted1 (col1 INT) ENCRYPTION='n';
 CREATE TABLE not_encrypted2 (col1 INT) ENCRYPTION='N';
-CREATE TABLE encrypted1 (col1 INT) ENCRYPTION='y';
-CREATE TABLE encrypted2 (col1 INT) ENCRYPTION='Y';
-
 INSERT INTO not_encrypted1 VALUES (1);
 INSERT INTO not_encrypted2 VALUES (1);
-INSERT INTO encrypted1 VALUES (1);
-INSERT INTO encrypted2 VALUES (1);
-
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-ALTER TABLE not_encrypted1 ENCRYPTION='y';
-ALTER TABLE not_encrypted2 ENCRYPTION='Y';
-
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-
-DROP TABLE encrypted1;
 DROP TABLE not_encrypted1;
-DROP TABLE encrypted2;
 DROP TABLE not_encrypted2;
 CREATE TABLE t1 (i INT, at INT, k INT) ENGINE=InnoDB;
-CREATE TRIGGER ai AFTER INSERT ON t1 FOR EACH ROW SET @a:= NEW.at;
 ALTER TABLE t1 ADD PRIMARY KEY (i);
 DROP TABLE t1;
 CREATE TABLE ftidx_encrypted (a VARCHAR(255), FULLTEXT ftidx(a))
@@ -547,7 +454,6 @@ INSERT INTO t1 VALUES
 (1,11,11,11), (4,4,4,4), (4,4,24,24), (8,18,18,18), (1,11,11,51), (7,7,27,27),
 (8,8,8,8), (9,9,29,29), (7,7,7,47), (1,1,1,1), (5,5,25,25), (4,4,24,64),
 (9,9,29,69), (0,10,10,10), (9,9,9,49);
-        WHERE a.twenty = b.ten AND b.eighty >= (3 + 20);
 DROP TABLE t1;
 CREATE TABLE `t1` (
   `two` blob,
@@ -623,20 +529,11 @@ INSERT INTO `t1` VALUES
 ('0','5','8','64','0'), ('1','1','44','16','0'), ('0','4','52',NULL,'2'),
 ('0','9','0',NULL,'3'), ('0','3','36','64','2'), ('0','3','52','16','8'),
 ('1','5','4','16','2'), ('0','9','58',NULL,'9');
-
-UPDATE mysql.innodb_table_stats SET n_rows = 197
-WHERE database_name = "test" AND table_name = "t1";
-        WHERE a.ten = b.sixty AND b.tenPercent < (9 + (5*10));
-
 DROP TABLE t1;
 CREATE TABLE t1 (
   tenPercent int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO t1 VALUES (6),(5),(9),(1),(7);
-
-UPDATE mysql.innodb_table_stats SET n_rows = 5
-WHERE database_name = "test" AND table_name = "t1";
-
 DROP TABLE t1;
 CREATE TABLE k (
   pk int(11) NOT NULL AUTO_INCREMENT,
@@ -678,7 +575,6 @@ INSERT INTO k VALUES (1,
                       NULL,
                       'pwcrafsbtn',
                       '2002-08-22 03:35:28');
-
 CREATE TABLE a (
   col_datetime_key datetime DEFAULT NULL,
   col_datetime datetime DEFAULT NULL,
@@ -719,7 +615,6 @@ INSERT INTO a VALUES (NULL,
                       NULL,
                       'like',
                       'CGLFP');
-
 CREATE TABLE g (
   col_varchar_10_latin1 varchar(10) CHARACTER SET latin1 DEFAULT NULL,
   col_datetime datetime DEFAULT NULL,
@@ -760,17 +655,9 @@ INSERT INTO g VALUES ('o',
                       1,
                       'I',
                       '2007-05-11 00:00:00');
-        LEFT OUTER JOIN  a AS alias2
-        RIGHT OUTER JOIN g AS alias3  ON  alias2 . col_varchar_255_utf8_key =  alias3 . col_varchar_10_utf8
-                                      ON  alias1 . col_varchar_10_latin1 =  alias3 . col_varchar_255_latin1
-        LEFT OUTER JOIN g AS alias4  ON  alias1 . col_varchar_255_utf8_key =  alias4 . col_varchar_255_utf8_key
-        WHERE  alias2 . pk = 3   ORDER BY field1;
-
 DROP TABLE a, k, g;
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 VALUES (1), (2), (3);
-UPDATE mysql.innodb_table_stats SET n_rows = 3
-WHERE database_name = "test" AND table_name = "t1";
 DROP TABLE t1;
 CREATE TABLE table1 (
   col_datetime_key datetime DEFAULT NULL,
@@ -808,7 +695,6 @@ INSERT INTO table1 VALUES ('2000-09-05 00:00:00',
                       'a',
                       '2001-02-18',
                       'jn');
-
 CREATE TABLE table2 (
   col_time_key time DEFAULT NULL,
   col_blob_key blob,
@@ -845,7 +731,6 @@ INSERT INTO table2 VALUES ('10:39:59',
                        1,
                        NULL,
                        '2009-03-19 00:00:00');
-
 CREATE TABLE table3 (
   col_int_key int(11) DEFAULT NULL,
   col_datetime datetime DEFAULT NULL,
@@ -881,7 +766,6 @@ INSERT INTO table3 VALUES (6,
                       '00:30:27',
                       '2008-11-18',
                       '2008-05-26');
-
 CREATE TABLE table4 (
   col_datetime datetime DEFAULT NULL,
   col_time time DEFAULT NULL,
@@ -918,24 +802,12 @@ INSERT INTO table4 VALUES ('2009-05-17 00:00:00',
                       '2005-03-21',
                       1,
                       '2009-11-16 02:30:22');
-
 CREATE VIEW view_BB AS SELECT * FROM table2;
 CREATE VIEW view_A AS SELECT * FROM table1;
-SELECT alias2 . col_time AS field1
-FROM  view_BB AS alias1  LEFT  JOIN view_A AS alias2
-ON  alias1 . col_varchar =  alias2 . col_varchar_key
-WHERE  alias2 . col_int_key > 2 AND alias2 . col_int_key < ( 5 + 1 )
-ORDER BY field1
-LIMIT 1000 OFFSET 35)
-UPDATE table3 AS OUTR1, table4 AS OUTR2, cte AS OUTRcte, cte AS OUTRcte1
-SET OUTR1.col_varchar_key = 'hey'
-WHERE OUTRcte . field1 <> 3;
-
 DROP VIEW view_BB, view_A;
 DROP TABLE table1, table2, table3, table4;
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 VALUES (1), (2), (3), (4), (5);
-
 DROP TABLE t1;
 CREATE TABLE t1 (col1 BIGINT);
 INSERT INTO t1 VALUES (-8454100925504552960), (-3300857051885862912), (0), (0),
@@ -948,15 +820,12 @@ CREATE TABLE t1 (col1 VARCHAR(255));
 INSERT INTO t1 VALUES ("c"), ("f"), ("get"), ("going"), ("look"), ("MOZVN"),
 ("n"), ("NJAOC"), ("o"), ("on"), ("qnqzklkafp"), ("say"), ("sckaeiqnqz"),
 ("the"), ("there"), ("VXPRU"), ("w"), ("WBQDQ"), ("your"), ("ZHZXW");
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 VALUES (1), (2), (3);
 DELETE FROM t1;
 INSERT INTO t1 VALUES (4), (5), (6);
 DROP TABLE t1;
-SET @@SESSION.sql_mode='';
 CREATE TABLE t1 (
   pk int(11) NOT NULL AUTO_INCREMENT,
   col_int int(11) NOT NULL,
@@ -984,7 +853,6 @@ VALUES (10,8,'2006-08-19','2001-07-04
 04:46:53','18:13:22','q'),(14,1,'2003-10-21','2007-05-14
 06:19:04','00:00:00','g'),(29,1,'2008-12-24','2004-04-02
 07:16:01','16:30:10','e');
-
 CREATE TABLE t2 (
   pk int(11) NOT NULL AUTO_INCREMENT,
   col_int int(11) NOT NULL,
@@ -1004,29 +872,6 @@ VIRTUAL,
   PRIMARY KEY (pk),
   KEY col_date_key (col_date_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
-INSERT INTO t2 (pk, col_int, col_date, col_datetime, col_time, col_varchar)
-VALUES (1,2,'2002-10-13','1900-01-01
-00:00:00','00:00:00','s'),(2,4,'1900-01-01','2005-08-15
-00:00:00','15:57:25','r'),(3,8,'0000-00-00','1900-01-01
-00:00:00','07:05:51','m'),(4,4,'2006-03-09','2008-05-16
-08:09:06','19:22:21','b'),(5,4,'2001-06-05','2001-01-20
-12:47:23','03:53:16','x'),(6,7,'2006-05-28','2008-07-02
-00:00:00','09:16:38','g'),(7,4,'2001-04-19','1900-01-01
-00:00:00','15:37:26','p'),(8,1,'1900-01-01','2002-12-08
-11:34:58','00:00:00','q'),(9,9,'2004-08-20','1900-01-01
-00:00:00','05:03:03','w'),(10,4,'2004-10-10','1900-01-01
-00:00:00','02:59:24','d'),(11,8,'2000-04-02','2002-08-25
-20:35:06','00:01:58','e'),(12,4,'2006-11-02','2001-10-22
-11:13:24','00:00:00','b'),(13,8,'2009-01-28','2003-03-12
-02:00:34','02:20:16','y'),(14,0,'2005-04-19','2007-04-10
-12:16:04','04:59:50','p'),(15,0,'2006-08-12','2009-11-07
-00:00:00','21:14:04','f'),(16,0,'2005-03-12','2003-12-04
-11:14:26','00:00:00','p'),(17,7,'1900-01-01','2006-09-11
-18:25:21','12:59:27','d'),(18,7,'1900-01-01','1900-01-01
-00:00:00','16:39:36','f'),(19,5,'0000-00-00','2001-07-25
-08:40:24','00:00:00','j'),(20,3,'2007-09-09','2009-06-07
-13:48:58','00:00:00','e');
-
 SELECT  STD( OUTR . pk ) AS x
 FROM t2 AS OUTR2 LEFT JOIN t2 AS OUTR
 ON ( OUTR2 . col_datetime_key >= OUTR . col_datetime_key )
@@ -1042,9 +887,7 @@ ORDER BY OUTR . pk , OUTR . pk;
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS WHERE table_name = 't2' and column_name = 'col_datetime';
-
 DROP TABLE t1, t2;
-SET @@SESSION.sql_mode=DEFAULT;
 CREATE TABLE t1 (
   pk int(11) NOT NULL AUTO_INCREMENT,
   col_int int(11) DEFAULT NULL,
@@ -1071,7 +914,6 @@ INSERT INTO t1 (pk, col_int, col_date, col_datetime, col_time, col_varchar) VALU
 (17,NULL,'2008-08-08','2009-07-07 07:00:21','02:03:54','v'),
 (18,3,'2006-07-03','2001-04-15 00:00:00','22:37:33',NULL),
 (19,3,'2002-11-21','2007-07-08 04:01:58','12:17:48','m');
-
 CREATE TABLE t2 (
   pk int(11) NOT NULL AUTO_INCREMENT,
   col_int int(11) DEFAULT NULL,
@@ -1130,25 +972,20 @@ INSERT INTO t2 (pk, col_int, col_date, col_datetime, col_time, col_varchar) VALU
 (49,1,'2008-07-05','2000-10-18 08:28:55','06:16:28','x');
 CREATE OR REPLACE VIEW view_AA AS SELECT * FROM t1;
 CREATE OR REPLACE VIEW view_CC AS SELECT * FROM t2;
-
 SELECT LEFT(col_varchar_key, 1) AS field1 FROM view_AA WHERE ( pk, NULL ) IN
 (  SELECT col_int AS subfield11, pk AS subfield12 FROM view_CC WHERE ( col_datetime, col_date_key, col_varchar_key ) IN
  (  SELECT col_time_key AS subfield21, pk AS subfield22, col_time_key AS subfield23 FROM t1 WHERE col_varchar != col_varchar_key    )
  ORDER BY subfield12   ) OR col_int IS NOT NULL  ORDER BY field1 LIMIT 10 OFFSET 25;
-
 DROP VIEW view_AA, view_CC;
 DROP TABLE t1, t2;
 CREATE TABLE t1 (col1 TIME, col2 DATE);
 INSERT INTO t1 VALUES ("00:00:00", "2017-01-01");
 DROP TABLE t1;
-
 CREATE TABLE tbl_int (col1 INT);
 INSERT INTO tbl_int VALUES (1), (2), (2), (2), (3), (6), (8), (8), (NULL), (NULL);
-
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
-
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 > 0;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 > 1;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 > 2;
@@ -1210,7 +1047,6 @@ SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 <> 7;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 <> 8;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 <> 9;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 0 AND 0;
-SET @const = 0;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 0 AND 1;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 0 AND 2;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 0 AND 3;
@@ -1230,7 +1066,6 @@ SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 6 AND 9;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 7 AND 9;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 8 AND 9;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 BETWEEN 9 AND 9;
-SET @const = 9;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (0,1,2,3,4,5,6,7,8,9);
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (2,3,4,5,6,7,8,9);
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (3,4,5,6,7,8,9);
@@ -1244,17 +1079,13 @@ SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (1,3,5,7);
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (2,4,6,8);
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (2,5,6);
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 IN (9,10,11,12,13);
-
 DROP TABLE tbl_int;
-
 CREATE TABLE tbl_float (col double);
 INSERT INTO tbl_float VALUES (0.1), (0.2), (0.3), (0.3), (0.4), (0.5), (0.5),
                              (0.8), (NULL), (NULL);
-
 SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
-
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col > 0.0;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col > 0.1;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col > 0.2;
@@ -1316,7 +1147,6 @@ SELECT COUNT(*)/10.0 FROM tbl_float WHERE col <> 0.7;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col <> 0.8;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col <> 0.9;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.0 AND 0.0;
-SET @const = 0.0e0;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.0 AND 0.1;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.0 AND 0.2;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.0 AND 0.3;
@@ -1336,7 +1166,6 @@ SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.6 AND 0.9;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.7 AND 0.9;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.8 AND 0.9;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col BETWEEN 0.9 AND 0.9;
-SET @const = 0.9;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9);
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9);
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.3,0.4,0.5,0.6,0.7,0.8,0.9);
@@ -1350,9 +1179,7 @@ SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.1,0.3,0.5,0.7);
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.2,0.4,0.6,0.8);
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.2,0.5,0.6);
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col IN (0.9,1.0,1.1,1.2,1.3);
-
 DROP TABLE tbl_float;
-
 CREATE TABLE t1 (col1 BIGINT, col2 BIGINT UNSIGNED, col3 DOUBLE);
 INSERT INTO t1 VALUES
   (-9223372036854775808, 0, -1.7976931348623157E+308),
@@ -1360,91 +1187,32 @@ INSERT INTO t1 VALUES
   (9223372036854775807, 18446744073709551615, 1.7976931348623157e+308);
 DROP TABLE t1;
 CREATE TABLE t1 (col1 VARCHAR(255));
-SET cte_max_recursion_depth = 10000;
-INSERT INTO t1 (col1)
-WITH RECURSIVE cte (n, val) AS
-(
-  SELECT 1, CONCAT(SHA2(RAND(),0), SHA2(RAND(),0))
-  UNION ALL
-  SELECT n + 1, CONCAT(SHA2(RAND(),0), SHA2(RAND(),0)) FROM cte WHERE n < 10000
-)
-SELECT val FROM cte;
-SET histogram_generation_max_mem_size = 1000000;
-
 SELECT
   histogram->>'$."sampling-rate"' < 1.0 AS should_be_true
 FROM
   INFORMATION_SCHEMA.COLUMN_STATISTICS;
-
-SET cte_max_recursion_depth = DEFAULT;
-SET histogram_generation_max_mem_size = DEFAULT;
-
 DROP TABLE t1;
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 VALUES (10), (20), (30);
-
 SELECT JSON_EXTRACT(histogram, '$."number-of-buckets-specified"')
 FROM INFORMATION_SCHEMA.column_statistics
 WHERE table_name = "t1" AND column_name = "col1";
 DROP TABLE t1;
-
 CREATE TABLE t1 (a INT);
-SET lock_wait_timeout= 1;
+LOCK INSTANCE FOR BACKUP;
+UNLOCK INSTANCE;
 DROP TABLE t1;
-
--- echo --
--- echo -- Bug#33935417 Histograms cause zero row estimates for values outside
--- echo --              histogram buckets
--- echo --
-
--- Verify that selectivity estimates are lower bounded by 0.001.
 CREATE TABLE ten (x INT);
 INSERT INTO ten VALUES (0), (1), (2), (3), (4), (5), (6), (7), (8), (9);
-
 CREATE TABLE hundred (x INT);
 INSERT INTO hundred SELECT 10*ten1.x + ten0.x AS v
 FROM ten AS ten1, ten AS ten0 ORDER BY v;
-
 CREATE TABLE ten_thousand (x INT);
 INSERT INTO ten_thousand SELECT 100*h1.x + h0.x AS v
 FROM hundred AS h1, hundred AS h0 ORDER BY v;
-
--- The default selectivity used for equality predicates is 0.1.
-EXPLAIN SELECT * FROM ten WHERE x = -1;
-
--- Build histograms on all tables and ensure statistics are up to date.
-ANALYZE TABLE ten UPDATE HISTOGRAM ON x;
-
--- The old optimizer uses a selectivity estimate of max(1/#rows, histogram_estimate).
--- At 10k rows we should see the difference with the new lower bound of 1/1000
--- being used instead of 1/10000.
-EXPLAIN SELECT * FROM ten WHERE x = -1;
-
--- The lower bound is used for all predicates supported by the histogram.
-EXPLAIN SELECT * FROM ten_thousand WHERE x < -1;
-
 DROP TABLE ten;
 DROP TABLE hundred;
 DROP TABLE ten_thousand;
-
--- echo --
--- echo -- Bug#34787357 Hypergraph: row estimates for
--- echo -- field=non_field_term ignores indexes and histogram.
--- echo --
-
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 VALUES (1),(1),(2),(2),(3),(3),(NULL),(NULL);
-
--- Calculate selectivity as non_null_values_fraction/num_distinct_values.
-EXPLAIN SELECT * FROM t1 WHERE col1 = FLOOR(RAND(0));
-
--- Calculate selectivity as:
--- non_null_values_fraction * (num_distinct_values - 1) / num_distinct_values
-EXPLAIN SELECT * FROM t1 WHERE col1 <> FLOOR(RAND(0));
-
 DROP TABLE t1;
-
-
--- Run a restart without any special parameters, which causes "check testcase" to
--- be run. Always keep this at the very end of the test!
-let $restart_parameters = restart:;

@@ -1,10 +1,5 @@
-
--- Description
--- -----------
--- Simple operands and arithmetic grouping
-
 select 1+1,1-1,1+1*2,8/5,8%5,mod(8,5),mod(8,5)|0,-(1+1)*-2;
-select 1 | (1+1),5 & 3,bit_count(7) ;
+select 1 | (1+1),5 & 3,bit_count(7);
 select 1 << 32,1 << 63, 1 << 64, 4 >> 2, 4 >> 63, 1<< 63 >> 60;
 select -1 | 0, -1 ^ 0, -1 & 0;
 select -1 | 1, -1 ^ 1, -1 & 1;
@@ -12,12 +7,6 @@ select  1 | -1,  1 ^ -1,  1 & -1;
 select  0 | -1,  0 ^ -1,  0 & -1;
 select -1 >> 0, -1 << 0;
 select -1 >> 1, -1 << 1;
-
---
--- Bug 13044: wrong bit_count() results
---
-
---disable_warnings
 drop table if exists t1,t2;
 create table t1(a int);
 create table t2(a int, b int);

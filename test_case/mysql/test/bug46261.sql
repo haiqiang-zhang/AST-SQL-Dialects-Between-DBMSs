@@ -1,3 +1,2 @@
-
 SELECT PLUGIN_STATUS FROM INFORMATION_SCHEMA.plugins
   WHERE plugin_name='example';

@@ -3,7 +3,6 @@ CREATE TABLE t1(
   f1 int,
   f2 varchar(200)
 ) charset latin1;
-
 INSERT INTO t1(f1, f2) VALUES 
 (0,"0"),(1,"1"),(2,"2"),(3,"3"),(4,"4"),(5,"5"),
 (6,"6"),(7,"7"),(8,"8"),(9,"9"),(10,"10"),
@@ -25,7 +24,6 @@ INSERT INTO t1(f1, f2) VALUES
 (86,"86"),(87,"87"),(88,"88"),(89,"89"),(90,"90"),
 (91,"91"),(92,"92"),(93,"93"),(94,"94"),(95,"95"),
 (96,"96"),(97,"97"),(98,"98"),(99,"99");
-
 CREATE TEMPORARY TABLE tmp (f1 int, f2 varchar(20)) charset latin1;
 INSERT INTO tmp SELECT f1,f2 FROM t1;
 INSERT INTO t1(f1,f2) SELECT * FROM tmp;
@@ -42,22 +40,12 @@ INSERT INTO tmp SELECT f1,f2 FROM t1;
 INSERT INTO t1(f1,f2) SELECT * FROM tmp;
 INSERT INTO tmp SELECT f1,f2 FROM t1;
 INSERT INTO t1(f1,f2) SELECT * FROM tmp;
-
--- Test when only sortkeys fits to memory
-set sort_buffer_size= 32768;
-
 SELECT * FROM t1 ORDER BY f2,f0 LIMIT 101;
-
--- 32-bit has smaller pointers and thus can do with fewer merge passes.
---replace_result 100 102
-SHOW SESSION STATUS LIKE 'Sort%';
 CREATE TABLE t2 (f1 int);
 INSERT INTO t2 VALUES (0), (0);
 SELECT * FROM t2 where f1 =
 (SELECT f2 from t1 where t1.f1 = t2.f1 ORDER BY f1 LIMIT 1);
-
 DROP TABLE t1, t2, tmp;
-
 CREATE TABLE t (
 col1 INTEGER NOT NULL,
 col2 BINARY(16) NOT NULL,
@@ -68,34 +56,15 @@ col6 BLOB,
 PRIMARY KEY (col1),
 UNIQUE KEY uc_key (col2, col3, col4)
 );
-
 INSERT INTO t VALUES(1, x'4142434445464748494a414243444546', 'WRITEBACK',
                      0, TIMESTAMP'2020-01-01 00:00:00.000000', NULL);
-
-let $query =
 SELECT t.col1, t.col2, t.col3, t.col4, t.col5, t.col6
 FROM t
 WHERE t.col2 IN (x'4142434445464748494a414243444546') AND
       t.col3 IN ('WRITEBACK')
 ORDER BY t.col2 DESC, t.col3 DESC, t.col4 DESC
 LIMIT 1;
-
 DROP TABLE t;
-
 CREATE TABLE t1(vc VARCHAR(20) CHARACTER SET latin1);
 INSERT INTO t1 VALUES('2021-02-08'), ('21-02-08');
-
-let $query = SELECT * FROM t1 WHERE vc = '2021-02-08' ORDER BY vc ASC;
-
-let $query = SELECT * FROM t1 WHERE vc = '2021-02-08' ORDER BY vc DESC;
-
-set @strvar = _latin1'2021-02-08';
-let $query = SELECT * FROM t1 WHERE vc = @strvar ORDER BY vc ASC;
-
-let $query = SELECT * FROM t1 WHERE vc = @strvar ORDER BY vc DESC;
-
-let $query = SELECT * FROM t1 WHERE vc = DATE'2021-02-08' ORDER BY vc ASC;
-
-let $query = SELECT * FROM t1 WHERE vc = DATE'2021-02-08' ORDER BY vc DESC;
-
 DROP TABLE t1;

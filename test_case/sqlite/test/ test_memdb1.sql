@@ -1,19 +1,7 @@
 PRAGMA auto_vacuum = off;
 VACUUM;
-CREATE TABLE t2(x, y);
-WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<100)
-   INSERT INTO t2(x, y) SELECT x, randomblob(1000) FROM c;
-DROP TABLE t2;
-PRAGMA page_count;
 VACUUM;
 PRAGMA page_count;
-CREATE TABLE t3(x, y);
-WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<400)
-   INSERT INTO t3(x, y) SELECT x, randomblob(1000) FROM c;
-PRAGMA quick_check;
-WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<400)
-   INSERT INTO t3(x, y) SELECT x, randomblob(1000) FROM c;
-PRAGMA quick_check;
 PRAGMA integrity_check;
 CREATE TABLE t4(a,b);
 INSERT INTO t4 VALUES('hello','world!');

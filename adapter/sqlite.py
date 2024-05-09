@@ -3,7 +3,7 @@ import sqlite3
 from typing import List
 import threading
 
-ECHO = False
+ECHO_SUCC = False
 
 # setup_query_keyword = [
 #     "create table",
@@ -40,7 +40,7 @@ class SQLITE3:
         self.conn.interrupt()
         raise TimeoutError(f"Query timed out: '{query}'")
 
-    def query(self, sql_query:str, filename:str, timeout_duration=5):
+    def query(self, sql_query:str, filename:str, timeout_duration=10):
         # Execute the SQL query
         combined_result = None
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
@@ -61,7 +61,7 @@ class SQLITE3:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             combined_result = (False, ["Error executing test case '{filename}': {e}"])
             print(f"Error executing test case '{filename}': {e}")
-            print("=================================")
+            print("#"*50)
         finally:
             timer.cancel()
         

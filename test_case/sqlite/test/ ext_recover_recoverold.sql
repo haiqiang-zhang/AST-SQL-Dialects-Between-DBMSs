@@ -27,11 +27,5 @@ SELECT name FROM sqlite_master;
 CREATE TABLE lost_and_found_0(a, b, c);
 SELECT name FROM sqlite_master;
 SELECT name FROM sqlite_master;
-CREATE TABLE x1(a, b, c);
-WITH s(i) AS (
-    SELECT 1 UNION ALL SELECT i+1 FROM s WHERE i<100
-  )
-  INSERT INTO x1 SELECT i, i, hex(randomblob(500)) FROM s;
-DROP TABLE x1;
 SELECT name FROM sqlite_master;
 SELECT name FROM sqlite_master;

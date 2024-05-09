@@ -1,35 +1,12 @@
-
--- Plugin 'InnoDB' has ref_count=1 after shutdown
-call mtr.add_suppression("Plugin \'InnoDB\'");
 DROP TABLE IF EXISTS t1;
-
---
--- Test Unicode collations.
---
-set names utf8mb3;
-
---
--- Check trailing spaces
---
-set collation_connection=utf8_unicode_ci;
-
 select 'a' = 'a', 'a' = 'a ', 'a ' = 'a';
-
 select 'a\t' = 'a' , 'a\t' < 'a' , 'a\t' > 'a';
 select 'a\t' = 'a ', 'a\t' < 'a ', 'a\t' > 'a ';
-
 select 'a' = 'a\t', 'a' < 'a\t', 'a' > 'a\t';
 select 'a ' = 'a\t', 'a ' < 'a\t', 'a ' > 'a\t';
-
 select 'a  a' > 'a', 'a  \t' < 'a';
-
---
--- Bug #6787 LIKE not working properly with _ and utf8mb3 data
---
 select 'c' like '\_' as want0;
-
 create table t1 (c1 char(10) character set utf8mb3 COLLATE utf8mb3_bin);
-
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_unicode_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_icelandic_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_latvian_ci;
@@ -40,7 +17,6 @@ select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_estonian
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_spanish_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_swedish_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_turkish_ci;
-
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_czech_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_danish_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_lithuanian_ci;
@@ -53,7 +29,6 @@ select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_croatian
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_german2_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_unicode_520_ci;
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_vietnamese_ci;
-
 ALTER TABLE t1 CONVERT TO CHARACTER SET ucs2 COLLATE ucs2_bin;
 SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_unicode_ci;
 SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_icelandic_ci;
@@ -77,13 +52,7 @@ SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_croatian_ci
 SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_german2_ci;
 SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_unicode_520_ci;
 SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_vietnamese_ci;
-
 drop table t1;
-
---
--- Bug#5324
---
-SET NAMES utf8mb3;
 CREATE TABLE t1 (c varchar(255) NOT NULL COLLATE utf8mb3_general_ci, INDEX (c));
 INSERT INTO t1 VALUES (CONVERT(_ucs2 0x039C03C903B403B11F770308 USING utf8mb3));
 SELECT * FROM t1 WHERE c LIKE CONVERT(_ucs2 0x039C0025 USING utf8mb3)
@@ -106,11 +75,9 @@ INSERT INTO t1 VALUES (CONVERT(_ucs2 0x039C03C903B4 USING utf8mb3));
 SELECT * FROM t1 WHERE c LIKE CONVERT(_ucs2 0x039C0025 USING utf8mb3)
 COLLATE utf8mb3_unicode_ci ORDER BY c;
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   col1 CHAR(32) CHARACTER SET utf8mb3 NOT NULL
 );
-
 INSERT INTO t1 VALUES (CONVERT(_ucs2 0x0041004100410627 USING utf8mb3));
 INSERT INTO t1 VALUES (CONVERT(_ucs2 0x0041004100410628 USING utf8mb3));
 INSERT INTO t1 VALUES (CONVERT(_ucs2 0x0041004100410647 USING utf8mb3));
@@ -297,10 +264,6 @@ INSERT INTO t1 VALUES (CONVERT(_ucs2 0x06280648062F0646062F USING utf8mb3));
 INSERT INTO t1 VALUES (CONVERT(_ucs2 0x06450647064506270646 USING utf8mb3));
 SELECT HEX(CONVERT(col1 USING ucs2)) FROM t1 ORDER BY col1 COLLATE utf8mb3_persian_ci, col1 COLLATE utf8mb3_bin;
 DROP TABLE t1;
-
---
--- Test all characters that appear in utf8_persia_ci tailoring
---
 CREATE TABLE t1 (
   a VARCHAR(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_persian_ci,
   offs INT NOT NULL
@@ -342,30 +305,13 @@ INSERT INTO t1 VALUES
 (_ucs2 0xFEF2,17),(_ucs2 0xFEF3,18),(_ucs2 0xFEF4,19),(_ucs2 0xFEF5,20),
 (_ucs2 0xFEF6,21),(_ucs2 0xFEF7,22),(_ucs2 0xFEF8,23),(_ucs2 0xFEF9,24),
 (_ucs2 0xFEFA,25),(_ucs2 0xFEFB,26),(_ucs2 0xFEFC,27);
-
 SELECT HEX(CONVERT(a USING ucs2)), offs, hex(weight_string(a)), a
 FROM t1 ORDER BY a, offs, BINARY a;
 DROP TABLE t1;
-
-SET @test_character_set= 'utf8mb3';
-SET @test_collation= 'utf8_swedish_ci';
-
---
--- Bug 7111 server crashes when regexp is used
---
 create table t1 (a varchar(1)) character set utf8mb3 COLLATE utf8mb3_estonian_ci;
 insert into t1 values ('A'),('B'),('C'),('a'),('b'),('c');
 select a, a regexp '[a]' from t1 order by binary a;
 drop table t1;
-
-SET collation_connection='utf8_unicode_ci';
-
--- End of 4.1 tests
-
---
--- Check UPPER/LOWER changeing length
---
--- Result shorter than argument
 CREATE TABLE t1 (id int, a varchar(30) character set utf8mb3);
 INSERT INTO t1 VALUES (1, _ucs2 0x01310069), (2, _ucs2 0x01310131);
 INSERT INTO t1 VALUES (3, _ucs2 0x00690069), (4, _ucs2 0x01300049);
@@ -376,16 +322,11 @@ ALTER TABLE t1 MODIFY a VARCHAR(30) character set utf8mb3 COLLATE utf8mb3_turkis
 SELECT a, length(a) la, @l:=lower(a) l, length(@l) ll, @u:=upper(a) u, length(@u) lu
 FROM t1 ORDER BY id;
 DROP TABLE t1;
-
---
--- Bug#27345 Incorrect data returned when range-read from utf8_danish_ci indexes
---
-set names utf8mb3;
 create table t1 (
   a varchar(255),
   key a(a)
 ) character set utf8mb3 COLLATE utf8mb3_danish_ci;
-insert into t1 values ('åaaaa'),('ååaaa'),('aaaaa');
+insert into t1 values ('ÃÂÃÂ¥aaaa'),('ÃÂÃÂ¥ÃÂÃÂ¥aaa'),('aaaaa');
 select a as like_a from t1 where a like 'a%';
 select a as like_aa from t1 where a like 'aa%';
 select a as like_aaa from t1 where a like 'aaa%';
@@ -398,7 +339,6 @@ select a as like_aaa from t1 where a like 'aaa%';
 select a as like_aaaa from t1 where a like 'aaaa%';
 select a as like_aaaaa from t1 where a like 'aaaaa%';
 drop table t1;
-
 create table t1 (
   a varchar(255),
   key(a)
@@ -416,7 +356,6 @@ select a as like_lll from t1 where a like 'lll%';
 select a as like_llll from t1 where a like 'llll%';
 select a as like_lllll from t1 where a like 'lllll%';
 drop table t1;
-
 create table t1 (
   a varchar(255),
   key a(a)
@@ -427,73 +366,20 @@ select * from t1 where a like 'c%';
 alter table t1 convert to character set ucs2 collate ucs2_czech_ci;
 select * from t1 where a like 'c%';
 drop table t1;
-
-set collation_connection=ucs2_unicode_ci;
-set names utf8mb3;
-
--- echo End for 5.0 tests
---echo End of 5.1 tests
-
---echo --
---echo -- Start of 5.5 tests
---echo --
---
--- Test my_like_range and contractions
---
-SET collation_connection=utf8_czech_ci;
-SET collation_connection=ucs2_czech_ci;
-
-set collation_connection=ucs2_unicode_ci;
-
-set @@collation_connection=utf8_unicode_ci;
-
-set @@collation_connection=utf8_czech_ci;
-
-set @@collation_connection=ucs2_czech_ci;
 select hex(weight_string(_utf8mb4 0xF0908080 /* U+10000 */ collate utf8mb4_unicode_ci));
 CREATE TABLE t1 (s1 VARCHAR(10) COLLATE utf8mb3_german2_ci);
 INSERT INTO t1 VALUES ('a'),('ae'),('af');
 SELECT s1,hex(s1),hex(weight_string(s1)) FROM t1 ORDER BY s1;
 DROP TABLE t1;
-SET collation_connection=utf8_german2_ci;
-SET NAMES utf8mb4 COLLATE utf8mb4_unicode_520_ci;
-CREATE TABLE t1(id INT PRIMARY KEY, c CHAR(1) COLLATE utf8mb3_test);
-
--- Cleanup
---echo --
---echo -- Restart server with original character sets dir:
---let $restart_parameters=restart:--character-sets-dir=$MYSQL_CHARSETSDIR
---replace_result $MYSQL_CHARSETSDIR MYSQL_CHARSETSDIR
---source include/restart_mysqld.inc
-
---echo --
---echo -- End of 5.6 tests
---echo --
-
---
--- Test that CHAR columns with properly with NO PAD collations
--- in operations involving the MEMORY engine. These two strings
--- should hash to the same value, but won't unless trailing spaces
--- are stripped before hashing and comparison (since one field will
--- have three spaces at the end and another one two).
---
-
-SET NAMES utf8mb4;
-
 CREATE TABLE t1 (
         f1 CHAR(4) NOT NULL
 );
-
-INSERT INTO t1 VALUES ('é');
 INSERT INTO t1 VALUES (_utf16 0x00650301);
-
 SELECT DISTINCT f1 FROM t1;
 SELECT SQL_BIG_RESULT DISTINCT f1 FROM t1;
-
 DROP TABLE t1;
-SET NAMES DEFAULT;
 CREATE TABLE t1 (
-    f1 CHAR(20) COLLATE utf8mb4_0900_ai_ci  -- A NO PAD collation.
+    f1 CHAR(20) COLLATE utf8mb4_0900_ai_ci  # A NO PAD collation.
 );
 INSERT INTO t1 VALUES ('ABC  ');
 INSERT INTO t1 VALUES ('XYZ');
@@ -504,9 +390,7 @@ SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ ';
 CREATE INDEX f1_index ON t1 ( f1 );
 SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ';
 SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ ';
-
 DROP TABLE t1;
-
 CREATE TABLE t1(c1 float);
 INSERT INTO t1 VALUES
 (-9999999999999),
@@ -514,27 +398,21 @@ INSERT INTO t1 VALUES
 (-999999999999999),
 (-9999999999999999);
 SELECT GROUP_CONCAT(c1) FROM t1 GROUP BY c1 COLLATE utf8mb3_icelandic_ci;
-
 DROP TABLE t1;
-
 CREATE TABLE t1double(c1 double);
 INSERT INTO t1double values(0.00000000000002123456789123456789);
 SELECT c1 FROM t1double;
 SELECT CONCAT(c1) FROM t1double;
 SELECT CAST(CONCAT(c1) AS DOUBLE) FROM t1double;
 SELECT GROUP_CONCAT(c1) FROM t1double GROUP BY c1 COLLATE utf8mb3_icelandic_ci;
-
 DROP TABLE t1double;
-
 CREATE TABLE t1 (
   col_real_key double DEFAULT NULL,
   col_bigint_key bigint DEFAULT NULL
 );
 INSERT INTO t1 VALUES (-20162.341,8262411111801246601);
-
 SELECT alias1.col_real_key / alias1.col_bigint_key AS field1,
        alias1.col_bigint_key AS field2
        FROM t1 AS alias1
        ORDER BY LEAST(field2, field1 COLLATE utf8mb4_croatian_ci);
-
 DROP TABLE t1;

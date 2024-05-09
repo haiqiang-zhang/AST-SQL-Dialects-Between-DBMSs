@@ -1,27 +1,15 @@
 DROP TABLE IF EXISTS t1,t2,t3;
-
---
--- Test for KEY_COLUMN_USAGE & TABLE_CONSTRAINTS tables
---
-
 CREATE TABLE t1 (id INT NOT NULL, PRIMARY KEY (id)) ENGINE=INNODB;
 CREATE TABLE t2 (id INT PRIMARY KEY, t1_id INT, INDEX par_ind (t1_id, id),
 FOREIGN KEY (t1_id) REFERENCES t1(id)  ON DELETE CASCADE,
 FOREIGN KEY (t1_id) REFERENCES t1(id)  ON UPDATE CASCADE) ENGINE=INNODB;
-
 CREATE TABLE t3 (id INT PRIMARY KEY, t2_id INT, INDEX par_ind (t2_id),
 FOREIGN KEY (id, t2_id) REFERENCES t2(t1_id, id)  ON DELETE CASCADE) ENGINE=INNODB;
-
 select * from information_schema.TABLE_CONSTRAINTS where
 TABLE_SCHEMA= "test" order by TABLE_SCHEMA, TABLE_NAME, CONSTRAINT_NAME;
 select * from information_schema.KEY_COLUMN_USAGE where
 TABLE_SCHEMA= "test" order by TABLE_SCHEMA, TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME;
-
 drop table t3, t2, t1;
-
---
--- Test for REFERENTIAL_CONSTRAINTS table
---
 CREATE TABLE t1(a1 INT NOT NULL, a2 INT NOT NULL,
                 PRIMARY KEY(a1, a2)) ENGINE=INNODB;
 CREATE TABLE t2(b1 INT, b2 INT, INDEX (b1, b2),
@@ -48,19 +36,12 @@ from information_schema.TABLE_CONSTRAINTS a,
 where a.CONSTRAINT_SCHEMA COLLATE utf8mb3_GENERAL_CI = 'test' and
       a.CONSTRAINT_SCHEMA COLLATE utf8mb3_GENERAL_CI = b.CONSTRAINT_SCHEMA and
       a.CONSTRAINT_NAME = b.CONSTRAINT_NAME;
-
 drop tables t5, t4, t3, t2, t1;
-
---
--- Bug#25026  `information_schema.KEY_COLUMN_USAGE`.`REFERENCED_TABLE_NAME` returns garbage
---
 create database `db-1`;
-use `db-1`;
 create table `t-2` (
   id int(10) unsigned not null auto_increment,
   primary key (id)
 ) engine=innodb;
-
 create table `t-1` (
   id int(10) unsigned not null auto_increment,
   idtype int(10) unsigned not null,
@@ -68,31 +49,21 @@ create table `t-1` (
   key fk_t1_1 (idtype),
   constraint fk_t1_1 foreign key (idtype) references `t-2` (id)
 ) engine=innodb;
-use test;
 select referenced_table_schema, referenced_table_name 
 from information_schema.key_column_usage
 where constraint_schema = 'db-1' and table_schema != 'PERFORMANCE_SCHEMA' order by referenced_table_schema, referenced_table_name;
 drop database `db-1`;
-
---
--- Bug#35108 SELECT FROM REFERENTIAL_CONSTRAINTS crashes
---
 create table t1(id int primary key) engine = Innodb;
 create table t2(pid int, foreign key (pid) references t1(id)) engine = Innodb;
-set foreign_key_checks = 0;
-drop table t1;
 select UNIQUE_CONSTRAINT_NAME
 from information_schema.referential_constraints
 where constraint_schema = schema();
 drop table t2;
-set foreign_key_checks = 1;
 DROP TABLE IF EXISTS t1;
 DROP VIEW IF EXISTS v1;
-
 CREATE VIEW v1 AS SELECT 1;
 CREATE TABLE t1 engine = InnoDB AS
   SELECT * FROM information_schema.partitions
   WHERE table_schema= 'test' AND table_name= 'v1';
-
 DROP TABLE t1;
 DROP VIEW v1;

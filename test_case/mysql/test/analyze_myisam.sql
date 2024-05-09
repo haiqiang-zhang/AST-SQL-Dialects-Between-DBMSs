@@ -1,5 +1,3 @@
-
--- With spatial index
 CREATE TABLE t1 (
   id INT NOT NULL AUTO_INCREMENT,
   a VARCHAR(10) NOT NULL,
@@ -10,8 +8,6 @@ CREATE TABLE t1 (
   INDEX a (a),
   INDEX b (b) 
 ) ENGINE=MyISAM;
-
--- Without spatial index
 CREATE TABLE t2 (
   id INT NOT NULL AUTO_INCREMENT,
   a VARCHAR(10) NOT NULL,
@@ -21,7 +17,6 @@ CREATE TABLE t2 (
   INDEX a (a),
   INDEX b (b) 
 ) ENGINE=MyISAM;
-
 INSERT INTO t1(a, b, c) VALUES
   ('a1', 'b1', POINT(0, 0)),
   ('a2', 'b2', POINT(0, 0)),
@@ -30,7 +25,5 @@ INSERT INTO t1(a, b, c) VALUES
   ('a5', 'b5', POINT(0, 0)),
   ('a6', 'b6', POINT(0, 0)),
   ('a7', 'b7', POINT(0, 0));
-
 INSERT INTO t2 SELECT * FROM t1;
-
 DROP TABLE t1, t2;

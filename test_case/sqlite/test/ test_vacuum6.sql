@@ -12,17 +12,9 @@ vacuum;
 PRAGMA integrity_check;
 vacuum;
 PRAGMA integrity_check;
-PRAGMA page_size = 1024;
 PRAGMA page_size = 512;
 VACUUM;
 PRAGMA integrity_check;
-CREATE TABLE tx(a, b);
-CREATE INDEX i1 ON tx(b);
-WITH s(i) AS (
-      SELECT 8000 UNION ALL SELECT i+1 FROM s WHERE i<10000
-  )
-  INSERT INTO tx SELECT i, randomblob(i) FROM s;
-SELECT sum(length(b)) FROM tx;
 PRAGMA page_size = 2048;
 PRAGMA auto_vacuum = 0;
 VACUUM;

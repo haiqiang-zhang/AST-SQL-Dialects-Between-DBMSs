@@ -38,7 +38,7 @@ DELETE FROM tbl1;
 INSERT INTO tbl1 VALUES('contains');
 INSERT INTO tbl1 VALUES('UTF-8');
 INSERT INTO tbl1 VALUES('characters');
-INSERT INTO tbl1 VALUES('hiÃÂÃÂ¡ÃÂÃÂÃÂÃÂ´ho');
+INSERT INTO tbl1 VALUES('hiÃÂÃÂÃÂÃÂ¡ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ´ho');
 SELECT t1 FROM tbl1 ORDER BY t1;
 SELECT length(t1) FROM tbl1 ORDER BY t1;
 SELECT substr(t1,1,2) FROM tbl1 ORDER BY t1;
@@ -111,12 +111,6 @@ SELECT typeof(sum(x)) FROM (SELECT '9223372036' || '854775808' AS x
                           UNION ALL SELECT -9223372036854775807);
 SELECT sum(x)>0.0 FROM (SELECT '9223372036' || '854775808' AS x
                           UNION ALL SELECT -9223372036850000000);
-SELECT random() is not null;
-SELECT typeof(random());
-SELECT randomblob(32) is not null;
-SELECT typeof(randomblob(32));
-SELECT length(randomblob(32)), length(randomblob(-5)),
-           length(randomblob(2000));
 SELECT hex(x'00112233445566778899aAbBcCdDeEfF');
 SELECT hex(replace('abcdefg','ef','12'));
 SELECT hex(replace('abcdefg','','12'));
@@ -215,16 +209,9 @@ SELECT typeof(group_concat(x)) FROM (SELECT '' AS x);
 SELECT typeof(group_concat(x,''))
       FROM (SELECT '' AS x UNION ALL SELECT '');
 SELECT coalesce(1,2);
-CREATE TABLE t29b(a,b,c,d,e,f,g,h,i);
-INSERT INTO t29b 
-   VALUES(1, hex(randomblob(2000)), null, 0, 1, '', zeroblob(0),'x',x'01');
-SELECT typeof(c), typeof(d), typeof(e), typeof(f),
-         typeof(g), typeof(h), typeof(i) FROM t29b;
-SELECT length(f), length(g), length(h), length(i) FROM t29b;
-SELECT quote(f), quote(g), quote(h), quote(i) FROM t29b;
 SELECT unicode('$');
-SELECT unicode('ÃÂÃÂÃÂÃÂ¢');
-SELECT unicode('ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¬');
+SELECT unicode('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢');
+SELECT unicode('ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬');
 SELECT char(36,162,8364);
 SELECT char(), length(char()), typeof(char());
 DROP TABLE IF EXISTS t1;

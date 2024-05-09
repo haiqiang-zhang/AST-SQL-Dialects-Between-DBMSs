@@ -1,54 +1,9 @@
-
--- This should have been a unit test in hypergraph_optimizer-t.cc, but
--- the unit test framework does not currently allow creating temporary
--- tables.
---
--- We want to test that the hypergraph optimizer doesn't try to do
--- sort-ahead on an aggregate.
---
--- We expect the hypergraph optimizer to set up a plan like this:
---
--- -> Remove duplicates from input grouped on t.x, `MIN(t2.x)`
---   -> Stream results
---       -> Group aggregate: min(t2.x)
---           -> Sort: t2.x
---               -> Inner hash join (t1.x = t2.x)
---                   -> Table scan on t1
---                   -> Hash
---                       -> Table scan on t2
---
--- Before, it would set up this plan, which tried to sort on MIN(t2.x)
--- before the aggregation had happened:
---
--- -> Remove duplicates from input grouped on t1.x, min(t2.x)
---   -> Stream results
---       -> Group aggregate: min(t2.x)
---           -> Sort: t1.x, min(t2.x)
---               -> Inner hash join (t1.x = t2.x)
---                   -> Table scan on t1
---                   -> Hash
---                       -> Table scan on t2
---
--- Note that because MIN(t2.x) is functionally dependent on the GROUP BY
--- expression (which happens to be t2.x as well here), we avoid a sort
--- in the final DISTINCT pass. We further shuffle the SELECT expressions
--- around a bit (putting the MIN() first) to demonstrate that our sorting of
--- expressions in an interesting grouping is robust.
---
--- Of course, we should have been able to remove the entire DISTINCT operation,
--- and if we wrote t2.x instead of t1.x, we would be able to do that. However,
--- the interesting order framework does not track uniqueness (so can not do it),
--- and the hard-coded DISTINCT removal, which runs before the join optimizer,
--- does not take functional dependencies into account, so it does not know that
--- t1.x (in the SELECT list) = t2.x (in the GROUP BY list).
-
 CREATE TABLE t (x INTEGER);
 INSERT INTO t VALUES (1), (2), (3);
- SELECT DISTINCT MIN(t2.x), t1.x
+SELECT DISTINCT MIN(t2.x), t1.x
  FROM t t1 JOIN t t2 USING (x)
  GROUP BY t2.x;
 DROP TABLE t;
-
 CREATE TABLE t1(
   a INT,
   b INT,
@@ -58,55 +13,21 @@ CREATE TABLE t1(
     PRIMARY KEY(a,b),
   KEY ix1 (c,d)
 );
-
 INSERT INTO t1 VALUES (0,0,0,0,1), (1,0,1,0,1), (0,1,2,0,1), (2,0,2,0,1), (4,0,0,0,1);
-
--- When we use ROLLUP, we can scan ix1 if the group-by terms form a (correctly ordered)
--- prefix of [c,d,a,b] and the primary key for a prefix of [a,b]. Otherwise, we must sort.
-
--- All of these need sort.
-
---replace_regex $elide_costs
-EXPLAIN FORMAT=TREE SELECT a,c,d,sum(e) FROM t1 GROUP BY a,c,d WITH ROLLUP;
-
--- For these queries, the group-by key form a prefix of  [c,d,a,b]
--- (in that order). Therefore they can scan ix1.
-
---replace_regex $elide_costs
-EXPLAIN FORMAT=TREE SELECT c,sum(e) FROM t1 GROUP BY c WITH ROLLUP;
-
 SELECT c,sum(e) FROM t1 GROUP BY c WITH ROLLUP;
-
 SELECT c,d,sum(e) FROM t1 GROUP BY c,d WITH ROLLUP;
-
 SELECT c,d,a,sum(e) FROM t1 GROUP BY c,d,a WITH ROLLUP;
-
 SELECT c,d,a,b,sum(e) FROM t1 GROUP BY c,d,a,b WITH ROLLUP;
-
--- For these queries, the group-by terms for a prefix of the primary index.
--- So we can scan that.
-
---replace_regex $elide_costs
-EXPLAIN FORMAT=TREE SELECT a,sum(e) FROM t1 GROUP BY a WITH ROLLUP;
-
 SELECT a,sum(e) FROM t1 GROUP BY a WITH ROLLUP;
-
 SELECT a,b,sum(e) FROM t1 GROUP BY a,b WITH ROLLUP;
-
 SELECT d,a,c,sum(e) FROM t1 GROUP BY d,a,c;
-
 SELECT a,d,c,sum(e) FROM t1 GROUP BY a,d,c;
-
 SELECT b,a,sum(e) FROM t1 GROUP BY b,a;
-
 DROP TABLE t1;
-
 CREATE TABLE num10 (n INT);
 INSERT INTO num10 VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
-
 CREATE VIEW num1000 AS
 SELECT d1.n+d2.n*10+d3.n*100 n FROM num10 d1, num10 d2, num10 d3;
-
 CREATE TABLE t1(
   a INT,
   b INT,
@@ -127,121 +48,18 @@ CREATE TABLE t1(
   KEY ix4 (k,j,l),
   KEY ix5 (k,l)
 );
-
 INSERT INTO t1
   SELECT n/100,n%100,n%5,n%7,n%11,n%13,n%10,n%10,n%10,n%10,n%10,n%10
   FROM num1000;
-
--- Estimate result size using primary index.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY a;
-
--- Estimate result size using ix1.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c;
-
--- Estimate result size using ix1.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY d,c;
-
--- Estimate result size using ix2.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY d,a;
-
--- Estimate result size using ix1 or ix2.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c,d,a;
-
--- Estimate result size using:
--- - ix1 or ix2 for d,c,a.
--- - ix1 or ix2 for d,c
--- - ix2 d
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY d,a,c WITH ROLLUP;
-
--- Estimate result size using:
--- - ix1 or ix2 for c,d,a.
--- - ix1 for c,d
--- - ix1 for c
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c,d,a WITH ROLLUP;
-
--- Estimate result size using:
--- - ix1 or ix2 for c,a,d.
--- - ix1 and PRIMARY for c,a
--- - ix1 for c
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c,a,d WITH ROLLUP;
-
--- Estimate result size using ix1 and PRIMARY.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c,a;
-
--- Estimate result size using ix1 (for c) and t1 row count.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c,b;
-
--- Estimate result size using t1 row count.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY e,f;
-
--- Estimate result size using ix3 and ix5 (not one-field prefix of ix4).
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY g,h,i,j,k,l;
-
--- Estimate result size using histogram.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY e;
-
--- Estimate result size using histograms.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY e,f;
-
--- Estimate result size using histograms, and then cap to input set size.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 WHERE b>95 GROUP BY e,f;
-
--- Estimate result size using input row count.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY c+0,e+0;
-
--- Estimate result size using input row count.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 WHERE b>95 GROUP BY c+0,e+0;
-
--- Estimate result size using primary index (for a), histogram (for e)
--- and t1 row count for 'c+0'.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1 GROUP BY a,e,c+0;
-
 CREATE TABLE t2 (
   c1 INT,
   c2 INT,
   c3 INT,
   PRIMARY KEY(c1,c2)
 );
-
 INSERT INTO t2 SELECT n%5,n/5,n%3 FROM num10;
-
--- Estimate result size using primary index.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1,t2 GROUP BY c1;
-
--- Estimate result size using t2 row count.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1,t2 GROUP BY c2;
-
--- Estimate result size using histogram.
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1,t2 GROUP BY c3;
-
--- Estimate result size using primary index (a) and histogram (c3).
---replace_regex $elide_costs_and_time
-EXPLAIN ANALYZE SELECT 1 FROM t1,t2 GROUP BY a,c3;
-
 DROP VIEW num1000;
 DROP TABLE num10, t1, t2;
-
 CREATE TABLE t (
 col1 INT, col2 INT, col3 INT, col4 INT, col5 INT, col6 INT,
 col7 INT, col8 INT, col9 INT, col10 INT, col11 INT, col12 INT,
@@ -267,5 +85,4 @@ KEY (col46), KEY (col47), KEY (col48), KEY (col49), KEY (col50),
 KEY (col51), KEY (col52), KEY (col53), KEY (col54), KEY (col55),
 KEY (col56), KEY (col57), KEY (col58), KEY (col59), KEY (col60),
 KEY (col61), KEY (col62), KEY (col63), KEY (col64));
-
 DROP TABLE t;

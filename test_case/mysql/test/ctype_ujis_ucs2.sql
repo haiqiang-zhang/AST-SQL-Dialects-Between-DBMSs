@@ -1,14 +1,4 @@
 drop table if exists t1, t2;
-
---
--- Tests for UJIS-to-Unicode and Unicode-to-UJIS mapping
---
--- MySQL's "ujis" is x-eucjp-unicode-0.9.
---
-
---
--- A helper table, with codes 0xA1..0xFE
---
 create table t2 (code binary(1));
 insert into t2 values (0xA1),(0xA2),(0xA3),(0xA4),(0xA5),(0xA6),(0xA7);
 insert into t2 values (0xA8),(0xA9),(0xAA),(0xAB),(0xAC),(0xAD),(0xAE),(0xAF);
@@ -22,7 +12,6 @@ insert into t2 values (0xE0),(0xE1),(0xE2),(0xE3),(0xE4),(0xE5),(0xE6),(0xE7);
 insert into t2 values (0xE8),(0xE9),(0xEA),(0xEB),(0xEC),(0xED),(0xEE),(0xEF);
 insert into t2 values (0xF0),(0xF1),(0xF2),(0xF3),(0xF4),(0xF5),(0xF6),(0xF7);
 insert into t2 values (0xF8),(0xF9),(0xFA),(0xFB),(0xFC),(0xFD),(0xFE);
-
 create table t1
 (
   ujis varchar(1) character set ujis collate ujis_bin primary key,
@@ -30,12 +19,6 @@ create table t1
   ujis2 varchar(1) character set ujis not null default '',
   name varchar(64) character set ujis not null default ''
 );
-
---
--- A character from the ASCII (code set 0)
--- is represented by one byte, in the range 0x00 - 0x7E.
---
-
 insert into t1 set ujis=0x00, name='U+0000 NULL';
 insert into t1 set ujis=0x01, name='U+0001 START OF HEADING';
 insert into t1 set ujis=0x02, name='U+0002 START OF TEXT';
@@ -164,20 +147,7 @@ insert into t1 set ujis=0x7C, name='U+007C VERTICAL LINE';
 insert into t1 set ujis=0x7D, name='U+007D RIGHT CURLY BRACKET';
 insert into t1 set ujis=0x7E, name='U+007E TILDE';
 insert into t1 set ujis=0x7F, name='U+007F DELETE';
-
-
---
--- A character from JIS-X-0208 (code set 1)
--- is represented by two bytes,
--- both in the range 0xA1 - 0xFE.
--- Codes according to:
--- ftp://ftp.unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/JIS/JIS0208.TXT
---
--- Fill table t1 with codes "[A1..FE][A1..FE]" using helper table t2.
--- 8836 codes total:
---
 insert into t1 (ujis) select concat(t21.code,t22.code) from t2 t21, t2 t22 order by 1;
-
 update t1 set name='U+3000 IDEOGRAPHIC SPACE' where ujis=0xA1A1;
 update t1 set name='U+3001 IDEOGRAPHIC COMMA' where ujis=0xA1A2;
 update t1 set name='U+3002 IDEOGRAPHIC FULL STOP' where ujis=0xA1A3;
@@ -702,20 +672,8 @@ update t1 set name='U+2530 BOX DRAWINGS DOWN HEAVY AND HORIZONTAL LIGHT' where u
 update t1 set name='U+2525 BOX DRAWINGS VERTICAL LIGHT AND LEFT HEAVY' where ujis=0xA8BE;
 update t1 set name='U+2538 BOX DRAWINGS UP HEAVY AND HORIZONTAL LIGHT' where ujis=0xA8BF;
 update t1 set name='U+2542 BOX DRAWINGS VERTICAL HEAVY AND HORIZONTAL LIGHT' where ujis=0xA8C0;
-
---
--- [B0..BF][A1..FE] - 16*94=1504 codes assigned 
---
 update t1 set name='<CJK>' where ujis >= 0xB0A1 AND ujis <= 0xBFFE;
-
---
--- [C0..CE][A1..FE] = 15*94=1410 codes assigned
---
 update t1 set name='<CJK>' where ujis >= 0xC0A1 AND ujis <= 0xCEFE;
-
---
--- 0xCFxx - 51 codes assigned
---
 update t1 set name='U+84EE <CJK>' where ujis=0xCFA1;
 update t1 set name='U+9023 <CJK>' where ujis=0xCFA2;
 update t1 set name='U+932C <CJK>' where ujis=0xCFA3;
@@ -767,42 +725,16 @@ update t1 set name='U+6900 <CJK>' where ujis=0xCFD0;
 update t1 set name='U+6E7E <CJK>' where ujis=0xCFD1;
 update t1 set name='U+7897 <CJK>' where ujis=0xCFD2;
 update t1 set name='U+8155 <CJK>' where ujis=0xCFD3;
-
---
--- [D0..DF][A1..FE] - all 16*94=1504 codes assigned 
---
 update t1 set name='<CJK>' where ujis >= 0xD0A1 AND ujis <= 0xDFFE;
-
---
--- [E0..EF][A1..FE] - all codes assigned, 16*94=1504 total
---
 update t1 set name='<CJK>' where ujis >= 0xE0A1 AND ujis <= 0xEFFE;
-
---
--- [F0..F3][A1..FE] - all codes assigned, 4*94=376 total
---
 update t1 set name='<CJK>' where ujis >= 0xF0A1 AND ujis <= 0xF3FE;
-
--- 0xF4xx - six codes assigned
 update t1 set name='U+582F <CJK>' where ujis=0xF4A1;
 update t1 set name='U+69C7 <CJK>' where ujis=0xF4A2;
 update t1 set name='U+9059 <CJK>' where ujis=0xF4A3;
 update t1 set name='U+7464 <CJK>' where ujis=0xF4A4;
 update t1 set name='U+51DC <CJK>' where ujis=0xF4A5;
 update t1 set name='U+7199 <CJK>' where ujis=0xF4A6;
-
--- [F5..FE][A1..FE] - User defined range
-update t1 set name='User defined range --1' where ujis >= 0xF5A1 AND ujis <= 0xFEFE;
-
-
--- A character from the upper half of JIS-X-0201
--- (half-width kana, code set 2)
--- is represented by two bytes:
--- the first being 0x8E,
--- the second in the range 0xA1 - 0xDF.
--- Codes according to:
--- ftp://ftp.unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/JIS/JIS0201.TXT
-
+update t1 set name='User defined range #1' where ujis >= 0xF5A1 AND ujis <= 0xFEFE;
 insert into t1 (ujis,name) values (0x8EA1,'U+FF61 HALFWIDTH IDEOGRAPHIC FULL STOP');
 insert into t1 (ujis,name) values (0x8EA2,'U+FF62 HALFWIDTH LEFT CORNER BRACKET');
 insert into t1 (ujis,name) values (0x8EA3,'U+FF63 HALFWIDTH RIGHT CORNER BRACKET');
@@ -866,20 +798,7 @@ insert into t1 (ujis,name) values (0x8EDC,'U+FF9C HALFWIDTH KATAKANA LETTER WA')
 insert into t1 (ujis,name) values (0x8EDD,'U+FF9D HALFWIDTH KATAKANA LETTER N');
 insert into t1 (ujis,name) values (0x8EDE,'U+FF9E HALFWIDTH KATAKANA VOICED SOUND MARK');
 insert into t1 (ujis,name) values (0x8EDF,'U+FF9F HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK');
-
-
---
--- A character from JIS-X-0212 (code set 3)
--- is represented by three bytes,
--- the first being 0x8F,
--- the following two in the range 0xA1 - 0xFE.
--- ftp://ftp.unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/JIS/JIS0212.TXT
---
--- Fill table t1 with codes [8F][A1..FE][A1..FE] using helper table t2,
--- 8836 codes total
---
 insert into t1 (ujis) select concat(0x8F,t21.code,t22.code) from t2 t21, t2 t22 order by 1;
-
 update t1 set name='U+02D8 BREVE' where ujis=0x8FA2AF;
 update t1 set name='U+02C7 CARON (Mandarin Chinese third tone)' where ujis=0x8FA2B0;
 update t1 set name='U+00B8 CEDILLA' where ujis=0x8FA2B1;
@@ -1146,20 +1065,10 @@ update t1 set name='U+0177 LATIN SMALL LETTER Y WITH CIRCUMFLEX' where ujis=0x8F
 update t1 set name='U+017A LATIN SMALL LETTER Z WITH ACUTE' where ujis=0x8FABF5;
 update t1 set name='U+017E LATIN SMALL LETTER Z WITH CARON' where ujis=0x8FABF6;
 update t1 set name='U+017C LATIN SMALL LETTER Z WITH DOT ABOVE' where ujis=0x8FABF7;
-
--- [8F][B0..BF][A1..FE] - all 16*94=1504 codes assigned
 update t1 set name='<CJK>' where ujis >= 0x8FB0A1 AND ujis <= 0x8FBFFE;
-
--- [8F][C0..CF][A1..FE] - all 16*94=1504 codes assigned
 update t1 set name='<CJK>' where ujis >= 0x8FC0A1 AND ujis <= 0x8FCFFE;
-
--- [8F][D0..DF][A1..FE] - all 16*94=1504 codes assigned
 update t1 set name='<CJK>' where ujis >= 0x8FD0A1 AND ujis <= 0x8FDFFE;
-
--- [8F][E0..EC][A1..FE] - all 13*94=1222 codes assigned
 update t1 set name='<CJK>' where ujis >= 0x8FE0A1 AND ujis <= 0x8FECFE;
-
---
 update t1 set name='U+9EF8 <CJK>' where ujis=0x8FEDA1;
 update t1 set name='U+9EFF <CJK>' where ujis=0x8FEDA2;
 update t1 set name='U+9F02 <CJK>' where ujis=0x8FEDA3;
@@ -1175,7 +1084,6 @@ update t1 set name='U+9F17 <CJK>' where ujis=0x8FEDAC;
 update t1 set name='U+9F19 <CJK>' where ujis=0x8FEDAD;
 update t1 set name='U+9F1A <CJK>' where ujis=0x8FEDAE;
 update t1 set name='U+9F1B <CJK>' where ujis=0x8FEDAF;
-
 update t1 set name='U+9F1F <CJK>' where ujis=0x8FEDB0;
 update t1 set name='U+9F22 <CJK>' where ujis=0x8FEDB1;
 update t1 set name='U+9F26 <CJK>' where ujis=0x8FEDB2;
@@ -1192,7 +1100,6 @@ update t1 set name='U+9F3C <CJK>' where ujis=0x8FEDBC;
 update t1 set name='U+9F3D <CJK>' where ujis=0x8FEDBD;
 update t1 set name='U+9F3F <CJK>' where ujis=0x8FEDBE;
 update t1 set name='U+9F41 <CJK>' where ujis=0x8FEDBF;
-
 update t1 set name='U+9F43 <CJK>' where ujis=0x8FEDC0;
 update t1 set name='U+9F44 <CJK>' where ujis=0x8FEDC1;
 update t1 set name='U+9F45 <CJK>' where ujis=0x8FEDC2;
@@ -1209,7 +1116,6 @@ update t1 set name='U+9F5E <CJK>' where ujis=0x8FEDCC;
 update t1 set name='U+9F68 <CJK>' where ujis=0x8FEDCD;
 update t1 set name='U+9F69 <CJK>' where ujis=0x8FEDCE;
 update t1 set name='U+9F6D <CJK>' where ujis=0x8FEDCF;
-
 update t1 set name='U+9F6E <CJK>' where ujis=0x8FEDD0;
 update t1 set name='U+9F6F <CJK>' where ujis=0x8FEDD1;
 update t1 set name='U+9F70 <CJK>' where ujis=0x8FEDD2;
@@ -1226,30 +1132,17 @@ update t1 set name='U+9F94 <CJK>' where ujis=0x8FEDDC;
 update t1 set name='U+9F96 <CJK>' where ujis=0x8FEDDD;
 update t1 set name='U+9F97 <CJK>' where ujis=0x8FEDDE;
 update t1 set name='U+9F9E <CJK>' where ujis=0x8FEDDF;
-
 update t1 set name='U+9FA1 <CJK>' where ujis=0x8FEDE0;
 update t1 set name='U+9FA2 <CJK>' where ujis=0x8FEDE1;
 update t1 set name='U+9FA3 <CJK>' where ujis=0x8FEDE2;
 update t1 set name='U+9FA5 <CJK>' where ujis=0x8FEDE3;
-
--- [8F][F5..FE][A1..FE] - User defined range
-update t1 set name='User defined range --2' where ujis >= 0x8FF5A1 and ujis <= 0x8FFEFE;
-
--- Other characters are not assigned
+update t1 set name='User defined range #2' where ujis >= 0x8FF5A1 and ujis <= 0x8FFEFE;
 update t1 set name='UNASSIGNED' where name='';
-SET @@session.max_error_count = 0;
 update ignore t1 set ucs2=ujis, ujis2=ucs2;
-SET @@session.max_error_count = DEFAULT;
 select hex(ujis), hex(ucs2), hex(ujis2), name from t1 where ujis=ujis2 order by ujis;
 select hex(ujis), hex(ucs2), hex(ujis2), name from t1 where ujis<>ujis2 order by ujis;
 drop table t1;
-
 drop table t2;
-
---
--- Tricky characters, which have different mapping
--- in various euc-jp versions. See WL#1820 for details.
---
 create table t1 (
   ujis varchar(1) character set ujis,
   name varchar(64),
@@ -1273,10 +1166,6 @@ insert into t1 (ujis,name) values (0x8FA2C3, 'U+00A6 BROKEN BAR');
 update t1 set ucs2=ujis, ujis2=ucs2;
 select hex(ujis), hex(ucs2), hex(ujis2), name from t1;
 drop table t1;
-
---
--- Unicode characters which are not in x-eucjp-unicode-0.9
---
 create table t1 (
   ujis char(1) character set ujis,
   ucs2 char(1) character set ucs2,

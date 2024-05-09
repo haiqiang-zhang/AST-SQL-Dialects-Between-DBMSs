@@ -31,9 +31,9 @@ CREATE TABLE Users (
     	salt BINARY,
     	password STRING
     );
-INSERT INTO "Users" VALUES(1, 'test', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦$d',
+INSERT INTO "Users" VALUES(1, 'test', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦$d',
                '43ba0f45014306bd6df529551ffdb3df');
-INSERT INTO "Users" VALUES(2, 'limited', 'ÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂ>S',
+INSERT INTO "Users" VALUES(2, 'limited', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ>S',
                'cf07c8348fdf675cc1f7696b7d45191b');
 CREATE TABLE UserGroups (
     	userGroupId INTEGER PRIMARY KEY,

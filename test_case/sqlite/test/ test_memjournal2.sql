@@ -1,6 +1,5 @@
 PRAGMA journal_mode = memory;
 CREATE TABLE t1(a INTEGER PRIMARY KEY, b UNIQUE);
-BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
 PRAGMA integrity_check;

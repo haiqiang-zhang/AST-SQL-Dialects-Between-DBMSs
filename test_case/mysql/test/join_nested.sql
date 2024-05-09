@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS t0,t1,t2,t3,t4,t5,t6,t7,t8,t9;
-
 CREATE TABLE t0 (a int, b int, c int);
 CREATE TABLE t1 (a int, b int, c int);
 CREATE TABLE t2 (a int, b int, c int);
@@ -10,7 +9,6 @@ CREATE TABLE t6 (a int, b int, c int);
 CREATE TABLE t7 (a int, b int, c int);
 CREATE TABLE t8 (a int, b int, c int);
 CREATE TABLE t9 (a int, b int, c int);
-
 INSERT INTO t0 VALUES (1,1,0), (1,2,0), (2,2,0);
 INSERT INTO t1 VALUES (1,3,0), (2,2,0), (3,2,0);
 INSERT INTO t2 VALUES (3,3,0), (4,2,0), (5,3,0);
@@ -21,29 +19,23 @@ INSERT INTO t6 VALUES (3,2,0), (6,2,0), (6,1,0);
 INSERT INTO t7 VALUES (1,1,0), (2,2,0);
 INSERT INTO t8 VALUES (0,2,0), (1,2,0);
 INSERT INTO t9 VALUES (1,1,0), (1,2,0), (3,3,0);
-
 CREATE TABLE t34 (a3 int, b3 int, c3 int, a4 int, b4 int, c4 int);
 INSERT INTO t34
 SELECT t3.*, t4.*
 FROM t3 CROSS JOIN t4;
-
 CREATE TABLE t345 (a3 int, b3 int, c3 int, a4 int, b4 int, c4 int,
                    a5 int, b5 int, c5 int);
 INSERT INTO t345
 SELECT t3.*, t4.*, t5.*
 FROM t3 CROSS JOIN t4 CROSS JOIN t5;
-
 CREATE TABLE t67 (a6 int, b6 int, c6 int, a7 int, b7 int, c7 int);
 INSERT INTO t67
 SELECT t6.*, t7.*
 FROM t6 CROSS JOIN t7;
-
 SELECT t2.a,t2.b
   FROM t2;
-
 SELECT t3.a,t3.b
   FROM t3;
-
 SELECT t4.a,t4.b
   FROM t4;
 SELECT t3.a,t3.b,t4.a,t4.b
@@ -94,7 +86,6 @@ SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4
        LEFT JOIN t34
        ON t2.b=t34.b4
     WHERE t34.a3>1 OR t34.c3 IS NULL;
-
 SELECT t5.a,t5.b
   FROM t5;
 SELECT t3.a,t3.b,t4.a,t4.b,t5.a,t5.b
@@ -145,15 +136,12 @@ SELECT t2.a,t2.b,t345.a3,t345.b3,t345.a4,t345.b4,t345.a5,t345.b5
        ON t2.b=t345.b4
     WHERE (t345.a3>1 OR t345.c3 IS NULL) AND 
           (t345.a5<3 OR t345.c5 IS NULL);
-
 SELECT t6.a,t6.b
   FROM t6;
-
 SELECT t7.a,t7.b
   FROM t7;
 SELECT t6.a,t6.b,t7.a,t7.b
   FROM t6,t7;
-
 SELECT t8.a,t8.b
   FROM t8;
 SELECT t6.a,t6.b,t7.a,t7.b,t8.a,t8.b
@@ -171,7 +159,6 @@ SELECT t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b
        LEFT JOIN 
        t8
        ON t67.b7=t8.b AND t67.b6 < 10;
-
 SELECT t5.a,t5.b
   FROM t5;
 SELECT t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b
@@ -287,7 +274,6 @@ SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,
        ON t67.b6 >= 2 AND t5.b=t67.b7
     WHERE t2.a > 3 AND
           (t67.a6 < 6 OR t67.c6 IS NULL);
-
 SELECT t1.a,t1.b
   FROM t1;
 SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
@@ -356,9 +342,6 @@ SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND
           (t1.a != 2)
     WHERE (t2.a >= 4 OR t2.c IS NULL);
-   
---echo "Standard compliant copy of above query"
---sorted_result
 SELECT t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,
        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b
   FROM t1
@@ -381,7 +364,6 @@ SELECT t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,
           (t1.b=t5.b OR t34.c3 IS NULL OR t67.c6 IS NULL or t8.c IS NULL) AND
           (t1.a <> 2)
     WHERE (t2.a >= 4 OR t2.c IS NULL);
-   
 SELECT t0.a,t0.b
   FROM t0;
 SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
@@ -493,7 +475,6 @@ SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
            (t8.a < 1 OR t8.c IS NULL) AND
            (t8.b=t9.b OR t8.c IS NULL) AND
            (t9.a=1);
-
 SELECT t9.a,t9.b
   FROM t9;
 SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
@@ -564,13 +545,10 @@ SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,
            (t8.a < 1 OR t8.c IS NULL) AND
            (t8.b=t9.b OR t8.c IS NULL) AND
            (t9.a=1);
-
 SELECT t1.a,t1.b
   FROM t1;
-
 SELECT t2.a,t2.b
   FROM t2;
-
 SELECT t3.a,t3.b
   FROM t3;
 SELECT t2.a,t2.b,t3.a,t3.b
@@ -672,7 +650,6 @@ SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b
        t2
        ON t3.a=1 AND t2.b=t4.b
     WHERE t1.a <= 2;
-
 CREATE INDEX idx_b ON t2(b);
 SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b
   FROM (t3,t4)
@@ -723,7 +700,6 @@ SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
            (t8.a < 1 OR t8.c IS NULL) AND
            (t8.b=t9.b OR t8.c IS NULL) AND
            (t9.a=1);
-
 CREATE INDEX idx_b ON t4(b);
 CREATE INDEX idx_b ON t5(b);
 SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
@@ -760,7 +736,6 @@ SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
            (t8.a < 1 OR t8.c IS NULL) AND
            (t8.b=t9.b OR t8.c IS NULL) AND
            (t9.a=1);
-
 CREATE INDEX idx_b ON t8(b);
 SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b
@@ -796,7 +771,6 @@ SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
            (t8.a < 1 OR t8.c IS NULL) AND
            (t8.b=t9.b OR t8.c IS NULL) AND
            (t9.a=1);
-
 CREATE INDEX idx_b ON t1(b);
 CREATE INDEX idx_a ON t0(a);
 SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,
@@ -902,10 +876,8 @@ SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,
            (t8.a < 1 OR t8.c IS NULL) AND
            (t8.b=t9.b OR t8.c IS NULL) AND
            (t9.a=1);
-
 SELECT t2.a,t2.b
   FROM t2;
-
 SELECT t3.a,t3.b
   FROM t3;
 SELECT t2.a,t2.b,t3.a,t3.b
@@ -914,7 +886,6 @@ SELECT t2.a,t2.b,t3.a,t3.b
 SELECT t2.a,t2.b,t3.a,t3.b
   FROM t2 LEFT JOIN (t3) ON t2.b=t3.b
     WHERE t2.a = 4 OR (t2.a > 4 AND t3.a IS NULL);
-
 ALTER TABLE t3
   CHANGE COLUMN a a1 int,
   CHANGE COLUMN c c1 int;
@@ -924,75 +895,47 @@ SELECT t2.a,t2.b,t3.a1,t3.b
 SELECT t2.a,t2.b,t3.a1,t3.b
   FROM t2 NATURAL LEFT JOIN t3
     WHERE t2.a = 4 OR (t2.a > 4 AND t3.a1 IS NULL);
-
 DROP TABLE t0,t1,t2,t3,t4,t5,t6,t7,t8,t9;
 DROP TABLE t34, t345, t67;
-
 CREATE TABLE t1 (a int);
 CREATE TABLE t2 (a int);
 CREATE TABLE t3 (a int);
-
 INSERT INTO t1 VALUES (1);
 INSERT INTO t2 VALUES (2);
 INSERT INTO t3 VALUES (2);
 INSERT INTO t1 VALUES (2);
 SELECT * FROM t1 LEFT JOIN (t2 LEFT JOIN t3 ON t2.a=t3.a) ON t1.a=t3.a;
 SELECT * FROM t1 LEFT JOIN t2 LEFT JOIN t3 ON t2.a=t3.a ON t1.a=t3.a;
-
 DELETE FROM t1 WHERE a=2;
 SELECT * FROM t1 LEFT JOIN t2 LEFT JOIN t3 ON t2.a=t3.a ON t1.a=t3.a;
 DELETE FROM t2;
 SELECT * FROM t1 LEFT JOIN t2 LEFT JOIN t3 ON t2.a=t3.a ON t1.a=t3.a;
-
 DROP TABLE t1,t2,t3;
-
 CREATE TABLE t1(a int, key (a));
 CREATE TABLE t2(b int, key (b));
 CREATE TABLE t3(c int, key (c));
-
 INSERT INTO t1 VALUES (NULL), (0), (1), (2), (3), (4), (5), (6), (7), (8), (9),
 (10), (11), (12), (13), (14), (15), (16), (17), (18), (19);
-
 INSERT INTO t2 VALUES (NULL), (0), (1), (2), (3), (4), (5), (6), (7), (8), (9),
 (10), (11), (12), (13), (14), (15), (16), (17), (18), (19);
-
 INSERT INTO t3 VALUES (0), (1), (2), (3), (4), (5);
 SELECT a, b, c FROM t1 LEFT JOIN (t2, t3) ON b < 3 and b = c;
-
 DELETE FROM t3;
 SELECT a, b, c FROM t1 LEFT JOIN (t2, t3) ON b < 3 and b = c;
-
 DROP TABLE t1,t2,t3;
-
---
--- Test for bug #11284: empty table in a nested left join
--- 
-
 CREATE TABLE t1 (c11 int);
 CREATE TABLE t2 (c21 int);
 CREATE TABLE t3 (c31 int);
-
 INSERT INTO t1 VALUES (4), (5);
-
 SELECT * FROM t1 LEFT JOIN t2 ON c11=c21;
-
 SELECT * FROM t1 LEFT JOIN (t2 LEFT JOIN t3 ON c21=c31) ON c11=c21;
-
 DROP TABLE t1,t2,t3;
-
---
--- Bug #12154: creation of temp table for a query with nested outer join
--- 
-
 CREATE TABLE t1 (goods int(12) NOT NULL, price varchar(128) NOT NULL);
 INSERT INTO t1 VALUES (23, 2340), (26, 9900);
-
 CREATE TABLE t2 (goods int(12), name varchar(50), shop char(2));
 INSERT INTO t2 VALUES (23, 'as300', 'fr'), (26, 'as600', 'fr');
-
 create table t3 (groupid int(12) NOT NULL, goodsid int(12) NOT NULL);
 INSERT INTO t3 VALUES (3,23), (6,26);
-
 CREATE TABLE t4 (groupid int(12));
 INSERT INTO t4 VALUES (1), (2), (3), (4), (5), (6);
 SELECT * FROM
@@ -1002,14 +945,12 @@ SELECT * FROM
        (t3 g INNER JOIN t2 p ON g.goodsid = p.goods 
              INNER JOIN t1 gp ON p.goods = gp.goods)
        ON gl.groupid = g.groupid and p.shop = 'fr') t;
-
 CREATE VIEW v1 AS
 SELECT g.groupid groupid, p.goods goods,  
        p.name name, p.shop shop, 
        gp.price price
   FROM t3 g INNER JOIN t2 p ON g.goodsid = p.goods
             INNER JOIN t1 gp on p.goods = gp.goods;
-
 CREATE VIEW v2 AS
 SELECT DISTINCT g.groupid, fr.price
   FROM t4 g
@@ -1021,14 +962,8 @@ SELECT * FROM
   FROM t4 g
        LEFT JOIN
        v1 fr on g.groupid = fr.groupid and fr.shop = 'fr') t;
-
 DROP VIEW v1,v2;
 DROP TABLE t1,t2,t3,t4;
-
---
--- Bug #13545: problem with NATURAL/USING joins.
---
-
 CREATE TABLE t1(a int);
 CREATE TABLE t2(b int);
 CREATE TABLE t3(c int, d int);
@@ -1039,159 +974,104 @@ CREATE VIEW v1 AS
   SELECT e FROM t5 JOIN t6 ON t5.e=t6.f;
 CREATE VIEW v2 AS 
   SELECT e FROM t5 NATURAL JOIN t6;
-
 SELECT t1.a FROM t1 JOIN t2 ON a=b JOIN t3 ON a=c JOIN t4 USING(d);
-SELECT t1.x FROM t1 JOIN t2 ON a=b JOIN t3 ON a=c JOIN t4 USING(d);
 SELECT t1.a FROM t1 JOIN t2 ON a=b JOIN t3 ON a=c NATURAL JOIN t4;
-SELECT t1.x FROM t1 JOIN t2 ON a=b JOIN t3 ON a=c NATURAL JOIN t4;
 SELECT v1.e FROM v1 JOIN t2 ON e=b JOIN t3 ON e=c JOIN t4 USING(d);
-SELECT v1.x FROM v1 JOIN t2 ON e=b JOIN t3 ON e=c JOIN t4 USING(d);
 SELECT v2.e FROM v2 JOIN t2 ON e=b JOIN t3 ON e=c JOIN t4 USING(d);
-SELECT v2.x FROM v2 JOIN t2 ON e=b JOIN t3 ON e=c JOIN t4 USING(d);
-
 DROP VIEW v1, v2;
 DROP TABLE t1, t2, t3, t4, t5, t6;
-
---
--- BUG#13126 -test case from bug report
---
 create table t1 (id1 int(11) not null);
 insert into t1 values (1),(2);
-
 create table t2 (id2 int(11) not null);
 insert into t2 values (1),(2),(3),(4);
-
 create table t3 (id3 char(16) not null);
 insert into t3 values ('100');
-
 create table t4 (id2 int(11) not null, id3 char(16));
-
 create table t5 (id1 int(11) not null, key (id1));
 insert into t5 values (1),(2),(1);
-
 create view v1 as
   select t4.id3 from t4 join t2 on t4.id2 = t2.id2;
-
 select t1.id1 from t1 inner join (t3 left join v1 on t3.id3 = v1.id3);
-
 drop view v1;
 drop table t1, t2, t3, t4, t5;
-
 create table t0 (a int);
 insert into t0 values (0),(1),(2),(3);
 create table t1(a int);
 insert into t1 select A.a + 10*(B.a) from t0 A, t0 B;
-
 create table t2 (a int, b int);
 insert into t2 values (1,1), (2,2), (3,3);
-
 create table t3(a int, b int, filler char(200), key(a));
 insert into t3 select a,a,'filler' from t1;
 insert into t3 select a,a,'filler' from t1;
-
 create table t4 like t3;
 insert into t4 select * from t3;
 insert into t4 select * from t3;
-
 create table t5 like t4;
 insert into t5 select * from t4;
 insert into t5 select * from t4;
-
 create table t6 like t5;
 insert into t6 select * from t5;
 insert into t6 select * from t5;
-
 create table t7 like t6;
 insert into t7 select * from t6;
 insert into t7 select * from t6;
-  t2 left join (t3 join t5 on t5.a=t3.b) on t3.a=t2.b where t4.a<=>t3.b;
-  (t3 left join (t4 join t6 on t6.a=t4.b) on t4.a=t3.b 
-   join t5 on t5.a=t3.b) on t3.a=t2.b;
-
 drop table t0, t1, t2, t3, t4, t5, t6, t7;
-
--- BUG#16393
 create table t1 (a int);
 insert into t1 values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
 create table t2 (a int, filler char(100), key(a));
 insert into t2 select A.a + 10*B.a, '' from t1 A, t1 B;
 create table t3 like t2;
 insert into t3 select * from t2;
-  (t2 left join t3 on (t2.a = t3.a)) 
-  on (t1.a = t2.a);
 drop table t1, t2, t3;
-
---
--- Bug #16260: single row table in the inner nest of an outer join  
---
-
 CREATE TABLE t1 (id int NOT NULL PRIMARY KEY, type varchar(10));
 CREATE TABLE t2 (pid int NOT NULL PRIMARY KEY, type varchar(10));
 CREATE TABLE t3 (cid int NOT NULL PRIMARY KEY,
                  id int NOT NULL,
                  pid int NOT NULL);
-
 INSERT INTO t1 VALUES (1, 'A'), (3, 'C');
 INSERT INTO t2 VALUES (1, 'A'), (3, 'C');
 INSERT INTO t3 VALUES (1, 1, 1), (3, 3, 3);
-
 SELECT * FROM t1 p LEFT JOIN (t3 JOIN t1)
                      ON (t1.id=t3.id AND t1.type='B' AND p.id=t3.id)
                    LEFT JOIN t2 ON (t3.pid=t2.pid)
   WHERE p.id=1;
-
 CREATE VIEW v1 AS
   SELECT t3.* FROM t3 JOIN t1 ON t1.id=t3.id AND t1.type='B';
-
 SELECT * FROM t1 p LEFT JOIN v1 ON p.id=v1.id
                    LEFT JOIN t2 ON v1.pid=t2.pid
   WHERE p.id=1;
-
 DROP VIEW v1;
 DROP TABLE t1,t2,t3;
-
-
---
--- Test for bug #18279: crash when on conditions are moved out of a nested join
---                      to the on conditions for the nest
-
 CREATE TABLE t1 (id1 int PRIMARY KEY, id2 int);
 CREATE TABLE t2 (id1 int PRIMARY KEY, id2 int);
 CREATE TABLE t3 (id1 int PRIMARY KEY, id2 int);
 CREATE TABLE t4 (id1 int PRIMARY KEY, id2 int);
 CREATE TABLE t5 (id1 int PRIMARY KEY, id2 int);
-
 SELECT t1.id1 AS id, t5.id1 AS ngroupbynsa
   FROM t1 INNER JOIN t2 ON t2.id2 = t1.id1
        LEFT OUTER JOIN
        (t3 INNER JOIN t4 ON t4.id1 = t3.id2 INNER JOIN t5 ON t4.id2 = t5.id1)
        ON t3.id2 IS NOT NULL
     WHERE t1.id1=2;
+PREPARE stmt FROM
+"SELECT t1.id1 AS id, t5.id1 AS ngroupbynsa
+  FROM t1 INNER JOIN t2 ON t2.id2 = t1.id1
        LEFT OUTER JOIN
        (t3 INNER JOIN t4 ON t4.id1 = t3.id2 INNER JOIN t5 ON t4.id2 = t5.id1)
        ON t3.id2 IS NOT NULL
     WHERE t1.id1=2";
-
 INSERT INTO t1 VALUES (1,1), (2,1), (3,2);
 INSERT INTO t2 VALUES (2,1), (3,2), (4,3);
 INSERT INTO t3 VALUES (1,1), (3,2), (2,NULL);
 INSERT INTO t4 VALUES (1,1), (2,1), (3,3);
 INSERT INTO t5 VALUES (1,1), (2,2), (3,3), (4,3);
-
 SELECT t1.id1 AS id, t5.id1 AS ngroupbynsa
   FROM t1 INNER JOIN t2 ON t2.id2 = t1.id1
        LEFT OUTER JOIN
        (t3 INNER JOIN t4 ON t4.id1 = t3.id2 INNER JOIN t5 ON t4.id2 = t5.id1)
        ON t3.id2 IS NOT NULL
     WHERE t1.id1=2;
-
 DROP TABLE t1,t2,t3,t4,t5;
-
---
--- Test for bug #24345: crash with nested left outer join when outer table is substituted
---                      for a row that happens to have a null value for the join attribute.
---
-
 CREATE TABLE t1 (
   id int NOT NULL PRIMARY KEY,
   ct int DEFAULT NULL,
@@ -1201,7 +1081,6 @@ CREATE TABLE t1 (
 );
 INSERT INTO t1 VALUES  
  (1,NULL,NULL),(2,NULL,NULL),(3,NULL,NULL),(4,NULL,NULL),(5,NULL,NULL);
-
 CREATE TABLE t2 (
   id int NOT NULL PRIMARY KEY,
   sr int NOT NULL,
@@ -1210,7 +1089,6 @@ CREATE TABLE t2 (
 );
 INSERT INTO t2 VALUES
   (2441905,4308,'LesAbymes'),(2441906,4308,'Anse-Bertrand');
-
 CREATE TABLE t3 (
   id int NOT NULL PRIMARY KEY,
   ct int NOT NULL,
@@ -1218,62 +1096,38 @@ CREATE TABLE t3 (
   INDEX idx_ct (ct),
   INDEX idx_ln (ln)
 );
-
 CREATE TABLE t4 (
   id int NOT NULL PRIMARY KEY,
   nm varchar(255) NOT NULL
 );
-
 INSERT INTO t4 VALUES (4308,'Guadeloupe'),(4309,'Martinique');
-
 SELECT t1.*
   FROM t1 LEFT JOIN
        (t2 LEFT JOIN t3 ON t3.ct=t2.id AND t3.ln='5') ON t1.ct=t2.id
     WHERE t1.id='5';
-
 SELECT t1.*, t4.nm
   FROM t1 LEFT JOIN
       (t2 LEFT JOIN t3 ON t3.ct=t2.id AND t3.ln='5') ON t1.ct=t2.id
           LEFT JOIN t4 ON t2.sr=t4.id
     WHERE t1.id='5';
-
 DROP TABLE t1,t2,t3,t4;
-
---
--- BUG#25575: ERROR 1052 (Column in from clause is ambiguous) with sub-join
---
 CREATE TABLE t1 (a INT, b INT);
 CREATE TABLE t2 (a INT);
 CREATE TABLE t3 (a INT, c INT);
 CREATE TABLE t4 (a INT, c INT);
 CREATE TABLE t5 (a INT, c INT);
-
 SELECT b FROM t1 JOIN (t2 LEFT JOIN t3 USING (a) LEFT JOIN t4 USING (a)
 LEFT JOIN t5 USING (a)) USING (a);
-SELECT c FROM t1 JOIN (t2 LEFT JOIN t3 USING (a) LEFT JOIN t4 USING (a)
-LEFT JOIN t5 USING (a)) USING (a);
-
 SELECT b FROM t1 JOIN (t2 JOIN t3 USING (a) JOIN t4 USING (a)
 JOIN t5 USING (a)) USING (a);
-SELECT c FROM t1 JOIN (t2 JOIN t3 USING (a) JOIN t4 USING (a)
-JOIN t5 USING (a)) USING (a);
-
 DROP TABLE t1,t2,t3,t4,t5;
 CREATE TABLE t1 (a INT, b INT);
 CREATE TABLE t2 (a INT, b INT);
 CREATE TABLE t3 (a INT, b INT);
-
 INSERT INTO t1 VALUES (1,1);
 INSERT INTO t2 VALUES (1,1);
 INSERT INTO t3 VALUES (1,1);
-SELECT * FROM t1 JOIN (t2 JOIN t3 USING (b)) USING (a);
-
 DROP TABLE t1,t2,t3;
-
---
--- BUG#29604: inner nest of left join interleaves with outer tables
---
-
 CREATE TABLE t1 (
   carrier char(2) default NULL,
   id int NOT NULL auto_increment PRIMARY KEY
@@ -1288,7 +1142,6 @@ INSERT INTO t1 VALUES
   ('CO',231059374),('CO',231059584),('CO',231059734),('CO',231059014),
   ('CO',231059854),('CO',231059494),('CO',231059794),('CO',231058534),
   ('CO',231058324),('CO',231058684),('CO',231059524),('CO',231059974);
-
 CREATE TABLE t2 (
   scan_date date default NULL,
   package_id int default NULL,
@@ -1311,7 +1164,6 @@ INSERT INTO t2 VALUES
   ('2008-12-29',231066094),('2008-12-29',231069034),('2008-12-29',231058594),
   ('2008-12-29',231059854),('2008-12-29',231059884),('2008-12-29',231059914),
   ('2008-12-29',231063664),('2008-12-29',231063814),('2008-12-29',231063904);
-
 CREATE TABLE t3 (
   package_id int default NULL,
   INDEX package_id(package_id)
@@ -1340,7 +1192,6 @@ INSERT INTO t3 VALUES
   (231062854),(231062884),(231062944),(231063004),(231063034),(231063064),
   (231063124),(231063154),(231063184),(231063214),(231063274),(231063334),
   (231063394),(231063424),(231063454),(231063514),(231063574),(231063664);
- 
 CREATE TABLE t4 (
   carrier char(2) NOT NULL default '' PRIMARY KEY,
   id int(11) default NULL,
@@ -1348,7 +1199,6 @@ CREATE TABLE t4 (
 ) CHARSET utf8mb4;
 INSERT INTO t4 VALUES
   ('99',6),('SK',456),('UA',486),('AI',1081),('OS',1111),('VS',1510);
-
 CREATE TABLE t5 (
   carrier_id int default NULL,
   INDEX carrier_id(carrier_id)
@@ -1377,9 +1227,7 @@ SELECT COUNT(*)
        LEFT JOIN 
        (t5 JOIN t4 ON t5.carrier_id = t4.id)
        ON t4.carrier = t1.carrier;
-
 DROP TABLE t1,t2,t3,t4,t5;
-
 CREATE TABLE t (
   a INT,
   b CHAR(255),
@@ -1389,7 +1237,6 @@ CREATE TABLE t (
   PRIMARY KEY (e),
   KEY (d)
 ) ENGINE=InnoDB;
-
 INSERT INTO t VALUES
 (1, '14effca2', 'cffa3819', 98927, 8767),
 (1, '2f7cbd33', '421aff88', 87613, 70956),
@@ -1407,8 +1254,6 @@ INSERT INTO t VALUES
 (1, 'fb66b513', '10f3de43', 41297, 74334),
 (1, 'ffec6d1b', '2fca4073', 12896, 95807),
 (1, 'aa3fcff8', 'f4981ed8', 99211, 18778);
-
-let $query=
 SELECT a.c AS c FROM (
   SELECT a.c AS c FROM (
     SELECT a.a AS c FROM t AS a
@@ -1417,18 +1262,4 @@ SELECT a.c AS c FROM (
   INNER JOIN t AS b ON a.c >= b.a
 ) AS a
 INNER JOIN t AS b ON a.c >= b.d;
-
--- Before the bug was fixed, the query allocated 17MB in the THD memory
--- root. After the fix it allocated 90KB. Verify that the memory leak
--- is plugged by checking that it doesn't allocate more than 1MB in the
--- memory root. The query against the performance schema table below
--- returns an empty result if the memory usage is OK, or one row if the
--- memory usage was too high.
---
-let $res=
-SELECT * FROM performance_schema.memory_summary_by_thread_by_event_name
-WHERE event_name = 'memory/sql/thd::main_mem_root'
-AND thread_id = ps_thread_id(connection_id())
-AND sum_number_of_bytes_alloc > 1000000;
-
 DROP TABLE t;

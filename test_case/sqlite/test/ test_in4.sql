@@ -145,7 +145,7 @@ INSERT INTO sqlite_stat1 VALUES('t1','t1','10 3 2 1');
 ANALYZE sqlite_schema;
 PRAGMA reverse_unordered_selects(1);
 ANALYZE sqlite_schema;
-INSERT INTO sqlite_stat1 VALUES('t1','t1abc','10000 5 00 2003ÃÂÃÂÃÂÃÂ 10');
+INSERT INTO sqlite_stat1 VALUES('t1','t1abc','10000 5 00 2003ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ 10');
 ANALYZE sqlite_schema;
 ANALYZE sqlite_schema;
 INSERT INTO sqlite_stat1 VALUES('t1','t1abc','358677 2 2 1');

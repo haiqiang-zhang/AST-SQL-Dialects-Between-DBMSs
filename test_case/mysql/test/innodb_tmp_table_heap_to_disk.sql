@@ -1,26 +1,10 @@
-
--- This test takes rather long time so let us run it only in --big-test mode
---source include/big_test.inc
--- Valgrind will make the test Timeout so skip it if only in --valgrind mode
---source include/not_valgrind.inc
--- Times out with ubsan
---source include/not_ubsan.inc
-
---from heap to ondisk
-set @old_heap_size= @@max_heap_table_size;
-set max_heap_table_size = 16384;
 select * from information_schema.collations order by id limit 1;
-{
-    set optimizer_switch='firstmatch=off';
-{
-    set optimizer_switch='loosescan=off';
 drop table if exists t1;
 create table t1 (
   a int not null,
   b int not null,
   c datetime default null
 );
-
 insert into t1 values 
 (406989,67,'2006-02-23 17:08:46'), (150078,67,'2005-10-26 11:17:45'),
 (406993,67,'2006-02-27 11:20:57'), (245655,67,'2005-12-08 15:59:08'),
@@ -48,15 +32,11 @@ drop table if exists t11;
 create table t11 select * from t1;
 insert into t1 select a+80, b+80, c from t1;
 select * from t1 where a in (select a from t11) order by 1, 2, 3 limit 1;
-{
-    set optimizer_switch='materialization=off';
 select * from t1 where a in (select a from t11) order by 1, 2, 3 limit 1;
 drop table t11;
-set optimizer_switch=default;
 drop table if exists t1, t2;
 CREATE TABLE t1 (id INTEGER);
 CREATE TABLE t2 (id INTEGER);
-
 INSERT INTO t1 (id) VALUES (1), (1), (1),(1);
 INSERT INTO t1 (id) SELECT id FROM t1;
 INSERT INTO t1 (id) SELECT id FROM t1;
@@ -78,6 +58,5 @@ INSERT INTO t2 SELECT id + 2000 FROM t1 limit 4000;
 select * from t1 union select * from t2 order by 1 limit 1;
 SELECT SUM(id) sm FROM t1 group by id order by sm limit 1;
 SELECT SUM(DISTINCT t1.id) sm FROM t1 left join t2 on t1.id=t2.id GROUP BY t1.id order by sm limit 1;
-set max_heap_table_size = @old_heap_size;
 drop table t1;
 drop table t2;

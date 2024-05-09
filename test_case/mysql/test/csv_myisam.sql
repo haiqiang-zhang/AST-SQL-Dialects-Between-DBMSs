@@ -1,8 +1,3 @@
-
---
---
--- Bug #21328 mysqld issues warnings on ALTER CSV table to MyISAM
---
 CREATE TABLE `bug21328` (
   `col1` int(11) NOT NULL,
   `col2` int(11) NOT NULL,

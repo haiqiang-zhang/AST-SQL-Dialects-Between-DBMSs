@@ -1,1 +1,0 @@
-CREATE TABLE t1 (a VARCHAR(10)) COLLATE utf8mb3_hugeid_ci;

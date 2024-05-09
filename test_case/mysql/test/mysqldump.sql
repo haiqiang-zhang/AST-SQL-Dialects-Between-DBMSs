@@ -1,98 +1,56 @@
-
--- Binlog is required
---source include/have_log_bin.inc
-
--- Save the initial number of concurrent sessions
---source include/count_sessions.inc
-
---source include/have_innodb_max_16k.inc
-
-disable_query_log;
-SET @OLD_CONCURRENT_INSERT = @@GLOBAL.CONCURRENT_INSERT;
-SET @@GLOBAL.CONCURRENT_INSERT = 0;
 DROP TABLE IF EXISTS t1, `"t"1`, t1aa, t2, t2aa, t3;
 drop database if exists mysqldump_test_db;
 drop database if exists db1;
 drop database if exists db2;
 drop view if exists v1, v2, v3;
-
--- XML output
-let $innodb_file_per_table_orig=`select @@innodb_file_per_table`;
-set global innodb_file_per_table=1;
 CREATE TABLE t1(a INT, KEY (a)) ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=1 ENGINE=Innodb;
 INSERT INTO t1 VALUES (1), (2);
 DROP TABLE t1;
-
 CREATE TABLE t1 (a decimal(64, 20));
 INSERT INTO t1 VALUES ("1234567890123456789012345678901234567890"),
 ("0987654321098765432109876543210987654321");
 DROP TABLE t1;
-
 CREATE TABLE t1 (a double);
 INSERT IGNORE INTO t1 VALUES ('-9e999999');
 DROP TABLE t1;
-
 CREATE TABLE t1 (a DECIMAL(10,5), b FLOAT);
-
--- check at first how mysql work with quoted decimal
-
 INSERT INTO t1 VALUES (1.2345, 2.3456);
 INSERT INTO t1 VALUES ('1.2345', 2.3456);
 INSERT INTO t1 VALUES ("1.2345", 2.3456);
-
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ANSI_QUOTES';
 INSERT INTO t1 VALUES (1.2345, 2.3456);
 INSERT INTO t1 VALUES ('1.2345', 2.3456);
 INSERT INTO t1 VALUES ("1.2345", 2.3456);
-SET SQL_MODE=@OLD_SQL_MODE;
-
--- check how mysqldump make quoting
---replace_regex /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{2}/--TIMESTAMP--/ /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/--TIME--/
---exec $MYSQL_DUMP --compact test t1
 DROP TABLE t1;
-
 CREATE TABLE t1(a int, b text, c varchar(3));
 INSERT INTO t1 VALUES (1, "test", "tes"), (2, "TEST", "TES");
 DROP TABLE t1;
-
 CREATE TABLE t1 (`a"b"` char(2));
 INSERT INTO t1 VALUES ("1\""), ("\"2");
 DROP TABLE t1;
-
 CREATE TABLE t1 (a  VARCHAR(255)) DEFAULT CHARSET koi8r;
 INSERT INTO t1  VALUES (_koi8r x'C1C2C3C4C5'), (NULL);
 DROP TABLE t1;
-
 create table ```a` (i int);
 drop table ```a`;
-
 create table t1(a int);
-set global sql_mode='ANSI_QUOTES';
-set global sql_mode=DEFAULT;
 drop table t1;
-
 create table t1(a int);
 insert into t1 values (1),(2),(3);
 drop table t1;
-
 create database mysqldump_test_db character set latin2 collate latin2_bin;
 drop database mysqldump_test_db;
-
 CREATE TABLE t1 (a  CHAR(10));
 INSERT INTO t1  VALUES (_latin1 x'C4D6DCDF');
 DROP TABLE t1;
-
 CREATE TABLE t1 (a int);
 CREATE TABLE t2 (a int);
 INSERT INTO t1 VALUES (1),(2),(3);
 INSERT INTO t2 VALUES (4),(5),(6);
 DROP TABLE t1;
 DROP TABLE t2;
-
 CREATE TABLE t1 (`b` blob);
 INSERT INTO `t1` VALUES (0x602010000280100005E71A);
 DROP TABLE t1;
-
 CREATE TABLE t1 (a INT);
 INSERT INTO t1 VALUES (1),(2),(3);
 INSERT INTO t1 VALUES (4),(5),(6);
@@ -430,13 +388,10 @@ create table t1 (
  F_fe73f687e5bc5280214e0486b273a5f9 int);
 insert into t1 (F_8d3bba7425e7c98c50f52ca1b52d3735) values (1);
 drop table t1;
-
 CREATE TABLE t1 (a int);
 INSERT INTO t1 VALUES (1),(2),(3);
 DROP TABLE t1;
-
 CREATE DATABASE mysqldump_test_db;
-USE mysqldump_test_db;
 CREATE TABLE t1 ( a INT );
 CREATE TABLE t2 ( a INT );
 INSERT INTO t1 VALUES (1), (2);
@@ -444,54 +399,39 @@ INSERT INTO t2 VALUES (1), (2);
 DROP TABLE t1, t2;
 DROP DATABASE mysqldump_test_db;
 create database mysqldump_test_db;
-use mysqldump_test_db;
 create table t1(a varchar(30) primary key, b int not null);
 create table t2(a varchar(30) primary key, b int not null);
 create table t3(a varchar(30) primary key, b int not null);
-select '------ Testing with illegal table names ------' as test_sequence ;
-select '------ Testing with illegal database names ------' as test_sequence ;
-
+select '------ Testing with illegal table names ------' as test_sequence;
+select '------ Testing with illegal database names ------' as test_sequence;
 drop table t1, t2, t3;
 drop database mysqldump_test_db;
-use test;
-
 create table t1 (a int(10));
 create table t2 (pk int primary key auto_increment,
 a int(10), b varchar(30), c datetime, d blob, e text);
 insert into t1 values (NULL), (10), (20);
 insert into t2 (a, b) values (NULL, NULL),(10, NULL),(NULL, "twenty"),(30, "thirty");
 drop table t1, t2;
-
 create table t1 (a text character set utf8mb3, b text character set latin1);
 insert t1 values (0x4F736E616272C3BC636B, 0x4BF66C6E);
 select * from t1;
 select * from t1;
-
 drop table t1;
-
 create table `t1` (
     t1_name varchar(255) default null,
     t1_id int(10) unsigned not null auto_increment,
     key (t1_name),
     primary key (t1_id)
 ) auto_increment = 1000 default charset=latin1;
-
 insert into t1 (t1_name) values('bla');
 insert into t1 (t1_name) values('bla');
 insert into t1 (t1_name) values('bla');
-
 select * from t1;
 DROP TABLE `t1`;
-
-select * from t1;
-
-drop table `t1`;
-
 create table t1(a int);
 create table t2(a int);
 create table t3(a int);
 drop table t1, t2, t3;
-
 create table t1 (a int);
 drop table t1;
 DROP TABLE IF EXISTS `t1`;
@@ -503,15 +443,11 @@ CREATE TABLE `t1` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 insert into t1 values (0815, 4711, 2006);
 DROP TABLE `t1`;
-
 create database db1;
-use db1;
-
 CREATE TABLE t2 (
   a varchar(30) default NULL,
   KEY a (a(5))
 );
-
 INSERT INTO t2 VALUES ('alfred');
 INSERT INTO t2 VALUES ('angie');
 INSERT INTO t2 VALUES ('bingo');
@@ -521,57 +457,28 @@ create view v2 as select * from t2 where a like 'a%' with check option;
 drop table t2;
 drop view v2;
 drop database db1;
-use test;
-
--- create table and views in db2
 create database db2;
-use db2;
 create table t1 (a int);
 create table t2 (a int, b varchar(10), primary key(a));
 insert into t2 values (1, "on"), (2, "off"), (10, "pol"), (12, "meg");
 insert into t1 values (289), (298), (234), (456), (789);
 create view v1 as select * from t2;
 create view v2 as select * from t1;
-
--- dump tables and view from db2
---exec $MYSQL_DUMP db2 > $MYSQLTEST_VARDIR/tmp/bug10713.sql
-
--- drop the db, tables and views
 drop table t1, t2;
 drop view v1, v2;
 drop database db2;
-use test;
-
--- create db1 and reload dump
 create database db1;
-use db1;
-
--- check that all tables and views could be created
-show tables;
-select * from t2 order by a;
-
-drop table t1, t2;
 drop database db1;
-use test;
-
---
--- dump of view
---
-
 create table t1(a int, b int);
 create view v1 as select * from t1;
 create view v2 (c, d) as select * from t1;
 drop view v1, v2;
 drop table t1;
-
 create database mysqldump_test_db;
-use mysqldump_test_db;
-
 CREATE TABLE t2 (
   a varchar(30) default NULL,
   KEY a (a(5))
 );
-
 INSERT INTO t2 VALUES ('alfred');
 INSERT INTO t2 VALUES ('angie');
 INSERT INTO t2 VALUES ('bingo');
@@ -581,87 +488,36 @@ create view v2 as select * from t2 where a like 'a%' with check option;
 drop table t2;
 drop view v2;
 drop database mysqldump_test_db;
-use test;
-
 CREATE TABLE t1 (a char(10));
 INSERT INTO t1 VALUES ('\'');
 DROP TABLE t1;
-
 create table t1(a int, b int, c varchar(30));
-
 insert into t1 values(1, 2, "one"), (2, 4, "two"), (3, 6, "three");
-
 create view v3 as
 select * from t1;
-
 create  view v1 as
 select * from v3 where b in (1, 2, 3, 4, 5, 6, 7);
-
 create  view v2 as
 select v3.a from v3, v1 where v1.a=v3.a and v3.b=3 limit 1;
-
 drop view v1, v2, v3;
 drop table t1;
-
 CREATE TABLE t1 (a int, b bigint default NULL);
 CREATE TABLE t2 (a int);
-create trigger trg1 before insert on t1 for each row
-begin
-  if new.a > 10 then
-    set new.a := 10;
-    set new.a := 11;
-  end if;
-create trigger trg2 before update on t1 for each row begin
-  if old.a % 2 = 0 then set new.b := 12;
-set sql_mode="traditional"|
-create trigger trg3 after update on t1 for each row
-begin
-  if new.a = -1 then
-    set @fired:= "Yes";
-  end if;
-create trigger trg4 before insert on t2 for each row
-begin
-  if new.a > 10 then
-    set @fired:= "No";
-  end if;
-set sql_mode=default|
-delimiter ;
 INSERT INTO t1 (a) VALUES (1),(2),(3),(22);
 update t1 set a = 4 where a=3;
 drop table t1;
-DROP TABLE t1, t2;
-EOF
---exec $MYSQL_MY_PRINT_DEFAULTS -c $MYSQLTEST_VARDIR/tmp/tmp.cnf mysqltest1
---exec $MYSQL_MY_PRINT_DEFAULTS -e $MYSQLTEST_VARDIR/tmp/tmp.cnf mysqltest1 mysqltest1
---remove_file $MYSQLTEST_VARDIR/tmp/tmp.cnf
-
---echo --
---echo -- Test of fix to Bug#12597 mysqldump dumps triggers wrongly
---echo --
-
 DROP TABLE IF EXISTS `test1`;
 CREATE TABLE `test1` (
   `a1` int(11) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 DROP TABLE IF EXISTS `test2`;
 CREATE TABLE `test2` (
   `a2` int(11) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TRIGGER `testref` BEFORE INSERT ON `test1` FOR EACH ROW BEGIN
-INSERT INTO test2 SET a2 = NEW.a1;
-
 INSERT INTO `test1` VALUES (1);
 SELECT * FROM `test2`;
-
--- dump
---exec $MYSQL_DUMP --skip-comments --databases test > $MYSQLTEST_VARDIR/tmp/mysqldump.sql
-
---DROP TRIGGER testref;
 SELECT * FROM `test1`;
 SELECT * FROM `test2`;
-
-DROP TRIGGER testref;
 DROP TABLE test1;
 DROP TABLE test2;
 DROP TABLE IF EXISTS t1;
@@ -670,70 +526,29 @@ DROP FUNCTION IF EXISTS bug9056_func2;
 DROP PROCEDURE IF EXISTS bug9056_proc1;
 DROP PROCEDURE IF EXISTS bug9056_proc2;
 DROP PROCEDURE IF EXISTS `a'b`;
-
 CREATE TABLE t1 (id int);
 INSERT INTO t1 VALUES(1), (2), (3), (4), (5);
-CREATE FUNCTION `bug9056_func1`(a INT, b INT) RETURNS int(11) RETURN a+b //
-CREATE PROCEDURE `bug9056_proc1`(IN a INT, IN b INT, OUT c INT)
-BEGIN SELECT a+b INTO c;
-
-create function bug9056_func2(f1 char binary) returns char
-begin
-  set f1= concat( 'hello', f1 );
-end //
-
-CREATE PROCEDURE bug9056_proc2(OUT a INT)
-BEGIN
-  select sum(id) from t1 into a;
-END //
-
-DELIMITER ;
-
-set sql_mode='ansi';
 create procedure `a'b` () select 1;
-set sql_mode='';
-
--- Dump the DB and ROUTINES
---exec $MYSQL_DUMP --skip-comments --routines --databases test
-
--- ok, now blow it all away
-DROP FUNCTION bug9056_func1;
-DROP FUNCTION bug9056_func2;
-DROP PROCEDURE bug9056_proc1;
-DROP PROCEDURE bug9056_proc2;
 DROP PROCEDURE `a'b`;
 drop table t1;
 drop table if exists t1;
-
 create table t1 (`d` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, unique (`d`));
-set time_zone='+00:00';
 insert into t1 values ('2003-10-25 22:00:00'),('2003-10-25 23:00:00');
 select * from t1;
-set time_zone='Europe/Moscow';
 select * from t1;
-set global time_zone='Europe/Moscow';
 drop table t1;
-set global time_zone=default;
-set time_zone=default;
 DROP TABLE IF EXISTS `t1 test`;
 DROP TABLE IF EXISTS `t2 test`;
-
 CREATE TABLE `t1 test` (
   `a1` int(11) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 CREATE TABLE `t2 test` (
   `a2` int(11) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TRIGGER `test trig` BEFORE INSERT ON `t1 test` FOR EACH ROW BEGIN
-INSERT INTO `t2 test` SET a2 = NEW.a1;
-
 INSERT INTO `t1 test` VALUES (1);
 INSERT INTO `t1 test` VALUES (2);
 INSERT INTO `t1 test` VALUES (3);
 SELECT * FROM `t2 test`;
-
-DROP TRIGGER `test trig`;
 DROP TABLE `t1 test`;
 DROP TABLE `t2 test`;
 drop table if exists t1;
@@ -741,38 +556,19 @@ create table t1 (a int, b varchar(32), c varchar(32));
 insert into t1 values (1, 'first value', 'xxxx');
 insert into t1 values (2, 'second value', 'tttt');
 insert into t1 values (3, 'third value', 'vvv vvv');
-
 create view v1 as select * from t1;
 create view v0 as select * from v1;
 create view v2 as select * from v0;
-
 select * from v2;
-
 drop view v2;
 drop view v0;
 drop view v1;
 drop table t1;
-
-SET @old_sql_mode = @@SQL_MODE;
-SET SQL_MODE = IGNORE_SPACE;
-
 CREATE TABLE t1 (a INT);
-CREATE TRIGGER tr1 BEFORE INSERT ON t1
-       FOR EACH ROW
-       BEGIN
-         SET new.a = 0;
-       END|
-DELIMITER ;
-
-SET SQL_MODE = @old_sql_mode;
-
-DROP TRIGGER tr1;
 DROP TABLE t1;
-
 create table t1 (a binary(1), b blob);
 insert into t1 values ('','');
 drop table t1;
-
 create table t1 (a int);
 insert into t1 values (289), (298), (234), (456), (789);
 create definer = CURRENT_USER view v1 as select * from t1;
@@ -780,47 +576,10 @@ create SQL SECURITY INVOKER view v2 as select * from t1;
 create view v3 as select * from t1 with local check option;
 create algorithm=merge view v4 as select * from t1 with cascaded check option;
 create algorithm =temptable view v5 as select * from t1;
-
--- dump tables and views
---exec $MYSQL_DUMP test > $MYSQLTEST_VARDIR/tmp/bug14871.sql
-
--- drop the db, tables and views
 drop table t1;
 drop view v1, v2, v3, v4, v5;
-
--- Reload dump
---exec $MYSQL test < $MYSQLTEST_VARDIR/tmp/bug14871.sql
-
--- check that all tables and views could be created
-show tables;
-select * from v3 order by a;
-
-drop table t1;
-drop view v1, v2, v3, v4, v5;
-
 create table t1 (a int, created datetime);
-create table t2 (b int, created datetime);
-create trigger tr1 before insert on t1 for each row set
-new.created=now();
-create trigger tr2 after insert on t1
-for each row
-begin
-  insert into t2 set b=new.a and created=new.created;
-
--- dump table and trigger
---exec $MYSQL_DUMP test > $MYSQLTEST_VARDIR/tmp/bug16878.sql
-drop trigger tr1;
-drop trigger tr2;
 drop table t1, t2;
-
--- reload dump
---exec $MYSQL test < $MYSQLTEST_VARDIR/tmp/bug16878.sql
---replace_column 6 --
-show triggers;
-drop trigger tr1;
-drop trigger tr2;
-drop table t1, t2;
-
 create table t (qty int, price int);
 insert into t values(3, 50);
 insert into t values(5, 51);
@@ -829,18 +588,11 @@ create view v2 as select qty from v1;
 drop view v1;
 drop view v2;
 drop table t;
-select 42 */|
-DELIMITER ;
-drop function f;
-drop procedure p;
-
 create table t1 ( id serial );
 create view v1 as select * from t1;
 drop table t1;
 drop view v1;
-
 create database mysqldump_test_db;
-use mysqldump_test_db;
 create table t1 (id int);
 create view v1 as select * from t1;
 insert into t1 values (1232131);
@@ -850,259 +602,69 @@ insert into t1 values (0815);
 drop view v1;
 drop table t1;
 drop database mysqldump_test_db;
-
 create database mysqldump_tables;
-use mysqldump_tables;
 create table basetable ( id serial, tag varchar(64) );
-
 create database mysqldump_views;
-use mysqldump_views;
-create view nasishnasifu as select mysqldump_tables.basetable.id from mysqldump_tables.basetable;
-
-drop view nasishnasifu;
 drop database mysqldump_views;
-drop table mysqldump_tables.basetable;
 drop database mysqldump_tables;
-
 create database mysqldump_dba;
-use mysqldump_dba;
 create table t1 (f1 int, f2 int);
 insert into t1 values (1,1);
 create view v1 as select f1, f2 from t1;
-
 create database mysqldump_dbb;
-use mysqldump_dbb;
-create table t1 (f1 int, f2 int);
 insert into t1 values (2,2);
-create view v1 as select f1, f2 from t1;
-
 drop view v1;
 drop table t1;
 drop database mysqldump_dbb;
-use mysqldump_dba;
-drop view v1;
-drop table t1;
 drop database mysqldump_dba;
-
-select * from mysqldump_dba.v1;
-select * from mysqldump_dbb.v1;
-
-use mysqldump_dba;
-drop view v1;
-drop table t1;
-drop database mysqldump_dba;
-use mysqldump_dbb;
-drop view v1;
-drop table t1;
-drop database mysqldump_dbb;
-use test;
-
--- Create user without sufficient privs to perform the requested operation
-create user mysqltest_1@localhost;
 create table t1(a int, b varchar(34));
-
--- To get consistent output, reset the master, starts over from first log
-reset binary logs and gtids;
-
--- Execute mysqldump, will fail on FLUSH TABLES
---error 2
---exec $MYSQL_DUMP --compact --source-data -u mysqltest_1 test 2>&1
-
--- Execute mysqldump, will fail on FLUSH TABLES
--- use --force, should no affect behaviour
---error 2
---exec $MYSQL_DUMP --compact --force --source-data -u mysqltest_1 test 2>&1
-
--- Add RELOAD grants
-grant RELOAD on *.* to mysqltest_1@localhost;
-
--- Execute mysqldump, will fail on SHOW BINARY LOG STATUS
---error 2
---exec $MYSQL_DUMP --compact --source-data -u mysqltest_1 test 2>&1
-
--- Execute mysqldump, will fail on SHOW BINARY LOG STATUS.
--- use --force, should not alter behaviour
---error 2
---exec $MYSQL_DUMP --compact --force --source-data -u mysqltest_1 test 2>&1
-
--- Add REPLICATION CLIENT grants
-grant REPLICATION CLIENT on *.* to mysqltest_1@localhost;
-
--- Execute mysqldump, should now succeed
---disable_result_log
---exec $MYSQL_DUMP --compact --source-data -u mysqltest_1 test 2>&1
---enable_result_log
-
--- Clean up
 drop table t1;
-drop user mysqltest_1@localhost;
-
--- Do as root
-connect (root,localhost,root,,test,$MASTER_MYPORT,$MASTER_MYSOCK);
 create database mysqldump_myDB;
-use mysqldump_myDB;
-create user myDB_User@localhost;
 create table t1 (c1 int);
 insert into t1 values (3);
-
--- Do as a user
-connect (user1,localhost,myDB_User,,mysqldump_myDB,$MASTER_MYPORT,$MASTER_MYSOCK);
-use mysqldump_myDB;
 create table u1 (f1 int);
 insert into u1 values (4);
 create view v1 (c1) as select * from t1;
-
--- Backup should not fail for Bug#21527. Flush priviliges test begins.
---exec $MYSQL_DUMP --skip-comments --add-drop-table --flush-privileges --ignore-table=mysql.general_log --ignore-table=mysql.slow_log --databases mysqldump_myDB mysql > $MYSQLTEST_VARDIR/tmp/bug21527.sql
-
--- Clean up
-connection root;
-use mysqldump_myDB;
 drop view v1;
 drop table t1;
 drop table u1;
-drop user myDB_User@localhost;
 drop database mysqldump_myDB;
-
--- Do as a user
-connection user1;
-use mysqldump_myDB;
-
--- Ultimate test for correct data.
-select * from mysqldump_myDB.v1;
-select * from mysqldump_myDB.u1;
-
--- Final cleanup.
-connection root;
-use mysqldump_myDB;
-drop view v1;
-drop table t1;
-drop table u1;
-drop user myDB_User@localhost;
-drop database mysqldump_myDB;
-use test;
 DROP TABLE IF EXISTS t1;
-
 CREATE TABLE t1 (f1 int(10), data MEDIUMBLOB);
 INSERT INTO t1 VALUES(1, 0xff00fef0);
-
 DROP TABLE t1;
-
 CREATE TABLE t1(a int);
 INSERT INTO t1 VALUES (1), (2);
-
--- too long a file path causes an error
---error 1
---exec $MYSQL_DUMP --tab=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa test 2>&1
-
---exec $MYSQL_DUMP --tab=$MYSQLTEST_VARDIR/tmp/ --fields-terminated-by=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa test
---error 2
---exec $MYSQL_DUMP --tab=$MYSQLTEST_VARDIR/tmp/ --fields-enclosed-by=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa test
---error 2
---exec $MYSQL_DUMP --tab=$MYSQLTEST_VARDIR/tmp/ --fields-optionally-enclosed-by=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa test
---error 2
---exec $MYSQL_DUMP --tab=$MYSQLTEST_VARDIR/tmp/ --fields-escaped-by=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa test
---exec $MYSQL_DUMP --tab=$MYSQLTEST_VARDIR/tmp/ --lines-terminated-by=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa test
-
---remove_file $MYSQLTEST_VARDIR/tmp/t1.sql
---remove_file $MYSQLTEST_VARDIR/tmp/t1.txt
-
 DROP TABLE t1;
-
-
---
--- Bug#25993 crashes with a merge table and -c
---
-
 CREATE TABLE t2 (a INT) ENGINE=MYISAM;
 CREATE TABLE t3 (a INT) ENGINE=MYISAM;
 CREATE TABLE t1 (a INT) ENGINE=merge UNION=(t2, t3);
 DROP TABLE t1, t2, t3;
-
--- Setup
 create database bug23491_original;
 create database bug23491_restore;
-use bug23491_original;
 create table t1 (c1 int);
 create view v1 as select * from t1;
 create procedure p1() select 1;
-create function f1() returns int return 1;
-create view v2 as select f1();
-create function f2() returns int return f1();
-create view v3 as select bug23491_original.f1();
-
--- Backup.
---exec $MYSQL_DUMP --skip-comments -uroot --opt --routines bug23491_original > $MYSQLTEST_VARDIR/tmp/bug23491_backup.sql
-
--- Restore.
---exec $MYSQL bug23491_restore < $MYSQLTEST_VARDIR/tmp/bug23491_backup.sql
-
--- Verify
-use bug23491_restore;
-
--- Cleanup
 drop database bug23491_original;
 drop database bug23491_restore;
-use test;
-
 create database mysqldump_test_db;
-
-create user user1, user2;
-
-create procedure mysqldump_test_db.sp1() select 'hello';
-
-drop procedure sp1;
-drop user user1;
-drop user user2;
-
 drop database mysqldump_test_db;
-
-CREATE TABLE t1 (c1 INT, c2 LONGBLOB);
-INSERT INTO t1 SET c1=11, c2=REPEAT('q',509);
 DROP TABLE t1;
-
-CREATE VIEW v1 AS SELECT 1;
 DROP VIEW v1;
-SELECT * FROM v1;
-DROP VIEW v1;
-
 CREATE TABLE t1 (c1 INT);
-CREATE TRIGGER t1bd BEFORE DELETE ON t1 FOR EACH ROW BEGIN END;
-
 CREATE TABLE t2 (c1 INT NOT NULL AUTO_INCREMENT PRIMARY KEY);
-
-SET @TMP_SQL_MODE = @@SQL_MODE;
-SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
-INSERT INTO t2 VALUES (0), (1), (2);
-SET SQL_MODE = @TMP_SQL_MODE;
 SELECT * FROM t2;
 SELECT * FROM t2;
-
 DROP TABLE t1,t2;
-
 create database db42635;
-use db42635;
 create table t1 (id int);
-create view db42635.v1 (c) as select * from db42635.t1;
-create view db42635.v2 (c) as select * from db42635.t1;
-use test;
 drop database db42635;
-
--- Check new --replace option
-
---disable_warnings
 drop table if exists t1;
-
 CREATE TABLE t1(a int, b int);
 INSERT INTO t1 VALUES (1,1);
 INSERT INTO t1 VALUES (2,3);
 INSERT INTO t1 VALUES (3,4), (4,5);
 DROP TABLE t1;
-
---
--- Added for use-thread option
---
-
 create table t1 (a text , b text);
 create table t2 (a text , b text);
 insert t1 values ("Duck, Duck", "goose");
@@ -1119,42 +681,20 @@ select * from t1;
 select * from t2;
 select * from words;
 select * from words2;
-
--- Drop table "words" and run with threads, should fail
 drop table words;
-
 drop table t1;
 drop table t2;
-
 drop table words2;
-
 create database first;
-use first;
-set time_zone = 'UTC';
-
---# prove one works (with spaces and tabs on the end)
 create event ee1 on schedule at '2035-12-31 20:01:23' do set @a=5;
 drop database first;
-
 create database second;
-use second;
-
---# prove three works (with spaces and tabs on the end)
--- start with one from the previous restore
 create event ee2 on schedule at '2029-12-31 21:01:23' do set @a=5;
 create event ee3 on schedule at '2030-12-31 22:01:23' do set @a=5;
 drop database second;
-
 create database third;
-use third;
 drop database third;
-
--- revert back to normal settings
-set time_zone = 'SYSTEM';
-use test;
-
 create database mysqldump_test_db;
-use mysqldump_test_db;
 create table t1 (id int);
 create view v1 as select * from t1;
 insert into t1 values (1232131);
@@ -1164,97 +704,37 @@ insert into t1 values (0815);
 drop view v1;
 drop table t1;
 drop database mysqldump_test_db;
-
---
--- Bug#26121 mysqldump includes LOCK TABLES general_log WRITE
---
---exec $MYSQL_DUMP --all-databases > $MYSQLTEST_VARDIR/tmp/bug26121.sql
--- take a backup of sys db.
---exec $MYSQL < $MYSQLTEST_VARDIR/tmp/bug26121.sql
---remove_file $MYSQLTEST_VARDIR/tmp/bug26121.sql
-
---##########################################################################
-
---echo --
---echo -- Bug#30027 mysqldump does not dump views properly.
---echo --
-
---echo
---echo -- Cleanup.
-
---disable_warnings
 DROP DATABASE IF EXISTS mysqldump_test_db;
-
 CREATE DATABASE mysqldump_test_db;
-
-set names koi8r;
-let $koi8rname= `select convert(_utf8mb4 'колонка1' using koi8r)`;
-
-set names latin1;
-
 DROP DATABASE mysqldump_test_db;
-
-set names utf8mb3;
-
-set names latin1;
-
-DROP DATABASE mysqldump_test_db;
-
-USE test;
 CREATE event e29938 ON SCHEDULE AT '2035-12-31 20:01:23' DO SET @bug29938=29938;
 DROP EVENT e29938;
 create database `test-database`;
-use `test-database`;
 create table test (a int);
 drop database `test-database`;
-use test;
 DROP DATABASE IF EXISTS mysqldump_test_db;
-
 CREATE DATABASE mysqldump_test_db;
-use mysqldump_test_db;
-
 CREATE VIEW v1(x, y) AS SELECT 'a', 'a';
-
 SELECT view_definition
 FROM INFORMATION_SCHEMA.VIEWS
 WHERE table_schema = 'mysqldump_test_db' AND table_name = 'v1';
-
 DROP DATABASE mysqldump_test_db;
-use test;
-
 SELECT view_definition
 FROM INFORMATION_SCHEMA.VIEWS
 WHERE table_schema = 'mysqldump_test_db' AND table_name = 'v1';
-
-DROP DATABASE mysqldump_test_db;
-
 create table t1 (a int);
-create view v1 as select a from t1;
-
-drop view v1;
-drop table t1;
-
 drop view v1;
 drop table t1;
 drop table if exists `load`;
 create table `load` (a varchar(255));
-
 select count(*) from `load`;
-
 drop table `load`;
-
--- We reset concurrent_inserts value to whatever it was at the start of the
--- test This line must be executed _after_ all test cases.
-SET @@GLOBAL.CONCURRENT_INSERT = @OLD_CONCURRENT_INSERT;
-
 CREATE TABLE t1 (f1 INT);
-CREATE TRIGGER tr1 BEFORE UPDATE ON t1 FOR EACH ROW SET @f1 = 1;
 CREATE PROCEDURE pr1 () SELECT "Meow";
 CREATE EVENT ev1 ON SCHEDULE AT '2030-01-01 00:00:00' DO SELECT "Meow";
 SELECT routine_name, routine_definition FROM INFORMATION_SCHEMA.routines
 WHERE routine_name = 'pr1';
 DROP EVENT ev1;
-DROP TRIGGER tr1;
 DROP TABLE t1;
 DROP PROCEDURE pr1;
 SELECT routine_name, routine_definition FROM INFORMATION_SCHEMA.routines
@@ -1265,202 +745,70 @@ DROP EVENT IF EXISTS ev1;
 DROP PROCEDURE IF EXISTS pr1;
 DROP TRIGGER IF EXISTS tr1;
 DROP TABLE IF EXISTS t1;
-
-SET NAMES utf8mb3;
 CREATE TABLE t1 (a INT, b CHAR(10) CHARSET koi8r, c CHAR(10) CHARSET latin1);
 CREATE TABLE t2 LIKE t1;
-INSERT INTO t1 VALUES (1, 'ABC-АБВ', 'DEF-ÂÃÄ'), (2, NULL, NULL);
 SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a, b, c;
 SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a, b, c;
 SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a, b, c;
 SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a, b, c;
-
-
-SET NAMES default;
-
 DROP TABLE t1, t2;
-
 CREATE TABLE t1 (a BLOB) CHARSET latin1;
 CREATE TABLE t2 LIKE t1;
-
-let $table= t1;
-let $dir= $MYSQLTEST_VARDIR/tmp;
-let $file= $dir/$table.txt;
-let $length= 800;
 SELECT LENGTH(a) FROM t2;
-
 DROP TABLE t1, t2;
-
---
--- WL#3126 TCP address binding for mysql client library;
 create table t1 (first char(28) , last varchar(37));
-insert into t1 values ("Magnus", "Blåudd");
+insert into t1 values ("Magnus", "BlÃÂÃÂ¥udd");
 drop table t1;
-
 CREATE TABLE `comment_table` (i INT COMMENT 'FIELD COMMENT') COMMENT = 'TABLE COMMENT';
 DROP TABLE `comment_table`;
-
 CREATE DATABASE `test-database`;
-USE `test-database`;
-CREATE TABLE `test` (`c1` VARCHAR(10)) ENGINE=MYISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-CREATE TRIGGER `trig` BEFORE INSERT ON `test` FOR EACH ROW BEGIN
-END |
-DELIMITER ;
-
 ALTER DATABASE `test-database` CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-ALTER DATABASE `test-database` CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci ;
-
+ALTER DATABASE `test-database` CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci;
 DROP DATABASE `test-database`;
-USE test;
 CREATE DATABASE BUG52792;
-USE BUG52792;
 CREATE TABLE t1 (c1 INT, c2 VARCHAR(20)) ENGINE=MyISAM;
 CREATE TABLE t2 (c1 INT) ENGINE=MyISAM;
 INSERT INTO t1 VALUES (1, 'aaa'), (2, 'bbb'), (3, 'ccc');
 INSERT INTO t2 VALUES (1),(2),(3);
-CREATE PROCEDURE simpleproc1 (OUT param1 INT)
-BEGIN
-  SELECT COUNT(*) INTO param1 FROM t1;
-CREATE PROCEDURE simpleproc2 (OUT param1 INT)
-BEGIN
-  SELECT COUNT(*) INTO param1 FROM t2;
-SET GLOBAL EVENT_SCHEDULER = OFF;
-
 CREATE EVENT e1 ON SCHEDULE EVERY 1 SECOND DO DROP DATABASE BUG52792;
 CREATE EVENT e2 ON SCHEDULE EVERY 1 SECOND DO DROP DATABASE BUG52792;
-
-CREATE FUNCTION `hello1` (s CHAR(20))
-  RETURNS CHAR(50) DETERMINISTIC
-RETURN CONCAT('Hello, ' ,s ,'!');
-
-CREATE FUNCTION `hello2` (s CHAR(20))
-    RETURNS CHAR(50) DETERMINISTIC
-RETURN CONCAT(']]>, ' , s ,'!');
-CREATE TRIGGER trig1 BEFORE INSERT ON t2
-  FOR EACH ROW BEGIN
-    INSERT INTO t2 VALUES(1);
-CREATE TRIGGER trig2 AFTER INSERT ON t2
-  FOR EACH ROW BEGIN
-    INSERT INTO t2 VALUES(1, ']]>');
-    INSERT INTO t2 VALUES(2, '<![CDATA]]>');
-    INSERT INTO t2 VALUES(3, '<![CDATA[');
-    INSERT INTO t2 VALUES(4, '< > & \ " _');
-
 CREATE VIEW v1 AS SELECT * FROM t1;
 CREATE VIEW v2 AS SELECT * FROM t2;
-
-CREATE USER user1;
-
-DROP USER user1;
-DROP DATABASE BUG52792;
-SET NAMES default;
-
-USE test;
-SET GLOBAL EVENT_SCHEDULER = ON;
-USE `test`;
-CREATE TABLE t1 (a int, b int);
-CREATE TRIGGER tt1_t1 BEFORE INSERT ON t1 FOR EACH ROW 
-  SET NEW.b=NEW.a + 10;
-
-INSERT INTO t1 (a) VALUES (1),(2),(3);
-DROP TABLE t1;
-CREATE TABLE t1 (
-  a TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  b TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  c TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  d TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  e TIMESTAMP NULL,
-  f TIMESTAMP NOT NULL DEFAULT '2010-05-26 12:34:56',
-  g DATETIME,
-  h DATETIME DEFAULT CURRENT_TIMESTAMP,
-  i DATETIME ON UPDATE CURRENT_TIMESTAMP,
-  j DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  k DATETIME NULL,
-  l DATETIME DEFAULT '2010-05-26 12:34:56'
-);
 DROP TABLE t1;
 DROP DATABASE IF EXISTS b12809202_db;
-
 CREATE DATABASE b12809202_db;
 CREATE TABLE b12809202_db.t1 (c1 INT);
 CREATE TABLE b12809202_db.t2 (c1 INT);
-
-INSERT INTO b12809202_db.t1 VALUES (1), (2), (3);
-INSERT INTO b12809202_db.t2 VALUES (1), (2), (3);
-
--- Cleanup
 DROP TABLE b12809202_db.t1;
 DROP TABLE b12809202_db.t2;
 DROP DATABASE b12809202_db;
 DROP DATABASE IF EXISTS b12688860_db;
-
 CREATE DATABASE b12688860_db;
 DROP DATABASE b12688860_db;
-
-
--- Wait till we reached the initial number of concurrent sessions
---source include/wait_until_count_sessions.inc
-
---echo --
---echo -- Bug#45740 MYSQLDUMP DOESN'T DUMP GENERAL_LOG AND SLOW_QUERY CAUSES RESTORE PROBLEM
---echo --
--- Cannot DROP 'mysql' as dictionary tables reside there.
---SET @old_log_output_state=       @@global.log_output;
---# Make log_output as table and disabling general_log and slow_log
---SET @@global.log_output="TABLE";
-let $colnum= 798;
-let $str= 1 AS thisColumnContainsAVeryLongNameThatNearsThe64CharacterLimit;
-{
-  let $str= 1 AS thisColumnContainsAVeryLongNameThatNearsThe64CharacterLimit$colnum, $str;
-  dec $colnum;
 DROP VIEW v1;
 CREATE DATABASE `a\\k`;
 CREATE TABLE `a\\k`.t1(i INT);
 DROP DATABASE `a\\k`;
-DROP DATABASE `a\\k`;
-
 CREATE DATABASE dump_gis;
-USE dump_gis;
 CREATE TABLE t1 (a GEOMETRY);
 INSERT INTO t1 VALUES(ST_GeomFromText('LineString(1 1, 2 1, 2 2, 1 2, 1 1)'));
 SELECT HEX(a) FROM t1;
 DROP DATABASE dump_gis;
-
 CREATE DATABASE db_20772273;
-USE db_20772273;
-CREATE TABLE t1(a INT);
-INSERT INTO t1 VALUES (1), (2);
-CREATE TABLE t2(a INT);
 INSERT INTO t2 VALUES (3), (4);
-
 SELECT * FROM t1;
 SELECT * FROM t2;
-
--- Test mysqlimport with multiple threads
---exec $MYSQL_IMPORT --silent --use-threads=2 db_20772273 $MYSQLTEST_VARDIR/tmp/t1.txt $MYSQLTEST_VARDIR/tmp/t2.txt
-
 SELECT * FROM t1;
 SELECT * FROM t2;
 DROP TABLE t1;
 DROP TABLE t2;
 DROP DATABASE db_20772273;
-
 CREATE DATABASE dump_json;
-USE dump_json;
 CREATE TABLE t1 (j JSON);
 INSERT INTO t1 VALUES (JSON_ARRAY(1, 2, 3, "one", "two", "three"));
 SELECT * FROM t1;
 DROP DATABASE dump_json;
-
 CREATE DATABASE dump_generated;
-USE dump_generated;
-CREATE TABLE t1 (pk INTEGER, a INTEGER, b INTEGER, c VARCHAR(16),
-                 sum INTEGER GENERATED ALWAYS AS (a+b),
-                 sub VARCHAR(4) GENERATED ALWAYS AS (SUBSTRING(c, 1, 4)),
-                 key k1(sum),
-                 key k2(sub)
-) engine=innodb;
-INSERT INTO t1(pk, a, b, c) VALUES (1, 11, 12, 'oneone'), (2, 21, 22, 'twotwo');
 SELECT * FROM t1;
 DELETE FROM t1;
 SELECT * FROM t1;
@@ -1479,19 +827,11 @@ SELECT * FROM t2;
 DELETE FROM t2;
 SELECT * FROM t2;
 DROP TABLE t2;
-
 DROP DATABASE dump_generated;
-
--- take backup of sys schema
---exec $MYSQL_DUMP --databases sys --routines > $MYSQLTEST_VARDIR/tmp/sys.sql
--- this will not dump sys schema and sys schema routines.
---exec $MYSQL_DUMP --all-databases > $MYSQLTEST_VARDIR/tmp/bug21549860.sql
-SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
-DROP DATABASE sys;
 SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
 SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
 SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
-
+SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
 CREATE TABLE test.t1 (
   a INT,
   b INT,
@@ -1500,124 +840,46 @@ CREATE TABLE test.t1 (
   INDEX (b) INVISIBLE,
   INDEX (c)
 );
-
 DROP TABLE test.t1;
-
-
 CREATE DATABASE bug25717383;
-use bug25717383;
-
 CREATE TABLE `tab
 one` (a int);
 CREATE VIEW `view
 one` as SELECT * FROM `tab
 one`;
-
 CREATE PROCEDURE `proc
 one`() SELECT * from `tab
 one`;
-
 CREATE TEMPORARY TABLE `temp
 one` (id INT);
-
-CREATE TRIGGER `trig
-one` BEFORE INSERT ON `tab
-one` FOR EACH ROW SET NEW.a = 1;
-
 CREATE EVENT `event
 one` ON SCHEDULE AT '2030-01-01 00:00:00' DO SET @a=5;
-
 SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES
        WHERE ROUTINE_SCHEMA='bug25717383' AND ROUTINE_TYPE= 'PROCEDURE'
        ORDER BY ROUTINE_NAME;
-
 SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES
        WHERE ROUTINE_SCHEMA='bug25717383' AND ROUTINE_TYPE= 'PROCEDURE'
        ORDER BY ROUTINE_NAME;
-
 DROP DATABASE bug25717383;
 CREATE SCHEMA column_statistics_dump;
-USE column_statistics_dump;
 CREATE TABLE t1 (col1 INT);
 INSERT INTO t1 VALUES (1), (2);
 SELECT schema_name, table_name, column_name,
        JSON_EXTRACT(HISTOGRAM, '$."number-of-buckets-specified"')
 FROM information_schema.COLUMN_STATISTICS;
-
 DROP SCHEMA column_statistics_dump;
-
 CREATE DATABASE bug26171967;
-USE bug26171967;
-CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES (1000000), (1000001);
-
 DROP DATABASE bug26171967;
-
-USE test;
-CREATE TABLE t1(f1 INT INVISIBLE, f2 INT,
-                f3 INT AS (f1 + 10), f4 INT AS (f2 + 10) INVISIBLE,
-                f5 INT AS (f2 + 10) STORED INVISIBLE);
 CREATE TABLE t2(f1 INT, f2 INT INVISIBLE);
-INSERT INTO t1(f1, f2) VALUES (10, 20), (20, 30);
 INSERT INTO t2(f1, f2) VALUES (10, 20), (20, 30);
 DROP TABLE t1, t2;
-DROP TABLE t2;
-SELECT * FROM t1 ORDER BY f2;
-SELECT f1, f2, f3, f4, f5 FROM t1 ORDER BY f2;
-SELECT f1, f2 FROM t2 ORDER BY f2;
-
--- In XML format.
---exec $MYSQL_DUMP --xml test t1 > "$MYSQLTEST_VARDIR/tmp/tmp1.xml" 2>&1
---exec $MYSQL_DUMP --xml test t2 > "$MYSQLTEST_VARDIR/tmp/tmp2.xml" 2>&1
-DELETE FROM t1;
-DELETE FROM t2;
-SELECT * FROM t1 ORDER BY f2;
-SELECT f1, f2, f3, f4, f5 FROM t1 ORDER BY f2;
-SELECT f1, f2 FROM t2 ORDER BY f2;
-DROP TABLE t1, t2;
-
-SET @saved_global_sql_generate_invisible_primary_key =
-       @@global.sql_generate_invisible_primary_key;
-SET @saved_session_sql_generate_invisible_primary_key =
-       @@session.sql_generate_invisible_primary_key;
-
--- User created column "my_row_id" with generated invisible primary key column
--- properties and primary key on it, is treated as generated invisible primary
--- key column.
 CREATE TABLE t1 (my_row_id bigint unsigned NOT NULL AUTO_INCREMENT INVISIBLE, f INT,
                  PRIMARY KEY(my_row_id));
 INSERT INTO t1 VALUES (1), (3), (7), (8), (4);
-SET SESSION sql_generate_invisible_primary_key=ON;
 CREATE TABLE t2 (f1 INT, f2 INT INVISIBLE DEFAULT 10);
 INSERT INTO t2 VALUES (1), (3), (7), (8), (4);
 CREATE TABLE t3 AS SELECT * FROM t2;
-DROP TABLE t1, t2, t3;
-DROP TABLE t3;
-SELECT * FROM t1;
-SELECT my_row_id, f FROM t1;
-SELECT * FROM t2;
-SELECT my_row_id, f1, f2 FROM t2;
-SELECT * FROM t3;
-SELECT my_row_id, f1 FROM t3;
-DROP TABLE t1, t2, t3;
-SELECT * FROM t3;
-DROP TABLE t3;
-SELECT * FROM t1;
-SELECT f FROM t1;
-SELECT * FROM t2;
-SELECT f1, f2 FROM t2;
-SELECT * FROM t3;
-SELECT f1 FROM t3;
-DROP TABLE t1, t2, t3;
-DELETE FROM t1;
-DELETE FROM t2;
-DELETE FROM t3;
-SELECT * FROM t1;
-SELECT my_row_id, f FROM t1;
-SELECT * FROM t2;
-SELECT my_row_id, f1 FROM t2;
-SELECT * FROM t3;
-SELECT my_row_id, f1 FROM t3;
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1 (f INT NOT NULL PRIMARY KEY, my_row_id INT DEFAULT 580030);
 SELECT * FROM t1;
@@ -1625,35 +887,16 @@ CREATE TABLE t2 (f1 INT NOT NULL PRIMARY KEY, f2 INT, my_row_id INT DEFAULT 5800
 SELECT * FROM t2;
 CREATE TABLE t3 (f1 INT NOT NULL PRIMARY KEY, my_row_id INT DEFAULT 580030);
 SELECT * FROM t3;
-SET GLOBAL sql_generate_invisible_primary_key = ON;
 SELECT my_row_id, f FROM t1;
 SELECT my_row_id, f1, f2 FROM t2;
 SELECT my_row_id, f1 FROM t3;
 DROP TABLE t1, t2, t3;
-SET GLOBAL sql_generate_invisible_primary_key =
-             @saved_global_sql_generate_invisible_primary_key;
-SET SESSION sql_generate_invisible_primary_key =
-              @saved_session_sql_generate_invisible_primary_key;
-
 CREATE DATABASE init_command_db;
 CREATE TABLE init_command_db.t(a INT);
-DELETE FROM init_command_db.t;
-DELETE FROM init_command_db.t;
-DELETE FROM init_command_db.t;
-DELETE FROM init_command_db.t;
-
 DROP DATABASE init_command_db;
 CREATE DATABASE skip_views_db;
 CREATE TABLE skip_views_db.t(a INT);
-CREATE VIEW skip_views_db.v AS SELECT * FROM skip_views_db.t;
-
-INSERT INTO skip_views_db.t VALUES (10), (20), (30);
-
 CREATE DATABASE skip_views_db2;
 CREATE TABLE skip_views_db2.t(a INT);
-
-INSERT INTO skip_views_db2.t VALUES (1);
-DROP DATABASE skip_views_db;
-DROP DATABASE skip_views_db;
 DROP DATABASE skip_views_db;
 DROP DATABASE skip_views_db2;

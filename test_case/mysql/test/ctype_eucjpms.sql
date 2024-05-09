@@ -2,10 +2,6 @@ drop table if exists t1;
 drop table if exists t2;
 drop table if exists t3;
 drop table if exists t4;
-
-set names eucjpms;
-set character_set_database = eucjpms;
- 
 CREATE TABLE t1(c1 CHAR(1)) DEFAULT CHARACTER SET = eucjpms;
 INSERT INTO t1 VALUES
 (0x5C),(0x7E),(0xA1B1),(0xA1BD),(0xA1C0),(0xA1C1),(0xA1C2),(0xA1DD),(0xA1F1),(0xA1F2),(0xA1EF),(0xA2CC),(0x8FA2B7),(0x8FA2C3);
@@ -319,48 +315,20 @@ CREATE TABLE t3 SELECT CONVERT(c1 USING eucjpms) AS c1 FROM t2;
 SELECT HEX(c1) FROM t3;
 CREATE TABLE t4 SELECT CONVERT(c1 USING cp932) AS c1 FROM t1;
 SELECT HEX(c1) FROM t4;
-
 DROP TABLE t1;
 DROP TABLE t2;
 DROP TABLE t3;
 DROP TABLE t4;
 CREATE TABLE t1(c1 varchar(10)) default character set = eucjpms;
-
 insert into t1 values(_ucs2 0x00F7);
 insert into t1 values(_eucjpms 0xA1E0);
 insert into t1 values(_ujis 0xA1E0);
 insert into t1 values(_sjis 0x8180);
 insert into t1 values(_cp932 0x8180);
-
 SELECT HEX(c1) FROM t1;
-
 DROP TABLE t1;
-
-SET collation_connection='eucjpms_japanese_ci';
-SET collation_connection='eucjpms_bin';
-
---
--- Bugs#15375: Unassigned multibyte codes are broken
--- into parts when converting to Unicode.
--- This query should return 0x003F0041. I.e. it should
--- scan unassigned double-byte character 0xA5FE, convert
--- it as QUESTION MARK 0x003F and then scan the next
--- character, which is a single byte character 0x41.
---
 select hex(convert(_eucjpms 0xA5FE41 using ucs2));
 select hex(convert(_eucjpms 0x8FABF841 using ucs2));
-
-
---
--- Bug #48053 String::c_ptr has a race and/or does an invalid 
---            memory reference
---            (triggered by Valgrind tests)
---  (see also ctype_eucjpms.test, ctype_cp1250.test, ctype_cp1251.test)
---
---error 1649
-set global LC_TIME_NAMES=convert((convert((0x63) using eucjpms)) using utf8mb3);
-SET NAMES utf8mb3;
-SET collation_connection=eucjpms_japanese_ci;
 CREATE TABLE t1 (b VARCHAR(2));
 INSERT INTO t1 VALUES ('0'),('1'),('2'),('3'),('4'),('5'),('6'),('7');
 INSERT INTO t1 VALUES ('8'),('9'),('A'),('B'),('C'),('D'),('E'),('F');
@@ -380,21 +348,12 @@ FROM head, tail
 WHERE (head BETWEEN '80' AND 'FF') AND (tail BETWEEN '20' AND 'FF')
 ORDER BY head, tail;
 DROP TEMPORARY TABLE head, tail;
-
--- Set max_error_count to contain number of warnings in result file.
-SET @@session.max_error_count = 64;
 UPDATE IGNORE t1 SET a=unhex(code) ORDER BY code;
-SET @@session.max_error_count = default;
 SELECT COUNT(*) FROM t1;
 SELECT COUNT(*) FROM t1 WHERE a<>'';
 SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=2;
 SELECT * FROM t1 WHERE CHAR_LENGTH(a)=2;
 SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=3;
-
-
---
--- Display all characters that have upper or lower case mapping.
---
 SELECT code, hex(upper(a)), hex(lower(a)),a, upper(a), lower(a) FROM t1 WHERE hex(a)<>hex(upper(a)) OR hex(a)<>hex(lower(a)) ORDER BY code;
 SELECT * FROM t1
 WHERE HEX(CAST(LOWER(a) AS CHAR CHARACTER SET utf8mb3)) <>
@@ -404,18 +363,4 @@ WHERE HEX(CAST(UPPER(a) AS CHAR CHARACTER SET utf8mb3)) <>
       HEX(UPPER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code;
 SELECT HEX(a), HEX(CONVERT(a USING utf8mb3)) as b FROM t1
 WHERE a<>'' HAVING b<>'3F' ORDER BY code;
-
 DROP TABLE t1;
-SELECT HEX(a), HEX(CONVERT(a using sjis)) as b FROM t1 HAVING b<>'3F' ORDER BY BINARY a;
-DROP TABLE t1;
-
-set names eucjpms;
-
-set collation_connection=eucjpms_bin;
-
---
--- Bugs#12635232: VALGRIND WARNINGS: IS_IPV6, IS_IPV4, INET6_ATON,
--- INET6_NTOA + MULTIBYTE CHARSET.
---
-
-SET NAMES eucjpms;

@@ -1,5 +1,4 @@
 drop table if exists t1,t2,t3,t4;
-
 create table t1 (a int not null,b int not null,c int not null, primary key(a,b))
 partition by list (b*a)
 (partition x1 values in (1),
@@ -7,7 +6,6 @@ partition by list (b*a)
  partition x3 values in (16, 8, 5+19, 70-43));
 select * from information_schema.partitions where table_schema="test"
 and table_name="t1";
-
 create table t2 (a int not null,b int not null,c int not null, primary key(a,b))
 partition by range (a)
 partitions 3
@@ -16,21 +14,17 @@ partitions 3
  partition x3 values less than maxvalue);
 select * from information_schema.partitions where table_schema="test"
 and table_name="t2";
-
 create table t3 (f1 date)
 partition by hash(month(f1))
 partitions 3;
 select * from information_schema.partitions where table_schema="test"
 and table_name="t3";
-
 create table t4 (f1 date, f2 int)
 partition by key(f1,f2)
 partitions 3;
 select * from information_schema.partitions where table_schema="test"
 and table_name="t4";
-
 drop table t1,t2,t3,t4;
-
 create table t1 (a int not null,b int not null,c int not null,primary key (a,b))
 partition by range (a)
 subpartition by hash (a+b)
@@ -41,7 +35,6 @@ subpartition by hash (a+b)
   ( subpartition x21,
     subpartition x22)
 );
-
 create table t2 (a int not null,b int not null,c int not null,primary key (a,b))
 partition by range (a)
 subpartition by key (a)
@@ -54,7 +47,6 @@ subpartition by key (a)
 );
 select * from information_schema.partitions where table_schema="test";
 drop table t1,t2;
-
 create table t1 (
 a int not null,
 b int not null,
@@ -72,27 +64,17 @@ subpartition by hash (a+b)
 ( subpartition x31 max_rows=50,
   subpartition x32 nodegroup 1)
 );
-   
---sorted_result
---replace_column 16 -- 19 # 20 #
---sorted_result
 select * from information_schema.partitions where table_schema="test";
 drop table t1;
-
 create table t1(f1 int, f2 int);
 select * from information_schema.partitions where table_schema="test";
 drop table t1;
-
 create table t1 (f1 date)
 partition by linear hash(month(f1))
 partitions 3;
 select * from information_schema.partitions where table_schema="test"
 and table_name="t1";
 drop table t1;
-
---
--- Bug 20161 Partitions: SUBPARTITION METHOD does not show LINEAR keyword
---
 create table t1 (a int)
 PARTITION BY RANGE (a)
 SUBPARTITION BY LINEAR HASH (a)
@@ -100,7 +82,6 @@ SUBPARTITION BY LINEAR HASH (a)
 select SUBPARTITION_METHOD FROM information_schema.partitions WHERE
 table_schema="test" AND table_name="t1";
 drop table t1;
-
 create table t1 (a int)
 PARTITION BY LIST (a)
 (PARTITION p0 VALUES IN
@@ -109,16 +90,10 @@ PARTITION BY LIST (a)
 SELECT PARTITION_DESCRIPTION FROM information_schema.partitions WHERE
 table_schema = "test" AND table_name = "t1";
 drop table t1;
-
---
--- Bug#38909 CREATE_OPTIONS in information_schema produces wrong results
---
---disable_warnings
 drop table if exists t1;
 create table t1 (f1 int key) partition by key(f1) partitions 2;
 select create_options from information_schema.tables where table_schema="test";
 drop table t1;
-
 CREATE TABLE t1
 (f1 INT NOT NULL AUTO_INCREMENT,
  f2 INT NOT NULL,
@@ -128,7 +103,6 @@ PARTITION BY RANGE (f2)
    PARTITION p1 VALUES LESS THAN (200),
    PARTITION p2 VALUES LESS THAN (300),
    PARTITION p3 VALUES LESS THAN (MAXVALUE));
-
 INSERT INTO t1 VALUES (NULL, 1);
 INSERT INTO t1 VALUES (NULL, 2);
 INSERT INTO t1 SELECT NULL, 3
@@ -146,7 +120,5 @@ SELECT TABLE_NAME, NON_UNIQUE, INDEX_SCHEMA INDEX_NAME, SEQ_IN_INDEX,
        IS_VISIBLE, EXPRESSION
   FROM INFORMATION_SCHEMA.STATISTICS
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
-SET session information_schema_stats_expiry = 0;
 INSERT INTO t1 SELECT NULL, 4 FROM t1;
-
 DROP TABLE t1;

@@ -1,17 +1,3 @@
-
--- Description
--- -----------
--- Numeric floating point.
-
---source include/force_myisam_default.inc
---source include/have_myisam.inc
-
---
---
--- Test of comparison of integer with float-in-range (Bug #7840)
--- This is needed because some ODBC applications (like Foxpro) uses
--- floats for everything.
---
 CREATE TABLE t1 (
   reckey int unsigned NOT NULL,
   recdesc varchar(50) NOT NULL,

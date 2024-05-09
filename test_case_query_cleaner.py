@@ -1,17 +1,18 @@
 import os
+from time import sleep
 from typing import List
 from adapter.sqlite import SQLITE3
 from adapter.mysql_adapter import MYSQL
 import pandas as pd
-from utils import clean_query, clean_test_garbage, SQLFileEmptyError
+from utils import clean_query, clean_test_garbage, SQLFileEmptyError, first_init_dbmss
 
 DBMS_ADAPTERS = {
-    # "sqlite": SQLITE3,
+    "sqlite": SQLITE3,
     "mysql": MYSQL
 }
 
 test_case_path = './test_case'
-dbms_test_case_used = ['sqlite']
+dbms_test_case_used = ['mysql']
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
 
 
@@ -72,17 +73,12 @@ def run_test_in_all_dbms(test_paths:str, filename:str, dbms:str)->pd.DataFrame:
 
 
 
-
-
-
-
-
-
 # Iterate over the test case files in the folder (it is a multi-level folder)
 for dbms in os.listdir(test_case_path):
     # for test_group in os.listdir(os.path.join(test_case_path, dbmss)):
     if dbms not in dbms_test_case_used:
         continue
+    first_init_dbmss({dbms: DBMS_ADAPTERS[dbms]})
     print(f"clean test cases of {dbms}")
     success_all = 0
     failure_all = 0

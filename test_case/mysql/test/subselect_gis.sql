@@ -1,8 +1,4 @@
 drop table if exists t1;
-
---
--- correct behavoiur for function from reduced subselect
---
 create table t1(City VARCHAR(30),Location geometry);
 insert into t1 values("Paris",ST_GeomFromText('POINT(2.33 48.87)'));
 select City from t1 where (select

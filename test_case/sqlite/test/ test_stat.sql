@@ -9,8 +9,6 @@ INSERT INTO t1(rowid, a, b) VALUES(2, 2, 3);
 INSERT INTO t1(rowid, a, b) VALUES(3, 4, 5);
 DROP TABLE t1;
 CREATE TABLE t3(a PRIMARY KEY, b);
-UPDATE t3 SET a=a||hex(randomblob(700));
-VACUUM;
 DROP TABLE t3;
 VACUUM;
 CREATE TABLE t4(x);

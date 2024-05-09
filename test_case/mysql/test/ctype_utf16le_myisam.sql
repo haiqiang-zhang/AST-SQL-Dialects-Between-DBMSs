@@ -1,14 +1,10 @@
-
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
-
 CREATE TABLE t1 (
    word VARCHAR(64),
    bar INT(11) DEFAULT 0,
    PRIMARY KEY (word))
    ENGINE=MyISAM
    CHARSET utf16le
-   COLLATE utf16le_general_ci ;
-
+   COLLATE utf16le_general_ci;
 INSERT INTO t1 (word) VALUES ("aar");
 INSERT INTO t1 (word) VALUES ("a");
 INSERT INTO t1 (word) VALUES ("aardvar");
@@ -18,14 +14,12 @@ INSERT INTO t1 (word) VALUES ("aardvarz");
 SELECT * FROM t1 ORDER BY word;
 SELECT word FROM t1 ORDER by word;
 DROP TABLE t1;
-
 CREATE TABLE t1 (
    word VARCHAR(64) ,
    PRIMARY KEY (word))
    ENGINE=MyISAM
    CHARSET utf16le
    COLLATE utf16le_general_ci;
-
 INSERT INTO t1 (word) VALUES ("aar");
 INSERT INTO t1 (word) VALUES ("a");
 INSERT INTO t1 (word) VALUES ("aardvar");
@@ -34,14 +28,13 @@ INSERT INTO t1 (word) VALUES ("aardvara");
 INSERT INTO t1 (word) VALUES ("aardvarz");
 SELECT * FROM t1 ORDER BY word;
 DROP TABLE t1;
-
 CREATE TABLE t1 (
    word TEXT,
    bar INT(11) AUTO_INCREMENT,
    PRIMARY KEY (bar))
    ENGINE=MyISAM
    CHARSET utf16le
-   COLLATE utf16le_general_ci ;
+   COLLATE utf16le_general_ci;
 INSERT INTO t1 (word) VALUES ("aar");
 INSERT INTO t1 (word) VALUES ("a" );
 INSERT INTO t1 (word) VALUES ("aardvar");
@@ -64,4 +57,3 @@ SELECT HEX(a) FROM t1 ORDER BY a;
 DROP TABLE t1;
 CREATE TABLE t1 (a VARCHAR(250) CHARACTER SET utf16le PRIMARY KEY) engine=MyISAM;
 DROP TABLE t1;
-CREATE TABLE t1 (a VARCHAR(334) CHARACTER SET utf16le PRIMARY KEY) engine=MyISAM;

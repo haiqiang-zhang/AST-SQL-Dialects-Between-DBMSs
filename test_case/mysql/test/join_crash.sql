@@ -1,11 +1,4 @@
-
---
--- This test gave a core dump
---
-
---disable_warnings
 DROP TABLE IF EXISTS t1,t2,t3,t4;
-
 CREATE TABLE t1 (
   project_id int(11) NOT NULL auto_increment,
   project_row_lock int(11) NOT NULL default '0',
@@ -18,7 +11,6 @@ CREATE TABLE t1 (
   PRIMARY KEY  (project_id),
   UNIQUE KEY project (client_ptr,project_name)
 ) PACK_KEYS=1;
-
 INSERT INTO t1 VALUES (1,0,'Rejected Time',1,NULL,NULL,NULL,NULL);
 INSERT INTO t1 VALUES (209,0,'MDGRAD Proposal/Investigation',97,NULL,NULL,NULL,'');
 INSERT INTO t1 VALUES (208,0,'Font 9 Design',84,NULL,NULL,NULL,'');
@@ -29,7 +21,6 @@ INSERT INTO t1 VALUES (204,0,'Magnafire Glue',94,NULL,NULL,NULL,'');
 INSERT INTO t1 VALUES (203,0,'Print Bid',93,NULL,NULL,NULL,'');
 INSERT INTO t1 VALUES (202,0,'EPOC Port',92,NULL,NULL,NULL,'');
 INSERT INTO t1 VALUES (201,0,'TravelMate',88,NULL,NULL,NULL,'');
-
 CREATE TABLE t2 (
   period_id int(11) NOT NULL auto_increment,
   period_type enum('user_table','client_table','role_table','member_table','project_table') default NULL,
@@ -41,7 +32,6 @@ CREATE TABLE t2 (
   KEY period_index (period_type,period_key),
   KEY date_index (start_date,end_date)
 ) PACK_KEYS=1;
-
 INSERT INTO t2 VALUES (1,'user_table',98,'2000-01-01 00:00:00',NULL,NULL);
 INSERT INTO t2 VALUES (2,'user_table',99,'2000-01-01 00:00:00',NULL,NULL);
 INSERT INTO t2 VALUES (3,'user_table',100,'2000-01-01 00:00:00',NULL,NULL);
@@ -57,7 +47,6 @@ INSERT INTO t2 VALUES (156,'role_table',2,'2000-01-01 00:00:00',NULL,NULL);
 INSERT INTO t2 VALUES (160,'member_table',1,'2000-01-01 00:00:00',NULL,1);
 INSERT INTO t2 VALUES (161,'member_table',2,'2000-01-01 00:00:00',NULL,1);
 INSERT INTO t2 VALUES (162,'member_table',3,'2000-01-01 00:00:00',NULL,1);
-
 CREATE TABLE t3 (
   budget_id int(11) NOT NULL auto_increment,
   project_ptr int(11) NOT NULL default '0',
@@ -69,7 +58,6 @@ CREATE TABLE t3 (
   PRIMARY KEY  (budget_id),
   UNIQUE KEY po (project_ptr,po_number)
 ) PACK_KEYS=1;
-
 CREATE TABLE t4 (
   client_id int(11) NOT NULL auto_increment,
   client_row_lock int(11) NOT NULL default '0',
@@ -79,41 +67,5 @@ CREATE TABLE t4 (
   PRIMARY KEY  (client_id),
   UNIQUE KEY client_name (client_name)
 ) PACK_KEYS=1;
-
 INSERT INTO t4 VALUES (1,0,'CPS',NULL,NULL);
-
---
---	The query that fails...
---
-select distinct
-    t1.project_id as project_id,
-    t1.project_name as project_name,
-    t1.client_ptr as client_ptr,
-    t1.comments as comments,
-    sum( t3.amount_received ) + sum( t3.adjustment ) as total_budget
-from
-    t2 as client_period ,
-    t2 as project_period,
-    t3 left join t1 on (t3.project_ptr = t1.project_id and
-                        t3.date_received <= '2001-03-22 14:15:09')
-       left join t4 on t4.client_id = t1.client_ptr
-   where
-        1
-        and ( client_period.period_type = 'client_table'
-            and client_period.period_key = t4.client_id
-            and ( client_period.start_date <= '2001-03-22 14:15:09' or isnull( client_period.start_date ))
-            and ( client_period.end_date > '2001-03-21 14:15:09' or isnull( client_period.end_date ))
-            )
-        and ( project_period.period_type = 'project_table'
-        and project_period.period_key = t1.project_id
-        and ( project_period.start_date <= '2001-03-22 14:15:09' or isnull( project_period.start_date ))
-        and ( project_period.end_date > '2001-03-21 14:15:09' or isnull( project_period.end_date )) )
-    group by
-        client_id,
-        project_id ,
-        client_period.period_id ,
-        project_period.period_id
-    order by
-        client_name asc,
-        project_name asc;
 DROP TABLE t1,t2,t3,t4;

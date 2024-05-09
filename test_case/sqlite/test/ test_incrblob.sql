@@ -22,6 +22,7 @@ CREATE TABLE t3(a INTEGER PRIMARY KEY, b);
 INSERT INTO t3 VALUES(1, 2);
 CREATE VIEW blobs_view AS SELECT k, v, i FROM blobs;
 ATTACH 'test2.db' AS aux;
+CREATE TABLE aux.files(name, text);
 SELECT rowid FROM blobs ORDER BY rowid;
 SELECT * FROM blobs WHERE rowid = 4;
 SELECT * FROM blobs WHERE rowid = 4;

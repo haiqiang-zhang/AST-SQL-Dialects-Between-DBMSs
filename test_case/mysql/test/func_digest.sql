@@ -1,10 +1,3 @@
-
-
--- These test data are from the NIST SHA Test Vectors for Hashing
--- Byte-Oriented Messages.  See http://csrc.nist.gov/cryptval/shs.htm
--- Only the "ShortMsg" test data are used here.
--- Values of x'00' in the test data have been excluded;
-
 SELECT SHA1( x'a8' ) = '99f2aa95e36f95c2acb0eaf23998f030638f3f15' as NIST_SHA1_test_vector;
 SELECT SHA1( x'3000' ) = 'f944dcd635f9801f7ac90a407fbc479964dec024' as NIST_SHA1_test_vector;
 SELECT SHA1( x'42749e' ) = 'a444319e9b6cc1e8464c511ec0969c37d6bb2619' as NIST_SHA1_test_vector;
@@ -69,9 +62,6 @@ SELECT SHA1( x'74e8404d5a453c5f4d306f2cfa338ca65501c840ddab3fb82117933483afd6913
 SELECT SHA1( x'46fe5ed326c8fe376fcc92dc9e2714e2240d3253b105adfbb256ff7a19bc40975c604ad7c0071c4fd78a7cb64786e1bece548fa4833c04065fe593f6fb10' ) = 'f220a7457f4588d639dc21407c942e9843f8e26b' as NIST_SHA1_test_vector;
 SELECT SHA1( x'836dfa2524d621cf07c3d2908835de859e549d35030433c796b81272fd8bc0348e8ddbc7705a5ad1fdf2155b6bc48884ac0cd376925f069a37849c089c8645' ) = 'ddd2117b6e309c233ede85f962a0c2fc215e5c69' as NIST_SHA1_test_vector;
 SELECT SHA1( x'7e3a4c325cb9c52b88387f93d01ae86d42098f5efa7f9457388b5e74b6d28b2438d42d8b64703324d4aa25ab6aad153ae30cd2b2af4d5e5c00a8a2d0220c6116' ) = 'a3054427cdb13f164a610b348702724c808a0dcc' as NIST_SHA1_test_vector;
-
--- See Bug#13174 and WL#3986 -- SHA2 implementation
-
 SELECT SHA2( x'ff', 224 ) = 'e33f9d75e6ae1369dbabf81b96b4591ae46bba30b591a6b6c62542b5'  as NIST_SHA224_test_vector;
 SELECT SHA2( x'984c', 224 ) = '2fa9df9157d9e027cfbc4c6a9df32e1adc0cbe2328ec2a63c5ae934e'  as NIST_SHA224_test_vector;
 SELECT SHA2( x'50efd0', 224 ) = 'b5a9820413c2bf8211fbbf5df1337043b32fa4eafaf61a0c8e9ccede'  as NIST_SHA224_test_vector;
@@ -456,9 +446,6 @@ SELECT SHA2( x'8beea2e048193dfa755a594306ad9825c77659d037092ee09a6f91394a68d2364
 SELECT SHA2( x'f4259473bfd39877bfe9597353d7ce8dd520c66d1fc7884e4e03b655c63a7721762dd4a35d7163304c1e23d4eecba8ea07b978e9f94eb4818cc5fbe7ee258b6df96fa955b51c44e71ec6d5c12726896ffe3ea23b92d71a46532e8ad838eb4bf50752db31d1bd82c5bb4a35e105d1ba4444190d0bf24b03c629a62dd1ac75', 512 ) = 'c8a04bf3881d0582e03563af73a675e40dc9918fcb5a138b8c6fdd057df0c11b112a6dc0664a0dff8a316c3a645ac87dd25b644d061700306bbd7dd805879b55'  as NIST_SHA512_test_vector;
 SELECT SHA2( x'd60da691585b7c0c3714905411ae8e3515e8490dbbaf07d1b2431f501a96c7bcf4f52766d7e9b2c9e460b5cafc08303e30fce6ad78a2b055a8d31672a13d20bdc4066a33adb277171d47473a37af2c7af05dd989c134bcf09ea48e532c1628f62f8a9880417e74ffca126e2d2c6b29f23e554b29fc2cd4a77dfcae7925e784', 512 ) = 'ec83376ff6f633ee2d898d87a6a91efb0788bce188fac7d3c4c35f81ba6015640dbfad1f8584557ec210478a0cb566f1490643ce602aa5abfab63d46f7f1d4ee'  as NIST_SHA512_test_vector;
 SELECT SHA2( x'b7d5d5f8955d1ad349b9e618c7987814f6dc7bdc6c4ee59a79902026685468d601cc74965361583bb0a8aa14f892e3c21be3094ad9e58b69cc5d6d28a9bea4afc39dc45ed065d81af04c91e5eb85a4b2bab76d774aafd8837c52811270d51a1f03300e7996cf6319128be5b328da818bde42ef8a471494919156a60d460191cc', 512 ) = '6e7fb797dfca7577432c0b339fe9003b36942a549b112d32016b257c9a866e4385e01d4e757d4378b8e61f5a8a29aa73f2daafdaab23dfe4e0b93df21374e594'  as NIST_SHA512_test_vector;
-
---# Test some unusual parameters items.
---# First, the ones that must return NULL.
 SELECT SHA2( x'ff', 1 );
 SELECT SHA2( x'ff', 2 );
 SELECT SHA2( x'ff', 223 );
@@ -466,96 +453,46 @@ SELECT SHA2( x'ff', 511 );
 SELECT SHA2( x'ff', least(123, 42) );
 SELECT SHA2( x'ff', 10000000000000 );
 SELECT SHA2( SHA2( NULL, 224), 224 );
---# Second, things that mustn't return NULL;
 SELECT SHA2( SHA2( x'ff', 224), 224 ) is not NULL;
 SELECT SHA2( SHA2( x'ff', NULL), 224 ) is not NULL;
 SELECT SHA2( SHA2( x'ff', 224), NULL ) is not NULL;
 SELECT SHA2( (select x'ff'), 224 ) is not NULL;
 SELECT SHA2( (select x'ff'), least(224, 500) ) is not NULL;
 SELECT SHA2( (select 1), NULL ) is not NULL;
-
---# Verify the digest lengths.
--- N bits -> N / 8 bytes -> N/8 * 2 nybbles
 SELECT LENGTH(SHA2( '', 224 )) / 2 * 8           = 224;
 SELECT LENGTH(SHA2( 'any', 256 )) / 2 * 8        = 256;
 SELECT LENGTH(SHA2( 'size', 384 )) / 2 * 8       = 384;
 SELECT LENGTH(SHA2( 'computed', 512 )) / 2 * 8   = 512;
-SET NAMES binary;
 SELECT sha2('1',224);
-SET NAMES utf8mb3;
 SELECT sha2('1',224);
-SET NAMES latin1;
 SELECT sha2('1',224);
-SET NAMES utf8mb3;
 CREATE TABLE t1 (a varchar(1));
 SELECT * FROM t1 WHERE a=sha1('a');
 SELECT * FROM t1 WHERE a=sha2('a',224);
 DROP TABLE t1;
-SET NAMES latin1;
-
 SELECT SHA2("hello", 1);
 SELECT SHA2("hello", 0);
 SELECT SHA2("hello", NULL);
 SELECT SHA2("hello", -4294966784);
-
--- We have to run the query in order to get the digest from performance_schema,
--- so all table references must be resolved.
 CREATE TABLE t1 ( a INT );
 CREATE TABLE t2 ( b INT );
 CREATE TABLE t3 ( c INT );
-
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1 AS SELECT statement_digest( 'select 1, 2, 3' ) AS digest;
 DROP TABLE t1;
-CREATE TABLE digest_gcol (
-  query VARCHAR ( 100 ),
-  digest VARCHAR ( 32 ) GENERATED ALWAYS AS ( statement_digest(query) )
-);
-
--- We have to run the query in order to get the digest from performance_schema,
--- so all table references must be resolved.
 CREATE TABLE t1 ( a INT );
 CREATE TABLE t2 ( b INT );
 CREATE TABLE t3 ( c INT );
-
 DROP TABLE t1, t2, t3;
-
-SET NAMES utf8mb4;
 CREATE TABLE t1 AS SELECT statement_digest_text( 'select 1, 2, 3' ) AS digest;
 DROP TABLE t1;
-
-SET NAMES latin1;
 CREATE TABLE t1 AS SELECT statement_digest_text( 'select 1, 2, 3' ) AS digest;
 DROP TABLE t1;
-
-SET NAMES DEFAULT;
-CREATE TABLE digest_gcol (
-  query VARCHAR ( 100 ),
-  digest VARCHAR ( 32 ) GENERATED ALWAYS AS ( digest_gcol (query) )
-);
-
-SET NAMES utf8mb4;
-SELECT statement_digest_text("CREATE TABLE åäö( a int )");
-SELECT statement_digest_text("CREATE TABLE 日本語( a int )");
-SELECT statement_digest_text("CREATE TABLE  𩸽( a int )");
-
-DROP TABLE åäö, 日本語,  𩸽;
-SET NAMES DEFAULT;
-
-CREATE FUNCTION f1() RETURNS longblob
-BEGIN
-  DECLARE ret longblob;
-  SELECT statement_digest_text( "DROP TABLE t" ) INTO ret;
-//
-
-delimiter ;
-
-SELECT f1();
-DROP FUNCTION f1;
-
+SELECT statement_digest_text("CREATE TABLE ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂ¶( a int )");
+SELECT statement_digest_text("CREATE TABLE ÃÂ¦ÃÂÃÂ¥ÃÂ¦ÃÂÃÂ¬ÃÂ¨ÃÂªÃÂ( a int )");
+SELECT statement_digest_text("CREATE TABLE  ÃÂ°ÃÂ©ÃÂ¸ÃÂ½( a int )");
 SELECT statement_digest( "CREATE VIEW v1 AS SELECT 1" ) IS NULL;
 SELECT statement_digest( "SET PASSWORD = 'a'" ) IS NULL;
-SELECT statement_digest( "CREATE FUNCTION f() RETURNS INT BEGIN RETURN 0;
 SELECT statement_digest( "CHECKSUM TABLE t" ) IS NULL;
 SELECT statement_digest( "DROP VIEW v" ) IS NULL;
 SELECT statement_digest( "SHOW OPEN TABLES WHERE 1 = 1" ) IS NULL;
@@ -570,29 +507,10 @@ SELECT statement_digest(
   "CREATE TRIGGER trg BEFORE INSERT ON t1 FOR EACH ROW SET @a := 1" ) IS NULL;
 SELECT statement_digest( "FLUSH TABLES t1" ) IS NULL;
 SELECT statement_digest( "LOCK TABLE t1 READ" ) IS NULL;
-SET sql_mode = 'PIPES_AS_CONCAT';
-SELECT statement_digest( " CREATE ALGORITHM = MERGE VIEW v1 AS " ||
-                         "SELECT a FROM ( SELECT a1 FROM v2 ) AS SELECT1" );
-SET sql_mode = DEFAULT;
-
-SELECT DIGEST_TEXT
-FROM performance_schema.events_statements_summary_by_digest
-WHERE DIGEST_TEXT LIKE 'SELECT ?%';
-
 SELECT statement_digest_text('SELECT 1 + 1');
-SELECT DIGEST_TEXT
-FROM performance_schema.events_statements_summary_by_digest
-WHERE DIGEST_TEXT LIKE 'SELECT ?%';
-SET @v = CONCAT('SELECT 1 AS ', _latin1 0xC5);
-
-SET NAMES utf8mb4;
 SELECT statement_digest_text(CONVERT(@v USING latin1));
 SELECT statement_digest(CONVERT(@v USING latin1));
 SELECT substr(hex(statement_digest_text(CONVERT(@v USING latin1))), -6, 4);
-
-SET NAMES latin1;
 SELECT statement_digest_text(CONVERT(@v USING latin1));
 SELECT statement_digest(CONVERT(@v USING latin1));
 SELECT substr(hex(statement_digest_text(CONVERT(@v USING latin1))), -6, 4);
-
-SET NAMES DEFAULT;

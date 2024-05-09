@@ -51,6 +51,8 @@ INSERT INTO ddd VALUES(
 PRAGMA legacy_alter_table = 1;
 ATTACH 'test.db2' AS aux;
 PRAGMA foreign_keys = on;
+INSERT INTO aux.c1 VALUES(NULL, 2);
+INSERT INTO aux.c1 VALUES(NULL, 1);
 SELECT sql FROM aux.sqlite_master WHERE name = 'c1';
 PRAGMA legacy_alter_table = 1;
 CREATE VIEW v1 AS SELECT * FROM t2;

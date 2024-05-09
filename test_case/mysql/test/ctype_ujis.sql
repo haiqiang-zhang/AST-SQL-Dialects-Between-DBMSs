@@ -1,24 +1,8 @@
-
---
--- Tests with the ujis character set
---
---disable_warnings
 drop table if exists t1;
-
-set names ujis;
-
---
--- Test problem with LEFT()
---
-
 create table t1 (c text character set ujis);
 insert into t1 values (0xa4a2),(0xa4a3);
 select hex(left(c,1)) from t1 group by c;
 drop table t1;
-
---
---
---
 select locate(0xa2a1,0xa1a2a1a3);
 select locate(_ujis 0xa2a1,_ujis 0xa1a2a1a3);
 select locate(_ujis 0xa2a1,_ujis 0xa1a2a1a3 collate ujis_bin);
@@ -28,41 +12,20 @@ select locate('lo','hello',2);
 select locate('HE','hello');
 select locate('HE','hello',2);
 select locate('LO','hello',2);
-select locate('HE','hello' collate ujis_bin);
-select locate('HE','hello' collate ujis_bin,2);
-select locate('LO','hello' collate ujis_bin,2);
 select locate(_ujis 0xa1a3,_ujis 0xa1a2a1a3);
-
 select 0xa1a2a1a3 like concat(_binary'%',0xa2a1,_binary'%');
 select _ujis 0xa1a2a1a3 like concat(_ujis'%',_ujis 0xa2a1, _ujis'%');
 select _ujis 0xa1a2a1a3 like concat(_ujis'%',_ujis 0xa2a1, _ujis'%') collate ujis_bin;
 select 'a' like 'a';
 select 'A' like 'a';
-select 'A' like 'a' collate ujis_bin;
-
---
--- Bug 3290: Hald-width Katakana conversion problem.
--- Check ujis-utf8mb3-ujis round trip.
---
-set @ujis1= _ujis     0x8EA18EA28EA38EA48EA58EA68EA78EA88EA98EAA8EAB8EAC8EAD8EAE8EAF;
-set @ujis2= _ujis 0x8EB08EB18EB28EB38EB48EB58EB68EB78EB88EB98EBA8EBB8EBC8EBD8EBE8EBF;
-set @ujis3= _ujis 0x8EC08EC18EC28EC38EC48EC58EC68EC78EC88EC98ECA8ECB8ECC8ECD8ECE8ECF;
-set @ujis4= _ujis 0x8ED08ED18ED28ED38ED48ED58ED68ED78ED88ED98EDA8EDB8EDC8EDD8EDE8EDF;
-
 select hex(@utf81:= CONVERT(@ujis1 USING utf8mb3));
 select hex(@utf82:= CONVERT(@ujis2 USING utf8mb3));
 select hex(@utf83:= CONVERT(@ujis3 USING utf8mb3));
 select hex(@utf84:= CONVERT(@ujis4 USING utf8mb3));
-
 select @ujis1 = CONVERT(@utf81 USING ujis);
 select @ujis2 = CONVERT(@utf82 USING ujis);
 select @ujis3 = CONVERT(@utf83 USING ujis);
 select @ujis4 = CONVERT(@utf84 USING ujis);
-
---
--- Testing with '%' and index (Bug #3438)
---
-
 drop table if exists t1;
 create table t1 (c1 varchar(8)) default character set 'ujis';
 insert into t1 values (0xA4A2),(0xA2A2),(0xA4A2);
@@ -71,20 +34,11 @@ create index idx_c1 on t1(c1);
 select c1 as 'using index' from t1 where c1 like cast(concat(0xA4A2, '%') as char character set ujis);
 select c1 as 'no index' from t1 where c1 like cast(concat('%',0xA4A2, '%') as char character set ujis);
 drop table t1;
-
-
--- Bug 2077
 CREATE TABLE t1 (
   a char(1) NOT NULL default '',
-  b enum('��','��') default NULL
+  b enum('ÃÂ¤ÃÂ¢','ÃÂ¤ÃÂ¤') default NULL
 ) CHARACTER SET ujis;
-let $default_engine = `select @@SESSION.default_storage_engine`;
 DROP TABLE t1;
-
---
--- Bug #6345 Unexpected behaviour with partial indices
---
---disable_warnings
 CREATE TABLE t1
 (
   a INTEGER NOT NULL,
@@ -99,7 +53,6 @@ SELECT t1.* FROM t1 WHERE b='aaabbbcccddd' ORDER BY a;
 SELECT t1.* FROM t1 WHERE b='eeefffggghhh' ORDER BY a;
 SELECT t1.* FROM t1 WHERE b='iiijjjkkkl'   ORDER BY a;
 DROP TABLE t1;
-
 CREATE TABLE t1(c char(1)) character set ujis;
 INSERT INTO t1 VALUES(0xA2AF);
 INSERT INTO t1 VALUES(0xA2B0);
@@ -1120,62 +1073,24 @@ INSERT INTO t1 VALUES(0xF4FD);
 INSERT INTO t1 VALUES(0xF4FE);
 SELECT HEX(c) FROM t1 ORDER BY BINARY c;
 DROP TABLE t1;
-
-
-SET collation_connection='ujis_japanese_ci';
-SET collation_connection='ujis_bin';
-
---
--- Bugs#15375: Unassigned multibyte codes are broken
--- into parts when converting to Unicode.
--- This query should return 0x003F0041. I.e. it should
--- scan unassigned double-byte character 0xA5FE, convert
--- it as QUESTION MARK 0x003F and then scan the next
--- character, which is a single byte character 0x41.
---
 select hex(convert(_ujis 0xA5FE41 using ucs2));
 select hex(convert(_ujis 0x8FABF841 using ucs2));
-
--- End of 4.1 tests
---disable_warnings
 DROP TABLE IF EXISTS t1, t2;
 DROP PROCEDURE IF EXISTS sp1;
-
-set names ujis;
-set character_set_database = ujis;
-set character_set_server = ujis;
-
 CREATE TABLE t1(c1 char(2)) default charset = ujis;
 CREATE TABLE t2(c2 char(2)) default charset = ujis;
-
 INSERT INTO t1 VALUES(_ujis 0xA4A2);
-CREATE PROCEDURE sp1()
-BEGIN
-  DECLARE a CHAR(2) CHARSET ujis;
-  INSERT INTO t2 VALUES (a);
 SELECT c1,c2 FROM t1,t2;
 SELECT hex(convert(_latin1 0xA4A2 using ujis)),hex(c2) FROM t1,t2;
-
-DROP PROCEDURE sp1;
 DROP TABLE t1;
 DROP TABLE t2;
-SET NAMES utf8mb3;
 SELECT CONVERT(REPLACE(EXPORT_SET('a','a','a','','a'),'00','') USING ujis);
-
-
-set names default;
-set character_set_database=default;
-set character_set_server=default;
-SET NAMES utf8mb3;
-SET collation_connection=ujis_japanese_ci;
 CREATE TABLE t1 (b VARCHAR(2));
 INSERT INTO t1 VALUES ('0'),('1'),('2'),('3'),('4'),('5'),('6'),('7');
 INSERT INTO t1 VALUES ('8'),('9'),('A'),('B'),('C'),('D'),('E'),('F');
 CREATE TEMPORARY TABLE head AS SELECT concat(b1.b, b2.b) AS head FROM t1 b1, t1 b2;
 CREATE TEMPORARY TABLE tail AS SELECT concat(b1.b, b2.b) AS tail FROM t1 b1, t1 b2;
 DROP TABLE t1;
--- 
---
 CREATE TABLE t1 AS SELECT 'XXXXXX' AS code, ' ' AS a LIMIT 0;
 INSERT INTO t1 (code) SELECT concat('8E', head) FROM head
 WHERE (head BETWEEN 'A1' AND 'DF') ORDER BY head;
@@ -1189,11 +1104,7 @@ FROM head, tail
 WHERE (head BETWEEN '80' AND 'FF') AND (tail BETWEEN '80' AND 'FF')
 ORDER BY head, tail;
 DROP TEMPORARY TABLE head, tail;
-
--- Set max_error_count to contain number of warnings in result file.
-SET @@session.max_error_count = 64;
 UPDATE IGNORE t1 SET a=unhex(code) ORDER BY code;
-SET @@session.max_error_count = default;
 SELECT COUNT(*) FROM t1;
 SELECT COUNT(*) FROM t1 WHERE a<>'';
 SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=2;
@@ -1207,13 +1118,4 @@ WHERE HEX(CAST(UPPER(a) AS CHAR CHARACTER SET utf8mb3)) <>
       HEX(UPPER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code;
 SELECT HEX(a), HEX(CONVERT(a USING utf8mb3)) as b FROM t1
 WHERE a<>'' HAVING b<>'3F' ORDER BY code;
-
 DROP TABLE t1;
-SELECT HEX(a), HEX(CONVERT(a using sjis)) as b FROM t1 HAVING b<>'3F' ORDER BY BINARY a;
-DROP TABLE t1;
-
-set names ujis;
-
-set collation_connection=ujis_bin;
-
-SET NAMES ujis;

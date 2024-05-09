@@ -189,6 +189,8 @@ INSERT INTO t2 VALUES(9, 10);
 PRAGMA main.journal_mode = WAL;
 PRAGMA aux2.journal_mode = WAL;
 PRAGMA aux3.journal_mode = WAL;
+CREATE TABLE aux2.t2(x,y);
+CREATE TABLE aux3.t3(x,y);
 INSERT INTO t2 VALUES('a', 'b');
 INSERT INTO t3 VALUES('a', 'b');
 PRAGMA main.journal_mode = WAL;
