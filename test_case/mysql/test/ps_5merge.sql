@@ -1,17 +1,5 @@
---                                             #
---  Prepared Statements test on MERGE tables   #
---                                             #
---##############################################
-
---    
--- NOTE: PLEASE SEE ps_1general.test (bottom) 
---       BEFORE ADDING NEW TEST CASES HERE !!!
-
-use test;
 drop table if exists t1, t1_1, t1_2,
      t9, t9_1, t9_2;
-let $type= 'MYISAM' ;
-
 create table t1
 (
   a int, b varchar(30),
@@ -32,16 +20,7 @@ create table t9
   primary key(c1)
 )  ENGINE = MERGE UNION=(t9_1,t9_2)
 INSERT_METHOD=FIRST;
-
--- source include/ps_query.inc
--- source include/ps_modify.inc
--- no test of ps_modify1, because insert .. select 
--- is not allowed on MERGE tables
--- -- source include/ps_modify1.inc
--- source include/ps_conv.inc
-
--- Let us try the same tests with INSERT_METHOD=LAST
-drop table t1, t9 ;
+drop table t1, t9;
 create table t1
 (
   a int, b varchar(30),
@@ -62,13 +41,3 @@ create table t9
   primary key(c1)
 )  ENGINE = MERGE UNION=(t9_1,t9_2)
 INSERT_METHOD=LAST;
-
--- source include/ps_query.inc
--- source include/ps_modify.inc
--- no test of ps_modify1, because insert .. select
--- is not allowed on MERGE tables
--- -- source include/ps_modify1.inc
--- source include/ps_conv.inc
-
-drop table t1, t1_1, t1_2, 
-           t9_1, t9_2, t9;

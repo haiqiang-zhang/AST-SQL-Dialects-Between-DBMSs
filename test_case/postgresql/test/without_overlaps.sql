@@ -42,7 +42,7 @@ CREATE TABLE temporal_rng (
 	valid_at daterange,
 	CONSTRAINT temporal_rng_pk PRIMARY KEY (id, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_rng
+\d temporal_rng;
 SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng_pk';
 SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng_pk';
 
@@ -54,7 +54,7 @@ CREATE TABLE temporal_rng2 (
 	valid_at daterange,
 	CONSTRAINT temporal_rng2_pk PRIMARY KEY (id1, id2, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_rng2
+\d temporal_rng2;
 SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng2_pk';
 SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng2_pk';
 
@@ -75,7 +75,7 @@ CREATE TABLE temporal_mltrng (
   valid_at datemultirange,
   CONSTRAINT temporal_mltrng_pk PRIMARY KEY (id, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_mltrng
+\d temporal_mltrng;
 
 -- PK with two columns plus a multirange:
 -- We don't drop this table because tests below also need multiple scalar columns.
@@ -85,7 +85,7 @@ CREATE TABLE temporal_mltrng2 (
 	valid_at datemultirange,
 	CONSTRAINT temporal_mltrng2_pk PRIMARY KEY (id1, id2, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_mltrng2
+\d temporal_mltrng2;
 SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_mltrng2_pk';
 SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_mltrng2_pk';
 
@@ -118,7 +118,7 @@ CREATE TABLE temporal_rng3 (
 	valid_at daterange,
 	CONSTRAINT temporal_rng3_uq UNIQUE (id, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_rng3
+\d temporal_rng3;
 SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
 SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
 DROP TABLE temporal_rng3;
@@ -130,7 +130,7 @@ CREATE TABLE temporal_rng3 (
 	valid_at daterange,
 	CONSTRAINT temporal_rng3_uq UNIQUE (id1, id2, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_rng3
+\d temporal_rng3;
 SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
 SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
 DROP TABLE temporal_rng3;
@@ -479,7 +479,7 @@ CREATE TABLE temporal_fk2_rng2rng (
 	CONSTRAINT temporal_fk2_rng2rng_fk FOREIGN KEY (parent_id1, parent_id2, PERIOD valid_at)
 		REFERENCES temporal_rng2 (id1, id2, PERIOD valid_at)
 );
-\d temporal_fk2_rng2rng
+\d temporal_fk2_rng2rng;
 DROP TABLE temporal_fk2_rng2rng;
 
 --
@@ -508,7 +508,7 @@ ALTER TABLE temporal_fk2_rng2rng
 	ADD CONSTRAINT temporal_fk2_rng2rng_fk
 	FOREIGN KEY (parent_id1, parent_id2, PERIOD valid_at)
 	REFERENCES temporal_rng2 (id1, id2, PERIOD valid_at);
-\d temporal_fk2_rng2rng
+\d temporal_fk2_rng2rng;
 
 -- with inferred PK on the referenced table, and wrong column type:
 ALTER TABLE temporal_fk_rng2rng
@@ -916,7 +916,7 @@ CREATE TABLE temporal_fk2_mltrng2mltrng (
 	CONSTRAINT temporal_fk2_mltrng2mltrng_fk FOREIGN KEY (parent_id1, parent_id2, PERIOD valid_at)
 		REFERENCES temporal_mltrng2 (id1, id2, PERIOD valid_at)
 );
-\d temporal_fk2_mltrng2mltrng
+\d temporal_fk2_mltrng2mltrng;
 DROP TABLE temporal_fk2_mltrng2mltrng;
 
 --
@@ -945,7 +945,7 @@ ALTER TABLE temporal_fk2_mltrng2mltrng
 	ADD CONSTRAINT temporal_fk2_mltrng2mltrng_fk
 	FOREIGN KEY (parent_id1, parent_id2, PERIOD valid_at)
 	REFERENCES temporal_mltrng2 (id1, id2, PERIOD valid_at);
-\d temporal_fk2_mltrng2mltrng
+\d temporal_fk2_mltrng2mltrng;
 
 -- should fail because of duplicate referenced columns:
 ALTER TABLE temporal_fk_mltrng2mltrng
@@ -1166,7 +1166,7 @@ CREATE TABLE temporal_box (
   valid_at box,
   CONSTRAINT temporal_box_pk PRIMARY KEY (id, valid_at WITHOUT OVERLAPS)
 );
-\d temporal_box
+\d temporal_box;
 
 CREATE TABLE temporal_fk_box2box (
   id int4range,

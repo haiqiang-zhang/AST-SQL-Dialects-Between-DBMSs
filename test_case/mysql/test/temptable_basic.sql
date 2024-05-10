@@ -1,10 +1,3 @@
-
--- ---------------------------------------------------------------------
--- Prepare
---
-
-SET @@GLOBAL.internal_tmp_mem_storage_engine = TempTable;
-
 CREATE TABLE t_int (c INT);
 CREATE TABLE t_char (c CHAR(20));
 CREATE TABLE t_varchar (c VARCHAR(20));
@@ -13,7 +6,6 @@ CREATE TABLE t_blob (c BLOB);
 CREATE TABLE t_json (c JSON);
 CREATE TABLE t_point (c POINT);
 CREATE TABLE t_geom (c GEOMETRY);
-
 INSERT INTO t_int VALUES
 	(1),
 	(2),
@@ -21,7 +13,6 @@ INSERT INTO t_int VALUES
 	(3),
 	(4),
 	(NULL);
-
 INSERT INTO t_char VALUES
 	('abcde'),
 	('fghij'),
@@ -30,7 +21,6 @@ INSERT INTO t_char VALUES
 	('stxyz'),
 	(''),
 	(NULL);
-
 INSERT INTO t_varchar VALUES
 	('abcde'),
 	('fghij'),
@@ -39,7 +29,6 @@ INSERT INTO t_varchar VALUES
 	('stxyz'),
 	(''),
 	(NULL);
-
 INSERT INTO t_text VALUES
 	('abcde'),
 	('fghij'),
@@ -48,7 +37,6 @@ INSERT INTO t_text VALUES
 	('stxyz'),
 	(''),
 	(NULL);
-
 INSERT INTO t_blob VALUES
 	('abcde'),
 	('fghij'),
@@ -57,7 +45,6 @@ INSERT INTO t_blob VALUES
 	('stxyz'),
 	(''),
 	(NULL);
-
 INSERT INTO t_json VALUES
 	('{"k1": "value", "k2": [10, 20]}'),
 	('["hot", "cold"]'),
@@ -65,7 +52,6 @@ INSERT INTO t_json VALUES
 	('["a", "b", 1]'),
 	('{"key": "value"}'),
 	(NULL);
-
 INSERT INTO t_point VALUES
 	(ST_PointFromText('POINT(10 10)')),
 	(ST_PointFromText('POINT(50 10)')),
@@ -73,7 +59,6 @@ INSERT INTO t_point VALUES
 	(ST_PointFromText('POINT(-1 -2)')),
 	(ST_PointFromText('POINT(10 50)')),
 	(NULL);
-
 INSERT INTO t_geom VALUES
 	(ST_PointFromText('POINT(10 10)')),
 	(ST_MultiPointFromText('MULTIPOINT(0 0,10 10,10 20,20 20)')),
@@ -113,11 +98,6 @@ SELECT c,COUNT(*) FROM t_blob GROUP BY c;
 SELECT c,COUNT(*) FROM t_json GROUP BY c;
 SELECT ST_AsText(c),COUNT(*) FROM t_point GROUP BY c;
 SELECT ST_AsText(c),COUNT(*) FROM t_geom GROUP BY c;
-
--- ---------------------------------------------------------------------
--- Cleanup
---
-
 DROP TABLE t_int;
 DROP TABLE t_char;
 DROP TABLE t_varchar;
@@ -126,34 +106,20 @@ DROP TABLE t_blob;
 DROP TABLE t_json;
 DROP TABLE t_point;
 DROP TABLE t_geom;
-
--- ---------------------------------------------------------------------
--- Scenario 3
---
-
 CREATE TABLE t_pk (
   pk INT NOT NULL,
   PRIMARY KEY (pk)
 );
-
 INSERT INTO t_pk VALUES
         (1),
 	(2),
 	(3);
-
 SELECT COUNT(t_pk.pk) FROM t_pk
     WHERE 1 IN (SELECT 1 FROM t_pk AS SQ2_alias1
         WHERE 1 IN (SELECT 1 FROM t_pk AS C_SQ1_alias1)
     );
-
 DROP TABLE t_pk;
-
--- ---------------------------------------------------------------------
--- Bug #29654465 SEGMENTATION FAULT WITH QUERY USING JSON_TABLE
---
-
 CREATE TABLE t_json(json_col JSON);
-
 INSERT INTO t_json VALUES (
     '[
         { "name":"John Johnson", "nickname": {"stringValue": "Johnny"}},
@@ -164,63 +130,29 @@ INSERT INTO t_json VALUES (
         { "name":"John Johnson", "nickname": {"stringValue": "Johnny"}}
      ]');
 SELECT attrs.* FROM t_json, JSON_TABLE(json_col, '$[*]' COLUMNS (nickname JSON PATH '$.nickname')) as attrs;
-
 DROP TABLE t_json;
-
 CREATE TABLE t1 (
   pk INTEGER NOT NULL,
   f1 varchar(255)
 );
 INSERT INTO t1 VALUES (5,'N');
-
 CREATE TABLE t2 (
   pk int,
   f2 varchar(10)
 );
 INSERT INTO t2 VALUES (5,'he');
 INSERT INTO t2 VALUES (5,'l');
-
 CREATE TABLE t3 (
   f2 varchar(10),
   f3 varchar(255)
 );
 INSERT INTO t3 VALUES ('L','2.0');
-
-set optimizer_switch='block_nested_loop=off';
-
 SELECT SUM(t3.f3)
 FROM t1
   LEFT JOIN t2 ON t1.pk = t2.pk
   LEFT JOIN t3 ON t2.f2 = t3.f2
 GROUP BY t1.f1;
-
-set optimizer_switch=default;
-
 DROP TABLE t1, t2, t3;
-
--- Start fresh, make sure that memory is low
-truncate performance_schema.memory_summary_global_by_event_name;
-select * from performance_schema.memory_summary_global_by_event_name where event_name like 'memory/temptable%';
-
--- Trigger some work from a new session
---echo -- conn1
-connect (conn1, localhost, root,,);
-
--- Check the memory consumption
-select * from performance_schema.memory_summary_global_by_event_name where event_name like 'memory/temptable%';
-
--- Switch back to default connection. Check consumption again.
-connection default;
-select * from performance_schema.memory_summary_global_by_event_name where event_name like 'memory/temptable%';
-
--- Now, disconnect one session
-disconnect conn1;
-let $count_sessions=1;
-
--- We expect that memory consumption is again low (as from fresh start)
-connection default;
-select * from performance_schema.memory_summary_global_by_event_name where event_name like 'memory/temptable%';
-
 CREATE TABLE t1 (
   f1 CHAR(0) NOT NULL,
   f2 INT NOT NULL
@@ -228,5 +160,3 @@ CREATE TABLE t1 (
 INSERT INTO t1(f1, f2) VALUES('', 1);
 SELECT AVG(f1) from t1 GROUP BY f2, f1;
 DROP TABLE t1;
-
-SET @@GLOBAL.internal_tmp_mem_storage_engine = default;

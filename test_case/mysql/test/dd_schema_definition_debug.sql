@@ -1,177 +1,17 @@
-let $ddse_table_names = test.ddse_table_names;
-let $dd_table_names = test.dd_table_names;
-
-SET debug = '+d,skip_dd_table_access_check';
-
 CREATE TABLE dd_check_table (id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
    t TEXT NOT NULL,
    row_hash VARCHAR(64) DEFAULT NULL);
-
--- Expression representing the DD table ids
-let $dd_table_ids =
-  SELECT id FROM mysql.tables
-  WHERE schema_id = 1
-  AND name IN (SELECT name FROM $dd_table_names UNION
-               SELECT name FROM $ddse_table_names);
-
--- Schema meta data excluding timestamps. Id is fixed even across versions.
-INSERT INTO dd_check_table(t)
-  SELECT CONCAT(id, '-', catalog_id, '-',
-    name, '-', default_collation_id, '-',
-    IFNULL(options, 'NULL'))
-  FROM mysql.schemata
-  WHERE name = 'mysql';
-
--- Tablespace meta data excluding timestamps. Filter out server version. Id is fixed.
-INSERT INTO dd_check_table(t)
-  SELECT CONCAT(id, '-', name, '-',
-    IFNULL(options, 'NULL'), '-',
-    IFNULL(INSERT(se_private_data, 
-             INSTR(se_private_data, 'server_version'),
-             20, 'server_version=x'),
-      'NULL'),
-    '-', comment, '-', engine)
-  FROM mysql.tablespaces
-  WHERE name = 'mysql';
-
--- Subset of definitions from tables, not including
--- timestamps, partitioning, view definitions and
--- default values
-eval INSERT INTO dd_check_table(t)
-  SELECT CONCAT(id, '-', name, '-', type, '-',
-    engine, '-', collation_id, '-',
-    comment, '-', hidden, '-',
-    IFNULL(options, 'NULL'), '-',
-    IFNULL(se_private_data, 'NULL'), '-',
-    se_private_id, '-',
-    tablespace_id)
-  FROM mysql.tables
-  WHERE id IN ($dd_table_ids)
-  ORDER BY id;
-
--- Subset of definitions from columns, not including
--- default_values.
-eval INSERT INTO dd_check_table(t)
-  SELECT CONCAT(id, '-', table_id, '-', name, '-',
-    ordinal_position, '-', type, '-', is_nullable, '-',
-    IFNULL(is_zerofill, 'NULL'), '-',
-    IFNULL(is_unsigned, 'NULL'), '-',
-    IFNULL(char_length, 'NULL'), '-',
-    IFNULL(numeric_precision, 'NULL'), '-',
-    IFNULL(numeric_scale, 'NULL'), '-',
-    IFNULL(datetime_precision, 'NULL'), '-',
-    IFNULL(collation_id, 'NULL'), '-',
-    IFNULL(default_option, 'NULL'), '-',
-    IFNULL(update_option, 'NULL'), '-',
-    IFNULL(is_auto_increment, 'NULL'), '-',
-    comment, '-',
-    hidden, '-',
-    IFNULL(options, 'NULL'), '-',
-    IFNULL(se_private_data, 'NULL'))
-  FROM mysql.columns
-  WHERE table_id IN ($dd_table_ids)
-  ORDER BY id;
-
--- Definitions from indexes.
-eval INSERT INTO dd_check_table(t)
-  SELECT CONCAT(
-    id, '-',
-    table_id, '-',
-    name, '-',
-    type, '-',
-    algorithm, '-',
-    is_algorithm_explicit, '-',
-    is_visible, '-',
-    is_generated, '-',
-    hidden, '-',
-    ordinal_position, '-',
-    comment, '-',
-    IFNULL(options, 'NULL'), '-',
-    IFNULL(se_private_data, 'NULL'), '-',
-    IFNULL(tablespace_id, 'NULL'), '-',
-    engine)
-  FROM mysql.indexes
-  WHERE table_id IN ($dd_table_ids)
-  ORDER BY id;
-
--- Definitions from index_column_usage.
-eval INSERT INTO dd_check_table(t)
-  SELECT CONCAT(
-    index_id, '-',
-    ordinal_position, '-',
-    column_id, '-',
-    IFNULL(length, 'NULL'), '-',
-    `order`, '-',
-    hidden)
-  FROM mysql.index_column_usage
-  WHERE index_id IN (
-    SELECT id FROM mysql.indexes WHERE table_id IN ($dd_table_ids)
-  )
-  ORDER BY index_id, column_id;
-
--- Definitions from foreign_keys.
-eval INSERT INTO dd_check_table(t)
-  SELECT CONCAT(
-    id, '-',
-    schema_id, '-',
-    table_id, '-',
-    name, '-',
-    IFNULL(unique_constraint_name, 'NULL'), '-',
-    match_option, '-',
-    update_rule, '-',
-    delete_rule, '-',
-    referenced_table_catalog, '-',
-    referenced_table_schema, '-',
-    referenced_table_name, '-',
-    IFNULL(options, 'NULL'))
-  FROM mysql.foreign_keys
-  WHERE table_id IN ($dd_table_ids)
-  ORDER BY id;
-
--- Definitions from foreign_key_column_usage.
-eval INSERT INTO dd_check_table(t)
-  SELECT CONCAT(
-    foreign_key_id, '-',
-    ordinal_position, '-',
-    column_id, '-',
-    referenced_column_name)
-  FROM mysql.foreign_key_column_usage
-  WHERE foreign_key_id IN (
-    SELECT id FROM mysql.foreign_keys WHERE table_id IN ($dd_table_ids)
-  )
-  ORDER BY foreign_key_id, ordinal_position;
-
--- Create checksums for each row.
 UPDATE dd_check_table SET row_hash = SHA2(t, 256);
-
--- And then a checksum of all rows. We need about 1500 rows of varchar(64)
--- concatenated.
-SET @old_group_concat_max_len = @@group_concat_max_len;
-SET group_concat_max_len = 100000;
-
 CREATE TABLE whole_schema(row_checksums LONGTEXT, checksum VARCHAR(64));
 INSERT INTO whole_schema (row_checksums)
   SELECT GROUP_CONCAT(row_hash ORDER BY id)
     FROM dd_check_table;
 UPDATE whole_schema SET checksum = SHA2(row_checksums, 256);
-
-let $assert_cond = "[SELECT LENGTH(row_checksums) FROM whole_schema]"
-                    < @@group_concat_max_len;
-
--- Insert historical records of DD version numbers and checksums. For a
--- new DD version, add a new row below. Please read the comments at the
--- beginning of the test file to make sure this is done correctly. Note
--- that the checksums are different depending on case sensitivity of the
--- underlying file system. Hence, the lctn field is used as a discriminator
--- (lctn = lower case table names).
-
 CREATE TABLE dd_published_schema(
   version VARCHAR(20),
   lctn BOOL,
   checksum VARCHAR(64),
   PRIMARY KEY (version, lctn));
-
--- Checksums with ids.
 INSERT INTO dd_published_schema
   VALUES ('80004', 0,
     '7de8b2fe214be4dbb15c3d8e4c08ab74f190bca269dd08861a4cf66ea5de1804');
@@ -235,7 +75,7 @@ INSERT INTO dd_published_schema
 INSERT INTO dd_published_schema
   VALUES('80200', 0,
     'a3e8513fa7db0783beba8ced3371196cc20ecb05291a6d0cdef545f1a4e8be25');
- INSERT INTO dd_published_schema
+INSERT INTO dd_published_schema
   VALUES('80200', 1,
     '8ee19626f672bcb6e487fe3555cc9580e9de021144aa047a09446244002aaa05');
 SELECT IFNULL(CONCAT('The schema checksum corresponds to DD version ',
@@ -245,16 +85,3 @@ SELECT IFNULL(CONCAT('The schema checksum corresponds to DD version ',
   FROM dd_published_schema
     RIGHT OUTER JOIN whole_schema
     ON dd_published_schema.checksum= whole_schema.checksum;
-
--- Please read the comments at the beginning of the test file to make sure an
--- error in the assert below is handled correctly.
-
-let $assert_cond = "[SELECT COUNT(version)
-                       FROM dd_published_schema, whole_schema
-                       WHERE dd_published_schema.checksum =
-                             whole_schema.checksum
-                       AND lctn = @@global.lower_case_file_system]" = 1;
-
-SET group_concat_max_len = @old_group_concat_max_len;
-            $dd_table_names, $ddse_table_names;
-SET debug = '-d,skip_dd_table_access_check';

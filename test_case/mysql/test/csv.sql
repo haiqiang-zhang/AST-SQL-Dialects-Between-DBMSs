@@ -1,26 +1,12 @@
-
---
--- Simple select test
---
-
---disable_warnings
 drop table if exists t1,t2,t3,t4;
-
 CREATE TABLE t1 (
   Period smallint(4) unsigned zerofill DEFAULT '0000' NOT NULL,
   Varor_period smallint(4) unsigned DEFAULT '0' NOT NULL
 ) ENGINE = CSV;
-
 INSERT INTO t1 VALUES (9410,9412);
-  
 select period from t1;
 select * from t1;
 select t1.* from t1;
-
---
--- Create test table
---
-
 CREATE TABLE t2 (
   auto int not null,
   fld1 int(6) unsigned zerofill DEFAULT '000000' NOT NULL,
@@ -30,12 +16,6 @@ CREATE TABLE t2 (
   fld5 char(35) DEFAULT '' NOT NULL,
   fld6 char(4) DEFAULT '' NOT NULL
 ) ENGINE = CSV;
-
---
--- Populate table
---
-
---disable_query_log
 INSERT INTO t2 VALUES (1,000001,00,'Omaha','teethe','neat','');
 INSERT INTO t2 VALUES (2,011401,37,'breaking','dreaded','Steinberg','W');
 INSERT INTO t2 VALUES (3,011402,37,'Romans','scholastics','jarring','');
@@ -1235,85 +1215,31 @@ INSERT INTO t2 VALUES (1190,123304,00,'bruises','Medicare','backer','');
 INSERT INTO t2 VALUES (1191,068504,00,'bonfire','corresponds','positively','');
 INSERT INTO t2 VALUES (1192,068305,00,'Colombo','hardware','colicky','');
 INSERT INTO t2 VALUES (1193,000000,00,'nondecreasing','implant','thrillingly','');
-
---
--- Search with a key
---
-
 select t2.fld3 from t2 where companynr = 58 and fld3 like "%imaginable%";
-select fld3 from t2 where fld3 like "%cultivation" ;
-
---
--- Search with a key using sorting and limit the same time
---
-
+select fld3 from t2 where fld3 like "%cultivation";
 select t2.fld3,companynr from t2 where companynr = 57+1 order by fld3;
 select fld3,companynr from t2 where companynr = 58 order by fld3;
-
 select fld3 from t2 order by fld3 desc limit 10;
 select fld3 from t2 order by fld3 desc limit 5;
 select fld3 from t2 order by fld3 desc limit 5,5;
-
---
--- Update
---
-
 UPDATE t2 SET fld3="foo" WHERE fld3="b%";
 select fld3 from t2;
-
-
---
--- Update randomly
---
-
 UPDATE t2 SET fld3="bar" WHERE fld3="s%";
 select fld3 from t2;
-
---
--- Delete with constant
---
-
 DELETE FROM t2 WHERE fld3="r%";
 SELECT fld3 FROM t2;
-
---
--- Delete with Random
---
-
-DELETE FROM t2 WHERE fld3="d%" ORDER BY RAND();
 SELECT fld3 FROM t2;
-
---
--- Rename table
---
-
 DROP TABLE t1;
 ALTER TABLE t2 RENAME t1;
-
---
--- Drop and recreate
---
-
-
 DROP TABLE t1;
 CREATE TABLE t1 (
   Period smallint(4) unsigned zerofill DEFAULT '0000' NOT NULL,
   Varor_period smallint(4) unsigned DEFAULT '0' NOT NULL
 ) ENGINE = CSV;
-
 INSERT INTO t1 VALUES (9410,9412);
-  
 select period from t1;
-
 drop table if exists t1,t2,t3,t4;
-
---
--- Bug #13894    Server crashes on update of CSV table
---
-
---disable_warnings
 DROP TABLE IF EXISTS bug13894;
-
 CREATE TABLE bug13894 ( val integer not null ) ENGINE = CSV;
 INSERT INTO bug13894 VALUES (5);
 INSERT INTO bug13894 VALUES (10);
@@ -1323,14 +1249,7 @@ SELECT * FROM bug13894;
 UPDATE  bug13894 SET val=6 WHERE val=10;
 SELECT * FROM bug13894;
 DROP TABLE bug13894;
-
---
--- Bug #14672    Bug in deletion
---
-
---disable_warnings
 DROP TABLE IF EXISTS bug14672;
-
 CREATE TABLE bug14672 (c1 integer not null) engine = CSV;
 INSERT INTO bug14672 VALUES (1), (2), (3);
 SELECT * FROM bug14672;
@@ -1341,66 +1260,25 @@ SELECT * FROM bug14672;
 INSERT INTO bug14672 VALUES (5);
 SELECT * FROM bug14672;
 DROP TABLE bug14672;
-
--- End of 4.1 tests
-
---
--- Test CONCURRENT INSERT (5.1)
---
-
 CREATE TABLE test_concurrent_insert ( val integer not null ) ENGINE = CSV;
-INSERT INTO test_concurrent_insert VALUES (1);
+LOCK TABLES test_concurrent_insert READ LOCAL;
 SELECT * FROM test_concurrent_insert;
 SELECT * FROM test_concurrent_insert;
-
--- Now check that we see our own changes
-
+UNLOCK TABLES;
 LOCK TABLES test_concurrent_insert WRITE;
 INSERT INTO test_concurrent_insert VALUES (2);
 SELECT * FROM test_concurrent_insert;
-
--- cleanup
+UNLOCK TABLES;
 DROP TABLE test_concurrent_insert;
-
---
--- Test REPAIR/CHECK TABLE (5.1)
---
-
--- Check that repair on the newly created table works fine
-
 CREATE TABLE test_repair_table ( val integer not null ) ENGINE = CSV;
-
 DROP TABLE test_repair_table;
-
---
--- Check autorepair. Here we also check that we can work w/o metafile
--- restore the meta-file
---
-
 CREATE TABLE test_repair_table2 ( val integer not null ) ENGINE = CSV;
-let $MYSQLD_DATADIR= `select @@datadir`;
-
--- Should give a warning and perform autorepair. We also disable ps-protocol
--- here, as mysql-test eats up warnings in ps-protocol mode
-
---disable_ps_protocol
 SELECT * from test_repair_table2;
 SELECT * from test_repair_table2;
 DROP TABLE test_repair_table2;
-
-
--- Corrupt csv file and see if we can repair it
 CREATE TABLE test_repair_table3 ( val integer not null ) ENGINE = CSV;
-"1"
-"4"
-"3
-EOF
-CHECK TABLE test_repair_table3;
 SELECT * FROM test_repair_table3;
 DROP TABLE test_repair_table3;
-
--- Test with more sophisticated table
-
 CREATE TABLE test_repair_table4 (
   num int not null,
   magic_no int(4) unsigned zerofill DEFAULT '0000' NOT NULL,
@@ -1409,60 +1287,27 @@ CREATE TABLE test_repair_table4 (
 ) ENGINE = CSV;
 SELECT * FROM test_repair_table4;
 SELECT * FROM test_repair_table4;
-
 INSERT INTO test_repair_table4 VALUES (2,101,'SAP','1972');
 INSERT INTO test_repair_table4 VALUES (1,101,'Microsoft','1978');
 INSERT INTO test_repair_table4 VALUES (2,101,'MySQL','1995');
-
--- list table content
 SELECT * FROM test_repair_table4;
 SELECT * FROM test_repair_table4;
 SELECT * FROM test_repair_table4;
 DROP TABLE test_repair_table4;
-
--- Run CHECK/REPAIR on the CSV file with a single row, which misses a column.
-
 CREATE TABLE test_repair_table5 (
   num int not null,
   magic_no int(4) unsigned zerofill DEFAULT '0000' NOT NULL,
   company_name char(30) DEFAULT '' NOT NULL,
   founded char(4) DEFAULT '' NOT NULL
 ) ENGINE = CSV;
-
--- Corrupt a table -- put a file with wrong # of columns
---remove_file $MYSQLD_DATADIR/test/test_repair_table5.CSV
---write_file $MYSQLD_DATADIR/test/test_repair_table5.CSV
-"1","101","IBM"
-EOF
-
-CHECK TABLE test_repair_table5;
 SELECT * FROM test_repair_table5;
 INSERT INTO test_repair_table5 VALUES (1, 102, "CORRECT", 1876);
 SELECT * FROM test_repair_table5;
-
--- Corrupt a table -- put a row with wrong # of columns at end of file
---append_file $MYSQLD_DATADIR/test/test_repair_table5.CSV
-"1","101","IBM"
-EOF
-
-FLUSH TABLES;
 SELECT * FROM test_repair_table5;
 INSERT INTO test_repair_table5 VALUES (1, 102, "CORRECT2", 1876);
 SELECT * FROM test_repair_table5;
-
--- Corrupt table again -- put a row with wrong # of columns at end of file
---append_file $MYSQLD_DATADIR/test/test_repair_table5.CSV
-"1","101","IBM"
-EOF
-
-FLUSH TABLES;
 SELECT * FROM test_repair_table5;
 DROP TABLE test_repair_table5;
-
---
--- BUG#13406 - incorrect amount of "records deleted"
---
-
 create table t1 (a int not null) engine=csv;
 insert t1 values (1);
 delete from t1;
@@ -1476,12 +1321,6 @@ select count(*) from t1;
 delete from t1;
 insert t1 values (1),(2),(3),(4),(5);
 drop table t1;
-
---
--- Some additional tests for new, faster alter table.  Note that most of the
--- whole alter table code is being tested all around the test suite already.
---
-
 create table t1 (v varchar(32) not null) engine=csv;
 insert into t1 values ('def'),('abc'),('hij'),('3r4f');
 select * from t1;
@@ -1499,33 +1338,13 @@ alter table t1 change i i bigint not null;
 select * from t1;
 select * from t1 where i between 2 and 4 and v in ('def','3r4f','abc');
 drop table t1;
-
---
--- Bug #15205   Select from CSV table without the datafile causes crash
---
--- NOTE: the bug is not deterministic
-
--- The crash happens because the necessary cleanup after an error wasn't
--- performed. Namely, the table share, inserted in the hash during table
--- open, was not deleted from hash. At the same time the share was freed
--- when an error was encountered. Thus, subsequent access to the hash
--- resulted in scanning through deleted memory and we were geting a crash.
--- that's why we need two tables in the bugtest
-
 create table bug15205 (val int(11) not null) engine=csv;
 create table bug15205_2 (val int(11) not null) engine=csv;
 select * from bug15205;
 select * from bug15205_2;
-EOF
 select * from bug15205;
 drop table bug15205;
 drop table bug15205_2;
-
-
---
--- Bug#28862 "Extended Latin1 characters get lost in CVS engine"
---
-set names latin1;
 create table t1 (
   c varchar(1) not null,
   name varchar(64) not null
@@ -1538,42 +1357,13 @@ insert into t1 values (0xF7,'DIVISION SIGN');
 insert into t1 values (0xFF,'LATIN SMALL LETTER Y WITH DIAERESIS');
 select hex(c), c, name from t1 order by 1;
 drop table t1;
-
-
---
--- Bug#22080 "CHECK fails to identify some corruption"
---
-
 create table bug22080_1 (id int not null,string varchar(64) not null) Engine=CSV;
 create table bug22080_2 (id int not null,string varchar(64) not null) Engine=CSV;
 create table bug22080_3 (id int not null,string varchar(64) not null) Engine=CSV;
 insert into bug22080_1 values(1,'string');
 insert into bug22080_1 values(2,'string');
 insert into bug22080_1 values(3,'string');
-
--- Create first corrupt file as described in bug report
---remove_file $MYSQLD_DATADIR/test/bug22080_2.CSV
---write_file $MYSQLD_DATADIR/test/bug22080_2.CSV
-1,"string"
-2","string"
-3,"string"
-EOF
-
--- Create second corrupt file as described in bug report
---remove_file $MYSQLD_DATADIR/test/bug22080_3.CSV
---write_file $MYSQLD_DATADIR/test/bug22080_3.CSV
-1,"string"
-"2",string"
-3,"string"
-EOF
-
-check table bug22080_2;
-
 drop tables bug22080_1,bug22080_2,bug22080_3;
-
---
--- Testing float type
---
 create table float_test (id float not null,string varchar(64) not null) Engine=CSV;
 insert into float_test values(1.0,'string');
 insert into float_test values(2.23,'serg.g');
@@ -1582,33 +1372,19 @@ insert into float_test values(0.19,'string');
 insert into float_test values(.67,'string');
 insert into float_test values(9.67,'string');
 select * from float_test;
-
 drop table float_test;
 create table t1(a blob not null, b int not null) engine=csv;
 insert into t1 values('a', 1);
 update t1 set b=2;
 select * from t1;
 drop table t1;
-
---
--- Bug #29353: negative values
---
 create table t1(a int not null) engine=csv;
 insert into t1 values(-1), (-123.34), (2), (-23);
 select * from t1;
 drop table t1;
-
 create table t1(a int not null, b int not null) engine=csv;
--1, -100.1
-1a, -2b
-EOF
-repair table t1;
 select * from t1;
 drop table t1;
-
---
--- Bug #29411: deleting from a csv table leads to the table corruption
---
 create table t1(a int not null) engine=csv;
 insert into t1 values (0), (1), (2);
 delete from t1 limit 2;
@@ -1616,66 +1392,38 @@ select * from t1;
 delete from t1;
 select * from t1;
 drop table t1;
-
---
--- Bug #31473: does not work with NULL value in datetime field
---
-SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
 create table t1(a datetime not null) engine=csv;
-insert into t1 values();
 select * from t1;
 drop table t1;
 create table t1(a set('foo','bar') not null) engine=csv;
-insert into t1 values();
 select * from t1;
 drop table t1;
 create table t1(a varchar(32) not null) engine=csv;
-insert into t1 values();
 select * from t1;
 drop table t1;
 create table t1(a int not null) engine=csv;
-insert into t1 values();
 select * from t1;
 drop table t1;
 create table t1(a blob not null) engine=csv;
-insert into t1 values();
 select * from t1;
 drop table t1;
 create table t1(a bit(1) not null) engine=csv;
-insert into t1 values();
 select BIN(a) from t1;
 drop table t1;
-create table t1(a enum('foo','bar') default null) engine=csv;
-create table t1(a enum('foo','bar') default 'foo') engine=csv;
 create table t1(a enum('foo','bar') default 'foo' not null) engine=csv;
 insert into t1 values();
 select * from t1;
 drop table t1;
-SET sql_mode = default;
---             with error 1005.
---
---error ER_CHECK_NOT_IMPLEMENTED
-CREATE TABLE t1(a INT) ENGINE=CSV;
-
---
--- BUG#33067 - .
---
 create table t1 (c1 tinyblob not null) engine=csv;
 insert into t1 values("This");
 update t1 set c1="That" where c1="This";
 select * from t1;
 drop table t1;
-
---
--- Bug#36638 mysqld crashes when open file limit is passed and general query log enabled
---
 create table t1 (a int not null) engine=csv;
+lock tables t1 read;
 select * from t1;
+unlock tables;
 drop table t1;
-
---
--- Bug#33717 INSERT...(default) fails for enum. Crashes CSV tables, loads spaces for MyISAM
---
 CREATE TABLE t1 (e enum('foo','bar') NOT NULL) ENGINE = CSV;
 INSERT INTO t1 VALUES();
 INSERT INTO t1 VALUES(default);
@@ -1684,50 +1432,14 @@ INSERT IGNORE INTO t1 VALUES(3);
 INSERT IGNORE INTO t1 VALUES(-1);
 SELECT * FROM t1;
 DROP TABLE t1;
-
-
---
--- Bug #40814 CSV engine does not parse \X characters when they occur in unquoted fields
---
-
---echo --
---echo -- Test for the following cases
---echo -- 1) integers and strings enclosed in quotes
---echo -- 2) integers and strings not enclosed in quotes
---echo -- 3) \X  characters with quotes
---echo -- 4) \X  characters outside quotes
---echo --
-
 CREATE TABLE t1(c1 INT NOT NULL, c2 VARCHAR(50) NOT NULL) ENGINE=csv;
-EOF
---cat_file $MYSQLD_DATADIR/test/t1.CSV
-
---echo -- select from the table in which the data has been filled in using
---echo -- the hard-coded .CSV file
 SELECT * FROM t1;
-
 DROP TABLE t1;
-
 CREATE TABLE t1(c1 INT NOT NULL, c2 VARCHAR(50) NOT NULL) ENGINE=csv;
-EOF
---cat_file $MYSQLD_DATADIR/test/t1.CSV
-
---echo -- select from the table in which the data has been filled in using
---echo -- the hard-coded .CSV file
---error ER_CRASHED_ON_USAGE
 SELECT * FROM t1;
-
 DROP TABLE t1;
-
 CREATE TABLE t1(c1 INT NOT NULL, c2 VARCHAR(50) NOT NULL) ENGINE=csv;
-EOF
---cat_file $MYSQLD_DATADIR/test/t1.CSV
-
---echo -- select from the table in which the data has been filled in using
---echo -- the hard-coded .CSV file
---error ER_CRASHED_ON_USAGE
 SELECT * FROM t1;
-
 DROP TABLE t1;
 CREATE TABLE t(j JSON NOT NULL) ENGINE = CSV;
 INSERT INTO t VALUES ('{"a": 1, "b": 2}');

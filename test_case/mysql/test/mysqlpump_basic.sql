@@ -1,6 +1,4 @@
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
 CREATE TABLE t1 (a INT);
 CREATE TABLE t2 (a INT, b VARCHAR(10), primary key(a));
 CREATE TABLE t3 (`a"b"` char(2));
@@ -11,17 +9,14 @@ CREATE TABLE t4 (
   comment VARCHAR(1024) DEFAULT NULL,
   PRIMARY KEY (name)
 );
-
 CREATE TABLE t5 (
   id int(11) NOT NULL,
   id2 tinyint(3) NOT NULL,
   PRIMARY KEY (id),
   KEY index2 (id2)
 );
-
 CREATE TABLE t6 (`x"z"` INT, xyz VARCHAR(20), notes TEXT);
 ALTER TABLE t6 ADD INDEX t6_index (`x"z"`, xyz, notes(3));
-
 CREATE TABLE t7 (
   PS_PARTKEY int(11) NOT NULL,
   PS_SUPPKEY int(11) NOT NULL,
@@ -29,22 +24,18 @@ CREATE TABLE t7 (
   PS_SUPPLYCOST float NOT NULL,
   PS_COMMENT varchar(199) NOT NULL
 );
-
 ALTER TABLE t7 ADD PRIMARY KEY (PS_PARTKEY,PS_SUPPKEY);
-
 CREATE TABLE t8 (
   c_id INT(11) NOT NULL AUTO_INCREMENT,
   c_name VARCHAR(255) NOT NULL,
   c_description text,
   PRIMARY KEY (c_id)
 );
-
 CREATE TABLE t9 (
   v_id INT(11) NOT NULL AUTO_INCREMENT,
   v_name VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (v_id)
 );
-
 CREATE TABLE t10 (
   p_id INT(11) NOT NULL AUTO_INCREMENT,
   p_name VARCHAR(355) NOT NULL,
@@ -54,22 +45,18 @@ CREATE TABLE t10 (
   KEY fk_t8 (c_id),
   CONSTRAINT t10_ibfk_1 FOREIGN KEY (c_id) REFERENCES t8 (c_id) ON UPDATE CASCADE
 );
-
 CREATE TABLE t11 (
    num int PRIMARY KEY,
    FOREIGN KEY (num) REFERENCES t9 (v_id)
 );
-
 ALTER TABLE t10 ADD COLUMN v_id INT NOT NULL AFTER c_id;
 ALTER TABLE t10 ADD FOREIGN KEY fk_t9(v_id) REFERENCES
       t9(v_id) ON DELETE NO ACTION ON UPDATE CASCADE;
-
 CREATE TABLE t12 (
   ID bigint NOT NULL DEFAULT '0',
   v bigint NOT NULL,
   PRIMARY KEY (ID,v)
 );
-
 CREATE TABLE t13 (
   ID bigint NOT NULL DEFAULT '0',
   k varchar(30) NOT NULL DEFAULT '',
@@ -77,51 +64,33 @@ CREATE TABLE t13 (
   PRIMARY KEY (ID, v, k),
   CONSTRAINT relation_tags_ibfk_1 FOREIGN KEY (ID, v) REFERENCES t12 (ID,v)
 );
-
 INSERT INTO t4  (name) VALUES ('disk_temptable_create_cost');
 INSERT INTO t4  (name) VALUES ('disk_temptable_row_cost');
 INSERT INTO t4  (name) VALUES ('key_compare_cost');
 INSERT INTO t4  (name) VALUES ('memory_temptable_create_cost');
 INSERT INTO t4  (name) VALUES ('memory_temptable_row_cost');
 INSERT INTO t4  (name) VALUES ('row_evaluate_cost');
-
--- store table value before backup
 SELECT last_update INTO @val1 FROM t4 WHERE name= 'disk_temptable_create_cost';
 SELECT last_update INTO @val2 FROM t4 WHERE name= 'disk_temptable_row_cost';
 SELECT last_update INTO @val3 FROM t4 WHERE name= 'key_compare_cost';
 SELECT last_update INTO @val4 FROM t4 WHERE name= 'memory_temptable_create_cost';
 SELECT last_update INTO @val5 FROM t4 WHERE name= 'memory_temptable_row_cost';
 SELECT last_update INTO @val6 FROM t4 WHERE name= 'row_evaluate_cost';
-
 INSERT INTO t1 VALUES (289), (298), (234), (456), (789);
 INSERT INTO t2 VALUES (1, "on"), (2, "off"), (10, "pol"), (12, "meg");
 INSERT INTO t3 VALUES ("1\""), ("\"2");
-
 CREATE VIEW v1 AS SELECT * FROM t2;
 CREATE VIEW v2 AS SELECT * FROM t1;
 CREATE VIEW v3 AS SELECT v1.*,v2.a as X FROM v1,v2;
 CREATE VIEW v11 AS SELECT * FROM v3;
-
 CREATE TEMPORARY TABLE t14 (id INT);
-
-CREATE TRIGGER trig1 BEFORE INSERT ON t1 FOR EACH ROW SET NEW.a = 1;
-CREATE TRIGGER trig2 BEFORE UPDATE ON t1 FOR EACH ROW SET NEW.a = 999;
-
 CREATE EVENT ev1 ON SCHEDULE AT '2030-01-01 00:00:00' DO SET @a=5;
 CREATE EVENT ev2 ON SCHEDULE EVERY 5 HOUR DO SELECT 1;
-CREATE PROCEDURE t_cache()
-BEGIN
-  SET @A= 20;
-  SELECT * FROM t1;
-  SELECT * FROM t1;
-  SELECT * FROM t1;
-  SELECT * FROM t1;
-END ;
-CREATE FUNCTION f1 () RETURNS int
-BEGIN
-SET NAMES 'big5';
-END ;
-
+SELECT * FROM t1;
+SELECT * FROM t1;
+PREPARE x FROM 'SELECT 1';
+SELECT * FROM t1;
+SELECT * FROM t1;
 SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
        WHERE TABLE_SCHEMA='db1_basic' AND TABLE_TYPE= 'BASE TABLE'
        ORDER BY TABLE_NAME;
@@ -139,7 +108,6 @@ SELECT EVENT_NAME FROM INFORMATION_SCHEMA.EVENTS
 SELECT TRIGGER_NAME FROM INFORMATION_SCHEMA.TRIGGERS
        WHERE TRIGGER_SCHEMA='db1_basic' ORDER BY TRIGGER_NAME;
 DROP DATABASE db1_basic;
-
 SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
        WHERE TABLE_SCHEMA='db1_basic' AND TABLE_TYPE= 'BASE TABLE'
        ORDER BY TABLE_NAME;
@@ -156,158 +124,59 @@ SELECT EVENT_NAME FROM INFORMATION_SCHEMA.EVENTS
        WHERE EVENT_SCHEMA='db1_basic' ORDER BY EVENT_NAME;
 SELECT TRIGGER_NAME FROM INFORMATION_SCHEMA.TRIGGERS
        WHERE TRIGGER_SCHEMA='db1_basic' ORDER BY TRIGGER_NAME;
-
--- restore and check the values
-SELECT 1 FROM db1_basic.t4 WHERE name= 'disk_temptable_create_cost' AND last_update = @val1;
-SELECT 2 FROM db1_basic.t4 WHERE name= 'disk_temptable_row_cost' AND last_update = @val2;
-SELECT 3 FROM db1_basic.t4 WHERE name= 'key_compare_cost' AND last_update = @val3;
-SELECT 4 FROM db1_basic.t4 WHERE name= 'memory_temptable_create_cost' AND last_update = @val4;
-SELECT 5 FROM db1_basic.t4 WHERE name= 'memory_temptable_row_cost' AND last_update = @val5;
-SELECT 6 FROM db1_basic.t4 WHERE name= 'row_evaluate_cost' AND last_update = @val6;
-DROP DATABASE db1_basic;
-DROP DATABASE db1_basic;
-DROP DATABASE db1_basic;
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
 CREATE TABLE t0 (`b` blob);
 INSERT INTO `t0` VALUES (0x602010000280100005E71A);
 DROP DATABASE db1_basic;
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
 DROP TABLE IF EXISTS `t0`;
 CREATE TABLE `t0` (a INT);
 INSERT INTO `t0` VALUES (1),(2),(3);
 INSERT INTO `t0` VALUES (4),(5),(6);
 DROP DATABASE db1_basic;
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
 DROP TABLE IF EXISTS `t0`;
 CREATE TABLE `t0` (a int);
 INSERT INTO `t0` VALUES (1),(2),(3);
 DROP DATABASE db1_basic;
 CREATE DATABASE db1_basic;
-USE db1_basic;
-CREATE TABLE t0 ( a INT, b VARCHAR(10), c TIMESTAMP DEFAULT CURRENT_TIMESTAMP );
-INSERT INTO t0(a,b) VALUES (1, 'temptable'), (2, 'temptable');
-INSERT INTO t0(a,b) VALUES (3, ''), (4, NULL);
 DROP DATABASE db1_basic;
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
-CREATE TABLE t0 ( a INT );
-CREATE TABLE t2 ( a INT );
 INSERT INTO t0 VALUES (1), (2);
-INSERT INTO t2 VALUES (1), (2);
-
 SELECT * FROM t0 ORDER BY a;
 SELECT * FROM t2 ORDER BY a;
 DROP DATABASE db1_basic;
-USE db1_basic;
 SELECT * FROM t0 ORDER BY a;
 SELECT * FROM t2 ORDER BY a;
-DROP DATABASE db1_basic;
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
-CREATE TABLE t0 (c1 INT);
-CREATE TABLE t2 (c1 INT);
 INSERT INTO t0 VALUES (1), (2), (3);
-INSERT INTO t2 VALUES (1), (2), (3);
 DROP DATABASE db1_basic;
-USE db1_basic;
 SELECT * FROM t0;
 SELECT * FROM t2;
-DROP DATABASE db1_basic;
-
 CREATE DATABASE db1_basic;
-USE db1_basic;
-CREATE TABLE t1 (a1 INT);
-CREATE TABLE t2 (a1 INT, b1 VARCHAR(10), primary key(a1));
-
 CREATE DATABASE db3_basic;
-USE db3_basic;
-CREATE TABLE t1 (a3 INT);
-CREATE TABLE t2 (a3 INT, b3 VARCHAR(10), primary key(a3));
-CREATE VIEW v1 AS SELECT * FROM db1_basic.t2;
-
 CREATE DATABASE db2_basic;
-USE db2_basic;
-CREATE TABLE t1 (a2 INT);
-CREATE TABLE t2 (a2 INT, b2 VARCHAR(10), primary key(a2));
-CREATE VIEW v1 AS SELECT * FROM db1_basic.t2;
-CREATE VIEW v2 AS SELECT * FROM db3_basic.t1;
-
 CREATE DATABASE db4_basic;
-USE db4_basic;
-CREATE TABLE t1 (a4 INT);
-CREATE TABLE t2 (a4 INT, b4 VARCHAR(10), primary key(a4));
-CREATE VIEW v1 AS SELECT * FROM db1_basic.t2,db3_basic.t1;
-CREATE VIEW v2 AS SELECT * FROM db2_basic.t1,db1_basic.t2;
 DROP DATABASE db1_basic;
 DROP DATABASE db2_basic;
 DROP DATABASE db3_basic;
 DROP DATABASE db4_basic;
-
--- test with default-parallelism=0
---exec $MYSQL_PUMP --default-parallelism=0 --exclude-databases=mysql,mtr > $MYSQLTEST_VARDIR/tmp/db1_basic.sql
-DROP DATABASE db1_basic;
-DROP DATABASE db2_basic;
-DROP DATABASE db3_basic;
-DROP DATABASE db4_basic;
-
-DROP DATABASE db1_basic;
-DROP DATABASE db2_basic;
-DROP DATABASE db3_basic;
-DROP DATABASE db4_basic;
-
 CREATE DATABASE bug21650559;
-USE bug21650559;
-CREATE TABLE t1 (pk INTEGER, a INTEGER, b INTEGER, c VARCHAR(16),
-                 sum INTEGER GENERATED ALWAYS AS (a+b),
-                 sub VARCHAR(4) GENERATED ALWAYS AS (SUBSTRING(c, 1, 4)),
-                 key k1(sum),
-                 key k2(sub)
-);
-CREATE TABLE t2 (pk INTEGER, a INTEGER, b INTEGER,
-                 sum INTEGER GENERATED ALWAYS AS (a+b),
-                 c VARCHAR(16),
-                 key k1(sum)
-);
-CREATE TABLE t3 (sum INTEGER GENERATED ALWAYS AS (a+(EXTRACT(YEAR from pk))),
-                 pk TIMESTAMP, a INTEGER,
-                 c VARCHAR(16)
-);
-
-INSERT INTO t1(pk, a, b, c) VALUES (1, 11, 12, 'oneone'), (2, 21, 22, 'twotwo');
-SELECT * FROM t1;
-INSERT INTO t2(pk, a, b, c) VALUES (1, 11, 12, 'oneone'), (2, 21, 22, 'twotwo');
-SELECT * FROM t2;
-INSERT INTO t3(pk, a, c) VALUES ('2003-01-02 10:30:00.000123', 11, 12), ('2015-11-22 00:30:00', 21, 22);
-SELECT * FROM t3;
-DROP DATABASE bug21650559;
-USE bug21650559;
 SELECT * FROM t1;
 SELECT * FROM t2;
 SELECT * FROM t3;
 DROP DATABASE bug21650559;
-
+SELECT * FROM t1;
+SELECT * FROM t2;
+SELECT * FROM t3;
 CREATE DATABASE bug22505474;
-USE bug22505474;
-CREATE TABLE t1 (a INT);
 INSERT INTO t1 VALUES (1),(2),(3);
 CREATE VIEW `v 1` AS SELECT * FROM t1;
 SELECT * FROM `v 1`;
 DROP DATABASE bug22505474;
-USE bug22505474;
 SELECT * FROM t1;
 SELECT * FROM `v 1`;
-DROP DATABASE bug22505474;
-
 CREATE DATABASE bug22726732;
-USE bug22726732;
 CREATE TABLE `part1_hash` (
    `id` int(11) NOT NULL,
    `fname` varchar(30) DEFAULT NULL,
@@ -317,7 +186,6 @@ CREATE TABLE `part1_hash` (
    KEY `id` (`id`)
  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
  PARTITION BY HASH (MONTH(hired)) PARTITIONS 2;
-
 CREATE TABLE `part2_hash` (
     `firstname` VARCHAR(25) NOT NULL,
     `lastname` VARCHAR(25) NOT NULL,
@@ -332,7 +200,6 @@ PARTITION BY RANGE( YEAR(joined) ) (
     PARTITION p3 VALUES LESS THAN (1990),
     PARTITION p4 VALUES LESS THAN MAXVALUE
 );
-
 CREATE TABLE `part3_hash` (
     `id` INT NOT NULL,
     `fname` VARCHAR(30),
@@ -349,164 +216,28 @@ PARTITION BY LIST(store_id) (
     PARTITION pCentral VALUES IN (7,8,15,16)
 );
 DROP DATABASE bug22726732;
-USE bug22726732;
-DROP DATABASE bug22726732;
-
 CREATE DATABASE bug23072245;
-USE bug23072245;
 CREATE TABLE test1(a1 INT);
 CREATE TABLE test2(a2 INT);
 CREATE TABLE test3(a3 INT NOT NULL AUTO_INCREMENT PRIMARY KEY);
 CREATE TABLE test4(a4 INT NOT NULL AUTO_INCREMENT PRIMARY KEY, b4 INT DEFAULT 0);
-CREATE TRIGGER testref BEFORE INSERT ON test1
-FOR EACH ROW
-BEGIN
- INSERT INTO test2 SET a2 = NEW.a1;
- DELETE FROM test3 WHERE a3 = NEW.a1;
- UPDATE test4 SET b4 = b4 + 1 WHERE a4 = NEW.a1;
-END ;
 DROP DATABASE bug23072245;
-USE bug23072245;
-DROP DATABASE bug23072245;
-
---
--- Bug #23721446 MYSQLPUMP DOES NOT DUMPS ALL THE GRANT STATEMENTS OF USERS
---
-
-CREATE USER bug23721446_u1,bug23721446_u2;
 CREATE DATABASE db23721446;
 CREATE TABLE db23721446.t(i int);
-CREATE PROCEDURE db23721446.sp(out p1 int)
-BEGIN
-    select count(*) from db23721446.t;
-END ;
-DROP USER bug23721446_u1,bug23721446_u2;
 DROP DATABASE db23721446;
-DROP USER bug23721446_u1,bug23721446_u2;
-DROP DATABASE db23721446;
-
--- echo --
--- echo -- Bug#22919028 - MYSQLPUMP DOES NOT HANDLE RE-IMPORT FROM UPGRADE
--- echo --
-
 CREATE DATABASE bug22919028;
-USE bug22919028;
 CREATE TABLE t (i DATE);
-SET SQL_MODE = ALLOW_INVALID_DATES;
-INSERT INTO t VALUES('2016-02-31');
 DROP DATABASE bug22919028;
-SELECT * FROM bug22919028.t;
-
--- Cleanup
---remove_file $MYSQLTEST_VARDIR/tmp/bug22919028.sql
-DROP DATABASE bug22919028;
-
--- echo --
--- echo -- Bug#26694675: MYSQLPUMP SPAMS WITH SQL_NO_CACHE DEPRECATION WARNINGS
--- echo --
-
 CREATE DATABASE bug26694675;
-USE bug26694675;
-CREATE TABLE t (i INT);
-INSERT INTO t VALUES (9), (0);
 DROP DATABASE bug26694675;
-let SEARCH_FILE= $MYSQLTEST_VARDIR/log/err.log;
-let SEARCH_PATTERN= mysqlpump: \[WARNING\];
-
--- cleanup
---remove_file $MYSQLTEST_VARDIR/log/err.log
---remove_file $MYSQLTEST_VARDIR/tmp/bug26694675.sql
-
--- echo --
--- echo -- Bug#26116415 TABLESPACE CLAUSE CONFUSES MYSQLPUMP
--- echo --
-
 CREATE TABLESPACE `mytbsp` ADD DATAFILE 'mytbsp.ibd' ENGINE INNODB;
-
-CREATE TABLE `test`.`t1` (a integer) TABLESPACE `mytbsp`;
-
-DROP TABLE `test`.`t1`;
-
-DROP TABLE `test`.`t1`;
 DROP TABLESPACE `mytbsp`;
-
--- echo --
--- echo -- Bug#29023216: MYSQLPUMP SHOULD WRITE USERS AND GRANTS BEFORE VIEWS AND STORED PROGRAMS
--- echo --
-
 CREATE DATABASE DB29023216;
-CREATE USER 'VIEWUSER'@'LOCALHOST';
-
-USE DB29023216;
-CREATE TABLE T1 (ID INT UNSIGNED NOT NULL PRIMARY KEY, VAL VARCHAR(10));
-CREATE DEFINER=VIEWUSER@LOCALHOST SQL SECURITY INVOKER VIEW V_T1_A AS SELECT * FROM T1;
-CREATE DEFINER=VIEWUSER@LOCALHOST SQL SECURITY DEFINER VIEW V_T1_B AS SELECT * FROM T1;
-CREATE SQL SECURITY DEFINER VIEW V_T1_A2 AS SELECT * FROM V_T1_A;
-CREATE SQL SECURITY DEFINER VIEW V_T1_B2 AS SELECT * FROM V_T1_B;
 DROP DATABASE DB29023216;
-DROP USER 'VIEWUSER'@'LOCALHOST';
-
-USE DB29023216;
-SELECT * FROM V_T1_A;
-SELECT * FROM V_T1_B;
-SELECT * FROM V_T1_A2;
-SELECT * FROM V_T1_B2;
-CREATE DEFINER=VIEWUSER@LOCALHOST FUNCTION TESTFUNC() RETURNS BOOL RETURN TRUE;
-CREATE VIEW V_T1_C AS SELECT DB29023216.TESTFUNC();
-DROP DATABASE DB29023216;
-DROP USER 'VIEWUSER'@'LOCALHOST';
-
-USE DB29023216;
-SELECT * FROM V_T1_C;
-DROP DATABASE DB29023216;
-DROP USER 'VIEWUSER'@'LOCALHOST';
-USE test;
-
-CREATE TABLE t1(f1 INT INVISIBLE, f2 INT,
-                f3 INT AS (f1 + 10), f4 INT AS (f2 + 10) INVISIBLE);
-CREATE TABLE t2(f1 INT, f2 INT);
-
-INSERT INTO t1(f1, f2) VALUES (10, 20), (20, 30);
-INSERT INTO t2(f1, f2) VALUES (10, 20), (20, 30);
 DROP TABLE t1, t2;
-SELECT * FROM t1 ORDER BY f2;
-SELECT f1, f2, f3, f4 FROM t1 ORDER BY f2;
-SELECT * FROM t2 ORDER BY f2;
-DROP TABLE t1, t2;
-
-SET @saved_global_sql_generate_invisible_primary_key =
-       @@global.sql_generate_invisible_primary_key;
-SET @saved_session_sql_generate_invisible_primary_key =
-       @@session.sql_generate_invisible_primary_key;
-
--- User created column "my_row_id" with generated invisible primary key column
--- properties and primary key on it, is treated as generated invisible primary
--- key column.
 CREATE TABLE t1 (my_row_id bigint unsigned NOT NULL AUTO_INCREMENT INVISIBLE, f INT,
                  PRIMARY KEY(my_row_id));
 INSERT INTO t1 VALUES (1), (3), (7), (8), (4);
-
-SET SESSION sql_generate_invisible_primary_key=ON;
 CREATE TABLE t2(f1 INT INVISIBLE, f2 INT);
 INSERT INTO t2(f1, f2) VALUES (10, 20), (20, 30);
 DROP TABLE t1, t2;
-SELECT * FROM t1;
-SELECT my_row_id, f FROM t1;
-SELECT * FROM t2;
-SELECT my_row_id, f1, f2 FROM t2;
-DROP TABLE t1, t2;
-SELECT * FROM t1;
-SELECT f FROM t1;
-SELECT * FROM t2;
-SELECT f1, f2 FROM t2;
-DROP TABLE t1, t2;
-SET GLOBAL sql_generate_invisible_primary_key = ON;
-SELECT * FROM t1;
-SELECT my_row_id, f FROM t1;
-SELECT * FROM t2;
-SELECT my_row_id, f1, f2 FROM t2;
-DROP TABLE t1, t2;
-SET GLOBAL sql_generate_invisible_primary_key =
-             @saved_global_sql_generate_invisible_primary_key;
-SET SESSION sql_generate_invisible_primary_key =
-              @saved_session_sql_generate_invisible_primary_key;

@@ -1,51 +1,21 @@
-
-SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
-
---
--- test of rtree (using with spatial data)
---
---disable_warnings
 DROP TABLE IF EXISTS t1, t2;
-
 CREATE TABLE t1 (
   fid INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   g GEOMETRY NOT NULL SRID 0,
   SPATIAL KEY(g)
 ) ENGINE=MyISAM;
-
-let $1=150;
-let $2=150;
-{
-  eval INSERT INTO t1 (g) VALUES (ST_GeomFromText('LineString($1 $1, $2 $2)'));
-  dec $1;
-  inc $2;
-
 SELECT count(*) FROM t1;
 SELECT fid, ST_AsText(g) FROM t1 WHERE ST_Within(g, ST_GeomFromText('Polygon((140 140,160 140,160 160,140 160,140 140))'));
-
 DROP TABLE t1;
-
 CREATE TABLE t2 (
   fid INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   g GEOMETRY NOT NULL SRID 0
 ) ENGINE=MyISAM;
-
-let $1=10;
-{
-  let $2=10;
-  {
-    eval INSERT INTO t2 (g) VALUES (LineString(Point($1 * 10 - 9, $2 * 10 - 9), Point($1 * 10, $2 * 10)));
-    dec $2;
-  }
-  dec $1;
-
 ALTER TABLE t2 ADD SPATIAL KEY(g);
 SELECT count(*) FROM t2;
 SELECT fid, ST_AsText(g) FROM t2 WHERE ST_Within(g, 
   ST_GeomFromText('Polygon((40 40,60 40,60 60,40 60,40 40))'));
-
 DROP TABLE t2;
-
 drop table if exists t1;
 CREATE TABLE t1 (a geometry NOT NULL SRID 0, SPATIAL (a));
 INSERT INTO t1 VALUES (ST_GeomFromText("LINESTRING(100 100, 200 200, 300 300)"));
@@ -78,20 +48,13 @@ INSERT INTO t1 VALUES (ST_GeomFromText("LINESTRING(100 100, 200 200, 300 300)"))
 INSERT INTO t1 VALUES (ST_GeomFromText("LINESTRING(100 100, 200 200, 300 300)"));
 INSERT INTO t1 VALUES (ST_GeomFromText("LINESTRING(100 100, 200 200, 300 300)"));
 drop table t1;
-
---
--- The following crashed gis
---
-
 CREATE TABLE t1 (
   fid INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   g GEOMETRY NOT NULL SRID 0,
   SPATIAL KEY(g)
 ) ENGINE=MyISAM;
-
 INSERT INTO t1 (g) VALUES (ST_GeomFromText('LineString(1 2, 2 3)')),(ST_GeomFromText('LineString(1 2, 2 4)'));
 drop table t1;
-
 CREATE TABLE t1 (
   line LINESTRING NOT NULL SRID 0,
   kind ENUM('po', 'pp', 'rr', 'dr', 'rd', 'ts', 'cl') NOT NULL DEFAULT 'po',
@@ -101,66 +64,24 @@ CREATE TABLE t1 (
 
 
 ) engine=myisam;
-
 ALTER TABLE t1 DISABLE KEYS;
-INSERT INTO t1 (name, kind, line) VALUES 
-  ("Aadaouane", "pp", ST_GeomFromText("POINT(32.816667 35.983333)")),
-  ("Aadassiye", "pp", ST_GeomFromText("POINT(35.816667 36.216667)")),
-  ("Aadbel", "pp", ST_GeomFromText("POINT(34.533333 36.100000)")),
-  ("Aadchit", "pp", ST_GeomFromText("POINT(33.347222 35.423611)")),
-  ("Aadchite", "pp", ST_GeomFromText("POINT(33.347222 35.423611)")),
-  ("Aadchit el Qoussair", "pp", ST_GeomFromText("POINT(33.283333 35.483333)")),
-  ("Aaddaye", "pp", ST_GeomFromText("POINT(36.716667 40.833333)")),
-  ("'Aadeissa", "pp", ST_GeomFromText("POINT(32.823889 35.698889)")),
-  ("Aaderup", "pp", ST_GeomFromText("POINT(55.216667 11.766667)")),
-  ("Qalaat Aades", "pp", ST_GeomFromText("POINT(33.503333 35.377500)")),
-  ("A ad'ino", "pp", ST_GeomFromText("POINT(54.812222 38.209167)")),
-  ("Aadi Noia", "pp", ST_GeomFromText("POINT(13.800000 39.833333)")),
-  ("Aad La Macta", "pp", ST_GeomFromText("POINT(35.779444 -0.129167)")),
-  ("Aadland", "pp", ST_GeomFromText("POINT(60.366667 5.483333)")),
-  ("Aadliye", "pp", ST_GeomFromText("POINT(33.366667 36.333333)")),
-  ("Aadloun", "pp", ST_GeomFromText("POINT(33.403889 35.273889)")),
-  ("Aadma", "pp", ST_GeomFromText("POINT(58.798333 22.663889)")),
-  ("Aadma Asundus", "pp", ST_GeomFromText("POINT(58.798333 22.663889)")),
-  ("Aadmoun", "pp", ST_GeomFromText("POINT(34.150000 35.650000)")),
-  ("Aadneram", "pp", ST_GeomFromText("POINT(59.016667 6.933333)")),
-  ("Aadneskaar", "pp", ST_GeomFromText("POINT(58.083333 6.983333)")),
-  ("Aadorf", "pp", ST_GeomFromText("POINT(47.483333 8.900000)")),
-  ("Aadorp", "pp", ST_GeomFromText("POINT(52.366667 6.633333)")),
-  ("Aadouane", "pp", ST_GeomFromText("POINT(32.816667 35.983333)")),
-  ("Aadoui", "pp", ST_GeomFromText("POINT(34.450000 35.983333)")),
-  ("Aadouiye", "pp", ST_GeomFromText("POINT(34.583333 36.183333)")),
-  ("Aadouss", "pp", ST_GeomFromText("POINT(33.512500 35.601389)")),
-  ("Aadra", "pp", ST_GeomFromText("POINT(33.616667 36.500000)")),
-  ("Aadzi", "pp", ST_GeomFromText("POINT(38.100000 64.850000)"));
-
 ALTER TABLE t1 ENABLE KEYS;
 INSERT INTO t1 (name, kind, line) VALUES ("austria", "pp", ST_GeomFromText('LINESTRING(14.9906 48.9887,14.9946 48.9904,14.9947 48.9916)'));
 drop table t1;
-
 CREATE TABLE t1 (st varchar(100));
 INSERT INTO t1 VALUES ("Fake string");
 CREATE TABLE t2 (geom GEOMETRY NOT NULL SRID 0, SPATIAL KEY gk(geom));
-INSERT INTO t2 SELECT ST_GeomFromText(st) FROM t1;
 drop table t1, t2;
-
 CREATE TABLE t1 (`geometry` geometry NOT NULL SRID 0,SPATIAL KEY `gndx` (`geometry`)) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 INSERT INTO t1 (geometry) VALUES
 (ST_PolygonFromText('POLYGON((-18.6086111000 -66.9327777000, -18.6055555000
 -66.8158332999, -18.7186111000 -66.8102777000, -18.7211111000 -66.9269443999,
 -18.6086111000 -66.9327777000))'));
-
 INSERT INTO t1 (geometry) VALUES
 (ST_PolygonFromText('POLYGON((-65.7402776999 -96.6686111000, -65.7372222000
 -96.5516666000, -65.8502777000 -96.5461111000, -65.8527777000 -96.6627777000,
 -65.7402776999 -96.6686111000))'));
-
 drop table t1;
-
---
--- Bug#17877 - Corrupted spatial index
---
 CREATE TABLE t1 (
   c1 geometry NOT NULL SRID 0,
   SPATIAL KEY i1 (c1)
@@ -195,10 +116,6 @@ INSERT INTO t1 (c1) VALUES (
                             -18.7211111000 -66.9269443999,
                             -18.6086111000 -66.9327777000))'));
 DROP TABLE t1;
-
---
--- Bug #21888: Query on GEOMETRY field using PointFromWKB() results in lost connection
---
 CREATE TABLE t1 (foo GEOMETRY NOT NULL SRID 0, SPATIAL INDEX(foo) );
 INSERT INTO t1 (foo) VALUES (POINT(1,1));
 INSERT INTO t1 (foo) VALUES (POINT(1,0));
@@ -206,10 +123,6 @@ INSERT INTO t1 (foo) VALUES (POINT(0,1));
 INSERT INTO t1 (foo) VALUES (POINT(0,0));
 SELECT 1 FROM t1 WHERE foo != POINT(0,0);
 DROP TABLE t1;
-
---
--- Bug#25673 - spatial index corruption, error 126 incorrect key file for table
---
 CREATE TABLE t1 (id bigint(12) unsigned NOT NULL auto_increment,
   c2 varchar(15) COLLATE utf8mb3_bin default NULL,
   c1 varchar(15) COLLATE utf8mb3_bin default NULL,
@@ -319,16 +232,6 @@ INSERT INTO t1 (c2, c1, c3, spatial_point) VALUES
   ('o', 'f', 'm', ST_GeomFromText('POINT(232 218)')),
   ('c', 'w', 'j', ST_GeomFromText('POINT(156 165)')),
   ('s', 'q', 'v', ST_GeomFromText('POINT(98 161)'));
-SET @@RAND_SEED1=692635050, @@RAND_SEED2=297339954;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=159925977, @@RAND_SEED2=942570618;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=328169745, @@RAND_SEED2=410451954;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=178507359, @@RAND_SEED2=332493072;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=1034033013, @@RAND_SEED2=558966507;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(230 9)') where  c1 like 'y%';
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(95 35)') where  c1 like 'j%';
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(93 99)') where  c1 like 'a%';
@@ -600,16 +503,6 @@ INSERT INTO t1 (c2, c1, c3, spatial_point) VALUES
   ('m', 'i', 'd', ST_GeomFromText('POINT(117 226)')),
   ('z', 'y', 'y', ST_GeomFromText('POINT(62 81)')),
   ('g', 'v', 'm', ST_GeomFromText('POINT(66 158)'));
-SET @@RAND_SEED1=481064922, @@RAND_SEED2=438133497;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=280535103, @@RAND_SEED2=444518646;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=1072017234, @@RAND_SEED2=484203885;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=358851897, @@RAND_SEED2=358495224;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
-SET @@RAND_SEED1=509031459, @@RAND_SEED2=675962925;
-DELETE FROM t1 ORDER BY RAND() LIMIT 10;
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(61 203)') where  c1 like 'y%';
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(202 194)') where  c1 like 'f%';
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(228 18)') where  c1 like 'h%';
@@ -701,7 +594,6 @@ INSERT INTO t1 (c2, c1, c3, spatial_point) VALUES
   ('u', 't', 'w', ST_GeomFromText('POINT(251 188)')),
   ('h', 's', 'w', ST_GeomFromText('POINT(254 247)')),
   ('f', 'f', 'b', ST_GeomFromText('POINT(166 103)'));
-SET @@RAND_SEED1=866613816, @@RAND_SEED2=92289615;
 INSERT INTO t1 (c2, c1, c3, spatial_point) VALUES
   ('l', 'c', 'l', ST_GeomFromText('POINT(202 98)')),
   ('k', 'c', 'b', ST_GeomFromText('POINT(46 206)')),
@@ -759,11 +651,6 @@ INSERT INTO t1 (c2, c1, c3, spatial_point) VALUES
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(33 100)') where  c1 like 't%';
 UPDATE t1 set spatial_point=ST_GeomFromText('POINT(41 46)') where  c1 like 'f%';
 DROP TABLE t1;
-
---
--- Bug #30286 spatial index cause corruption and server crash!
---
-
 create table t1 (a geometry not null SRID 0, spatial index(a));
 insert into t1 values (POINT(1.1517219314031e+164, 131072));
 insert into t1 values (POINT(9.1248812352444e+192, 2.9740338169556e+284));
@@ -795,25 +682,9 @@ insert into t1 values (POINT(1.8033161362863e-130, 9.1248812352444e+192));
 insert into t1 values (POINT(4.7783097267365e-299, 2.2761049594727e-159));
 insert into t1 values (POINT(1.94906280228e+289, 1.2338789709327e-178));
 drop table t1;
-
--- End of 4.1 tests
-
---
--- bug #21790 (UNKNOWN ERROR on NULLs in RTree)
---
 CREATE TABLE t1(foo GEOMETRY NOT NULL SRID 0, SPATIAL INDEX(foo) );
-INSERT INTO t1(foo) VALUES (NULL);
-INSERT INTO t1() VALUES ();
-INSERT INTO t1(foo) VALUES ('');
 DROP TABLE t1;
-
---
--- Bug #23578: Corruption prevents Optimize table from working properly with a 
---             spatial index
---
-
 CREATE TABLE t1 (a INT AUTO_INCREMENT, b POINT NOT NULL SRID 0, KEY (a), SPATIAL KEY (b));
-
 INSERT INTO t1 (b) VALUES (ST_GeomFromText('POINT(1 2)'));
 INSERT INTO t1 (b) SELECT b FROM t1;
 INSERT INTO t1 (b) SELECT b FROM t1;
@@ -821,60 +692,32 @@ INSERT INTO t1 (b) SELECT b FROM t1;
 INSERT INTO t1 (b) SELECT b FROM t1;
 INSERT INTO t1 (b) SELECT b FROM t1;
 DROP TABLE t1;
-
-
---
--- Bug #29070: Error in spatial index
---
-
 CREATE TABLE t1 (a INT, b GEOMETRY NOT NULL SRID 0, SPATIAL KEY b(b));
 INSERT INTO t1 VALUES (1, ST_GEOMFROMTEXT('LINESTRING(1102218.456 1,2000000 2)'));
 INSERT INTO t1 VALUES (2, ST_GEOMFROMTEXT('LINESTRING(1102218.456 1,2000000 2)'));
-
--- must return the same number as the next select
 SELECT COUNT(*) FROM t1 WHERE
   MBRINTERSECTS(b, ST_GEOMFROMTEXT('LINESTRING(1 1,1102219 2)') );
 SELECT COUNT(*) FROM t1 IGNORE INDEX (b) WHERE
   MBRINTERSECTS(b, ST_GEOMFROMTEXT('LINESTRING(1 1,1102219 2)') );
-
 DROP TABLE t1;
 CREATE TABLE t1(a LINESTRING NOT NULL SRID 0, SPATIAL KEY(a));
 INSERT INTO t1 VALUES
   (ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)')),
   (ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)'));
 SELECT 1 FROM t1 WHERE a = ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)');
-SELECT 1 FROM t1 WHERE a < ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)');
-SELECT 1 FROM t1 WHERE a <= ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)');
-SELECT 1 FROM t1 WHERE a > ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)');
-SELECT 1 FROM t1 WHERE a >= ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)');
 DROP TABLE t1;
-
 CREATE TABLE t1(a GEOMETRY NOT NULL SRID 0,SPATIAL INDEX a(a));
-
--- second crash fixed when the tree has changed since the last search.
-HANDLER t1 OPEN;
 INSERT INTO t1 VALUES (ST_GeomFromText('Polygon((40 40,60 40,60 60,40 60,40 40))'));
-
 DROP TABLE t1;
-
 CREATE TABLE t1(a LINESTRING NOT NULL SRID 0, b GEOMETRY NOT NULL SRID 0,
   SPATIAL KEY(a), SPATIAL KEY(b)) ENGINE=MyISAM;
-INSERT INTO t1 VALUES(ST_GEOMFROMTEXT("point (0 0)"), ST_GEOMFROMTEXT("point (1 1)"));
-INSERT IGNORE INTO t1 SET a=ST_GEOMFROMTEXT("point (-6 0)"), b=ST_GEOMFROMTEXT("error");
-INSERT IGNORE INTO t1 SET a=ST_GEOMFROMTEXT("point (-6 0)"), b=NULL;
 SELECT ST_ASTEXT(a), ST_ASTEXT(b) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1(a INT NOT NULL, b GEOMETRY NOT NULL SRID 0,
   KEY(a), SPATIAL KEY(b)) ENGINE=MyISAM;
 INSERT INTO t1 VALUES(0, ST_GEOMFROMTEXT("point (1 1)"));
-INSERT IGNORE INTO t1 SET a=0, b=ST_GEOMFROMTEXT("error");
-INSERT IGNORE INTO t1 SET a=1, b=NULL;
 SELECT a, ST_ASTEXT(b) FROM t1;
 DROP TABLE t1;
-
-SET sql_mode = default;
-
 CREATE TABLE t1 (g GEOMETRY NOT NULL SRID 0, SPATIAL KEY (g)) ENGINE=MyISAM;
 DELETE FROM t1 WHERE ST_DISJOINT(g, POINT(1,1));
 DROP TABLE t1;

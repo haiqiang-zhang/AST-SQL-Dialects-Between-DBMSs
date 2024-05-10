@@ -1,26 +1,14 @@
-set global log_bin_trust_routine_creators=1;
-set table_type='MyISAM';
-select @@table_type='MyISAM';
-create table t1 (t6 timestamp) type=myisam;
-
-set sql_mode=pipes_as_concat;
 select 2 || 3;
 select 2 or 3;
 select concat(2,3);
-set sql_mode='';
 select 2 || 3;
 select 2 or 3;
-set sql_mode=default;
-
--- CREATE TABLE for column
 create table t1 (v varchar(10) binary);
 drop table t1;
 create table t1 (v varchar(10) character set latin1 binary);
 drop table t1;
 create table t1 (v varchar(10) binary character set latin1);
 drop table t1;
-
--- ASCII and UNICODE have dedicated yacc rules
 create table t1 (v varchar(10) binary ascii);
 drop table t1;
 create table t1 (v varchar(10) ascii binary);
@@ -29,78 +17,37 @@ create table t1 (v varchar(10) binary unicode);
 drop table t1;
 create table t1 (v varchar(10) unicode binary);
 drop table t1;
-
--- ALTER TABLE for column
 create table t1 (v varchar(10));
 alter table t1 modify v varchar(10) binary character set latin1;
 alter table t1 modify v varchar(10) unicode binary;
 alter table t1 modify v varchar(10) binary ascii;
 drop table t1;
-
 select collation(cast('a' as char(2))), collation(cast('a' as char(2) binary));
 select collation(convert('a', char(2))), collation(convert('a', char(2) binary));
 select collation(convert('a',char(2) ascii)), collation(convert('a',char(2) ascii binary));
-
--- A binary column:
-
 create table t1 (v binary(10));
 drop table t1;
-
--- table's charset:
-
 create table t1 (v varchar(10)) character set binary;
 drop table t1;
-
 create table t1 (v varchar(10));
 alter table t1 character set binary;
 drop table t1;
-
--- database's charset:
-
 create database mysqltest2 default character set = binary;
 drop database mysqltest2;
 create database mysqltest2 default character set = latin1;
 alter database mysqltest2 default character set = binary;
 drop database mysqltest2;
-
--- session variables:
-
 select @@character_set_client;
-set character set binary;
 select @@character_set_client;
-set character set default;
 select @@character_set_client;
-set names binary;
 select @@character_set_client;
-set names default;
-
--- misc:
-
--- gives binary charset
 select convert("123" using binary);
 select char(123 using binary);
 select collation(char(123)), collation(char(123 using binary));
-
--- creates varbinary
 create table t1 (v varchar(10) byte);
-
--- LOAD DATA INFILE '$file' :
--- and SELECT ... INTO OUTFILE:
-
--- https://dev.mysql.com/doc/refman/8.0/en/load-data.html says:
--- "If the contents of the input file use a character set that differs
--- from the default, it is usually preferable to specify the character set
--- of the file by using the CHARACTER SET clause. A character set of
--- binary specifies "no conversion.""
--- So it's not about implying a _bin collation of another charset:
--- no warning.
-
 insert into t1 values("xyz");
-select * from t1 into outfile 'tmp1.txt' character set binary;
 select * from t1;
-let $MYSQLD_DATADIR= `select @@datadir`;
 drop table t1;
-
 CREATE SCHEMA testdb;
 CREATE TABLE testdb.t1 (
     a VARCHAR (10000),
@@ -125,7 +72,6 @@ CREATE TABLE testdb.t4 (
     KEY (a),
     KEY (b(5))
 ) PARTITION BY KEY(c) PARTITIONS 10;
-CREATE TABLE testdb.l1 LIKE testdb.t1;
 ALTER TABLE testdb.t1 COMMENT='t1';
 CREATE TABLE testdb.t5 (
     a VARCHAR (10000),

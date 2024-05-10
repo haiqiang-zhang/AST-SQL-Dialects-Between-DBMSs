@@ -1,5 +1,3 @@
-
--- disable_warnings
 DROP TABLE IF EXISTS t1,t2,t3;
 CREATE TABLE t1(c1 DOUBLE, c2 DOUBLE, c3 DOUBLE, c4 DOUBLE, c5 DOUBLE,
   c6 DOUBLE, c7 DOUBLE, c8 DOUBLE, c9 DOUBLE, a INT PRIMARY KEY);
@@ -25,15 +23,7 @@ INSERT INTO t1 VALUES
 (2.51880677333017e-05,2.63051795435778e-05,2.79874748974906e-05,2.02888886670845e-05,1.8178636318197e-05,1.91308527003585e-05,1.83260023644133e-05,2.4422300558171e-05,1.96411467520551e-05,44),
 (2.22402118719591e-05,2.37546284320705e-05,2.58463051055541e-05,1.83391609130854e-05,1.6300720519646e-05,1.74559091886791e-05,1.63733785575587e-05,2.26616253279828e-05,1.79541237435621e-05,45),
 (3.01092775359837e-05,3.23865212934412e-05,4.09444584045994e-05,0,2.15470966302776e-05,2.39082636344032e-05,2.28296706429177e-05,2.9007671511595e-05,2.44201138973326e-05,46);
-let $MYSQLD_DATADIR= `select @@datadir`;
 DROP TABLE t1;
-
---
--- Bug#40949 Debug version of MySQL server crashes when run OPTIMIZE on compressed table.
--- expanded with testcase for
--- BUG#41574 - REPAIR TABLE: crashes for compressed tables
---
---disable_warnings
 drop table if exists t1;
 create table t1(f1 int, f2 char(255));
 insert into t1 values(1, 'foo'), (2, 'bar');
@@ -49,29 +39,14 @@ insert into t1 select * from t1;
 insert into t1 select * from t1;
 insert into t1 select * from t1;
 insert into t1 select * from t1;
-let $MYSQLD_DATADIR= `select @@datadir`;
 drop table t1;
 CREATE TABLE  t1(f1 VARCHAR(200), f2 TEXT);
 INSERT INTO  t1 VALUES ('foo', 'foo1'), ('bar', 'bar1');
-let $i=9;
- INSERT INTO t1 SELECT * FROM t1;
- dec $i;
-let $MYSQLD_DATADIR= `select @@datadir`;
+INSERT INTO t1 SELECT * FROM t1;
 SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE DATABASE mysql_db1;
 CREATE TABLE mysql_db1.t1 (c1 VARCHAR(5), c2 int);
-CREATE INDEX i1 ON mysql_db1.t1 (c1, c2);
-INSERT INTO mysql_db1.t1 VALUES ('A',1);
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-INSERT INTO mysql_db1.t1 SELECT * FROM mysql_db1.t1;
-let $MYSQLD_DATADIR= `select @@datadir`;
-SELECT COUNT(*) FROM mysql_db1.t1 WHERE c2 < 5;
 DROP DATABASE mysql_db1;
 CREATE TABLE t1(a CHAR(4), FULLTEXT(a));
 INSERT INTO t1 VALUES('aaaa'),('bbbb'),('cccc');
@@ -79,28 +54,14 @@ SELECT * FROM t1 WHERE MATCH(a) AGAINST('aaaa' IN BOOLEAN MODE);
 SELECT * FROM t1 WHERE MATCH(a) AGAINST('aaaa');
 DROP TABLE t1;
 CREATE TABLE t1(a CHAR(30), FULLTEXT(a));
-let $1=1700;
-{
-  eval INSERT INTO t1 VALUES('$1aaaaaaaaaaaaaaaaaaaaaaaaaa');
-  dec $1;
-let $1=60;
-{
-  eval INSERT INTO t1 VALUES('aaaa'),('aaaa'),('aaaa'),('aaaa'),('aaaa');
-  dec $1;
 DROP TABLE t1;
 CREATE DATABASE db1;
 CREATE TABLE db1.t1(c1 INT) ENGINE=MyISAM;
---# Added -f to force pack db in any case regardless the size of database 
---# being packed
-let $MYSQLD_DATADIR = `SELECT @@datadir`;
 DROP DATABASE db1;
-SET SESSION information_schema_stats_expiry=0;
-
 CREATE TABLE t1(a CHAR(4)) ENGINE=MYISAM;
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
 INSERT INTO t1 VALUES('aaaa'),('bbbb'),('cccc');
-let $MYSQLD_DATADIR= `select @@datadir`;
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
 SELECT COUNT(*) FROM t1;
@@ -112,5 +73,3 @@ SELECT COUNT(*) FROM t1;
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
 DROP TABLE t1;
-
-SET SESSION information_schema_stats_expiry=default;

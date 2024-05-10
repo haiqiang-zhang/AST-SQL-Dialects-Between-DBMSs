@@ -1,10 +1,7 @@
-
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 SELECT HEX('a'), HEX('a ');
 SELECT HEX(_utf16le 0x44);
 SELECT HEX(_utf16le 0x3344);
 SELECT HEX(_utf16le 0x113344);
-
 CREATE TABLE t1 (word VARCHAR(64), word2 CHAR(64)) CHARACTER SET utf16le;
 INSERT INTO t1 VALUES (_koi8r 0xF2, _koi8r 0xF2), (_ucs2 X'2004',_ucs2 X'2004');
 SELECT HEX(word) FROM t1 ORDER BY word;
@@ -24,32 +21,20 @@ INSERT INTO t1 VALUES (_utf32 X'010000', 10, _ucs2 X'0421');
 INSERT INTO t1 VALUES (_ucs2 X'0421', 10, _utf32 X'010000');
 SELECT a, pad, b, LPAD(a, pad, b), HEX(LPAD(a, pad, b)) FROM t1;
 DROP TABLE t1;
-
-
 CREATE TABLE t1 SELECT
 LPAD(_utf16le X'2004',10,_utf16le X'2104') l,
 RPAD(_utf16le X'2004',10,_utf16le X'2104') r;
 SELECT HEX(l), HEX(r) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 CHAR(30));
 INSERT INTO t1 VALUES ("103000"), ("22720000"), ("3401200"), ("78000");
 SELECT LPAD(f1, 12, "-o-/") FROM t1;
 DROP TABLE t1;
-
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
-
 CREATE TABLE t1 (a VARCHAR(10) CHARACTER SET utf16le);
-INSERT INTO t1 VALUES ('фыва'),('Фыва'),('фЫва'),('фыВа'),('фывА'),('ФЫВА');
-INSERT INTO t1 VALUES ('фывапролдж'),('Фывапролдж'),('фЫвапролдж'),('фыВапролдж');
-INSERT INTO t1 VALUES ('фывАпролдж'),('фываПролдж'),('фывапРолдж'),('фывапрОлдж');
-INSERT INTO t1 VALUES ('фывапроЛдж'),('фывапролДж'),('фывапролдЖ'),('ФЫВАПРОЛДЖ');
-SELECT * FROM t1 WHERE a LIKE '%фЫва%' ORDER BY BINARY a;
-SELECT * FROM t1 WHERE a LIKE '%фЫв%' ORDER BY BINARY a;
-SELECT * FROM t1 WHERE a LIKE 'фЫва%' ORDER BY BINARY a;
-SELECT * FROM t1 WHERE a LIKE 'фЫва%' COLLATE utf16le_bin ORDER BY BINARY a;
+SELECT * FROM t1 WHERE a LIKE '%ÃÂÃÂÃÂÃÂ«ÃÂÃÂ²ÃÂÃÂ°%' ORDER BY BINARY a;
+SELECT * FROM t1 WHERE a LIKE '%ÃÂÃÂÃÂÃÂ«ÃÂÃÂ²%' ORDER BY BINARY a;
+SELECT * FROM t1 WHERE a LIKE 'ÃÂÃÂÃÂÃÂ«ÃÂÃÂ²ÃÂÃÂ°%' ORDER BY BINARY a;
 DROP TABLE t1;
-
 CREATE TABLE t1 (word VARCHAR(64) NOT NULL, PRIMARY KEY (word))
 CHARACTER SET utf16le;
 INSERT INTO t1 (word) VALUES ("cat");
@@ -72,57 +57,46 @@ CREATE TABLE t1 (a CHAR(10) CHARACTER SET utf16le);
 INSERT INTO t1 VALUES (0x1),(0x11),(0x111),(0x1111),(0x11111);
 SELECT HEX(a) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a VARCHAR(10) CHARACTER SET utf16le);
 INSERT INTO t1 VALUES (0x1),(0x11),(0x111),(0x1111),(0x11111);
 SELECT HEX(a) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a TEXT CHARACTER SET utf16le);
 INSERT INTO t1 VALUES (0x1),(0x11),(0x111),(0x1111),(0x11111);
 SELECT HEX(a) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a MEDIUMTEXT CHARACTER SET utf16le);
 INSERT INTO t1 VALUES (0x1),(0x11),(0x111),(0x1111),(0x11111);
 SELECT HEX(a) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a LONGTEXT CHARACTER SET utf16le);
 INSERT INTO t1 VALUES (0x1),(0x11),(0x111),(0x1111),(0x11111);
 SELECT HEX(a) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1(a CHAR(1)) DEFAULT CHARSET utf16le;
 INSERT INTO t1 VALUES ('a'),('b'),('c');
 ALTER TABLE t1 MODIFY a CHAR(5);
 SELECT a, HEX(a) FROM t1;
 DROP TABLE t1;
-SET NAMES latin1;
-SET @ivar= 1234;
-SET @str1 = 'SELECT ?';
-SET @str2 = CONVERT(@str1 USING utf16le);
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 CREATE TABLE t1 (a ENUM('x','y','z') CHARACTER SET utf16le);
 INSERT INTO t1 VALUES ('x');
 INSERT INTO t1 VALUES ('y');
 INSERT INTO t1 VALUES ('z');
 SELECT a, HEX(a) FROM t1 ORDER BY a;
-ALTER TABLE t1 CHANGE a a ENUM('x','y','z','d','e','ä','ö','ü') CHARACTER SET utf16le;
+ALTER TABLE t1 CHANGE a a ENUM('x','y','z','d','e','ÃÂÃÂ¤','ÃÂÃÂ¶','ÃÂÃÂ¼') CHARACTER SET utf16le;
 INSERT INTO t1 VALUES ('D');
 INSERT INTO t1 VALUES ('E ');
-INSERT INTO t1 VALUES ('ä');
-INSERT INTO t1 VALUES ('ö');
-INSERT INTO t1 VALUES ('ü');
+INSERT INTO t1 VALUES ('ÃÂÃÂ¤');
+INSERT INTO t1 VALUES ('ÃÂÃÂ¶');
+INSERT INTO t1 VALUES ('ÃÂÃÂ¼');
 SELECT a, HEX(a) FROM t1 ORDER BY a;
 DROP TABLE t1;
-
-CREATE TABLE t1 (a set ('x','y','z','ä','ö','ü') CHARACTER SET utf16le);
+CREATE TABLE t1 (a set ('x','y','z','ÃÂÃÂ¤','ÃÂÃÂ¶','ÃÂÃÂ¼') CHARACTER SET utf16le);
 INSERT INTO t1 VALUES ('x');
 INSERT INTO t1 VALUES ('y');
 INSERT INTO t1 VALUES ('z');
 INSERT INTO t1 VALUES ('x,y');
-INSERT INTO t1 VALUES ('x,y,z,ä,ö,ü');
+INSERT INTO t1 VALUES ('x,y,z,ÃÂÃÂ¤,ÃÂÃÂ¶,ÃÂÃÂ¼');
 SELECT a, HEX(a) FROM t1 ORDER BY a;
 DROP TABLE t1;
 CREATE TABLE t1(a ENUM('a','b','c')) DEFAULT CHARACTER SET utf16le;
@@ -130,9 +104,6 @@ INSERT INTO t1 VALUES('a'),('b'),('c');
 ALTER TABLE t1 ADD b CHAR(1);
 SELECT * FROM t1 ORDER BY a;
 DROP TABLE t1;
-
-SET NAMES utf8mb3, collation_connection='utf16le_general_ci';
-SET NAMES utf8mb3, collation_connection='utf16le_bin';
 CREATE TABLE t1 (a VARCHAR(10) CHARACTER SET utf16le, pos INT);
 INSERT INTO t1 VALUES (_ucs2 0x00e400e50068,1);
 INSERT INTO t1 VALUES (_ucs2 0x00e400e50068,2);
@@ -148,14 +119,13 @@ INSERT INTO t1 VALUES (_utf32 0x000000e4000000e500010000, -2);
 INSERT INTO t1 VALUES (_utf32 0x000000e4000000e500010000, -3);
 SELECT HEX(SUBSTR(a, pos)), SUBSTR(a, pos) FROM t1;
 DROP TABLE t1;
-
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 CREATE TABLE t1 (utext VARCHAR(20) CHARACTER SET utf16le);
 INSERT INTO t1 VALUES ("lily");
 INSERT INTO t1 VALUES ("river");
-SET @param1='%%';
+PREPARE stmt FROM 'SELECT utext FROM t1 where utext like ?';
 SELECT utext FROM t1 where utext like '%%';
 DROP TABLE t1;
+DEALLOCATE PREPARE stmt;
 CREATE TABLE t1 (
   status ENUM('active','passive') CHARACTER SET utf16le COLLATE utf16le_general_ci
     NOT NULL DEFAULT 'passive'
@@ -170,12 +140,12 @@ DROP TABLE t1;
 CREATE TABLE t1 (utext VARCHAR(20) CHARACTER SET utf16le);
 INSERT INTO t1 VALUES ("lily");
 INSERT INTO t1 VALUES ("river");
-SET @param1='%%';
+PREPARE stmt FROM 'SELECT utext FROM t1 where utext like ?';
 SELECT utext FROM t1 where utext like '%%';
 DROP TABLE t1;
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
-SELECT SOUNDEX(''),SOUNDEX('he'),SOUNDEX('hello all folks'),SOUNDEX('--3556 in bugdb');
-SELECT HEX(SOUNDEX('')),HEX(SOUNDEX('he')),HEX(SOUNDEX('hello all folks')),HEX(SOUNDEX('--3556 in bugdb'));
+DEALLOCATE PREPARE stmt;
+SELECT SOUNDEX(''),SOUNDEX('he'),SOUNDEX('hello all folks'),SOUNDEX('#3556 in bugdb');
+SELECT HEX(SOUNDEX('')),HEX(SOUNDEX('he')),HEX(SOUNDEX('hello all folks')),HEX(SOUNDEX('#3556 in bugdb'));
 SELECT 'mood' sounds like 'mud';
 SELECT HEX(SOUNDEX(_utf16le 0x041004110412));
 SELECT HEX(SOUNDEX(_utf16le 0x00BF00C0));
@@ -183,12 +153,7 @@ CREATE TABLE t1(a BLOB, b TEXT CHARSET utf16le);
 SELECT data_type, character_octet_length, character_maximum_length
   FROM information_schema.columns where table_name='t1';
 DROP TABLE t1;
-
-
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 SELECT POSITION('bb' IN 'abba');
-SET NAMES utf8mb3, collation_connection=utf16le_bin;
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 SELECT CHAR_LENGTH('abcd'), OCTET_LENGTH('abcd');
 SELECT CHAR_LENGTH(_utf16le 0x00D800DC), OCTET_LENGTH(_utf16le 0x00D800DC);
 SELECT CHAR_LENGTH(_utf16le 0x7DD8FFDF), OCTET_LENGTH(_utf16le 0x7FD8DDDF);
@@ -196,29 +161,20 @@ SELECT LEFT('abcd',2);
 SELECT HEX(LEFT(_utf16le 0x00D800DC7FD8FFDF, 1));
 SELECT HEX(RIGHT(_utf16le 0x00D800DC7FD8FFDF, 1));
 CREATE TABLE t1 (a VARCHAR(10) CHARACTER SET utf16le);
-INSERT INTO t1 VALUES (_utf16le 0x00D8);
-INSERT INTO t1 VALUES (_utf16le 0x00DC);
-INSERT INTO t1 VALUES (_utf16le 0x00D800D8);
-INSERT INTO t1 VALUES (_utf16le 0x00D800E8);
-INSERT INTO t1 VALUES (_utf16le 0x00D80008);
 INSERT INTO t1 VALUES (_utf16le 0x00D800DC);
 INSERT INTO t1 VALUES (_utf16le 0x00D8FFDC);
 INSERT INTO t1 VALUES (_utf16le 0xFFDB00DC);
 INSERT INTO t1 VALUES (_utf16le 0xFFDBFFDC);
 SELECT HEX(a) FROM t1;
 DROP TABLE t1;
-SET sql_mode = '';
 CREATE TABLE t1 (s1 VARCHAR(50) CHARACTER SET ucs2);
 INSERT INTO t1 VALUES (0xDF84);
-ALTER TABLE t1 MODIFY column s1 VARCHAR(50) CHARACTER SET utf16le;
 SELECT HEX(s1) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (s1 VARCHAR(5) CHARACTER SET ucs2, s2 VARCHAR(5) CHARACTER SET utf16le);
 INSERT INTO t1 (s1) VALUES (0xdf84);
-UPDATE t1 set s2 = s1;
 SELECT HEX(s2) FROM t1;
 DROP TABLE t1;
-SET sql_mode = default;
 CREATE TABLE t1 (a CHAR(10)) CHARACTER SET utf16le;
 INSERT INTO t1 VALUES ('a   ');
 SELECT HEX(a) FROM t1;
@@ -235,14 +191,10 @@ SELECT a, HEX(a) FROM t1;
 DROP TABLE t1;
 SELECT SOUNDEX('a'), HEX(SOUNDEX('a'));
 CREATE TABLE t1 (a enum ('a','b','c')) CHARACTER SET utf16le;
-INSERT INTO t1 VALUES ('1');
 SELECT * FROM t1;
 DROP TABLE t1;
-SET NAMES latin1;
 SELECT HEX(CONV(CONVERT('123' USING utf16le), -10, 16));
 SELECT HEX(CONV(CONVERT('123' USING utf16le), 10, 16));
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 SELECT 1.1 + '1.2';
 SELECT 1.1 + '1.2xxx';
 SELECT LEFT('aaa','1');
@@ -292,50 +244,33 @@ INSERT INTO t1 VALUES ('1 ');
 INSERT IGNORE INTO t1 VALUES ('1 x');
 SELECT * FROM t1;
 DROP TABLE t1;
-SET sql_mode = '';
-CREATE TABLE t1 (a VARCHAR(17000) CHARACTER SET utf16le);
-DROP TABLE t1;
-SET sql_mode = default;
 CREATE TABLE t1 (a VARCHAR(150) CHARACTER SET utf16le PRIMARY KEY);
 DROP TABLE t1;
-CREATE TABLE t1 (a VARCHAR(334) CHARACTER SET utf16le PRIMARY KEY) ROW_FORMAT=COMPACT;
 CREATE TABLE t1 (a CHAR(1) CHARACTER SET utf16le);
 INSERT INTO t1 VALUES (0x00D800DC),(0x00D8FFDC),(0x7FDB00DC),(0x7FDBFFDC);
 INSERT INTO t1 VALUES (0xC000), (0xFF00),(0x00E0), (0xFFFF);
 SELECT HEX(a), HEX(@a:=CONVERT(a USING utf8mb4)), HEX(CONVERT(@a USING utf16le)) FROM t1;
 DROP TABLE t1;
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 CREATE TABLE t1 AS SELECT REPEAT('a',2) as s1 LIMIT 0;
 INSERT INTO t1 VALUES ('ab'),('AE'),('ab'),('AE');
 SELECT * FROM t1 ORDER BY s1;
-SET max_sort_length=4;
 SELECT * FROM t1 ORDER BY s1;
 DROP TABLE t1;
-SET max_sort_length=DEFAULT;
 CREATE TABLE t1 (
   s1 TINYTEXT CHARACTER SET utf16le,
   s2 TEXT CHARACTER SET utf16le,
   s3 MEDIUMTEXT CHARACTER SET utf16le,
   s4 LONGTEXT CHARACTER SET utf16le
 );
-SET NAMES utf8mb3, @@character_set_results=NULL;
 SELECT *, HEX(s1) FROM t1;
-SET NAMES latin1;
 SELECT *, HEX(s1) FROM t1;
-SET NAMES utf8mb3;
 SELECT *, HEX(s1) FROM t1;
 CREATE TABLE t2 AS SELECT CONCAT(s1) FROM t1;
 DROP TABLE t1, t2;
-SET NAMES utf8mb3, @@collation_connection=utf16le_bin;
 CREATE TABLE t1 AS SELECT REPEAT(' ', 10) as c LIMIT 0;
 ALTER TABLE t1 ADD PRIMARY KEY(c);
 INSERT INTO t1 VALUES ('abc'),('zyx'),('acb');
 SELECT UPPER(c) FROM t1 ORDER BY 1 DESC;
 DROP TABLE t1;
-
-SET NAMES utf8mb3, collation_connection=utf16le_general_ci;
 SELECT HEX(WEIGHT_STRING(_utf16le 0x00D800DC));
 SELECT HEX(WEIGHT_STRING(_utf16le 0x00D801DC));
-
-SET NAMES utf8mb3, collation_connection=utf16le_bin;

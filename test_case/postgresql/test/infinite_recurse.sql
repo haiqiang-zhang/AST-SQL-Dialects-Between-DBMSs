@@ -15,15 +15,15 @@ create function infinite_recurse() returns int as
 
 SELECT version() ~ 'powerpc64[^,]*-linux-gnu'
        AS skip_test \gset
-\if :skip_test
-\quit
-\endif
+\if :skip_test;
+\quit;
+\endif;
 
 -- The full error report is not very stable, so we show only SQLSTATE
 -- and primary error message.
 
-\set VERBOSITY sqlstate
+\set VERBOSITY sqlstate;
 
 select infinite_recurse();
 
-\echo :LAST_ERROR_MESSAGE
+\echo :LAST_ERROR_MESSAGE;

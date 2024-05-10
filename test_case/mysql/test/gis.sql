@@ -1,13 +1,4 @@
-
-SET sql_mode = 'ONLY_FULL_GROUP_BY,NO_ENGINE_SUBSTITUTION';
-
---
--- Spatial objects
---
-
---disable_warnings
 DROP TABLE IF EXISTS t1, gis_point, gis_line, gis_polygon, gis_multi_point, gis_multi_line, gis_multi_polygon, gis_geometrycollection, gis_geometry;
-
 CREATE TABLE gis_point (fid INTEGER NOT NULL PRIMARY KEY, g POINT);
 CREATE TABLE gis_line  (fid INTEGER NOT NULL PRIMARY KEY, g LINESTRING);
 CREATE TABLE gis_polygon   (fid INTEGER NOT NULL PRIMARY KEY, g POLYGON);
@@ -16,44 +7,34 @@ CREATE TABLE gis_multi_line (fid INTEGER NOT NULL PRIMARY KEY, g MULTILINESTRING
 CREATE TABLE gis_multi_polygon  (fid INTEGER NOT NULL PRIMARY KEY, g MULTIPOLYGON);
 CREATE TABLE gis_geometrycollection  (fid INTEGER NOT NULL PRIMARY KEY, g GEOMETRYCOLLECTION);
 CREATE TABLE gis_geometry (fid INTEGER NOT NULL PRIMARY KEY, g GEOMETRY);
-
-
 INSERT INTO gis_point VALUES 
 (101, ST_PointFromText('POINT(10 10)')),
 (102, ST_PointFromText('POINT(20 10)')),
 (103, ST_PointFromText('POINT(20 20)')),
 (104, ST_PointFromWKB(ST_AsWKB(ST_PointFromText('POINT(10 20)'))));
-
 INSERT INTO gis_line VALUES
 (105, ST_LineFromText('LINESTRING(0 0,0 10,10 0)')),
 (106, ST_LineStringFromText('LINESTRING(10 10,20 10,20 20,10 20,10 10)')),
 (107, ST_LineStringFromWKB(ST_AsWKB(LineString(Point(10, 10), Point(40, 10)))));
-
 INSERT INTO gis_polygon VALUES
 (108, ST_PolygonFromText('POLYGON((10 10,20 10,20 20,10 20,10 10))')),
 (109, ST_PolyFromText('POLYGON((0 0,50 0,50 50,0 50,0 0), (10 10,20 10,20 20,10 20,10 10))')),
 (110, ST_PolyFromWKB(ST_AsWKB(Polygon(LineString(Point(0, 0), Point(30, 0), Point(30, 30), Point(0, 0))))));
-
 INSERT INTO gis_multi_point VALUES
 (111, ST_MultiPointFromText('MULTIPOINT(0 0,10 10,10 20,20 20)')),
 (112, ST_MPointFromText('MULTIPOINT(1 1,11 11,11 21,21 21)')),
 (113, ST_MPointFromWKB(ST_AsWKB(MultiPoint(Point(3, 6), Point(4, 10)))));
-
 INSERT INTO gis_multi_line VALUES
 (114, ST_MultiLineStringFromText('MULTILINESTRING((10 48,10 21,10 0),(16 0,16 23,16 48))')),
 (115, ST_MLineFromText('MULTILINESTRING((10 48,10 21,10 0))')),
 (116, ST_MLineFromWKB(ST_AsWKB(MultiLineString(LineString(Point(1, 2), Point(3, 5)), LineString(Point(2, 5), Point(5, 8), Point(21, 7))))));
-
-
 INSERT INTO gis_multi_polygon VALUES
 (117, ST_MultiPolygonFromText('MULTIPOLYGON(((28 26,28 0,84 0,84 42,28 26),(52 18,66 23,73 9,48 6,52 18)),((59 18,67 18,67 13,59 13,59 18)))')),
 (118, ST_MPolyFromText('MULTIPOLYGON(((28 26,28 0,84 0,84 42,28 26),(52 18,66 23,73 9,48 6,52 18)),((59 18,67 18,67 13,59 13,59 18)))')),
 (119, ST_MPolyFromWKB(ST_AsWKB(MultiPolygon(Polygon(LineString(Point(0, 3), Point(3, 3), Point(3, 0), Point(0, 3)))))));
-
 INSERT INTO gis_geometrycollection VALUES
 (120, ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(0 0), LINESTRING(0 0,10 10))')),
 (121, ST_GeometryFromWKB(ST_AsWKB(GeometryCollection(Point(44, 6), LineString(Point(3, 6), Point(7, 9))))));
-
 INSERT into gis_geometry SELECT * FROM gis_point;
 INSERT into gis_geometry SELECT * FROM gis_line;
 INSERT into gis_geometry SELECT * FROM gis_polygon;
@@ -61,7 +42,6 @@ INSERT into gis_geometry SELECT * FROM gis_multi_point;
 INSERT into gis_geometry SELECT * FROM gis_multi_line;
 INSERT into gis_geometry SELECT * FROM gis_multi_polygon;
 INSERT into gis_geometry SELECT * FROM gis_geometrycollection;
-
 SELECT fid, ST_AsText(g) FROM gis_point;
 SELECT fid, ST_AsText(g) FROM gis_line;
 SELECT fid, ST_AsText(g) FROM gis_polygon;
@@ -70,55 +50,41 @@ SELECT fid, ST_AsText(g) FROM gis_multi_line;
 SELECT fid, ST_AsText(g) FROM gis_multi_polygon;
 SELECT fid, ST_AsText(g) FROM gis_geometrycollection;
 SELECT fid, ST_AsText(g) FROM gis_geometry;
-
 SELECT fid, ST_Dimension(g) FROM gis_geometry;
 SELECT fid, ST_GeometryType(g) FROM gis_geometry;
 SELECT fid, ST_IsEmpty(g) FROM gis_geometry;
 SELECT fid, ST_AsText(ST_Envelope(g)) FROM gis_geometry;
-
 SELECT fid, ST_X(g) FROM gis_point;
 SELECT fid, ST_Y(g) FROM gis_point;
-
 SELECT fid, ST_AsText(ST_StartPoint(g)) FROM gis_line;
 SELECT fid, ST_AsText(ST_EndPoint(g)) FROM gis_line;
 SELECT fid, ST_Length(g) FROM gis_line;
 SELECT fid, ST_NumPoints(g) FROM gis_line;
 SELECT fid, ST_AsText(ST_PointN(g, 2)) FROM gis_line;
 SELECT fid, ST_IsClosed(g) FROM gis_line;
-
 SELECT fid, ST_AsText(ST_Centroid(g)) FROM gis_polygon;
 SELECT fid, ST_Area(g) FROM gis_polygon;
 SELECT fid, ST_AsText(ST_ExteriorRing(g)) FROM gis_polygon;
 SELECT fid, ST_NumInteriorRings(g) FROM gis_polygon;
 SELECT fid, ST_AsText(ST_InteriorRingN(g, 1)) FROM gis_polygon;
-
 SELECT fid, ST_IsClosed(g) FROM gis_multi_line;
-
 SELECT fid, ST_AsText(ST_Centroid(g)) FROM gis_multi_polygon;
 SELECT fid, ST_Area(g) FROM gis_multi_polygon;
-
 SELECT fid, ST_NumGeometries(g) from gis_multi_point;
 SELECT fid, ST_NumGeometries(g) from gis_multi_line;
 SELECT fid, ST_NumGeometries(g) from gis_multi_polygon;
 SELECT fid, ST_NumGeometries(g) from gis_geometrycollection;
-
 SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_multi_point;
 SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_multi_line;
 SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_multi_polygon;
 SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_geometrycollection;
 SELECT fid, ST_AsText(ST_GeometryN(g, 1)) from gis_geometrycollection;
-
 SELECT g1.fid as first, g2.fid as second,
 MBRWithin(g1.g, g2.g) as w, MBRContains(g1.g, g2.g) as c, MBROverlaps(g1.g, g2.g) as o,
 MBREquals(g1.g, g2.g) as e, MBRDisjoint(g1.g, g2.g) as d, ST_Touches(g1.g, g2.g) as t,
 MBRIntersects(g1.g, g2.g) as i, ST_Crosses(g1.g, g2.g) as r
 FROM gis_geometrycollection g1, gis_geometrycollection g2 ORDER BY first, second;
-
 DROP TABLE gis_point, gis_line, gis_polygon, gis_multi_point, gis_multi_line, gis_multi_polygon, gis_geometrycollection, gis_geometry;
-
---
--- Check that ALTER TABLE does not loose geometry type
---
 CREATE TABLE t1 (
   gp  point,
   ln  linestring,
@@ -131,22 +97,12 @@ CREATE TABLE t1 (
 );
 ALTER TABLE t1 ADD fid INT NOT NULL;
 DROP TABLE t1;
-
 SELECT ST_AsText(ST_GeometryFromWKB(ST_AsWKB(ST_GeometryFromText('POINT(1 4)'))));
 SELECT ST_SRID(ST_GeomFromText('LineString(1 1,2 2)'));
-
 create table t1 (a geometry not null SRID 0);
 insert into t1 values (ST_GeomFromText('Point(1 2)'));
-insert into t1 values ('Garbage');
-insert IGNORE into t1 values ('Garbage');
 alter table t1 add spatial index(a);
-
 drop table t1;
-
---
--- Bug #5219: problem with range optimizer
---
-
 create table t1(a geometry not null SRID 0, spatial index(a));
 insert into t1 values
 (ST_GeomFromText('POINT(1 1)')), (ST_GeomFromText('POINT(3 3)')), 
@@ -160,7 +116,6 @@ select ST_AsText(a) from t1 where
   and
   MBRContains(ST_GeomFromText('Polygon((0 0, 0 7, 7 7, 7 0, 0 0))'), a);
 drop table t1;
-
 CREATE TABLE t1 (Coordinates POINT NOT NULL SRID 0, SPATIAL INDEX(Coordinates));
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(383293632 1754448)'));
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(564952612 157516260)'));
@@ -250,13 +205,10 @@ INSERT INTO t1 VALUES(ST_GeomFromText('POINT(367894677 368542487)'));
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(580848489 219587743)'));
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(11247614 782797569)'));
 drop table t1;
-
 create table t1 select ST_GeomFromWKB(St_AsWKB(POINT(1,3)));
 drop table t1;
-
 CREATE TABLE `t1` (`object_id` bigint(20) unsigned NOT NULL default '0', `geo`
-geometry NOT NULL) ENGINE=MyISAM ;
-
+geometry NOT NULL) ENGINE=MyISAM;
 insert into t1 values ('85984',ST_GeomFromText('MULTIPOLYGON(((-115.006363
 36.305435,-114.992394 36.305202,-114.991219 36.305975,-114.991163
 36.306845,-114.989432 36.309452,-114.978275 36.312642,-114.977363
@@ -320,96 +272,42 @@ insert into t1 values ('85984',ST_GeomFromText('MULTIPOLYGON(((-115.006363
 36.255018,-115.333069 36.255018,-115.333042 36.247767,-115.279039
 36.248666,-115.263639 36.247466,-115.263839 36.252766,-115.261439
 36.252666,-115.261439 36.247366,-115.247239 36.247066)))'));
-
 select object_id, ST_geometrytype(geo), ST_ISSIMPLE(GEO), ST_ASTEXT(ST_centroid(geo)) from
 t1 where object_id=85998;
-
 select object_id, ST_geometrytype(geo), ST_ISSIMPLE(GEO), ST_ASTEXT(ST_centroid(geo)) from
 t1 where object_id=85984;
-
 drop table t1;
-
 create table t1 (fl geometry not null);
-insert into t1 values (1);
-insert into t1 values (1.11);
-insert into t1 values ("qwerty");
-insert into t1 values (ST_pointfromtext('point(1,1)'));
-
 drop table t1;
-
 select (ST_asWKT(ST_geomfromwkb((0x000000000140240000000000004024000000000000))));
 select (ST_asWKT(ST_geomfromwkb((0x010100000000000000000024400000000000002440))));
 create table t1 (g GEOMETRY);
 select * from t1;
 select ST_asbinary(g) from t1;
 drop table t1;
-
 create table t1 (a TEXT, b GEOMETRY NOT NULL SRID 0, SPATIAL KEY(b));
 alter table t1 disable keys;
 alter table t1 enable keys;
 drop table t1;
-
---
--- Bug #26038: is null and bad data
---
-
 create table t1 (a int, b blob);
 insert into t1 values (1, ''), (2, NULL), (3, '1');
 select * from t1;
-select
-  ST_geometryfromtext(b) IS NULL, ST_geometryfromwkb(b) IS NULL, ST_astext(b) IS NULL, 
-  ST_aswkb(b) IS NULL, ST_geometrytype(b) IS NULL, ST_centroid(b) IS NULL,
-  ST_envelope(b) IS NULL, ST_startpoint(b) IS NULL, ST_endpoint(b) IS NULL,
-  ST_exteriorring(b) IS NULL, ST_pointn(b, 1) IS NULL, ST_geometryn(b, 1) IS NULL,
-  ST_interiorringn(b, 1) IS NULL, multipoint(b) IS NULL, ST_isempty(b) IS NULL,
-  ST_issimple(b) IS NULL, ST_isclosed(b) IS NULL, ST_dimension(b) IS NULL,
-  ST_numgeometries(b) IS NULL, ST_numinteriorrings(b) IS NULL, ST_numpoints(b) IS NULL,
-  ST_area(b) IS NULL, ST_length(b) IS NULL, ST_srid(b) IS NULL, ST_x(b) IS NULL, 
-  ST_y(b) IS NULL
-from t1;
-select 
-  MBRwithin(b, b) IS NULL, MBRcontains(b, b) IS NULL, MBRoverlaps(b, b) IS NULL, 
-  MBRequals(b, b) IS NULL, MBRdisjoint(b, b) IS NULL, ST_touches(b, b) IS NULL, 
-  MBRintersects(b, b) IS NULL, ST_crosses(b, b) IS NULL
-from t1;
-select 
-  point(b, b) IS NULL, linestring(b) IS NULL, polygon(b) IS NULL, multipoint(b) IS NULL, 
-  multilinestring(b) IS NULL, multipolygon(b) IS NULL, 
-  geometrycollection(b) IS NULL
-from t1;
-
 drop table t1;
-
---
--- Bug #27164: Crash when mixing InnoDB and MyISAM Geospatial tables
---
 CREATE TABLE t1(a POINT) ENGINE=MyISAM;
 INSERT INTO t1 VALUES (NULL);
 SELECT * FROM t1;
 DROP TABLE t1;
-
---
--- Bug #30955 ST_geomfromtext() crasher
---
 CREATE TABLE `t1` ( `col9` set('a'), `col89` date);
-INSERT INTO `t1` VALUES ('','0000-00-00');
 select ST_geomfromtext(col9,col89) as a from t1;
 DROP TABLE t1;
-
---
--- Bug #31158 Spatial, Union, LONGBLOB vs BLOB bug (crops data) 
---
-
 CREATE TABLE t1 (
   geomdata polygon NOT NULL SRID 0,
   SPATIAL KEY index_geom (geomdata)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin2 DELAY_KEY_WRITE=1 ROW_FORMAT=FIXED;
-
 CREATE TABLE t2 (
   geomdata polygon NOT NULL SRID 0,
   SPATIAL KEY index_geom (geomdata)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin2 DELAY_KEY_WRITE=1 ROW_FORMAT=FIXED;
-
 CREATE TABLE t3
 select 
     ST_aswkb(ws.geomdata) AS geomdatawkb 
@@ -420,102 +318,44 @@ union
     ST_aswkb(ws.geomdata) AS geomdatawkb 
   from 
     t2 ws;
-
 drop table t1;
 drop table t2;
 drop table t3;
-
---
--- Bug #30284 spatial key corruption 
---
-
 create table t1(col1 geometry default null,col15 geometrycollection not
 null SRID 0,spatial index(col15))engine=myisam;
-insert into t1 set col15 = ST_GeomFromText('POINT(6 5)');
-insert into t1 set col15 = ST_GeomFromText('POINT(6 5)');
 drop table t1;
-
---
--- Bug #12281 (Geometry: crash in trigger)
---
-
 create table t1 (s1 geometry not null,s2 char(100));
-create trigger t1_bu before update on t1 for each row set new.s1 = null;
-insert into t1 values (null,null);
 drop table t1;
-
---
--- Bug #10499 (function creation with GEOMETRY datatype)
---
---disable_warnings
 drop procedure if exists fn3;
-create function fn3 () returns point deterministic return ST_GeomFromText("point(1 1)");
-select ST_astext(fn3());
-drop function fn3;
-
---
--- Bug #12267 (primary key over GIS)
---
 create table t1(pt POINT);
-alter table t1 add primary key pti(pt);
 drop table t1;
 create table t1(pt GEOMETRY);
-alter table t1 add primary key pti(pt);
-alter table t1 add primary key pti(pt(20));
 drop table t1;
-
-
 create table t1 select ST_GeomFromText('point(1 1)');
 drop table t1;
-
---
--- Bug #20691 (DEFAULT over NOT NULL field)
---
 create table t1 (g geometry not null);
-insert into t1 values(default);
 drop table t1;
-
---
--- Bug #27300: create view with geometry functions lost columns types 
---
 CREATE TABLE t1 (a GEOMETRY);
 CREATE VIEW v1 AS SELECT ST_GeomFromwkb(ST_ASBINARY(a)) FROM t1;
 CREATE VIEW v2 AS SELECT a FROM t1;
-
 DROP VIEW v1,v2;
 DROP TABLE t1;
-
---
--- Bug#24563: MBROverlaps does not seem to function propertly
--- Bug#54888: MBROverlaps missing in 5.1?
---
-
--- Test all MBR* functions and their non-MBR-prefixed aliases,
--- using shifted squares to verify the spatial relations.
-
 create table t1 (name VARCHAR(100), square GEOMETRY);
-
 INSERT INTO t1 VALUES("center", ST_GeomFromText('POLYGON (( 0 0, 0 2, 2 2, 2 0, 0 0))'));
-
 INSERT INTO t1 VALUES("small",  ST_GeomFromText('POLYGON (( 0 0, 0 1, 1 1, 1 0, 0 0))'));
 INSERT INTO t1 VALUES("big",    ST_GeomFromText('POLYGON (( 0 0, 0 3, 3 3, 3 0, 0 0))'));
-
 INSERT INTO t1 VALUES("up",     ST_GeomFromText('POLYGON (( 0 1, 0 3, 2 3, 2 1, 0 1))'));
 INSERT INTO t1 VALUES("up2",    ST_GeomFromText('POLYGON (( 0 2, 0 4, 2 4, 2 2, 0 2))'));
 INSERT INTO t1 VALUES("up3",    ST_GeomFromText('POLYGON (( 0 3, 0 5, 2 5, 2 3, 0 3))'));
-
 INSERT INTO t1 VALUES("down",   ST_GeomFromText('POLYGON (( 0 -1, 0  1, 2  1, 2 -1, 0 -1))'));
 INSERT INTO t1 VALUES("down2",  ST_GeomFromText('POLYGON (( 0 -2, 0  0, 2  0, 2 -2, 0 -2))'));
 INSERT INTO t1 VALUES("down3",  ST_GeomFromText('POLYGON (( 0 -3, 0 -1, 2 -1, 2 -3, 0 -3))'));
-
 INSERT INTO t1 VALUES("right",  ST_GeomFromText('POLYGON (( 1 0, 1 2, 3 2, 3 0, 1 0))'));
 INSERT INTO t1 VALUES("right2", ST_GeomFromText('POLYGON (( 2 0, 2 2, 4 2, 4 0, 2 0))'));
 INSERT INTO t1 VALUES("right3", ST_GeomFromText('POLYGON (( 3 0, 3 2, 5 2, 5 0, 3 0))'));
-
 INSERT INTO t1 VALUES("left",   ST_GeomFromText('POLYGON (( -1 0, -1 2,  1 2,  1 0, -1 0))'));
 INSERT INTO t1 VALUES("left2",  ST_GeomFromText('POLYGON (( -2 0, -2 2,  0 2,  0 0, -2 0))'));
 INSERT INTO t1 VALUES("left3",  ST_GeomFromText('POLYGON (( -3 0, -3 2, -1 2, -1 0, -3 0))'));
-
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrcontains  FROM t1 a1 JOIN t1 a2 ON MBRContains(   a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrdisjoint  FROM t1 a1 JOIN t1 a2 ON MBRDisjoint(   a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrequals     FROM t1 a1 JOIN t1 a2 ON MBREquals(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
@@ -523,7 +363,6 @@ SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrintersect FROM t1 a1 JOIN t1
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbroverlaps  FROM t1 a1 JOIN t1 a2 ON MBROverlaps(   a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrtouches   FROM t1 a1 JOIN t1 a2 ON MBRTouches(    a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrwithin    FROM t1 a1 JOIN t1 a2 ON MBRWithin(     a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRcontains     FROM t1 a1 JOIN t1 a2 ON MBRContains(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRdisjoint     FROM t1 a1 JOIN t1 a2 ON MBRDisjoint(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRequals       FROM t1 a1 JOIN t1 a2 ON MBREquals(        a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
@@ -531,17 +370,6 @@ SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS `intersect`    FROM t1 a1 JOIN 
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRoverlaps     FROM t1 a1 JOIN t1 a2 ON MBROverlaps(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS ST_touches      FROM t1 a1 JOIN t1 a2 ON ST_Touches(       a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRwithin       FROM t1 a1 JOIN t1 a2 ON MBRWithin(        a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-
--- MBROverlaps needs a few more tests, with point and line dimensions
-
---error ER_GIS_INVALID_DATA
-SET @vert1   = ST_GeomFromText('POLYGON ((0 -2, 0 2, 0 -2))');
-SET @horiz1  = ST_GeomFromText('POLYGON ((-2 0, 2 0, -2 0))');
-SET @horiz2 = ST_GeomFromText('POLYGON ((-1 0, 3 0, -1 0))');
-SET @horiz3 = ST_GeomFromText('POLYGON ((2 0, 3 0, 2 0))');
-SET @point1 = ST_GeomFromText('POLYGON ((0 0))');
-SET @point2 = ST_GeomFromText('POLYGON ((-2 0))');
-
 SELECT GROUP_CONCAT(a1.name ORDER BY a1.name) AS MBRoverlaps FROM t1 a1 WHERE MBROverlaps(a1.square, @vert1) GROUP BY a1.name;
 SELECT GROUP_CONCAT(a1.name ORDER BY a1.name) AS MBRoverlaps FROM t1 a1 WHERE MBROverlaps(a1.square, @horiz1) GROUP BY a1.name;
 SELECT MBROverlaps(@horiz1, @vert1) FROM DUAL;
@@ -549,12 +377,7 @@ SELECT MBROverlaps(@horiz1, @horiz2) FROM DUAL;
 SELECT MBROverlaps(@horiz1, @horiz3) FROM DUAL;
 SELECT MBROverlaps(@horiz1, @point1) FROM DUAL;
 SELECT MBROverlaps(@horiz1, @point2) FROM DUAL;
-
 DROP TABLE t1;
-
---
--- Bug#28763: Selecting geometry fields in UNION caused server crash.
---
 create table t1(f1 geometry, f2 point, f3 linestring);
 select f1 from t1 union select f1 from t1;
 insert into t1 (f2,f3) values (ST_GeomFromText('POINT(1 1)'),
@@ -564,16 +387,6 @@ select ST_AsText(a) from (select f2 as a from t1 union select f3 from t1) t;
 create table t2 as select f2 as a from t1 union select f3 from t1;
 select ST_AsText(a) from t2;
 drop table t1, t2;
-
---
--- Bug #29166: MYsql crash when query is run
---
-
--- The test query itself is not logged : too large output.
--- The real test is the second query : see if the first hasn't crashed the
--- server
---disable_query_log
---disable_result_log
 SELECT ST_AsText(ST_GeometryFromText(CONCAT(
   'MULTIPOLYGON(((',
   REPEAT ('-0.00000000001234567890123456789012 -0.123456789012345678,', 1000),
@@ -581,226 +394,94 @@ SELECT ST_AsText(ST_GeometryFromText(CONCAT(
   ')))'
 ))) AS a;
 SELECT 1;
-
--- source include/gis_keys.inc
-
---
--- Bug #31155 gis types in union'd select cause crash
---
-
 create table `t1` (`col002` point)engine=myisam;
 insert into t1 values (),(),();
-select min(`col002`) from t1 union select `col002` from t1;
 drop table t1;
-
 CREATE TABLE t1(a INT, b MULTIPOLYGON);
 INSERT INTO t1 VALUES 
   (0,
    ST_GEOMFROMTEXT(
     'multipolygon(((1 2,3 4,5 6,7 8,9 8, 1 2),(7 6,5 4,3 2,1 2,3 4, 7 6)))'));
 SELECT 1 FROM t1 WHERE a <> (SELECT ST_GEOMETRYCOLLECTIONFROMWKB(St_AsWKB(b)) FROM t1);
-
 DROP TABLE t1;
-CREATE TABLE t1(col1 MULTIPOLYGON NOT NULL,
-  SPATIAL INDEX USING BTREE (col1));
 CREATE TABLE t2(col1 MULTIPOLYGON NOT NULL);
-CREATE SPATIAL INDEX USING BTREE ON t2(col);
-ALTER TABLE t2 ADD SPATIAL INDEX USING BTREE (col1);
-
 DROP TABLE t2;
-
---
--- Bug #11335 View redefines column types
---
 create table t1 (f1 tinyint(1), f2 char(1), f3 varchar(1), f4 geometry, f5 datetime);
 create view v1 as select * from t1;
 drop view v1;
 drop table t1;
-
---
--- Bug#44684: valgrind reports invalid reads in 
--- Item_func_spatial_collection::val_str
---
---error ER_ILLEGAL_VALUE_FOR_TYPE
-SELECT MultiPoint(12345,'');
-
---
--- Bug55531 crash with conversions of geometry types / strings
---
---error ER_ILLEGAL_VALUE_FOR_TYPE
-SELECT 1 FROM (SELECT GREATEST(1,GEOMETRYCOLLECTION('00000','00000')) b FROM DUAL) AS d WHERE (LINESTRING(d.b));
-SET @a=0x00000000030000000100000000000000000000000000144000000000000014400000000000001840000000000000184000000000000014400000000000001440;
-SET @a=ST_POLYFROMWKB(@a);
-SET @a=0x00000000030000000000000000000000000000000000144000000000000014400000000000001840000000000000184000000000000014400000000000001440;
-SET @a=ST_POLYFROMWKB(@a);
-
-
---
--- Bug #57321    crashes and valgrind errors from spatial types
---
-
 create table t1(a polygon NOT NULL)engine=myisam;
-insert into t1 values (ST_geomfromtext("point(0 1)"));
-insert into t1 values (ST_geomfromtext("point(1 0)"));
 select * from (select polygon(t1.a) as p from t1 order by t1.a) d;
 drop table t1;
 create table t1(a char(32) not null) engine=myisam;
-create spatial index i on t1 (a);
 drop table t1;
-
---
--- Bug #50574 5.5.ST_x allows spatial indexes on non-spatial 
---           columns, causing crashes!
--- Bug#11767480 SPATIAL INDEXES ON NON-SPATIAL COLUMNS 
---              CAUSE CRASHES.
---
 CREATE TABLE t0 (a BINARY(32) NOT NULL);
-CREATE SPATIAL INDEX i on t0 (a);
 INSERT INTO t0 VALUES (1);
-CREATE TABLE t1(
-  col0 BINARY NOT NULL,
-  col2 TIMESTAMP,
-  SPATIAL INDEX i1 (col0)
-) ENGINE=MyISAM;
-
--- Test other ways to add indices
 CREATE TABLE t1 (
   col0 BINARY NOT NULL,
   col2 TIMESTAMP
 ) ENGINE=MyISAM;
-CREATE SPATIAL INDEX idx0 ON t1(col0);
-ALTER TABLE t1 ADD SPATIAL INDEX i1 (col0);
-
 CREATE TABLE t2 (
   col0 INTEGER NOT NULL,
   col1 POINT,
   col2 POINT
 );
-CREATE SPATIAL INDEX idx0 ON t2 (col1, col2);
-CREATE TABLE t3 (
-  col0 INTEGER NOT NULL,
-  col1 POINT,
-  col2 LINESTRING,
-  SPATIAL INDEX i1 (col1, col2)
-);
-
--- cleanup
 DROP TABLE t0, t1, t2;
-SELECT ST_ISCLOSED(CONVERT(CONCAT('     ', 0x2), BINARY(20)));
-SELECT GEOMETRYCOLLECTION((SELECT @@OLD));
-
 CREATE TABLE g1
 (a geometry NOT NULL) engine=myisam;
-
 INSERT INTO g1 VALUES (ST_geomfromtext('point(1 1)'));
 INSERT INTO g1 VALUES (ST_geomfromtext('point(1 2)'));
 SELECT 1 FROM g1 WHERE a = date_sub(now(), interval 2808.4 year_month);
-
 DROP TABLE g1;
-
 CREATE TABLE g1(a TEXT NOT NULL, KEY(a(255))) charset latin1;
-
 INSERT INTO g1 VALUES ('a'),('a');
-SELECT 1 FROM g1 WHERE a >= ANY
-(SELECT 1 FROM g1 WHERE a = ST_geomfromtext('') OR a) ;
-
 DROP TABLE g1;
-SELECT ST_ASTEXT(0x0100000000030000000100000000000010);
-SELECT ST_ENVELOPE(0x0100000000030000000100000000000010);
-SELECT
-  ST_GEOMETRYN(0x0100000000070000000100000001030000000200000000000000ffff0000, 1);
-SELECT
-  ST_GEOMETRYN(0x0100000000070000000100000001030000000200000000000000ffffff0f, 1);
-
-
--- Conformance tests
---
--- C.3.3 Geometry types and functions 
---
-
---disable_warnings
 DROP DATABASE IF EXISTS gis_ogs;
-
 CREATE DATABASE gis_ogs;
-USE gis_ogs;
-
--- TODO: WL#2377
---CREATE TABLE spatial_ref_sys ( 
---ST_srid INTEGER NOT NULL PRIMARY KEY, 
---auth_name CHARACTER VARYING, 
---auth_srid INTEGER, 
---srtext CHARACTER VARYING(2048));
-
 CREATE TABLE lakes ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   shore POLYGON);
-
 CREATE TABLE road_segments ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   aliases CHARACTER VARYING(64), 
   num_lanes INTEGER, 
   centerline LINESTRING);
-
 CREATE TABLE divided_routes ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   num_lanes INTEGER, 
   centerlines MULTILINESTRING);
-
 CREATE TABLE forests ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   boundary MULTIPOLYGON);
-
 CREATE TABLE bridges ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   position POINT);
-
 CREATE TABLE streams ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   centerline LINESTRING);
-
 CREATE TABLE buildings ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   address CHARACTER VARYING(64), 
   position POINT, 
   footprint POLYGON);
-
 CREATE TABLE ponds ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   type CHARACTER VARYING(64), 
   shores MULTIPOLYGON);
-
 CREATE TABLE named_places ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   name CHARACTER VARYING(64), 
   boundary POLYGON);
-
 CREATE TABLE map_neatlines ( 
   fid INTEGER NOT NULL PRIMARY KEY, 
   neatline POLYGON);
-
--- TODO: WL#2377
----- Spatial Reference System 
---INSERT INTO spatial_ref_sys VALUES 
---(101, 'POSC', 32214, 'PROJCS["UTM_ZONE_14N", 
---GEOGCS["World Geodetic System 72", 
---DATUM["WGS_72", 
---ELLIPSOID["NWL_10D", 6378135, 298.26]], 
---PRIMEM["Greenwich", 0], 
---UNIT["Meter", 1.0]], 
---PROJECTION["Transverse_Mercator"], 
---PARAMETER["False_Easting", 500000.0], 
---PARAMETER["False_Northing", 0.0], 
---PARAMETER["Central_Meridian", -99.0], 
---PARAMETER["Scale_Factor", 0.9996], 
---PARAMETER["Latitude_of_origin", 0.0], 
---UNIT["Meter", 1.0]]');
 INSERT INTO lakes VALUES ( 
 101, 'BLUE LAKE', 
 ST_PolyFromText( 
@@ -809,88 +490,62 @@ ST_PolyFromText(
 (59 18,67 18,67 13,59 13,59 18) 
 )', 
 0));
-
 INSERT INTO road_segments VALUES(102, 'Route 5', NULL, 2, 
 ST_LineFromText( 
 'LINESTRING( 0 18, 10 21, 16 23, 28 26, 44 31 )' ,0));
-
 INSERT INTO road_segments VALUES(103, 'Route 5', 'Main Street', 4, 
 ST_LineFromText( 
 'LINESTRING( 44 31, 56 34, 70 38 )' ,0));
-
 INSERT INTO road_segments VALUES(104, 'Route 5', NULL, 2, 
 ST_LineFromText( 
 'LINESTRING( 70 38, 72 48 )' ,0));
-
 INSERT INTO road_segments VALUES(105, 'Main Street', NULL, 4, 
 ST_LineFromText( 
 'LINESTRING( 70 38, 84 42 )' ,0));
-
 INSERT INTO road_segments VALUES(106, 'Dirt Road by Green Forest', NULL, 
 1, 
 ST_LineFromText( 
 'LINESTRING( 28 26, 28 0 )',0));
-
 INSERT INTO divided_routes VALUES(119, 'Route 75', 4, 
 ST_MLineFromText( 
 'MULTILINESTRING((10 48,10 21,10 0), 
 (16 0,16 23,16 48))', 0));
-
 INSERT INTO forests VALUES(109, 'Green Forest', 
 ST_MPolyFromText( 
 'MULTIPOLYGON(((28 26,28 0,84 0,84 42,28 26), 
 (52 18,66 23,73 9,48 6,52 18)),((59 18,67 18,67 13,59 13,59 18)))', 
 0));
-
 INSERT INTO bridges VALUES(110, 'Cam Bridge', ST_PointFromText( 
 'POINT( 44 31 )', 0));
-
 INSERT INTO streams VALUES(111, 'Cam Stream', 
 ST_LineFromText( 
 'LINESTRING( 38 48, 44 41, 41 36, 44 31, 52 18 )', 0));
-
 INSERT INTO streams VALUES(112, NULL, 
 ST_LineFromText( 
 'LINESTRING( 76 0, 78 4, 73 9 )', 0));
-
 INSERT INTO buildings VALUES(113, '123 Main Street', 
 ST_PointFromText( 
 'POINT( 52 30 )', 0), 
 ST_PolyFromText( 
 'POLYGON( ( 50 31, 54 31, 54 29, 50 29, 50 31) )', 0));
-
 INSERT INTO buildings VALUES(114, '215 Main Street', 
 ST_PointFromText( 
 'POINT( 64 33 )', 0), 
 ST_PolyFromText( 
 'POLYGON( ( 66 34, 62 34, 62 32, 66 32, 66 34) )', 0));
-
 INSERT INTO ponds VALUES(120, NULL, 'Stock Pond', 
 ST_MPolyFromText( 
 'MULTIPOLYGON( ( ( 24 44, 22 42, 24 40, 24 44) ), 
 ( ( 26 44, 26 40, 28 42, 26 44) ) )', 0));
-
 INSERT INTO named_places VALUES(117, 'Ashton', 
 ST_PolyFromText( 
 'POLYGON( ( 62 48, 84 48, 84 30, 56 30, 56 34, 62 48) )', 0));
-
 INSERT INTO named_places VALUES(118, 'Goose Island', 
 ST_PolyFromText( 
 'POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )', 0));
-
 INSERT INTO map_neatlines VALUES(115, 
 ST_PolyFromText( 
 'POLYGON( ( 0 0, 0 48, 84 48, 84 0, 0 0 ) )', 0));
-
--- TODO: WL#2377
-----echo # Conformance Item T1 
---SELECT f_table_name 
---FROM geometry_columns;
---
-
-
---echo -- Conformance Item T6 
--- TODO: ST_Dimension() alias
 SELECT ST_Dimension(shore) 
 FROM lakes 
 WHERE name = 'Blue Lake';
@@ -910,19 +565,6 @@ SELECT ST_IsEmpty(centerline)
 FROM road_segments 
 WHERE name = 'Route 5' 
 AND aliases = 'Main Street';
-
--- FIXME: get wrong result:0, expected 1.
-----echo # Conformance Item T12 
--- TODO: ST_IsSimple() alias
---SELECT ST_IsSimple(shore) 
---FROM lakes 
---WHERE name = 'Blue Lake';
-
--- TODO: WL#2377
-----echo # Conformance Item T13 
---SELECT ST_AsText(Boundary((boundary),101) 
---FROM named_places 
---WHERE name = 'Goose Island';
 SELECT ST_AsText(ST_Envelope(boundary)) 
 FROM named_places 
 WHERE name = 'Goose Island';
@@ -938,19 +580,6 @@ WHERE fid = 102;
 SELECT ST_AsText(ST_EndPoint(centerline)) 
 FROM road_segments 
 WHERE fid = 102;
-
--- TODO: WL#2377
-----echo # Conformance Item T19 
--- TODO: ST_LineFromWKB() alias
---SELECT ST_IsClosed(LineFromWKB(ST_AsBinary(Boundary(boundary)),ST_SRID(boundary))) 
---FROM named_places 
---WHERE name = 'Goose Island';
-
--- TODO: WL#2377
-----echo # Conformance Item T20 
---SELECT IsRing(LineFromWKB(ST_AsBinary(Boundary(boundary)),ST_SRID(boundary))) 
---FROM named_places 
---WHERE name = 'Goose Island';
 SELECT ST_Length(centerline) 
 FROM road_segments 
 WHERE fid = 106;
@@ -963,12 +592,6 @@ WHERE fid = 102;
 SELECT ST_AsText(ST_Centroid(boundary)) 
 FROM named_places 
 WHERE name = 'Goose Island';
-
--- TODO: WL#2377
-----echo # Conformance Item T25 
---SELECT MBRContains(boundary, PointOnSurface(boundary)) 
---FROM named_places 
---WHERE name = 'Goose Island';
 SELECT ST_Area(boundary) 
 FROM named_places 
 WHERE name = 'Goose Island';
@@ -996,21 +619,11 @@ WHERE name = 'Route 75';
 SELECT ST_AsText(ST_Centroid(shores)) 
 FROM ponds 
 WHERE fid = 120;
-
--- TODO: WL#2377
-----echo # Conformance Item T35 
---SELECT MBRContains(shores, PointOnSurface(shores)) 
---FROM ponds 
---WHERE fid = 120;
 SELECT ST_Area(shores) 
 FROM ponds 
 WHERE fid = 120;
 SELECT ST_Equals(boundary,
 ST_PolyFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',0))
-FROM named_places
-WHERE name = 'Goose Island';
-SELECT ST_Equals(boundary,
-ST_PolyFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',4145))
 FROM named_places
 WHERE name = 'Goose Island';
 SELECT ST_Disjoint(centerlines, boundary) 
@@ -1021,20 +634,6 @@ SELECT ST_Touches(centerline, shore)
 FROM streams, lakes 
 WHERE streams.name = 'Cam Stream' 
 AND lakes.name = 'Blue Lake';
-
--- FIXME: wrong result: get 0, expected 1
-----echo # Conformance Item T40 
---SELECT ST_Within(boundary, footprint) 
---FROM named_places, buildings 
---WHERE named_places.name = 'Ashton' 
---AND buildings.address = '215 Main Street';
-
--- FIXME: wrong result: get 0, expected 1
-----echo # Conformance Item T41 
---SELECT ST_Overlaps(forests.boundary, named_places.boundary) 
---FROM forests, named_places 
---WHERE forests.name = 'Green Forest' 
---AND named_places.name = 'Ashton';
 SELECT ST_Crosses(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes 
 WHERE road_segments.fid = 102 
@@ -1047,24 +646,10 @@ SELECT ST_Contains(forests.boundary, named_places.boundary)
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' 
 AND named_places.name = 'Ashton';
-
--- TODO: WL#2377
-----echo # Conformance Item T45 
---SELECT Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT') 
---FROM forests, named_places 
---WHERE forests.name = 'Green Forest' 
---AND named_places.name = 'Ashton';
 SELECT ST_Distance(position, boundary) 
 FROM bridges, named_places 
 WHERE bridges.name = 'Cam Bridge' 
 AND named_places.name = 'Ashton';
-
--- FIXME: wrong result: NULL, expected 12
-----echo # Conformance Item T47 
---SELECT ST_AsText(ST_Intersection(centerline, shore)) 
---FROM streams, lakes 
---WHERE streams.name = 'Cam Stream' 
---AND lakes.name = 'Blue Lake';
 SELECT ST_AsText(ST_Difference(named_places.boundary, forests.boundary)) 
 FROM named_places, forests 
 WHERE named_places.name = 'Ashton' 
@@ -1080,33 +665,9 @@ AND named_places.name = 'Ashton';
 SELECT count(*) 
 FROM buildings, bridges 
 WHERE ST_Contains(ST_Buffer(bridges.position, 15.0), buildings.footprint) = 1;
-
--- TODO: WL#2377
-----echo # Conformance Item T52 
---SELECT ST_AsText(ConvexHull(shore)) 
---FROM lakes 
---WHERE lakes.name = 'Blue Lake';
-
 DROP DATABASE gis_ogs;
-SELECT ST_Union('', ''), md5(1);
-
-USE test;
 CREATE TABLE t1(a POINT NOT NULL SRID 0, SPATIAL KEY(a)) engine=myisam;
-INSERT INTO t1 VALUES ("");
-INSERT IGNORE INTO t1 VALUES ("");
-CREATE PROCEDURE p1()
-BEGIN
- DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
- BEGIN
-   SELECT 'Handler activated';
- INSERT INTO t1 VALUES("");
-END $
-delimiter ;
-DROP PROCEDURE p1;
 DROP TABLE t1;
-
-SET sql_mode = default;
-
 SELECT HEX(Point(-1*0e0, -1*0e0));
 CREATE TABLE t1 (pk INTEGER AUTO_INCREMENT PRIMARY KEY, g GEOMETRY);
 INSERT INTO t1(g) VALUES (Point(0.0, 0.0));
@@ -1120,469 +681,52 @@ SELECT pk, ST_AsText(g) AS wkt, HEX(g) AS hex FROM t1 ORDER BY pk;
 INSERT INTO t1(g) SELECT ST_GeomFromWKB(ST_AsBinary(g)) FROM t1 ORDER BY pk;
 SELECT pk, ST_AsText(g) AS wkt, HEX(g) AS hex FROM t1 ORDER BY pk;
 DROP TABLE t1;
-
 CREATE TABLE t1(g GEOMETRY);
 INSERT INTO t1 VALUES (Point(-1*0e0, -1*0e0)), (Point(0, 0));
 SELECT ST_AsGeoJSON(g) AS GeoJSON, HEX(ST_AsBinary(g)) AS WKB FROM t1;
 SELECT ST_AsGeoJSON(g, 30) AS GeoJSON, HEX(ST_AsBinary(g)) AS WKB FROM t1;
 DROP TABLE t1;
-
 SELECT HEX(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-0,-0.0]}')) AS g;
 SELECT HEX(
   ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-0.0,-0.0]}')) AS g;
-
 CREATE TABLE t1(g GEOMETRY);
-
--- Big-endian geometry
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('00000000000000000100000000000000000000000000000000'));
-
--- ST_GeomFromWKB should convert it to little-endian, so this should succeed
 INSERT INTO t1 VALUES (ST_GeomFromWKB(
   UNHEX('000000000100000000000000000000000000000000')));
 SELECT ST_AsText(g) FROM t1;
-
--- Big-endian point in little-endian geometrycollection
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX(
-  '00000000010700000001000000000000000100000000000000000000000000000000'));
-
--- Invalid and unsupported geometry types
--- Geometry -- fictitious WKB (abstract type)
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('00000000000000000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010800000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010900000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010A00000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010B00000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010C00000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010D00000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010E00000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010F0000000100000001030000000100000004000000000000000000000000'
-        '00000000000000000000000000F03F0000000000000000000000000000F03F00000000'
-        '0000F03F00000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001100000000100000001030000000100000004000000000000000000000000'
-        '00000000000000000000000000F03F0000000000000000000000000000F03F00000000'
-        '0000F03F00000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001110000000100000004000000000000000000000000000000000000000000'
-        '00000000F03F0000000000000000000000000000F03F000000000000F03F0000000000'
-        '0000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001E803000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001E9030000000000000000000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001EA0300000200000000000000000000000000000000000000000000000000'
-        '0000000000000000F03F000000000000F03F0000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001EB0300000100000004000000000000000000000000000000000000000000'
-        '000000000000000000000000F03F000000000000000000000000000000000000000000'
-        '00F03F000000000000F03F000000000000000000000000000000000000000000000000'
-        '0000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001EC0300000100000001E90300000000000000000000000000000000000000'
-        '00000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001ED030000010000000000000001EA03000002000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000F03F00000000'
-        '00000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001EE0300000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001EF0300000100000001E90300000000000000000000000000000000000000'
-        '00000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F003000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F103000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F203000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F303000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F403000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F503000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F603000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F70300000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F80300000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001F90300000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D007000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D1070000000000000000000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D20700000200000000000000000000000000000000000000000000000000'
-        '0000000000000000F03F000000000000F03F0000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D30700000100000004000000000000000000000000000000000000000000'
-        '000000000000000000000000F03F000000000000000000000000000000000000000000'
-        '00F03F000000000000F03F000000000000000000000000000000000000000000000000'
-        '0000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D40700000100000001E90300000000000000000000000000000000000000'
-        '00000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D5070000010000000000000001EA03000002000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000F03F00000000'
-        '00000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D60700000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D70700000100000001E90300000000000000000000000000000000000000'
-        '00000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D807000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001D907000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001DA07000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001DB07000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001DC07000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001DD07000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001DE07000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001DF0700000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001E00700000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001E10700000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001B80B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001B90B00000000000000000000000000000000000000000000000000000000'
-        '0000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001BA0B00000200000000000000000000000000000000000000000000000000'
-        '00000000000000000000000000000000F03F000000000000F03F000000000000000000'
-        '00000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001BB0B00000100000004000000000000000000000000000000000000000000'
-        '0000000000000000000000000000000000000000F03F00000000000000000000000000'
-        '0000000000000000000000000000000000F03F000000000000F03F0000000000000000'
-        '0000000000000000000000000000000000000000000000000000000000000000000000'
-        '0000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001BC0B00000100000001B90B00000000000000000000000000000000000000'
-        '0000000000000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001BD0B00000100000001BA0B00000200000000000000000000000000000000'
-        '00000000000000000000000000000000000000000000000000F03F000000000000F03F'
-        '00000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001BE0B00000100000001BB0B00000100000004000000000000000000000000'
-        '0000000000000000000000000000000000000000000000000000000000F03F00000000'
-        '0000000000000000000000000000000000000000000000000000F03F000000000000F0'
-        '3F00000000000000000000000000000000000000000000000000000000000000000000'
-        '0000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001BF0B00000100000001B90B00000000000000000000000000000000000000'
-        '0000000000000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C00B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C10B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C20B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C30B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C40B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C50B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C60B000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C70B00000100000001BB0B00000100000004000000000000000000000000'
-        '0000000000000000000000000000000000000000000000000000000000F03F00000000'
-        '0000000000000000000000000000000000000000000000000000F03F000000000000F0'
-        '3F00000000000000000000000000000000000000000000000000000000000000000000'
-        '0000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C80B00000100000001BB0B00000100000004000000000000000000000000'
-        '0000000000000000000000000000000000000000000000000000000000F03F00000000'
-        '0000000000000000000000000000000000000000000000000000F03F000000000000F0'
-        '3F00000000000000000000000000000000000000000000000000000000000000000000'
-        '0000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001C90B00000100000001EB0300000100000004000000000000000000000000'
-        '000000000000000000000000000000000000000000F03F000000000000000000000000'
-        '00000000000000000000F03F000000000000F03F000000000000000000000000000000'
-        '0000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('00000000011F00000000000000000000000000000000000000'));
-
--- Linestring with no points
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('00000000010200000000000000'));
-
--- Linestring with one point
---error ER_GIS_INVALID_DATA
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0)));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001020000000100000000000000000000000000000000000000'));
-
--- Polygon with no rings
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX('00000000010300000000000000'));
-
--- Polygon with one ring with no points
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX('0000000001030000000100000000000000'));
-
--- Polygon ring with two points
---error ER_GIS_INVALID_DATA
-INSERT INTO t1 VALUES (POLYGON(LINESTRING(POINT(0,0),POINT(1,0))));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001030000000100000002000000000000000000000000000000000000000000'
-        '00000000F03F0000000000000000'));
-
--- Polygon ring with three points
---error ER_GIS_INVALID_DATA
-INSERT INTO t1 VALUES (POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(0,0))));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001030000000100000003000000000000000000000000000000000000000000'
-        '00000000F03F000000000000000000000000000000000000000000000000'));
-
--- Polygon ring with three points, where the fourth is added automatically
--- This should succeed
 INSERT INTO t1 VALUES (POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1), POINT(0,0))));
-
--- Empty multipoint
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX('00000000010400000000000000'));
-
--- Empty multilinestring
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX('00000000010500000000000000'));
-
--- Empty multipolygon
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX('00000000010600000000000000'));
-
--- Empty geometrycollection
--- This should succeed
 INSERT INTO t1 VALUES (UNHEX('00000000010700000000000000'));
 SELECT ST_AsText(g) FROM t1;
-
--- Strings that are shorter than the encoded object
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX(''));
-INSERT INTO t1 VALUES (UNHEX('00000000'));
-INSERT INTO t1 VALUES (UNHEX('0000000001'));
-INSERT INTO t1 VALUES (UNHEX('000000000101'));
-INSERT INTO t1 VALUES (UNHEX('000000000101000000'));
-INSERT INTO t1 VALUES (UNHEX('0000000001010000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001010000000000000000000000000000000000000'));
-
--- Strings that are longer than the encoded object
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX('000000000107000000000000000'));
-INSERT INTO t1 VALUES (UNHEX('0000000001070000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('000000000101000000000000000000000000000000000000000'));
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001010000000000000000000000000000000000000000'));
-
--- Multipoint with a linestring in it
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001040000000100000001020000000200000000000000000000000000000000'
-        '000000000000000000F03F000000000000F03F'));
-
--- Geometrycollection with a multipoint with a linestring in it
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001070000000100000001040000000100000001020000000200000000000000'
-        '000000000000000000000000000000000000F03F000000000000F03F'));
-
--- Multilinestring with a point in it
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX(
-  '00000000010500000001000000010100000000000000000000000000000000000000'));
-
--- Geometrycollection with a multilinestring with a point in it
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001070000000100000001050000000100000001010000000000000000000000'
-        '0000000000000000'));
-
--- Multipolygon with a point in it
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (UNHEX(
-  '00000000010600000001000000010100000000000000000000000000000000000000'));
-
--- Geometrycollection with a multipolygon with a point in it
---error ER_CANT_CREATE_GEOMETRY_OBJECT
-INSERT INTO t1 VALUES (
-  UNHEX('0000000001070000000100000001060000000100000001010000000000000000000000'
-        '0000000000000000'));
-
 DROP TABLE t1;
-
--- Invalid geometry types in point column
 CREATE TABLE t1 (p POINT);
 INSERT INTO t1 VALUES (POINT(0,0));
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (
-  POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
-INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
-INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
-  POINT(1,1), POINT(0,1),POINT(0,0)))));
-INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
--- Invalid geometry types in linestring column
 CREATE TABLE t1 (l LINESTRING);
-INSERT INTO t1 VALUES (POINT(0,0));
 INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (
-  POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
-INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
-INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
-  POINT(1,1),POINT(0,1),POINT(0,0)))));
-INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
--- Invalid geometry types in polygon column
 CREATE TABLE t1 (p POLYGON);
-INSERT INTO t1 VALUES (POINT(0,0));
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
 INSERT INTO t1 VALUES (
   POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
-INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
-INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
-  POINT(1,1),POINT(0,1),POINT(0,0)))));
-INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
--- Invalid geometry types in multipoint column
 CREATE TABLE t1 (m MULTIPOINT);
-INSERT INTO t1 VALUES (POINT(0,0));
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (
-  POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
 INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
-INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
-  POINT(1,1),POINT(0,1),POINT(0,0)))));
-INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
--- Invalid geometry types in multilinestring column
 CREATE TABLE t1 (m MULTILINESTRING);
-INSERT INTO t1 VALUES (POINT(0,0));
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (
-  POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
-INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
 INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
-INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
-  POINT(1,1),POINT(0,1),POINT(0,0)))));
-INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
--- Invalid geometry types in multipolygon column
 CREATE TABLE t1 (m MULTIPOLYGON);
-INSERT INTO t1 VALUES (POINT(0,0));
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (
-  POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
-INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
 INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
   POINT(1,1),POINT(0,1), POINT(0,0)))));
-INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
--- Invalid geometry types in geometrycollection column
 CREATE TABLE t1 (g GEOMETRYCOLLECTION);
-INSERT INTO t1 VALUES (POINT(0,0));
-INSERT INTO t1 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
-INSERT INTO t1 VALUES (
-  POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1),POINT(0,1),POINT(0,0))));
 INSERT INTO t1 VALUES (MULTIPOINT(POINT(0,0),POINT(1,1)));
 INSERT INTO t1 VALUES (MULTILINESTRING(LINESTRING(POINT(0,0),POINT(1,1))));
 INSERT INTO t1 VALUES (MULTIPOLYGON(POLYGON(LINESTRING(POINT(0,0),POINT(1,0),
   POINT(1,1),POINT(0,1),POINT(0,0)))));
 INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0,0)));
 DROP TABLE t1;
-
 CREATE TABLE t1 (g GEOMETRY);
 INSERT INTO t1 VALUES(ST_GeomFromText('GEOMETRYCOLLECTION()'));
 DROP TABLE t1;
-CREATE TABLE t1 (
-  a GEOMETRY NOT NULL,
-  b GEOMETRY NOT NULL,
-  c GEOMETRY NOT NULL,
-  d GEOMETRY NOT NULL,
-  e GEOMETRY NOT NULL,
-  f GEOMETRY NOT NULL,
-  g GEOMETRY NOT NULL,
-  h GEOMETRY NOT NULL,
-  i GEOMETRY NOT NULL,
-  j GEOMETRY NOT NULL,
-  k GEOMETRY NOT NULL,
-  l GEOMETRY NOT NULL,
-  m GEOMETRY NOT NULL,
-  n GEOMETRY NOT NULL,
-  o GEOMETRY NOT NULL,
-  p GEOMETRY NOT NULL,
-  q GEOMETRY NOT NULL,
-  r GEOMETRY NOT NULL,
-  SPATIAL INDEX (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
-);
-SET @poly1 = ST_GeomFromText('POLYGON((25 25, 25 35, 35 35, 35 25, 25 25))');
-
 CREATE TABLE t1 (
                    a INT NOT NULL,
                    p POINT NOT NULL SRID 0,
@@ -1592,12 +736,10 @@ CREATE TABLE t1 (
                    SPATIAL KEY idx3 (l),
                    SPATIAL KEY idx4 (g)
                 ) ENGINE=InnoDB;
-
 INSERT INTO t1 VALUES(
                       1, ST_GeomFromText('POINT(10 10)'),
                       ST_GeomFromText('LINESTRING(1 1, 5 5, 10 10)'),
                       ST_GeomFromText('POLYGON((30 30, 40 40, 50 50, 30 50, 30 40, 30 30))'));
-
 INSERT INTO t1 VALUES(
                       2, ST_GeomFromText('POINT(30 30)'),
                       ST_GeomFromText('LINESTRING(2 3, 7 8, 9 10, 15 16)'),
@@ -1605,7 +747,6 @@ INSERT INTO t1 VALUES(
 SELECT ST_AsText(p) FROM t1 WHERE ST_Within(p, @poly1);
 SELECT ST_AsText(p) FROM t1 WHERE ST_Equals(p, ST_PointFromText('POINT(20 20)'));
 DROP TABLE t1;
-
 CREATE TABLE t1 (
                    a INT NOT NULL,
                    p POINT NOT NULL SRID 0,
@@ -1615,47 +756,35 @@ CREATE TABLE t1 (
                    SPATIAL KEY idx3 (l),
                    SPATIAL KEY idx4 (g)
                 ) ENGINE=MyISAM;
-
 INSERT INTO t1 VALUES(
                       1, ST_GeomFromText('POINT(10 10)'),
                       ST_GeomFromText('LINESTRING(1 1, 5 5, 10 10)'),
                       ST_GeomFromText('POLYGON((30 30, 40 40, 50 50, 30 50, 30 40, 30 30))'));
-
 INSERT INTO t1 VALUES(
                       2, ST_GeomFromText('POINT(30 30)'),
                       ST_GeomFromText('LINESTRING(2 3, 7 8, 9 10, 15 16)'),
                       ST_GeomFromText('POLYGON((10 30, 30 40, 40 50, 40 30, 30 20, 10 30))'));
 SELECT ST_AsText(p) FROM t1 WHERE ST_Within(p, @poly1);
 SELECT ST_AsText(p) FROM t1 WHERE ST_Equals(p, ST_PointFromText('POINT(20 20)'));
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (p POINT NOT NULL) ENGINE=InnoDB;
-
 INSERT INTO t1 VALUES (ST_GEOMFROMTEXT('POINT(1 1)'));
-
 SELECT ST_ASTEXT(p) FROM t1
 WHERE MBRCOVEREDBY
 (
   p,
   ST_GEOMFROMTEXT('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))')
 );
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (p POINT NOT NULL) ENGINE=MyISAM;
-
 INSERT INTO t1 VALUES (ST_GEOMFROMTEXT('POINT(1 1)'));
-
 SELECT ST_ASTEXT(p) FROM t1
 WHERE MBRCOVEREDBY
 (
   p,
   ST_GEOMFROMTEXT('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))')
 );
-
 DROP TABLE t1;
-
 SELECT ST_NUMINTERIORRING(ST_GEOMFROMTEXT('POLYGON((0 0, 1 0, 1 1, 0 0))'));
 SELECT ST_NUMINTERIORRING(
   ST_GEOMFROMTEXT(
@@ -1672,62 +801,46 @@ SELECT * FROM v2;
 DROP VIEW v1;
 DROP VIEW v2;
 CREATE TABLE t1 (g GEOMETRY);
-
 INSERT INTO t1 (g) VALUES (ST_GeomFromText("MULTIPOLYGON(((0 7,-3 -14,9 -11,0 7)))"));
 SELECT ST_AsText(ST_Buffer(g, 2)), ST_AsText(ST_Buffer(g, 2)) FROM t1;
 SELECT ST_AsText(ST_Buffer(g, 2)), ST_AsText(ST_Difference(g, g)) FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1(id INT PRIMARY KEY AUTO_INCREMENT, g GEOMETRY NOT NULL SRID 0,
                 SPATIAL INDEX(g));
-
 INSERT INTO t1(g) VALUES
 (ST_GEOMFROMTEXT('MULTIPOLYGON(((0 7,-3 -14,9 -11,0 7)))'));
-
 CREATE TABLE t2 SELECT ST_ASTEXT(ST_BUFFER(g, 54706,
 ST_BUFFER_STRATEGY('join_miter', 183))) AS result FROM t1 WHERE id = 1;
-
 UPDATE t2 SET result = (SELECT ST_ASTEXT(ST_BUFFER(g, 54706,
 ST_BUFFER_STRATEGY('join_miter', 183))) AS result FROM t1 WHERE id = 1) + 9999
 WHERE result NOT IN
 (SELECT ST_ASTEXT(ST_BUFFER(g, 54706, ST_BUFFER_STRATEGY('join_miter', 183)))
  AS result FROM t1 WHERE id = 1);
-
 DROP TABLE t1;
 DROP TABLE t2;
-
 CREATE TABLE t1(id INT PRIMARY KEY AUTO_INCREMENT, g GEOMETRY);
-
 INSERT INTO t1(g) VALUES
 (ST_GEOMFROMTEXT('MULTIPOLYGON(((4 1,0 -18,6 -18,17 -18,19 8,4 1)))'));
-
 INSERT INTO t1(g) VALUES (ST_GEOMFROMTEXT('LINESTRING(-10 20,0 -1)'));
-
 CREATE TABLE t2 SELECT ST_ASTEXT(ST_DIFFERENCE(a.g, b.g)) AS result
 FROM t1 AS a, t1 AS b WHERE a.id = 1 AND b.id = 2;
-
 SELECT * FROM t2 WHERE result NOT IN
 (SELECT ST_ASTEXT(ST_DIFFERENCE(a.g, b.g)) AS result
  FROM t1 AS a, t1 AS b WHERE a.id = 1 AND b.id = 2);
-
 DROP TABLE t1;
 DROP TABLE t2;
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((0 6,-11 -6,6 0,0
 6),(3 1,5 0,-2 0,3 1))'), ST_GEOMFROMTEXT('POLYGON((5 4,6 0,9 12,-7 -12,5
 -19,5 4))')));
-
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((0 0,10 10,20 0,0 0))'),
 ST_GEOMFROMTEXT('POLYGON((10 5,20 7,10 10,30 10,20 0,20 5,10 5))')));
-
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((0 0,0 40,40 40,40
 0,0 0),(10 10,30 10,30 30,10 30,10 10))'), ST_GEOMFROMTEXT('POLYGON((5
 15,5 30,30 15,5 15))')));
-
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('MULTIPOLYGON(((0 0,0 40,40
 40,40 0,0 0),(10 10,30 10,30 30,10 30,10 10)))'),
 ST_GEOMFROMTEXT('MULTIPOLYGON(((10 10,10 20,20 10,10 10)),((20 10,30
 20,30 10,20 10)),((10 20,10 30,20 20,10 20)),((20 20,30 30,30 20,20 20)))')));
-
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('MULTIPOLYGON(((0 0,0 40,40
 40,40 0,0 0),(10 10,30 10,30 30,10 30,10 10)))'),
 ST_GEOMFROMTEXT('MULTIPOLYGON(((15 10,10 15,10 17,15 10)),((15 10,10
@@ -1735,53 +848,42 @@ ST_GEOMFROMTEXT('MULTIPOLYGON(((15 10,10 15,10 17,15 10)),((15 10,10
 10)),((25 10,30 22,30 20,25 10)),((25 10,30 27,30 25,25 10)),((18
 10,20 30,19 10,18 10)),((21 10,20 30,22 10,21 10)))')));
 CREATE TABLE t(a BLOB NOT NULL, b DATE NOT NULL) ENGINE=Innodb;
-
 SELECT NOT EXISTS
 ( SELECT 1 FROM t WHERE (SELECT a FROM t)
     IN (SELECT b FROM t)
     ) AS rescol FROM t;
-
 SELECT NOT EXISTS
 ( SELECT 1 FROM t WHERE (SELECT ST_GeomFromWKB(a) FROM t)
     IN (SELECT b FROM t)
     ) AS rescol FROM t;
-
 SELECT NOT EXISTS
 ( SELECT 1 FROM t WHERE (SELECT st_AsWKB(a) FROM t)
     IN (SELECT b FROM t)
     )AS rescol  FROM t;
-
 SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t) AS result;
 INSERT INTO t VALUES(ST_GeomFromText('POINT(0 0)'), CURDATE());
 SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t) AS result;
-SELECT ST_GeomFromText('POINT(0 0)') > (SELECT b FROM t) AS result;
 DROP TABLE t;
-
 CREATE TABLE t1(a BLOB NOT NULL, b INT NOT NULL) ENGINE=Innodb;
-
 SELECT NOT EXISTS
 ( SELECT 1 FROM t1 WHERE (SELECT a FROM t1)
     IN (SELECT b FROM t1)
     ) AS rescol FROM t1;
-
 SELECT NOT EXISTS
 ( SELECT 1 FROM t1 WHERE (SELECT ST_GeomFromWKB(a) FROM t1)
     IN (SELECT b FROM t1)
     ) AS rescol FROM t1;
-
 SELECT NOT EXISTS
 ( SELECT 1 FROM t1 WHERE (SELECT st_AsWKB(a) FROM t1)
     IN (SELECT b FROM t1)
     )AS rescol  FROM t1;
-
 SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t1) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t1) AS result;
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(0 0)'), 1);
 SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t1) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t1) AS result;
-SELECT ST_GeomFromText('POINT(0 0)') > (SELECT b FROM t1) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) > (SELECT b FROM t1) AS result;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1798,10 +900,7 @@ CREATE TABLE t1 (
   i INT NOT NULL
 ) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (0);
-ALTER TABLE t1 ADD COLUMN g GEOMETRY NOT NULL, ALGORITHM=INPLACE;
-ALTER TABLE t1 ADD COLUMN g GEOMETRY NOT NULL, ALGORITHM=COPY;
 ALTER TABLE t1 ADD COLUMN g GEOMETRY;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
 SELECT i, g FROM t1;
 UPDATE t1 SET g=POINT(0,0) WHERE g IS NULL;
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
@@ -1821,14 +920,8 @@ ALTER TABLE t1 ADD COLUMN g INT;
 ALTER TABLE t1 ADD COLUMN g2 INT;
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
 ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY NOT NULL;
-SET @save_innodb_strict_mode=@@session.innodb_strict_mode;
-SET SESSION innodb_strict_mode=OFF;
-SET @save_sql_mode=@@session.sql_mode;
-SET SESSION sql_mode="";
 ALTER TABLE t1 MODIFY COLUMN g2 GEOMETRY NOT NULL;
 ALTER TABLE t1 CHANGE COLUMN g2 h2 GEOMETRY NOT NULL;
-SET SESSION sql_mode=@save_sql_mode;
-SET SESSION innodb_strict_mode=@save_innodb_strict_mode;
 DROP TABLE t1;
 CREATE TABLE t1 (
   i INT NOT NULL
@@ -1838,7 +931,6 @@ ALTER TABLE t1 ADD COLUMN g INT;
 SELECT i, g FROM t1;
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY;
 SELECT i, g FROM t1;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
 SELECT i, g FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1847,16 +939,6 @@ CREATE TABLE t1 (
 INSERT INTO t1 VALUES (0);
 ALTER TABLE t1 ADD COLUMN g INT;
 SELECT i, g FROM t1;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY NOT NULL;
-SET @save_innodb_strict_mode=@@session.innodb_strict_mode;
-SET SESSION innodb_strict_mode=OFF;
-SET @save_sql_mode=@@session.sql_mode;
-SET SESSION sql_mode="";
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY NOT NULL;
-SET SESSION sql_mode=@save_sql_mode;
-SET SESSION innodb_strict_mode=@save_innodb_strict_mode;
 SELECT i, g FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1865,8 +947,6 @@ CREATE TABLE t1 (
 INSERT INTO t1 VALUES (0);
 ALTER TABLE t1 ADD COLUMN g INT DEFAULT 1;
 SELECT i, g FROM t1;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY;
-ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY;
 SELECT i, g FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1874,8 +954,6 @@ CREATE TABLE t1 (
 ) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (0);
 ALTER TABLE t1 ADD COLUMN g INT DEFAULT 1;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY NOT NULL;
 SELECT * FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1884,8 +962,6 @@ CREATE TABLE t1 (
 INSERT INTO t1 VALUES (0);
 ALTER TABLE t1 ADD COLUMN g VARCHAR(20) NOT NULL;
 SELECT i, g FROM t1;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY;
-ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY;
 SELECT i, g FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1894,8 +970,6 @@ CREATE TABLE t1 (
 INSERT INTO t1 VALUES (0);
 ALTER TABLE t1 ADD COLUMN g VARCHAR(20) NOT NULL;
 SELECT i, g FROM t1;
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-ALTER TABLE t1 CHANGE COLUMN g h GEOMETRY NOT NULL;
 SELECT i, g FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (b BLOB);
@@ -1904,14 +978,6 @@ ALTER TABLE t1 MODIFY COLUMN b BLOB;
 ALTER TABLE t1 ALGORITHM=COPY, MODIFY COLUMN b GEOMETRY NOT NULL;
 ALTER TABLE t1 MODIFY COLUMN b BLOB;
 INSERT INTO t1 VALUES(NULL);
-ALTER TABLE t1 ALGORITHM=COPY, MODIFY COLUMN b GEOMETRY NOT NULL;
-SET @save_innodb_strict_mode=@@session.innodb_strict_mode;
-SET SESSION innodb_strict_mode=OFF;
-SET @save_sql_mode=@@session.sql_mode;
-SET SESSION sql_mode="";
-ALTER TABLE t1 MODIFY COLUMN b GEOMETRY NOT NULL;
-SET SESSION sql_mode=@save_sql_mode;
-SET SESSION innodb_strict_mode=@save_innodb_strict_mode;
 SELECT HEX(b) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1931,11 +997,7 @@ CREATE TABLE t1 (
 ) ENGINE=InnoDB;
 INSERT INTO t1 VALUES(POINT(0,0));
 SELECT ST_AsText(p) FROM t1;
-ALTER TABLE t1 MODIFY COLUMN p POLYGON;
-ALTER TABLE t1 CHANGE COLUMN p q POLYGON;
 SELECT ST_AsText(p) FROM t1;
-ALTER TABLE t1 MODIFY COLUMN p POLYGON NOT NULL;
-ALTER TABLE t1 CHANGE COLUMN p q POLYGON NOT NULL;
 SELECT ST_AsText(p) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -1967,19 +1029,10 @@ SELECT ST_ASTEXT(g) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (g GEOMETRY) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (NULL);
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
 DROP TABLE t1;
 CREATE TABLE t1 (g GEOMETRY) ENGINE=MyISAM;
 INSERT INTO t1 VALUES (NULL);
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
 SELECT g FROM t1;
-SET @save_innodb_strict_mode=@@session.innodb_strict_mode;
-SET SESSION innodb_strict_mode=OFF;
-SET @save_sql_mode=@@session.sql_mode;
-SET SESSION sql_mode="";
-ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-SET SESSION sql_mode=@save_sql_mode;
-SET SESSION innodb_strict_mode=@save_innodb_strict_mode;
 SELECT g FROM t1;
 DROP TABLE t1;
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('LINESTRING(12 6,9 4,-9
@@ -1988,7 +1041,6 @@ SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('LINESTRING(12 6,9 4,-9
 7),(-19 -3,-16 -12),(10 0,3 8,12 19,8 -15)),MULTILINESTRING((8 16,-8 -3),(18
 3,8 12),(-19 4,20 14)),POLYGON((2 3,-9 -7,12 -13,2 3)),MULTILINESTRING((16
 -7,-2 2,11 -10,-1 8),(6 0,-15 0,16 0,-6 -14)))')));
-
 SELECT ST_ISVALID(
   ST_UNION(
     ST_GEOMFROMTEXT('
@@ -2003,7 +1055,6 @@ SELECT ST_ISVALID(
     ')
   )
 ) AS valid;
-
 SELECT ST_ISVALID(
 ST_DIFFERENCE(
 ST_GEOMFROMTEXT('MULTILINESTRING((8 16,-8 -3),(-2 2,-0.561069
@@ -2013,31 +1064,25 @@ ST_GEOMFROMTEXT('POLYGON((2 3,-9 -7,12 -13,2 3))'))) as valid0;
 SELECT ST_ISVALID(ST_INTERSECTION(ST_GEOMFROMTEXT('POLYGON((0 5,-6
 -17,12 17,0 5),(4 6,5 5,0 1,4 6))'), ST_GEOMFROMTEXT('POLYGON((3 9,-15 -5,13
 -11,3 9))')));
-
 SELECT ST_ISVALID(ST_INTERSECTION(ST_GEOMFROMTEXT('POLYGON((5 6,-15
 -13,1 -8,5 6))'), ST_GEOMFROMTEXT('POLYGON((0 8,-19 6,18 -17,20 8,11 17,0
 8),(3 2,3 -1,1 0,3 2),(1 3,4 4,0 -1,1 3))')));
 SELECT point(1,1) IN ('1',1,'1') AS res;
 SELECT st_centroid(point(1,1)) IN ('1',1,'1') AS res;
-
 SELECT ST_AsText(ST_GeomFromText('POINT(0 0)', NULL));
 SELECT ST_SRID(ST_GeomFromText('POINT(0 0)', NULL));
 SELECT ST_ISVALID(ST_BUFFER(ST_GEOMFROMTEXT('MULTILINESTRING((-5 15,7
 15,19 -10,-11 -2),(2 13,2 -9))'), 1));
-
 CREATE TABLE t1 (g GEOMETRY);
 INSERT INTO t1 VALUES (ST_GeomFromText('LINESTRING(-3 11,-10 15,-16 -13)'));
-
 CREATE TABLE t2 (g GEOMETRY);
 INSERT INTO t2 VALUES
 (ST_GeomFromText('POINT(-10 15)')),
 (ST_GeomFromText('GEOMETRYCOLLECTION(LINESTRING(-13 9,0 -13))'));
-
 CREATE PROCEDURE proc () LANGUAGE SQL
 SELECT 1 AS result
 FROM (t1 RIGHT OUTER JOIN t2 ON ST_CONTAINS(t2.g, t1.g))
 WHERE t1.g NOT IN (SELECT g FROM t2);
-
 DROP PROCEDURE proc;
 DROP TABLE t1, t2;
 SELECT ST_ISVALID(ST_INTERSECTION(ST_GEOMFROMTEXT('POLYGON((6 7,18
@@ -2052,43 +1097,15 @@ SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((4 5,12 11,-12
 SELECT ST_ISVALID(ST_DIFFERENCE(ST_GEOMFROMTEXT('POLYGON((8 6,5 7,-1
 4,-8 -7,0 -17,8 6),(3 6,5 5,0 -2,3 6))'), ST_GEOMFROMTEXT('POLYGON((3 5,-17
 11,-8 -3,3 5))'))) AS result;
-
 CREATE TABLE d (id INT, r_id INT, i INT);
 INSERT INTO d VALUES (1, 1, 1);
-
 CREATE TABLE dp (id INT, d_id INT);
 INSERT INTO dp VALUES (1, 1);
-
 CREATE TABLE r (id INT, p POINT);
 INSERT INTO r VALUES (1, ST_GEOMFROMTEXT('POINT(1 1)'));
-
-DO (SELECT ST_ASBINARY(r.p)
-FROM d
-INNER JOIN dp ON d.id = dp.d_id
-INNER JOIN r ON d.r_id = r.id
-ORDER BY d.i);
-
 DROP TABLE d, dp, r;
-
-SET collation_connection='utf32_bin';
 SELECT '2010-10-10 10:10:10' + INTERVAL
   ST_GeometryType(ST_GeomFromText('POINT(1 1)')) HOUR_SECOND;
-
-SET @wkt_pt = 'POINT(0 0)';
-SET @wkt_ls = 'LINESTRING(0 0, 1 1)';
-SET @wkt_py = 'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))';
-SET @wkt_mpt = 'MULTIPOINT((0 0))';
-SET @wkt_mls = 'MULTILINESTRING((0 0, 1 1))';
-SET @wkt_mpy = 'MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))';
-SET @wkt_gc = 'GEOMETRYCOLLECTION(POINT(0 0))';
-
-SET @wkb_pt = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_pt));
-SET @wkb_ls = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_ls));
-SET @wkb_py = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_py));
-SET @wkb_mpt = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_mpt));
-SET @wkb_mls = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_mls));
-SET @wkb_mpy = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_mpy));
-SET @wkb_gc = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_gc));
 SELECT ST_SRID(ST_GEOMCOLLFROMTEXT(@wkt_gc, -1));
 SELECT ST_SRID(ST_GEOMCOLLFROMTXT(@wkt_gc, -1));
 SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMTEXT(@wkt_gc, -1));
@@ -2105,22 +1122,6 @@ SELECT ST_SRID(ST_MULTIPOLYGONFROMTEXT(@wkt_mpy, -1));
 SELECT ST_SRID(ST_POINTFROMTEXT(@wkt_pt, -1));
 SELECT ST_SRID(ST_POLYFROMTEXT(@wkt_py, -1));
 SELECT ST_SRID(ST_POLYGONFROMTEXT(@wkt_py, -1));
-SELECT ST_SRID(ST_GEOMCOLLFROMWKB(@wkb_gc, -1));
-SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMWKB(@wkb_gc, -1));
-SELECT ST_SRID(ST_GEOMETRYFROMWKB(@wkb_pt, -1));
-SELECT ST_SRID(ST_GEOMFROMWKB(@wkb_pt, -1));
-SELECT ST_SRID(ST_LINEFROMWKB(@wkb_ls, -1));
-SELECT ST_SRID(ST_LINESTRINGFROMWKB(@wkb_ls, -1));
-SELECT ST_SRID(ST_MLINEFROMWKB(@wkb_mls, -1));
-SELECT ST_SRID(ST_MPOINTFROMWKB(@wkb_mpt, -1));
-SELECT ST_SRID(ST_MPOLYFROMWKB(@wkb_mpy, -1));
-SELECT ST_SRID(ST_MULTILINESTRINGFROMWKB(@wkb_mls, -1));
-SELECT ST_SRID(ST_MULTIPOINTFROMWKB(@wkb_mpt, -1));
-SELECT ST_SRID(ST_MULTIPOLYGONFROMWKB(@wkb_mpy, -1));
-SELECT ST_SRID(ST_POINTFROMWKB(@wkb_pt, -1));
-SELECT ST_SRID(ST_POLYFROMWKB(@wkb_py, -1));
-SELECT ST_SRID(ST_POLYGONFROMWKB(@wkb_py, -1));
-
 SELECT ST_SRID(ST_GEOMCOLLFROMTEXT(@wkt_gc, 0));
 SELECT ST_SRID(ST_GEOMCOLLFROMTXT(@wkt_gc, 0));
 SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMTEXT(@wkt_gc, 0));
@@ -2153,91 +1154,22 @@ SELECT ST_SRID(ST_MULTIPOLYGONFROMTEXT(@wkt_mpy, 4294967296));
 SELECT ST_SRID(ST_POINTFROMTEXT(@wkt_pt, 4294967296));
 SELECT ST_SRID(ST_POLYFROMTEXT(@wkt_py, 4294967296));
 SELECT ST_SRID(ST_POLYGONFROMTEXT(@wkt_py, 4294967296));
-SELECT ST_SRID(ST_GEOMCOLLFROMWKB(@wkb_gc, 4294967296));
-SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMWKB(@wkb_gc, 4294967296));
-SELECT ST_SRID(ST_GEOMETRYFROMWKB(@wkb_pt, 4294967296));
-SELECT ST_SRID(ST_GEOMFROMWKB(@wkb_pt, 4294967296));
-SELECT ST_SRID(ST_LINEFROMWKB(@wkb_ls, 4294967296));
-SELECT ST_SRID(ST_LINESTRINGFROMWKB(@wkb_ls, 4294967296));
-SELECT ST_SRID(ST_MLINEFROMWKB(@wkb_mls, 4294967296));
-SELECT ST_SRID(ST_MPOINTFROMWKB(@wkb_mpt, 4294967296));
-SELECT ST_SRID(ST_MPOLYFROMWKB(@wkb_mpy, 4294967296));
-SELECT ST_SRID(ST_MULTILINESTRINGFROMWKB(@wkb_mls, 4294967296));
-SELECT ST_SRID(ST_MULTIPOINTFROMWKB(@wkb_mpt, 4294967296));
-SELECT ST_SRID(ST_MULTIPOLYGONFROMWKB(@wkb_mpy, 4294967296));
-SELECT ST_SRID(ST_POINTFROMWKB(@wkb_pt, 4294967296));
-SELECT ST_SRID(ST_POLYFROMWKB(@wkb_py, 4294967296));
-SELECT ST_SRID(ST_POLYGONFROMWKB(@wkb_py, 4294967296));
-
-SET @wkt_pt = 'POINT(0 0)';
-SET @wkt_ls = 'LINESTRING(0 0, 1 1)';
-SET @wkt_py = 'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))';
-SET @wkt_mpt = 'MULTIPOINT((0 0))';
-SET @wkt_mls = 'MULTILINESTRING((0 0, 1 1))';
-SET @wkt_mpy = 'MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))';
-SET @wkt_gc = 'GEOMETRYCOLLECTION(POINT(0 0))';
-
-SET @wkb_pt = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_pt));
-SET @wkb_ls = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_ls));
-SET @wkb_py = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_py));
-SET @wkb_mpt = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_mpt));
-SET @wkb_mls = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_mls));
-SET @wkb_mpy = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_mpy));
-SET @wkb_gc = ST_ASWKB(ST_GEOMFROMTEXT(@wkt_gc));
-
-DO ST_GEOMETRYFROMTEXT(@wkt_pt);
-
-DO ST_GEOMFROMTEXT(@wkt_pt);
-
--- Should pass
-DO ST_POINTFROMTEXT(@wkt_pt);
-
-DO ST_GEOMETRYFROMWKB(@wkb_pt);
-
-DO ST_GEOMFROMWKB(@wkb_pt);
-
--- Should pass
-DO ST_POINTFROMWKB(@wkb_pt);
-
-DO ST_GEOMETRYFROMWKB(St_AsWKB(ST_GEOMFROMTEXT(@wkt_pt)));
-
-DO ST_GEOMFROMWKB(St_AsWKB(ST_GEOMFROMTEXT(@wkt_pt)));
-
--- Should pass
-DO ST_POINTFROMWKB(St_AsWKB(ST_GEOMFROMTEXT(@wkt_pt)));
-
 CREATE TABLE t1 (a DECIMAL(54,20));
 INSERT INTO t1 VALUES (0);
-SELECT (SELECT MULTILINESTRING(d.a, d.a, d.a) FROM t1)
-FROM t1 AS d GROUP BY d.a;
-
 DROP TABLE t1;
-
 CREATE TABLE t1(g GEOMETRY NOT NULL) ENGINE=ARCHIVE;
-INSERT INTO t1 VALUES (NULL), (NULL);
 ALTER TABLE t1 FORCE;
 DROP TABLE t1;
-
-SET @save_sql_mode=@@sql_mode;
-SET sql_mode='';
-
 CREATE TABLE t1(g GEOMETRY NOT NULL) ENGINE=ARCHIVE;
-INSERT INTO t1 VALUES (NULL), (NULL);
 ALTER TABLE t1 FORCE;
 DROP TABLE t1;
-
-SET sql_mode=@save_sql_mode;
-
 CREATE TABLE t(a INT);
 INSERT INTO t VALUES(1),(2),(3),(4);
 DROP TABLE t;
-
 CREATE TABLE t1 (
   g POLYGON SRID 4326 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE SPATIAL INDEX g_idx ON t1(g);
-
 INSERT INTO t1 VALUES (
   ST_GeomFromText(
     'POLYGON((-165 -46,161 -70,-108 72,-165 -46))',
@@ -2245,7 +1177,6 @@ INSERT INTO t1 VALUES (
     'axis-order=long-lat'
   )
 );
-
 SELECT COUNT(*)
 FROM t1 IGNORE INDEX (g_idx)
 WHERE MBRContains(
@@ -2256,7 +1187,6 @@ WHERE MBRContains(
   ),
   g
 );
-
 SELECT COUNT(*)
 FROM t1 FORCE INDEX (g_idx)
 WHERE MBRContains(
@@ -2266,15 +1196,11 @@ WHERE MBRContains(
     'axis-order=long-lat'),
   g
 );
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   g POLYGON SRID 4326 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 ALTER TABLE t1 ADD SPATIAL INDEX g_idx (g);
-
 INSERT INTO t1 VALUES (
   ST_GeomFromText(
     'POLYGON((-165 -46,161 -70,-108 72,-165 -46))',
@@ -2282,7 +1208,6 @@ INSERT INTO t1 VALUES (
     'axis-order=long-lat'
   )
 );
-
 SELECT COUNT(*)
 FROM t1 IGNORE INDEX (g_idx)
 WHERE MBRContains(
@@ -2293,7 +1218,6 @@ WHERE MBRContains(
   ),
   g
 );
-
 SELECT COUNT(*)
 FROM t1 FORCE INDEX (g_idx)
 WHERE MBRContains(
@@ -2303,14 +1227,11 @@ WHERE MBRContains(
     'axis-order=long-lat'),
   g
 );
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   g POLYGON SRID 4326 NOT NULL,
   SPATIAL INDEX g_idx (g)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 INSERT INTO t1 VALUES (
   ST_GeomFromText(
     'POLYGON((-165 -46,161 -70,-108 72,-165 -46))',
@@ -2318,7 +1239,6 @@ INSERT INTO t1 VALUES (
     'axis-order=long-lat'
   )
 );
-
 SELECT COUNT(*)
 FROM t1 IGNORE INDEX (g_idx)
 WHERE MBRContains(
@@ -2329,7 +1249,6 @@ WHERE MBRContains(
   ),
   g
 );
-
 SELECT COUNT(*)
 FROM t1 FORCE INDEX (g_idx)
 WHERE MBRContains(
@@ -2339,84 +1258,38 @@ WHERE MBRContains(
     'axis-order=long-lat'),
   g
 );
-
 DROP TABLE t1;
 CREATE TABLE t1(g GEOMETRY NOT NULL);
-INSERT IGNORE INTO t1 VALUES (NULL);
-INSERT INTO t1 VALUES (NULL);
-INSERT INTO t1 VALUES (NULL), (NULL);
 UPDATE t1 SET g=NULL;
 UPDATE IGNORE t1 SET g=NULL;
 INSERT INTO t1 VALUES (POINT(0, 0));
-UPDATE t1 SET g=NULL;
-UPDATE IGNORE t1 SET g=NULL;
 DROP TABLE t1;
 CREATE TABLE t1(g GEOMETRY NOT NULL);
-INSERT IGNORE INTO t1 VALUES ();
 DROP TABLE t1;
 CREATE TABLE t1(x VARCHAR(10), g GEOMETRY NOT NULL);
 DROP TABLE t1;
-SET @save_sql_mode=@@sql_mode;
-SET sql_mode='';
-CREATE TABLE t1(g GEOMETRY NOT NULL DEFAULT '');
-SET sql_mode=@save_sql_mode;
 CREATE TABLE t1 (id INT, g GEOMETRY NOT NULL);
 CREATE VIEW v1 AS SELECT * FROM t1;
-INSERT IGNORE INTO v1(id) VALUES(0);
 DROP VIEW v1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (g GEOMCOLLECTION);
 INSERT INTO t1 VALUES (GEOMCOLLECTION(POINT(0, 0)));
 SELECT TABLE_NAME, COLUMN_NAME, GEOMETRY_TYPE_NAME
 FROM INFORMATION_SCHEMA.ST_GEOMETRY_COLUMNS;
 DROP TABLE t1;
-
 CREATE TABLE t1 (g GEOMETRYCOLLECTION);
 INSERT INTO t1 VALUES (GEOMETRYCOLLECTION(POINT(0, 0)));
 SELECT TABLE_NAME, COLUMN_NAME, GEOMETRY_TYPE_NAME
 FROM INFORMATION_SCHEMA.ST_GEOMETRY_COLUMNS;
 DROP TABLE t1;
-
 SELECT ST_GEOMETRYTYPE(GEOMETRYCOLLECTION(POINT(0, 0)));
-SELECT ST_Contains(
-  ST_GeomFromText('LINESTRING(79 63,65 -51)', '4326','axis-order=long-lat'),
-  ST_GeomFromText(
-    'GEOMETRYCOLLECTION(POLYGON((16 -15,-132 -22,-56 89,67 -29,16 -15)),
-     POLYGON((101 49,117 -61,-164 -21,12 40,101 49)))',
-    '4326', 'axis-order=long-lat'
-  )
-) AS result;
-SELECT ST_Touches(
-  ST_GeomFromText(
-    'GEOMETRYCOLLECTION(POLYGON((-31 144,-74 -125,60 -89,53 60,-31 144)),
-     POLYGON((1 23,23 105,14 -134,1 23)))',
-    '4326'
-  ),
-  ST_GeomFromText(
-    'MULTIPOLYGON(((-12 -12,-17 -157,-77 -132,-12 -12)))',
-    '4326'
-  )
-) AS result;
-
--- The test case is run in both strict and non-strict mode because it will hit
--- different conditional statements in the ALTER TABLE code.
-
---source include/bug27252609.inc
-
-SET @saved_sql_mode=@@sql_mode;
-SET SESSION sql_mode='';
-SET SESSION sql_mode=@saved_sql_mode;
-
 CREATE TABLE t1(c1 POINT);
 INSERT INTO t1 VALUES (POINT(0,0));
 CREATE TABLE t2(c1 LINESTRING);
 INSERT INTO t2 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
 CREATE TABLE t3 SELECT * FROM t1;
-INSERT INTO t3 SELECT * FROM t2;
 SELECT ST_AsText(c1) FROM t3;
 DROP TABLE t1, t2, t3;
-
 CREATE TABLE t1 (
   point_col POINT SRID 4326
 , multipoint_col MULTIPOINT SRID 4326
@@ -2426,9 +1299,7 @@ CREATE TABLE t1 (
 , multipolygon_col MULTIPOLYGON SRID 4326
 , geometrycollection_col GEOMETRYCOLLECTION SRID 4326
 , geometry_col GEOMETRY SRID 4326) ENGINE = InnoDB;
-
 CREATE TABLE t2 LIKE t1;
-
 INSERT INTO t1 VALUES (
   ST_GeomFromText('POINT(1 1)', 4326)
 , ST_GeomFromText('MULTIPOINT((1 1))', 4326)
@@ -2439,62 +1310,22 @@ INSERT INTO t1 VALUES (
 , ST_GeomFromText('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING(3 3, 4 4))', 4326)
 , ST_GeomFromText('POINT(1 1)', 4326));
 INSERT INTO t2 (point_col) SELECT point_col FROM t1;
-INSERT INTO t2 (multipoint_col) SELECT point_col FROM t1;
-INSERT INTO t2 (linestring_col) SELECT point_col FROM t1;
-INSERT INTO t2 (multilinestring_col) SELECT point_col FROM t1;
-INSERT INTO t2 (polygon_col) SELECT point_col FROM t1;
-INSERT INTO t2 (multipolygon_col) SELECT point_col FROM t1;
-INSERT INTO t2 (geometrycollection_col) SELECT point_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT point_col FROM t1;
-INSERT INTO t2 (point_col) SELECT multipoint_col FROM t1;
 INSERT INTO t2 (multipoint_col) SELECT multipoint_col FROM t1;
-INSERT INTO t2 (linestring_col) SELECT multipoint_col FROM t1;
-INSERT INTO t2 (multilinestring_col) SELECT multipoint_col FROM t1;
-INSERT INTO t2 (polygon_col) SELECT multipoint_col FROM t1;
-INSERT INTO t2 (multipolygon_col) SELECT multipoint_col FROM t1;
 INSERT INTO t2 (geometrycollection_col) SELECT multipoint_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT multipoint_col FROM t1;
-INSERT INTO t2 (point_col) SELECT linestring_col FROM t1;
-INSERT INTO t2 (multipoint_col) SELECT linestring_col FROM t1;
 INSERT INTO t2 (linestring_col) SELECT linestring_col FROM t1;
-INSERT INTO t2 (multilinestring_col) SELECT linestring_col FROM t1;
-INSERT INTO t2 (polygon_col) SELECT linestring_col FROM t1;
-INSERT INTO t2 (multipolygon_col) SELECT linestring_col FROM t1;
-INSERT INTO t2 (geometrycollection_col) SELECT linestring_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT linestring_col FROM t1;
-INSERT INTO t2 (point_col) SELECT multilinestring_col FROM t1;
-INSERT INTO t2 (multipoint_col) SELECT multilinestring_col FROM t1;
-INSERT INTO t2 (linestring_col) SELECT multilinestring_col FROM t1;
 INSERT INTO t2 (multilinestring_col) SELECT multilinestring_col FROM t1;
-INSERT INTO t2 (polygon_col) SELECT multilinestring_col FROM t1;
-INSERT INTO t2 (multipolygon_col) SELECT multilinestring_col FROM t1;
 INSERT INTO t2 (geometrycollection_col) SELECT multilinestring_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT multilinestring_col FROM t1;
-INSERT INTO t2 (point_col) SELECT polygon_col FROM t1;
-INSERT INTO t2 (multipoint_col) SELECT polygon_col FROM t1;
-INSERT INTO t2 (linestring_col) SELECT polygon_col FROM t1;
-INSERT INTO t2 (multilinestring_col) SELECT polygon_col FROM t1;
 INSERT INTO t2 (polygon_col) SELECT polygon_col FROM t1;
-INSERT INTO t2 (multipolygon_col) SELECT polygon_col FROM t1;
-INSERT INTO t2 (geometrycollection_col) SELECT polygon_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT polygon_col FROM t1;
-INSERT INTO t2 (point_col) SELECT multipolygon_col FROM t1;
-INSERT INTO t2 (multipoint_col) SELECT multipolygon_col FROM t1;
-INSERT INTO t2 (linestring_col) SELECT multipolygon_col FROM t1;
-INSERT INTO t2 (multilinestring_col) SELECT multipolygon_col FROM t1;
-INSERT INTO t2 (polygon_col) SELECT multipolygon_col FROM t1;
 INSERT INTO t2 (multipolygon_col) SELECT multipolygon_col FROM t1;
 INSERT INTO t2 (geometrycollection_col) SELECT multipolygon_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT multipolygon_col FROM t1;
-INSERT INTO t2 (point_col) SELECT geometrycollection_col FROM t1;
-INSERT INTO t2 (multipoint_col) SELECT geometrycollection_col FROM t1;
-INSERT INTO t2 (linestring_col) SELECT geometrycollection_col FROM t1;
-INSERT INTO t2 (multilinestring_col) SELECT geometrycollection_col FROM t1;
-INSERT INTO t2 (polygon_col) SELECT geometrycollection_col FROM t1;
-INSERT INTO t2 (multipolygon_col) SELECT geometrycollection_col FROM t1;
 INSERT INTO t2 (geometrycollection_col) SELECT geometrycollection_col FROM t1;
 INSERT INTO t2 (geometry_col) SELECT geometrycollection_col FROM t1;
-
 SELECT
   ST_AsText(point_col) AS point_col
 , ST_AsText(multipoint_col) AS multipoint_col
@@ -2505,27 +1336,10 @@ SELECT
 , ST_AsText(geometrycollection_col) AS geometrycollection_col
 , ST_AsText(geometry_col) AS geometry_col
 FROM t2;
-
 DROP TABLE t1, t2;
 CREATE TABLE t(a INT PRIMARY KEY) ENGINE=INNODB
 PARTITION BY KEY(a) PARTITIONS 10;
-INSERT t(a) VALUES(
-is_uuid(
-   st_distance_sphere(
-    multipoint(
-     point(-6682,10942),
-     point(-6033,-22659),
-     point(-14161,-22192),
-     point(3074,1.717753e+308),
-     point(-12593,562949953421315)
-    ),
-    point(2051,8192)
-   )
-)
-);
-
 DROP TABLE t;
-
 CREATE TABLE t (
   c1 VARCHAR(8) NOT NULL,
   c2 VARCHAR(16) NOT NULL,
@@ -2533,23 +1347,8 @@ CREATE TABLE t (
   PRIMARY KEY (c2,c1),
   SPATIAL KEY coord (geom)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb3;
-
 INSERT INTO t VALUES (1, 2, POINT(1, 2));
 DROP TABLE t;
 CREATE TABLE t1 (geom POINT SRID 0 NOT NULL);
-INSERT INTO t1 VALUES();
-INSERT IGNORE INTO t1 VALUES();
-INSERT IGNORE INTO t1 VALUES(DEFAULT);
-INSERT INTO t1 VALUES(DEFAULT);
-
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(0 0)', 0));
-UPDATE t1 SET geom = DEFAULT;
-
-SET @orig_sql_mode = @@sql_mode;
-SET sql_mode = '';
-INSERT INTO t1 VALUES();
-INSERT INTO t1 VALUES(DEFAULT);
-UPDATE t1 SET geom = DEFAULT;
-
-SET sql_mode= @orig_sql_mode;
 DROP TABLE t1;

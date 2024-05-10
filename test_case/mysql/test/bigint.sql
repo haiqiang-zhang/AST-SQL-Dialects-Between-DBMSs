@@ -1,10 +1,4 @@
-
---
--- Initialize
-
---disable_warnings
 drop table if exists t1, t2;
-SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
 select 0,256,00000000000000065536,2147483647,-2147483648,2147483648,+4294967296;
 select 9223372036854775807,-009223372036854775808;
 select +9999999999999999999,-9999999999999999999;
@@ -14,13 +8,6 @@ select -(0-3),round(-(0-3)), round(9999999999999999999);
 select 1,11,101,1001,10001,100001,1000001,10000001,100000001,1000000001,10000000001,100000000001,1000000000001,10000000000001,100000000000001,1000000000000001,10000000000000001,100000000000000001,1000000000000000001,10000000000000000001;
 select -1,-11,-101,-1001,-10001,-100001,-1000001,-10000001,-100000001,-1000000001,-10000000001,-100000000001,-1000000000001,-10000000000001,-100000000000001,-1000000000000001,-10000000000000001,-100000000000000001,-1000000000000000001,-10000000000000000001;
 select conv(1,10,16),conv((1<<2)-1,10,16),conv((1<<10)-2,10,16),conv((1<<16)-3,10,16),conv((1<<25)-4,10,16),conv((1<<31)-5,10,16),conv((1<<36)-6,10,16),conv((1<<47)-7,10,16),conv((1<<48)-8,10,16),conv((1<<55)-9,10,16),conv((1<<56)-10,10,16),conv((1<<63)-11,10,16);
-
---
--- In 3.23 we have to disable the test of column to bigint as
--- this fails on AIX powerpc (the resolution for double is not good enough)
--- This will work on 4.0 as we then have internal handling of bigint variables.
---
-
 create table t1 (a bigint unsigned not null, primary key(a));
 insert into t1 values (18446744073709551615), (0xFFFFFFFFFFFFFFFE), (18446744073709551613), (18446744073709551612);
 select * from t1;
@@ -28,9 +15,7 @@ select * from t1 where a=18446744073709551615;
 delete from t1 where a=18446744073709551615;
 select * from t1;
 drop table t1;
-
 create table t1 ( a int not null default 1, big bigint );
-insert into t1 (big) values (-1),(12345678901234567),(9223372036854775807),(18446744073709551615);
 select * from t1;
 select min(big),max(big),max(big)-1 from t1;
 select min(big),max(big),max(big)-1 from t1 group by a;
@@ -44,118 +29,68 @@ select min(big),max(big),max(big)-1 from t1 group by a;
 alter table t1 add key (big);
 select min(big),max(big),max(big)-1 from t1;
 select min(big),max(big),max(big)-1 from t1 group by a;
-alter table t1 modify big bigint not null;
 select * from t1;
 select min(big),max(big),max(big)-1 from t1;
 select min(big),max(big),max(big)-1 from t1 group by a;
 drop table t1;
-
---
--- Test problem with big values for auto_increment
---
-
 create table t1 (id bigint auto_increment primary key, a int) auto_increment=9999999999;
 insert into t1 values (null,1);
 select * from t1;
 select * from t1 limit 9999999999;
 drop table t1;
-
---
--- Item_uint::save_to_field()
--- BUG#1845
--- This can't be fixed in MySQL 4.0 without loosing precisions for bigints
---
-
 CREATE TABLE t1 ( quantity decimal(60,0));
 insert into t1 values (10000000000000000000);
 insert into t1 values (10000000000000000000.0);
 insert into t1 values ('10000000000000000000');
 select * from t1;
 drop table t1;
-
--- atof() behaviour is different of different systems. to be fixed in 4.1
 SELECT '0x8000000000000001'+0;
-
--- Test for BUG#8562: joins over BIGINT UNSIGNED value + constant propagation
 create table t1 (
  value64  bigint unsigned  not null,
  value32  integer          not null,
  primary key(value64, value32)
 );
-
 create table t2 (
  value64  bigint unsigned  not null,
  value32  integer          not null,
  primary key(value64, value32)
 );
-
 insert into t1 values(17156792991891826145, 1);
 insert into t1 values( 9223372036854775807, 2);
 insert into t2 values(17156792991891826145, 3);
 insert into t2 values( 9223372036854775807, 4);
-
 select * from t1;
 select * from t2;
-
 select * from t1, t2 where t1.value64=17156792991891826145 and
 t2.value64=17156792991891826145;
 select * from t1, t2 where t1.value64=17156792991891826145 and
 t2.value64=t1.value64;
-
 select * from t1, t2 where t1.value64= 9223372036854775807 and
 t2.value64=9223372036854775807;
 select * from t1, t2 where t1.value64= 9223372036854775807 and
 t2.value64=t1.value64;
-
 drop table t1, t2;
-
--- Test for BUG#30069, can't handle bigint -9223372036854775808 on
--- x86_64, with some GCC versions and optimizations.
-
 create table t1 (sint64 bigint not null);
 insert into t1 values (-9223372036854775808);
 select * from t1;
-
 drop table t1;
-
--- End of 4.1 tests
-
---
--- Test of CREATE ... SELECT and unsigned integers
---
-
 create table t1 select 1 as 'a';
 drop table t1;
 create table t1 select 9223372036854775809 as 'a';
 select * from t1;
 drop table t1;
 DROP DATABASE IF EXISTS `scott`;
-
-
---
--- Check various conversions from/to unsigned bigint.
---
-
 create table t1 (a char(100), b varchar(100), c text, d blob);
 insert into t1 values(
   18446744073709551615,18446744073709551615,
   18446744073709551615, 18446744073709551615
 );
-
 insert into t1 values (-1 | 0,-1 | 0,-1 | 0 ,-1 | 0);
 select * from t1;
 drop table t1;
-
 create table t1 ( quantity decimal(2) unsigned);
-insert into t1 values (500), (-500), (~0), (-1);
 select * from t1;
 drop table t1;
-
---
--- Test of storing decimal values in BIGINT range
--- (Bug #12750: Incorrect storage of 9999999999999999999 in DECIMAL(19, 0))
---
-
 CREATE TABLE t1 (
   `col1` INT(1) NULL,
   `col2` INT(2) NULL,
@@ -226,7 +161,6 @@ CREATE TABLE t1 (
   `fix29` DECIMAL(38, 29) NULL,
   `fix30` DECIMAL(38, 30) NULL
 );
-
 INSERT INTO t1(`col1`, `col2`, `col3`, `col4`, `col5`, `col6`, `col7`, `col8`, `col9`, `col10`, `col11`, `col12`, `col13`, `col14`, `col15`, `col16`, `col17`, `col18`, `col19`, `col20`, `col21`, `col22`, `col23`, `col24`, `col25`, `col26`, `col27`, `col28`, `col29`, `col30`, `col31`, `col32`, `col33`, `col34`, `col35`, `col36`, `col37`, `col38`, `fix1`, `fix2`, `fix3`, `fix4`, `fix5`, `fix6`, `fix7`, `fix8`, `fix9`, `fix10`, `fix11`, `fix12`, `fix13`, `fix14`, `fix15`, `fix16`, `fix17`, `fix18`, `fix19`, `fix20`, `fix21`, `fix22`, `fix23`, `fix24`, `fix25`, `fix26`, `fix27`, `fix28`, `fix29`, `fix30`)
 VALUES (9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
 9999999999, 99999999999, 999999999999, 9999999999999, 99999999999999,
@@ -270,7 +204,6 @@ VALUES (9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
 9999999999.9999999999999999999999999999,
 999999999.99999999999999999999999999999,
 99999999.999999999999999999999999999999);
-
 SELECT * FROM t1;
 DROP TABLE t1;
 create table t1 (bigint_col bigint unsigned);
@@ -278,139 +211,84 @@ insert into t1 values (17666000000000000000);
 select * from t1 where bigint_col=17666000000000000000;
 select * from t1 where bigint_col='17666000000000000000';
 drop table t1;
-
 select cast(10000002383263201056 as unsigned) mod 50 as result;
-
 create table t1 (c1 bigint unsigned);
 insert into t1 values (10000002383263201056);
 select c1 mod 50 as result from t1;
 drop table t1;
-
---
--- Bug #8663 cant use bgint unsigned as input to cast
---
-
 select cast(19999999999999999999 as signed);
 select cast(-19999999999999999999 as signed);
-
---
--- Bug #28625: -9223372036854775808 doesn't fit in BIGINT.
---
-
--- PS protocol gives different metadata for `Max length' column
---disable_ps_protocol
---enable_metadata
 select -9223372036854775808;
 select -(9223372036854775808);
 select -((9223372036854775808));
 select -(-(9223372036854775808));
 select --9223372036854775808, ---9223372036854775808, ----9223372036854775808;
 select -(-9223372036854775808), -(-(-9223372036854775808));
-
--- Bug #28005 Partitions: cannot use -9223372036854775808 
 create table t1 select -9223372036854775808 bi;
 drop table t1;
 create table t1 select -9223372036854775809 bi;
 drop table t1;
-
 CREATE TABLE t1 (id INT AUTO_INCREMENT PRIMARY KEY,
                  a BIGINT(20) UNSIGNED,
                  b VARCHAR(20));
-
 INSERT INTO t1 (a) VALUES
   (0),
   (CAST(0x7FFFFFFFFFFFFFFF AS UNSIGNED)),
   (CAST(0x8000000000000000 AS UNSIGNED)),
   (CAST(0xFFFFFFFFFFFFFFFF AS UNSIGNED));
-
 UPDATE t1 SET b = a;
-
-let $n = `SELECT MAX(id) FROM t1`;
-  let $x = `SELECT a FROM t1 WHERE id = $n`;
-  dec $n;
-  let $hex = `SELECT HEX($x)`;
-
 DROP TABLE t1;
-
 CREATE TABLE t_bigint(id BIGINT);
 INSERT INTO t_bigint VALUES (1), (2);
-
 SELECT id, id >= 1.1 FROM t_bigint;
 SELECT id, 1.1 <= id FROM t_bigint;
-
 SELECT id, id = 1.1 FROM t_bigint;
 SELECT id, 1.1 = id FROM t_bigint;
-
 SELECT * from t_bigint WHERE id = 1.1;
 SELECT * from t_bigint WHERE id = 1.1e0;
 SELECT * from t_bigint WHERE id = '1.1';
 SELECT * from t_bigint WHERE id = '1.1e0';
-
 SELECT * from t_bigint WHERE id IN (1.1, 2.2);
 SELECT * from t_bigint WHERE id IN (1.1e0, 2.2e0);
 SELECT * from t_bigint WHERE id IN ('1.1', '2.2');
 SELECT * from t_bigint WHERE id IN ('1.1e0', '2.2e0');
-
 SELECT * from t_bigint WHERE id BETWEEN 1.1 AND 1.9;
 SELECT * from t_bigint WHERE id BETWEEN 1.1e0 AND 1.9e0;
 SELECT * from t_bigint WHERE id BETWEEN '1.1' AND '1.9';
 SELECT * from t_bigint WHERE id BETWEEN '1.1e0' AND '1.9e0';
-
 DROP TABLE t_bigint;
-
 CREATE TABLE t1 (a BIGINT);
 INSERT INTO t1 VALUES (1);
-
--- a. These queries correctly return 0 rows:
 SELECT * FROM t1 WHERE coalesce(a) BETWEEN 0 and 0.9;
 SELECT * FROM t1 WHERE coalesce(a)=0.9;
 SELECT * FROM t1 WHERE coalesce(a) in (0.8,0.9);
-
--- b. These queries mistakenely returned 1 row:
 SELECT * FROM t1 WHERE a BETWEEN 0 AND 0.9;
 SELECT * FROM t1 WHERE a=0.9;
 SELECT * FROM t1 WHERE a IN (0.8,0.9);
-
 DROP TABLE t1;
-
 create table t (id bigint unsigned, b int);
-
 insert into t values(8894754949779693574,1);
 insert into t values(8894754949779693579,2);
 insert into t values(17790886498483827171,3);
-
 select count(*) from t 
 where id>=8894754949779693574 and id <=17790886498483827171;
-
 select count(*) from t 
 where id between 8894754949779693574 and 17790886498483827171;
-
 alter table t add primary key (id);
-
 select count(*) from t 
 where id>=8894754949779693574 and id <=17790886498483827171;
-
 select count(*) from t 
 where id between 8894754949779693574 and 17790886498483827171;
-
 drop table t;
-
 SELECT (184467440737095 BETWEEN 0 AND 18446744073709551500);
-
 SELECT 184467440737095 >= 0;
 SELECT 0 <= 18446744073709551500;
-
 SELECT CAST(100 AS UNSIGNED) BETWEEN 1 AND -1;
 SELECT CAST(100 AS UNSIGNED) NOT BETWEEN 1 AND -1;
-
 SELECT CAST(0 AS UNSIGNED) BETWEEN 0 AND -1;
 SELECT CAST(0 AS UNSIGNED) NOT BETWEEN 0 AND -1;
-
-SET sql_mode = default;
-
 select -9223372036854775808 mod 9223372036854775810 as result;
 select bin(convert(-9223372036854775808 using ucs2));
-
 SELECT ( 9223372036854775808 BETWEEN 9223372036854775808 AND 9223372036854775808 );
 SELECT ( 9223372036854775807 BETWEEN 9223372036854775808 AND 1 );
 SELECT ( -1 BETWEEN 9223372036854775808 AND 1 );

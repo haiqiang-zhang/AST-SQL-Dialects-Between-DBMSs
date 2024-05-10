@@ -38,7 +38,7 @@ UPDATE sqlite_master SET rootpage = (
   ) WHERE type = 'index';
 PRAGMA writable_schema = ON;
 INSERT INTO t1(rowid, w, x, y, z) VALUES(5, 10, 11, 10, NULL);
-PRAGMA journal_mode = wal;
+PRAGMA wal_checkpoint;
 PRAGMA writable_schema=ON;
 CREATE INDEX i1 ON t1((NULL));
 INSERT INTO t1 VALUES(1, NULL, 1, 'text value');

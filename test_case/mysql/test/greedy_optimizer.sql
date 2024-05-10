@@ -1,24 +1,4 @@
-
--- The include statement below is a temp one for tests that are yet to
---be ported to run with InnoDB,
---but needs to be kept for tests that would need MyISAM in future.
---source include/not_hypergraph.inc -- Costs vary
---source include/force_myisam_default.inc
---source include/have_myisam.inc
---source include/not_valgrind.inc
---source include/big_test.inc
-
---
--- A simple test of the greedy query optimization algorithm and the switches that
--- control the optimizationprocess.
---
-
---
--- Schema
---
---disable_warnings
 drop table if exists t1,t2,t3,t4,t5,t6,t7;
-
 create table t1 (
   c11 integer,c12 integer,c13 integer,c14 integer,c15 integer,c16 integer,
   primary key (c11)
@@ -44,22 +24,15 @@ create table t7 (
   c71 integer,c72 integer,c73 integer,c74 integer,c75 integer,c76 integer,
   primary key (c71)
 );
-
---
--- Data
--- cardinality(Ti) = cardinality(T(i-1)) + 3
---
 insert into t1 values (1,2,3,4,5,6);
 insert into t1 values (2,2,3,4,5,6);
 insert into t1 values (3,2,3,4,5,6);
-
 insert into t2 values (1,2,3,4,5,6);
 insert into t2 values (2,2,3,4,5,6);
 insert into t2 values (3,2,3,4,5,6);
 insert into t2 values (4,2,3,4,5,6);
 insert into t2 values (5,2,3,4,5,6);
 insert into t2 values (6,2,3,4,5,6);
-
 insert into t3 values (1,2,3,4,5,6);
 insert into t3 values (2,2,3,4,5,6);
 insert into t3 values (3,2,3,4,5,6);
@@ -69,7 +42,6 @@ insert into t3 values (6,2,3,4,5,6);
 insert into t3 values (7,2,3,4,5,6);
 insert into t3 values (8,2,3,4,5,6);
 insert into t3 values (9,2,3,4,5,6);
-
 insert into t4 values (1,2,3,4,5,6);
 insert into t4 values (2,2,3,4,5,6);
 insert into t4 values (3,2,3,4,5,6);
@@ -82,7 +54,6 @@ insert into t4 values (9,2,3,4,5,6);
 insert into t4 values (10,2,3,4,5,6);
 insert into t4 values (11,2,3,4,5,6);
 insert into t4 values (12,2,3,4,5,6);
-
 insert into t5 values (1,2,3,4,5,6);
 insert into t5 values (2,2,3,4,5,6);
 insert into t5 values (3,2,3,4,5,6);
@@ -98,7 +69,6 @@ insert into t5 values (12,2,3,4,5,6);
 insert into t5 values (13,2,3,4,5,6);
 insert into t5 values (14,2,3,4,5,6);
 insert into t5 values (15,2,3,4,5,6);
-
 insert into t6 values (1,2,3,4,5,6);
 insert into t6 values (2,2,3,4,5,6);
 insert into t6 values (3,2,3,4,5,6);
@@ -117,7 +87,6 @@ insert into t6 values (15,2,3,4,5,6);
 insert into t6 values (16,2,3,4,5,6);
 insert into t6 values (17,2,3,4,5,6);
 insert into t6 values (18,2,3,4,5,6);
-
 insert into t7 values (1,2,3,4,5,6);
 insert into t7 values (2,2,3,4,5,6);
 insert into t7 values (3,2,3,4,5,6);
@@ -139,193 +108,53 @@ insert into t7 values (18,2,3,4,5,6);
 insert into t7 values (19,2,3,4,5,6);
 insert into t7 values (20,2,3,4,5,6);
 insert into t7 values (21,2,3,4,5,6);
-
---
--- The actual test begins here
---
-
--- Check the default values for the optimizer paramters
-
 select @@optimizer_search_depth;
 select @@optimizer_prune_level;
-
--- These are the values for the parameters that control the greedy optimizer
--- (total 6 combinations - 3 for optimizer_search_depth, 2 for optimizer_prune_level):
--- 3:
--- set optimizer_search_depth=0;
-
-
---
--- Compile several queries with all combinations of the query
--- optimizer parameters. Each test query has two variants, where
--- in the second variant the tables in the FROM clause are in
--- inverse order to the tables in the first variant.
--- Due to pre-sorting of tables before compilation, there should
--- be no difference in the plans for each two such query variants.
---
-
--- Test the greedy optimization procedures
-
-set optimizer_prune_level=0;
 select @@optimizer_prune_level;
-
-set optimizer_search_depth=0;
 select @@optimizer_search_depth;
-
--- 6-table join, chain
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
--- 6-table join, star
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
--- 6-table join, clique
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-
-set optimizer_search_depth=1;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
 select @@optimizer_search_depth;
-
--- 6-table join, chain
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
--- 6-table join, star
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
--- 6-table join, clique
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-set optimizer_search_depth=62;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
 select @@optimizer_search_depth;
-
--- 6-table join, chain
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
--- 6-table join, star
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
--- 6-table join, clique
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-
-set optimizer_prune_level=1;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
 select @@optimizer_prune_level;
-
-set optimizer_search_depth=0;
 select @@optimizer_search_depth;
-
--- 6-table join, chain
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
--- 6-table join, star
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
--- 6-table join, clique
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-set optimizer_search_depth=1;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
 select @@optimizer_search_depth;
-
--- 6-table join, chain
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
--- 6-table join, star
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
--- 6-table join, clique
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-set optimizer_search_depth=62;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
 select @@optimizer_search_depth;
-
--- 6-table join, chain
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
-
--- 6-table join, star
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
-
--- 6-table join, clique
-let $query=
- select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
-let $query=
- select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
-
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c12 = t2.c21 and t2.c22 = t3.c31 and t3.c32 = t4.c41 and t4.c42 = t5.c51 and t5.c52 = t6.c61 and t6.c62 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71;
+select t1.c11 from t1, t2, t3, t4, t5, t6, t7 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
+select t1.c11 from t7, t6, t5, t4, t3, t2, t1 where t1.c11 = t2.c21 and t1.c12 = t3.c31 and t1.c13 = t4.c41 and t1.c14 = t5.c51 and t1.c15 = t6.c61 and t1.c16 = t7.c71 and t2.c22 = t3.c32 and t2.c23 = t4.c42 and t2.c24 = t5.c52 and t2.c25 = t6.c62 and t2.c26 = t7.c72 and t3.c33 = t4.c43 and t3.c34 = t5.c53 and t3.c35 = t6.c63 and t3.c36 = t7.c73 and t4.c42 = t5.c54 and t4.c43 = t6.c64 and t4.c44 = t7.c74 and t5.c52 = t6.c65 and t5.c53 = t7.c75 and t6.c62 = t7.c76;
 drop table t1,t2,t3,t4,t5,t6,t7;
-
-
---
--- Bug # 38795: Automatic search depth and nested join's results in server
--- crash
---
-
 CREATE TABLE t1 (a int, b int, d int, i int);
 CREATE TABLE t2 (b int, c int, j int);
 CREATE TABLE t2_1 (j int);
@@ -335,9 +164,6 @@ CREATE TABLE t4 (d int, e int, k int);
 CREATE TABLE t4_1 (k int);
 CREATE TABLE t5 (g int, d int, h int, l int);
 CREATE TABLE t5_1 (l int);
-
-SET optimizer_search_depth = 3;
-
 SELECT 1
 FROM t1
 LEFT JOIN (
@@ -345,9 +171,7 @@ LEFT JOIN (
 ) ON t2.b = t1.b
 LEFT JOIN (
   t4 JOIN t5 ON t5.d = t4.d
-) ON t4.d = t1.d
-;
-
+) ON t4.d = t1.d;
 SELECT 1
 FROM t1
 LEFT JOIN (
@@ -355,9 +179,7 @@ LEFT JOIN (
 ) ON t2.b = t1.b
 LEFT JOIN (
   t4 JOIN t5 ON t5.d = t4.d
-) ON t4.d = t1.d
-;
-
+) ON t4.d = t1.d;
 SELECT 1
 FROM t1
 LEFT JOIN (
@@ -365,9 +187,7 @@ LEFT JOIN (
 ) ON t2.b = t1.b
 LEFT JOIN (
   t4 JOIN t5 ON t5.d = t4.d
-) ON t4.d = t1.d
-;
-
+) ON t4.d = t1.d;
 SELECT 1
 FROM t1
 LEFT JOIN (
@@ -375,9 +195,7 @@ LEFT JOIN (
 ) ON t2.b = t1.b
 LEFT JOIN (
   (t4 JOIN t4_1 ON t4.k = t4_1.k) LEFT JOIN t5 ON t5.d = t4.d
-) ON t4.d = t1.d
-;
-
+) ON t4.d = t1.d;
 SELECT 1
 FROM t1
 LEFT JOIN (
@@ -385,421 +203,141 @@ LEFT JOIN (
 ) ON t2.b = t1.b
 LEFT JOIN (
   t4 LEFT JOIN (t5 JOIN t5_1 ON t5.l = t5_1.l) ON t5.d = t4.d
-) ON t4.d = t1.d
-;
-
-SET optimizer_search_depth = DEFAULT;
+) ON t4.d = t1.d;
 DROP TABLE t1,t2,t2_1,t3,t3_1,t4,t4_1,t5,t5_1;
-
 CREATE TABLE t10(
   K INT NOT NULL AUTO_INCREMENT,
   I INT,
   PRIMARY KEY(K)
 );
 INSERT INTO t10(I) VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(0);
-
 CREATE TABLE t100 LIKE t10;
 INSERT INTO t100(I)
 SELECT X.I FROM t10 AS X,t10 AS Y;
-
 CREATE TABLE t10000 LIKE t10;
 INSERT INTO t10000(I)
 SELECT X.I FROM t100 AS X, t100 AS Y;
-let $total_handler_reads=
 select sum(variable_value) from performance_schema.session_status
  where VARIABLE_NAME like 'Handler_read%';
-
-
---# All crossproducts should be executed in order t10,t100,t10000
-EXPLAIN SELECT * FROM t10,t100,t10000;
---# Ordering between T100,T10000 EQ-joined T10 will
---# normally be with smallest EQ-table joined first
---#####
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.K=t10.I;
-
---# However, swapping EQ_REF-joined tables gives the same cost
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000,t100
 WHERE t100.K=t10.I
   AND t10000.K=t10.I;
-let $query=
 SELECT COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.K=t10.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000,t100
 WHERE t100.K=t10.I
   AND t10000.K=t10.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.K=t10.K;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000,t100
 WHERE t100.K=t10.I
   AND t10000.K=t10.K;
-
-let $query=
 SELECT COUNT(*) FROM t100,t10,t10000
 WHERE t100.K=t10.I
   AND t10000.K=t10.K;
-
-let $query=
 SELECT COUNT(*) FROM t100,t10000,t10
 WHERE t100.K=t10.I
   AND t10000.K=t10.K;
-
-let $query=
 SELECT COUNT(*) FROM t10000,t10,t100
 WHERE t100.K=t10.I
   AND t10000.K=t10.K;
-
-let $query=
 SELECT COUNT(*) FROM t10000,t100,t10
 WHERE t100.K=t10.I
   AND t10000.K=t10.K;
---# EQ_REF Should be executed before table scan(ALL)
---# - Independent of #records in table being EQ_REF-joined
---####
---####
--- Expect: Join EQ_REF(t100) before ALL(t10000)
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.I=t10.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.I=t10.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000,t100
 WHERE t100.K=t10.I
   AND t10000.I=t10.I;
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000,t100
 WHERE t100.I=t10.I
   AND t10000.K=t10.I;
-let $query=
 SELECT COUNT(*) FROM t10,t100,t10000
 WHERE t100.I=t10.I
   AND t10000.K=t10.I;
-let $query=
 SELECT COUNT(*) FROM t10,t10000,t100
 WHERE t100.I=t10.I
   AND t10000.K=t10.I;
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000,t100
 WHERE t100.I=t10.I
   AND t10000.K=t100.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t100,t10000
 WHERE t100.I=t10.I
   AND t10000.K=t100.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000,t100
 WHERE t100.I=t10.I
   AND t10000.K=t100.I;
---# EQ_REF & ALL join two instances of t10000 with t10:
---# Always EQ_REF join first before producing cross product
---####
-
---####
--- Expected QEP: 'join EQ_REF(X) on X.K=t10.I' before 'cross' ALL(Y)
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 y,t10000 x
 WHERE x.k=t10.i;
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 y,t10000 x
 WHERE x.k=t10.i
   AND y.i=t10.i;
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=x.k;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=x.k;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 y,t10000 x
 WHERE x.k=t10.i
   AND y.i=x.k;
-
-
-
---# Create indexes to test REF access
 CREATE INDEX IX ON t10(I);
 CREATE INDEX IX ON t100(I);
 CREATE INDEX IX ON t10000(I);
-
---# Adding SHOW CREATE's so that we cache TABLE_SHARE objects
---# for required tables before hand. This helps avoid 'Handler_reads'
---# session status variable to get incremented while reading meta data from
---# data dictionary tables later while queries is being inspected.
---# This enables proper validation of the status variable value.
-SHOW CREATE TABLE t10;
---# EQ_REF Should be executed before 'REF'
---# - Independent of #records in table being EQ_REF-joined
-
---###
--- Expected QEP: 'join EQ_REF(t100) on t100.K=t10.I' before REF(t10000)
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.I=t10.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t100,t10000
 WHERE t100.K=t10.I
   AND t10000.I=t10.I;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000,t100
 WHERE t100.K=t10.I
   AND t10000.I=t10.I;
---# EQ_REF & REF join two instances of t10000 with t10:
---####
-
---####
---# Expect this QEP, cost & #handler_read
--- Expected QEP: 'join EQ_REF(X) on X.K=t10.I' before 'cross' ALL(Y)
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 y,t10000 x
 WHERE x.k=t10.i;
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=t10.i;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 y,t10000 x
 WHERE x.k=t10.i
   AND y.i=t10.i;
-let $query=
 SELECT STRAIGHT_JOIN COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=x.k;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 x,t10000 y
 WHERE x.k=t10.i
   AND y.i=x.k;
-
-let $query=
 SELECT COUNT(*) FROM t10,t10000 y,t10000 x
 WHERE x.k=t10.i
   AND y.i=x.k;
-
 DROP TABLE t10, t10000;
-
-let $tabledef=
-( K INT NOT NULL AUTO_INCREMENT,
-  I INT,
-  A INT,
-  PRIMARY KEY(K), KEY IX(A)
-) engine = InnoDB;
-
-let $analyze = ANALYZE TABLE t100;
-
-let $i= 1;
-{
-  let $create= CREATE TABLE t$i $tabledef;
-
-  let $insert =
-  INSERT INTO t$i(I,A) SELECT X.K,X.K FROM t100 AS X, t100 AS Y WHERE X.K < 20 AND Y.K <= $i;
-
-  let $analyze = $analyze, t$i;
-  inc $i;
-
-set optimizer_prune_level=1;
---# The EXPLAIN'ed query itself can't be part of the verified 
---# result as the QEP is not 100% predictable due to variation
---# in statistics from the engines. This is believed to be
---# caused by:
---#  - Variations in table fill degree.
---#  - 'Fuzzy' statistics provided by engines.
---#  - Round errors caused by 'cost' calculation using 
---#    'only' 64-bit double precision.
---#  - Other bugs...?
---#
---##############
-
---# Will test with optimizer_search_depth= [0,1,3,62]
-let $depth= 0;
-{
-  if ($depth==0)
-  {
-    set optimizer_search_depth=0;
-  }
-  if ($depth==1)
-  {
-    set optimizer_search_depth=1;
-  }
-  if ($depth==2)
-  {
-    set optimizer_search_depth=3;
-  }
-  if ($depth==3)
-  {
-    set optimizer_search_depth=62;
-  }
-  inc $depth;
-
-
-  --# Test pruning of joined table scans (ALL) 
-  --# Prepare of QEP without timeout is heavily dependent
-  --# on maintaining correctly '#rows-sorted' plan
-  --#
-  let $query= SELECT COUNT(*) FROM t1 AS x;
-  let $i= 1;
-  {
-    let $query= $query JOIN t$i ON t$i.I=x.I;
-    inc $i;
-
-    select @@optimizer_prune_level;
-    select @@optimizer_search_depth;
-    eval EXPLAIN $query;
-  }
-
-  --# Test pruning of joined table scans (ALL) 
-  --# with multiple instances of same table.
-  --# (All instances being equally expensive)
-  let $query= SELECT COUNT(*) FROM t1 AS x;
-  let $i= 1;
-  {
-    let $t= t$i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-    let $query= $query JOIN $t as t$i ON t$i.I=x.I;
-    inc $i;
-
-    select @@optimizer_prune_level;
-    select @@optimizer_search_depth;
-    eval EXPLAIN $query;
-  }
-
-  --# A mix of 25% EQ_REF / 75% ALL joins
-  --#
-  let $query= SELECT COUNT(*) FROM t1 AS x;
-  let $i= 1;
-  {
-    let $query= $query JOIN t$i ON t$i.I = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.K = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.I = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.I = x.I;
-    inc $i;
-
-    eval EXPLAIN $query;
-  }
-
-  --# A mix of 50% EQ_REF / 50% ALL joins
-  --#
-  let $query= SELECT COUNT(*) FROM t1 AS x;
-  let $i= 1;
-  {
-    let $query= $query JOIN t$i ON t$i.I = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.K = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.I = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.K = x.I;
-    inc $i;
-
-    eval EXPLAIN $query;
-  }
-
-  --# A mix of 75% EQ_REF / 25% ALL joins
-  --#
-  let $query= SELECT COUNT(*) FROM t1 AS x;
-  let $i= 1;
-  {
-    let $query= $query JOIN t$i ON t$i.I = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.K = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.K = x.I;
-    inc $i;
-    let $query= $query JOIN t$i ON t$i.K = x.I;
-    inc $i;
-
-    eval EXPLAIN $query;
-  }
-
-  --# 100% EQ_REF joins
-  --#
-  let $query= SELECT COUNT(*) FROM t1 AS x;
-  let $i= 1;
-  {
-    let $query= $query JOIN t$i ON t$i.K=x.I;
-    inc $i;
-
-    eval EXPLAIN $query;
-  }
-}
-
-let $drop = DROP TABLE t100;
-let $i= 1;
-{
-  let $drop = $drop, t$i;
-  inc $i;
-
-SET OPTIMIZER_SEARCH_DEPTH = DEFAULT;
+select @@optimizer_prune_level;
+select @@optimizer_search_depth;
+select @@optimizer_prune_level;
+select @@optimizer_search_depth;

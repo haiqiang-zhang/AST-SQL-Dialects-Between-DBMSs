@@ -1,24 +1,20 @@
 import os
 from typing import List
-from adapter.sqlite import SQLITE3
-from adapter.mysql_adapter import MYSQL
-from adapter.duckdb_adapter import DUCKDB
-import pandas as pd
-
-DBMS_ADAPTERS = {
-    # "sqlite3": SQLITE3,
-    # "mysql": MYSQL,
-    "duckdb": DUCKDB
-}
-
-setup_query_keyword = [
-    "create table",
-    "insert into",
-    "drop table"
-]
 
 
-encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
+def print_prevent_stopping(string:str):
+    string = string.replace(b'\xc2\x9e'.decode(), " ")
+    print(string)
+
+
+
+def first_init_dbmss(DBMS_ADAPTERS:dict):
+    print("Start init DBMSs...")
+    for dbms in DBMS_ADAPTERS:
+        # check dbms adapter exist init_dbms method or not
+        if hasattr(DBMS_ADAPTERS[dbms], 'init_dbms'):
+            DBMS_ADAPTERS[dbms].init_dbms()
+        print(f"DBMS {dbms} init done")
 
 
 # define a Error class for SQLFileEmptyError
@@ -27,9 +23,10 @@ class SQLFileEmptyError(Exception):
 
 def clean_test_garbage():
     # Delete all files in test_case_path
+    cleaning_list = ["test.db", "cannot-read", "no-such-file"]
     print(f"Cleaning...")
     for file in os.listdir(os.getcwd()):
-        if file.startswith("test.db") or file.endswith(".db"):
+        if file.endswith(".db") or any(keyword.lower() in file.lower() for keyword in cleaning_list):
             os.remove(os.path.join(os.getcwd(), file))
 
 def clean_query(query)->List[str]:
@@ -46,58 +43,3 @@ def clean_query(query)->List[str]:
         i += 1
     return sql_query
 
-
-
-def run_setup_in_all_dbms(setup_paths:str):
-    # check setup_paths exists
-    if os.path.exists(setup_paths):
-        with open(setup_paths, 'r') as file:
-            setup_query = file.read()
-        setup_query = clean_query(setup_query)
-
-        # Execute the SQL query
-        for dbms in DBMS_ADAPTERS:
-            DBMS_ADAPTERS[dbms].run_setup(setup_query, setup_paths)
-
-
-def run_test_in_all_dbms(test_paths:str, filename:str):
-    # Read the contents of the test case file
-    sql_query = None
-    for encoding in encodings:
-        try:
-            with open(test_paths, 'r', encoding=encoding) as file:
-                sql_query = file.read()
-        except UnicodeDecodeError as e:
-            continue
-    
-    if not sql_query:
-        raise ValueError(f"Error decode sql file '{filename}'")
-
-    # clean the query
-    sql_query = clean_query(sql_query)
-    # Execute the SQL query
-    df = pd.DataFrame(columns=['DBMS','Status', 'result'])
-
-    success_counter = 0
-    failure_counter = 0
-
-    for dbms in DBMS_ADAPTERS:
-        db_adaptor = DBMS_ADAPTERS[dbms]()
-        for query in sql_query:
-            result = db_adaptor.query(query, filename)
-            if any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
-                if result[0]:
-                    success_counter += 1
-                else:
-                    failure_counter += 1
-        df.apply(lambda x: x.append([dbms, result[0], result[1]]), axis=1)
-        db_adaptor.close_connection()
-
-    
-    return success_counter, failure_counter, df
-
-
-def run_all(test_paths:str, filename:str, setup_paths:str=""):
-    if setup_paths:
-        run_setup_in_all_dbms(setup_paths)
-    return run_test_in_all_dbms(test_paths, filename)

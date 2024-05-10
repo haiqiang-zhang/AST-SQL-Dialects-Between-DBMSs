@@ -1,8 +1,3 @@
---                      new tests. Reason: All these might be not available.
---                    - Minor cleanup
---
---disable_query_log
-call mtr.add_suppression(".InnoDB. Compare_key: table=.*, index=.*");
 drop table if exists t1, t2;
 CREATE TABLE t1 (
        id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -28,7 +23,6 @@ ALTER TABLE t1 PARTITION BY LIST (YEAR(dt)) (
 INSERT INTO t1 (dt, st, uid, id2nd, filler) VALUES
    ('1991-07-14', 'After Partitioning Insert', 299, 1234567, 'Insert row');
 UPDATE t1 SET filler='Updating the row' WHERE uid=298;
-
 DROP TABLE t1;
 CREATE TABLE t1 (
 a char(2) NOT NULL,
@@ -42,7 +36,6 @@ KEY (a, b)
 )
 /*!50100 PARTITION BY KEY (a)
 PARTITIONS 20 */;
-
 INSERT INTO t1 (a, b, c, d, e) VALUES
 ('07', '03', 343, '1', '07_03_343'),
 ('01', '04', 343, '2', '01_04_343'),
@@ -57,16 +50,13 @@ INSERT INTO t1 (a, b, c, d, e) VALUES
 ('04', '06', 343, '11', '04_06_343'),
 ('05', '03', 343, '12', '05_03_343'),
 ('11', '03', 343, '13', '11_03_343'),
-('11', '04', 343, '14', '11_04_343')
-;
-
+('11', '04', 343, '14', '11_04_343');
 UPDATE t1 AS A,
 (SELECT '03' AS a, '06' AS b, 343 AS c, 'last' AS d) AS B
 SET A.e = B.d  
 WHERE A.a = '03'  
 AND A.b = '06' 
 AND A.c = 343;
-
 DROP TABLE t1;
 CREATE TABLE t1 (a VARCHAR(51) CHARACTER SET latin1)
 PARTITION BY KEY (a) PARTITIONS 1;
@@ -75,7 +65,6 @@ DROP TABLE t1;
 CREATE TABLE t1 (a INT NOT NULL, b INT NOT NULL)
 PARTITION BY KEY (a) PARTITIONS 2;
 INSERT INTO t1 VALUES (0,1), (0,2);
-ALTER TABLE t1 ADD PRIMARY KEY (a);
 SELECT * FROM t1;
 UPDATE t1 SET a = 1, b = 1 WHERE a = 0 AND b = 2;
 ALTER TABLE t1 ADD PRIMARY KEY (a);
@@ -90,15 +79,10 @@ CREATE TABLE t1
  INDEX name (name(8))
 )
 PARTITION BY HASH(id) PARTITIONS 2;
-
 INSERT INTO t1 VALUES ( 1, 'FooBar', '1924' );
-
 CREATE TABLE t2 (id INT);
-
 INSERT INTO t2 VALUES (1),(2);
-
 UPDATE t1, t2 SET t1.year = '1955' WHERE t1.name = 'FooBar';
-
 DROP TABLE t1, t2;
 CREATE TABLE t1 (
   `id` int NOT NULL,
@@ -120,9 +104,7 @@ PARTITIONS 2;
 INSERT INTO t2 VALUES (1,8601,'John');
 INSERT INTO t2 VALUES (2,8601,'JS');
 INSERT INTO t2 VALUES (3,8601,'John S');
-
 UPDATE t1, t2 SET t2.name = 'John Smith' WHERE t1.user_num = t2.user_num;
-
 DROP TABLE t1, t2;
 CREATE TABLE t1 (
     ID int(11) NOT NULL,
@@ -139,41 +121,26 @@ SUBPARTITIONS 2 (
     PARTITION p21 VALUES LESS THAN MAXVALUE);
 SELECT PARTITION_EXPRESSION, SUBPARTITION_EXPRESSION FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME='t1';
 drop table t1;
-
---
--- Bug#48276: can't add column if subpartition exists
 CREATE TABLE t1 (a INT, b INT)
 PARTITION BY LIST (a)
 SUBPARTITION BY HASH (b)
 (PARTITION p1 VALUES IN (1));
 ALTER TABLE t1 ADD COLUMN c INT;
 DROP TABLE t1;
-
---
--- Bug#46639: 1030 (HY000): Got error 124 from storage engine on
--- INSERT ... SELECT ...
 CREATE TABLE t1 (
   a int NOT NULL,
   b int NOT NULL);
-
 CREATE TABLE t2 (
   a int NOT NULL,
   b int NOT NULL,
   INDEX(b)
 )
 PARTITION BY HASH(a) PARTITIONS 2;
-
 INSERT INTO t1 VALUES (399, 22);
 INSERT INTO t2 VALUES (1, 22), (1, 42);
-
 INSERT INTO t2 SELECT 1, 399 FROM t2, t1
 WHERE t1.b = t2.b;
-
 DROP TABLE t1, t2;
-
---
--- Bug#46478: timestamp field incorrectly defaulted when partition is reorganized
---
 CREATE TABLE t1 (
   a timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   b varchar(10),
@@ -183,11 +150,9 @@ PARTITION BY RANGE (UNIX_TIMESTAMP(a)) (
  PARTITION p1 VALUES LESS THAN (1199134800),
  PARTITION pmax VALUES LESS THAN MAXVALUE
 );
-
 INSERT INTO t1 VALUES ('2007-07-30 17:35:48', 'p1');
 INSERT INTO t1 VALUES ('2009-07-14 17:35:55', 'pmax');
 INSERT INTO t1 VALUES ('2009-09-21 17:31:42', 'pmax');
-
 SELECT * FROM t1;
 SELECT * FROM t1 where a between '2007-01-01' and '2007-08-01';
 ALTER TABLE t1 REORGANIZE PARTITION pmax INTO (
@@ -196,10 +161,6 @@ ALTER TABLE t1 REORGANIZE PARTITION pmax INTO (
 SELECT * FROM t1;
 SELECT * FROM t1 where a between '2007-01-01' and '2007-08-01';
 DROP TABLE t1;
-
---
--- Bug#45904: Error when CHARSET=utf8mb3 and subpartitioning
---
 create table t1 (a int NOT NULL, b varchar(5) NOT NULL)
 default charset=utf8mb3
 partition by list (a)
@@ -207,40 +168,21 @@ subpartition by key (b)
 (partition p0 values in (1),
  partition p1 values in (2));
 drop table t1;
-
---
--- Bug#44059: rec_per_key on empty partition gives weird optimiser results
---
 create table t1 (a int, b int, key(a))
 partition by list (a)
 ( partition p0 values in (1),
   partition p1 values in (2));
 insert into t1 values (1,1),(2,1),(2,2),(2,3);
 drop table t1;
-
---
--- Bug#40181: hang if create index
---
 create table t1 (a int)
 partition by hash (a);
 create index i on t1 (a);
 insert into t1 values (1);
 insert into t1 select * from t1;
-create index i on t1 (a);
 create index i2 on t1 (a);
 drop table t1;
-
---
--- Bug#36001: Partitions: spelling and using some error messages
---
 CREATE TABLE t0 (a INT PRIMARY KEY);
-CREATE TABLE t1 (a INT, FOREIGN KEY (a) REFERENCES t0 (a))
-PARTITION BY HASH (a);
 DROP TABLE t0;
-
---
--- Bug#40954: Crash if range search and order by.
---
 CREATE TABLE t1 (
   pk INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (pk)
@@ -252,48 +194,10 @@ INSERT INTO t1 VALUES (NULL);
 INSERT INTO t1 VALUES (NULL);
 SELECT * FROM t1 WHERE pk < 0 ORDER BY pk;
 DROP TABLE t1;
-
---
--- Bug#35765: ALTER TABLE produces wrong error when non-existent storage engine
--- used
---error ER_UNKNOWN_STORAGE_ENGINE
-CREATE TABLE t1 (a INT)
-ENGINE=NonExistentEngine;
-CREATE TABLE t1 (a INT)
-ENGINE=NonExistentEngine
-PARTITION BY HASH (a);
-
 CREATE TABLE t1 (a INT);
-ALTER TABLE t1 ENGINE=NonExistentEngine;
-ALTER TABLE t1
-PARTITION BY HASH (a)
-(PARTITION p0 ENGINE=InnoDB,
- PARTITION p1 ENGINE=NonExistentEngine);
-ALTER TABLE t1 ENGINE=NonExistentEngine;
-DROP TABLE t1;
-
-SET sql_mode='';
-CREATE TABLE t1 (a INT)
-ENGINE=NonExistentEngine;
-DROP TABLE t1;
-CREATE TABLE t1 (a INT)
-ENGINE=NonExistentEngine
-PARTITION BY HASH (a);
 DROP TABLE t1;
 CREATE TABLE t1 (a INT);
-ALTER TABLE t1 ENGINE=NonExistentEngine;
-ALTER TABLE t1
-PARTITION BY HASH (a)
-(PARTITION p0 ENGINE=InnoDB,
- PARTITION p1 ENGINE=NonExistentEngine);
-ALTER TABLE t1 ENGINE=NonExistentEngine;
 DROP TABLE t1;
-SET sql_mode=DEFAULT;
-
---
--- Bug#40494: Crash MYSQL server crashes on range access with partitioning
---            and order by
---
 CREATE TABLE t1 (a INT NOT NULL, KEY(a))
 PARTITION BY RANGE(a)
 (PARTITION p1 VALUES LESS THAN (200), PARTITION pmax VALUES LESS THAN MAXVALUE);
@@ -312,10 +216,6 @@ SELECT a FROM t1 WHERE a BETWEEN 60 AND 95;
 SELECT a FROM t1 WHERE a BETWEEN 60 AND 220;
 SELECT a FROM t1 WHERE a BETWEEN 200 AND 220;
 DROP TABLE t1;
-
---
--- Bug35931: Index search may return duplicates
---
 CREATE TABLE t1 (
   a INT NOT NULL,   
   b MEDIUMINT NOT NULL,   
@@ -377,32 +277,23 @@ ALTER TABLE t1 ADD INDEX b USING HASH (b);
 SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 DROP TABLE t1;
-
--- Bug#37327 Range scan on partitioned table returns duplicate rows
--- (Duplicate of Bug#35931)
 CREATE TABLE `t1` (
   `c1` int(11) DEFAULT NULL,
   KEY `c1` (`c1`)
 ) DEFAULT CHARSET=latin1;
-
 CREATE TABLE `t2` (
   `c1` int(11) DEFAULT NULL,
   KEY `c1` (`c1`)
 ) DEFAULT CHARSET=latin1 /*!50100 PARTITION BY RANGE (c1) (PARTITION a VALUES LESS THAN (100) , PARTITION b VALUES LESS THAN MAXVALUE ) */;
-
 INSERT INTO `t1` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
 INSERT INTO `t2` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
 SELECT c1 FROM t1 WHERE (c1 > 10 AND c1 < 13) OR (c1 > 17 AND c1 < 20);
 SELECT c1 FROM t2 WHERE (c1 > 10 AND c1 < 13) OR (c1 > 17 AND c1 < 20);
 DROP TABLE t1,t2;
-
--- Bug#37329 Range scan on partitioned tables shows higher Handler_read_next
--- (marked as duplicate of Bug#35931)
 CREATE TABLE `t1` (
   `c1` int(11) DEFAULT NULL,
   KEY `c1` (`c1`)
 ) DEFAULT CHARSET=latin1;
-
 CREATE TABLE `t2` (
   `c1` int(11) DEFAULT NULL,
   KEY `c1` (`c1`)
@@ -410,7 +301,6 @@ CREATE TABLE `t2` (
 /*!50100 PARTITION BY RANGE (c1)
 (PARTITION a VALUES LESS THAN (100) ,
  PARTITION b VALUES LESS THAN MAXVALUE ) */;
-
 INSERT INTO `t1` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
 INSERT INTO `t2` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
 SELECT c1 FROM t1 WHERE (c1 > 2 AND c1 < 5);
@@ -418,15 +308,6 @@ SELECT c1 FROM t2 WHERE (c1 > 2 AND c1 < 5);
 SELECT c1 FROM t1 WHERE (c1 > 12 AND c1 < 15);
 SELECT c1 FROM t2 WHERE (c1 > 12 AND c1 < 15);
 DROP TABLE t1,t2;
-create table t1 (a int) partition by list ((a/3)*10 div 1)
-(partition p0 values in (0), partition p1 values in (1));
-
---
--- Bug #30695: An apostrophe ' in the comment of the ADD PARTITION causes the Server to crash.
---
--- To verify the fix for crashing (on unix-type OS)
--- uncomment the exec and error rows!
-
 CREATE TABLE t1 (
     d DATE NOT NULL
 )
@@ -436,83 +317,34 @@ PARTITION BY RANGE( YEAR(d) ) (
     PARTITION p2 VALUES LESS THAN (1980),
     PARTITION p3 VALUES LESS THAN (1990)
 );
-
 ALTER TABLE t1 ADD PARTITION (
 PARTITION `p5` VALUES LESS THAN (2010)
 COMMENT 'APSTART \' APEND'
 );
 SELECT * FROM t1 LIMIT 1;
-
 DROP TABLE t1;
-
---
--- Bug 30878: crashing when alter an auto_increment non partitioned
---            table to partitioned
-
 create table t1 (id int auto_increment, s1 int, primary key (id));
-
 insert into t1 values (null,1);
 insert into t1 values (null,6);
-
--- sorted_result
 select * from t1;
-
 alter table t1 partition by range (id) (
   partition p0 values less than (3),
   partition p1 values less than maxvalue
 );
-
 drop table t1;
-
---
--- Bug 15890: Strange number of partitions accepted
---
--- error ER_PARSE_ERROR
-create table t1 (a int)
-partition by key(a)
-partitions 0.2+e1;
-create table t1 (a int)
-partition by key(a)
-partitions -1;
-create table t1 (a int)
-partition by key(a)
-partitions 1.5;
-create table t1 (a int)
-partition by key(a)
-partitions 1e+300;
-
---
--- Bug 19309 Partitions: Crash if double procedural alter
---
 create table t1 (a int)
 partition by list (a)
 (partition p0 values in (1));
-
 create procedure pz()
 alter table t1;
 drop procedure pz;
 drop table t1;
-
---
--- BUG 16002: Handle unsigned integer functions properly
---
---error ER_VALUES_IS_NOT_INT_TYPE_ERROR
-create table t1 (a bigint)
-partition by range (a)
-(partition p0 values less than (0xFFFFFFFFFFFFFFFF),
- partition p1 values less than (10));
-create table t1 (a bigint)
-partition by list (a)
-(partition p0 values in (0xFFFFFFFFFFFFFFFF),
- partition p1 values in (10));
-
 create table t1 (a bigint unsigned)
 partition by range (a)
 (partition p0 values less than (100),
  partition p1 values less than MAXVALUE);
 insert into t1 values (1);
 drop table t1;
-
 create table t1 (a bigint unsigned)
 partition by hash (a);
 insert into t1 values (0xFFFFFFFFFFFFFFFD);
@@ -520,10 +352,6 @@ insert into t1 values (0xFFFFFFFFFFFFFFFE);
 select * from t1 where (a + 1) < 10;
 select * from t1 where (a + 1) > 10;
 drop table t1;
-
---
--- BUG 19067 ALTER TABLE .. ADD PARTITION for subpartitioned table crashes
---
 create table t1 (a int)
 partition by range (a)
 subpartition by key (a)
@@ -531,27 +359,13 @@ subpartition by key (a)
 alter table t1 add partition (partition p1 values less than (2));
 alter table t1 reorganize partition p1 into (partition p1 values less than (3));
 drop table t1;
-
---
--- Partition by key no partition defined => OK
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
 c int not null,
 primary key(a,b))
 partition by key (a);
-
---
--- Bug 13323: Select count(*) on empty table returns 2
---
 select count(*) from t1;
-
---
--- Test SHOW CREATE TABLE
---
-show create table t1;
-
 drop table t1;
 CREATE TABLE t1 (
 a int not null,
@@ -559,7 +373,6 @@ b int not null,
 c int not null,
 primary key(a,b))
 partition by key (a, b);
-
 drop table t1;
 CREATE TABLE t1 (
 a int not null,
@@ -569,7 +382,6 @@ primary key(a,b))
 partition by key (a)
 partitions 3
 (partition x1, partition x2, partition x3);
-
 drop table t1;
 CREATE TABLE t1 (
 a int not null,
@@ -581,7 +393,6 @@ partitions 3
 (partition x1 nodegroup 0,
  partition x2 nodegroup 1,
  partition x3 nodegroup 2);
-
 drop table t1;
 CREATE TABLE t1 (
 a int not null,
@@ -593,7 +404,6 @@ partitions 3
 (partition x1 engine innodb,
  partition x2 engine innodb,
  partition x3 engine innodb);
-
 drop table t1;
 CREATE TABLE t1 (
 a int not null,
@@ -605,14 +415,9 @@ partitions 3
 (partition x1 tablespace innodb_file_per_table,
  partition x2 tablespace innodb_file_per_table,
  partition x3 tablespace innodb_file_per_table);
-
 CREATE TABLE t2 LIKE t1;
 drop table t2;
 drop table t1;
-
---
--- Partition by key list, basic
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -635,10 +440,6 @@ partitions 3
  partition x2 values in (3, 11, 5, 7),
  partition x3 values in (16, 8, 5+19, 70-43));
 drop table t1;
-
---
--- Partition by key list, list function, no spec of #partitions
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -649,24 +450,16 @@ partition by list (b*a)
  partition x2 values in (3, 11, 5, 7),
  partition x3 values in (16, 8, 5+19, 70-43));
 drop table t1;
-
---
--- Bug 13154: Insert crashes due to bad calculation of partition id
---            for PARTITION BY KEY and SUBPARTITION BY KEY
---
 CREATE TABLE t1 (
 a int not null)
 partition by key(a);
+LOCK TABLES t1 WRITE;
 insert into t1 values (1);
 insert into t1 values (2);
 insert into t1 values (3);
 insert into t1 values (4);
-
+UNLOCK TABLES;
 drop table t1;
-
---
--- Bug #13644 DROP PARTITION NULL's DATE column
---
 CREATE TABLE t1 (a int, name VARCHAR(50), purchased DATE)
 PARTITION BY RANGE (a)
 (PARTITION p0 VALUES LESS THAN (3),
@@ -684,120 +477,63 @@ INSERT INTO t1 VALUES
 (8, 'acquarium', '1992-08-04'),
 (9, 'study desk', '1984-09-16'),
 (10, 'lava lamp', '1998-12-25');
-
 SELECT * from t1 ORDER BY a;
 ALTER TABLE t1 DROP PARTITION p0;
 SELECT * from t1 ORDER BY a;
-
 drop table t1;
-
---
--- Bug #13442;
---
-
 CREATE TABLE t1 (a int)
 PARTITION BY LIST (a)
 (PARTITION p0 VALUES IN (1,2,3), PARTITION p1 VALUES IN (4,5,6));
-
 insert into t1 values (1),(2),(3),(4),(5),(6);
 select * from t1;
 select * from t1;
 select * from t1;
 drop table t1;
-
---
--- Bug #13445 Partition by KEY method crashes server
---
 CREATE TABLE t1 (a int, b int, primary key(a,b))
 PARTITION BY KEY(b,a) PARTITIONS 4;
-
 insert into t1 values (0,0),(1,1),(2,2),(3,3),(4,4),(5,5),(6,6);
 select * from t1 where a = 4;
-
 drop table t1;
-
---
--- Bug#22351 - handler::index_next_same() call to key_cmp_if_same()
---             uses the wrong buffer
---
 CREATE TABLE t1 (c1 INT, c2 INT, PRIMARY KEY USING BTREE (c1,c2))
   PARTITION BY KEY(c2,c1) PARTITIONS 4;
 INSERT INTO t1 VALUES (0,0),(1,1),(2,2),(3,3),(4,4),(5,5),(6,6);
 SELECT * FROM t1 WHERE c1 = 4;
 DROP TABLE t1;
-
---
--- Bug #13438: Engine clause in PARTITION clause causes crash
---
 CREATE TABLE t1 (a int)
 PARTITION BY LIST (a)
 PARTITIONS 1
 (PARTITION x1 VALUES IN (1) ENGINE=InnoDB);
 drop table t1;
-
---
--- Bug #13440: REPLACE causes crash in partitioned table
---
 CREATE TABLE t1 (a int, unique(a))
 PARTITION BY LIST (a)
 (PARTITION x1 VALUES IN (10), PARTITION x2 VALUES IN (20));
 drop table t1;
-
---
--- Bug #14365: Crash if value too small in list partitioned table
---
 CREATE TABLE t1 (a int)
 PARTITION BY LIST (a)
 (PARTITION x1 VALUES IN (2), PARTITION x2 VALUES IN (3));
-
 insert into t1 values (2), (3);
-insert into t1 values (4);
-insert into t1 values (1);
 drop table t1;
-
---
--- Bug 14327: PARTITIONS clause gets lost in SHOW CREATE TABLE
---
 CREATE TABLE t1 (a int)
 PARTITION BY HASH(a)
 PARTITIONS 5;
-
 drop table t1;
-
---
--- Bug #13446: Update to value outside of list values doesn't give error
---
 CREATE TABLE t1 (a int)
 PARTITION BY RANGE (a)
 (PARTITION x1 VALUES LESS THAN (2));
-
 insert into t1 values (1);
-update t1 set a = 5;
-
 drop table t1;
-
---
--- Bug #13441: Analyze on partitioned table didn't work
---
 CREATE TABLE t1 (a int)
 PARTITION BY LIST (a)
 (PARTITION x1 VALUES IN (10), PARTITION x2 VALUES IN (20));
-
 drop table t1;
-
---
--- BUG 15221 (Cannot reorganize with the same name)
---
 create table t1
 (a int)
 partition by range (a)
   ( partition p0 values less than(10),
     partition p1 values less than (20),
     partition p2 values less than (25));
-
 alter table t1 reorganize partition p2 into (partition p2 values less than (30));
 drop table t1;
-
 CREATE TABLE t1 (a int, b int)
 PARTITION BY RANGE (a)
 (PARTITION x0 VALUES LESS THAN (2),
@@ -810,38 +546,23 @@ PARTITION BY RANGE (a)
  PARTITION x7 VALUES LESS THAN (16),
  PARTITION x8 VALUES LESS THAN (18),
  PARTITION x9 VALUES LESS THAN (20));
-
 ALTER TABLE t1 REORGANIZE PARTITION x0,x1,x2 INTO
 (PARTITION x1 VALUES LESS THAN (6));
 drop table t1;
-
--- Testcase for BUG#15819
 create table t1 (a int not null, b int not null) partition by LIST (a+b) (
   partition p0 values in (12),
   partition p1 values in (14)
 );
-insert into t1 values (10,1);
-
 drop table t1;
-
---
--- Bug#16901 Partitions: crash, SELECT, column of part.
---           function=first column of primary key
---
 create table t1 (f1 integer,f2 integer, f3 varchar(10), primary key(f1,f2))
 partition by range(f1) subpartition by hash(f2) subpartitions 2
 (partition p1 values less than (0),
  partition p2 values less than (2),
  partition p3 values less than (2147483647));
-
 insert into t1 values(10,10,'10');
 insert into t1 values(2,2,'2');
 select * from t1 where f1 = 2;
 drop table t1;
-
---
--- Bug #16907 Partitions: crash, SELECT goes into last partition, UNIQUE INDEX
---
 create table t1 (f1 integer,f2 integer, unique index(f1))
 partition by range(f1 div 2)
 subpartition by hash(f1) subpartitions 2
@@ -851,96 +572,51 @@ partition partf values less than (10000));
 insert into t1 values(10,1);
 select * from t1 where f1 = 10;
 drop table t1;
-
---
--- Bug #16775: Wrong engine type stored for subpartition
--- After WL#8971, this test case is rewritten to use InnoDB
--- instead of InnoDB.
---
-set @old_default_engine= @@session.default_storage_engine;
-set session default_storage_engine= 'innodb';
 create table t1 (f_int1 int(11) default null) engine = innodb
   partition by range (f_int1) subpartition by hash (f_int1)
   (partition part1 values less than (1000)
    (subpartition subpart11 engine = innodb));
 drop table t1;
-set session default_storage_engine= @old_default_engine;
-
---
--- Bug #16782: Crash using REPLACE on table with primary key
---
 create table t1 (f_int1 integer, f_int2 integer, primary key (f_int1))
   partition by hash(f_int1) partitions 2;
 insert into t1 values (1,1),(2,2);
 drop table t1;
-
---
--- Bug #17169: Partitions: out of memory if add partition and unique
---
 create table t1 (s1 int, unique (s1)) partition by list (s1) (partition x1 VALUES in (10), partition x2 values in (20));
 alter table t1 add partition (partition x3 values in (30));
 drop table t1;
-
---
--- Bug #17754 Change to explicit removal of partitioning scheme
--- Also added a number of tests to ensure that proper engine is
--- choosen in all kinds of scenarios.
---
-
 create table t1 (a int)
 partition by key(a)
 partitions 2
 (partition p0 engine=innodb, partition p1 engine=innodb);
-
 alter table t1;
-
 alter table t1 engine=innodb;
-
 alter table t1 remove partitioning;
-
 drop table t1;
-
 create table t1 (a int)
 engine=innodb
 partition by key(a)
 partitions 2
 (partition p0 engine=innodb, partition p1 engine=innodb);
-
 alter table t1 add column b int remove partitioning;
-
 alter table t1
 engine=innodb
 partition by key(a)
 (partition p0 engine=innodb, partition p1);
-
 alter table t1 engine=myisam, add column c int remove partitioning;
-
 alter table t1
 engine=innodb
 partition by key (a)
 (partition p0, partition p1);
-
 alter table t1
 partition by key (a)
 (partition p0, partition p1);
-
--- Since alter, it already have ENGINE=INNODB from before on table level
--- -> OK
 alter table t1
 partition by key(a)
 (partition p0, partition p1 engine=innodb);
-
--- Since alter, it already have ENGINE=INNODB from before on table level
--- -> OK
 alter table t1
 partition by key(a)
 (partition p0 engine=innodb, partition p1);
-
 drop table t1;
-
--- Bug #17432: Partition functions containing NULL values should return
---             LONGLONG_MIN
---
 CREATE TABLE t1 (
  f_int1 INTEGER, f_int2 INTEGER,
  f_char1 CHAR(10), f_char2 CHAR(10), f_charbig VARCHAR(1000)
@@ -953,15 +629,10 @@ CREATE TABLE t1 (
   PARTITION parte VALUES LESS THAN (10),
   PARTITION partf VALUES LESS THAN (2147483647));
 INSERT INTO t1 SET f_int1 = NULL , f_int2 = -20, f_char1 = CAST(-20 AS CHAR),
-                   f_char2 = CAST(-20 AS CHAR), f_charbig = '--NULL#';
+                   f_char2 = CAST(-20 AS CHAR), f_charbig = '#NULL#';
 SELECT * FROM t1 WHERE f_int1 IS NULL;
 SELECT * FROM t1;
 drop table t1;
-
---
--- Bug 17430: Crash when SELECT * from t1 where field IS NULL
---
-
 CREATE TABLE t1 (
  f_int1 INTEGER, f_int2 INTEGER,
  f_char1 CHAR(10), f_char2 CHAR(10), f_charbig VARCHAR(1000)  )
@@ -970,205 +641,72 @@ CREATE TABLE t1 (
  (PARTITION part1 VALUES IN (-1) (SUBPARTITION sp1, SUBPARTITION sp2),
   PARTITION part2 VALUES IN (0) (SUBPARTITION sp3, SUBPARTITION sp5),
   PARTITION part3 VALUES IN (1) (SUBPARTITION sp4, SUBPARTITION sp6));
-
 INSERT INTO t1 SET f_int1 = 2, f_int2 = 2, f_char1 = '2', f_char2 = '2', f_charbig = '===2===';
 INSERT INTO t1 SET f_int1 = 2, f_int2 = 2, f_char1 = '2', f_char2 = '2', f_charbig = '===2===';
-
 SELECT * FROM t1 WHERE f_int1  IS NULL;
 drop table t1;
-
---
--- Bug#14363 Partitions: failure if create in stored procedure
---
-delimiter //;
-
-create procedure p ()
-begin
-create table t1 (s1 mediumint,s2 mediumint)
-partition by list (s2)
-(partition p1 values in (0),
- partition p2 values in (1));
-drop procedure p//
-drop table t1;
-
-create procedure p ()
-begin
-create table t1 (a int not null,b int not null,c int not null,primary key (a,b))
-partition by range (a)
-subpartition by hash (a+b)
-(partition x1 values less than (1)
- (subpartition x11,
-  subpartition x12),
- partition x2 values less than (5)
- (subpartition x21,
-  subpartition x22));
-drop procedure p//
-drop table t1//
-delimiter ;
-
---
--- Bug #15447  Partitions: NULL is treated as zero
---
-
--- NULL for RANGE partition
 create table t1 (a int,b int,c int,key(a,b))
 partition by range (a)
 partitions 3
 (partition x1 values less than (0),
  partition x2 values less than (10),
  partition x3 values less than maxvalue);
-
 insert into t1 values (NULL, 1, 1);
 insert into t1 values (0, 1, 1);
 insert into t1 values (12, 1, 1);
 select partition_name, partition_description, table_rows
 from information_schema.partitions where table_schema ='test';
 drop table t1;
-
--- NULL for LIST partition
---error ER_MULTIPLE_DEF_CONST_IN_LIST_PART_ERROR
-create table t1 (a int,b int, c int)
-partition by list(a)
-partitions 2
-(partition x123 values in (11,12),
- partition x234 values in (1 ,NULL, NULL));
-create table t1 (a int,b int, c int)
-partition by list(a)
-partitions 2
-(partition x123 values in (11, NULL),
- partition x234 values in (1 ,NULL));
-
 create table t1 (a int,b int, c int)
 partition by list(a)
 partitions 2
 (partition x123 values in (11, 12),
  partition x234 values in (5, 1));
-insert into t1 values (NULL,1,1);
 drop table t1;
-
 create table t1 (a int,b int, c int)
 partition by list(a)
 partitions 2
 (partition x123 values in (11, 12),
  partition x234 values in (NULL, 1));
-
 insert into t1 values (11,1,6);
 insert into t1 values (NULL,1,1);
 select partition_name, partition_description, table_rows
 from information_schema.partitions where table_schema ='test';
 drop table t1;
-
---
--- BUG 17947 Crash with REBUILD PARTITION
---
 create table t1 (a int)
 partition by list (a)
 (partition p0 values in (1));
-alter table t1 rebuild partition;
-
 drop table t1;
-
---
--- BUG 15253 Insert that should fail doesn't
---
 create table t1 (a int)
 partition by list (a)
 (partition p0 values in (5));
-insert into t1 values (0);
-
 drop table t1;
-
---
--- BUG #16370 Subpartitions names not shown in SHOW CREATE TABLE output
---
 create table t1 (a int)
 partition by range (a) subpartition by hash (a)
 (partition p0 values less than (100));
 alter table t1 add partition (partition p1 values less than (200)
 (subpartition subpart21));
-
 drop table t1;
-
 create table t1 (a int)
 partition by key (a);
 alter table t1 add partition (partition p1);
-
 drop table t1;
-
---
--- BUG 15407 Crash with subpartition
---
---error ER_PARSE_ERROR
-create table t1 (a int, b int)
-partition by range (a)
-subpartition by hash(a)
-(partition p0 values less than (0) (subpartition sp0),
- partition p1 values less than (1));
-create table t1 (a int, b int)
-partition by range (a)
-subpartition by hash(a)
-(partition p0 values less than (0),
- partition p1 values less than (1) (subpartition sp0));
-
---
--- Bug 46354 Crash with subpartition
---
---error ER_PARSE_ERROR
-create table t1 (a int, b int)
-partition by list (a)
-subpartition by hash(a)
-(partition p0 values in (0),
- partition p1 values in (1) (subpartition sp0));
-
-
---
--- BUG 15961 No error when subpartition defined without subpartition by clause
---
---error ER_SUBPARTITION_ERROR
-create table t1 (a int)
-partition by hash (a)
-(partition p0 (subpartition sp0));
-
---
--- Bug 17127 
---
 create table t1 (a int)
 partition by range (a)
 (partition p0 values less than (1));
-alter table t1 add partition (partition p1 values in (2));
-alter table t1 add partition (partition p1);
-
 drop table t1;
-
 create table t1 (a int)
 partition by list (a)
 (partition p0 values in (1));
-alter table t1 add partition (partition p1 values less than (2));
-alter table t1 add partition (partition p1);
-
 drop table t1;
-
 create table t1 (a int)
 partition by hash (a)
 (partition p0);
-alter table t1 add partition (partition p1 values less than (2));
-alter table t1 add partition (partition p1 values in (2));
-
 drop table t1;
-
---
--- BUG 17947 Crash with REBUILD PARTITION
---
 create table t1 (a int)
 partition by list (a)
 (partition p0 values in (1));
-alter table t1 rebuild partition;
-
 drop table t1;
-
---
--- Bug #14526: Partitions: indexed searches fail
---
 create table t2 (s1 int not null auto_increment, primary key (s1)) partition by list (s1) (partition p1 values in (1),partition p2 values in (2),partition p3 values in (3),partition p4 values in (4));
 insert into t2 values (null),(null),(null);
 select * from t2;
@@ -1177,93 +715,41 @@ update t2 set s1 = s1 + 1 order by s1 desc;
 select * from t2 where s1 < 3;
 select * from t2 where s1 = 2;
 drop table t2;
-
---
--- Bug #17497: Partitions: crash if add partition on temporary table
---
---error ER_PARTITION_NO_TEMPORARY
-create temporary table t1 (a int) partition by hash(a);
-
---
--- Bug #17097: Partitions: failing ADD PRIMARY KEY leads to temporary rotten
--- metadata,crash
---
 create table t1 (a int, b int) partition by list (a)
   (partition p1 values in (1), partition p2 values in (2));
-alter table t1 add primary key (b);
 drop table t1;
---            and add column + comment on
---            partitioned table
---
---###########################################
 create table t1 (a int unsigned not null auto_increment primary key)
 partition by key(a);
 alter table t1 rename t2, add c char(10), comment "no comment";
-
 drop table t2;
-
---
--- Bug#15336 Partitions: crash if create table as select
---
 create table t1 (f1 int) partition by hash (f1) as select 1;
 drop table t1;
-
---
--- bug #14350 Partitions: crash if prepared statement
---
 prepare stmt1 from 'create table t1 (s1 int) partition by hash (s1)';
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1 (num INT,PRIMARY KEY(num));
+INSERT INTO t1 VALUES (14);
 drop table t1;
-
---
--- bug 17290 SP with delete, create and rollback to save point causes MySQLD core
---
-delimiter |;
-  DROP TABLE IF EXISTS t1;
-  CREATE TABLE t1 (num INT,PRIMARY KEY(num));
-    INSERT INTO t1 VALUES(i);
-    savepoint t1_save;
-    INSERT INTO t1 VALUES (14);
-    ROLLBACK to savepoint t1_save;
-    COMMIT;
-drop table t1;
-drop procedure test.p1;
-
---
--- Bug 13520: Problem with delimiters in COMMENT DATA DIRECTORY ..
---
 CREATE TABLE t1 (a int not null)
 partition by key(a)
 (partition p0 COMMENT='first partition');
 drop table t1;
-
---
--- Bug 13433: Problem with delimited identifiers
---
 CREATE TABLE t1 (`a b` int not null)
 partition by key(`a b`);
 drop table t1;
-
 CREATE TABLE t1 (`a b` int not null)
 partition by hash(`a b`);
 drop table t1;
-
---
--- Bug#18053 Partitions: crash if null
--- Bug#18070 Partitions: wrong result on WHERE ... IS NULL
---
 create table t1 (f1 integer) partition by range(f1)
 (partition p1 values less than (0), partition p2 values less than (10));
 insert into t1 set f1 = null;
 select * from t1 where f1 is null;
 drop table t1;
-
 create table t1 (f1 integer) partition by list(f1)
 (partition p1 values in (1), partition p2 values in (null));
 insert into t1 set f1 = null;
 insert into t1 set f1 = 1;
 select * from t1 where f1 is null or f1 = 1;
 drop table t1;
-
 create table t1 (f1 smallint)
 partition by list (f1) (partition p0 values in (null));
 insert into t1 values (null);
@@ -1275,13 +761,11 @@ select * from t1 where f1 >= NULL;
 select * from t1 where f1 > NULL;
 select * from t1 where f1 > 1;
 drop table t1;
-
 create table t1 (f1 smallint)
 partition by range (f1) (partition p0 values less than (0));
 insert into t1 values (null);
 select * from t1 where f1 is null;
 drop table t1;
-
 create table t1 (f1 integer) partition by list(f1)
 (
  partition p1 values in (1),
@@ -1290,12 +774,10 @@ create table t1 (f1 integer) partition by list(f1)
  partition p4 values in (3),
  partition p5 values in (4)
 );
-
 insert into t1 values (1),(2),(3),(4),(null);
 select * from t1 where f1 < 3;
 select * from t1 where f1 is null;
 drop table t1;
-
 create table t1 (f1 int) partition by list(f1 div 2)
 (
  partition p1 values in (1),
@@ -1304,12 +786,10 @@ create table t1 (f1 int) partition by list(f1 div 2)
  partition p4 values in (3),
  partition p5 values in (4)
 );
-
 insert into t1 values (2),(4),(6),(8),(null);
 select * from t1 where f1 < 3;
 select * from t1 where f1 is null;
 drop table t1;
-
 create table t1 (a int) partition by LIST(a) (
   partition pn values in (NULL),
   partition p0 values in (0),
@@ -1320,10 +800,6 @@ insert into t1 values (NULL),(0),(1),(2);
 select * from t1 where a is null or a < 2;
 select * from t1 where a is null or a < 0 or a > 1;
 drop table t1;
-
---
---Bug# 17631 SHOW TABLE STATUS reports wrong engine
---
 CREATE TABLE t1 (id INT NOT NULL PRIMARY KEY, name VARCHAR(20)) 
 DEFAULT CHARSET=latin1
 PARTITION BY RANGE(id)
@@ -1331,56 +807,22 @@ PARTITION BY RANGE(id)
 PARTITION p1 VALUES LESS THAN (20),
 PARTITION p2 VALUES LESS THAN (30));
 DROP TABLE t1;
-
---
---BUG 16002 Erroneus handling of unsigned partition functions
---
---error ER_PARTITION_CONST_DOMAIN_ERROR
-create table t1 (a bigint unsigned)
-partition by list (a)
-(partition p0 values in (0-1));
-
 create table t1 (a bigint unsigned)
 partition by range (a)
 (partition p0 values less than (10));
-insert into t1 values (0xFFFFFFFFFFFFFFFF);
-
 drop table t1;
-
---
---BUG 18750 Problems with partition names
---
 create table t1 (a int)
 partition by list (a)
 (partition `s1 s2` values in (0));
 drop table t1;
-
 create table t1 (a int)
 partition by list (a)
 (partition `7` values in (0));
 drop table t1;
-create table t1 (a int)
-partition by list (a)
-(partition `s1 s2 ` values in (0));
-create table t1 (a int)
-partition by list (a)
-subpartition by hash (a)
-(partition p1 values in (0) (subpartition `p1 p2 `));
-
---
--- BUG 18752 SHOW CREATE TABLE doesn't show NULL value in SHOW CREATE TABLE
---
 CREATE TABLE t1 (a int)
 PARTITION BY LIST (a)
 (PARTITION p0 VALUES IN (NULL));
 DROP TABLE t1;
-CREATE TABLE t1 (a int)
-PARTITION BY RANGE(a)
-(PARTITION p0 VALUES LESS THAN (NULL));
-
---
--- Bug#18753 Partitions: auto_increment fails
---
 create table t1 (s1 int auto_increment primary key)
 partition by list (s1)
 (partition p1 values in (1),
@@ -1392,89 +834,40 @@ insert into t1 values (null);
 select auto_increment from information_schema.tables where table_name='t1';
 select * from t1;
 drop table t1;
-
---
--- BUG 19140 Partitions: Create index for partitioned table crashes
---
 create table t1 (a int)
 partition by key(a);
 insert into t1 values (1);
 create index inx1 on t1(a);
 drop table t1;
-
---
--- BUG 19304 Partitions: MERGE handler not allowed in partitioned tables
---
---error ER_PARTITION_MERGE_ERROR
-create table t1 (a int)
-partition by key (a)
-(partition p0 engine = MERGE);
-
---
--- BUG 19062 Partition clause ignored if CREATE TABLE ... AS SELECT ...;
 create table t1 (a varchar(1))
 partition by key (a)
 as select 'a';
 drop table t1;
-
---
--- BUG 19501 Partitions: SHOW TABLE STATUS shows wrong Data_free
---
 CREATE TABLE t1 (a int) PARTITION BY KEY(a);
 INSERT into t1 values (1), (2);
 DELETE from t1 where a = 1;
 ALTER TABLE t1 OPTIMIZE PARTITION p0;
 DROP TABLE t1;
-
---
--- BUG 19502: ENABLE/DISABLE Keys don't work for partitioned tables
---
 CREATE TABLE t1 (a int, index(a)) PARTITION BY KEY(a);
 ALTER TABLE t1 DISABLE KEYS;
 ALTER TABLE t1 ENABLE KEYS;
 DROP TABLE t1;
-
---
--- Bug 17455 Partitions: Wrong message and error when using Repair/Optimize
---                       table on partitioned table
--- (added check/analyze for gcov of Bug#20129)
 create table t1 (a int)
 partition by key (a);
-
 drop table t1;
-
---
---BUG 17138 Problem with stored procedure and analyze partition
---
---disable_warnings
 drop procedure if exists mysqltest_1;
-
 create table t1 (a int)
 partition by list (a)
 (partition p0 values in (0));
-
 insert into t1 values (0);
-
-create procedure mysqltest_1 ()
-begin
-  begin
-    declare continue handler for sqlexception begin end;
-    update ignore t1 set a = 1 where a = 0;
+update ignore t1 set a = 1 where a = 0;
+prepare stmt1 from 'alter table t1';
 drop table t1;
-drop procedure mysqltest_1;
-
---
--- Bug 20583 Partitions: Crash using index_last
---
 create table t1 (a int, index(a))
 partition by hash(a);
 insert into t1 values (1),(2);
 select * from t1 ORDER BY a DESC;
 drop table t1;
-
---
--- Bug 21388: Bigint fails to find record
---
 create table t1 (a bigint unsigned not null, primary key(a))
 partition by key (a)
 partitions 10;
@@ -1485,101 +878,24 @@ select * from t1 where a = 18446744073709551615;
 delete from t1 where a = 18446744073709551615;
 select * from t1;
 drop table t1;
-
---
--- Bug 24502 reorganize partition closes connection
---
 CREATE TABLE t1 (
   num int(11) NOT NULL, cs int(11) NOT NULL)
 PARTITION BY RANGE (num) SUBPARTITION BY HASH (
 cs) SUBPARTITIONS 2 (PARTITION p_X VALUES LESS THAN MAXVALUE);
-
 ALTER TABLE t1 
 REORGANIZE PARTITION p_X INTO ( 
     PARTITION p_100 VALUES LESS THAN (100), 
     PARTITION p_X VALUES LESS THAN MAXVALUE 
     );
-
 drop table t1;
-
---
--- Bug #24186 (nested query across partitions returns fewer records)
---
-
-set session sql_mode='';
-
-CREATE TABLE t2 (
-  taken datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  id int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id,taken),
-  KEY taken (taken)
-) DEFAULT CHARSET=latin1;
-
-INSERT INTO t2 VALUES 
-('2006-09-27 21:50:01',16421),
-('2006-10-02 21:50:01',16421),
-('2006-09-27 21:50:01',19092),
-('2006-09-28 21:50:01',19092),
-('2006-09-29 21:50:01',19092),
-('2006-09-30 21:50:01',19092),
-('2006-10-01 21:50:01',19092),
-('2006-10-02 21:50:01',19092),
-('2006-09-27 21:50:01',22589),
-('2006-09-29 21:50:01',22589);
-
 CREATE TABLE t1 (
   id int(8) NOT NULL,
   PRIMARY KEY (id)
 ) DEFAULT CHARSET=latin1;
-
 INSERT INTO t1 VALUES 
 (16421),
 (19092),
 (22589);
-
-CREATE TABLE t4 (
-  taken datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  id int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id,taken),
-  KEY taken (taken)
-) DEFAULT CHARSET=latin1 
-PARTITION BY RANGE (to_days(taken)) 
-(
-PARTITION p01 VALUES LESS THAN (732920) , 
-PARTITION p02 VALUES LESS THAN (732950) , 
-PARTITION p03 VALUES LESS THAN MAXVALUE ) ;
-
-INSERT INTO t4 select * from t2;
-
-set @f_date='2006-09-28';
-set @t_date='2006-10-02';
-
-SELECT t1.id AS MyISAM_part
-FROM t1
-WHERE t1.id IN (
-    SELECT distinct id
-    FROM t4
-    WHERE taken BETWEEN @f_date AND date_add(@t_date, INTERVAL 1 DAY))
-ORDER BY t1.id;
-
-drop table t1, t2, t4;
-
-CREATE TABLE t1 (
-  taken datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  id int(11) NOT NULL DEFAULT '0',
-  status varchar(20) NOT NULL DEFAULT '',
-  PRIMARY KEY (id,taken)
-) DEFAULT CHARSET=latin1
-PARTITION BY RANGE (to_days(taken))
-(
-PARTITION p15 VALUES LESS THAN (732950) ,
-PARTITION p16 VALUES LESS THAN MAXVALUE ) ;
-
-
-INSERT INTO t1 VALUES
-('2006-09-27 21:50:01',22589,'Open'),
-('2006-09-29 21:50:01',22589,'Verified');
-
 DROP TABLE IF EXISTS t2;
 CREATE TABLE t2 (
   id int(8) NOT NULL,
@@ -1588,45 +904,26 @@ CREATE TABLE t2 (
   status varchar(20) DEFAULT NULL,
   alien tinyint(4) NOT NULL
 ) DEFAULT CHARSET=latin1;
-
 INSERT INTO t2 VALUES
 (22589,1,1,'Need Feedback',0);
-
 SELECT t2.id FROM t2 WHERE t2.id IN (SELECT id FROM t1 WHERE status = 'Verified');
-
 drop table t1, t2;
-
---
--- Bug #27123 partition + on duplicate key update + varchar = Can't find record in <table> 
---
 create table t1 (c1 varchar(255),c2 tinyint,primary key(c1))
-   partition by key (c1) partitions 10 ;
+   partition by key (c1) partitions 10;
 insert into t1 values ('aaa','1') on duplicate key update c2 = c2 + 1;
 insert into t1 values ('aaa','1') on duplicate key update c2 = c2 + 1;
 select * from t1;
 drop table t1;
-
---
--- Bug #28005 Partitions: can't use -9223372036854775808 
---
-
 create table t1 (s1 bigint) partition by list (s1) (partition p1 values in (-9223372036854775808));
 drop table t1;
-
---
--- Bug #28806: Running SHOW TABLE STATUS during high INSERT load crashes server
---
 create table t1(a int auto_increment, b int, primary key (a, b)) 
   partition by hash(b) partitions 2;
 insert into t1 values (null, 1);
 drop table t1;
-
 create table t1(a int auto_increment primary key)
   partition by key(a) partitions 2;
 insert into t1 values (null), (null), (null);
 drop table t1;
---
-
 CREATE TABLE t1(a INT NOT NULL, b TINYBLOB, KEY(a))
   PARTITION BY RANGE(a) ( PARTITION p0 VALUES LESS THAN (32));
 INSERT INTO t1 VALUES (1, REPEAT('a', 10));
@@ -1634,61 +931,26 @@ INSERT INTO t1 SELECT a + 1, b FROM t1;
 INSERT INTO t1 SELECT a + 2, b FROM t1;
 INSERT INTO t1 SELECT a + 4, b FROM t1;
 INSERT INTO t1 SELECT a + 8, b FROM t1;
-
 ALTER TABLE t1 ADD PARTITION (PARTITION p1 VALUES LESS THAN (64));
 ALTER TABLE t1 DROP PARTITION p1;
-
 DROP TABLE t1;
-
---
--- Bug #30484: Partitions: crash with self-referencing trigger
---
-
 create table t (s1 int) partition by key (s1);
-create trigger t_ad after delete on t for each row insert into t values (old.s1);
 insert into t values (1);
 drop table t;
-
---
--- Bug #27084 partitioning by list seems failing when using case 
--- BUG #18198: Case no longer supported, test case removed
---
-
 create table t2 (b int);
-create table t1 (b int)
-PARTITION BY RANGE (t2.b) (
-  PARTITION p1 VALUES LESS THAN (10),
-  PARTITION p2 VALUES LESS THAN (20)
-) select * from t2;
 create table t1 (a int)
 PARTITION BY RANGE (b) (
   PARTITION p1 VALUES LESS THAN (10),
   PARTITION p2 VALUES LESS THAN (20)
 ) select * from t2;
 drop table t1, t2;
-
---
--- Bug #32067 Partitions: crash with timestamp column
---  this bug occurs randomly on some UPDATE statement
---  with the '1032: Can't find record in 't1'' error
-
 create table t1
  (s1 timestamp on update current_timestamp, s2 int)
  partition by key(s1) partitions 3;
-
 insert into t1 values (null,null);
-let $cnt= 1000;
-{
-  update t1 set s2 = 1;
-  update t1 set s2 = 2;
-  dec $cnt;
-
+update t1 set s2 = 1;
+update t1 set s2 = 2;
 drop table t1;
-
---
--- BUG#32772: partition crash 1: enum column
---
--- Note that month(int_col) is disallowed after bug#54483.
 create table t1 (
   c0 int,
   c1 bigint,
@@ -1698,27 +960,17 @@ create table t1 (
 ) partition by hash (c0) partitions 5;
 insert ignore into t1 set c0 = -6502262, c1 = 3992917, c2 = 35019;
 insert ignore into t1 set c0 = 241221, c1 = -6862346, c2 = 56644;
-select c1 from t1 group by (select c0 from t1 limit 1);
 drop table t1;
-
--- Bug #30495: optimize table t1,t2,t3 extended errors
--- (added more maintenace commands for Bug#20129
 CREATE TABLE t1(a int)
 PARTITION BY RANGE (a) (
   PARTITION p1 VALUES LESS THAN (10),
   PARTITION p2 VALUES LESS THAN (20)
 );
-ALTER TABLE t1 OPTIMIZE PARTITION p1 EXTENDED;
-ALTER TABLE t1 ANALYZE PARTITION p1 EXTENDED;
 ALTER TABLE t1 ANALYZE PARTITION p1;
 ALTER TABLE t1 CHECK PARTITION p1;
 ALTER TABLE t1 REPAIR PARTITION p1;
 ALTER TABLE t1 OPTIMIZE PARTITION p1;
 DROP TABLE t1;
-
---
--- Bug #29258: Partitions: search fails for maximum unsigned bigint
---
 CREATE TABLE t1 (s1 BIGINT UNSIGNED)
   PARTITION BY RANGE (s1) (
   PARTITION p0 VALUES LESS THAN (0), 
@@ -1726,9 +978,7 @@ CREATE TABLE t1 (s1 BIGINT UNSIGNED)
   PARTITION p2 VALUES LESS THAN (18446744073709551615)
 );
 INSERT INTO t1 VALUES (0), (18446744073709551614);
-INSERT INTO t1 VALUES (18446744073709551615);
 DROP TABLE t1;
-
 CREATE TABLE t1 (s1 BIGINT UNSIGNED)
  PARTITION BY RANGE (s1) (
   PARTITION p0 VALUES LESS THAN (0),
@@ -1736,14 +986,11 @@ CREATE TABLE t1 (s1 BIGINT UNSIGNED)
   PARTITION p2 VALUES LESS THAN (18446744073709551614),
   PARTITION p3 VALUES LESS THAN MAXVALUE
 );
-INSERT INTO t1 VALUES (-1), (0), (18446744073709551613), 
-  (18446744073709551614), (18446744073709551615);
 SELECT * FROM t1;
 SELECT * FROM t1 WHERE s1 = 0;
 SELECT * FROM t1 WHERE s1 = 18446744073709551614;
 SELECT * FROM t1 WHERE s1 = 18446744073709551615;
 DROP TABLE t1;
-
 CREATE TABLE t1 (s1 BIGINT UNSIGNED)  
  PARTITION BY RANGE (s1) (
   PARTITION p0 VALUES LESS THAN (0),
@@ -1752,11 +999,6 @@ CREATE TABLE t1 (s1 BIGINT UNSIGNED)
   PARTITION p3 VALUES LESS THAN MAXVALUE
 );
 DROP TABLE t1;
-
---
--- Bug #31890 Partitions: ORDER BY DESC in InnoDB not working
---
-
 CREATE TABLE t1
 (int_column INT, char_column CHAR(5),
 PRIMARY KEY(char_column,int_column))
@@ -1778,11 +1020,6 @@ INSERT INTO t1 (int_column, char_column) VALUES
 (     718061 ,'ZZzZH');
 SELECT * FROM t1 ORDER BY char_column DESC;
 DROP TABLE t1;
-
---
--- Bug #32247 Test reports wrong value of "AUTO_INCREMENT" (on a partitioned InnoDB table)
---
-
 CREATE TABLE t1(id MEDIUMINT NOT NULL AUTO_INCREMENT,
                 user CHAR(25), PRIMARY KEY(id))
                    PARTITION BY RANGE(id)
@@ -1790,16 +1027,8 @@ CREATE TABLE t1(id MEDIUMINT NOT NULL AUTO_INCREMENT,
                    (PARTITION pa1 values less than (10),
                     PARTITION pa2 values less than (20),
                     PARTITION pa11 values less than MAXVALUE);
-let $n= 15;
-{
-  insert into t1 (user) values ('mysql');
-  dec $n;
+insert into t1 (user) values ('mysql');
 drop table t1;
-
---
--- Bug #38272 timestamps fields incorrectly defaulted on update accross partitions.
---
-
 CREATE TABLE  t1 (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `createdDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1810,46 +1039,25 @@ PARTITION BY RANGE (number) (
     PARTITION p0 VALUES LESS THAN (6),
     PARTITION p1 VALUES LESS THAN (11)
 );
-
 create table t2 (
   `ID` bigint(20),
   `createdDate` TIMESTAMP,
   `number` int
 );
-
 INSERT INTO t1 SET number=1;
 insert into t2 select * from t1;
 SELECT SLEEP(1);
 UPDATE t1 SET number=6;
 select count(*) from t1, t2 where t1.createdDate = t2.createdDate;
-
 drop table t1, t2;
-
---
--- Bug #38083 Error-causing row inserted into partitioned table despite error
---
-SET @orig_sql_mode = @@SQL_MODE;
-SET SQL_MODE='STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO';
 CREATE TABLE t1 (c1 INT)
        PARTITION BY LIST(1 DIV c1) (
        PARTITION p0 VALUES IN (NULL),
        PARTITION p1 VALUES IN (1)
      );
- 
--- error ER_DIVISION_BY_ZERO
-INSERT INTO t1 VALUES (0);
 SELECT * FROM t1;
-INSERT INTO t1 VALUES (NULL), (0), (1), (2);
 SELECT * FROM t1;
 DROP TABLE t1;
-SET SQL_MODE= @orig_sql_mode;
-
-
-
---
--- Bug #38005 Partitions: error with insert select
---
-
 create table t1 (s1 int) partition by hash(s1) partitions 2;
 create index i on t1 (s1);
 insert into t1 values (1);
@@ -1858,7 +1066,6 @@ insert into t1 select s1 from t1;
 insert into t1 select s1 from t1 order by s1 desc;
 select * from t1;
 drop table t1;
-
 create table t1 (s1 int) partition by range(s1) 
         (partition pa1 values less than (10),
          partition pa2 values less than MAXVALUE);
@@ -1869,7 +1076,6 @@ insert into t1 select s1 from t1;
 insert into t1 select s1 from t1 order by s1 desc;
 select * from t1;
 drop table t1;
-
 create table t1 (s1 int) partition by range(s1) 
         (partition pa1 values less than (10),
          partition pa2 values less than MAXVALUE);
@@ -1880,7 +1086,6 @@ insert into t1 select s1 from t1;
 insert into t1 select s1 from t1 order by s1 desc;
 select * from t1;
 drop table t1;
-
 create table t1 (s1 int) partition by range(s1) 
         (partition pa1 values less than (10),
          partition pa2 values less than MAXVALUE);
@@ -1901,14 +1106,8 @@ CREATE TABLE t1 (a int) PARTITION BY RANGE (a)
    PARTITION p3 VALUES LESS THAN MAXVALUE);
 INSERT INTO t1 VALUES (10), (100), (200), (300), (400);
 DROP TABLE t1;
-
---
--- Bug#44821: select distinct on partitioned table returns wrong results
---
 CREATE TABLE t1 ( a INT, b INT, c INT, KEY bc(b, c) )
-PARTITION BY KEY (a, b) PARTITIONS 3
-;
-
+PARTITION BY KEY (a, b) PARTITIONS 3;
 INSERT INTO t1 VALUES
 (17, 1, -8),
 (3,  1, -7),
@@ -1933,103 +1132,55 @@ INSERT INTO t1 VALUES
 (24, 1, 12),
 (12, 1, 13),
 (26, 1, 14),
-(14, 1, 15)
-;
-
+(14, 1, 15);
 SELECT b, c FROM t1 WHERE b = 1 GROUP BY b, c;
 SELECT b, c FROM t1 WHERE b = 1 GROUP BY b, c;
-
 DROP TABLE t1;
-
-SET SESSION SQL_MODE='ONLY_FULL_GROUP_BY';
 CREATE TABLE t1(id INT,KEY(id))
   PARTITION BY HASH(id) PARTITIONS 2;
 SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
-SET SESSION SQL_MODE=DEFAULT;
-
--- This testcase is commented due to the Bug #46853
--- Should be uncommented after fixing Bug #46853
-----echo #
-----echo # BUG#45816 - assertion failure with index containing double 
-----echo #             column on partitioned table
-----echo #
---
---CREATE TABLE t1 (
---  a INT DEFAULT NULL,
---  b DOUBLE DEFAULT NULL,
---  c INT DEFAULT NULL,
---  KEY idx2(b,a)
---) PARTITION BY HASH(c) PARTITIONS 3;
 DROP TABLE IF EXISTS t1;
-
---
--- Case 1.
---
-
 CREATE TABLE t1 (s1 INT PRIMARY KEY) PARTITION BY HASH(s1);
-ALTER TABLE t1 DROP PARTITION p1;
-
--- The SELECT below used to hang in tdc_wait_for_old_versions().
+LOCK TABLES t1 WRITE, t1 b READ;
+UNLOCK TABLES;
 SELECT * FROM t1;
-
 DROP TABLE t1;
-
---
--- Case 2.
---
-
 CREATE TABLE t1 (s1 VARCHAR(5) PRIMARY KEY) PARTITION BY KEY(s1);
-ALTER TABLE t1 ADD COLUMN (s3 VARCHAR(5) UNIQUE);
-
--- The SELECT below used to hang in tdc_wait_for_old_versions().
+LOCK TABLES t1 WRITE, t1 b READ;
+UNLOCK TABLES;
 SELECT * FROM t1;
-
 DROP TABLE t1;
-SET GLOBAL myisam_use_mmap=1;
 CREATE TABLE t1(a INT) PARTITION BY HASH(a) PARTITIONS 1;
 INSERT INTO t1 VALUES(0);
 INSERT INTO t1 VALUES(0);
 DROP TABLE t1;
-SET GLOBAL myisam_use_mmap=default;
-
 CREATE TABLE t1_part (
   partkey int,
   nokey int
 ) PARTITION BY LINEAR HASH(partkey) PARTITIONS 3;
-
 INSERT INTO t1_part VALUES (1, 1) , (10, 10);
 CREATE VIEW v1 AS SELECT * FROM t1_part;
 SELECT * FROM t1_part;
-UPDATE t1_part AS A NATURAL JOIN t1_part B SET A.partkey = 2, B.nokey = 3;
-UPDATE t1_part AS A NATURAL JOIN t1_part B SET A.nokey = 2, B.partkey = 3;
-UPDATE t1_part AS A NATURAL JOIN v1 as B SET A.nokey = 2 , B.partkey = 3;
-UPDATE v1 AS A NATURAL JOIN t1_part as B SET A.nokey = 2 , B.partkey = 3;
 SELECT * FROM t1_part;
 UPDATE t1_part AS A NATURAL JOIN t1_part B SET A.nokey = 2 , B.nokey = 3;
 SELECT * FROM t1_part;
 DROP VIEW v1;
 DROP TABLE t1_part;
-
 create table t1 (i int) partition by list (i)
   (partition p0 values in (1),
    partition p1 values in (2,3),
    partition p2 values in (4,5));
+lock tables t1 write, t1 as a read, t1 as b read;
 alter table t1 add column j int;
+unlock tables;
 drop table t1;
-
---
--- Bug #12330344 Crash and/or valgrind errors in free_io_cache with join, view,
--- partitioned table
---
-
 CREATE TABLE t1(a INT PRIMARY KEY) PARTITION BY LINEAR KEY (a);
 CREATE ALGORITHM=TEMPTABLE VIEW vtmp AS
 SELECT 1 FROM t1 AS t1_0 JOIN t1 ON t1_0.a LIKE (SELECT 1 FROM t1);
 SELECT * FROM vtmp;
 DROP VIEW vtmp;
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   a INT PRIMARY KEY,
   b INT,
@@ -2037,138 +1188,27 @@ CREATE TABLE t1 (
   d INT,
   KEY (c,d)
 ) PARTITION BY KEY () PARTITIONS 1;
-
 INSERT INTO t1 VALUES (1,1,'a',1), (2,2,'a',1);
-SELECT 1 FROM t1 WHERE 1 IN
-(SELECT  group_concat(b)
- FROM t1
- WHERE c > ST_geomfromtext('point(1 1)')
- GROUP BY b
-);
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (c1 int(11) DEFAULT NULL, KEY c1 (c1))
   PARTITION BY RANGE (c1)
     (PARTITION a VALUES LESS THAN (10),
      PARTITION b VALUES LESS THAN (100),
      PARTITION c VALUES LESS THAN MAXVALUE);
-
 INSERT INTO t1 VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
-
-let $query=SELECT c1 FROM t1 WHERE (c1 > 2 AND c1 < 15);
-
 DROP TABLE t1;
-
-SET sql_mode= 'STRICT_TRANS_TABLES';
-CREATE TABLE t1 (d TIME)
-  PARTITION BY RANGE COLUMNS (d)
-    (PARTITION p0 VALUES LESS THAN ('2000-01-01'),
-     PARTITION p1 VALUES LESS THAN ('2040-01-01'));
-
--- Before this fix, sql_mode would have been reset to 0.
 SELECT @@sql_mode;
-SET sql_mode= DEFAULT;
 CREATE TABLE t1 (a int PRIMARY KEY)
 PARTITION BY LINEAR KEY(a) PARTITIONS 2;
-SELECT 1 FROM t1 WHERE EXP(10000);
 DROP TABLE t1;
-
--- The test for Bug 20770 is disabled on Windows due to BUG#19107;
-
---
--- Bug 20770 Partitions: DATA DIRECTORY clause change in reorganize
---                       does not remove old directory
-
-let $MYSQLD_DATADIR= `select @@datadir`;
-
-drop table t1;
-
---
--- Bug #24633 SQL MODE "NO_DIR_IN_CREATE" does not work with partitioned tables
---
-set innodb_strict_mode=off;
-
-set @org_mode=@@sql_mode;
-set @@sql_mode='NO_DIR_IN_CREATE';
 select @@sql_mode;
-create table t1 (i int )
-partition by range (i)
-(
-  partition p01 values less than (1000)
-  data directory='/not/existing'
-  index directory='/not/existing'
-);
-DROP TABLE t1, t2;
-set @@sql_mode=@org_mode;
-
---
--- Bug#32167: another privilege bypass with DATA/INDEX DIRECTORY
---
-
-let $MYSQLD_DATADIR= `select @@datadir`;
-));
-
---replace_result $MYSQLD_DATADIR MYSQLD_DATADIR
---replace_regex  /(Incorrect path value: ).*/\1'MYSQLD_DATADIR\/test'/
---error ER_WRONG_VALUE
-eval CREATE TABLE ts (id INT, purchased DATE)
-PARTITION BY RANGE(YEAR(purchased))
-SUBPARTITION BY HASH(TO_DAYS(purchased)) (
-PARTITION p0 VALUES LESS THAN (1990) (
-SUBPARTITION s0a
-  INDEX DIRECTORY = '$MYSQLD_DATADIR/test',
-SUBPARTITION s0b
-  INDEX DIRECTORY = '$MYSQLD_DATADIR/test'
-));
-
--- End Windows specific test failures.
-
--- These tests contain non-Windows specific directory/file format.
-
---
--- Bug 25141: Crash Server on Partitioning command
---
-
---disable_warnings
 DROP TABLE IF EXISTS `example`;
-);
-
-let $MYSQLD_DATADIR= `select @@datadir`;
-DROP TABLE example;
-
-SET @@SQL_MODE= 'ANSI_QUOTES';
-
-CREATE TABLE t1(col1 INT, col2 DATE)
-ENGINE=INNODB
-PARTITION BY RANGE(YEAR("col2"))
-SUBPARTITION BY HASH(TO_DAYS("col2"))(
-      PARTITION p0 VALUES LESS THAN (1990)(
-          SUBPARTITION s0,
-          SUBPARTITION s1 tablespace=`innodb_file_per_table`
-      ),
-      PARTITION p1 VALUES LESS THAN MAXVALUE(
-            SUBPARTITION s2,
-            SUBPARTITION s3 tablespace="innodb_file_per_table"
-        )
-    );
 SELECT partition_expression FROM information_schema.partitions
 WHERE table_schema = 'test' AND table_name = 't1';
-
-SET @@SQL_MODE= DEFAULT;
 SELECT partition_expression FROM information_schema.partitions
 WHERE table_schema = 'test' AND table_name = 't1';
-
-SET @@SQL_QUOTE_SHOW_CREATE= 0;
 SELECT partition_expression FROM information_schema.partitions
 WHERE table_schema = 'test' AND table_name = 't1';
-
-SET @@SQL_QUOTE_SHOW_CREATE= 1;
-DROP TABLE t1;
-DROP TABLE t1;
-DROP TABLE t1;
-DROP TABLE t1;
-DROP TABLE t1;
 CREATE TABLE t (a BIGINT NOT NULL)
   PARTITION BY KEY(a) PARTITIONS 2;
 INSERT INTO t VALUES(0);
@@ -2180,15 +1220,12 @@ PARTITION BY RANGE (b)
  PARTITION pb VALUES LESS THAN (20),
  PARTITION pc VALUES LESS THAN (30),
  PARTITION pd VALUES LESS THAN (40));
-
 INSERT INTO t
 VALUES('A',0),('B',1),('C',2),('D',3),('E',4),('F',5),('G',25),('H',35);
-
 ALTER TABLE t ADD COLUMN r INT UNSIGNED NOT NULL AUTO_INCREMENT, ADD UNIQUE
 KEY (r,b), ALGORITHM=INPLACE, LOCK=SHARED;
 SELECT * FROM t;
 DROP TABLE t;
-
 CREATE SCHEMA tables;
 CREATE TABLE tables.mysql(a INT);
 ALTER TABLE tables.mysql PARTITION BY HASH (a);
@@ -2198,8 +1235,8 @@ SELECT MBRTOUCHES(a.c2, b.c2) FROM t1 AS a JOIN t1 AS b;
 ALTER TABLE t1 CONVERT TO CHARACTER SET latin1;
 DROP TABLE t1;
 CREATE TABLE t1 (s1 INT PRIMARY KEY) PARTITION BY HASH(s1);
-ALTER TABLE t1 DROP PARTITION p1;
-
+LOCK TABLES t1 WRITE, t1 b READ;
+UNLOCK TABLES;
 ALTER TABLE t1 CONVERT TO CHARACTER SET latin1;
 DROP TABLE t1;
 CREATE TABLE t1 (c1 INT NOT NULL, c2 INT)
@@ -2216,47 +1253,32 @@ CREATE TABLE t1 (c1 INT NOT NULL, c2 INT)
             SUBPARTITION p31,
             SUBPARTITION p32,
             SUBPARTITION p33));
-
 SELECT MBRTOUCHES(a.c1, b.c2) FROM t1 AS a JOIN t1 AS b;
 ALTER TABLE t1 CONVERT TO CHARACTER SET latin1;
 DROP TABLE t1;
-
--- Disabled execution under --ps-protocol until bug #13569548 "DBUG_ASSERT HIT
--- IN COLUMNS PART EXPR IN THE VALUE LIST UNDER --PS-PROTOCOL" is fixed.
---disable_ps_protocol
---echo --
---echo -- Test case mimicking the original one.
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 INSERT INTO t1 (i, j) VALUES (-1, 1);
-ALTER TABLE t1 CHANGE COLUMN i j INT, CHANGE COLUMN j i INT;
 SELECT i, j FROM t1 PARTITION (p0);
 SELECT i, j FROM t1 PARTITION (p1);
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 INSERT INTO t1 (i, j) VALUES (-1, 1);
-ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT DEFAULT 1;
 SELECT i, j FROM t1 PARTITION (p0);
 SELECT i, j FROM t1 PARTITION (p1);
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i+1) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
-ALTER TABLE t1 RENAME COLUMN i TO k;
-ALTER TABLE t1 CHANGE COLUMN i k INT;
-ALTER TABLE t1 RENAME COLUMN i TO j, RENAME COLUMN j TO i;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT) PARTITION BY LIST COLUMNS (i) (PARTITION p0 VALUES IN (-2,-1), PARTITION p1 VALUES IN (0, 1, 2));
-ALTER TABLE t1 RENAME COLUMN i TO k;
 ALTER TABLE t1 RENAME COLUMN i TO k REMOVE PARTITIONING;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 INSERT INTO t1 (i, j) VALUES (-1, 1);
 ALTER TABLE t1 RENAME COLUMN i TO k PARTITION BY RANGE(k) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
-ALTER TABLE t1 RENAME COLUMN k TO l PARTITION BY RANGE(m) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 SELECT k, j FROM t1 PARTITION (p0);
 SELECT k, j FROM t1 PARTITION (p1);
 ALTER TABLE t1 RENAME COLUMN k TO j, RENAME COLUMN j TO k PARTITION BY RANGE(k) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 SELECT k, j FROM t1 PARTITION (p0);
 SELECT k, j FROM t1 PARTITION (p1);
-ALTER TABLE t1 RENAME COLUMN k TO j, RENAME COLUMN j TO k, ALGORITHM=INPLACE PARTITION BY RANGE(k) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT, PRIMARY KEY (i)) PARTITION BY KEY () PARTITIONS 2 (PARTITION p0, PARTITION p1);
 INSERT INTO t1 (i, j) VALUES (-1, 1);
@@ -2270,28 +1292,23 @@ CREATE TABLE t1 (i INT, j INT, PRIMARY KEY (i, j)) PARTITION BY KEY (i) PARTITIO
 INSERT INTO t1 (i, j) VALUES (-1, 1);
 SELECT i, j FROM t1 PARTITION (p0);
 SELECT i, j FROM t1 PARTITION (p1);
-ALTER TABLE t1 RENAME COLUMN i TO j, RENAME COLUMN j TO i;
 ALTER TABLE t1 RENAME COLUMN i TO j, RENAME COLUMN j TO i PARTITION BY KEY (i) PARTITIONS 2 (PARTITION p0, PARTITION p1);
 SELECT i, j FROM t1 PARTITION (p0);
 SELECT i, j FROM t1 PARTITION (p1);
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i+1) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
-ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT) PARTITION BY LIST COLUMNS (i) (PARTITION p0 VALUES IN (-2,-1), PARTITION p1 VALUES IN (0, 1, 2));
-ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT;
 ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT REMOVE PARTITIONING;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
-ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT PARTITION BY RANGE(k) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 INSERT INTO t1 (i, j) VALUES (-1, 1);
 SELECT i, j FROM t1 PARTITION (p0);
 SELECT i, j FROM t1 PARTITION (p1);
 ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT DEFAULT 1 PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 SELECT i, j FROM t1 PARTITION (p0);
 SELECT i, j FROM t1 PARTITION (p1);
-ALTER TABLE t1 DROP COLUMN i, ADD COLUMN i INT DEFAULT 2, ALGORITHM=INPLACE PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT, PRIMARY KEY (i, j)) PARTITION BY KEY () PARTITIONS 2 (PARTITION p0, PARTITION p1);
 INSERT INTO t1 (i, j) VALUES (1, 2);
@@ -2300,7 +1317,6 @@ SELECT i, j FROM t1 PARTITION (p1);
 ALTER TABLE t1 DROP COLUMN i;
 SELECT j FROM t1 PARTITION (p0);
 SELECT j FROM t1 PARTITION (p1);
-ALTER TABLE t1 ADD COLUMN k INT, DROP COLUMN j;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT, PRIMARY KEY (i, j)) PARTITION BY KEY () PARTITIONS 2 (PARTITION p0, PARTITION p1);
 INSERT INTO t1 (i, j) VALUES (1, 2);
@@ -2317,35 +1333,18 @@ CREATE TABLE t(  id int unsigned NOT NULL,
         /*!50100 PARTITION BY RANGE (id)
         (PARTITION p10 VALUES LESS THAN (10) ,
          PARTITION p20 VALUES LESS THAN (20) ) */;
-
-INSERT INTO t VALUES (6, 'ab'), (4, 'ab'), (5, 'ab'), (16, 'ab'), (14, 'ab'), (15, 'ab'), (5, 'ac'), (15, 'aa') ;
+INSERT INTO t VALUES (6, 'ab'), (4, 'ab'), (5, 'ab'), (16, 'ab'), (14, 'ab'), (15, 'ab'), (5, 'ac'), (15, 'aa');
 SELECT id FROM t WHERE data = 'ab' ORDER BY id ASC;
 DROP TABLE t;
-
--- Create table with default non-deterministic expression
 CREATE TABLE t1 (c1 INT, c2 CHAR(32) DEFAULT (RANDOM_BYTES(32))) PARTITION BY HASH(c1);
 CREATE TABLE t2 (c1 INT, c2 CHAR(32) DEFAULT (RANDOM_BYTES(32))) PARTITION BY RANGE(c1) (PARTITION p1 VALUES LESS THAN(100));
-
--- ALter table with default non-deterministic expression
 CREATE TABLE t (c1 INT, c2 INT) PARTITION BY RANGE(c1) (PARTITION p1 VALUES LESS THAN(100));
 ALTER TABLE t MODIFY COLUMN c2 CHAR(32) DEFAULT (RANDOM_BYTES(32));
 DROP TABLE t, t1, t2;
-
--- Create table with generated column containing non-deterministic expression
---error ER_GENERATED_COLUMN_NAMED_FUNCTION_IS_NOT_ALLOWED
-CREATE TABLE t1 (c1 INT, c2 CHAR(32) GENERATED ALWAYS AS (RANDOM_BYTES(32))) PARTITION BY HASH(c1);
-CREATE TABLE t2 (c1 INT, c2 CHAR(32) GENERATED ALWAYS AS (RANDOM_BYTES(32))) PARTITION BY RANGE(c1) (PARTITION p1 VALUES LESS THAN(100));
-
--- Alter table with generated column containing non-deterministic expression
 CREATE TABLE t (c1 INT, c2 INT) PARTITION BY RANGE(c1) (PARTITION p1 VALUES LESS THAN(100));
-ALTER TABLE t MODIFY COLUMN c2 CHAR(32) GENERATED ALWAYS AS (RANDOM_BYTES(32)) STORED;
-ALTER TABLE t ADD COLUMN c3 CHAR(32) GENERATED ALWAYS AS (RANDOM_BYTES(32));
 DROP TABLE t;
-
 CREATE TABLE v0 ( c1 SERIAL )
 PARTITION BY RANGE ( c1 )
 SUBPARTITION BY
-LINEAR HASH ( c1 DIV - c1 ) ( PARTITION p2 VALUES LESS THAN MAXVALUE ) ;
-INSERT v0 SET c1 = 0;
-
+LINEAR HASH ( c1 DIV - c1 ) ( PARTITION p2 VALUES LESS THAN MAXVALUE );
 DROP TABLE v0;

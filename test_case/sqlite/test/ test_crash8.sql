@@ -43,53 +43,30 @@ INSERT INTO ab VALUES(5, NULL);
 INSERT INTO ab VALUES(6, NULL);
 ATTACH 'test2.db' AS aux;
 PRAGMA aux.journal_mode = persist;
+CREATE TABLE aux.ab(a, b);
+INSERT INTO aux.ab SELECT * FROM main.ab;
 BEGIN;
+UPDATE aux.ab SET b = 'def' WHERE a = 0;
 UPDATE main.ab SET b = 'def' WHERE a = 0;
 SELECT b FROM main.ab WHERE a = 0;
+SELECT b FROM aux.ab WHERE a = 0;
+SELECT b FROM aux.ab WHERE a = 0;
 SELECT b FROM main.ab WHERE a = 0;
-/* 64 rows */;
-PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
-PRAGMA cache_size = 10;
-/* 64 rows */
-        BEGIN;
+PRAGMA integrity_check;
 PRAGMA integrity_check;

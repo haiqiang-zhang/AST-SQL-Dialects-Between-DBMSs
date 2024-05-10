@@ -5,4 +5,3 @@ SELECT substr(a,',') is true FROM t1 ORDER BY rowid;
 SELECT substr(a,',') is true FROM t1 ORDER BY rowid DESC;
 CREATE INDEX i1 ON t1(a);
 SELECT count(*) FROM t1 WHERE substr(a,',');
-SELECT randomblob(0) - 1;

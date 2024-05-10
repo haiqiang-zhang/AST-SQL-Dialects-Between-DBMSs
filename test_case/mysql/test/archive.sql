@@ -1,23 +1,12 @@
 DROP TABLE if exists t1,t2,t3,t4,t5,t6;
-
-SET default_storage_engine=ARCHIVE;
-let $MYSQLD_DATADIR= `SELECT @@datadir`;
-
 CREATE TABLE t1 (
   Period smallint(4) unsigned zerofill DEFAULT '0000' NOT NULL,
   Varor_period smallint(4) unsigned DEFAULT '0' NOT NULL
 ) ENGINE=archive;
-
 INSERT INTO t1 VALUES (9410,9412);
-  
 select period FROM t1;
 select * FROM t1;
 select t1.* FROM t1;
-
---
--- Create test table
---
-
 CREATE TABLE t2 (
   auto int,
   fld1 int(6) unsigned zerofill DEFAULT '000000' NOT NULL,
@@ -27,12 +16,6 @@ CREATE TABLE t2 (
   fld5 char(35) DEFAULT '' NOT NULL,
   fld6 char(4) DEFAULT '' NOT NULL
 ) ENGINE=archive;
-
---
--- Populate table
---
-
---disable_query_log
 INSERT INTO t2 VALUES (1,000001,00,'Omaha','teethe','neat','');
 INSERT INTO t2 VALUES (2,011401,37,'breaking','dreaded','Steinberg','W');
 INSERT INTO t2 VALUES (3,011402,37,'Romans','scholastics','jarring','');
@@ -1232,72 +1215,30 @@ INSERT INTO t2 VALUES (1190,123304,00,'bruises','Medicare','backer','');
 INSERT INTO t2 VALUES (1191,068504,00,'bonfire','corresponds','positively','');
 INSERT INTO t2 VALUES (1192,068305,00,'Colombo','hardware','colicky','');
 INSERT INTO t2 VALUES (1193,000000,00,'nondecreasing','implant','thrillingly','');
-
---
--- Search with a key
---
-
 select t2.fld3 FROM t2 where companynr = 58 and fld3 like "%imaginable%";
-select fld3 FROM t2 where fld3 like "%cultivation" ;
-
---
--- Search with a key using sorting and limit the same time
---
-
+select fld3 FROM t2 where fld3 like "%cultivation";
 select t2.fld3,companynr FROM t2 where companynr = 57+1 order by fld3;
 select fld3,companynr FROM t2 where companynr = 58 order by fld3;
-
 select fld3 FROM t2 order by fld3 desc limit 10;
 select fld3 FROM t2 order by fld3 desc limit 5;
 select fld3 FROM t2 order by fld3 desc limit 5,5;
-
---
--- Search with a key having a constant with each unique key.
--- The table is read directly with read-next on fld3
---
-
 select t2.fld3 FROM t2 where fld3 = 'honeysuckle';
 select t2.fld3 FROM t2 where fld3 LIKE 'honeysuckl_';
 select t2.fld3 FROM t2 where fld3 LIKE 'hon_ysuckl_';
 select t2.fld3 FROM t2 where fld3 LIKE 'honeysuckle%';
 select t2.fld3 FROM t2 where fld3 LIKE 'h%le';
-
 select t2.fld3 FROM t2 where fld3 LIKE 'honeysuckle_';
 select t2.fld3 FROM t2 where fld3 LIKE 'don_t_find_me_please%';
-
---
--- Test sorting with a used key (there is no need for sorting)
---
-
 select t2.fld3 FROM t2 where fld3 >= 'honeysuckle' and fld3 <= 'honoring' order by fld3;
 select fld1,fld3 FROM t2 where fld3="Colombo" or fld3 = "nondecreasing" order by fld3;
-
---
--- Search with a key with LIKE constant
--- If the like starts with a certain letter key will be used.
---
-
 select fld1,fld3 FROM t2 where companynr = 37 and fld3 like 'f%';
 select fld3 FROM t2 where fld3 like "L%" and fld3 = "ok";
 select fld3 FROM t2 where (fld3 like "C%" and fld3 = "Chantilly");
 select fld1,fld3 FROM t2 where fld1 like "25050%";
 select fld1,fld3 FROM t2 where fld1 like "25050_";
-
-
---
--- Test rename of table
---
 CREATE TABLE t3 engine=archive select * FROM t2;
 select * FROM t3 where fld3='bonfire';
 select count(*) FROM t3;
-select * FROM t4 where fld3='bonfire';
-select count(*) FROM t4;
-
--- End of 4.1 tests
-
---
--- Test for insert after select
---
 INSERT INTO t2 VALUES (1,000001,00,'Omaha','teethe','neat','');
 INSERT INTO t2 VALUES (2,011401,37,'breaking','dreaded','Steinberg','W');
 INSERT INTO t2 VALUES (3,011402,37,'Romans','scholastics','jarring','');
@@ -1309,42 +1250,22 @@ INSERT INTO t2 VALUES (3,011402,37,'Romans','scholastics','jarring','');
 INSERT INTO t2 VALUES (4,011403,37,'intercepted','audiology','tinily','');
 SELECT * FROM t2;
 SELECT * FROM t2;
-
---
--- Test bulk inserts
 INSERT INTO t2 VALUES (1,000001,00,'Omaha','teethe','neat','') , (2,011401,37,'breaking','dreaded','Steinberg','W') , (3,011402,37,'Romans','scholastics','jarring','') , (4,011403,37,'intercepted','audiology','tinily','');
 SELECT * FROM t2;
-
---
--- For bug #12836
--- Delete was allowing all rows to be removed
---error 1031
-DELETE FROM t2;
 SELECT * FROM t2;
 INSERT INTO t2 VALUES (2,011401,37,'breaking','dreaded','Steinberg','W');
 INSERT INTO t2 VALUES (3,011402,37,'Romans','scholastics','jarring','');
 INSERT INTO t2 VALUES (4,011403,37,'intercepted','audiology','tinily','');
 SELECT * FROM t2;
 SELECT * FROM t2;
-
--- Adding support for CHECK table
-CHECK TABLE t2;
 SELECT * FROM t2;
-
--- Adding test for ALTER TABLE
 ALTER TABLE t2 DROP COLUMN fld6;
 SELECT * FROM t2 WHERE auto != 100000;
-
-
--- Adding tests for autoincrement
--- First the simple stuff
-
 CREATE TABLE `t5` (
 `a` int(11) NOT NULL auto_increment,
 b char(12),
 PRIMARY KEY  (`a`)
 )  DEFAULT CHARSET=latin1;
-
 INSERT INTO t5 VALUES (NULL, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
@@ -1354,20 +1275,15 @@ INSERT INTO t5 VALUES (32, "foo");
 INSERT INTO t5 VALUES (23, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
-INSERT INTO t5 VALUES (3, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
 SELECT * FROM t5;
-
 SELECT * FROM t5 WHERE a=3;
-
 DROP TABLE t5;
-
 CREATE TABLE `t5` (
 `a` int(11) NOT NULL auto_increment,
 b char(12),
 KEY  (`a`)
 )  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5;
-
 INSERT INTO t5 VALUES (NULL, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
@@ -1381,18 +1297,14 @@ INSERT INTO t5 VALUES (3, "foo");
 INSERT INTO t5 VALUES (NULL, "foo");
 SELECT * FROM t5;
 SELECT * FROM t5;
-
 SELECT * FROM t5 WHERE a=32;
 SELECT * FROM t5 WHERE a=3;
-
 DROP TABLE t5;
-
 CREATE TABLE `t5` (
 `a` int(11) NOT NULL auto_increment,
 b blob(12),
 KEY  (`a`)
 )  DEFAULT CHARSET=latin1;
-
 INSERT INTO t5 VALUES (NULL, "foo");
 INSERT INTO t5 VALUES (NULL, "We the people");
 INSERT INTO t5 VALUES (NULL, "in order to form a more pefect union");
@@ -1408,16 +1320,13 @@ SELECT * FROM t5;
 SELECT b FROM t5;
 SELECT b FROM t5 WHERE a =3;
 SELECT b FROM t5 WHERE a IN (32, 23, 5);
-
 DROP TABLE t5;
-
 CREATE TABLE `t5` (
 `a` int(11) NOT NULL auto_increment,
 b blob(12),
 c blob(12),
 KEY  (`a`)
 )  DEFAULT CHARSET=latin1;
-
 INSERT INTO t5 VALUES (NULL, "foo", "grok this!");
 INSERT INTO t5 VALUES (NULL, "We the people", NULL);
 INSERT INTO t5 VALUES (NULL, "in order to form a more peefect union", "secure the blessing of liberty");
@@ -1432,15 +1341,8 @@ SELECT b FROM t5 WHERE a IN (32, 23, 5);
 SELECT c FROM t5;
 SELECT c FROM t5 WHERE a =3;
 SELECT c FROM t5 WHERE a IN (32, 23, 5);
-
--- Adding this in case someone tries to add fast ALTER TABLE and doesn't tes
--- it.
--- Some additional tests for new, faster ALTER TABLE.  Note that most of the
--- whole ALTER TABLE code is being tested all around the test suite already.
---
-
 DROP TABLE t1;
-CREATE TABLE t1 (v varchar(32)) ;
+CREATE TABLE t1 (v varchar(32));
 insert into t1 values ('def'),('abc'),('hij'),('3r4f');
 select * from t1;
 ALTER TABLE t1 change v v2 varchar(32);
@@ -1449,17 +1351,13 @@ ALTER TABLE t1 change v2 v varchar(64);
 select * from t1;
 ALTER TABLE t1 add i int auto_increment not null primary key first;
 select * from t1;
-
--- Testing cleared row key
 DROP TABLE t5;
-
 CREATE TABLE `t5` (
 `a` int(11) NOT NULL auto_increment,
 b varchar(250),
 c varchar(800),
 KEY  (`a`)
 )  DEFAULT CHARSET=latin1;
-
 INSERT INTO t5 VALUES (NULL, "foo", "grok this!");
 INSERT INTO t5 VALUES (NULL, "We the people", NULL);
 INSERT INTO t5 VALUES (NULL, "in order to form a more peefect union", "secure the blessing of liberty");
@@ -1468,9 +1366,7 @@ INSERT INTO t5 VALUES (32, "ensure domestic tranquility", NULL);
 INSERT INTO t5 VALUES (23, "provide for the common defense", "posterity");
 INSERT INTO t5 VALUES (NULL, "promote the general welfare", "do ordain");
 INSERT IGNORE INTO t5 VALUES (NULL, "abcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabcdeghijklmnopqrstuvwxyzabc", "do ordain");
-
 SELECT * FROM t5;
-
 CREATE TABLE `t6` (
 `a` int(11) NOT NULL auto_increment,
 b blob(12),
@@ -1491,60 +1387,21 @@ INSERT INTO t6 VALUES (NULL, "promote the general welfare", 50);
 SELECT * FROM t6;
 SELECT * FROM t6 ORDER BY a;
 SELECT * FROM t6 ORDER BY a DESC;
-
-
--- 
--- Cleanup, test is over
---
-
-
---disable_warnings
-DROP TABLE t1, t2, t4, t5, t6;
-
---
--- BUG#26138 - REPAIR TABLE with option USE_FRM erases all records in ARCHIVE
---             table
---
-create table t1 (i int) engine=archive;
-insert into t1 values (1);
 select * from t1;
 drop table t1;
-
---
--- BUG#29207 - archive table reported as corrupt by check table
---
 create table t1(a longblob) engine=archive;
 insert into t1 set a='';
 insert into t1 set a='a';
 drop table t1;
-
---
--- BUG#31036 - Using order by with archive table crashes server
---
-
 CREATE TABLE t1(a VARCHAR(510)) ENGINE = ARCHIVE;
-
-let $bug31036=41;
-{
-  INSERT INTO t1(a) VALUES (REPEAT('a', 510));
-  dec $bug31036;
+INSERT INTO t1(a) VALUES (REPEAT('a', 510));
 INSERT INTO t1(a) VALUES ('');
 SELECT * FROM t1 ORDER BY a;
-
 DROP TABLE t1;
-
---
--- BUG#31833 -  ORDER BY leads to wrong result when ARCHIVE, BLOB and table
---              cache is full
---
 CREATE TABLE t1(a INT NOT NULL AUTO_INCREMENT, b BLOB, KEY(a)) ENGINE=archive;
 INSERT INTO t1 VALUES (NULL, NULL),(NULL, NULL);
 SELECT * FROM t1 ORDER BY a;
 DROP TABLE t1;
-
---
--- BUG#29203 - archive tables have weird values in show table status
---
 CREATE TABLE t1(a INT, b BLOB) ENGINE=archive;
 SELECT DATA_LENGTH, AVG_ROW_LENGTH FROM
   INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='t1' AND TABLE_SCHEMA='test';
@@ -1552,28 +1409,14 @@ INSERT INTO t1 VALUES(1, 'sampleblob1'),(2, 'sampleblob2');
 SELECT DATA_LENGTH, AVG_ROW_LENGTH FROM
   INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='t1' AND TABLE_SCHEMA='test';
 DROP TABLE t1;
-
---
--- BUG#46961 - archive engine loses rows during self joining select!
---
-SET @save_join_buffer_size= @@join_buffer_size;
-SET @@join_buffer_size= 8192;
 CREATE TABLE t1(a CHAR(255)) ENGINE=archive;
 INSERT INTO t1 VALUES('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
                      ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
                      ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 SELECT COUNT(t1.a) FROM t1, t1 a, t1 b, t1 c, t1 d, t1 e;
 DROP TABLE t1;
-SET @@join_buffer_size= @save_join_buffer_size;
-
---
--- BUG#40677 - Archive tables joined on primary return no result
---
 CREATE TABLE t1(id INT NOT NULL AUTO_INCREMENT, name VARCHAR(128) NOT NULL, PRIMARY KEY(id)) ENGINE=archive;
 INSERT INTO t1 VALUES(NULL,'a'),(NULL,'a');
-CREATE TABLE t2(id INT NOT NULL AUTO_INCREMENT, name VARCHAR(128) NOT NULL, PRIMARY KEY(id)) ENGINE=archive;
-INSERT INTO t2 VALUES(NULL,'b'),(NULL,'b');
-SELECT t1.id, t2.id, t1.name, t2.name FROM t1,t2 WHERE t1.id = t2.id;
 DROP TABLE t1,t2;
 CREATE TABLE t1(a INT) ENGINE=ARCHIVE;
 SELECT * FROM t1;
@@ -1586,7 +1429,6 @@ SELECT * FROM t1;
 SELECT * FROM t1;
 SELECT * FROM t1;
 DROP TABLE t1;
-SET sort_buffer_size=32804;
 CREATE TABLE t1(a INT, b CHAR(255), c CHAR(255), d CHAR(255),
   e CHAR(255), f INT) ENGINE=ARCHIVE DEFAULT CHARSET utf8mb3;
 INSERT INTO t1 VALUES(-1,'b','c','d','e',1);
@@ -1595,12 +1437,8 @@ INSERT INTO t1 SELECT * FROM t1;
 INSERT INTO t1 SELECT t1.* FROM t1,t1 t2,t1 t3,t1 t4,t1 t5,t1 t6;
 SELECT * FROM t1 ORDER BY f LIMIT 1;
 DROP TABLE t1;
-SET sort_buffer_size=DEFAULT;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t1 (c1 decimal(19,14) NOT NULL) ENGINE=ARCHIVE;
-SET sql_mode='NO_ENGINE_SUBSTITUTION';
-CREATE INDEX i1 ON t1(c1);
-SET sql_mode= default;
 DROP TABLE t1;
 CREATE TABLE t1(a BLOB, b VARCHAR(200)) ENGINE=ARCHIVE;
 INSERT INTO t1 VALUES(NULL, '');
@@ -1612,62 +1450,23 @@ SELECT * FROM t2;
 DROP TABLE t1, t2;
 CREATE TABLE t (j JSON) ENGINE=ARCHIVE;
 INSERT INTO t VALUES ('{}');
-UPDATE t SET j = '[1]';
 SELECT * FROM t;
 DROP TABLE t;
 CREATE TABLE archive_table (id INT, x INT) ENGINE=ARCHIVE;
 CREATE TABLE innodb_table (id INT PRIMARY KEY, x INT) ENGINE=InnoDB;
 CREATE VIEW v AS SELECT * FROM archive_table;
-DELETE FROM archive_table;
-DELETE FROM v;
-DELETE t1, t2 FROM archive_table AS t1, innodb_table AS t2
-       WHERE t1.id = t2.id;
-DELETE t1 FROM v AS t1, innodb_table AS t2 WHERE t1.id = t2.id;
-UPDATE archive_table SET x = 1000;
-UPDATE archive_table AS t1, innodb_table AS t2
-       SET t1.x = 1000, t2.x = 2000 WHERE t1.id = t2.id;
-UPDATE v SET x = 1000;
-UPDATE v AS t1, innodb_table AS t2
-       SET t1.x = 1000, t2.x = 2000 WHERE t1.id = t2.id;
-
 INSERT INTO archive_table VALUES (1, 1), (2, 2), (3, 3);
 INSERT INTO innodb_table VALUES (1, 2), (3, 4), (5, 6);
-UPDATE archive_table SET x = 1 WHERE id = 1;
-UPDATE archive_table SET x = x + 1 WHERE FALSE;
-UPDATE archive_table AS t1, innodb_table AS t2
-       SET t1.x = 1, t2.x = 2
-       WHERE t1.id = t2.id AND t1.id = 1;
-UPDATE v SET x = 1 WHERE id = 1;
-UPDATE v AS t1, innodb_table AS t2
-       SET t1.x = 1, t2.x = 2
-       WHERE t1.id = t2.id AND t1.id = 1;
-UPDATE archive_table SET x = x + 1;
-UPDATE archive_table SET x = NULL;
-UPDATE archive_table AS t1, innodb_table AS t2
-       SET t1.x = t1.x + 1, t2.x = t2.x + 1
-       WHERE t1.id = t2.id AND t1.id = 1;
-UPDATE v SET x = x + 1 WHERE id = 1;
-UPDATE v AS t1, innodb_table AS t2
-       SET t1.x = t1.x + 1, t2.x = t2.x + 1
-       WHERE t1.id = t2.id AND t1.id = 1;
-
 SELECT * FROM archive_table ORDER BY id;
 SELECT * FROM innodb_table ORDER BY id;
 UPDATE archive_table AS t1, innodb_table AS t2
        SET t2.x = t2.x + 1 WHERE t1.id = t2.id;
 SELECT * FROM archive_table ORDER BY id;
 SELECT * FROM innodb_table ORDER BY id;
-DELETE FROM archive_table;
-DELETE FROM v;
-DELETE t1, t2 FROM archive_table AS t1, innodb_table AS t2
-       WHERE t1.id = t2.id;
-DELETE t1 FROM v AS t1, innodb_table AS t2 WHERE t1.id = t2.id;
-
 SELECT * FROM archive_table ORDER BY id;
 SELECT * FROM innodb_table ORDER BY id;
 DELETE t2 FROM archive_table AS t1, innodb_table AS t2 WHERE t1.id = t2.id;
 SELECT * FROM archive_table ORDER BY id;
 SELECT * FROM innodb_table ORDER BY id;
-
 DROP VIEW v;
 DROP TABLE archive_table, innodb_table;

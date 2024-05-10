@@ -1,14 +1,3 @@
-
--- PS protocol gives slightly different metadata
---disable_ps_protocol
-
---
--- Bug #20191: getTableName gives wrong or inconsistent result when using VIEWs
---
--- wrong metadata result displayed when VIEWs created over innodb table.
--- a Bug #27303036 opened to track this issue
--- Remove ENGINE=MyISAM option when bug is fixed.
---enable_metadata
 create table t1 (id int(10)) ENGINE=MyISAM;
 insert into t1 values (1);
 CREATE  VIEW v1 AS select t1.id as id from t1;

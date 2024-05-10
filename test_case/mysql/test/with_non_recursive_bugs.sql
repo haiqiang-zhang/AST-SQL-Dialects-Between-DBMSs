@@ -1,8 +1,6 @@
 create table t1(a int);
 insert into t1 values(1),(2);
-select * from qn where qn.a=(select * from qn qn1 limit 1) union select 2;
 drop table t1;
-
 CREATE TABLE c (
   col_date date DEFAULT NULL,
   col_time_key time DEFAULT NULL,
@@ -25,7 +23,6 @@ CREATE TABLE c (
   KEY col_int_key (col_int_key),
   KEY col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE cc (
   col_time time DEFAULT NULL,
   col_blob blob,
@@ -48,7 +45,6 @@ CREATE TABLE cc (
   KEY col_datetime_key (col_datetime_key),
   KEY col_date_key (col_date_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE bb (
   col_varchar varchar(1) DEFAULT NULL,
   col_blob_key blob,
@@ -71,32 +67,9 @@ CREATE TABLE bb (
   KEY col_time_key (col_time_key),
   KEY col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
-
 CREATE OR REPLACE VIEW view_c AS SELECT * FROM c;
-SELECT alias1 . col_time_key AS field1
-FROM  cc AS alias1  LEFT OUTER JOIN view_c AS alias2
-ON  alias1 . col_varchar_key =  alias2 . col_blob_key
-WHERE  alias2 . col_varchar_key >= 'n'
-ORDER BY field1
-LIMIT 1000 OFFSET 9)
-DELETE  FROM outr1.*, outr2.*
-USING c AS outr1 RIGHT OUTER JOIN c AS outr2
-ON ( outr1 . col_blob_key = outr2 . col_blob )
-RIGHT JOIN cte AS outrcte
-ON outr2 . col_blob = outrcte.field1
-WHERE outr1 . col_blob_key <>
-(
-SELECT
-DISTINCT innr1 . col_blob AS y
-FROM bb AS innr1 LEFT JOIN cte AS innrcte
-ON innr1.pk <> innrcte.field1
-);
-
 DROP VIEW view_c;
 DROP TABLE bb,cc,c;
-
-
 CREATE TABLE d (
   col_int int(11) DEFAULT NULL,
   col_time_key time DEFAULT NULL,
@@ -119,7 +92,6 @@ CREATE TABLE d (
   KEY col_varchar_key (col_varchar_key),
   KEY col_date_key (col_date_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE dd (
   col_datetime datetime DEFAULT NULL,
   col_varchar varchar(1) DEFAULT NULL,
@@ -142,29 +114,7 @@ CREATE TABLE dd (
   KEY col_time_key (col_time_key),
   KEY col_int_key (col_int_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-SELECT alias1 . col_int AS field1
-FROM  dd AS alias1  LEFT  JOIN d AS alias2
-ON  alias1 . col_blob =  alias2 . col_blob_key
-WHERE  alias2 . col_varchar_key  IN ('m')
-ORDER BY field1  LIMIT 10)
-DELETE IGNORE FROM outr2.*
-USING dd AS outr1 JOIN d AS outr2
-ON ( outr1 . col_blob = outr2 . col_varchar )
-JOIN d AS outr3
-ON ( outr1 . pk = outr3 . col_int )
-LEFT OUTER JOIN cte AS outrcte
-ON outr2 . pk = outrcte.field1
-WHERE outrcte . field1 = (
-SELECT  innr1 . col_int AS y
-FROM dd AS innr2 RIGHT OUTER JOIN dd AS innr1
-ON ( innr2 . col_date > innr1 . col_date )
-INNER JOIN cte AS innrcte
-ON innr2.col_int_key <= innrcte.field1
-WHERE innr1 . col_varchar_key <= 'u'
-ORDER BY innr1 . col_int_key );
-
 DROP TABLE d,dd;
-
 CREATE TABLE d (
   col_int int(11) DEFAULT NULL,
   col_time_key time DEFAULT NULL,
@@ -187,9 +137,7 @@ CREATE TABLE d (
   KEY col_varchar_key (col_varchar_key),
   KEY col_date_key (col_date_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE OR REPLACE VIEW view_d AS SELECT * FROM d;
-
 CREATE TABLE dd (
   col_datetime datetime DEFAULT NULL,
   col_varchar varchar(1) DEFAULT NULL,
@@ -212,57 +160,11 @@ CREATE TABLE dd (
   KEY col_time_key (col_time_key),
   KEY col_int_key (col_int_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE OR REPLACE VIEW view_dd AS SELECT * FROM dd;
-SELECT
-alias1 . col_date AS field1 ,
-alias1 . col_blob AS field2 ,
-alias1 . pk AS field3 ,
-alias1 . pk AS field4
-FROM  dd AS alias1  LEFT  JOIN d AS alias2
-ON  alias1 . col_varchar_key =  alias2 . col_varchar_key
-WHERE  alias2 . pk != 0
-OR  alias2 . col_varchar_key >= 'v'
-ORDER BY field4 )
-DELETE /*+ NO_MERGE(outrcte) */  outr2.*
-FROM d AS outr1 JOIN d AS outr2
-ON ( outr1 . col_datetime_key = outr2 . col_date )
-JOIN cte AS outrcte
-ON outr1 . pk = outrcte.field1
-WHERE outr1 . col_int_key = (
-SELECT  innr1 . col_int AS y
-FROM dd AS innr1 INNER JOIN cte AS innrcte
-ON innr1.col_int_key = innrcte.field1
-WHERE innr1 . col_blob_key = 'h'
-ORDER BY innr1 . col_varchar );
-SELECT
-alias1 . col_date AS field1 ,
-alias2 . col_blob AS field2
-FROM  view_d AS alias1  LEFT  JOIN view_dd AS alias2
-ON  alias1 . col_blob_key =  alias2 . col_blob_key
-WHERE  alias1 . col_varchar_key IS  NULL
-AND  alias2 . col_int_key > 6
-AND alias2 . col_int_key <= ( 7 + 5 )
-OR alias1 . col_blob_key >= 'a' )
-DELETE /*+ MERGE(outrcte) */
-FROM outr1.*, outr2.*
-USING d AS outr1 LEFT OUTER JOIN d AS outr2
-ON ( outr1 . col_date = outr2 . col_date )
-JOIN cte AS outrcte
-ON outr2 . col_blob_key = outrcte.field1
-WHERE outr1 . col_blob  IN
-( SELECT DISTINCT innr1 . col_blob_key AS y
-FROM dd AS innr1 RIGHT OUTER JOIN cte AS innrcte
-ON innr1.pk >= innrcte.field1
-WHERE outr1 . col_int_key > 6  );
-
 DROP TABLE d,dd;
 DROP VIEW view_d,view_dd;
-
 create table t1 (i int);
-
 drop table t1;
-
 CREATE TABLE b (
 col_time_key time,
 col_int_key int,
@@ -285,9 +187,7 @@ key (col_datetime_key ),
 key (col_date_key ),
 key (col_blob_key  (255)),
 primary key (pk)) ENGINE=innodb;
-
 CREATE VIEW view_b AS SELECT * FROM b;
-
 INSERT /*! IGNORE */ INTO b VALUES  ('2005-05-12 20:15:58.052785', 6, 'h',
 '20071120175445.006011', 'fvqjpbenl', '2008-08-28', '2003-08-01', '2009-01-10 04:04:37.053602', 's', 'vqjpbenltgiontlibvmp', '2004-02-19 08:13:58.032936',
 NULL, 4) ,  ('20071118112941.009031', 9, 'e', '20080508112705.046045',
@@ -313,7 +213,6 @@ NULL, 4) ,  ('20071118112941.009031', 9, 'e', '20080508112705.046045',
 'd', '2008-03-10', 'bvmpqrj', '20000404232830.043738',
 '20080104131505.048837', '2008-03-21 14:47:29.005926', 'e', 'vmpqrjqqtervh',
 '20070213100707.011219', NULL, NULL);
-
 CREATE TABLE d (
 col_blob blob,
 col_date_key date,
@@ -336,9 +235,7 @@ key (col_int_key ),
 key (col_blob_key  (255)),
 key (col_datetime_key ),
 key (col_time_key )) ENGINE=innodb;
-
 CREATE VIEW view_d AS SELECT * FROM d;
-
 INSERT /*! IGNORE */ INTO d VALUES  ('vjhnsz', '2009-01-07 14:35:19.020132',
 'l', 3, NULL, 3, '20000326113108.015501', 'r', '20010401050329.035127',
 '20011113143139.064960', 'jhnszaxsayy', '20070118125355.047410',
@@ -366,7 +263,6 @@ NULL, 1, '2004-07-27 08:04:56.058948', 't', '20050807070334.035272',
 ('wcxvckkur', '2004-01-17', 'y', 0, NULL, 1, '2000-05-12 01:48:35.064791',
 'x', '20070410164713.053236', '2003-05-23', 'cx', '20010122125247.033418',
 '2002-07-21');
-
 CREATE TABLE cc (
 col_date date,
 col_int_key int,
@@ -389,7 +285,6 @@ key (col_blob_key  (255)),
 key (col_datetime_key ),
 primary key (pk),
 key (col_time_key )) ENGINE=innodb;
-
 INSERT /*! IGNORE */ INTO cc VALUES  ('2005-06-10 07:33:22.052469', 8,
 '20060110031422.021867', 'dwnqdsnrgazuybhjdahq', 'r', 'wnqdsnrgazuybhjda',
 '20050603013634.045108', NULL, '2004-02-11', 'f', 3, '20000705085324.025237',
@@ -416,30 +311,8 @@ NULL, '20060712223533.053408', 'dahqdxtgmcoipft', 'p', 'ahqdxtgmcoipftyraxg',
 ('20081110073618.016133', 3, '2000-07-24 16:13:45.058915', 'hqdxtgmc', 's',
 NULL, '20001101104313.012643', NULL, '2005-07-09', 'o', 2,
 '20040927102407.022307', '20091206042605.020200');
-SELECT
-alias2 . col_datetime_key AS field1 ,
-alias1 . col_varchar_key AS field2 ,
-alias2 . col_int_key AS field3
-FROM  view_b AS alias1  LEFT  JOIN  cc AS alias2  LEFT  JOIN view_d AS alias3
-ON  alias2 . col_varchar_key =  alias3 . col_blob_key
-ON  alias1 . col_blob =  alias3 . col_blob_key
-WHERE  alias3 . col_varchar_key  LIKE ( 'w' )
-OR  alias2 . pk <> 4  )
-DELETE /*+ NO_MERGE(outrcte) */  QUICK
-outr1.*, outr2.* FROM d AS outr1 LEFT OUTER JOIN d AS outr2
-ON ( outr1 . col_int = outr2 . col_int )
-INNER JOIN cte AS outrcte
-ON outr1 . pk = outrcte.field1
-WHERE (4, 7 )  IN (
-SELECT DISTINCT innr1 . col_int_key AS x , innr1 . col_int AS y
-FROM cc AS innr1 JOIN cte AS innrcte
-ON innr1.pk = innrcte.field1
-WHERE innr1 . col_int >= innr1 . pk
-);
-
 DROP TABLE b,cc,d;
 DROP VIEW view_d,view_b;
-
 CREATE TABLE a (
 col_int int,
 col_date date,
@@ -461,7 +334,6 @@ primary key (pk),
 key (col_blob_key  (255)),
 key (col_datetime_key ),
 key (col_varchar_key )) ENGINE=innodb;
-
 CREATE TABLE c (
 col_int_key int,
 col_datetime datetime,
@@ -483,7 +355,6 @@ key (col_varchar_key ),
 key (col_date_key ),
 key (col_blob_key  (255)),
 key (col_datetime_key )) ENGINE=innodb;
-
 CREATE TABLE d (
 col_time_key time,
 col_time time,
@@ -505,32 +376,7 @@ key (col_date_key ),
 key (col_blob_key  (255)),
 primary key (pk),
 key (col_varchar_key )) ENGINE=innodb;
-SELECT alias1 . col_int_key AS field1
-FROM  a AS alias1  LEFT  JOIN c AS alias2
-ON  alias1 . col_blob =  alias2 . col_blob_key
-WHERE  alias2 . pk > 3
-AND alias2 . pk < ( 3 + 10 )
-OR  alias1 . col_varchar_key >= 'z'
-AND alias1 . col_varchar_key <= 'k'  )
-DELETE /*+ NO_MERGE(outrcte) */ LOW_PRIORITY QUICK  outr1.*, outr2.*
-FROM d AS outr1 LEFT JOIN c AS outr2
-ON ( outr1 . col_int = outr2 . pk )
-JOIN a AS outr3
-ON ( outr1 . col_int_key = outr3 . pk )
-RIGHT JOIN cte AS outrcte
-ON outr1 . col_int_key = outrcte.field1
-WHERE outr1 . col_blob_key <> (
-SELECT  innr1 . col_blob AS y
-FROM a AS innr2 INNER JOIN a AS innr1
-ON ( innr2 . col_datetime >= innr1 . col_datetime )
-RIGHT OUTER JOIN cte AS innrcte
-ON innr2.col_int_key < innrcte.field1
-WHERE innr1 . col_datetime = '2006-02-24'  );
-
 DROP TABLE c,d,a;
-
-SET @@SESSION.sql_mode='';
-
 CREATE TABLE a (
   col_int int(11) DEFAULT NULL,
   col_time_key time DEFAULT NULL,
@@ -553,7 +399,6 @@ CREATE TABLE a (
   KEY col_date_key (col_date_key),
   KEY col_datetime_key (col_datetime_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
 CREATE TABLE d (
   col_date date DEFAULT NULL,
   col_date_key date DEFAULT NULL,
@@ -576,7 +421,6 @@ CREATE TABLE d (
   KEY col_time_key (col_time_key),
   KEY col_int_key (col_int_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE bb (
   col_datetime datetime DEFAULT NULL,
   col_time time DEFAULT NULL,
@@ -599,29 +443,6 @@ CREATE TABLE bb (
   KEY col_blob_key (col_blob_key(255)),
   KEY col_int_key (col_int_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
-INSERT INTO bb VALUES ('2000-03-10
-07:59:07','20:09:19',7,'y',1,'00:20:02','byuvlhiviingf','2000-04-06','2002-01-
-18 04:14:45','2009-02-13','yu',6,'v'),('2008-09-04
-21:14:02','05:11:49',4,'b',2,'16:18:13','uvlhiviingfglqfsrku','2003-10-25','20
-01-06-01 00:00:00','2003-03-15','vlhiviin',9,'x'),('2005-04-12
-00:00:00','02:17:02',8,'n',3,'00:38:06','lhiv','2004-03-18','2009-09-07
-01:11:02','2007-06-22','hiviingfglqfsr',8,'j'),('2008-09-03
-00:00:00','23:55:54',7,'i',4,'07:58:47','ivi','2002-08-18','2002-07-04
-14:47:00','2005-10-09','viingfglqfsrk',0,'v'),('2005-11-20
-00:00:00','22:38:15',3,'w',5,'00:20:01','i','2003-05-13','2008-12-17
-18:34:39','2009-12-27','ingfglqfsrkuzymmw',3,'t'),('2000-11-24
-18:26:08','15:48:23',8,'e',6,'21:16:41','ng','2000-05-11','2005-11-16
-15:25:37','2007-01-25','gfglqfsrkuz',3,'m'),('2000-05-17
-00:00:00','00:20:01',2,'h',7,'00:20:09','fglqfsrkuzym','2006-02-07','2009-02-2
-4 00:00:00','2007-09-17','glqfsr',1,'a'),('2002-03-14
-13:32:30','17:14:34',6,'a',8,'00:20:06','lqfsrkuzymmwno','2004-02-12','2001-01
--16 21:53:44','2002-09-24','qfsrkuzymmwnorrsk',2,'a'),('2009-02-17
-18:23:44','11:07:00',6,'q',9,'07:11:35','fsr','2009-01-27','2001-04-11
-00:00:00','2000-07-01','srku',4,'w'),('2001-03-22
-03:25:45','19:12:08',4,'n',10,'00:20:08','rkuz','2003-08-10','2000-03-27
-21:15:52','2002-11-17','ku',7,'m');
-
 CREATE TABLE cc (
   col_varchar_key varchar(1) DEFAULT NULL,
   col_date_key date DEFAULT NULL,
@@ -644,7 +465,6 @@ CREATE TABLE cc (
   KEY col_blob_key (col_blob_key(255)),
   KEY col_datetime_key (col_datetime_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 INSERT INTO cc VALUES ('r','2009-06-19',9,'00:20:01','uzymmwnorr','2000-07-03
 03:10:16','17:17:32','f',1,'2007-06-20','zym','2001-10-19
 13:28:47',2),('d','2000-12-27',7,'22:21:37','ymmwn','2000-09-05
@@ -665,7 +485,6 @@ INSERT INTO cc VALUES ('r','2009-06-19',9,'00:20:01','uzymmwnorr','2000-07-03
 00:00:00','10:33:36','f',9,'2008-02-19','uzodhtfjsfcyq','2009-10-17
 08:43:06',3),('j','2000-05-07',9,'07:16:29','zodhtfjs','2009-09-07
 00:00:00','00:20:05','b',10,'2005-11-10','odhtfjs','2009-04-26 00:00:00',0);
-
 CREATE TABLE dd (
   col_int_key int(11) DEFAULT NULL,
   col_int int(11) DEFAULT NULL,
@@ -688,29 +507,7 @@ CREATE TABLE dd (
   KEY col_time_key (col_time_key),
   KEY col_datetime_key (col_datetime_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-SELECT alias1 . pk AS field1 ,
-alias2 . col_blob AS field2
-FROM  bb AS alias1  LEFT  JOIN dd AS alias2
-ON  alias1 . col_varchar_key =  alias2 . col_varchar_key
-WHERE  alias2 . pk > 3
-AND alias2 . pk < ( 1 + 1 )
-OR alias2 . pk  IN (7, 5)
-AND  alias2 . pk <> 3
-AND  alias2 . pk IS NOT NULL  )
-DELETE /*+ NO_MERGE(outrcte) */ LOW_PRIORITY
-outr2.* FROM d AS outr1 INNER JOIN a AS outr2
-ON ( outr1 . col_int = outr2 . col_int_key )
-LEFT OUTER JOIN cte AS outrcte
-ON outr2 . col_int_key = outrcte.field1
-WHERE outr1 . col_int_key < (
-SELECT DISTINCT innr1 . col_int AS y
-FROM cc AS innr1 LEFT OUTER JOIN cte AS innrcte
-ON innr1.col_int_key <= innrcte.field1
-WHERE innr1 . col_int = 4  );
-
 DROP TABLE a,d,bb,cc,dd;
-SET @@SESSION.sql_mode=DEFAULT;
-
 CREATE TABLE aa (
   col_time_key time DEFAULT NULL,
   col_int_key int(11) DEFAULT NULL,
@@ -733,7 +530,6 @@ CREATE TABLE aa (
   KEY col_datetime_key (col_datetime_key),
   KEY col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
 CREATE TABLE b (
   col_varchar_key varchar(30) DEFAULT NULL,
   col_blob blob,
@@ -757,7 +553,6 @@ CREATE TABLE b (
   KEY col_int_key (col_int_key),
   KEY test_idx (col_int_key,col_int) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE bb (
   col_varchar_key varchar(30) DEFAULT NULL,
   col_datetime datetime DEFAULT NULL,
@@ -780,7 +575,6 @@ CREATE TABLE bb (
   KEY col_date_key (col_date_key),
   KEY col_int_key (col_int_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE c (
   col_varchar varchar(30) DEFAULT NULL,
   col_time time DEFAULT NULL,
@@ -804,7 +598,6 @@ CREATE TABLE c (
   KEY col_time_key (col_time_key),
   KEY test_idx (pk,col_int_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE TABLE e (
   col_time_key time DEFAULT NULL,
   col_date_key date DEFAULT NULL,
@@ -828,38 +621,10 @@ CREATE TABLE e (
   KEY col_datetime_key (col_datetime_key),
   KEY test_idx (col_int_key,col_int) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
 CREATE OR REPLACE VIEW view_c AS SELECT * FROM c;
 CREATE OR REPLACE VIEW view_bb AS SELECT * FROM bb;
-SELECT alias1 . col_datetime_key AS field1
-FROM  view_c AS alias1  RIGHT  JOIN view_bb AS alias2
-ON  alias1 . col_blob_key =  alias2 . col_blob_key
-WHERE
-alias2 . col_varchar_key >= 'r'
-AND alias2 . col_varchar_key <= 'z'
-AND alias2 . col_varchar_key > 'x'
-AND alias2 . col_varchar_key <= 'z'
-AND  alias2 . pk > 3
-AND alias2 . pk < ( 7 + 1 )
-OR  alias2 . col_int_key  IN (5)
-ORDER BY field1  , field1 )
-DELETE     outr1.*
-FROM b AS outr1 JOIN e AS outr2
-ON ( outr1 . col_int_key = outr2 . col_int )
-JOIN c AS outr3
-ON ( outr1 . col_datetime_key = outr3 . col_date_key )
-LEFT JOIN cte AS outrcte
-ON outr1 . col_blob = outrcte.field1
-WHERE ( _utf8mb3 'g' )  IN (
-SELECT  innrcte . field1 AS x
-FROM aa AS innr1 JOIN cte AS innrcte
-ON innr1.pk = innrcte.field1
-WHERE outr1 . col_int_key <> 0
-ORDER BY innr1 . col_blob );
-
 DROP VIEW view_c, view_bb;
 DROP TABLE aa,b,bb,c,e;
-
 CREATE TABLE E (
 col_varchar_key varchar (1),
 col_datetime_key datetime,
@@ -882,92 +647,24 @@ key (col_time_key ),
 key (col_date_key ),
 key (col_blob_key  (255)),
 primary key (pk)) ENGINE=innodb;
-SELECT alias2 . col_time_key AS field1
-FROM  E AS alias1  LEFT OUTER JOIN E AS alias2
-ON  alias1 . col_varchar_key =  alias2 . col_blob_key
-WHERE  alias2 . col_varchar_key  LIKE ( 'u' )
-ORDER BY field1 DESC LIMIT 1000)
-UPDATE
-E AS OUTR1 JOIN E AS OUTR2
-ON ( OUTR1 . col_int = OUTR2 . col_int )
-LEFT OUTER JOIN cte AS OUTRcte JOIN cte AS OUTRcte1
-ON OUTR1 . col_int = OUTRcte.field1
-ON OUTR2 . col_varchar = OUTRcte1.field1
-SET OUTR1.col_varchar_key = 0
-WHERE OUTRcte . field1  IN (
-SELECT  INNR1 . col_varchar AS y FROM E AS INNR1
-WHERE OUTRcte1 . field1 <> 3 );
-
 DROP TABLE E;
-
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES(1),(2),(3),(4),(5),(6);
-
 CREATE TABLE t2 (a INT);
-
--- Read the CTE twice;
-INSERT INTO t2
- WITH cte AS (SELECT RAND() AS a FROM t1)
- SELECT SUM(c.a) FROM cte c UNION ALL
- SELECT SUM(c2.a) FROM cte c2;
-
 SELECT * FROM t2 tmp1, t2 tmp2 WHERE tmp1.a<>tmp2.a;
 DELETE FROM t2;
-
-INSERT INTO t2
- WITH cte AS (SELECT * FROM t1 WHERE a>3*RAND())
- SELECT SUM(c.a) FROM cte c
- UNION ALL SELECT SUM(c2.a) FROM cte c2;
-
 SELECT * FROM t2 tmp1, t2 tmp2 WHERE tmp1.a<>tmp2.a;
-
 DROP TABLE t1,t2;
-
--- Verify that in SELECT/DELETE/UPDATE/INSERT, the CTE
--- hides a base table of the same name
 create table t1(a int);
 insert into t1 values(2),(3);
 insert into t1 with t1 as (select 36 as col from t1) select * from t1;
 select * from t1;
-create table t1 with t1 as (select 72 as col from t1) select * from t1;
 create table t2 with t1 as (select 72 as col from t1) select * from t1;
 select * from t1;
 select * from t2;
 drop table t1,t2;
-
 CREATE TABLE t1(a INTEGER);
-SELECT COUNT(sq1_t1.a) AS sq1_field1
-FROM t1 AS sq1_t1 RIGHT JOIN
-       t1 AS sq1_t2 LEFT JOIN t1 AS sq1_t3
-       ON sq1_t2.a IN
-         (WITH cte2 AS
-           (SELECT sq1_t1.a AS c_sq1_field1
-            FROM t1 AS c_sq1_t1
-           )
-          SELECT * FROM cte2
-         )
-     ON sq1_t3.a = sq1_t2.a;
-SELECT (WITH cte1 AS
-         (SELECT COUNT(sq1_t1.a) AS sq1_field1
-          FROM t1 AS sq1_t1 RIGHT JOIN
-                 t1 AS sq1_t2 LEFT JOIN t1 AS sq1_t3
-                 ON sq1_t2.a IN
-                   (WITH cte2 AS
-                     (SELECT sq1_t1.a AS c_sq1_field1
-                             FROM t1 AS c_sq1_t1
-                     )
-                    SELECT * FROM cte2
-                   )
-                ON sq1_t3.a = sq1_t2.a
-         )
-        SELECT * FROM cte1
-       ) AS field3
-FROM t1 AS table1;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 TEXT);
 INSERT INTO t1 VALUES ('x');
-     cte2 AS (SELECT COUNT(*) FROM cte1) SELECT * from cte1,cte2;
-
 DROP TABLE t1;

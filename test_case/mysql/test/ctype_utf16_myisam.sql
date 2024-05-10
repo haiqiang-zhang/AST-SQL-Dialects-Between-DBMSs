@@ -1,18 +1,10 @@
-
-SET NAMES latin1;
-
---
--- Two fields, index
---
-
 CREATE TABLE t1 (
    word VARCHAR(64),
    bar INT(11) default 0,
    PRIMARY KEY (word))
    ENGINE=MyISAM
    CHARSET utf16
-   COLLATE utf16_general_ci ;
-
+   COLLATE utf16_general_ci;
 INSERT INTO t1 (word) VALUES ("aar");
 INSERT INTO t1 (word) VALUES ("a");
 INSERT INTO t1 (word) VALUES ("aardvar");
@@ -22,19 +14,12 @@ INSERT INTO t1 (word) VALUES ("aardvarz");
 SELECT * FROM t1 ORDER BY word;
 SELECT word FROM t1 ORDER by word;
 DROP TABLE t1;
-
-
---
--- One field, index
---
-
 CREATE TABLE t1 (
    word VARCHAR(64) ,
    PRIMARY KEY (word))
    ENGINE=MyISAM
    CHARSET utf16
    COLLATE utf16_general_ci;
-
 INSERT INTO t1 (word) VALUES ("aar");
 INSERT INTO t1 (word) VALUES ("a");
 INSERT INTO t1 (word) VALUES ("aardvar");
@@ -43,19 +28,13 @@ INSERT INTO t1 (word) VALUES ("aardvara");
 INSERT INTO t1 (word) VALUES ("aardvarz");
 SELECT * FROM t1 ORDER BY word;
 DROP TABLE t1;
-
-
---
--- Two fields, no index
---
-
 CREATE TABLE t1 (
    word TEXT,
    bar INT(11) AUTO_INCREMENT,
    PRIMARY KEY (bar))
    ENGINE=MyISAM
    CHARSET utf16
-   COLLATE utf16_general_ci ;
+   COLLATE utf16_general_ci;
 INSERT INTO t1 (word) VALUES ("aar");
 INSERT INTO t1 (word) VALUES ("a" );
 INSERT INTO t1 (word) VALUES ("aardvar");
@@ -65,15 +44,6 @@ INSERT INTO t1 (word) VALUES ("aardvarz");
 SELECT * FROM t1 ORDER BY word;
 SELECT word FROM t1 ORDER BY word;
 DROP TABLE t1;
-
---
--- END OF Bug 1264 test
---
---#######################################################
-
---
--- Bug#22052 Trailing spaces are not removed from UNICODE fields in an index
---
 create table t1 (
   a char(10) character set utf16 not null,
   index a (a)
@@ -85,14 +55,5 @@ select hex(a) from t1 order by a;
 alter table t1 drop index a;
 select hex(a) from t1 order by a;
 drop table t1;
-
---
--- Testing auto-conversion to TEXT
---
-SET sql_mode = '';
-create table t1 (a varchar(17000) character set utf16);
-drop table t1;
-SET sql_mode = default;
 create table t1 (a varchar(250) character set utf16 primary key) engine=MyISAM;
 drop table t1;
-create table t1 (a varchar(334) character set utf16 primary key) engine=MyISAM;

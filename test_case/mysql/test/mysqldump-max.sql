@@ -1,71 +1,51 @@
-
 create table t1 (id int(8), name varchar(32));
 create table t2 (id int(8), name varchar(32)) ENGINE="MyISAM";
 create table t3 (id int(8), name varchar(32)) ENGINE="MEMORY";
 create table t4 (id int(8), name varchar(32)) ENGINE="HEAP";
 create table t5 (id int(8), name varchar(32)) ENGINE="ARCHIVE";
 create table t6 (id int(8), name varchar(32)) ENGINE="InnoDB";
-
 insert into t1 values (1, 'first value');
 insert into t1 values (2, 'first value');
 insert into t1 values (3, 'first value');
 insert into t1 values (4, 'first value');
 insert into t1 values (5, 'first value');
-
 insert into t2 values (1, 'first value');
 insert into t2 values (2, 'first value');
 insert into t2 values (3, 'first value');
 insert into t2 values (4, 'first value');
 insert into t2 values (5, 'first value');
-
 insert into t3 values (1, 'first value');
 insert into t3 values (2, 'first value');
 insert into t3 values (3, 'first value');
 insert into t3 values (4, 'first value');
 insert into t3 values (5, 'first value');
-
 insert into t4 values (1, 'first value');
 insert into t4 values (2, 'first value');
 insert into t4 values (3, 'first value');
 insert into t4 values (4, 'first value');
 insert into t4 values (5, 'first value');
-
 insert into t5 values (1, 'first value');
 insert into t5 values (2, 'first value');
 insert into t5 values (3, 'first value');
 insert into t5 values (4, 'first value');
 insert into t5 values (5, 'first value');
-
 insert into t6 values (1, 'first value');
 insert into t6 values (2, 'first value');
 insert into t6 values (3, 'first value');
 insert into t6 values (4, 'first value');
 insert into t6 values (5, 'first value');
-
 select * from t1;
 select * from t2;
 select * from t3;
 select * from t4;
 select * from t5;
 select * from t6;
-
 drop table t1;
 drop table t2;
 drop table t3;
 drop table t4;
 drop table t5;
 drop table t6;
-
-
---
--- Bug#31434 - mysqldump dumps view as table
---
-
--- Show that mysqldump's stand-in tables for views are always of MyISAM
--- type to avoid Inno's column-number limits (~1000 columns) etc.
--- Here because it needs Inno-engine.
-
---disable_query_log
 CREATE TABLE `t1` (
   `col_0` tinyint(1) default NULL,
   `col_1` tinyint(1) default NULL,
@@ -1095,11 +1075,8 @@ CREATE TABLE `t1` (
   `col_1025` tinyint(1) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 CREATE VIEW v1 AS SELECT * FROM t1;
-
 INSERT INTO t1 VALUES();
 SELECT COUNT(*) FROM v1;
-
 SELECT COUNT(*) FROM v1;
-
 DROP VIEW  v1;
 DROP TABLE t1;

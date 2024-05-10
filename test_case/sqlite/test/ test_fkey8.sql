@@ -123,3 +123,6 @@ UPDATE parent SET p = '456' WHERE p=1200;
 PRAGMA integrity_check;
 PRAGMA foreign_keys = on;
 ATTACH 'test.db2' AS aux;
+CREATE TABLE aux.p1(a INTEGER PRIMARY KEY);
+INSERT INTO aux.p1 VALUES(123);
+DELETE FROM aux.p1 WHERE a=123;

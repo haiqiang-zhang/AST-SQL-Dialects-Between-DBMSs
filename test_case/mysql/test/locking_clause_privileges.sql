@@ -1,25 +1,7 @@
-CREATE ROLE of;
-CREATE ROLE skip;
-CREATE ROLE locked;
-CREATE ROLE nowait;
-
-DROP ROLE skip, locked, nowait;
-
 CREATE DATABASE db1;
 CREATE TABLE db1.t1( a INT );
 CREATE TABLE db1.t2( a INT );
-
 DROP DATABASE db1;
-
 CREATE DATABASE db1;
-
 CREATE TABLE db1.t1 ( a INT );
-
-INSERT INTO db1.t1 VALUES ( 1 );
-
-CREATE USER mysqluser1;
-
-SELECT * FROM t1 WHERE a = 1 FOR UPDATE;
-
 DROP DATABASE db1;
-DROP USER mysqluser1;

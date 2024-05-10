@@ -1,16 +1,10 @@
---
-
---disable_warnings
 drop table if exists t1,t2,t3,t4,t5,t6,t7,t8,t9;
-
 create table t1 (a char, b char, c char)
 partition by range columns(a,b,c)
 ( partition p0 values less than ('a','b','c'));
 insert into t1 values ('a', NULL, 'd');
 select * from t1 where a = 'a' AND c = 'd';
 drop table t1;
-
---# COLUMN_LIST partition pruning tests
 create table t1 (a int not null) partition by range columns(a) (
   partition p0 values less than (10),
   partition p1 values less than (20),
@@ -22,7 +16,6 @@ create table t1 (a int not null) partition by range columns(a) (
 );
 insert into t1 values (5),(15),(25),(35),(45),(55),(65);
 insert into t1 values (5),(15),(25),(35),(45),(55),(65);
-
 create table t2 (a int not null) partition by range(a) (
   partition p0 values less than (10),
   partition p1 values less than (20),
@@ -34,9 +27,7 @@ create table t2 (a int not null) partition by range(a) (
 );
 insert into t2 values (5),(15),(25),(35),(45),(55),(65);
 insert into t2 values (5),(15),(25),(35),(45),(55),(65);
-
 drop table t1, t2;
-
 create table t1 (a int not null, b int not null ) 
 partition by range columns(a,b) (
   partition p01 values less than (2,10),
@@ -51,9 +42,7 @@ partition by range columns(a,b) (
   partition p22 values less than (6,20),
   partition p23 values less than (6,30)
 );
-
 insert into t1 values (2,5), (2,15), (2,25),
   (4,5), (4,15), (4,25), (6,5), (6,15), (6,25);
 insert into t1 select * from t1;
-
 drop table t1;

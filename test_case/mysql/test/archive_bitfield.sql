@@ -1,5 +1,4 @@
 drop table if exists t1;
-
 create table t1 (
   pk1 int not null auto_increment primary key,
   b bit(64)
@@ -12,7 +11,6 @@ insert into t1 values
 (NULL,b'0101010101010101010101010101010101010101010101010101010101010101');
 select hex(b) from t1 order by pk1;
 drop table t1;
-
 create table t1 (
   pk1 int not null auto_increment primary key,
   b bit(9)
@@ -25,7 +23,6 @@ insert into t1 values
 (NULL,b'000000100');
 select hex(b) from t1 order by pk1;
 drop table t1;
-
 create table t1 (a bit(7), b bit(9)) engine = archive;
 insert into t1 values 
 (94, 46), (31, 438), (61, 152), (78, 123), (88, 411), (122, 118), (0, 177),    
@@ -37,7 +34,6 @@ insert into t1 values
 select a+0 from t1 order by a;
 select b+0 from t1 order by b;
 drop table t1;
-
 create table t1 (
                 dummyKey INTEGER NOT NULL AUTO_INCREMENT,
                 a001 TINYINT,

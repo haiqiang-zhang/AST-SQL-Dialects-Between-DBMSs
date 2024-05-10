@@ -1,11 +1,5 @@
---  
-
--- Thread stack overrun in debug mode on sparc
---source include/not_sparc_debug.inc
-
 create table t1 (a int not null);
-
--- The query may or may not fail with an error;
+prepare s1 from '
   select a from t1 where a in ( 
   select a from t1 where a in ( 
   select a from t1 where a in ( 
@@ -69,5 +63,4 @@ create table t1 (a int not null);
   select a from t1 where a in ( 
   select a from t1 where a in ( select a from t1) 
   )))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))';
-
 drop table t1;

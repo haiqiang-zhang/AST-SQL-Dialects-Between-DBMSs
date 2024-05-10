@@ -32,7 +32,6 @@ vacuum;
 pragma auto_vacuum;
 pragma integrity_check;
 pragma auto_vacuum;
--- 16;
 VACUUM;
 VACUUM;
 VACUUM;

@@ -97,9 +97,11 @@ INSERT INTO temp.t4 VALUES(14, 15, 16);
 INSERT INTO aux.t4  VALUES(17, 18, 19);
 SELECT * FROM insert_log;
 DROP TABLE insert_log;
+CREATE TABLE aux.insert_log(db, d, e, f);
 INSERT INTO main.t4 VALUES(21, 22, 23);
 INSERT INTO temp.t4 VALUES(24, 25, 26);
 INSERT INTO aux.t4  VALUES(27, 28, 29);
+SELECT * FROM insert_log;
 CREATE TABLE tA(a INTEGER PRIMARY KEY, b, c);
 INSERT INTO tA VALUES(1, 2, 3);
 CREATE TABLE t17a(ii INT);
@@ -123,6 +125,8 @@ INSERT INTO t19(a,b,c) VALUES(1,2,3);
 UPDATE t19 SET c=CASE WHEN b=2 THEN b ELSE b+99 END WHERE a=1;
 SELECT * FROM t19;
 CREATE TABLE t20_1(x);
+CREATE TABLE aux.t20_2(y);
+CREATE TABLE aux.t20_3(z);
 DETACH aux;
 PRAGMA recursive_triggers = true;
 CREATE TABLE t0(a, b, c UNIQUE);
@@ -130,9 +134,4 @@ CREATE UNIQUE INDEX i0 ON t0(b) WHERE a;
 INSERT INTO t0(a,b,c) VALUES(0,0,9),(1,1,1);
 REPLACE INTO t0(a,b,c) VALUES(2,0,9);
 SELECT * FROM t0;
-CREATE TABLE t1(
-    a INTEGER PRIMARY KEY,
-    b DOUBLE
-  );
-INSERT INTO t1(b) VALUES('Y'),('X'),('Z');
-SELECT a, CASE WHEN typeof(b)='text' THEN quote(b) ELSE '<blob>' END, '|' FROM t1;
+CREATE TABLE t1(a INT);

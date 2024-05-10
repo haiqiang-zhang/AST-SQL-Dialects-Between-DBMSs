@@ -1,7 +1,5 @@
 drop table if exists t1_30237_bool;
-
 create table t1_30237_bool(A boolean, B boolean, C boolean);
-
 insert into t1_30237_bool values
 (FALSE, FALSE, FALSE),
 (FALSE, FALSE, NULL),
@@ -29,22 +27,19 @@ insert into t1_30237_bool values
 (TRUE, NULL, TRUE),
 (TRUE, TRUE, FALSE),
 (TRUE, TRUE, NULL),
-(TRUE, TRUE, TRUE) ;
+(TRUE, TRUE, TRUE);
 select A, B, A OR B, A XOR B, A AND B
   from t1_30237_bool where C is null order by A, B;
 select A, B, C, (A OR B) OR C, A OR (B OR C), A OR B OR C
  from t1_30237_bool order by A, B, C;
-
 select count(*) from t1_30237_bool
   where ((A OR B) OR C) != (A OR (B OR C));
 select A, B, C, (A XOR B) XOR C, A XOR (B XOR C), A XOR B XOR C
   from t1_30237_bool order by A, B, C;
-
 select count(*) from t1_30237_bool
   where ((A XOR B) XOR C) != (A XOR (B XOR C));
 select A, B, C, (A AND B) AND C, A AND (B AND C), A AND B AND C
   from t1_30237_bool order by A, B, C;
-
 select count(*) from t1_30237_bool
   where ((A AND B) AND C) != (A AND (B AND C));
 select A, B, C, (A OR B) AND C, A OR (B AND C), A OR B AND C
@@ -71,7 +66,6 @@ select A, B, C, (A OR B) XOR C, A OR (B XOR C), A OR B XOR C
   from t1_30237_bool order by A, B, C;
 select count(*) from t1_30237_bool
   where (A OR (B XOR C)) != (A OR B XOR C);
-
 drop table t1_30237_bool;
 select (NOT FALSE) OR TRUE, NOT (FALSE OR TRUE), NOT FALSE OR TRUE;
 select (NOT FALSE) XOR FALSE, NOT (FALSE XOR FALSE), NOT FALSE XOR FALSE;
@@ -85,12 +79,6 @@ select (NOT TRUE) IS UNKNOWN, NOT (TRUE IS UNKNOWN), NOT TRUE IS UNKNOWN;
 select (NOT TRUE) IS NOT UNKNOWN, NOT (TRUE IS NOT UNKNOWN), NOT TRUE IS NOT UNKNOWN;
 select (NOT TRUE) IS NULL, NOT (TRUE IS NULL), NOT TRUE IS NULL;
 select (NOT TRUE) IS NOT NULL, NOT (TRUE IS NOT NULL), NOT TRUE IS NOT NULL;
-select TRUE IS TRUE IS TRUE IS TRUE;
-select FALSE IS NOT TRUE IS NOT TRUE IS NOT TRUE;
-select NULL IS FALSE IS FALSE IS FALSE;
-select TRUE IS NOT FALSE IS NOT FALSE IS NOT FALSE;
-select FALSE IS UNKNOWN IS UNKNOWN IS UNKNOWN;
-select TRUE IS NOT UNKNOWN IS NOT UNKNOWN IS NOT UNKNOWN;
 select FALSE IS NULL IS NULL IS NULL;
 select TRUE IS NOT NULL IS NOT NULL IS NOT NULL;
 select 1 <=> 2 <=> 2, (1 <=> 2) <=> 2, 1 <=> (2 <=> 2);
@@ -101,17 +89,9 @@ select 1 < 2 < 3, (1 < 2) < 3, 1 < (2 < 3);
 select 3 <= 2 <= 1, (3 <= 2) <= 1, 3 <= (2 <= 1);
 select 1 > 2 > 3, (1 > 2) > 3, 1 > (2 > 3);
 select 1 >= 2 >= 3, (1 >= 2) >= 3, 1 >= (2 >= 3);
-
--- echo Testing that | is associative
 select 0xF0 | 0x0F | 0x55, (0xF0 | 0x0F) | 0x55, 0xF0 | (0x0F | 0x55);
-
--- echo Testing that & is associative
 select 0xF5 & 0x5F & 0x55, (0xF5 & 0x5F) & 0x55, 0xF5 & (0x5F & 0x55);
-
--- echo Testing that << is left associative
 select 4 << 3 << 2, (4 << 3) << 2, 4 << (3 << 2);
-
--- echo Testing that >> is left associative
 select 256 >> 3 >> 2, (256 >> 3) >> 2, 256 >> (3 >> 2);
 select 0xF0 & 0x0F | 0x55, (0xF0 & 0x0F) | 0x55, 0xF0 & (0x0F | 0x55);
 select 0x55 | 0xF0 & 0x0F, (0x55 | 0xF0) & 0x0F, 0x55 | (0xF0 & 0x0F);
@@ -171,10 +151,6 @@ select 0x80 / 2 + 2, (0x80 / 2) + 2, 0x80 / (2 + 2);
 select 0x80 + 2 / 2, (0x80 + 2) / 2, 0x80 + (2 / 2);
 select 0x80 / 4 - 2, (0x80 / 4) - 2, 0x80 / (4 - 2);
 select 0x80 - 4 / 2, (0x80 - 4) / 2, 0x80 - (4 / 2);
-
--- TODO: %, DIV, MOD
-
---echo Testing that ^ is associative
 select 0xFF ^ 0xF0 ^ 0x0F, (0xFF ^ 0xF0) ^ 0x0F, 0xFF ^ (0xF0 ^ 0x0F);
 select 0xFF ^ 0xF0 ^ 0x55, (0xFF ^ 0xF0) ^ 0x55, 0xFF ^ (0xF0 ^ 0x55);
 select 0xFF ^ 0xF0 | 0x0F, (0xFF ^ 0xF0) | 0x0F, 0xFF ^ (0xF0 | 0x0F);

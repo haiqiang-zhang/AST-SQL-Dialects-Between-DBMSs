@@ -1,17 +1,4 @@
-
--- The include file ctype_numconv.inc have some MyISAM specific tests
-
---
--- Tests with the latin1 character set
---
---disable_warnings
 drop table if exists t1;
-
---
--- WL 1494: Treat latin1 as cp1252 for unicode conversion
---
-
-SET NAMES latin1;
 CREATE TABLE t1 (a char(1) character set latin1);
 INSERT INTO t1 VALUES (0x00),(0x01),(0x02),(0x03),(0x04),(0x05),(0x06),(0x07);
 INSERT INTO t1 VALUES (0x08),(0x09),(0x0A),(0x0B),(0x0C),(0x0D),(0x0E),(0x0F);
@@ -45,60 +32,15 @@ INSERT INTO t1 VALUES (0xE0),(0xE1),(0xE2),(0xE3),(0xE4),(0xE5),(0xE6),(0xE7);
 INSERT INTO t1 VALUES (0xE8),(0xE9),(0xEA),(0xEB),(0xEC),(0xED),(0xEE),(0xEF);
 INSERT INTO t1 VALUES (0xF0),(0xF1),(0xF2),(0xF3),(0xF4),(0xF5),(0xF6),(0xF7);
 INSERT INTO t1 VALUES (0xF8),(0xF9),(0xFA),(0xFB),(0xFC),(0xFD),(0xFE),(0xFF);
-
---
--- 0x81 0x8D 0x8F 0x90 0x9D are undefined in cp1252
---
 SELECT 
   hex(a), 
   hex(@u:=convert(a using utf8mb3)),
   hex(@l:=convert(@u using latin1)),
   a=@l FROM t1;
 DROP TABLE t1;
-
---
--- Bug#13145: A table named "C-cedilla" can't be dropped.
--- Accept extended cp1252 letters as valid identifiers.
--- This test partially checks that "ctype" array is correct
--- for cp1252 extended characters 0x80-0x9F.
---
--- 0x83 0x0192  #LATIN SMALL LETTER F WITH HOOK
--- 0x8A 0x0160  #LATIN CAPITAL LETTER S WITH CARON
--- 0x8C 0x0152  #LATIN CAPITAL LIGATURE OE
--- 0x8E 0x017D  #LATIN CAPITAL LETTER Z WITH CARON
--- 0x9A 0x0161  #LATIN SMALL LETTER S WITH CARON
--- 0x9C 0x0153  #LATIN SMALL LIGATURE OE
--- 0x9E 0x017E  #LATIN SMALL LETTER Z WITH CARON
--- 0x9F 0x0178  #LATIN CAPITAL LETTER Y WITH DIAERESIS
---
-SELECT 1 as ƒ, 2 as Š, 3 as Œ, 4 as , 5 as š, 6 as œ, 7 as , 8 as Ÿ;
-
---
--- Bug #6737: REGEXP gives wrong result with case sensitive collation
---
-select 'a' regexp 'A' collate latin1_general_ci;
-select 'a' regexp 'A' collate latin1_general_cs;
-select 'a' regexp 'A' collate latin1_bin;
-
-
-SET collation_connection='latin1_swedish_ci';
-SET collation_connection='latin1_bin';
-
---
--- Bug#8041
--- An unknown character (e.g. 0x84) should result in ERROR,
--- It was treated like a space character earlier.
--- Howerver, it should still work fine as a string part.
---error 1064
-CREATE TABLE „a (a int);
-SELECT '„a' as str;
-
-
---
--- Bug#18321: Can't store EuroSign with latin1_german1_ci and latin1_general_ci
--- The problem was in latin1->utf8mb3->latin1 round trip.
---
-set @str= _latin1 'ABC €°§ß²³µ~ äöüÄÖÜ áéíóú ÀÈÌÒÙ @ abc';
+SELECT 1 as ÃƒÂ‚Ã‚Âƒ, 2 as ÃƒÂ‚Ã‚ÂŠ, 3 as ÃƒÂ‚Ã‚ÂŒ, 4 as ÃƒÂ‚Ã‚Â, 5 as ÃƒÂ‚Ã‚Âš, 6 as ÃƒÂ‚Ã‚Âœ, 7 as ÃƒÂ‚Ã‚Â, 8 as ÃƒÂ‚Ã‚ÂŸ;
+CREATE TABLE ÃƒÂ‚Ã‚Â„a (a int);
+SELECT 'ÃƒÂ‚Ã‚Â„a' as str;
 SELECT convert(@str collate latin1_bin using utf8mb3);
 SELECT convert(@str collate latin1_general_ci using utf8mb3);
 SELECT convert(@str collate latin1_german1_ci using utf8mb3);
@@ -106,28 +48,12 @@ SELECT convert(@str collate latin1_danish_ci using utf8mb3);
 SELECT convert(@str collate latin1_spanish_ci using utf8mb3);
 SELECT convert(@str collate latin1_german2_ci using utf8mb3);
 SELECT convert(@str collate latin1_swedish_ci using utf8mb3);
-
--- End of 4.1 tests
-
-SET NAMES latin1;
-DROP TABLE IF EXISTS `abcÿdef`;
-CREATE TABLE `abcÿdef` (i int);
-INSERT INTO `abcÿdef` VALUES (1);
-INSERT INTO abcÿdef VALUES (2);
-SELECT * FROM `abcÿdef`;
-SELECT * FROM abcÿdef;
-DROP TABLE `abcÿdef`;
+DROP TABLE IF EXISTS `abcÃƒÂƒÃ‚Â¿def`;
+CREATE TABLE `abcÃƒÂƒÃ‚Â¿def` (i int);
+INSERT INTO `abcÃƒÂƒÃ‚Â¿def` VALUES (1);
+INSERT INTO abcÃƒÂƒÃ‚Â¿def VALUES (2);
+SELECT * FROM `abcÃƒÂƒÃ‚Â¿def`;
+SELECT * FROM abcÃƒÂƒÃ‚Â¿def;
+DROP TABLE `abcÃƒÂƒÃ‚Â¿def`;
 select hex(cast(_ascii 0x7f as char(1) character set latin1));
 SELECT '' LIKE '' ESCAPE EXPORT_SET(1, 1, 1, 1, '');
-
-set @@collation_connection=latin1_swedish_ci;
-
-set @@collation_connection=latin1_bin;
-
-set @@collation_connection=latin1_general_cs;
-
-set @@collation_connection=binary;
-
-set names latin1;
-
-SET NAMES latin1;

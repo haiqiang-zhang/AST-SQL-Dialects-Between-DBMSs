@@ -1,45 +1,10 @@
---                                                            #
---   basic and miscellaneous tests for prepared statements    #
---                                                            #
---#############################################################
-
-let $type= 'MYISAM' ;
-
--- PS protocol gives slightly different metadata
---disable_ps_protocol
---enable_metadata
-EXECUTE stmt1;
-SET @arg00=1 ;
-
-DROP TABLE t1, t9;
---                                             #
---  Prepared Statements test on MYISAM tables  #
---                                             #
---##############################################
-
-let $type= 'MYISAM' ;
-
-DROP TABLE t1, t9;
---                                             #
---  Prepared Statements test on MERGE tables   #
---                                             #
---##############################################
-
---    
--- NOTE: PLEASE SEE ps_1general.test (bottom) 
---       BEFORE ADDING NEW TEST CASES HERE !!!
-
---disable_warnings
 DROP TABLE IF EXISTS t1, t1_1, t1_2, t9, t9_1, t9_2;
-let $type= 'MYISAM' ;
-
 CREATE TABLE t1
 (
   a INT, b VARCHAR(30),
   PRIMARY KEY(a)
 ) ENGINE = MERGE UNION=(t1_1,t1_2)
 INSERT_METHOD=FIRST;
-
 CREATE TABLE t9
 (
   c1  TINYINT, c2  SMALLINT, c3  MEDIUMINT, c4  INT,
@@ -54,16 +19,7 @@ CREATE TABLE t9
   PRIMARY KEY(c1)
 )  ENGINE = MERGE UNION=(t9_1,t9_2)
 INSERT_METHOD=FIRST;
-
--- source include/ps_query.inc
--- source include/ps_modify.inc
--- no test of ps_modify1, because insert .. select 
--- is not allowed on MERGE tables
--- -- source include/ps_modify1.inc
--- source include/ps_conv.inc
-
--- Lets's try the same tests with INSERT_METHOD=LAST
-DROP TABLE t1, t9 ;
+DROP TABLE t1, t9;
 CREATE TABLE t1
 (
   a int, b varchar(30),
@@ -84,5 +40,3 @@ CREATE TABLE t9
   PRIMARY KEY(c1)
 )  ENGINE = MERGE UNION=(t9_1,t9_2)
 INSERT_METHOD=LAST;
-
-DROP TABLE t1, t1_1, t1_2, t9_1, t9_2, t9;

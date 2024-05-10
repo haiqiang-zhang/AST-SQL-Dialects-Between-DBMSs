@@ -1,4 +1,2 @@
-
-let $MYSQLD_DATADIR = `select @@datadir`;
-CREATE TABLE tæøå(i INT);
-DROP TABLE tæøå;
+CREATE TABLE tÃÂÃÂ¦ÃÂÃÂ¸ÃÂÃÂ¥(i INT);
+DROP TABLE tÃÂÃÂ¦ÃÂÃÂ¸ÃÂÃÂ¥;

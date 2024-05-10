@@ -1,89 +1,55 @@
 DROP TABLE IF EXISTS t1;
-
-SET NAMES utf8mb4 COLLATE utf8mb4_0900_as_cs;
-
-SET @test_character_set= 'utf8mb4';
-SET @test_collation= 'utf8mb4_0900_as_cs';
-
-SET NAMES utf8mb4 COLLATE utf8mb4_0900_as_cs;
-
--- Test some conversions
-SET NAMES utf8mb4 COLLATE utf8mb4_0900_as_cs;
 SELECT HEX(CONVERT(_utf8mb4 0xF091AB9B41 USING ucs2));
 SELECT HEX(CONVERT(_utf8mb4 0xF091AB9B41 USING utf16));
 SELECT HEX(CONVERT(_utf8mb4 0xF091AB9B41 USING utf32));
 SELECT HEX(CONVERT(_ucs2 0xF8FF USING utf8mb4));
 SELECT HEX(CONVERT(_utf16 0xF8FF USING utf8mb4));
 SELECT HEX(CONVERT(_utf32 0xF8FF USING utf8mb4));
-SELECT HEX(CONVERT(_utf8mb4 0x8F USING ucs2));
-SELECT HEX(CONVERT(_utf8mb4 0xC230 USING ucs2));
-SELECT HEX(CONVERT(_utf8mb4 0xE234F1 USING ucs2));
-SELECT HEX(CONVERT(_utf8mb4 0xF4E25634 USING ucs2));
-
--- Test some string functions
 SELECT ASCII('ABC');
 SELECT BIT_LENGTH('a');
-SELECT BIT_LENGTH('À');
-SELECT BIT_LENGTH('テ');
-SELECT BIT_LENGTH('𝌆');
-SELECT CHAR_LENGTH('𝌆テÀa');
-SELECT LENGTH('𝌆テÀa');
-SELECT FIELD('a', '𝌆テÀa');
-SELECT HEX('𝌆テÀa');
-SELECT INSERT('𝌆テÀa', 2, 2, 'テb');
-SELECT LOWER('𝌆テÀBcd');
-SELECT ORD('𝌆');
-SELECT UPPER('𝌆テàbCD');
+SELECT BIT_LENGTH('ÃÂÃÂ');
+SELECT BIT_LENGTH('ÃÂ£ÃÂÃÂ');
+SELECT BIT_LENGTH('ÃÂ°ÃÂÃÂÃÂ');
+SELECT CHAR_LENGTH('ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂa');
+SELECT LENGTH('ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂa');
+SELECT FIELD('a', 'ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂa');
+SELECT HEX('ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂa');
+SELECT INSERT('ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂa', 2, 2, 'ÃÂ£ÃÂÃÂb');
+SELECT LOWER('ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂBcd');
+SELECT ORD('ÃÂ°ÃÂÃÂÃÂ');
+SELECT UPPER('ÃÂ°ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ bCD');
 SELECT LOCATE(_utf8mb4 0xF091AB9B41, _utf8mb4 0xF091AB9B42F091AB9B41F091AB9B43);
 SELECT HEX(REVERSE(_utf8mb4 0xF091AB9B41F091AB9B42F091AB9B43));
 SELECT HEX(SUBSTRING(_utf8mb4 0xF091AB9B41F091AB9B42F091AB9B43, 1, 2));
 SELECT HEX(SUBSTRING(_utf8mb4 0xF091AB9B41F091AB9B42F091AB9B43, -3, 2));
 SELECT HEX(TRIM(_utf8mb4 0x2020F091AB9B4120F091AB9B4120202020));
-
-
--- Test maximum buffer necessary for WEIGHT_STRING
 SELECT HEX(WEIGHT_STRING('aA'));
 SELECT HEX(WEIGHT_STRING(CAST(_utf32 x'337F' AS CHAR)));
 SELECT HEX(WEIGHT_STRING(CAST(_utf32 x'FDFA' AS CHAR)));
-
--- Test WEIGHT_STRING, LOWER, UPPER
---source include/weight_string.inc
---source include/weight_string_euro.inc
---source include/ctype_unicode800.inc
-
 SELECT 'a' = 'a ';
 SELECT 'a\0' < 'a';
 SELECT 'a\0' < 'a ';
 SELECT 'a\t' < 'a';
 SELECT 'a\t' < 'a ';
-
 SELECT 'a' LIKE 'a';
 SELECT 'A' LIKE 'a';
 SELECT _utf8mb4 0xD0B0D0B1D0B2 LIKE CONCAT(_utf8mb4'%',_utf8mb4 0xD0B1,_utf8mb4 '%');
-
 CREATE TABLE t1 (c VARCHAR(10) CHARACTER SET utf8mb4);
 INSERT INTO t1 VALUES (_utf8mb4 0xF09090A7), (_utf8mb4 0xEA8B93), (_utf8mb4 0xC4BC), (_utf8mb4 0xC6AD), (_utf8mb4 0xF090918F), (_utf8mb4 0xEAAD8B);
 SELECT HEX(ANY_VALUE(c)), COUNT(c) FROM t1 GROUP BY c COLLATE utf8mb4_0900_as_cs;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a VARCHAR(10), b VARCHAR(10)) COLLATE utf8mb4_0900_as_cs;
 INSERT INTO t1 VALUES(_utf16 0xAC00, _utf16 0x326E), (_utf16 0xAD, _utf16 0xA0),
 (_utf16 0xC6, _utf16 0x41), (_utf16 0xC6, _utf16 0xAA), (_utf16 0xA73A, _utf16 0xA738);
-
 SELECT a = b FROM t1;
 DROP TABLE t1;
-
-SET NAMES utf8mb4;
 CREATE TABLE t1 (c1 CHAR(10) COLLATE utf8mb4_0900_as_cs);
 SELECT c1, hex(weight_string(c1)) FROM t1 ORDER BY c1 COLLATE utf8mb4_0900_as_cs;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (a CHAR(10)) COLLATE utf8mb4_da_0900_as_cs;
 INSERT INTO t1 VALUES('z'), (_utf16 0x00C50053), (_utf16 0x00C50073), (_utf16 0x00E50053), (_utf16 0x00E50073), (_utf16 0x00C10053), (_utf16 0x00C10073), (_utf16 0x00E10073), (_utf16 0x00E10053), ('aAS'), ('aAs'), ('AS'), ('As'), ('as'), ('aS'), ('aas'), ('AAS'), ('Aas'), ('AAs'), ('aaS'), ('AaS');
 SELECT HEX(CONVERT(a USING utf16)), HEX(WEIGHT_STRING(a)) FROM t1 ORDER BY a, BINARY a;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a VARCHAR(10), b VARCHAR(10)) COLLATE utf8mb4_da_0900_as_cs;
 INSERT INTO t1 VALUES (_utf16 0x00DE, _utf16 0x0074), (_utf16 0x0162, _utf16 0x00DE), (_utf16 0x0162, _utf16 0x00FE),
 (_utf16 0x0163, _utf16 0x00DE), (_utf16 0x0163, _utf16 0x00FE), (_utf16 0x0164, _utf16 0x00DE),
@@ -103,7 +69,6 @@ INSERT INTO t1 VALUES (_utf16 0x00DE, _utf16 0x0074), (_utf16 0x0162, _utf16 0x0
 (_utf16 0x02A8, _utf16 0x00FE);
 SELECT a > b FROM t1;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a VARCHAR(10), b VARCHAR(10), c integer) COLLATE utf8mb4_vi_0900_as_cs;
 INSERT INTO t1 VALUES (_utf16 0x00C1, _utf16 0x00C0, 1),
 (_utf16 0x00C3, _utf16 0x00C1, 0), (_utf16 0x00C4, _utf16 0x00C3, 1),
@@ -143,10 +108,8 @@ INSERT INTO t1 VALUES (_utf16 0x00C1, _utf16 0x00C0, 1),
 (_utf16 0x022C, _utf16 0x00D3, 0), (_utf16 0x022D, _utf16 0x00D3, 0);
 SELECT a, b, c FROM t1 where (a > b) <> c;
 DROP TABLE t1;
-SET NAMES utf8mb4;
 SELECT CONVERT(_utf16 0x212B USING utf8mb4) = CONVERT(_utf16 0x00C5 USING
 utf8mb4) COLLATE utf8mb4_da_0900_as_cs AS result;
-SET NAMES default;
 CREATE TABLE t1(a CHAR, b CHAR, c INTEGER) COLLATE utf8mb4_vi_0900_as_cs;
 INSERT INTO t1 VALUES (_utf16 0x1F8C , _utf16 0x1F02, 1),
        (_utf16 0x1F8D , _utf16 0x1F03, 1), (_utf16 0x1F9C , _utf16 0x1F22, 1),
@@ -156,7 +119,6 @@ INSERT INTO t1 VALUES (_utf16 0x1F8C , _utf16 0x1F02, 1),
        (_utf16 0x1FEE , _utf16 0x1FED, 1);
 SELECT a, b, c FROM t1 where (a > b) <> c;
 DROP TABLE t1;
-
 CREATE TABLE t1(a CHAR, description VARCHAR(30)) COLLATE utf8mb4_ja_0900_as_cs;
 INSERT INTO t1 VALUES('a', 'Latin'), ('A', 'Latin'), (_utf16 0x02AC, 'Latin'),
 (_utf16 0x02AD, 'Latin'), (_utf16 0x03B1, 'Greak'), (_utf16 0x2C81, 'Coptic'),
@@ -171,7 +133,6 @@ INSERT INTO t1 VALUES('a', 'Latin'), ('A', 'Latin'), (_utf16 0x02AC, 'Latin'),
 (_utf16 0x3070, 'Hiragana BA'), (_utf16 0x3071, 'Hiragana PA');
 SELECT HEX(CONVERT(a USING utf16)), description FROM t1 ORDER BY a;
 DROP TABLE t1;
-
 CREATE TABLE t1(a CHAR, description VARCHAR(30)) COLLATE utf8mb4_ja_0900_as_cs_ks;
 INSERT INTO t1 VALUES('a', 'Latin'), ('A', 'Latin'), (_utf16 0x02AC, 'Latin'),
 (_utf16 0x02AD, 'Latin'), (_utf16 0x03B1, 'Greak'), (_utf16 0x2C81, 'Coptic'),
@@ -186,22 +147,14 @@ INSERT INTO t1 VALUES('a', 'Latin'), ('A', 'Latin'), (_utf16 0x02AC, 'Latin'),
 (_utf16 0x3070, 'Hiragana BA'), (_utf16 0x3071, 'Hiragana PA');
 SELECT HEX(CONVERT(a USING utf16)), description FROM t1 ORDER BY a;
 DROP TABLE t1;
-
-SET @s1 = CONVERT(_utf16 0x304D30853046 USING utf8mb4);
-SET @s2 = CONVERT(_utf16 0x30AD30E530A6 USING utf8mb4);
-SET @s3 = CONVERT(_utf16 0x304D30863046 USING utf8mb4);
-SET @s4 = CONVERT(_utf16 0x30AD30E630A6 USING utf8mb4);
 SELECT STRCMP(@s1 COLLATE utf8mb4_ja_0900_as_cs, @s2 COLLATE utf8mb4_ja_0900_as_cs);
 SELECT STRCMP(@s2 COLLATE utf8mb4_ja_0900_as_cs, @s3 COLLATE utf8mb4_ja_0900_as_cs);
 SELECT STRCMP(@s3 COLLATE utf8mb4_ja_0900_as_cs, @s4 COLLATE utf8mb4_ja_0900_as_cs);
 SELECT STRCMP(@s1 COLLATE utf8mb4_ja_0900_as_cs_ks, @s2 COLLATE utf8mb4_ja_0900_as_cs_ks);
 SELECT STRCMP(@s2 COLLATE utf8mb4_ja_0900_as_cs_ks, @s3 COLLATE utf8mb4_ja_0900_as_cs_ks);
 SELECT STRCMP(@s3 COLLATE utf8mb4_ja_0900_as_cs_ks, @s4 COLLATE utf8mb4_ja_0900_as_cs_ks);
-SET @s1 = CONVERT(_utf16 0x309D USING utf8mb4);
-SET @s2 = CONVERT(_utf16 0x30FD USING utf8mb4);
 SELECT STRCMP(@s1 COLLATE utf8mb4_ja_0900_as_cs, @s2 COLLATE utf8mb4_ja_0900_as_cs);
 SELECT STRCMP(@s1 COLLATE utf8mb4_ja_0900_as_cs_ks, @s2 COLLATE utf8mb4_ja_0900_as_cs_ks);
-
 CREATE TABLE t1(a VARCHAR(20)) COLLATE utf8mb4_ja_0900_as_cs_ks;
 INSERT INTO t1 VALUES(_utf16 0x30FC), (_utf16 0x30A230FC), (_utf16 0x304230FC),
 (_utf16 0x65E5672C8A9E), (_utf16 0x30443059309E), (_utf16 0x30443059305A),
@@ -209,7 +162,6 @@ INSERT INTO t1 VALUES(_utf16 0x30FC), (_utf16 0x30A230FC), (_utf16 0x304230FC),
 (_utf16 0x65E5672C8A9E30CB30DB30F330B4);
 SELECT HEX(CONVERT(a USING utf16)), HEX(WEIGHT_STRING(a)) FROM t1 ORDER BY a;
 DROP TABLE t1;
-
 CREATE TABLE t1(a VARCHAR(20), KEY a (a)) COLLATE utf8mb4_ja_0900_as_cs_ks
 PARTITION BY KEY (a) PARTITIONS 3;
 INSERT INTO t1 VALUES(_utf16 0x30FC), (_utf16 0x30A230FC), (_utf16 0x304230FC),
@@ -218,47 +170,18 @@ INSERT INTO t1 VALUES(_utf16 0x30FC), (_utf16 0x30A230FC), (_utf16 0x304230FC),
 (_utf16 0x65E5672C8A9E30CB30DB30F330B4);
 SELECT HEX(CONVERT(a USING utf16)) FROM t1 WHERE a = _utf16 0x30443059305A;
 DROP TABLE t1;
-
 CREATE TABLE t1 (a VARCHAR(10)) COLLATE utf8mb4_ru_0900_as_cs;
 INSERT INTO t1 VALUES(_utf16 0x0452), (_utf16 0x0453), (_utf16 0x0403),
        (_utf16 0x0439), (_utf16 0x048B), (_utf16 0x048A), (_utf16 0x043B),
        (_utf16 0x1D2B), (_utf16 0x045B), (_utf16 0x045C), (_utf16 0x040C);
 SELECT HEX(CONVERT(a USING utf16)) AS codepoint FROM t1 ORDER BY a, HEX(a);
 DROP TABLE t1;
-
--- Mongolian langauage using Cryllic.
 CREATE TABLE t1 (
       codepoint CHAR(1) CHARSET utf16 NOT NULL,
       glyph CHAR(2) CHARSET utf8mb4 COLLATE utf8mb4_mn_cyrl_0900_as_cs NOT NULL,
       description VARCHAR(64) NOT NULL);
-INSERT INTO t1 (codepoint, glyph, description) VALUES
-      (0x041E, 'О', 'CYRILLIC CAPITAL LETTER O'),
-      (0x04E8, 'Ө', 'CYRILLIC CAPITAL LETTER BARRED O'),
-      (0x041F, 'П', 'CYRILLIC CAPITAL LETTER PE '),
-
-      (0x043E, 'о', 'CYRILLIC SMALL LETTER O'),
-      (0x04E9, 'ө', 'CYRILLIC SMALL LETTER BARRED O'),
-      (0x043F, 'п', 'CYRILLIC SMALL LETTER PE'),
-
-      (0x0423, 'У', 'CYRILLIC CAPITAL LETTER U '),
-      (0x04AE, 'Ү', 'CYRILLIC CAPITAL LETTER STRAIGHT U '),
-      (0x0424, 'Ф', 'CYRILLIC CAPITAL LETTER EF '),
-
-      (0x0443, 'у', 'CYRILLIC SMALL LETTER U '),
-      (0x04AF, 'ү', 'CYRILLIC SMALL LETTER STRAIGHT U'),
-      (0x0444, 'ф', 'CYRILLIC SMALL LETTER EF');
-
 SELECT HEX(codepoint), codepoint, glyph, description FROM t1 ORDER BY glyph, codepoint;
 DROP TABLE t1;
-
--- Test the characters in different groups are reordered correctly. For example,
--- U+33E8 is in the core group, and U+2F17 is in the Han group, and 'A' is in
--- the latin group. According to the reorder rule defined by the CLDR for the
--- Chinese collation, we should get U+33E8 < U+2F17 < 'A'. This also tests how
--- different glyphs of one Han character sort according to the weight shift rule
--- defined by CLDR. For example, U+3197 (IDEOGRAPHIC ANNOTATION MIDDLE MARK) and
--- U+4E2D (CJK UNIFIED IDEOGRAPH-4E2D) are different glyphs of a Chinese
--- character which means 'middle' and the CLDR defines "U+412D <<< U+3197".
 CREATE TABLE t1(a VARCHAR(10)) COLLATE utf8mb4_zh_0900_as_cs;
 INSERT INTO t1 VALUES(_utf16 0x2E87), (_utf16 0x2E8D), (_utf16 0x2F17),
 (_utf16 0x3038), (_utf16 0x24B6), (_utf32 0x1F150), (_utf16 0x4E2D),
@@ -267,30 +190,16 @@ INSERT INTO t1 VALUES(_utf16 0x2E87), (_utf16 0x2E8D), (_utf16 0x2F17),
 (_utf32 0x1F229), (_utf32 0x1F241), (_utf16 0xFA56);
 SELECT HEX(CONVERT(a USING utf32)), HEX(WEIGHT_STRING(a)) FROM t1 ORDER BY a, HEX(a);
 DROP TABLE t1;
-
--- Test how the contraction of Han characters sorts. For example, U+6C88 and
--- U+5F1E are differenct characters, and U+6C88 < U+5F1E. But the strings
--- U+6C88U+9633 and U+5F1EU+9633 mean same thing. In such a contraction case,
--- U+5F1EU+9633 < U+6C88U+9633.
 CREATE TABLE t1(a VARCHAR(10)) COLLATE utf8mb4_zh_0900_as_cs;
 INSERT INTO t1 VALUES(_utf16 0x6C88), (_utf16 0x5F1E), (_utf16 0x9633),
 (_utf16 0x6C889633), (_utf16 0x5F1E9633);
 SELECT HEX(CONVERT(a USING utf32)), HEX(WEIGHT_STRING(a)) FROM t1 ORDER BY a, HEX(a);
 DROP TABLE t1;
-
--- This tests how different glyphs of one Han character sort. For example,
--- U+2F9E (KANGXI RADICAL CART) and U+F902 (CJK COMPATIBILITY IDEOGRAPH-F902)
--- are different glyphs of Chinese character which means 'cart'.
 CREATE TABLE t1(a VARCHAR(10), b VARCHAR(10)) COLLATE utf8mb4_zh_0900_as_cs;
 INSERT INTO t1 VALUES(_utf16 0xF902, _utf16 0x2F9E), (_utf16 0xF907, _utf16 0x2FD4),
 (_utf16 0xF908, _utf16 0x2FD4), (_utf16 0xF9D1, _utf16 0x3285);
 SELECT HEX(CONVERT(a USING utf16)) AS a_u16, HEX(CONVERT(b USING utf16)) AS b_u16, a = b FROM t1;
 DROP TABLE t1;
-
--- CLDR defines some weight shift rules for Chinese Bopomofo characters.
--- Bopomofo is a group of latin characters used to illustrate how a Han character
--- is pronounced. For example, 'e' is one of Bopomofo characters. This tests
--- how accented latin character which is not in Bopomofo group should be sorted.
 CREATE TABLE t1(a VARCHAR(10)) COLLATE utf8mb4_zh_0900_as_cs;
 INSERT INTO t1 VALUES(_utf16 0x1EC2), (_utf16 0x1EC3), (_utf16 0x1EC5), (_utf16 0x1EC0), (_utf16 0x1EC7), (_Utf16 0x1EBF);
 SELECT HEX(CONVERT(a USING utf16)) FROM t1 ORDER BY a;

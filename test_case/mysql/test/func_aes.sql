@@ -26,16 +26,13 @@ SELECT AES_ENCRYPT('a', 'a') = AES_ENCRYPT('aa', 'a');
 SELECT AES_ENCRYPT('a', 'a') = AES_ENCRYPT('a', 'aa');
 SELECT AES_ENCRYPT('a', 'a') = AES_ENCRYPT(REPEAT('a',1000), 'a');
 SELECT AES_ENCRYPT('a', 'a') = AES_ENCRYPT('a', REPEAT('a',1000));
-
 CREATE TABLE t1 (a BINARY(16) PRIMARY KEY);
-INSERT INTO t1 VALUES (AES_ENCRYPT('a','a'));
 INSERT INTO t1 VALUES (AES_ENCRYPT('a','a'));
 INSERT INTO t1 VALUES (AES_ENCRYPT('b','a'));
 SELECT COUNT(*) FROM t1 WHERE a = AES_ENCRYPT('a', 'a');
 SELECT COUNT(*) FROM t1 WHERE a = AES_ENCRYPT('b', 'a');
 SELECT COUNT(*) FROM t1 WHERE a = AES_ENCRYPT('c', 'a');
 SELECT COUNT(*) FROM t1 WHERE a = AES_ENCRYPT('a', 'c');
-
 SELECT TO_BASE64(a) FROM t1 ORDER BY a;
 DROP TABLE t1;
 SELECT AES_ENCRYPT('a', 'a') = AES_ENCRYPT('a', 'a', REPEAT('a', 16));
@@ -46,13 +43,11 @@ SELECT TO_BASE64(AES_ENCRYPT('a', 'a', REPEAT('a', 1024)));
 SELECT TO_BASE64(AES_ENCRYPT('a', 'a', RANDOM_BYTES(16)));
 SELECT LENGTH(RANDOM_BYTES(1));
 SELECT CHARSET(RANDOM_BYTES(1));
-SELECT RANDOM_BYTES(1000000000000);
-SELECT LENGTH(RANDOM_BYTES(0));
 SELECT CHARSET(AES_DECRYPT(AES_ENCRYPT('a', 'a'), 'a'));
 SELECT LENGTH(AES_DECRYPT(AES_ENCRYPT('a', 'a'), 'a'));
 SELECT AES_DECRYPT(AES_ENCRYPT('a','a'), 'a') = 'a';
-SELECT AES_DECRYPT(AES_ENCRYPT(_UTF8MB3'Жоро', 'a'), 'a') = _UTF8MB3'Жоро';
-SELECT AES_DECRYPT(AES_ENCRYPT('Жоро', 'a'), 'a') = 'Жоро';
+SELECT AES_DECRYPT(AES_ENCRYPT(_UTF8MB3'ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¾', 'a'), 'a') = _UTF8MB3'ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¾';
+SELECT AES_DECRYPT(AES_ENCRYPT('ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¾', 'a'), 'a') = 'ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¾';
 SELECT AES_DECRYPT(NULL, 'a');
 SELECT AES_DECRYPT('a', NULL);
 SELECT AES_DECRYPT(NULL, NULL);
@@ -60,38 +55,15 @@ SELECT 'a' = AES_DECRYPT(AES_ENCRYPT('a', 'a'), 'a', NULL);
 SELECT 'a' = AES_DECRYPT(AES_ENCRYPT('a', 'a'), 'a', REPEAT('a',16));
 SELECT 'a' = AES_DECRYPT(AES_ENCRYPT('a', 'a'), 'a', REPEAT('a',100));
 SELECT TO_BASE64(AES_DECRYPT(AES_ENCRYPT('a', 'a'), 'a', 'a'));
-
 CREATE TABLE aes_ecb(a VARBINARY(16), b128 CHAR(16), b192 CHAR(16), b256 CHAR(16)) charset latin1;
-INSERT INTO aes_ecb (a) VALUES ('a'), ('Жоро'), (REPEAT('a', 10));
-
-SET SESSION block_encryption_mode='aes-128-ecb';
 UPDATE aes_ecb SET b128 = AES_ENCRYPT(a, 'a');
-
-SET SESSION block_encryption_mode='aes-192-ecb';
 UPDATE aes_ecb SET b192 = AES_ENCRYPT(a, 'a');
-
-SET SESSION block_encryption_mode='aes-256-ecb';
 UPDATE aes_ecb SET b256 = AES_ENCRYPT(a, 'a');
 SELECT COUNT(*) FROM aes_ecb WHERE b128 = b192 OR B192 = b256 OR b128=b256;
-
-SET SESSION block_encryption_mode='aes-256-ecb';
 SELECT COUNT(*) FROM aes_ecb WHERE a = AES_DECRYPT(b256, 'a');
 SELECT COUNT(*) FROM aes_ecb WHERE a = AES_DECRYPT(b256, 'b');
-
-SET SESSION block_encryption_mode='aes-192-ecb';
 SELECT COUNT(*) FROM aes_ecb WHERE a = AES_DECRYPT(b192, 'a');
 SELECT COUNT(*) FROM aes_ecb WHERE a = AES_DECRYPT(b192, 'b');
-
-SET SESSION block_encryption_mode='aes-128-ecb';
 SELECT COUNT(*) FROM aes_ecb WHERE a = AES_DECRYPT(b128, 'a');
 SELECT COUNT(*) FROM aes_ecb WHERE a = AES_DECRYPT(b128, 'b');
-
-
-SET SESSION block_encryption_mode=DEFAULT;
 DROP TABLE aes_ecb;
-
-
-let $block_mode=cbc;
-
-let $block_mode=default;
-SELECT RANDOM_BYTES(2147483647 - 9);

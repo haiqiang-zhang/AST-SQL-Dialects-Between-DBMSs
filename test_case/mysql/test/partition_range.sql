@@ -1,6 +1,3 @@
--- 
-
---disable_warnings
 drop table if exists t1, t2;
 CREATE TABLE t1 (
  a INT,
@@ -8,27 +5,13 @@ CREATE TABLE t1 (
  KEY a (a,b)
 )
 PARTITION BY HASH (a) PARTITIONS 1;
-
--- insert some rows (i.e. so that rows/blocks > 1)
 INSERT INTO t1 VALUES (0, 580092), (3, 894076), (4, 805483), (4, 913540), (6, 611137), (8, 171602), (9, 599495), (9, 746305), (10, 272829), (10, 847519), (12, 258869), (12, 929028), (13, 288970), (15, 20971), (15, 105839), (16, 788272), (17, 76914), (18, 827274), (19, 802258), (20, 123677), (20, 587729), (22, 701449), (25, 31565), (25, 230782), (25, 442887), (25, 733139), (25, 851020);
-
--- Before the fix the 'Extra' column showed 'Using index for group-by'
-analyze table t1;
-
 DROP TABLE t1;
-
---
---BUG#49591, Add proper version number to SHOW CREATE TABLE
---
 create table t1 (a DATETIME)
 partition by range (TO_DAYS(a))
 subpartition by hash(to_seconds(a))
 (partition p0 values less than (1));
 drop table t1;
-create table t1 (a int)
-partition by range (a)
-( partition p0 values less than (NULL),
-  partition p1 values less than (MAXVALUE));
 create table t1 (a datetime not null)
 partition by range (TO_SECONDS(a))
 ( partition p0 VALUES LESS THAN (TO_SECONDS('2007-03-08 00:00:00')),
@@ -47,7 +30,6 @@ select * from t1;
 select * from t1 where a <= '2003-12-31';
 select * from t1 where a <= '2005-01-01';
 drop table t1;
-
 create table t1 (a datetime)
 partition by range(to_seconds(a))
 (partition p0 values less than (to_seconds('2004-01-01 12:00:00')),
@@ -57,98 +39,44 @@ select * from t1;
 select * from t1 where a <= '2004-01-01 11:59:59';
 select * from t1 where a <= '2005-01-01';
 drop table t1;
-
---
--- Adding new test cases for column list variant for partitioning
---
---error 1064
-create table t1 (a int, b char(20))
-partition by range columns(a,b)
-(partition p0 values less than (1));
-create table t1 (a int, b char(20))
-partition by range(a)
-(partition p0 values less than (1,"b"));
-create table t1 (a int, b char(20))
-partition by range(a)
-(partition p0 values less than (1,"b"));
-
 create table t1 (a int, b char(20))
 partition by range columns(b)
 (partition p0 values less than ("b"));
 drop table t1;
-
---
--- BUG 33429: Succeeds in  adding partition when maxvalue on last partition
---
 create table t1 (a int)
 partition by range (a)
 ( partition p0 values less than (maxvalue));
-alter table t1 add partition (partition p1 values less than (100000));
 drop table t1;
-
--- BUG 32943:
--- Locking problems in relation to partitioning and triggers
--- Also fixes and test cases of generic lock issues with
--- partition change code.
---
 create table t1 (a integer)
 partition by range (a)
 ( partition p0 values less than (4),
   partition p1 values less than (100));
-create trigger tr1 before insert on t1
-for each row begin
-  set @a = 1;
 alter table t1 drop partition p0;
-
 drop table t1;
-
 create table t1 (a integer)
 partition by range (a)
 ( partition p0 values less than (4),
   partition p1 values less than (100));
+LOCK TABLES t1 WRITE;
 alter table t1 drop partition p0;
 alter table t1 reorganize partition p1 into
 ( partition p0 values less than (4),
   partition p1 values less than (100));
 alter table t1 add partition ( partition p2 values less than (200));
+UNLOCK TABLES;
 drop table t1;
-
---
--- BUG 18198: Various tests for partition functions
---
---create table t1 (a varchar(10) charset latin1 collate latin1_bin, b int)
---partition by range (ascii(a) * b)
---(partition p0 values less than (2), partition p1 values less than (4000));
---                 b varchar(10) charset latin1 collate latin1_bin)
---partition by range (ascii(b) * ascii(a))
---(partition p0 values less than (2), partition p1 values less than (40000));
---                 b varchar(10) charset latin1 collate latin1_bin)
---partition by range (ascii(a) * ascii(b))
---(partition p0 values less than (2), partition p1 values less than (40000));
---                 b varchar(10) charset latin1 collate latin1_bin, c int)
---partition by range (ascii(a) * c)
---(partition p0 values less than (2), partition p1 values less than (4000));
---                 b varchar(10) charset latin1 collate latin1_bin, c int)
---partition by range (c * ascii(a))
---(partition p0 values less than (2), partition p1 values less than (4000));
-
---
--- More checks for partition pruning
---
 create table t1 (a int unsigned)
 partition by range (a)
 (partition pnull values less than (0),
  partition p0 values less than (1),
  partition p1 values less than(2));
 insert into t1 values (null),(0),(1);
-
 select * from t1 where a is null;
 select * from t1 where a >= 0;
 select * from t1 where a < 0;
 select * from t1 where a <= 0;
 select * from t1 where a > 1;
 drop table t1;
-
 create table t1 (a int unsigned, b int unsigned)
 partition by range (a)
 subpartition by hash (b)
@@ -157,18 +85,12 @@ subpartitions 2
  partition p0 values less than (1),
  partition p1 values less than(2));
 insert into t1 values (null,0),(null,1),(0,0),(0,1),(1,0),(1,1);
-
 select * from t1 where a is null;
 select * from t1 where a >= 0;
 select * from t1 where a < 0;
 select * from t1 where a <= 0;
 select * from t1 where a > 1;
-
 drop table t1;
-
---
--- Partition by range, basic
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -179,30 +101,19 @@ partitions 3
 (partition x1 values less than (5),
  partition x2 values less than (10),
  partition x3 values less than maxvalue);
-
--- Simple insert and verify test
 INSERT into t1 values (1, 1, 1);
 INSERT into t1 values (6, 1, 1);
 INSERT into t1 values (10, 1, 1);
 INSERT into t1 values (15, 1, 1);
-
 select * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 partitions 3
 (partition x1 values less than (5),
  partition x2 values less than (10),
  partition x3 values less than maxvalue);
-
 select * from t1;
-
 drop table if exists t1;
-
---
--- Partition by range, basic
--- No primary key
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -212,29 +123,19 @@ partitions 3
 (partition x1 values less than (5),
  partition x2 values less than (10),
  partition x3 values less than maxvalue);
-
--- Simple insert and verify test
 INSERT into t1 values (1, 1, 1);
 INSERT into t1 values (6, 1, 1);
 INSERT into t1 values (10, 1, 1);
 INSERT into t1 values (15, 1, 1);
-
 select * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 partitions 3
 (partition x1 values less than (5),
  partition x2 values less than (10),
  partition x3 values less than maxvalue);
-
 select * from t1;
 drop table if exists t1;
-
---
--- Partition by range, basic
--- No max value used
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -245,29 +146,18 @@ partitions 3
 (partition x1 values less than (5),
  partition x2 values less than (10),
  partition x3 values less than (15));
-
-
--- Simple insert and verify test
 INSERT into t1 values (1, 1, 1);
 INSERT into t1 values (6, 1, 1);
 INSERT into t1 values (10, 1, 1);
-INSERT into t1 values (15, 1, 1);
-
 select * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 partitions 3
 (partition x1 values less than (5),
  partition x2 values less than (10),
  partition x3 values less than (15));
-
 select * from t1;
 drop table t1;
-
---
--- Partition by range, only one partition
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -275,12 +165,7 @@ c int not null,
 primary key(a,b))
 partition by range (a)
 (partition x1 values less than (1));
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -295,17 +180,9 @@ subpartition by hash (a+b)
    ( subpartition x21,
      subpartition x22)
 );
-
 SELECT * from t1;
-
 ALTER TABLE t1 ADD COLUMN d int;
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
--- Defined tablespace, engine and node group
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -320,15 +197,8 @@ subpartition by hash (a+b)
    ( subpartition x21 engine innodb nodegroup 0,
      subpartition x22 engine innodb nodegroup 1)
 );
-
 SELECT * from t1;
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
--- Defined tablespace, node group
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -343,15 +213,8 @@ subpartition by hash (a+b)
    ( subpartition x21 nodegroup 0,
      subpartition x22 nodegroup 1)
 );
-
 SELECT * from t1;
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
--- Defined engine and node group
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -366,13 +229,9 @@ subpartition by hash (a+b)
    ( subpartition x21 engine innodb nodegroup 0,
      subpartition x22 engine innodb nodegroup 1)
 );
-
 INSERT into t1 VALUES (1,1,1);
 INSERT into t1 VALUES (4,1,1);
-INSERT into t1 VALUES (5,1,1);
-
 SELECT * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 subpartition by hash (a+b)
@@ -383,15 +242,8 @@ subpartition by hash (a+b)
    ( subpartition x21 engine innodb nodegroup 0,
      subpartition x22 engine innodb nodegroup 1)
 );
-
 SELECT * from t1;
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
--- Defined tablespace, engine
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -406,13 +258,9 @@ subpartition by hash (a+b)
   ( subpartition x21 engine innodb,
     subpartition x22 engine innodb)
 );
-
 INSERT into t1 VALUES (1,1,1);
 INSERT into t1 VALUES (4,1,1);
-INSERT into t1 VALUES (5,1,1);
-
 SELECT * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 subpartition by hash (a+b)
@@ -423,15 +271,8 @@ subpartition by hash (a+b)
   ( subpartition x21 engine innodb,
     subpartition x22 engine innodb)
 );
-
 SELECT * from t1;
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
--- Defined tablespace
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -446,13 +287,9 @@ subpartition by hash (a+b)
   ( subpartition x21 engine innodb,
     subpartition x22 engine innodb)
 );
-
 INSERT into t1 VALUES (1,1,1);
 INSERT into t1 VALUES (4,1,1);
-INSERT into t1 VALUES (5,1,1);
-
 SELECT * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 subpartition by hash (a+b)
@@ -463,15 +300,8 @@ subpartition by hash (a+b)
   ( subpartition x21 engine innodb,
     subpartition x22 engine innodb)
 );
-
 SELECT * from t1;
-
 drop table t1;
-
---
--- Subpartition by hash, two partitions and two subpartitions
--- Defined engine
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -486,13 +316,9 @@ subpartition by hash (a+b)
   ( subpartition x21 engine innodb,
     subpartition x22 engine innodb)
 );
-
 INSERT into t1 VALUES (1,1,1);
 INSERT into t1 VALUES (4,1,1);
-INSERT into t1 VALUES (5,1,1);
-
 SELECT * from t1;
-
 ALTER TABLE t1
 partition by range (a)
 subpartition by hash (a+b)
@@ -503,14 +329,8 @@ subpartition by hash (a+b)
   ( subpartition x21 engine innodb,
     subpartition x22 engine innodb)
 );
-
 SELECT * from t1;
-
 drop table t1;
-
---
--- Bug #17894 Comparison with "less than" operator fails with Range partition 
---
 CREATE TABLE t1 (c1 int default NULL, c2 varchar(30) default NULL, 
 c3 date default NULL)
 PARTITION BY RANGE (year(c3)) (PARTITION p0 VALUES LESS THAN (1995),
@@ -533,32 +353,16 @@ INSERT INTO t1 VALUES (1, 'testing partitions', '1995-07-17'),
 SELECT COUNT(*) FROM t1 WHERE c3 BETWEEN '1996-12-31' AND '2000-12-31';
 SELECT COUNT(*) FROM t1 WHERE c3 < '2000-12-31';
 DROP TABLE t1;
-
---
--- BUG 16002: Unsigned partition functions not handled correctly
---
---error ER_RANGE_NOT_INCREASING_ERROR
-create table t1 (a bigint unsigned)
-partition by range (a)
-(partition p0 values less than (10),
- partition p1 values less than (0));
-
 create table t1 (a bigint unsigned)
 partition by range (a)
 (partition p0 values less than (0),
  partition p1 values less than (10));
 drop table t1;
-
 create table t1 (a bigint unsigned)
 partition by range (a)
 (partition p0 values less than (2),
  partition p1 values less than (10));
-insert into t1 values (0xFFFFFFFFFFFFFFFF);
 drop table t1;
-
---
--- BUG 18962 Errors in DROP PARTITION
---
 create table t1 (a int)
 partition by range (MOD(a,3))
 subpartition by hash(a)
@@ -571,7 +375,6 @@ ALTER TABLE t1 DROP PARTITION p3;
 ALTER TABLE t1 DROP PARTITION p1;
 ALTER TABLE t1 DROP PARTITION p2;
 drop table t1;
-
 create table t1 (a int)
 partition by range (MOD(a,3))
 subpartition by hash(a)
@@ -584,15 +387,10 @@ ALTER TABLE t1 DROP PARTITION p0;
 ALTER TABLE t1 DROP PARTITION p1;
 ALTER TABLE t1 DROP PARTITION p2;
 drop table t1;
-
---
--- Bug 19830: ALTER TABLE t1 REORGANIZE PARTITION crashes
---
 create table t1 (a int DEFAULT NULL,
                  b varchar(30) DEFAULT NULL,
                  c date DEFAULT NULL)
 DEFAULT CHARSET=latin1;
-
 insert into t1 values (1, 'abc', '1995-01-01');
 insert into t1 values (1, 'abc', '1995-01-02');
 insert into t1 values (1, 'abc', '1995-01-03');
@@ -683,11 +481,9 @@ insert into t1 values (1, 'abc', '2001-01-12');
 insert into t1 values (1, 'abc', '2001-01-13');
 insert into t1 values (1, 'abc', '2001-01-14');
 insert into t1 values (1, 'abc', '2001-01-15');
-
 alter table t1
 partition by range (year(c))
 (partition p5 values less than (2000), partition p10 values less than (2010));
-
 alter table t1
 reorganize partition p5 into
 (partition p1 values less than (1996),
@@ -695,12 +491,7 @@ reorganize partition p5 into
  partition p3 values less than (1998),
  partition p4 values less than (1999),
  partition p5 values less than (2000));
-
 drop table t1;
-
---
--- New test cases for date based partitioning
---
 CREATE TABLE t1 (a date)
 PARTITION BY RANGE (TO_DAYS(a))
 (PARTITION p3xx VALUES LESS THAN (TO_DAYS('2004-01-01')),
@@ -735,11 +526,9 @@ PARTITION BY RANGE (TO_DAYS(a))
  PARTITION p605 VALUES LESS THAN (TO_DAYS('2006-06-01')),
  PARTITION p606 VALUES LESS THAN (TO_DAYS('2006-07-01')),
  PARTITION p607 VALUES LESS THAN (TO_DAYS('2006-08-01')));
-
 INSERT INTO t1 VALUES ('2003-01-13'),('2003-06-20'),('2003-08-30');
 INSERT INTO t1 VALUES ('2003-04-13'),('2003-07-20'),('2003-10-30');
 INSERT INTO t1 VALUES ('2003-05-13'),('2003-11-20'),('2003-12-30');
-
 INSERT INTO t1 VALUES ('2004-01-13'),('2004-01-20'),('2004-01-30');
 INSERT INTO t1 VALUES ('2004-02-13'),('2004-02-20'),('2004-02-28');
 INSERT INTO t1 VALUES ('2004-03-13'),('2004-03-20'),('2004-03-30');
@@ -752,7 +541,6 @@ INSERT INTO t1 VALUES ('2004-09-13'),('2004-09-20'),('2004-09-30');
 INSERT INTO t1 VALUES ('2004-10-13'),('2004-10-20'),('2004-10-30');
 INSERT INTO t1 VALUES ('2004-11-13'),('2004-11-20'),('2004-11-30');
 INSERT INTO t1 VALUES ('2004-12-13'),('2004-12-20'),('2004-12-30');
-
 INSERT INTO t1 VALUES ('2005-01-13'),('2005-01-20'),('2005-01-30');
 INSERT INTO t1 VALUES ('2005-02-13'),('2005-02-20'),('2005-02-28');
 INSERT INTO t1 VALUES ('2005-03-13'),('2005-03-20'),('2005-03-30');
@@ -765,7 +553,6 @@ INSERT INTO t1 VALUES ('2005-09-13'),('2005-09-20'),('2005-09-30');
 INSERT INTO t1 VALUES ('2005-10-13'),('2005-10-20'),('2005-10-30');
 INSERT INTO t1 VALUES ('2005-11-13'),('2005-11-20'),('2005-11-30');
 INSERT INTO t1 VALUES ('2005-12-13'),('2005-12-20'),('2005-12-30');
-
 INSERT INTO t1 VALUES ('2006-01-13'),('2006-01-20'),('2006-01-30');
 INSERT INTO t1 VALUES ('2006-02-13'),('2006-02-20'),('2006-02-28');
 INSERT INTO t1 VALUES ('2006-03-13'),('2006-03-20'),('2006-03-30');
@@ -773,33 +560,12 @@ INSERT INTO t1 VALUES ('2006-04-13'),('2006-04-20'),('2006-04-30');
 INSERT INTO t1 VALUES ('2006-05-13'),('2006-05-20'),('2006-05-30');
 INSERT INTO t1 VALUES ('2006-06-13'),('2006-06-20'),('2006-06-30');
 INSERT INTO t1 VALUES ('2006-07-13'),('2006-07-20'),('2006-07-30');
-
 SELECT * FROM t1
 WHERE a >= '2004-07-01' AND a <= '2004-09-30';
 SELECT * from t1
 WHERE (a >= '2004-07-01' AND a <= '2004-09-30') OR
       (a >= '2005-07-01' AND a <= '2005-09-30');
-      (a >= '2005-07-01' AND a <= '2005-09-30');
 DROP TABLE t1;
-
---
--- Bug 18198: Try with a couple of cases using VARCHAR fields in
---            partition function.
---create table t1 (a varchar(20))
---partition by range (ascii(a))
---(partition p0 values less than (100),
--- partition p1 values less than maxvalue);
---                                          a = "A2345678901234567890" OR
---                                          a = "B2345678901234567890" OR
---                                          a = "C2345678901234567890";
---                       a = "A2345678901234567890" OR
---                       a = "B2345678901234567890" OR
---                       a = "C2345678901234567890";
-
-
---
--- BUG#30573: get wrong result with "group by" on PARTITIONed table
---
 create table t1 (a int);
 insert into t1 values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
 CREATE TABLE t2 (
@@ -812,12 +578,10 @@ CREATE TABLE t2 (
 PARTITION BY RANGE (day) (
   PARTITION p7 VALUES LESS THAN (20070401) , 
   PARTITION p8 VALUES LESS THAN (20070501));
-
 insert into t2 select 20, 20070311, 1, 'filler' from t1 A, t1 B;
 insert into t2 select 20, 20070411, 1, 'filler' from t1 A, t1 B;
-insert into t2 values(52, 20070321, 123, 'filler') ;
-insert into t2 values(52, 20070322, 456, 'filler') ;
-
+insert into t2 values(52, 20070321, 123, 'filler');
+insert into t2 values(52, 20070322, 456, 'filler');
 select sum(count) from t2 ch where ch.defid in (50,52) and ch.day between 20070320 and 20070401 group by defid;
 drop table t1, t2;
 CREATE TABLE t1 (
@@ -825,22 +589,17 @@ CREATE TABLE t1 (
  b INT,
  KEY ( a, b )
 ) PARTITION BY HASH (a) PARTITIONS 1;
-
 CREATE TABLE t2 (
  a INT,
  b INT,
  KEY ( a, b )
 );
-
 INSERT INTO t1 VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-
 INSERT INTO t1 SELECT a +  5, b +  5 FROM t1;
 INSERT INTO t1 SELECT a + 10, b + 10 FROM t1;
 INSERT INTO t1 SELECT a + 20, b + 20 FROM t1;
 INSERT INTO t1 SELECT a + 40, b + 40 FROM t1;
-
 INSERT INTO t2 SELECT * FROM t1;
 SELECT a, MAX(b) FROM t1 WHERE a IN (10, 100) GROUP BY a;
 SELECT a, MAX(b) FROM t2 WHERE a IN (10, 100) GROUP BY a;
-
 DROP TABLE t1, t2;

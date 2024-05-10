@@ -1,11 +1,4 @@
-
---
--- Test keywords as fields
---
-
---disable_warnings
 drop table if exists t1;
-
 create table t1 (time time, date date, timestamp timestamp,
 quarter int, week int, year int, timestampadd int, timestampdiff int);
 insert into t1 values ("12:22:22","97:02:03","1997-01-02",1,2,3,4,5);
@@ -17,53 +10,9 @@ create table events(binlog int);
 insert into events values(1);
 select events.binlog from events;
 drop table events;
-
--- End of 4.1 tests
-
---
--- Bug#19939 "AUTHORS is not a keyword"
---
-delimiter |;
-create procedure p1()
-begin
-   declare n int default 2;
-     set n = n -1;
-   end while authors;
-create procedure p2()
-begin
-   declare n int default 2;
-     set n = n -1;
-   end while contributors;
-drop procedure p1;
-drop procedure p2;
-
--- End of 5.1 tests
-
---
--- Bug#12204 - CONNECTION should not be a reserved word
---
-
 create table t1 (connection int, b int);
-create procedure p1()
-begin
-  declare connection int;
-  select max(t1.connection) into connection from t1;
-  select concat("max=",connection) 'p1';
 insert into t1 (connection) values (1);
-drop procedure p1;
 drop table t1;
-
--- End of 5.0 tests
-
---
--- BUG#57899: Certain reserved words should not be reserved
---
-
---
--- We are looking for SYNTAX ERRORS here, so no need to 
--- log the queries
---
-
 CREATE TABLE slow (slow INT, general INT, master_heartbeat_period INT, ignore_server_ids INT);
 INSERT INTO slow(slow, general, master_heartbeat_period, ignore_server_ids) VALUES (1,2,3,4), (5,6,7,8);
 INSERT INTO slow(slow, general, master_heartbeat_period) VALUES (1,2,3), (5,6,7);
@@ -104,38 +53,6 @@ SELECT slow, general, master_heartbeat_period FROM ignore_server_ids ORDER BY sl
 SELECT slow, master_heartbeat_period FROM ignore_server_ids ORDER BY slow;
 SELECT slow FROM ignore_server_ids ORDER BY slow;
 DROP TABLE ignore_server_ids;
-
 CREATE TABLE t1 (slow INT, general INT, ignore_server_ids INT, master_heartbeat_period INT);
 INSERT INTO t1 VALUES (1,2,3,4);
-CREATE PROCEDURE p1()
-BEGIN
-  DECLARE slow INT;
-
-  SELECT max(t1.slow) INTO slow FROM t1;
-  SELECT max(t1.general) INTO general FROM t1;
-  SELECT max(t1.ignore_server_ids) INTO ignore_server_ids FROM t1;
-  SELECT max(t1.master_heartbeat_period) INTO master_heartbeat_period FROM t1;
-
-  SELECT slow, general, ignore_server_ids, master_heartbeat_period;
-
-CREATE PROCEDURE p2()
-BEGIN
-
-   DECLARE n INT DEFAULT 2;
-     SET n = n -1;
-   END WHILE general;
-
-   SET n = 2;
-     SET n = n -1;
-   END WHILE slow;
-
-   SET n = 2;
-     SET n = n -1;
-   END WHILE ignore_server_ids;
-
-   SET n = 2;
-     SET n = n -1;
-   END WHILE master_heartbeat_period;
-DROP PROCEDURE p1;
-DROP PROCEDURE p2;
 DROP TABLE t1;

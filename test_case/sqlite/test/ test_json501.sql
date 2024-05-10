@@ -5,7 +5,7 @@ SELECT '{ $123 : 789 }'->>'$."$123"';
 SELECT '{ _123$xyz : 789 }'->>'$."_123$xyz"';
 SELECT '{ MNO_123$xyz : 789 }'->>'$."MNO_123$xyz"';
 SELECT json('{ MNO_123$xyz : 789 }');
-SELECT '{ MNO_123ÃÂÃÂÃÂÃÂ¦xyz : 789 }'->>'MNO_123ÃÂÃÂÃÂÃÂ¦xyz';
+SELECT '{ MNO_123ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦xyz : 789 }'->>'MNO_123ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦xyz';
 WITH c(x) AS (VALUES('{"a":5, "b":6, }'))
   SELECT x->>'b', json(x), json_valid(x), NOT json_error_position(x) FROM c;
 SELECT '{a:5, b:6 , }'->>'b';

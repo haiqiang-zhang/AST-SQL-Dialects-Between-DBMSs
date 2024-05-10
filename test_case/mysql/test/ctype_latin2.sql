@@ -1,11 +1,4 @@
-
-
--- Tests with the latin1 character set
---
---disable_warnings
 drop table if exists t1;
-
-SET NAMES latin2;
 CREATE TABLE t1 (a char(1) character set latin2);
 INSERT INTO t1 VALUES (0x20),(0x21),(0x22),(0x23),(0x24),(0x25),(0x26),(0x27);
 INSERT INTO t1 VALUES (0x28),(0x29),(0x2A),(0x2B),(0x2C),(0x2D),(0x2E),(0x2F);
@@ -35,35 +28,7 @@ INSERT INTO t1 VALUES (0xE0),(0xE1),(0xE2),(0xE3),(0xE4),(0xE5),(0xE6),(0xE7);
 INSERT INTO t1 VALUES (0xE8),(0xE9),(0xEA),(0xEB),(0xEC),(0xED),(0xEE),(0xEF);
 INSERT INTO t1 VALUES (0xF0),(0xF1),(0xF2),(0xF3),(0xF4),(0xF5),(0xF6),(0xF7);
 INSERT INTO t1 VALUES (0xF8),(0xF9),(0xFA),(0xFB),(0xFC),(0xFD),(0xFE),(0xFF);
-
---
--- Bug#6504 upper/lower conversion bug
---
 SELECT hex(a) ha, hex(lower(a)) hl, hex(upper(a)) hu
 from t1 order by ha;
-
-
---
--- Bug#6505 wrong sorting order
---
 SELECT HEX(group_concat(a collate latin2_croatian_ci order by binary a)) from t1 group by a collate latin2_croatian_ci;
 drop table t1;
-
--- End of 4.1 tests
-
---echo End of 5.1 tests
-
-
---echo --
---echo -- Start of 5.6 tests
---echo --
-
---echo --
---echo -- WL#3664 WEIGHT_STRING
---echo --
-
-set names latin2;
-
-set collation_connection=latin2_bin;
-
-SET NAMES latin2;

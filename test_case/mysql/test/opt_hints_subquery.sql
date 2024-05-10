@@ -1,4 +1,3 @@
-
 CREATE TABLE t1 (a INTEGER NOT NULL, b INT, PRIMARY KEY (a));
 CREATE TABLE t2 (a INTEGER NOT NULL, KEY (a));
 CREATE TABLE t3 (a INTEGER NOT NULL, b INT, KEY (a));
@@ -237,17 +236,17 @@ WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3
 SELECT /*+ NO_SEMIJOIN(@subq1) NO_SEMIJOIN(@subq2) */ * FROM t1
 WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3
                WHERE t3.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t2));
+PREPARE stmt1 FROM "EXPLAIN
 SELECT /*+ NO_SEMIJOIN(@subq1 FIRSTMATCH, LOOSESCAN)
            NO_SEMIJOIN(@subq2 FIRSTMATCH, LOOSESCAN) */ * FROM t1
 WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3)
   AND t1.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t2)";
+DEALLOCATE PREPARE stmt1;
+PREPARE stmt1 FROM "EXPLAIN
 SELECT /*+ NO_SEMIJOIN(@subq1) SEMIJOIN(@subq2 LOOSESCAN) */ * FROM t1
 WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3
                WHERE t3.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t2))";
-
-SET optimizer_switch = default;
-
-SET optimizer_switch = 'semijoin=off';
+DEALLOCATE PREPARE stmt1;
 SELECT * FROM t2 WHERE t2.a IN (SELECT a FROM t1);
 SELECT /*+ NO_SEMIJOIN(@subq) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) */ a FROM t1);
@@ -279,9 +278,6 @@ WHERE t3.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t1 tx
 SELECT /*+ SEMIJOIN(@subq1) SEMIJOIN(@subq2) */ * FROM t3
 WHERE t3.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t1 tx
                WHERE tx.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t1 ty));
-SET optimizer_switch='semijoin=on';
-
-SET optimizer_switch='loosescan=off';
 SELECT * FROM t2 WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
 SELECT /*+ NO_SEMIJOIN(@subq1 LOOSESCAN) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
@@ -301,7 +297,6 @@ WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
 SELECT /*+ SEMIJOIN(@subq1 LOOSESCAN, FIRSTMATCH, MATERIALIZATION,
            DUPSWEEDOUT) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
-SET optimizer_switch='firstmatch=off';
 SELECT /*+ SEMIJOIN(@subq1 FIRSTMATCH, MATERIALIZATION, DUPSWEEDOUT) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
 SELECT /*+ NO_SEMIJOIN(@subq1 MATERIALIZATION, DUPSWEEDOUT) */ * FROM t2
@@ -346,7 +341,6 @@ WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3)
 SELECT /*+ NO_SEMIJOIN(@subq2 DUPSWEEDOUT) */ * FROM t1
 WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3)
   AND t1.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t2);
-SET optimizer_switch='firstmatch=on,loosescan=on,materialization=on,duplicateweedout=off';
 SELECT /*+ NO_SEMIJOIN(@subq1 LOOSESCAN, FIRSTMATCH, MATERIALIZATION) */ *
 FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
@@ -356,7 +350,6 @@ SELECT /*+ NO_SEMIJOIN(@subq1 FIRSTMATCH) */ * FROM t1
 WHERE t1.b IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3 WHERE t3.b = t1.a);
 SELECT /*+ SEMIJOIN(@subq1 LOOSESCAN, MATERIALIZATION) */ * FROM t1
 WHERE t1.b IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3 WHERE t3.b = t1.a);
-SET optimizer_switch='firstmatch=off,loosescan=off,materialization=off,duplicateweedout=off';
 SELECT * FROM t2 WHERE t2.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3);
 SELECT /*+ NO_SEMIJOIN(@subq1 LOOSESCAN, DUPSWEEDOUT) */ *
 FROM t2
@@ -368,16 +361,12 @@ SELECT /*+ SEMIJOIN(@subq1 LOOSESCAN, MATERIALIZATION) */ * FROM t1
 WHERE t1.b IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3 WHERE t3.b = t1.a);
 SELECT /*+ SEMIJOIN(@subq1 LOOSESCAN, FIRSTMATCH) */ * FROM t1
 WHERE t1.b IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3 WHERE t3.b = t1.a);
-
-SET optimizer_switch = default;
+PREPARE stmt1 FROM "EXPLAIN
 SELECT /*+ NO_SEMIJOIN(@subq1 FIRSTMATCH, LOOSESCAN)
            NO_SEMIJOIN(@subq2 FIRSTMATCH, LOOSESCAN) */ * FROM t1
 WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3)
   AND t1.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t2)";
-SET optimizer_switch = 'duplicateweedout=off';
-SET optimizer_switch = 'duplicateweedout=on';
-
-SET optimizer_switch = default;
+DEALLOCATE PREPARE stmt1;
 SELECT * FROM t2
 WHERE t2.a IN (SELECT /*+ NO_SEMIJOIN() SEMIJOIN() */ a FROM t1);
 SELECT * FROM t2
@@ -438,17 +427,16 @@ SELECT * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) */ concat(sum(b),"") FROM t1 group by a);
 SELECT /*+ SUBQUERY(@subq MATERIALIZATION) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) */ concat(sum(b),"") FROM t1 group by a);
+PREPARE stmt1 FROM "EXPLAIN
 SELECT /*+ SUBQUERY(@subq1 MATERIALIZATION)
            SUBQUERY(@subq2 INTOEXISTS) */ * FROM t1
 WHERE t1.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t3)
   AND t1.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t2)";
-SET optimizer_switch='materialization=off';
+DEALLOCATE PREPARE stmt1;
 SELECT * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) */ min(a) FROM t1 group by a);
 SELECT /*+ SUBQUERY(@subq MATERIALIZATION) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) */ min(a) FROM t1 group by a);
-
-SET optimizer_switch='materialization=on,subquery_materialization_cost_based=off';
 SELECT a, a IN (SELECT a FROM t1) FROM t2;
 SELECT /*+ SUBQUERY(@subq INTOEXISTS) */ a,
        a IN (SELECT /*+ QB_NAME(subq) */ a FROM t1) FROM t2;
@@ -461,8 +449,6 @@ SELECT /*+ SUBQUERY(@subq1 FIRSTMATCH) SUBQUERY(@subq2 LOOSESCAN) */ *
 FROM t3
 WHERE t3.a IN (SELECT /*+ QB_NAME(subq1) */ a FROM t1 tx)
   AND t3.b IN (SELECT /*+ QB_NAME(subq2) */ a FROM t1 ty);
-
-SET optimizer_switch= default;
 SELECT * FROM t2
 WHERE t2.a IN (SELECT /*+ SUBQUERY(MATERIALIZATION) SUBQUERY(INTOEXISTS) */ a
 FROM t1);
@@ -483,8 +469,4 @@ SELECT /*+ SUBQUERY(@subq INTOEXISTS) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) NO_SEMIJOIN() */ a FROM t1);
 SELECT /*+ SEMIJOIN(@subq FIRSTMATCH) */ * FROM t2
 WHERE t2.a IN (SELECT /*+ QB_NAME(subq) SUBQUERY(@subq INTOEXISTS) */ a FROM t1);
-
-
-
-
 drop table t1, t2, t3;

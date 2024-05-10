@@ -1,72 +1,8 @@
-
-USE test;
-CREATE USER some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
-CREATE DEFINER=some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 EVENT e1 ON SCHEDULE EVERY 1 DAY DO SELECT 1;
-CREATE DEFINER=some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 PROCEDURE p1() SELECT 1;
-CREATE DEFINER=some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 FUNCTION f1() RETURNS INT RETURN 1;
-CREATE DEFINER=some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 VIEW v1 AS SELECT 1;
 CREATE TABLE t1 (f1 INT);
-
-CREATE DEFINER=some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 TRIGGER trg1 BEFORE UPDATE ON t1 FOR EACH ROW SET @f1=1;
 CREATE TABLE s1 (f1 INT);
 CREATE TABLE s2 (f1 INT);
-CREATE USER u1@localhost;
-
-SELECT * FROM mysql.role_edges;
-SET DEFAULT ROLE u1@localhost TO some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
-
-SET DEFAULT ROLE some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 TO root@localhost;
-
-SELECT * FROM mysql.default_roles;
-SELECT USER, HOST, COUNT(*) > 0  FROM mysql.global_grants
-  WHERE USER LIKE 'some_user_name%' AND HOST LIKE 'host_%' GROUP BY USER, HOST;
-CREATE USER pass_hist_user@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890 IDENTIFIED BY 'haha' PASSWORD HISTORY 1;
-
-SELECT User, Host FROM mysql.password_history WHERE User='pass_hist_user';
 CREATE PROCEDURE p2() SELECT 1;
-
-SELECT User, Host FROM mysql.procs_priv WHERE User LIKE 'some_user_name%';
-SELECT * FROM mysql.proxies_priv WHERE user ='some_user_name';
-SELECT * FROM mysql.proxies_priv WHERE Proxied_user ='some_user_name';
-
--- Take dump
---exec $MYSQL_PUMP --include-users=some_user_name,pass_hist_user --databases test > $MYSQLTEST_VARDIR/tmp/mysqlpump_longhostname.sql
-
-DROP EVENT e1;
-DROP PROCEDURE p1;
-DROP FUNCTION f1;
-DROP VIEW v1;
-DROP TRIGGER trg1;
 DROP TABLE t1;
 DROP TABLE s1;
 DROP TABLE s2;
-DROP USER pass_hist_user@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
 DROP PROCEDURE p2;
-DROP USER some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
-
--- restore
---exec $MYSQL < $MYSQLTEST_VARDIR/tmp/mysqlpump_longhostname.sql
---remove_file $MYSQLTEST_VARDIR/tmp/mysqlpump_longhostname.sql
-
---echo -- Create user
-SHOW CREATE USER some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
-SELECT * FROM mysql.role_edges;
-SELECT * FROM mysql.default_roles;
-SELECT USER, HOST, COUNT(*) > 0  FROM mysql.global_grants
-  WHERE USER LIKE 'some_user_name%' AND HOST LIKE 'host_%' GROUP BY USER, HOST;
-SELECT User, Host FROM mysql.password_history WHERE User='pass_hist_user';
-SELECT User, Host FROM mysql.procs_priv WHERE User LIKE 'some_user_name%';
-SELECT * FROM mysql.proxies_priv WHERE user ='some_user_name';
-SELECT * FROM mysql.proxies_priv WHERE Proxied_user ='some_user_name';
-DROP EVENT e1;
-DROP PROCEDURE p1;
-DROP FUNCTION f1;
-DROP VIEW v1;
-DROP TRIGGER trg1;
-DROP TABLE t1;
-DROP TABLE s1;
-DROP TABLE s2;
-DROP USER pass_hist_user@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
-DROP PROCEDURE p2;
-DROP USER some_user_name@host_1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890abcdefghij1234567890;
-DROP USER u1@localhost;

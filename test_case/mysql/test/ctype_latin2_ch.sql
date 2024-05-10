@@ -1,11 +1,4 @@
 drop table if exists t1;
-
---
--- Bug#17374: select ... like 'A%' operator fails
--- to find value on columuns with key
---
-set names latin2;
-select 'A' = 'a' collate latin2_czech_cs;
 create table t1 (
     id  int(5) not null,    
     tt  char(255) not null
@@ -19,21 +12,7 @@ select * from t1 where tt like '%Aa%';
 select * from t1 where tt like 'AA%';
 select * from t1 ignore index (primary) where tt like 'AA%';
 select * from t1 where tt like '%AA%';
-
 drop table t1;
-
--- End of 4.1 tests
-
-set names latin2 collate latin2_czech_cs;
-
--- We can not use ctype_filesort.inc because
--- order of SPACE and TAB is not strict
-----source include/ctype_filesort.inc
---
-
---
--- Bug#29459 server died handling latin2 collate latin2_czech_cs
---
 create table t1 (
   a varchar(2) character set latin2 collate latin2_czech_cs,
   primary key(a)
@@ -42,15 +21,10 @@ insert into t1 set a=0x5ff;
 insert into t1 set a=0xff;
 select hex(a) from t1;
 drop table t1;
-
---
--- Bug#33452 Primary difference between capital and small letters U and O
---
 create table t1 (
   ch varchar(1),
   name varchar(64)
 ) character set latin2 collate latin2_czech_cs;
-
 insert into t1 values (0x6F,'LATIN SMALL LETTER O');
 insert into t1 values (0xF3,'LATIN SMALL LETTER O WITH ACUTE');
 insert into t1 values (0xF4,'LATIN SMALL LETTER O WITH CIRCUMFLEX');
@@ -61,7 +35,6 @@ insert into t1 values (0xD3,'LATIN CAPITAL LETTER O WITH ACUTE');
 insert into t1 values (0xD4,'LATIN CAPITAL LETTER O WITH CURCUMFLEX');
 insert into t1 values (0xD6,'LATIN CAPITAL LETTER O WITH DIAERESIS');
 insert into t1 values (0xD5,'LATIN CAPITAL LETTER O WITH DOUBLE ACUTE');
-
 insert into t1 values (0x75,'LATIN SMALL LETTER U');
 insert into t1 values (0xFA,'LATIN SMALL LETTER U WITH ACUTE');
 insert into t1 values (0xF9,'LATIN SMALL LETTER U WITH RING ABOVE');
@@ -74,11 +47,6 @@ insert into t1 values (0xDC,'LATIN CAPITAL LETTER U WITH DIAERESIS');
 insert into t1 values (0xDB,'LATIN CAPITAL LETTER U WITH DOUBLE ACUTE');
 select hex(weight_string(ch)) w, name from t1 order by ch;
 drop table t1;
-
---
--- Bug#33791 Wrong ORDER BY with latin2_czech_cs
---
-set names utf8mb3;
 create table t1 (
 ch varchar(1),
 name varchar(64)
@@ -106,32 +74,6 @@ CREATE INDEX i1 ON t1 (s1);
 SELECT * FROM t1 GROUP BY s1;
 SELECT * FROM t1 ORDER BY s1;
 DROP TABLE t1;
-SET sql_mode='';
-CREATE TABLE t1 ENGINE=FALCON AS SELECT repeat('a', 5) AS s1 LIMIT 0;
-SET sql_mode=DEFAULT;
-INSERT INTO t1 VALUES ('x'),('y'),('z'),('X'),('Y'),('Z');
-SELECT * FROM t1 GROUP BY s1;
-SELECT * FROM t1 ORDER BY s1;
-CREATE INDEX i1 ON t1 (s1);
-SELECT * FROM t1 GROUP BY s1;
-SELECT * FROM t1 ORDER BY s1;
-DROP TABLE t1;
-SET sql_mode='';
-CREATE TABLE t1 ENGINE=MARIA AS SELECT repeat('a', 5) AS s1 LIMIT 0;
-SET sql_mode=DEFAULT;
-INSERT INTO t1 VALUES ('x'),('y'),('z'),('X'),('Y'),('Z');
-SELECT * FROM t1 GROUP BY s1;
-SELECT * FROM t1 ORDER BY s1;
-CREATE INDEX i1 ON t1 (s1);
-SELECT * FROM t1 GROUP BY s1;
-SELECT * FROM t1 ORDER BY s1;
-DROP TABLE t1;
-
-SET NAMES latin2;
-
---
--- Bug#37854 Test fails/aborts for collate latin2_czech_cs used with SET and ENUM datatypes
---
 CREATE TABLE t2(colours SET('red','blue','yellow'))CHARACTER SET latin2 COLLATE
 latin2_czech_cs;
 CREATE TABLE t1(continent ENUM('Asia', 'Europe','Africa','Antartica'))CHARACTER SET latin2
@@ -141,5 +83,3 @@ INSERT INTO t2 VALUES('blue');
 SELECT * FROM t1;
 SELECT * FROM t2;
 DROP TABLE t1, t2;
-
-set names latin2 collate latin2_czech_cs;

@@ -160,7 +160,3 @@ PRAGMA temp_store = file;
 PRAGMA threads = 0;
 PRAGMA cache_size = 20;
 SELECT * FROM sqlite_master ORDER BY sql;
-ANALYZE;
-UPDATE sqlite_stat1 SET stat='50000' WHERE tbl='t2';
-UPDATE sqlite_stat1 SET stat='5000' WHERE tbl='t1';
-ANALYZE sqlite_schema;

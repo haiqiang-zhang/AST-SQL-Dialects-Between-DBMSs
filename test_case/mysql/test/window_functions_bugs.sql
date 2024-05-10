@@ -1,4 +1,3 @@
-
 CREATE TABLE H (
 col_varchar_10_utf8 varchar(10)  CHARACTER SET utf8mb3,
 col_varchar_255_latin1_key varchar(255)  CHARACTER SET latin1,
@@ -18,12 +17,10 @@ key (col_varchar_10_utf8_key ),
 key (col_varchar_255_utf8_key ),
 key (col_int_key ),
 primary key (pk)) ENGINE=innodb;
-
 INSERT IGNORE INTO H VALUES
 ('about', 'z', 'they', 'm', 'x', 'could',
 3, 155189248,
 'xyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnbkvkmqjgzrvmfpzwkixtxioqbzfvomgkicobwpsjeyfcaxwqxegkkiunassfsitgtnbbqukaeoubigzikncxyodlihgflmcbkqxdcvjpiqmnoorrutfxankapsmbdiicuytbwekanfyklnbjliaaebckybutdqwptyalaxaeuihzhclgqsmahtzogdxwslioxailzxafyztqpcakqukruoggiuemclpylcufjtmzxbutyghfkezxvfwojgolicczdqpqtwnugrwwcxumxofffljfhpkpddctnalygeuaugnnwxylfjdpzwvybdgtfyagjeqniouizgdzbhwahrylqwmnqzcjrhoivxidqmuikodwulsugcmwtxsadjdztkpdwbdxtvckayxskunxtompmmcbgiyedwfbjafnpcbvmxnrzvubwpnxfuzndvkxkfhjnzdvvkowuizfymqqexdtppmiznrhwfsngzbcvrynormfrjlflywpsmcsifmjuvwislbtaivizpbisvasqpyscnanwlttnqpzpdbiphzuujfksinzkcbbarimkigwdxjhscyrlmiqglyrdrwvhyoltdmpqlyzgknqzmfptjcmzeyokthfkdktzcsohicugzwgevhnsublfvasvftxhgk', NULL, 't');
-
 CREATE TABLE DD (
 col_varchar_255_latin1_key varchar(255)  CHARACTER SET latin1,
 col_varchar_255_utf8_key varchar(255)  CHARACTER SET utf8mb3,
@@ -43,7 +40,6 @@ key (col_varchar_10_latin1_key ),
 key (col_int_key ),
 primary key (pk),
 key (col_varchar_10_utf8_key )) ENGINE=innodb;
-
 INSERT IGNORE INTO DD VALUES  ('q',
 'brmucbzjaeueffwxeyonrgouqbsvekyzrfizdybnlisnzpgplythqeyugzvhzjmxhmzqnbmldcuskteeyxqeesumyuohkhmoxtlpsumxsuahxrnybqsdvkiiiiatzeihtiwqjgxrspppoytvmuufhhkcgbnpemioxkjebunithymftmsroaqsxdrxhcozhqdagsxfxndeimavrxfdocfgafdxzxqoehcikppndcieybkyxmumqsbcwcmmrweiprthlrnphvebnfgjfhrkrxxorzzbedateyoomxdzgkevuyyvmusoduugukillurhwggkspxpaoxldymllvikfrwhblzugcnlgmozwbhvpytvyogbythupkkfgjqpqjgprksqcndkbsrzgiuvqgkqtqvucjdnyfqhigpgfeclnxyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnbkvkmqjgzrvmfpzwkixtxioqbzfvomgkicobwpsjeyfcaxwqxegkkiunassfsitgtnbbqukaeoubigzikncxyodlihgflmcbkqxdcvjpiqmnoorrutfxankapsmbdiicuytbwekanfyklnbjliaaebckybutdqwptyalaxaeuihzhclgqsmahtzogdxwslioxailzxafyztqpcakqukruoggiuemclpylcufjtmzxbutyghfkezxvfwojgolicczdqpqtwnugrwwcxumxofffljfhpkpddctnalygeuaugnnwxylfjdpzwvybdgtfyagjeqniouizgdzbhwahrylqwmnqzcjrhoivxidqmuikodwulsugcmwtxsadjdztkpdwbdxtvckayxskunxtompmmcbgiyedwfbjafnpcbvmxnrzvubwpnxfuzndvkxkf', 'now',
 'you\'re', 1811152896, 'or', NULL, 'this', 6, 'then', 'e') ,  ('did', 'j',
@@ -76,7 +72,6 @@ spxpaoxldymllvikfrwhblzugcnlgmoz', NULL,'effwxeyonrgouqbsvekyzrfizdybnlisnzpgply
 'onrgouqbsvekyzrfizdybnlisnzpgplythqeyugzvhzjmxhmzqnbmldcuskteeyxqeesumyuohkhmoxtlpsumxsuahxrnybqsdvkiiiiatzeihtiwqjgxrspppoytvmuufhhkcgbnpemioxkjebunithymftmsroaqsxdrxhcozhqdagsxfxndeimavrxfdocfgafdxzxqoehcikppndcieybkyxmumqsbcwcmmrweiprthlrnphvebnfgjfhrkrxxorzzbedateyoomxdzgkevuyyvmusoduugukillurhwggkspxpaoxldymllvikfrwhblzugcnlgmozwbhvpytvyogbythupkkfgjqpqjgprksqcndkbsrzgiuvqgkqtqvucjdnyfqhigpgfeclnxyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnb') ,
 ('nrgouqbsvekyzrfizdybnlisnzpgplythqeyugzvhzjmxhmzqnbmldcuskteeyxqeesumyuohkhmoxtlpsumxsuahxrnybqsdvkiiiiatzeihtiwqjgxrspppoytvmuufhhkcgbnpemioxkjebunithymftmsroaqsxdrxhcozhqdagsxfxndeimavrxfdocfgafdxzxqoehcikppndcieybkyxmumqsbcwcmmrweiprthlrnphvebnfgjfhrkrxxorzzbedateyoomxdzgkevuyyvmusoduugukillurhwggkspxpaoxldymllvikfrwhblzugcnlgmozwbhvpytvyogbythupkkfgjqpqjgprksqcndkbsrzgiuvqgkqtqvucjdnyfqhigpgfeclnxyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnbkvkmqjgzrvmfpzwkixtxioqbzfvomgkicobwpsjeyfcaxwqxegkkiunassfsitgtnbbqukaeoubigzikncxyodlihgflmcbkqxdcvjpiqmnoorrutfxankapsmbdiicuytbwekanfyklnbjliaaebckybutdqwptyalaxaeuihzhclgqsmahtzogdxwslioxailzxafyztqpcakqukruoggiuemclpylcufjtmzxbutyghfkezxvfwojgolicczdqpqtwnugrwwcxumxofffljfhpkpddctnalygeuaugnnwxylfjdpzwvybdgtfyagjeqniouizgdzbhwahrylqwmnqzcjrhoivxi', 'one', 'n',
 'rgouqbsvekyzrfizdybnlisnzpgplythqeyugzvhzjmxhmzqnbmldcuskteeyxqeesumyuohkhmoxtlpsumxsuahxrnybqsdvkiiiiatzeihtiwqjgxrspppoytvmuufhhkcgbnpemioxkjebunithymftmsroaqsxdrxhcozhqdagsxfxndeimavrxfdocfgafdxzxqoehcikppndcieybkyxmumqsbcwcmmrweiprthlrnphvebnfgjfhrkrxxorzzbedateyoomxdzgkevuyyvmusoduugukillurhwggkspxpaoxldymllvikfrwhblzugcnlgmozwbhvpytvyogbythupkkfgjqpqjgprksqcndkbsrzgiuvqgkqtqvucjdnyfqhigpgfeclnxyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnbkvkmqjgzrvmfpzwkixtxioqbzfvomgkicobwpsjeyfcaxwqxegkkiunassfsitgtnbbqukaeoubigzikncxyodlihgflmcbkqxdcvjpiqmnoorrutfxankapsmbdiicuytbwekanfyklnbjliaaebckybutdqwptyalaxaeuihzhclgqsmahtzogdxwslioxailzxafyztqpcakqukruoggiuemclpylcufjtmzxbutyghfkezxvfwojgolicczdq', -681639936,'gouqbsvekyzrfizdybnlisnzpgplythqeyugzvhzjmxhmzqnbmldcuskteeyxqeesumyuohkhmoxtlpsumxsuahxrnybqsdvkiiiiatzeihtiwqjgxrspppoytvmuufhhkcgbnpemioxkjebunithymftmsroaqsxdrxhcozhqdagsxfxndeimavrxfdocfgafdxzxqoehcikppndcieybkyxmumqsbcwcmmrweiprthlrnphvebnfgjfhrkrxxorzzbedateyoomxdzgkevuyyvmusoduugukillurhwggkspxpaoxldymllvikfrwhblzugcnlgmozwbhvpytvyogbythupkkfgjqpqjgprksqcndkbsrzgiuvqgkqtqvucjdnyfqhigpgfeclnxyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnbkvkmqjgzrvmfpzwkixtxioqbzfvomgkicobwpsjeyfcaxwqxegkkiunassfsitgtnbbqukaeoubigzikncxyodlihgflmcbkqxdcvjpiqmnoorrutfxankapsmbdiicuytbwekanfyklnbjliaaebckybutdqwptyalaxaeuihzhclgqsmahtzogdxwslioxailzxafyztqpcakqukruoggiuemclpylcufjtmzxbutyghfkezxvfwojgolicczdqpqtwnugrwwcxumxofffljfhpkpddctnalygeuaugnnwxylfjdpzwvybdgtfyagjeqniouizgdzbhwahrylqwmnqzcjrhoivxidqmuikodwulsugcmwtxsadjdztkpdwbdxtvckayxskunxtompmmcbgiyedwfbjafnpcbvmxnrzvubwpnxfuzndvkxkf', NULL, 'n', 5, 'p','ouqbsvekyzrfizdybnlisnzpgplythqeyugzvhzjmxhmzqnbmldcuskteeyxqeesumyuohkhmoxtlpsumxsuahxrnybqsdvkiiiiatzeihtiwqjgxrspppoytvmuufhhkcgbnpemioxkjebunithymftmsroaqsxdrxhcozhqdagsxfxndeimavrxfdocfgafdxzxqoehcikppndcieybkyxmumqsbcwcmmrweiprthlrnphvebnfgjfhrkrxxorzzbedateyoomxdzgkevuyyvmusoduugukillurhwggkspxpaoxldymllvikfrwhblzugcnlgmozwbhvpytvyogbythupkkfgjqpqjgprksqcndkbsrzgiuvqgkqtqvucjdnyfqhigpgfeclnxyrkcxviqrwelsktxpoecytteiloxyzksesbdqhrcrfdzuxboyppuzjvssddkrsgvagetbssudtdsxcmpqpemiqbztutrkxougxqcpwlacgbyktskefotymojkkjnbkvkmqjgzrvmfpzwkixtxioqbzfvomgkicobwpsjeyfcaxwqxegkkiun');
-
 SELECT
 alias1 . col_int AS field1 ,
 CUME_DIST() OVER (   ORDER BY alias1 . pk) AS field2 ,
@@ -116,7 +111,6 @@ alias1.col_varchar_10_latin1,alias2.col_int_key, alias1.col_int,
 alias1.col_int_key, field11,alias1.col_int
 HAVING field3 >= 7
 ORDER BY field10  , field6  , field4;
-
 DROP TABLE DD,H;
 CREATE TABLE t (a INT NOT NULL, b BLOB NOT NULL) ENGINE=INNODB;
 CREATE VIEW v AS SELECT * FROM t;
@@ -125,7 +119,6 @@ SELECT a, PERCENT_RANK() OVER w1 FROM t GROUP BY b,1 WITH ROLLUP WINDOW w1 AS();
 SELECT a, PERCENT_RANK() OVER w1 FROM v GROUP BY b,1 WITH ROLLUP WINDOW w1 AS();
 DROP VIEW v;
 DROP TABLE t;
-
 CREATE TABLE t1 (doc JSON);
 INSERT INTO t1 VALUES
  ('{"txt": "abcd"}'), ('{"txt": "bcde"}'),
@@ -150,58 +143,33 @@ SELECT MAX(-2605.952148) OVER
          (PARTITION BY a ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM t WINDOW w1 AS (PARTITION BY a);
 DROP TABLE t;
-SELECT ((PERIOD_DIFF('7766-05-30','2955-06-11'))DIV(LAST_VALUE(';
-SELECT ((BIT_OR(COT('f?e')))DIV(LAG(' ',133,0xbb054701d650)OVER()));
-SELECT ((EXP(2778419536874221989))DIV(LAST_VALUE('{ }')OVER()));
-SELECT ((PERIOD_ADD(-6001,16973))DIV(LAST_VALUE('')OVER()));
-SELECT ((EXP(0x6108))DIV(LAG(NULL,21,' 4F')OVER()));
-SELECT ((FIRST_VALUE(EXP(0x41a129))OVER())DIV(-969));
-SELECT MAKETIME('1',(!(999*1.421474e+308)),LAST_VALUE(-25038)RESPECT NULLS
-OVER());
-
 CREATE TABLE t1 ( i INTEGER);
 INSERT INTO t1 VALUES (392),(392),(1027),(1027),(1027),(1034),(1039);
-
 SELECT i, LAST_VALUE(i) OVER w FROM t1
 WINDOW w AS (ORDER BY i RANGE BETWEEN 7 PRECEDING AND 1 PRECEDING);
-
 DROP TABLE t1;
-
-
 CREATE TABLE t(a INT);
 INSERT INTO t values (1),(2),(3),(6),(0);
-let $query=
-   SELECT 1 FROM t WINDOW w AS(PARTITION BY NULL,NULL ORDER BY NULL ASC);
-let $query=
-   SELECT 1 FROM t WINDOW w AS(PARTITION BY 1+2,3+4,5+6 ORDER BY 1+2,3+4);
-let $query=
-   SELECT RANK() OVER w1 FROM t WINDOW w1 AS (ORDER BY a), w2 AS (w1);
-let $query=
-   SELECT RANK() OVER w2 FROM t WINDOW w1 AS (ORDER BY a), w2 AS (w1);
-let $query=
-   SELECT RANK() OVER w2 FROM t WINDOW w1 AS (ORDER BY a), w2 AS (w1), w3 AS (w1);
-let $query=
-   SELECT RANK() OVER w3 FROM t WINDOW w1 AS (w2), w3 AS (w2), w2 AS ();
-let $query=
-   SELECT RANK() OVER w1 FROM t WINDOW w2 AS (w1), w1 AS (ORDER BY a);
-let $query=
-   SELECT RANK() OVER w1 FROM t WINDOW w1 AS (ROWS UNBOUNDED PRECEDING);
-
+SELECT 1 FROM t WINDOW w AS(PARTITION BY NULL,NULL ORDER BY NULL ASC);
+SELECT 1 FROM t WINDOW w AS(PARTITION BY 1+2,3+4,5+6 ORDER BY 1+2,3+4);
+SELECT RANK() OVER w1 FROM t WINDOW w1 AS (ORDER BY a), w2 AS (w1);
+SELECT RANK() OVER w2 FROM t WINDOW w1 AS (ORDER BY a), w2 AS (w1);
+SELECT RANK() OVER w2 FROM t WINDOW w1 AS (ORDER BY a), w2 AS (w1), w3 AS (w1);
+SELECT RANK() OVER w3 FROM t WINDOW w1 AS (w2), w3 AS (w2), w2 AS ();
+SELECT RANK() OVER w1 FROM t WINDOW w2 AS (w1), w1 AS (ORDER BY a);
+SELECT RANK() OVER w1 FROM t WINDOW w1 AS (ROWS UNBOUNDED PRECEDING);
 DROP TABLE t;
 CREATE TABLE t(c LONGTEXT NOT NULL);
 INSERT INTO t VALUES ('1'), ('1'), ('1'), ('1');
 SELECT FIRST_VALUE(c) OVER w fv, LAST_VALUE(c) OVER w lv
        FROM t WINDOW w AS (ORDER BY c
                            ROWS BETWEEN 3 FOLLOWING AND 5 FOLLOWING);
-
 DROP TABLE t;
-
 CREATE TABLE t(a BIT(52) NOT NULL, KEY(a));
 INSERT INTO t VALUES (1), (1), (1);
 SELECT EXISTS
     (SELECT a, LAST_VALUE(INET_ATON(1)) OVER() FROM t WHERE BIT_OR(1));
 DROP TABLE t;
-
 CREATE TABLE t (
 f1 LONGTEXT GENERATED ALWAYS AS (_utf8mb4'1') VIRTUAL NOT NULL
 );
@@ -220,16 +188,12 @@ SELECT VARIANCE(b) over w `var`,
        b,
        COUNT(b) OVER w count FROM t1
        WINDOW w as (ORDER BY b ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING);
-
-SET SESSION windowing_use_high_precision= FALSE;
-
 SELECT VARIANCE(b) over w `var`,
        AVG(b) OVER w `avg`,
        SUM(b) OVER w `sum`,
        b,
        count(b) OVER w count FROM t1
        WINDOW w as (ORDER BY b ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING);
-
 SELECT VARIANCE(b) over w `var`,
        AVG(b) OVER w `avg`,
        SUM(b) OVER w `sum`,
@@ -237,12 +201,8 @@ SELECT VARIANCE(b) over w `var`,
        count(b) OVER w count,
        LAST_VALUE(b) OVER w lastval FROM t1
        WINDOW w as (ORDER BY b ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING);
-
 INSERT INTO t1 VALUES (2);
 INSERT INTO t1 VALUES (3);
-
-SET SESSION windowing_use_high_precision= TRUE;
-
 SELECT VARIANCE(b) over w `var`,
        FIRST_VALUE(b) over w fv,
        AVG(b) OVER w `avg`,
@@ -250,9 +210,6 @@ SELECT VARIANCE(b) over w `var`,
        b,
        count(b) OVER w count FROM t1
        WINDOW w as (ORDER BY b ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING);
-
-SET SESSION windowing_use_high_precision= FALSE;
-
 SELECT VARIANCE(b) over w `var`,
        FIRST_VALUE(b) over w fv,
        AVG(b) OVER w `avg`,
@@ -260,19 +217,11 @@ SELECT VARIANCE(b) over w `var`,
        b,
        count(b) OVER w count FROM t1
        WINDOW w as (ORDER BY b ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING);
-
-SET SESSION windowing_use_high_precision= TRUE;
-
 DROP TABLE t1;
-
 CREATE TABLE t (a BIGINT,b INT);
 INSERT INTO t VALUES (9223372036854775807,1);
 INSERT INTO t VALUES (1,2);
-SELECT b, CUME_DIST() OVER (
-  PARTITION BY b ORDER BY a RANGE BETWEEN CURRENT ROW AND 1 FOLLOWING
-) FROM t;
 DROP TABLE t;
-
 CREATE TABLE t(f1 INTEGER);
 INSERT INTO t VALUES(0),(1),(2),(3);
 SELECT * FROM (SELECT IF(1, WEEKDAY('1'), ROW_NUMBER() OVER (PARTITION BY f1))
@@ -284,100 +233,47 @@ SELECT a, COUNT(a) OVER w, LAG(1,13) RESPECT NULLS OVER w
   FROM t
   WINDOW w AS (ORDER BY a RANGE BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING);
 DROP TABLE t;
-
-DO ST_CROSSES(@g,SUM(SHA(@g))OVER());
-
 SELECT bit_count(sum(cos(-66365726))over());
 SELECT bit_count(avg(cos(-66365726))over());
 CREATE TABLE t(a DATETIME(6) NOT NULL)ENGINE=INNODB;
 INSERT INTO t(a) VALUES('2008-01-01 00:22:33');
-    FROM t GROUP BY a;
 DROP TABLE t;
-
 CREATE TABLE t(a INTEGER);
 INSERT INTO t VALUES (1),(2),(3),(4);
-
 SELECT NTILE(74) OVER(ORDER BY a ROWS BETWEEN CURRENT ROW AND
                       9223372036854775807 FOLLOWING) FROM t;
-
 SELECT SUM(a) OVER(ORDER BY a ROWS BETWEEN 9223372036854775807 FOLLOWING AND
                    9223372036854775807 FOLLOWING) as `sum` FROM t;
-
 SELECT SUM(a) OVER(ORDER BY a ROWS BETWEEN 9223372036854775806 FOLLOWING AND
                    9223372036854775807 FOLLOWING) as `sum` FROM t;
-
 SELECT SUM(a) OVER(ORDER BY a ROWS BETWEEN 9223372036854775805 FOLLOWING AND
                    9223372036854775807 FOLLOWING) as `sum` FROM t;
-
 SELECT SUM(a) OVER(ORDER BY a ROWS BETWEEN 9223372036854775807 FOLLOWING AND
                    9223372036854775805 FOLLOWING) as `sum` FROM t;
-
 SELECT SUM(a) OVER(ORDER BY a ROWS BETWEEN 9223372036854775807 PRECEDING AND
                    9223372036854775805 PRECEDING) as `sum` FROM t;
-
 DROP TABLE t;
-
 CREATE TABLE t1 (i INTEGER);
-     der1 AS (SELECT ROW_NUMBER() OVER (ORDER BY a), a FROM der)
-  SELECT * FROM der1;
-     der1 AS (SELECT ROW_NUMBER() OVER (ORDER BY a) FROM der)
-  SELECT * FROM der1;
-     der1 AS (SELECT ROW_NUMBER() OVER (ORDER BY a) FROM der)
-  SELECT * FROM der1;
-SELECT i AS b, ROW_NUMBER() OVER (ORDER BY b) FROM t1;
-SELECT i+1 AS b, ROW_NUMBER() OVER (ORDER BY b) FROM t1;
-
 SELECT 3 AS i, ROW_NUMBER() OVER (ORDER BY i) FROM t1;
-
 DROP TABLE t1;
-
 CREATE TABLE t ( a INT, b DATETIME(3));
-
 INSERT t VALUES(1986,'9344-11-05 13:39:24.686');
 INSERT t VALUES(1995,'7213-04-25 08:35:10.618');
 INSERT t VALUES(1971,'9352-01-31 07:55:58.233');
 SELECT SUM(a) OVER w FROM t
 WINDOW w AS(ORDER BY a,b RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING);
-
 DROP TABLE t;
-
-SET @savmode=@@SESSION.SQL_MODE;
-SET SESSION SQL_MODE='';
 CREATE TABLE t(
   a TEXT CHARACTER SET CP1251
   GENERATED ALWAYS AS (LPAD(1,10621933,10)) VIRTUAL,
   b BLOB
   GENERATED ALWAYS AS (LPAD(1,10622,10)) VIRTUAL
   ) ENGINE=INNODB;
-INSERT INTO t VALUES (), ();
-
--- With TEXT:
---error ER_SUBQUERY_NO_1_ROW
-SET @f =
-(
-  SELECT NTILE(39) OVER w1 FROM t
-  WINDOW w1 AS(ORDER BY a)
-);
-
--- and with BLOB:
---error ER_SUBQUERY_NO_1_ROW
-SET @f =
-(
-  SELECT NTILE(39) OVER w1 FROM t
-  WINDOW w1 AS(ORDER BY b)
-);
-
+PREPARE stmt FROM 'SELECT NTILE(39) OVER w1 FROM t
+WINDOW w1 AS(ORDER BY a)';
+PREPARE stmt FROM 'SELECT NTILE(39) OVER w1 FROM t
+WINDOW w1 AS(ORDER BY b)';
 DROP TABLE t;
-SET SESSION SQL_MODE=@savmode;
-  SELECT 1 AS t,   'G' AS company, 40 AS quote
-  UNION SELECT 2 , 'G',    60
-  UNION SELECT 3 , 'S',    60
-  UNION SELECT 4,  'S',    20
-)
-SELECT DISTINCT
-    company,
-    quote - LAG(quote) OVER (PARTITION BY company ORDER BY t)
-  FROM tab;
 CREATE TABLE t(i INT);
 INSERT INTO t VALUES (0), (0), (0), (0), (1), (0), (0), (0);
 SELECT DISTINCT i, 1 + SUM(i) OVER (ORDER BY i ROWS UNBOUNDED PRECEDING) FROM t;
@@ -389,87 +285,53 @@ INSERT INTO t VALUES (1,1), (4,2), (NULL, 2), (NULL, NULL), (2, NULL);
 SELECT a,b, FIRST_VALUE(b) OVER w AS first, LAST_VALUE (a) OVER w AS last
     FROM t WINDOW w AS (ORDER BY a  desc RANGE 3 PRECEDING);
 DROP TABLE t;
-       SELECT 1 num
-       UNION ALL
-       SELECT num+1 FROM cte WHERE num < 5
-       )
-       SELECT num, COUNT(*) OVER (frame) cnt_named,
-                   COUNT(*) OVER (ORDER BY num DESC) cnt_direct
-       FROM cte
-       WINDOW frame AS (ORDER BY num DESC);
-SELECT JSON_ARRAY(FIRST_VALUE(CAST('' AS JSON)) OVER (), '');
-SELECT JSON_ARRAY(NTH_VALUE(CAST('' AS JSON), 1) OVER (), '');
-SELECT JSON_ARRAY(LEAD(CAST('true' AS JSON), 2, CAST('' AS JSON)) OVER (), '');
-SELECT JSON_ARRAY(JSON_ARRAYAGG(CAST('' AS JSON)) OVER (), '');
-
 CREATE TABLE t1 (a TIMESTAMP NOT NULL);
 INSERT INTO t1 VALUES ('2000-01-01 00:00:00');
 SELECT a + INTERVAL(LAST_VALUE(1) OVER ()) SECOND FROM (SELECT a FROM t1) q;
 DROP TABLE t1;
-
 CREATE TABLE t1 (
   f1 INTEGER,
   t1_partkey INTEGER
 );
-
 CREATE TABLE t2 (
   t2_partkey INTEGER PRIMARY KEY
 );
-
 INSERT INTO t1 VALUES (34, 1), (10, 1), (4, 1), (6, 1),
                       (9, 2), (64, 2), (31,2);
 INSERT INTO t2 VALUES (1), (2), (3), (4), (5), (6), (7);
-
 SELECT 0.2 * AVG(f1) OVER w AS avg, f1
  FROM t1 JOIN t2 ON t1_partkey = t2_partkey
  WINDOW w AS (PARTITION BY t1_partkey);
-
 DROP TABLE t1, t2;
-
 CREATE TABLE t(f1 SET('a','b'), f2 INTEGER);
 INSERT INTO t VALUES ('b',1), ('a',2), ('a,b',3), ('b',0), ('a',1);
 SELECT FIRST_VALUE(f2) OVER(ORDER BY f1 RANGE CURRENT ROW) FROM t;
 DROP TABLE t;
-
 CREATE TABLE t1 ( a INTEGER NOT NULL );
 INSERT INTO t1 VALUES (4);
-
--- Make sure we don't try to sort-ahead on a, SUM(a) before the grouping.
 SELECT a, SUM(a) OVER () AS s
 FROM t1
 GROUP BY a
 ORDER BY a, s;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( a INTEGER, b INTEGER );
-
--- The (a,b,m) ordering is pre-reduced and combined with (a,b),
--- so we can't ignore it for GROUP BY on the grounds that it
--- used to contain an aggregate.
 SELECT ROW_NUMBER() OVER (ORDER BY a), COUNT(*) AS m
 FROM t1
 GROUP BY a, b
 ORDER BY a, b, m;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( a INTEGER );
+PREPARE stmt FROM "SELECT RANK() OVER (ORDER BY a) FROM t1 GROUP BY a";
 DROP TABLE t1;
-
 CREATE TABLE t1 ( a INTEGER );
 INSERT INTO t1 VALUES (0), (1);
-
 SELECT a
   FROM t1 AS outer_t1
   WHERE (a,a) IN (
     SELECT MAX(a) OVER (), a FROM t1
   );
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( a INTEGER, b INTEGER, c INTEGER, d INTEGER, e INTEGER, f INTEGER, g INTEGER, h INTEGER, i INTEGER, j INTEGER, k INTEGER );
-
 SELECT
   CUME_DIST() OVER (ORDER BY t1.a)
 FROM
@@ -479,43 +341,25 @@ FROM
   NATURAL JOIN t1 AS t4
 GROUP BY t1.a
 WITH ROLLUP;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( pk INTEGER );
 INSERT INTO t1 VALUES (2);
-
 SELECT SUM(pk) OVER (ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) FROM t1 GROUP BY pk WITH ROLLUP;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( a LONGTEXT, b INTEGER );
 INSERT INTO t1 VALUES ('1', 0);
-
 SELECT
   a,
   SUM(1) OVER (ORDER BY b),
   SUM(1) OVER (ORDER BY b DESC)
 FROM t1;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (a INTEGER, b VARCHAR(255));
 INSERT INTO t1 VALUES (1,'x');
 INSERT INTO t1 VALUES (-3,'y');
-
 CREATE TABLE t2 ( a INTEGER );
-
-SET sql_mode='';
-
-SELECT MIN(a) AS field1 FROM t1 WHERE b IN ( SELECT a FROM t2 ) ORDER BY LEAD(a, 5, 7) OVER (ORDER BY b);
-SELECT MIN(a), LEAD(a, 5, 7) OVER (ORDER BY b) AS field1 FROM t1 WHERE b IN ( SELECT a FROM t2 ) ORDER BY b;
-
-SET sql_mode=DEFAULT;
 DROP TABLE t1, t2;
-
 CREATE TABLE t1 ( a INTEGER );
-
 SELECT DISTINCT
   0 AS field1,
   RANK() OVER (ORDER BY a) AS field2,
@@ -523,9 +367,7 @@ SELECT DISTINCT
 FROM t1
 GROUP BY a, field1 WITH ROLLUP
 ORDER BY field1, field2, field3;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (a INTEGER);
 INSERT INTO t1 VALUES (1);
 SELECT LAST_VALUE(0) OVER (ORDER BY (@f:='x')) FROM t1;
@@ -535,25 +377,17 @@ INSERT INTO t VALUES(1, 2.1);
 INSERT INTO t VALUES(2, 1.4);
 INSERT INTO t VALUES(1, 2.56);
 INSERT INTO t VALUES(2, 2.23);
-
 SELECT a, SUM(b)+1 AS cnt,
        ROW_NUMBER() OVER (ORDER BY SUM(b) DESC) AS rn
 FROM t GROUP BY a ORDER BY rn;
-
 SELECT a, ROUND(SUM(b), 2) AS cnt,
        ROW_NUMBER() OVER (ORDER BY SUM(b) DESC) AS rn
 FROM t GROUP BY a ORDER BY rn DESC;
-
 DROP TABLE t;
-
 CREATE TABLE v0 (v1 INTEGER);
 INSERT INTO v0 VALUES (1);
-
-let $query=
 SELECT v1, (SELECT v1 FROM (SELECT AVG(0) OVER (), v1) AS v2) FROM v0;
-
 DROP TABLE v0;
-
 CREATE TABLE t(
   col1 INT, col2 INT,
   col3 INT, col4 INT, col5 INT,
@@ -570,16 +404,6 @@ CREATE TABLE t(
   col56 INT, col57 INT, col58 INT, col59 INT, col60 INT,
   col61 INT, col62 INT, col63 INT, col64 INT, col65 INT,
   col66 INT, col67 INT, col68 INT, col69 INT, col70 INT);
-{
-  eval INSERT INTO t VALUES(
-    $i+1, $i+2, $i+3, $i+4, $i+5, $i+6, $i+7, $i+8, $i+9, $i+10,
-    $i+11, $i+12, $i+13, $i+14, $i+15, $i+16, $i+17, $i+18, $i+19, $i+20,
-    $i+21, $i+22, $i+23, $i+24, $i+25, $i+26, $i+27, $i+28, $i+29, $i+30,
-    $i+31, $i+32, $i+33, $i+34, $i+35, $i+36, $i+37, $i+38, $i+39, $i+40,
-    $i+41, $i+42, $i+43, $i+44, $i+45, $i+46, $i+47, $i+48, $i+49, $i+50,
-    $i+51, $i+52, $i+53, $i+54, $i+55, $i+56, $i+57, $i+58, $i+59, $i+60,
-    $i+61, $i+62, $i+63, $i+64, $i+65, $i+66, $i+67, $i+68, $i+69, $i+70);
-
 SELECT
   FIRST_VALUE(col1) OVER (ORDER BY col1) AS wf1,
   FIRST_VALUE(col1) OVER (ORDER BY col2) AS wf2,
@@ -652,7 +476,6 @@ SELECT
   FIRST_VALUE(col1) OVER (ORDER BY col69) AS wf69,
   FIRST_VALUE(col1) OVER (ORDER BY col70) AS wf70
 FROM t;
-
 SELECT DISTINCT
   FIRST_VALUE(col1) OVER (ORDER BY col1) AS wf1,
   FIRST_VALUE(col1) OVER (ORDER BY col2) AS wf2,
@@ -725,41 +548,28 @@ SELECT DISTINCT
   FIRST_VALUE(col1) OVER (ORDER BY col69) AS wf69,
   FIRST_VALUE(col1) OVER (ORDER BY col70) AS wf70
 FROM t;
-
 DROP TABLE t;
-
 CREATE TABLE t1 (f1 INTEGER, f2 INTEGER, f3 INTEGER);
-
 INSERT INTO t1 VALUES (1,1,1),
                       (2,1,20),
                       (3,1,300),
                       (4,1,4000);
-
 SELECT f1,f2,f3,
        FIRST_VALUE(f3) OVER w  AS 'FIRST_VALUE',
        LAG(f3) OVER w          AS 'LAG',
        NTH_VALUE(f3, 4) OVER w AS 'NTH_VALUE'
 FROM t1 WINDOW w AS (PARTITION BY f2 ORDER BY f3
                      ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING);
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 INTEGER, f2 INTEGER);
 INSERT INTO t1 VALUES (1,1),(1,2),(2,1),(2,2);
-
 SELECT f1, f2, DENSE_RANK() OVER (ORDER BY f1), RANK() OVER (ORDER BY f1)
 FROM t1 GROUP BY f1,f2 WITH ROLLUP;
 SELECT f1, f2, DENSE_RANK() OVER (ORDER BY f1), RANK() OVER (ORDER BY f1)
 FROM t1 GROUP BY f1,f2;
-
 DROP TABLE t1;
-
--- int & decimal share code paths for AVG so no need to test DECIMAL separately
 CREATE TABLE t (n INTEGER, r FLOAT);
-
 INSERT INTO t VALUES (1, 1.0), (2, 2.0), (3, 3.0), (4, 4.0);
-SET SESSION windowing_use_high_precision=FALSE;
-
 SELECT n
      , SUM(n)   OVER w AS "sum(n)"
      , COUNT(*) OVER w AS "count(n)"
@@ -772,8 +582,6 @@ SELECT n
      , SUM(r)   OVER w / COUNT(*) OVER w AS "sum(r)/count(r)"
 FROM t WINDOW w AS (ORDER BY n ROWS BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING)
 ORDER BY n;
-
-SET SESSION windowing_use_high_precision=default;
 SELECT n
      , SUM(n)   OVER w AS "sum(n)"
      , COUNT(*) OVER w AS "count(n)"
@@ -786,104 +594,59 @@ SELECT n
      , SUM(r)   OVER w / COUNT(*) OVER w AS "sum(r)/count(r)"
 FROM t WINDOW w AS (ORDER BY n ROWS BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING)
 ORDER BY n;
-
 DROP TABLE t;
 CREATE TABLE t1 ( a TIME );
 INSERT INTO t1 VALUES ('02:00:00');
 INSERT INTO t1 VALUES (NULL);
-
 SELECT a, PERCENT_RANK() OVER (ORDER BY a) FROM t1;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( a INTEGER, b INTEGER );
-
 INSERT INTO t1 VALUES (0,NULL);
 INSERT INTO t1 VALUES (NULL,1);
-
 SELECT 1 FROM t1
 ORDER BY BIT_OR(a) OVER (ORDER BY b ROWS CURRENT ROW);
-
 SELECT SUM(a) OVER w
 FROM t1
 WINDOW w AS (ORDER BY b ROWS CURRENT ROW)
 ORDER BY SUM(b) OVER w;
-
 SELECT a, b, SUM(a) OVER w, SUM(b) OVER w
 FROM t1
 WINDOW w AS (ORDER BY b ROWS CURRENT ROW)
 ORDER BY SUM(b) OVER w;
-
 DROP TABLE t1;
-
 CREATE TABLE t1(pk INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 c1 VARCHAR(10) DEFAULT NULL,
                 c2 VARCHAR(10) DEFAULT NULL,
                 c3 INT, KEY(c1));
 INSERT INTO t1(c1, c2, c3) VALUES('am', 'it', 1);
-
-SET SQL_MODE='';
-
-SELECT DISTINCT BIT_XOR( c2 )
-FROM t1
-WINDOW w1 AS (ORDER BY c2),
-       w2 AS (ORDER BY c3 ROWS UNBOUNDED PRECEDING)
-ORDER BY ( EXPORT_SET( c2,
-                       c1,
-                       SUM( pk ) OVER w1 ,
-                       FIRST_VALUE( pk ) OVER w2
-                     )
-         );
-
-SET SQL_MODE=default;
-
 DROP TABLE t1;
 CREATE TABLE t(i INT);
 INSERT INTO t(i) VALUES (100), (101);
+PREPARE stmt1 FROM "
   SELECT a.i, (LAST_VALUE(a.i) OVER outer_window) = a.i AS result
   FROM (SELECT LAG(i) OVER inner_window AS i_lag,
                i AS i
         FROM t
         WINDOW inner_window AS (ORDER BY i) ) AS a
   WINDOW outer_window AS (ORDER BY a.i)";
-
 DROP PREPARE stmt1;
 DROP TABLE t;
 CREATE TABLE table1(id INT);
 INSERT INTO table1 VALUES(1),(2),(3),(4),(5),(6);
-CREATE PROCEDURE test2()
-BEGIN
-SELECT COUNT(*) OVER (ROWS BETWEEN 5 PRECEDING AND 5 FOLLOWING) AS a,
-COUNT(*) OVER (ROWS BETWEEN 5 PRECEDING AND 5 FOLLOWING) + 1 AS "a+1",
-COUNT(*) OVER (ROWS BETWEEN 5 PRECEDING AND 5 FOLLOWING) - 1 AS "a-1",
-COUNT(*) OVER () AS b,
-COUNT(*) OVER () + 1 AS "b+1",
-COUNT(*) OVER () - 1 AS "b-1" FROM table1 ;
-END $
-DELIMITER ;
-
-DROP PROCEDURE test2;
 DROP TABLE table1;
 CREATE TABLE t1 (c1 INT);
 INSERT INTO t1 VALUES (NULL), (NULL), (-2128216064);
 SELECT AVG( @A := c1 ) OVER (ROWS 1 PRECEDING) FROM t1;
 SELECT @A;
 DROP TABLE t1;
-
--- Repro from Bug#11764371 decorated with windows to test
--- against possible locking issue mentioned therein.
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES (0);
-
--- original
 SELECT DISTINCT
        POW( COUNT(*), @a:=(SELECT 1 FROM t1 LEFT JOIN
                                          t1 AS t2
                                          ON @a)
           ) AS b
 FROM t1 GROUP BY a;
-
--- window func using setvar added in outer layer
 SELECT DISTINCT
        pow( COUNT(*), @a:=(SELECT 1 FROM t1 LEFT JOIN
                                          t1 t2
@@ -903,7 +666,6 @@ SELECT DISTINCT
           ) AS `pow`
 FROM t1 GROUP BY a;
 SELECT @a;
-
 DROP TABLE t1;
 CREATE TABLE t1(f1 INTEGER);
 SELECT @A := (CUME_DIST() OVER () + f1 + RANK() OVER ()) FROM t1 GROUP BY f1 WITH ROLLUP;
@@ -923,12 +685,10 @@ INSERT INTO t0 VALUES
        (255,NULL),
        (255,NULL),
        (255,NULL);
-
 SELECT NTH_VALUE(t0.c1, 97) OVER (
        ORDER BY t0.c1
        RANGE BETWEEN 99 FOLLOWING AND 51 FOLLOWING)
 FROM t0;
 INSERT INTO t0(c1) VALUES (135), (206), (193), (244), (255), (255), (255);
 SELECT NTH_VALUE(c1, 2) OVER (ORDER BY c1 RANGE BETWEEN 60 FOLLOWING AND 100 FOLLOWING) FROM t0;
-
 DROP TABLE t0;

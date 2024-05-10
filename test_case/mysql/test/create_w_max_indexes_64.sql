@@ -1,12 +1,3 @@
-
---
--- Bug #26642: create index corrupts table definition in .frm
---
--- Problem with creating keys with maximum key-parts and maximum name length
--- This test is made for a mysql server supporting names up to 64 bytes
--- and a maximum of 16 key segements per Key
---
-
 create table t1 (
   c1 int, c2 int, c3 int, c4 int, c5 int, c6 int, c7 int, c8 int,
   c9 int, c10 int, c11 int, c12 int, c13 int, c14 int, c15 int, c16 int,
@@ -146,16 +137,9 @@ create table t1 (
  key a064_long_123456789_123456789_123456789_123456789_123456789_1234 (
   c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16)
 );
-
--- Check that the table is not corrupted
-show create table t1;
-
--- Repeat test using ALTER to add indexes
-
 drop table t1;
 create table t1 (c1 int, c2 int, c3 int, c4 int, c5 int, c6 int, c7 int, 
 c8 int, c9 int, c10 int, c11 int, c12 int, c13 int, c14 int, c15 int, c16 int);
-
 alter table t1
 
  add key a001_long_123456789_123456789_123456789_123456789_123456789_1234 (
@@ -292,28 +276,8 @@ alter table t1
   c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16),
  add key a064_long_123456789_123456789_123456789_123456789_123456789_1234 (
   c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16);
-
--- Test the server limits;
-alter table t1 add key 
- a065_long_123456789_123456789_123456789_123456789_123456789_1234 (
-  c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16);
-
 drop table t1;
-
--- Ensure limit is really 16 key parts per key
-
 create table t1 (c1 int, c2 int, c3 int, c4 int, c5 int, c6 int, c7 int, 
 c8 int, c9 int, c10 int, c11 int, c12 int, c13 int, c14 int, c15 int, 
 c16 int, c17 int);
-
--- Get error for max key parts
---error 1070
-alter table t1 add key i1 (
- c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16, c17);
-
--- Get error for max key-name length
---error 1059
-alter table t1 add key 
- a001_long_123456789_123456789_123456789_123456789_123456789_12345 (c1);
-
 drop table t1;

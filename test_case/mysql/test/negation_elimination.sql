@@ -1,8 +1,4 @@
---
-
---disable_warnings
 drop table if exists t1;
-
 create table t1 (a int, key (a));
 insert into t1 values (NULL), (0), (1), (2), (3), (4), (5), (6), (7), (8), (9),
 (10), (11), (12), (13), (14), (15), (16), (17), (18), (19);
@@ -40,8 +36,6 @@ SELECT * FROM t1 WHERE NOT ((a > 5) XOR (NOT (a > 7)));
 SELECT * FROM t1 WHERE NOT ((NOT (a > 5)) XOR (NOT (a > 7)));
 SELECT * FROM t1 WHERE (NULL XOR (a > 7));
 SELECT * FROM t1 WHERE NOT (NULL XOR (a > 7));
-
 delete from t1 where a > 3;
 select a, not(not(a)) from t1;
-
 drop table t1;

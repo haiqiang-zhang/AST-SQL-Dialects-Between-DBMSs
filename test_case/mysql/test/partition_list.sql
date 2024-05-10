@@ -1,8 +1,4 @@
---
-
---disable_warnings
 drop table if exists t1;
-
 CREATE TABLE t1 (a INT);
 ALTER TABLE t1
 PARTITION BY LIST(a)
@@ -14,10 +10,6 @@ ALTER TABLE t1 ADD PARTITION
 ALTER TABLE t1
 PARTITION BY LIST COLUMNS (a)
 (PARTITION p1 VALUES IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20));
-ALTER TABLE t1 ADD PARTITION
-(PARTITION p2 VALUES IN ((71),(72),(73),(74),(75),(76),(77),(78),(79),(80),
-                         (81),(82),(83),(84),(85),(86),(87),(88),(89),(90)));
-
 ALTER TABLE t1 ADD PARTITION
 (PARTITION p2 VALUES IN (21,22,23,24,25,26,27,28,29,30,
                          31,32,33,34,35,36,37,38,39,40));
@@ -44,33 +36,14 @@ ALTER TABLE t1 ADD PARTITION
  (2, "ad"), (2, "ae"), (2, "af"), (2, "ag"), (2, "ah"), (2, "ai"), (2, "aj"),
  (2, "ak"), (2, "al")));
 ALTER TABLE t1 ADD PARTITION
-(PARTITION p3_a VALUES IN ((1 + 1 + 1), "a0"));
-ALTER TABLE t1 ADD PARTITION
-(PARTITION p3_a VALUES IN (1 + 1 + 1, "a0"));
-ALTER TABLE t1 ADD PARTITION
-(PARTITION p3_a VALUES IN ((3, "a1", 0), (3, "a2", 0)));
-ALTER TABLE t1 ADD PARTITION
 (PARTITION p3_a VALUES IN ((1 + 1 + 1, "a0")));
-ALTER TABLE t1 ADD PARTITION
-(PARTITION part_2 VALUES IN ((21 ,22, 23, 24, 25, 26, 27, 28, 29, 30,
-                              31 ,32, 33, 34, 35, 36, 37, 38, 39, 40),
-                             (41 ,42, 43, 44, 45, 46, 47, 48, 49, 50,
-                              51 ,52, 53, 54, 55, 56, 57, 58, 59, 60)));
-ALTER TABLE t1 ADD PARTITION
-(PARTITION part_2 VALUES IN (21 ,22, 23, 24, 25, 26, 27, 28, 29, 30,
-                             31 ,32, 33, 34, 35, 36, 37, 38, 39, 40));
 DROP TABLE t1;
-
---
--- Bug 20733: Zerofill columns gives wrong result with partitioned tables
---
 create table t1 (a int unsigned)
 partition by list (a)
 (partition p0 values in (0),
  partition p1 values in (1),
  partition pnull values in (null),
  partition p2 values in (2));
-
 insert into t1 values (null),(0),(1),(2);
 select * from t1 where a < 2;
 select * from t1 where a <= 0;
@@ -83,7 +56,6 @@ select * from t1 where a is null;
 select * from t1 where a is not null;
 select * from t1 where a is null or a > 0;
 drop table t1;
-
 create table t1 (a int unsigned, b int)
 partition by list (a)
 subpartition by hash (b)
@@ -102,10 +74,6 @@ select * from t1 where a <= 0;
 select * from t1 where a < 3;
 select * from t1 where a >= 1 or a is null;
 drop table t1;
-
---
--- Test ordinary list partitioning that it works ok
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -114,40 +82,32 @@ partition by list(a)
 partitions 2
 (partition x123 values in (1,5,6),
  partition x234 values in (4,7,8));
-
 INSERT into t1 VALUES (1,1,1);
-INSERT into t1 VALUES (2,1,1);
-INSERT into t1 VALUES (3,1,1);
 INSERT into t1 VALUES (4,1,1);
 INSERT into t1 VALUES (5,1,1);
 INSERT into t1 VALUES (6,1,1);
 INSERT into t1 VALUES (7,1,1);
 INSERT into t1 VALUES (8,1,1);
-INSERT into t1 VALUES (9,1,1);
 INSERT into t1 VALUES (1,2,1);
 INSERT into t1 VALUES (1,3,1);
 INSERT into t1 VALUES (1,4,1);
 INSERT into t1 VALUES (7,2,1);
 INSERT into t1 VALUES (7,3,1);
 INSERT into t1 VALUES (7,4,1);
-
 SELECT * from t1;
 SELECT * from t1 WHERE a=1;
 SELECT * from t1 WHERE a=7;
 SELECT * from t1 WHERE b=2;
-
 UPDATE t1 SET a=8 WHERE a=7 AND b=3;
 SELECT * from t1;
 UPDATE t1 SET a=8 WHERE a=5 AND b=1;
 SELECT * from t1;
-
 DELETE from t1 WHERE a=8;
 SELECT * from t1;
 DELETE from t1 WHERE a=2;
 SELECT * from t1;
 DELETE from t1 WHERE a=5 OR a=6;
 SELECT * from t1;
-
 ALTER TABLE t1
 partition by list(a)
 partitions 2
@@ -155,8 +115,6 @@ partitions 2
  partition x234 values in (4,7,8));
 SELECT * from t1;
 INSERT into t1 VALUES (6,2,1);
-INSERT into t1 VALUES (2,2,1);
-
 drop table t1;
 CREATE TABLE t1 (
 a int not null,
@@ -172,20 +130,15 @@ subpartition by hash (a+b)
   ( subpartition x21 nodegroup 0,
     subpartition x22 nodegroup 1)
 );
-
 INSERT into t1 VALUES (1,1,1);
 INSERT into t1 VALUES (4,1,1);
-INSERT into t1 VALUES (7,1,1);
 UPDATE t1 SET a=5 WHERE a=1;
 SELECT * from t1;
 UPDATE t1 SET a=6 WHERE a=4;
 SELECT * from t1;
 DELETE from t1 WHERE a=6;
 SELECT * from t1;
-
 drop table t1;
-
---
 CREATE TABLE t1 (
 a int not null,
 b int not null,
@@ -193,12 +146,7 @@ c int not null,
 primary key(a,b))
 partition by list (a)
 (partition x1 values in (1,2,9,4));
-
 drop table t1;
-
---
---Bug #17173 Partitions: less-than search fails
---
 CREATE TABLE t1 (s1 int) PARTITION BY LIST (s1)
 (PARTITION p1 VALUES IN (1),
 PARTITION p2 VALUES IN (2),
@@ -208,10 +156,6 @@ PARTITION p5 VALUES IN (5));
 INSERT INTO t1 VALUES (1), (2), (3), (4), (5);
 SELECT COUNT(*) FROM t1 WHERE s1 < 3;
 DROP TABLE t1;
-
---
--- Bug 19281 Partitions: Auto-increment value lost
---
 create table t1 (a int auto_increment primary key)
 auto_increment=100
 partition by list (a)
@@ -220,46 +164,6 @@ create index inx on t1 (a);
 insert into t1 values (null);
 select * from t1;
 drop table t1;
-create table t1 (a char(1))
-partition by list (ascii(ucase(a)))
-(partition p1 values in (2));
-
-SET innodb_strict_mode=OFF;
-(
-  PARTITION p1999 VALUES IN (1995, 1999, 2003)
-    DATA DIRECTORY = '$MYSQLTEST_VARDIR/tmp/tc_partition_list_directory/p1999/data'
-    INDEX DIRECTORY = '$MYSQLTEST_VARDIR/tmp/tc_partition_list_directory/p1999/idx',
-  PARTITION p2000 VALUES IN (1996, 2000, 2004)
-    DATA DIRECTORY = '$MYSQLTEST_VARDIR/tmp/tc_partition_list_directory/p2000/data'
-    INDEX DIRECTORY = '$MYSQLTEST_VARDIR/tmp/tc_partition_list_directory/p2000/idx',
-  PARTITION p2001 VALUES IN (1997, 2001, 2005)
-    DATA DIRECTORY = '$MYSQLTEST_VARDIR/tmp/tc_partition_list_directory/p2001/data'
-    INDEX DIRECTORY = '$MYSQLTEST_VARDIR/tmp/tc_partition_list_directory/p2001/idx'
-);
-INSERT INTO t1 VALUES(1,'abc','1994-01-01');
-INSERT INTO t1 VALUES(2,'abc','1995-01-01');
-INSERT INTO t1 VALUES(3,'abc','1996-01-01');
-INSERT INTO t1 VALUES(4,'abc','1997-01-01');
-INSERT INTO t1 VALUES(5,'abc','1998-01-01');
-INSERT INTO t1 VALUES(6,'abc','1999-01-01');
-INSERT INTO t1 VALUES(7,'abc','2000-01-01');
-INSERT INTO t1 VALUES(8,'abc','2001-01-01');
-INSERT INTO t1 VALUES(9,'abc','2002-01-01');
-INSERT INTO t1 VALUES(10,'abc','2003-01-01');
-INSERT INTO t1 VALUES(11,'abc','2004-01-01');
-INSERT INTO t1 VALUES(12,'abc','2005-01-01');
-INSERT INTO t1 VALUES(13,'abc','2006-01-01');
-DROP TABLE t1;
-
--- Cleanup
---force-rmdir $MYSQLTEST_VARDIR/tmp/tc_partition_list_directory
-
-
---echo --
---echo -- Bug#28387488: DATA DICTINARY CRASH ON DEBUG BUILD 
---echo -- 
-
---echo -- Create table with partition value which is not legal utf-8. 
 CREATE TABLE t1 (c1 varbinary(64) NOT NULL) PARTITION BY LIST COLUMNS (c1) (PARTITION custom_p1 VALUES IN (0x98000));
 SELECT TABLE_NAME, PARTITION_DESCRIPTION FROM information_schema.partitions WHERE table_name = 't1';
 CREATE TABLE t2 (c1 varbinary(64) NOT NULL) PARTITION BY LIST COLUMNS (c1) (PARTITION custom_p1 VALUES IN (0x24212b2b));

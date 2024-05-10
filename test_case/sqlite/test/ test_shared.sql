@@ -170,6 +170,7 @@ CREATE VIEW v2 AS SELECT * FROM t1, v1
                       WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b;
 SELECT * FROM t1;
 DROP TABLE t1;
+SELECT * FROM t1;
 pragma auto_vacuum=1;
 pragma auto_vacuum;
 INSERT INTO abc VALUES(1, 2, 3);
@@ -295,3 +296,4 @@ CREATE INDEX i1 ON t1(a, b);
 CREATE VIEW v1 AS SELECT * FROM t1;
 SELECT * FROM t1;
 DROP TABLE t1;
+SELECT * FROM t1;

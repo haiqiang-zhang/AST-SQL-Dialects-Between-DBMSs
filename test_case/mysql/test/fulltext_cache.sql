@@ -1,11 +1,4 @@
-
---
--- Bugreport due to Roy Nasser <roy@vem.ca>
---
-
---disable_warnings
 drop table if exists t1, t2;
-
 CREATE TABLE t1 (
   id int(10) unsigned NOT NULL auto_increment,
   q varchar(255) default NULL,
@@ -28,17 +21,12 @@ INSERT INTO t2 VALUES (5,2,'um copo de Vodka');
 INSERT INTO t2 VALUES (6,2,'um chocolate Snickers');
 INSERT INTO t2 VALUES (7,1,'Bife');
 INSERT INTO t2 VALUES (8,1,'Pizza de Salmao');
-
 SELECT t1.q, t2.item, t2.id, round(MATCH t2.item AGAINST ('sushi'),6)
 as x FROM t1, t2 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id;
-
 SELECT t1.q, t2.item, t2.id, MATCH t2.item AGAINST ('sushi' IN BOOLEAN MODE)
 as x FROM t1, t2 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id;
-
 SELECT t1.q, t2.item, t2.id, round(MATCH t2.item AGAINST ('sushi'),6)
 as x FROM t2, t1 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id;
-
 SELECT t1.q, t2.item, t2.id, MATCH t2.item AGAINST ('sushi' IN BOOLEAN MODE)
 as x FROM t2, t1 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id;
-
 drop table t1, t2;

@@ -1,9 +1,3 @@
-SET optimizer_switch='subquery_to_derived=on';
-
--- This performance schema table is queried further down. Clear it now,
--- so that we start with a clean state, regardless of what earlier
--- tests have written to it.
-TRUNCATE TABLE performance_schema.events_statements_summary_by_digest;
 CREATE TABLE t1(a INT);
 CREATE TABLE t2(a INT);
 INSERT INTO t1 VALUES (1),(2),(3),(4);
@@ -11,109 +5,16 @@ INSERT INTO t2 VALUES (1),(2);
 CREATE TABLE t0 AS SELECT * FROM t1;
 CREATE TABLE t3(a INT, b INT);
 INSERT INTO t3 VALUES (1,3), (2,3);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2);
-let $query = SELECT t1.* FROM t1 LEFT OUTER JOIN
-                    (SELECT COUNT(a) AS cnt FROM t2) AS derived
-             ON TRUE
-             WHERE t1.a > derived.cnt;
-let $query =
 SELECT t0.*, t1.* FROM t0 LEFT OUTER JOIN t1 ON t0.a != t1.a
 WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2);
-
-let $query =
 SELECT * FROM t0 LEFT OUTER JOIN t1 on t0.a = t1.a
 WHERE t0.a > (SELECT COUNT(a) AS cnt FROM t2);
-let $query =
 SELECT t0.*, t1.* FROM (t0 LEFT OUTER JOIN t1 ON t0.a != t1.a) LEFT OUTER JOIN
        (SELECT COUNT(a) AS cnt FROM t2) AS derived
 ON TRUE
 WHERE t1.a > derived.cnt;
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2) OR t1.a = 2;
-let $query = SELECT t1.* FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2) AND
-                   t1.a < (SELECT MAX(a) * 4 AS mx FROM t2);
-let $query = SELECT t1.* FROM t1
-             LEFT JOIN (SELECT COUNT(a) AS cnt FROM t2) AS lj1 ON TRUE
-             LEFT JOIN (SELECT MAX(a) * 4 AS mx FROM t2) AS lj2 ON TRUE
-             WHERE t1.a > cnt AND t1.a < mx;
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t3);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t3 GROUP BY a);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 EXCEPT SELECT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 3 EXCEPT SELECT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 INTERSECT SELECT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 EXCEPT SELECT 2);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 INTERSECT SELECT 2);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 INTERSECT ALL SELECT 2);
-let $query = SELECT * FROM t1
-             WHERE t1.a > ((SELECT COUNT(a) AS cnt FROM t2 GROUP BY a LIMIT 2) INTERSECT ALL SELECT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 GROUP BY a  INTERSECT ALL SELECT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT a from t1 WHERE false);
-
-let $query = SELECT a + (SELECT a from t1 WHERE false) FROM t1;
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 1 LIMIT 1);
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 1 LIMIT 1 OFFSET 1);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 1 LIMIT 1 OFFSET 0);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 1 LIMIT 2 OFFSET 0);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION SELECT 1 LIMIT 2 OFFSET 1);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2 UNION (SELECT 1 LIMIT 1));
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT a FROM t2 LIMIT 1);
-
-let $query = SELECT * FROM t1
-             WHERE t1.a > (SELECT a FROM t2);
 SELECT (SELECT SUM(a) + (SELECT SUM(t1.a) FROM t1) + SUM(t3.a) FROM t2) FROM t3;
 SELECT SUM(a), (SELECT SUM(b) FROM t3) scalar FROM t1 HAVING SUM(a) > scalar;
-        WHERE t1.a > (SELECT COUNT(a) AS cnt FROM t2);
-let $query =
-SELECT DISTINCT 3 + (SELECT COUNT(a) + RAND() FROM t1) FROM t1;
-let query = SELECT t1.a, t2.a
-            FROM t1
-                 JOIN t2
-                 ON t1.a+t2.a = (SELECT COUNT(*) FROM t1);
-
-let query = SELECT t1.a, t2.a, t3.a
-            FROM t1
-                 JOIN t2
-                 ON t1.a+t2.a = (SELECT COUNT(*) FROM t1)
-                 JOIN t3
-                 ON t1.a + (SELECT MIN(a) FROM t1) = t3.b;
-let query = SELECT t1.a, t2.a, t3.a
-            FROM t1
-                 LEFT JOIN ( t2
-                             JOIN t3
-                             ON t2.a = (SELECT COUNT(*) FROM t1) )
-                 ON t1.a + (SELECT MIN(a) FROM t1) = t3.b;
-
--- verify result with ordinary execution path
-SET optimizer_switch='subquery_to_derived=default';
-SET optimizer_switch='subquery_to_derived=on';
-let query =
 SELECT t1.a, t2.a, t3.a
 FROM t1
      LEFT JOIN (SELECT MIN(a) FROM t1) derived_1
@@ -124,23 +25,7 @@ FROM t1
                  JOIN t3
                  ON t2.a = derived_2.`COUNT(*)` )
      ON t1.a + derived_1.`MIN(a)` = t3.b;
-
-let query = SELECT t1.a, t2.a, t3.a
-            FROM t1
-                 STRAIGHT_JOIN ( t2
-                                 STRAIGHT_JOIN t3
-                                 ON t2.a = (SELECT COUNT(*) FROM t1) )
-                 ON t1.a + (SELECT MIN(a) FROM t1) = t3.b;
-let $query = SELECT a + (SELECT -SUM(a) FROM t1) AS cnt FROM t2;
-let $query = SELECT a + derived.cnt
-             FROM t2
-                  LEFT OUTER JOIN (SELECT -SUM(a) AS cnt FROM t1) AS derived
-                  ON TRUE;
-let $query = SELECT a + (SELECT SUM(a) FROM t1) FROM t1 UNION ALL
-             SELECT a + (SELECT SUM(a) FROM t1) FROM t1;
-
-let $query = SELECT a + (SELECT SUM(a) + (SELECT COUNT(a) FROM t1) FROM t1) AS cnt FROM t2;
-let $query =
+SELECT a + (SELECT SUM(a) FROM t1) FROM t1;
 SELECT (t2.a + derived_1_0.sum_plus_cnt) AS cnt
 FROM t2
      LEFT JOIN (SELECT (derived_2_0.tmp_aggr_1 + derived_2_1.count_a) AS sum_plus_cnt
@@ -148,30 +33,20 @@ FROM t2
                 LEFT JOIN (SELECT COUNT(t1.a) AS count_a from t1) derived_2_1
                 ON TRUE) derived_1_0
      ON TRUE;
-
--- This query actually belongs in group 5 below. It has an original
--- derived table and crashed at one point, so include here anyway,
--- before we drop these base tables.
 SELECT a + (SELECT SUM(a) + (SELECT COUNT(a) FROM t1)
     FROM (SELECT * from t1) t11) AS cnt FROM t2;
-
 SELECT AVG(a) OVER () AS `avg`,
        a + (SELECT SUM(a) + (SELECT COUNT(a) FROM t1)
     FROM (SELECT * from t1) t11) AS cnt FROM t2;
-
 DROP TABLE t0, t1, t2, t3;
 CREATE TABLE t1(a INT, b INT);
 INSERT INTO t1 (a) VALUES (1), (2);
 CREATE TABLE t2 SELECT * FROM t1;
-
-let $query =
 SELECT (WITH RECURSIVE dt AS (SELECT t1.a AS a UNION
                               SELECT a+1 FROM dt WHERE a<10)
         SELECT t1.a * CONCAT(COUNT(*), '.', FLOOR(AVG(dt.a)))
         FROM dt) AS subq
 FROM t1;
-
-let $query =
 SELECT derived0.cnct AS subq
 FROM t1
      LEFT JOIN LATERAL (WITH RECURSIVE dt AS (SELECT t1.a AS a UNION
@@ -180,7 +55,6 @@ FROM t1
                         SELECT t1.a * CONCAT(COUNT(0), '.', FLOOR(AVG(dt.a))) AS cnct
                         FROM dt) derived0
      ON TRUE;
-
 DROP TABLE t1, t2;
 CREATE TABLE t1(i INT);
 CREATE TABLE t2(a INT);
@@ -198,53 +72,44 @@ SELECT (
    FROM t1
 ) AS bignest
 FROM t3;
-
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1 (a INT NOT NULL, b SMALLINT);
 INSERT INTO t1 VALUES (12,12);
-let $query =
 SELECT (SELECT COUNT(*)
         FROM t1
         WHERE a=11725) AS tot,
        IFNULL(MAX(b),0)+1 + 5 AS mx
 FROM t1
 WHERE false;
-let $query =
 SELECT (SELECT COUNT(*)
         FROM t1
         WHERE a=11725) +
        IFNULL(MAX(b),0)+1 + 5 AS mx
 FROM t1
 WHERE false;
-
 INSERT INTO t1 VALUES (13, 12);
-let $query =
 SELECT DISTINCT (SELECT COUNT(*)
                  FROM t1) +
                 IFNULL(MAX(b),0)+1 + 5 AS mx
 FROM t1
 WHERE a > 5
 GROUP BY a;
-let $query =
 SELECT (SELECT COUNT(*)
         FROM t1) +
        IFNULL(MAX(b),0)+1 + 5 AS mx
 FROM t1
 GROUP BY a LIMIT 1;
-let $query =
 SELECT
   (SELECT (SELECT COUNT(*)
            FROM t1) +
           MAX(t1.b) + MIN(t1_outer.a) AS tot
    FROM t1) FROM t1 AS t1_outer;
-let $query =
 SELECT (SELECT COUNT(*)
         FROM t1) +
        MAX(b) +
        (SELECT MIN(a) + AVG(top.a) FROM t1)
        AS tot
 FROM t1 top;
-let $query =
 SELECT (SELECT COUNT(*) + `outer`.a
         FROM t1) +
        IFNULL(MAX(b),0)+1 + 5 AS mx
@@ -268,79 +133,19 @@ FROM (SELECT STRAIGHT_JOIN MAX(outer_t.b) AS `MAX(b)`,
                         FROM t1) derived_1
      ON(true)
 WHERE true;
-let $query =
 SELECT (SELECT COUNT(*) + MAX(outer_t.b)
         FROM t1) +
        IFNULL(MAX(b),0)+1 + 5 AS mx
 FROM t1 AS outer_t
 GROUP BY a;
-
 DROP TABLE t1;
-CREATE VIEW events_digest AS
-    SELECT * FROM performance_schema.events_statements_summary_by_digest;
-SELECT s2.avg_us avg_us,
-       IFNULL(SUM(s1.cnt)/NULLIF((SELECT COUNT(*) FROM
-                                  events_digest), 0), 0) percentile
-FROM sys.`x$ps_digest_avg_latency_distribution` AS s1
-     JOIN sys.`x$ps_digest_avg_latency_distribution` AS s2
-     ON s1.avg_us <= s2.avg_us
-GROUP BY s2.avg_us
-HAVING IFNULL(SUM(s1.cnt)/ NULLIF((SELECT COUNT(*) FROM events_digest), 0), 0) > 0.95
-ORDER BY percentile LIMIT 1;
-
--- redundantly repeated query here, but "$query = ;
-SELECT s2.avg_us avg_us,
-       IFNULL(SUM(s1.cnt)/NULLIF((SELECT COUNT(*) FROM
-                                  events_digest), 0), 0) percentile
-FROM sys.`x$ps_digest_avg_latency_distribution` AS s1
-     JOIN sys.`x$ps_digest_avg_latency_distribution` AS s2
-     ON s1.avg_us <= s2.avg_us
-GROUP BY s2.avg_us
-HAVING IFNULL(SUM(s1.cnt)/ NULLIF((SELECT COUNT(*) FROM events_digest), 0), 0) > 0.95
-ORDER BY percentile LIMIT 1;
-SET sql_mode='';
-SELECT s2.avg_us AS avg_us,
-       IFNULL((SUM(s1.cnt) / NULLIF(derived_1_0.`COUNT(*)`,0)),0) AS percentile,
-       derived_1_1.`COUNT(*)`
-FROM sys.`x$ps_digest_avg_latency_distribution` s1 JOIN
-     sys.`x$ps_digest_avg_latency_distribution` s2 LEFT JOIN
-     (SELECT COUNT(0) AS `COUNT(*)`
-      FROM performance_schema.events_statements_summary_by_digest) derived_1_0
-     ON(TRUE) LEFT JOIN
-     (SELECT COUNT(0) AS `COUNT(*)`
-      FROM performance_schema.events_statements_summary_by_digest) derived_1_1
-     ON(TRUE)
-WHERE (s1.avg_us <= s2.avg_us)
-GROUP BY s2.avg_us
-HAVING (IFNULL((SUM(s1.cnt) / NULLIF(derived_1_1.`COUNT(*)`,0)),0) > 0.95)
-ORDER BY percentile LIMIT 1;
-
-SET sql_mode=default;
-SELECT AVG(s2.avg_us) OVER () + 3 AS avgsum,
-       s2.avg_us avg_us,
-       s2.avg_us avg_us2,
-       SUM(s2.avg_us) OVER () + 3 AS avgsum2,
-       IFNULL(SUM(s1.cnt)/NULLIF((SELECT COUNT(*) FROM
-                                  events_digest), 0), 0) percentile
-FROM sys.`x$ps_digest_avg_latency_distribution` AS s1
-     JOIN sys.`x$ps_digest_avg_latency_distribution` AS s2
-ON s1.avg_us <= s2.avg_us
-GROUP BY s2.avg_us
-HAVING IFNULL(SUM(s1.cnt)/ NULLIF((SELECT COUNT(*) FROM events_digest), 0), 0) > 0.95
-ORDER BY percentile LIMIT 1;
-
-DROP VIEW events_digest;
-
 CREATE TABLE t1 (
   school_name VARCHAR(45) NOT NULL,
   country     VARCHAR(45) NOT NULL,
   funds_requested FLOAT NOT NULL,
   schooltype  VARCHAR(45) NOT NULL
 );
-
 INSERT INTO t1 VALUES ("the school", "USA", 1200, "Human");
-
-let $query=
 SELECT COUNT(country) AS countrycount,
        SUM(funds_requested) AS smcnt,
        country,
@@ -350,41 +155,9 @@ FROM t1
 GROUP BY country
 HAVING AVG(funds_requested) > 0
 ORDER BY SUM(ABS(funds_requested));
-
-SET sql_mode='';
-let $query=
-SELECT COUNT(country) AS countrycount,
-       SUM(funds_requested) AS smcnt,
-       country,
-       (SELECT SUM(funds_requested) FROM t1) AS total_funds,
-       ROW_NUMBER() OVER (ORDER BY STDDEV_POP(funds_requested)) AS rn
-FROM t1
-HAVING AVG(funds_requested) > 0
-ORDER BY SUM(ABS(funds_requested));
-SELECT derived_1_0.countrycount AS countrycount,
-       derived_1_0.smcnt AS smcnt,
-       derived_1_0.d_1 AS country,
-       derived_1_1.`SUM(funds_requested)` AS total_funds,
-       row_number() OVER (ORDER BY derived_1_1.`SUM(funds_requested)` )  AS rn
-FROM (SELECT COUNT(t1.country) AS countrycount,
-             SUM(t1.funds_requested) AS smcnt,
-             AVG(t1.funds_requested) AS tmp_aggr_1,
-             STD(t1.funds_requested) AS tmp_aggr_2,
-             t1.country AS d_1
-      FROM t1
-      HAVING (AVG(t1.funds_requested) > 0)) derived_1_0
-     LEFT JOIN
-     (SELECT SUM(t1.funds_requested) AS `SUM(funds_requested)`
-      FROM t1) derived_1_1
-     ON(TRUE);
-
-SET sql_mode=default;
-
 DROP TABLE t1;
 CREATE TABLE cc (i INT);
 INSERT INTO cc VALUES (1);
-
-let $query=
 SELECT (SELECT COUNT(i) FROM cc AS cc_alias
         WHERE (cc.i IN (SELECT cc_alias.i FROM cc))) AS cnt
 FROM cc
@@ -392,113 +165,61 @@ GROUP BY i;
 DROP TABLE cc;
 CREATE TABLE t (a INT);
 INSERT INTO t VALUES (1);
-  SELECT GROUP_CONCAT((SELECT COUNT(q.i) FROM t))
-  FROM t) AS i
-FROM (SELECT a AS i FROM t) q;
-
 DROP TABLE t;
 CREATE TABLE t1 (a INT NOT NULL, b INT NOT NULL);
 CREATE TABLE t2 (c INT NOT NULL, d INT NOT NULL);
 CREATE TABLE t3 (e INT NOT NULL);
-
 INSERT INTO t1 VALUES (1,10), (2,10), (1,20), (2,20), (3,20), (2,30), (4,40);
 INSERT INTO t2 VALUES (2,10), (2,20), (4,10), (5,10), (3,20), (2,40);
 INSERT INTO t3 VALUES (10), (30), (10), (20);
-
-let $query =
 SELECT * FROM t1 AS ta
 WHERE ta.a IN (SELECT c FROM t2 AS tb
                WHERE (SELECT MIN(e) FROM t3 as tc
                       WHERE tc.e IS NOT NULL) < SOME(SELECT e FROM t3 as tc
                                                      WHERE ta.b=tc.e));
-let $query =
 SELECT SUM(t1.a) + (SELECT SUM(t2.c)
                     FROM t2),
        (SELECT COUNT(t3.e) FROM t3)
 FROM t1;
-
-
 DROP TABLE t1, t2, t3;
-
 CREATE TABLE t1(
   pedcompralote INT NOT NULL,
   pedcompraseq SMALLINT
 );
-
 INSERT INTO t1 VALUES (12,12);
-
 CREATE TABLE t2(
   cod INT NOT NULL,
   ped INT,
   PRIMARY KEY (cod),
   KEY ped (ped)
 );
-
 INSERT INTO t2 VALUES
   (11724,1779), (11725,1779), (11726,1779), (11727,1779),
   (11728,1779), (11729,1779), (11730,1779), (11731,1779);
-
 SELECT (SELECT COUNT(*)
         FROM t1
         WHERE pedcompralote=11725) AS tot,
        IFNULL(MAX(pedcompraseq),0)+1 AS newcode
 FROM t1
 WHERE pedcompralote IN (SELECT cod FROM t2 WHERE ped=1779);
-
 DROP TABLE t1, t2;
 CREATE TABLE t(i INT DEFAULT 5);
 INSERT INTO t VALUES (4);
-
-let $query =
-SELECT DEFAULT(i) AS def,
-       5 + DEFAULT(i) AS def2,
-       i AS any_v,
-       (SELECT i FROM t) AS subquery,
-       SUM(i) AS summ
-FROM t;
-
-SET SQL_MODE='';
-
-SET SQL_MODE=default;
-let $query =
 SELECT ANY_VALUE(i) AS i1,
        (SELECT i FROM t) AS subquery,
        SUM(i) AS summ
 FROM t;
-SELECT i + ANY_VALUE(i) AS i1,
-       (SELECT i FROM t) AS subquery,
-       SUM(i) AS summ
-FROM t;
-SELECT ANY_VALUE(i) + i AS i1,
-       (SELECT i FROM t) AS subquery,
-       SUM(i) AS summ
-FROM t;
-
-let $query =
 SELECT ANY_VALUE(ANY_VALUE(i) + i) AS i1,
        (SELECT i FROM t) AS subquery,
        SUM(i) AS summ
 FROM t;
-SELECT ANY_VALUE(i) AS i1, i as i2,
-       (SELECT i FROM t) AS subquery,
-       SUM(i) AS summ
-FROM t;
-SELECT i as i2, ANY_VALUE(i) AS i1,
-       (SELECT i FROM t) AS subquery,
-       SUM(i) AS summ
-FROM t;
-
-let $query =
 SELECT ANY_VALUE(i) as i2, ANY_VALUE(i) AS i1,
        (SELECT i FROM t) AS subquery,
        SUM(i) AS summ
 FROM t;
-
 DROP TABLE t;
-
 CREATE TABLE t1(i int, j int);
 CREATE TABLE t2(i int);
-
 INSERT INTO t1 VALUES (1, 10);
 INSERT INTO t1 VALUES (1, 20);
 INSERT INTO t1 VALUES (1, 30);
@@ -506,34 +227,27 @@ INSERT INTO t1 VALUES (2, 11);
 INSERT INTO t1 VALUES (2, 20);
 INSERT INTO t1 VALUES (2, 30);
 INSERT INTO t2 VALUES (25);
-let $query=
 SELECT SUM(j) FROM t1
 HAVING SUM(j) > (SELECT SUM(t2.i) FROM t2);
-let $query=
 SELECT j FROM t1
 HAVING j > (SELECT MIN(t2.i) FROM t2);
-let $query=
 SELECT i, j FROM t1
 GROUP BY i, j
 HAVING SUM(j) > (SELECT SUM(t2.i) FROM t2);
-let $query=
 SELECT i, j FROM t1
 GROUP BY i, j WITH ROLLUP
 HAVING SUM(j) > (SELECT SUM(t2.i) FROM t2);
-
 DROP TABLE t1, t2;
 CREATE TABLE supplier (
   s_suppkey INT NOT NULL,
   s_nationkey BIGINT NOT NULL,
   PRIMARY KEY (s_suppkey)
 );
-
 CREATE TABLE nation (
   n_nationkey INT NOT NULL,
   n_name CHAR(25) DEFAULT NULL,
   PRIMARY KEY (n_nationkey)
 );
-
 CREATE TABLE partsupp (
   ps_partkey BIGINT NOT NULL,
   ps_suppkey BIGINT NOT NULL,
@@ -541,12 +255,10 @@ CREATE TABLE partsupp (
   ps_supplycost DECIMAL(10,0) DEFAULT NULL,
   PRIMARY KEY (ps_partkey, ps_suppkey)
 );
-
 INSERT INTO nation VALUES (1, 'germany'),
                           (2, 'norway'),
                           (3, 'u.k.');
 INSERT INTO supplier VALUES (1, 1);
-
 INSERT INTO partsupp VALUES
   (1, 1, 10, 555),
   (2, 1, 1, 2222),
@@ -555,8 +267,6 @@ INSERT INTO partsupp VALUES
   (5, 1, 20,  400),
   (6, 1, 1000, 300),
   (7, 1, 30, 700);
-
-let $query=
 SELECT
     ps_partkey,
     SUM(ps_supplycost * ps_availqty) AS value
@@ -583,7 +293,6 @@ GROUP BY
                 n_name = 'germany'
         )
 ORDER BY value DESC;
-
 DROP TABLE partsupp, nation, supplier;
 CREATE TABLE tbl1 (
   login INT NOT NULL,
@@ -598,15 +307,6 @@ CREATE TABLE tbl2 (
   KEY cmd (cmd),
   KEY login (login)
 );
-
-SET autocommit = 0;
-let $i=500;
-dec $i;
-let $i=500;
-dec $i;
-SET autocommit = default;
-
-let $query=
 SELECT
 t1.login AS tlogin,
   numb -
@@ -616,8 +316,6 @@ FROM tbl1 t1, tbl2 t2
 WHERE t1.login=t2.login
 GROUP BY t1.login
 LIMIT 5;
-
-let $query=
 SELECT
 t1.login AS tlogin,
   numb -
@@ -628,8 +326,6 @@ WHERE t1.login=t2.login
 GROUP BY t1.login
 ORDER BY sp
 LIMIT 5;
-
-let $query=
 SELECT
 t1.login AS tlogin,
   numb -
@@ -641,20 +337,15 @@ GROUP BY t1.login
 ORDER BY numb - IFNULL((SELECT sum(nump) FROM tbl2 WHERE login=t1.login), 0)
               - IFNULL((SELECT sum(nump) FROM tbl2 WHERE login=t1.login), 0)
 LIMIT 5;
-
 DROP TABLE tbl1, tbl2;
-
 CREATE TABLE t2 (a INT, b INT);
 CREATE TABLE t4 (a INT NOT NULL, b INT NOT NULL);
 INSERT INTO t2 VALUES (1, 7), (2, 7), (2,10);
 INSERT INTO t4 VALUES (4, 8), (3, 8), (5, 9), (12, 7), (1, 7),
                       (10, 9), (9, 6), (7, 6), (3, 9), (1, 10);
-let $query=
 SELECT b, MAX(a) AS ma FROM t4
 GROUP BY b HAVING ma < (SELECT MAX(t2.a) FROM t2 WHERE t2.b=t4.b);
-
 DROP TABLE t2, t4;
-
 CREATE TEMPORARY TABLE tmp_digests (
   schema_name VARCHAR(64) DEFAULT NULL,
   digest VARCHAR(64) DEFAULT NULL,
@@ -697,9 +388,6 @@ CREATE TEMPORARY TABLE tmp_digests (
   query_sample_timer_wait BIGINT UNSIGNED NOT NULL,
   INDEX (schema_name, digest)
 ) DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO tmp_digests SELECT * FROM performance_schema.events_statements_summary_by_digest;
-
 CREATE TEMPORARY TABLE tmp_digest_avg_latency_distribution1 (
               cnt BIGINT UNSIGNED NOT NULL,
               avg_us DECIMAL(21,0) NOT NULL,
@@ -710,23 +398,18 @@ CREATE TEMPORARY TABLE tmp_digest_avg_latency_distribution2 (
               avg_us DECIMAL(21,0) NOT NULL,
               PRIMARY KEY (avg_us)
             ) ENGINE=InnoDB;
-
 INSERT INTO tmp_digest_avg_latency_distribution1
 SELECT COUNT(*) cnt,
        ROUND(avg_timer_wait/1000000) AS avg_us
   FROM tmp_digests
  GROUP BY avg_us;
-
 INSERT INTO tmp_digest_avg_latency_distribution2 SELECT * FROM tmp_digest_avg_latency_distribution1;
-
 CREATE TEMPORARY TABLE tmp_digest_95th_percentile_by_avg_us (
               avg_us decimal(21,0) NOT NULL,
               percentile decimal(46,4) NOT NULL,
               PRIMARY KEY (avg_us)
             ) ENGINE=InnoDB;
-
-let $query =
-  INSERT INTO tmp_digest_95th_percentile_by_avg_us
+INSERT INTO tmp_digest_95th_percentile_by_avg_us
   SELECT s2.avg_us avg_us,
          IFNULL(SUM(s1.cnt)/
                 NULLIF((SELECT COUNT(*) FROM tmp_digests), 0), 0) percentile
@@ -738,15 +421,12 @@ let $query =
   ORDER BY percentile
   LIMIT 1;
 SELECT * from tmp_digest_95th_percentile_by_avg_us;
-
-DROP PREPARE p;
 DROP TEMPORARY TABLE tmp_digest_95th_percentile_by_avg_us;
 DROP TEMPORARY TABLE tmp_digest_avg_latency_distribution2;
 DROP TEMPORARY TABLE tmp_digest_avg_latency_distribution1;
 DROP TEMPORARY TABLE tmp_digests;
 CREATE TABLE t1 (col_int_key int, KEY col_int_key (col_int_key));
 INSERT INTO t1 VALUES (0),(8),(1),(8);
-
 CREATE TABLE where_subselect_20070
   SELECT table2 .col_int_key AS field1,
         ( SELECT COUNT( col_int_key )
@@ -755,8 +435,6 @@ CREATE TABLE where_subselect_20070
   FROM t1 AS table1
        JOIN t1 AS table2
        ON table2.col_int_key = table1.col_int_key;
-
-let $query =
 SELECT *
 FROM where_subselect_20070
 WHERE (field1, ( SELECT COUNT( col_int_key ) FROM t1 )) IN (
@@ -768,41 +446,29 @@ WHERE (field1, ( SELECT COUNT( col_int_key ) FROM t1 )) IN (
        JOIN t1 AS table2
        ON table2.col_int_key = table1.col_int_key
 );
-
 DROP TABLE t1, where_subselect_20070;
-
 CREATE TABLE t1 (a INT, b INT);
 INSERT INTO t1 VALUES (1,1), (1,2), (1,3);
-SELECT COUNT(*), (SELECT count(*) FROM t1 inr WHERE inr.a = outr.a)
-  FROM t1 outr;
 DROP TABLE t1;
 CREATE TABLE t1(a DATETIME NOT NULL);
 INSERT INTO t1 VALUES ('20060606155555');
-SET optimizer_switch='subquery_to_derived=off';
-SET optimizer_switch='subquery_to_derived=on';
+PREPARE s FROM
+  'SELECT a FROM t1 WHERE a=(SELECT MAX(a) FROM t1) AND (a="20060606155555")';
+PREPARE s FROM
+  'SELECT a FROM t1 WHERE a=(SELECT MAX(a) FROM t1) AND (a="20060606155555")';
 DROP TABLE t1;
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES (1),(2),(3),(4);
-
-let $query1 =
 SELECT (SELECT MIN(a) FROM t1) a, MAX(a) AS mx
 FROM t1
 WHERE FALSE
 HAVING (SELECT MIN(a) FROM t1) > 0;
-
-let $query2 =
 SELECT MAX(a) AS mx
 FROM t1
 WHERE FALSE
 HAVING (SELECT MIN(a) FROM t1) > 0;
-
-SET optimizer_switch='subquery_to_derived=off';
-SET optimizer_switch='subquery_to_derived=on';
-
 DROP TABLE t1;
 CREATE TABLE tab1(pk int PRIMARY KEY);
-
-let $query =
 SELECT *
 FROM tab1 AS table1
      LEFT JOIN
@@ -811,20 +477,14 @@ FROM tab1 AS table1
        ON 1 <= (SELECT COUNT(pk) FROM tab1) )
      ON 1
 WHERE (SELECT MIN(pk) FROM tab1);
-
 DROP TABLE tab1;
 CREATE TABLE c2 (col_varchar_key VARCHAR(1));
-
-let $query =
 SELECT alias1.col_varchar_key
 FROM c2 AS alias1
 HAVING   alias1.col_varchar_key > SOME (SELECT col_varchar_key FROM c2)
 ORDER BY alias1.col_varchar_key;
-
 DROP TABLE c2;
 CREATE TABLE t1(col_int INT);
-
-let $query =
 SELECT *
 FROM ((t1 AS a2
        LEFT JOIN
@@ -833,8 +493,6 @@ FROM ((t1 AS a2
      LEFT JOIN
      t1
      ON true);
-
-let $query =
 SELECT *
 FROM ((t1 AS a2
        LEFT JOIN
@@ -843,8 +501,6 @@ FROM ((t1 AS a2
      LEFT JOIN
      t1
      ON true);
-
-let $query =
 SELECT *
 FROM (t1
       RIGHT JOIN
@@ -853,22 +509,14 @@ FROM (t1
        t1 AS a2
        ON  1 <= SOME (SELECT COUNT(*) FROM t1))
       ON true);
-
 DROP TABLE t1;
-
 CREATE TABLE t1(pk int PRIMARY KEY);
-
-
-let $query=
 SELECT t1.pk
  FROM t1 LEFT JOIN ( SELECT t1.pk AS pk
                      FROM t1
                      WHERE (1 <= (SELECT MAX(t1.pk)
                                   FROM t1)) ) alias2
       ON true;
-SET optimizer_switch='subquery_to_derived=off';
-SET optimizer_switch='subquery_to_derived=on';
-let $query=
 SELECT alias1.pk
 FROM t1 AS alias1 LEFT JOIN
        t1 AS alias2 LEFT JOIN
@@ -881,19 +529,16 @@ FROM t1 AS alias1 LEFT JOIN
          ) AS alias3
        ON TRUE
      ON TRUE;
-
-
-
 DROP TABLE t1;
 CREATE TABLE X (col_varchar_key VARCHAR(1));
-SET OPTIMIZER_SWITCH='subquery_to_derived=on';
+PREPARE prep_stmt FROM
+'SELECT col_varchar_key
+ FROM (SELECT * FROM X
        WHERE X.col_varchar_key > (SELECT MIN(col_varchar_key)
                                   FROM X)) AS table1';
 DROP TABLE X;
 CREATE TABLE n(col_int INT);
 INSERT INTO n VALUES (1), (2), (3);
-
-let $query=
 SELECT alias2.col_int
 FROM (SELECT * FROM n) AS alias1
      JOIN
@@ -901,11 +546,8 @@ FROM (SELECT * FROM n) AS alias1
        JOIN n
        ON alias2.col_int < (SELECT MAX(col_int) FROM n)
      ON TRUE;
-
 DROP TABLE n;
-
 CREATE TABLE x(col_int_key INT);
-let $query=
 SELECT table1.col_int_key AS field1
 FROM ((SELECT * FROM x
        WHERE col_int_key <= (SELECT SUM(col_int_key)
@@ -913,7 +555,6 @@ FROM ((SELECT * FROM x
                              WHERE col_int_key < @var1)) AS table1
       JOIN
       x AS table2);
-let $query=
 SELECT table1.col_int_key AS field1
 FROM ((SELECT * FROM x
        WHERE col_int_key <= (SELECT SUM(col_int_key)
@@ -921,11 +562,8 @@ FROM ((SELECT * FROM x
                              WHERE col_int_key < 1)) AS table1
       JOIN
       x AS table2);
-
 DROP TABLE x;
 CREATE TABLE t1(col_varchar VARCHAR(1));
-
-let $query=
 SELECT (SELECT COUNT(*)
          FROM t1
          WHERE 1 <> table1.col_varchar)
@@ -938,13 +576,10 @@ SELECT (SELECT COUNT(*)
         JOIN
         t1
         ON 1);
-
 DROP TABLE t1;
 CREATE TABLE a(i INT);
 CREATE TABLE b(i INT);
 CREATE TABLE c(i INT);
-
-let $query =
 SELECT *
 FROM b
 WHERE EXISTS (SELECT *
@@ -957,11 +592,8 @@ WHERE EXISTS (SELECT *
                                                 FROM b)))
                     ON (6 IN (SELECT i
                               FROM b))));
-
 DROP TABLE a, b, c;
 CREATE TABLE n(i INT);
-
-let $query =
 SELECT (SELECT AVG(n.i)
         FROM n) AS feild1,
        SUM(table1.i)
@@ -970,7 +602,6 @@ FROM (n AS table1
       n AS table2
       ON (table1.i <= ANY (SELECT i FROM n)))
 WHERE (EXISTS ((SELECT i FROM n)));
-let $query =
 SELECT (SELECT AVG(n.i)
         FROM n) AS feild1,
        SUM(table1.i)
@@ -979,8 +610,6 @@ FROM (n AS table1
       n AS table2
       ON (table1.i <= (select MAX(`n`.`i`) from `n`)))
 WHERE (EXISTS ((SELECT i FROM n)));
-
-let $query =
 SELECT (SELECT AVG(n.i)
         FROM n) AS feild1,
        SUM(table1.i)
@@ -994,8 +623,6 @@ FROM (n AS table1
 WHERE (EXISTS ((SELECT i FROM n)) AND
        EXISTS ((SELECT i FROM n WHERE i = 5)) AND
        EXISTS ((SELECT i FROM n WHERE i = 7)));
-
-let $query =
 SELECT (SELECT AVG(n.i)
         FROM n) AS feild1,
        SUM(table1.i)
@@ -1008,8 +635,6 @@ FROM (n AS table1
 WHERE (NOT EXISTS ((SELECT n1.i
                     FROM n n1, n n2
                     WHERE n1.i > n2.i)));
-
-let $query =
 SELECT (SELECT AVG(n.i)
         FROM n) AS feild1,
        SUM(table1.i)
@@ -1023,7 +648,6 @@ FROM (n AS table1
 WHERE (EXISTS ((SELECT i FROM n)) AND
        EXISTS ((SELECT i FROM n WHERE i = 5)) AND
        EXISTS ((SELECT i FROM n WHERE i = 7)));
-let $query =
 SELECT (SELECT AVG(n.i)
         FROM n) AS feild1,
        SUM(table1.i)
@@ -1037,10 +661,12 @@ WHERE (EXISTS ((SELECT i FROM n)) AND
        EXISTS ((SELECT i FROM n WHERE i = 5)) AND
        EXISTS ((SELECT i FROM n WHERE i = 7)) AND
        NOT EXISTS ((SELECT i FROM n WHERE i = 3)));
-
 DROP TABLE n;
 CREATE TABLE m(pk INT);
 CREATE VIEW view_m AS SELECT * FROM m;
+PREPARE prep_stmt FROM
+
+'SELECT (SELECT t2.pk FROM (m AS t1
                             JOIN
                             (m AS t2
                              JOIN m AS t3))),
@@ -1051,18 +677,12 @@ CREATE VIEW view_m AS SELECT * FROM m;
          JOIN
          m AS table3))
        ON (table3.pk = table2.pk))';
-
 DROP VIEW view_m;
 DROP TABLE m;
 CREATE TABLE t1(field1 INT, field2 VARCHAR(1));
-
-SET optimizer_switch='subquery_to_derived=on';
-
 CREATE TABLE cc1(pk INT NOT NULL,
                  col_varchar_key VARCHAR(1) DEFAULT NULL,
                  PRIMARY KEY (pk));
-
-let $query =
 SELECT COUNT(table1.pk),
        (SELECT MIN(col_varchar_key) FROM cc1 )
 FROM (cc1 AS table1
@@ -1071,11 +691,7 @@ FROM (cc1 AS table1
              ON true)
       ON true)
 WHERE (1 <> (SELECT COUNT(*) FROM cc1));
-
 SELECT * from t1;
-
-DROP TABLE t1, cc1, t2;
-
 CREATE TABLE a (
     pk INTEGER
   );
@@ -1095,7 +711,6 @@ CREATE TABLE cc (
     PRIMARY KEY (pk)
 );
 CREATE INDEX idx_cc_col_varchar_key ON cc(col_varchar_key);
-
 INSERT INTO cc VALUES (1,764578610,1400450503,'04:58:13','15:43:36',
                        '1977-07-20 14:44:30','1998-10-04 17:29:04','0','N');
 INSERT INTO cc VALUES (2,-1430323290,761341340,'17:39:46','10:22:47',
@@ -1108,10 +723,11 @@ SELECT
   )
 FROM cc STRAIGHT_JOIN bb ON bb.col_varchar = cc.col_varchar_key
 WHERE cc.col_varchar <> 'w';
-
 DROP TABLE a, bb, cc;
 CREATE TABLE n(i INT);
 CREATE VIEW view_n AS SELECT * FROM n;
+PREPARE p FROM
+'SELECT (SELECT MAX(i) FROM n) AS field2,
         COUNT(table1.i) AS field3 ,
         (SELECT AVG(i) FROM n) AS field4
  FROM (n AS table1
@@ -1123,7 +739,6 @@ CREATE VIEW view_n AS SELECT * FROM n;
        ON (table2.i = table2.i))';
 DROP VIEW view_n;
 DROP TABLE n;
-
 CREATE TABLE cc (
   pk int NOT NULL AUTO_INCREMENT,
   col_int int DEFAULT NULL,
@@ -1134,7 +749,6 @@ CREATE TABLE cc (
   KEY idx_cc_col_int_key (col_int_key),
   KEY idx_cc_col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 INSERT INTO cc VALUES
   (1,   1375472775,   262188886, 'I', 'b'),
   (2,  -1851648474,   130471446, 'o', '7'),
@@ -1156,10 +770,7 @@ INSERT INTO cc VALUES
   (18, -1381157785, -1613624643, 'Z', 'E'),
   (19,  -270976631,   288433409, 'r', 'Z'),
   (20,  2113722977,   409698731, 'n', 'd');
-
 CREATE VIEW view_cc AS SELECT * FROM cc;
-
-let $query=
 SELECT AVG(table2.col_int) AS field1 ,
        ( SELECT COUNT(subquery1_t1.col_varchar_key ) AS subquery1_field1
          FROM ( cc AS subquery1_t1
@@ -1179,11 +790,9 @@ WHERE ( table1.pk = 1 ) AND
       table1.col_varchar_key < 'O'
 ORDER BY table1.col_varchar ASC, field2, field1
 LIMIT 1000 OFFSET 2;
-
 DROP VIEW view_cc;
 DROP TABLE cc;
 CREATE TABLE m(col_int INT);
-
 SELECT MIN(table1.col_int)           AS field1,
        ( SELECT COUNT(col_int )
          FROM m AS t1 )              AS field2,
@@ -1196,44 +805,13 @@ SELECT MIN(table1.col_int)           AS field1,
 FROM ( m AS table1
        JOIN ( ( m AS table2
                 JOIN
-                ( SELECT COUNT(col_int) FROM m ) AS table3 ) ) ) ;
-
+                ( SELECT COUNT(col_int) FROM m ) AS table3 ) ) );
 DROP TABLE m;
-
 CREATE TABLE n(col_int INT);
 INSERT INTO n VALUES (1), (2), (3);
 CREATE VIEW view_n AS SELECT * FROM n;
-SET sql_mode="";
-let $query =
-SELECT table_b.col_int               AS field_a,
-       (SELECT MAX(col_int) FROM n)  AS field_b,
-       COUNT(table_a.col_int)        AS field_c,
-       (SELECT AVG(col_int) FROM n)  AS field_d
-FROM ( n AS table_a
-       JOIN ( view_n AS table_b
-              JOIN n AS table_c) );
-
--- Non deterministic query so replace
---replace_regex /3/1/
-eval $query;
-
 DROP VIEW view_n;
-
 CREATE VIEW view_n(col_int2) AS SELECT col_int + 1 FROM n;
-let $query =
-SELECT  table_b.col_int2              AS field_e,
-        table_a.col_int,
-        (SELECT MAX(col_int) FROM n)  AS field_a,
-        COUNT(table_a.col_int )       AS field_b,
-        (SELECT AVG(col_int) FROM n)  AS field_c,
-        table_b.col_int2              AS field_d
-FROM ( n AS table_a
-       JOIN (view_n AS table_b
-             JOIN n AS table_c) );
-
-
-SET sql_mode=default;
-
 DROP VIEW view_n;
 DROP TABLE n;
 CREATE TABLE c (pk INTEGER AUTO_INCREMENT,
@@ -1250,7 +828,6 @@ CREATE TABLE cc (pk INTEGER AUTO_INCREMENT,
                  col_varchar_key VARCHAR(1) ,
                  PRIMARY KEY(pk));
 INSERT INTO cc VALUES (DEFAULT,1750627978,-2052557260,'0','o');
-
 INSERT INTO c values
     (DEFAULT,809266110,-169779076,'C','O'),
     (DEFAULT,3049998,1973362945,'2','O'),
@@ -1286,7 +863,6 @@ WHERE ( EXISTS ( SELECT subquery3_t1.col_int AS subquery3_field1
                   FROM c AS subquery3_t1
                   WHERE subquery3_t1.col_int_key = table1.pk ) ) AND
       table1.col_varchar_key <> table2.col_varchar;
-
 DROP TABLE c, cc;
 CREATE TABLE b (
   pk int NOT NULL AUTO_INCREMENT,
@@ -1298,9 +874,7 @@ CREATE TABLE b (
   KEY idx_b_col_int_key (col_int_key),
   KEY idx_b_col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 INSERT INTO b VALUES (1,-1155099828,-1879439976,'N','a');
-
 CREATE TABLE c (
   pk int NOT NULL AUTO_INCREMENT,
   col_int int DEFAULT NULL,
@@ -1311,7 +885,6 @@ CREATE TABLE c (
   KEY idx_c_col_int_key (col_int_key),
   KEY idx_c_col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 INSERT INTO c VALUES
   (1,     -3666739,   177583826, 'm', 'j'),
   (2,   1904347123,  1743248268, '2', 'P'),
@@ -1333,7 +906,6 @@ INSERT INTO c VALUES
   (18, -1108396995,   313282977, 'N', 'a'),
   (19,  -361562994,   419341930, 'd', 'C'),
   (20,   743792160,   984757597, 'e', '2');
-
 CREATE TABLE cc (
   pk int NOT NULL AUTO_INCREMENT,
   col_int int DEFAULT NULL,
@@ -1344,7 +916,6 @@ CREATE TABLE cc (
   KEY idx_cc_col_int_key (col_int_key),
   KEY idx_cc_col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 INSERT INTO cc VALUES
   (1,  1375472775,   262188886, 'I', 'b'),
   (2, -1851648474,   130471446, 'o', '7'),
@@ -1366,75 +937,15 @@ INSERT INTO cc VALUES
   (18,-1381157785, -1613624643, 'Z', 'E'),
   (19, -270976631,   288433409, 'r', 'Z'),
   (20, 2113722977,   409698731, 'n', 'd');
-
 CREATE VIEW  view_cc AS
 SELECT cc.col_int_key AS col_int_key,
        cc.col_varchar AS col_varchar,
        cc.col_varchar_key AS col_varchar_key from cc;
-
-SET sql_mode='';
-
-let $query =
-SELECT STRAIGHT_JOIN
-       ( SELECT AVG(subquery1_t1.col_int) AS subquery1_field1
-         FROM c AS subquery1_t1
-         WHERE EXISTS ( SELECT subquery1_t1.pk AS child_subquery1_field1
-                        FROM ( view_cc  AS child_subquery1_t1
-                               LEFT JOIN
-                               b AS child_subquery1_t2
-                               ON child_subquery1_t2.pk = child_subquery1_t1.col_int_key )
-                        WHERE child_subquery1_t1.col_varchar_key > subquery1_t1.col_varchar OR
-                              child_subquery1_t1.col_varchar_key < child_subquery1_t1.col_varchar))
-                                                  AS field1,
-                      table1.col_int_key          AS field2,
-                      SUM(table1.col_varchar_key) AS field3,
-                      MAX(table2.col_int)         AS field4
-FROM ( cc AS table1
-       INNER JOIN
-       ( b AS table2
-         INNER JOIN
-         cc AS table3
-         ON table3.col_int = table2.col_int_key )
-       ON ( table3.col_varchar_key = table2.col_varchar_key ) )
-WHERE ( NOT EXISTS ( ( SELECT subquery2_t1.col_varchar AS subquery2_field1
-                       FROM c AS subquery2_t1 ) ) )   AND
-      table1.col_varchar_key = table2.col_varchar_key AND
-      ( table2.col_varchar_key >= 'v'                 AND
-        table1.col_varchar <= table2.col_varchar_key )
-ORDER BY field2 DESC, table1.col_int_key, table2 .pk ASC, field1, field2, field3, field4
-LIMIT 1;
-
 DROP VIEW view_cc;
 DROP TABLES b, c, cc;
-
-SET sql_mode=default;
-CREATE TABLE t1(a INTEGER, b INTEGER);
 CREATE TABLE t2(a INTEGER);
-
-INSERT INTO t1 VALUES
- (1, 10),
- (2, 20), (2, 21),
- (3, NULL),
- (4, 40), (4, 41), (4, 42), (4, 43), (4, 44);
-
 INSERT INTO t2 VALUES (1), (2), (3), (4), (5), (NULL);
-
-CREATE VIEW v1 AS SELECT a, b, (SELECT COUNT(*) FROM t2) AS c FROM t1;
-let $query =
-SELECT * FROM v1;
-let $query =
-SELECT a FROM v1;
-
-set sql_mode='';
-let $query =
-SELECT a,c FROM v1 GROUP BY b HAVING c > 0;
-set sql_mode=default;
-let $query =
-SELECT a FROM v1 WHERE c > 0;
-
-DROP VIEW v1;
 DROP TABLE t1, t2;
-
 CREATE TABLE c (
   pk int NOT NULL AUTO_INCREMENT,
   col_int int DEFAULT NULL,
@@ -1454,8 +965,6 @@ CREATE TABLE c (
   KEY idx_cc_col_datetime_key (col_datetime_key),
   KEY idx_cc_col_varchar_key (col_varchar_key)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 CREATE VIEW view_c AS
 SELECT alias1.col_int
 FROM ( c AS alias1
@@ -1470,15 +979,12 @@ WHERE (  EXISTS ( ( SELECT sq2_alias1.col_int
                     FROM ( c AS sq2_alias1
                            JOIN
                            c AS sq2_alias2
-                           ON ( sq2_alias2.col_int = sq2_alias1.pk ) )) ) ) ;
-let $query =
+                           ON ( sq2_alias2.col_int = sq2_alias1.pk ) )) ) );
 SELECT * FROM view_c;
-
 DROP VIEW view_c;
 DROP TABLE c;
 CREATE TABLE t1 (i int);
 CREATE TABLE t2 (i int);
-
 SELECT t2.i FROM t2
 WHERE ( false ) AND
       ( t2.i  IN ( SELECT t1.i FROM t1
@@ -1486,14 +992,9 @@ WHERE ( false ) AND
 DROP TABLE t1, t2;
 CREATE TABLE t1 (a int);
 INSERT INTO t1 VALUES (1), (2);
-let $query =
 SELECT a FROM t1 WHERE (SELECT 1 FROM DUAL WHERE 1=0) IS NULL;
-
 DROP TABLE t1;
-
 CREATE TABLE a (col_varchar_key varchar(1));
-
-let $query=
 SELECT table1.col_varchar_key
 FROM ( SELECT sub1_t2.*
        FROM (a
@@ -1508,35 +1009,23 @@ FROM ( SELECT sub1_t2.*
        a
        ON 1 >= (SELECT MIN( col_varchar_key) FROM a))
      ON true;
-
 DROP TABLE a;
-
 CREATE TABLE t1(pk int primary key);
 INSERT INTO t1 VALUES(1),(2),(3),(4),(5);
 SELECT SUM(pk) FROM t1 WHERE ( pk >= ANY ( SELECT MAX(1) FROM DUAL) );
 DROP TABLE t1;
-
 CREATE TABLE t1 ( pk INTEGER );
-
--- The old optimizer calls both queries COUNT(*);
 SELECT
   (SELECT COUNT(*) FROM t1) AS f1,
   (SELECT COUNT(*) FROM t1) AS f2
 FROM t1
 GROUP BY f1, f2 WITH ROLLUP;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 ( f1 INTEGER);
 INSERT INTO t1 VALUES (0);
-
--- Name of the expression should be displayed as "field1".
--- Used to be "min".
 SELECT (SELECT MIN(f1) AS min FROM t1 ) AS field1 FROM t1 GROUP BY
 field1 WITH ROLLUP;
-
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 INTEGER);
 SELECT (SELECT SUM(f1) AS SQ1_field1 FROM t1) as field1
  FROM t1 GROUP BY f1 WITH ROLLUP ORDER BY f1;
@@ -1547,70 +1036,16 @@ CREATE TABLE t1 (pk integer auto_increment,
                  col_char_255 char(255) ,
                  col_smallint smallint ,
                  col_decimal_10_8 decimal(10,8),
-                 primary key(pk)) ;
-
-set sql_mode='';
-
-let $query =
-SELECT alias1.col_decimal_10_8 AS field1 ,
-       ( SELECT SUM(table1.col_smallint ) AS SQ1_field1
-         FROM ( t1 as table1 RIGHT JOIN t1 as table2 ON 1 )
-       ) AS field2 ,
-       GROUPING( LOG(alias1.col_int) ) AS field3
-FROM ( t1 AS alias1
-       JOIN
-       t1 AS alias2 ON 1  )
-WHERE alias2.pk IN ( SELECT col_char_255 FROM t1 )
-GROUP BY field1, field2, LOG(alias1.col_int)
-WITH ROLLUP
-ORDER BY alias1.col_datetime, field1, field2, LOG(alias1.col_int) ;
-set sql_mode=default;
-
+                 primary key(pk));
 DROP TABLE t1;
-
 CREATE TABLE t1 (f1 INTEGER);
-
-let $query1=
-SELECT SUM(f1), ROW_NUMBER() OVER (PARTITION BY f1), (SELECT MIN(f1) FROM t1) FROM t1;
-let $query2=
 SELECT SUM(f1), ROW_NUMBER() OVER (), (SELECT MIN(f1) FROM t1) FROM t1 ORDER BY f1;
-let $query3=
-SELECT SUM(f1), SUM(f1) OVER (), f1, (SELECT MIN(f1) FROM t1) sq FROM t1 ORDER BY f1;
-
-SET optimizer_switch='subquery_to_derived=default';
-
-SET optimizer_switch='subquery_to_derived=on';
-
 DROP TABLE t1;
 CREATE TABLE t(i INT);
 INSERT INTO t VALUES (1);
-
-let $query = SELECT 1 AS one FROM t WHERE 1=(SELECT 1 UNION SELECT 2);
 DROP TABLE t;
 CREATE TABLE t(x INT);
-SET SQL_MODE='';
-
-SELECT COUNT(*), (SELECT 1 FROM t)
-FROM t AS t1,
-     (SELECT 1 FROM t) AS t2,
-     t AS t3
-ORDER BY ROW_NUMBER() OVER (ORDER BY -t3.x);
-
-SET SQL_MODE=default;
 DROP TABLE t;
-
-SET SQL_MODE='';
-
 CREATE TABLE t(i INT);
 INSERT INTO t VALUES (4);
-
-SELECT i AS i1,  -- used to get renamed to i2
-       i AS i2,
-       (SELECT i FROM t) AS subquery,
-       SUM(i) AS summ
-FROM t;
-
-SET SQL_MODE=default;
 DROP TABLE t;
-
-SET optimizer_switch='subquery_to_derived=default';

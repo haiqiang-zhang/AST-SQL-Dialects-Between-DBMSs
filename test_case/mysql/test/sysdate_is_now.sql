@@ -1,11 +1,1 @@
-
---
--- BUG#15101 restore aliasing of SYSDATE to NOW in 5.0
--- this feature is activated via --sysdate-is-now mysqld init opt
---
--- To test here
--- 1. SYSDATE() does not distiguish from NOW()
--- 2. SYSDATE() obeys set timestamp
-
-set timestamp=1;
 SELECT sleep(1),NOW()-SYSDATE() as zero;
