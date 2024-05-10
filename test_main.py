@@ -4,17 +4,19 @@ from adapter.sqlite import SQLITE3
 from adapter.mysql_adapter import MYSQL
 from adapter.PostgresqlAdapter import PostgresqlAdapter
 from adapter.DBMSAdapter import DBMSAdapter
+from adapter.duckdb_adapter import DUCKDB
 import pandas as pd
 from utils import clean_query, clean_test_garbage, first_init_dbmss
 
 
 test_case_path = './test_case'
-dbms_test_case_used = ['postgresql']
+dbms_test_case_used = ['duckdb']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
     # "sqlite": SQLITE3,
     # "mysql": MYSQL,
-    "postgresql": PostgresqlAdapter
+    "postgresql": PostgresqlAdapter,
+    "duckdb": DUCKDB
 }
 
 setup_query_keyword = [
@@ -108,8 +110,7 @@ for dbms in os.listdir(test_case_path):
 
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
     for dirpath, dirnames, filenames in os.walk(test_folder):
-        for i in range(100):
-            filename = filenames[i]
+        for filename in filenames:
             if filename.endswith('.sql'):
                 test_paths = os.path.join(dirpath, filename)
                 # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)

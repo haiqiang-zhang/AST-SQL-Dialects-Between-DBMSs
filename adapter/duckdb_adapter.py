@@ -2,6 +2,7 @@ import os
 import duckdb
 from typing import List
 import threading
+from utils import print_prevent_stopping
 
 ECHO = False
 
@@ -57,8 +58,8 @@ class DUCKDB:
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             combined_result = (False, ["Error executing test case '{filename}': {e}"])
-            print(f"Error executing test case '{filename}': {e}")
-            print("=================================")
+            print_prevent_stopping(f"Error executing test case '{filename}': {e}")
+            print_prevent_stopping("=================================")
         finally:
             timer.cancel()
         
