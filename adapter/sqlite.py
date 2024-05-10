@@ -12,7 +12,7 @@ ECHO_SUCC = False
 #     "drop table"
 # ]
 
-class SQLITE3(DBMSAdapter):
+class SQLiteAdapter(DBMSAdapter):
     def __init__(self, filename:str="sqlite_test.db") -> None:
         # check if sqlite_test.db exists. If it does, delete it, then create a new one
         if os.path.exists(filename):

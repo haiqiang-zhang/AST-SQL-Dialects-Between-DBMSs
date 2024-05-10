@@ -1,13 +1,13 @@
 import os
 from time import sleep
 from typing import List
-from adapter.sqlite import SQLITE3
+from adapter.sqlite import SQLiteAdapter
 from adapter.mysql_adapter import MYSQL
 import pandas as pd
 from utils import clean_query, clean_test_garbage, SQLFileEmptyError, first_init_dbmss
 
 DBMS_ADAPTERS = {
-    "sqlite": SQLITE3,
+    "sqlite": SQLiteAdapter,
     "mysql": MYSQL
 }
 

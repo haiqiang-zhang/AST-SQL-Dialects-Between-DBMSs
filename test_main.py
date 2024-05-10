@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from adapter.sqlite import SQLITE3
+from adapter.sqlite import SQLiteAdapter
 from adapter.mysql_adapter import MYSQL
 from adapter.PostgresqlAdapter import PostgresqlAdapter
 from adapter.DBMSAdapter import DBMSAdapter
@@ -13,7 +13,7 @@ test_case_path = './test_case'
 dbms_test_case_used = ['duckdb']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    "sqlite": SQLITE3,
+    "sqlite": SQLiteAdapter,
     "mysql": MYSQL,
     "postgresql": PostgresqlAdapter,
     "duckdb": DUCKDB
