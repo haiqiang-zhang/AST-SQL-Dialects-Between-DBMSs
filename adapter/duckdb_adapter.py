@@ -3,6 +3,7 @@ import duckdb
 from typing import List
 import threading
 from utils import print_prevent_stopping
+from .DBMSAdapter import DBMSAdapter
 
 ECHO = False
 
@@ -12,7 +13,7 @@ ECHO = False
 #     "drop table"
 # ]
 
-class DUCKDB:
+class DUCKDB(DBMSAdapter):
     def __init__(self, filename:str="duckdb.db"):
         if os.path.exists(filename):
             os.remove(filename)
@@ -71,3 +72,8 @@ class DUCKDB:
 
         if os.path.exists(self.filename):
             os.remove(self.filename)
+
+    @staticmethod
+    def init_dbms():
+        pass
+    

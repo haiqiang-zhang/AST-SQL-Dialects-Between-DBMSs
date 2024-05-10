@@ -13,8 +13,8 @@ test_case_path = './test_case'
 dbms_test_case_used = ['duckdb']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    # "sqlite": SQLITE3,
-    # "mysql": MYSQL,
+    "sqlite": SQLITE3,
+    "mysql": MYSQL,
     "postgresql": PostgresqlAdapter,
     "duckdb": DUCKDB
 }
