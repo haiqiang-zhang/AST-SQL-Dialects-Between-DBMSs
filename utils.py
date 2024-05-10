@@ -2,11 +2,13 @@ import os
 from typing import List
 from adapter.sqlite import SQLITE3
 from adapter.mysql_adapter import MYSQL
+from adapter.duckdb_adapter import DUCKDB
 import pandas as pd
 
 DBMS_ADAPTERS = {
     # "sqlite3": SQLITE3,
-    "mysql": MYSQL
+    # "mysql": MYSQL,
+    "duckdb": DUCKDB
 }
 
 setup_query_keyword = [

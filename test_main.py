@@ -3,8 +3,8 @@ import os
 from utils import run_all, clean_test_garbage
 
 test_case_path = './test_case'
-# dbms_test_case_used = ['sqlite', 'mysql']
-dbms_test_case_used = ['mysql']
+# dbms_test_case_used = ['sqlite', 'mysql', 'duckdb']
+dbms_test_case_used = ['duckdb']
 
 # Iterate over the test case files in the folder (it is a multi-level folder)
 for dbms in os.listdir(test_case_path):
