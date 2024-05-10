@@ -9,9 +9,9 @@ SELECT getdatabaseencoding() <> 'WIN1252' OR
        (SELECT count(*) FROM pg_collation WHERE collname IN ('de_DE', 'en_US', 'sv_SE') AND collencoding = pg_char_to_encoding('WIN1252')) <> 3 OR
        (version() !~ 'Visual C\+\+' AND version() !~ 'mingw32' AND version() !~ 'windows')
        AS skip_test \gset
-\if :skip_test
-\quit
-\endif
+\if :skip_test;
+\quit;
+\endif;
 
 SET client_encoding TO WIN1252;
 
@@ -24,7 +24,7 @@ CREATE TABLE collate_test1 (
     b text COLLATE "en_US" NOT NULL
 );
 
-\d collate_test1
+\d collate_test1;
 
 CREATE TABLE collate_test_fail (
     a int,
@@ -45,7 +45,7 @@ CREATE TABLE collate_test_like (
     LIKE collate_test1
 );
 
-\d collate_test_like
+\d collate_test_like;
 
 CREATE TABLE collate_test2 (
     a int,
@@ -57,7 +57,7 @@ CREATE TABLE collate_test3 (
     b text COLLATE "C"
 );
 
-INSERT INTO collate_test1 VALUES (1, 'abc'), (2, 'äbc'), (3, 'bbc'), (4, 'ABC');
+INSERT INTO collate_test1 VALUES (1, 'abc'), (2, 'Ã¤bc'), (3, 'bbc'), (4, 'ABC');
 INSERT INTO collate_test2 SELECT * FROM collate_test1;
 INSERT INTO collate_test3 SELECT * FROM collate_test1;
 
@@ -101,8 +101,8 @@ SELECT * FROM collate_test2 ORDER BY b;
 SELECT * FROM collate_test3 ORDER BY b;
 
 -- constant expression folding
-SELECT 'bbc' COLLATE "en_US" > 'äbc' COLLATE "en_US" AS "true";
-SELECT 'bbc' COLLATE "sv_SE" > 'äbc' COLLATE "sv_SE" AS "false";
+SELECT 'bbc' COLLATE "en_US" > 'Ã¤bc' COLLATE "en_US" AS "true";
+SELECT 'bbc' COLLATE "sv_SE" > 'Ã¤bc' COLLATE "sv_SE" AS "false";
 
 -- LIKE/ILIKE
 
@@ -132,7 +132,7 @@ CREATE TABLE collate_test6 (
 );
 INSERT INTO collate_test6 VALUES (1, 'abc'), (2, 'ABC'), (3, '123'), (4, 'ab1'),
                                  (5, 'a1!'), (6, 'a c'), (7, '!.;'), (8, '   '),
-                                 (9, 'äbç'), (10, 'ÄBÇ');
+                                 (9, 'Ã¤bÃ§'), (10, 'Ã„BÃ‡');
 SELECT b,
        b ~ '^[[:alpha:]]+$' AS is_alpha,
        b ~ '^[[:upper:]]+$' AS is_upper,
@@ -380,8 +380,8 @@ CREATE INDEX collate_dep_test4i ON collate_dep_test4t (b COLLATE test0);
 DROP COLLATION test0 RESTRICT; -- fail
 DROP COLLATION test0 CASCADE;
 
-\d collate_dep_test1
-\d collate_dep_test2
+\d collate_dep_test1;
+\d collate_dep_test2;
 
 DROP TABLE collate_dep_test1, collate_dep_test4t;
 DROP TYPE collate_dep_test2;

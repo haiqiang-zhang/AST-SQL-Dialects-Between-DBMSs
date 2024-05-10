@@ -2,6 +2,7 @@ import os
 import sqlite3
 from typing import List
 import threading
+from .DBMSAdapter import DBMSAdapter
 
 ECHO_SUCC = False
 
@@ -11,7 +12,7 @@ ECHO_SUCC = False
 #     "drop table"
 # ]
 
-class SQLITE3:
+class SQLITE3(DBMSAdapter):
     def __init__(self, filename:str="sqlite_test.db") -> None:
         # check if sqlite_test.db exists. If it does, delete it, then create a new one
         if os.path.exists(filename):

@@ -3,12 +3,12 @@
 --
 
 -- directory paths and dlsuffix are passed to us in environment variables
-\getenv libdir PG_LIBDIR
-\getenv dlsuffix PG_DLSUFFIX
+\getenv libdir PG_LIBDIR;
+\getenv dlsuffix PG_DLSUFFIX;
 
-\set autoinclib :libdir '/autoinc' :dlsuffix
-\set refintlib :libdir '/refint' :dlsuffix
-\set regresslib :libdir '/regress' :dlsuffix
+\set autoinclib :libdir '/autoinc' :dlsuffix;
+\set refintlib :libdir '/refint' :dlsuffix;
+\set regresslib :libdir '/regress' :dlsuffix;
 
 CREATE FUNCTION autoinc ()
 	RETURNS trigger
@@ -299,7 +299,7 @@ COPY main_table (a,b) FROM stdin;
 30	10
 50	35
 80	15
-\.
+\.;
 
 CREATE FUNCTION trigger_func() RETURNS trigger LANGUAGE plpgsql AS '
 BEGIN
@@ -342,7 +342,7 @@ ALTER TABLE main_table DROP CONSTRAINT main_table_a_key;
 COPY main_table (a, b) FROM stdin;
 30	40
 50	60
-\.
+\.;
 
 SELECT * FROM main_table ORDER BY a, b;
 
@@ -372,7 +372,7 @@ INSERT INTO main_table (a) VALUES (123), (456);
 COPY main_table FROM stdin;
 123	999
 456	999
-\.
+\.;
 DELETE FROM main_table WHERE a IN (123, 456);
 UPDATE main_table SET a = 50, b = 60;
 SELECT * FROM main_table ORDER BY a, b;
@@ -689,7 +689,7 @@ CREATE TRIGGER z_min_update
 BEFORE UPDATE ON min_updates_test
 FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();
 
-\set QUIET false
+\set QUIET false;
 
 UPDATE min_updates_test SET f1 = f1;
 
@@ -697,7 +697,7 @@ UPDATE min_updates_test SET f2 = f2 + 1;
 
 UPDATE min_updates_test SET f3 = 2 WHERE f3 is null;
 
-\set QUIET true
+\set QUIET true;
 
 SELECT * FROM min_updates_test;
 
@@ -829,7 +829,7 @@ FOR EACH STATEMENT EXECUTE PROCEDURE view_trigger('after_view_upd_stmt');
 CREATE TRIGGER after_del_stmt_trig AFTER DELETE ON main_view
 FOR EACH STATEMENT EXECUTE PROCEDURE view_trigger('after_view_del_stmt');
 
-\set QUIET false
+\set QUIET false;
 
 -- Insert into view using trigger
 INSERT INTO main_view VALUES (20, 30);
@@ -851,15 +851,15 @@ UPDATE main_view SET b = 0 WHERE false;
 DELETE FROM main_view WHERE a IN (20,21);
 DELETE FROM main_view WHERE a = 31 RETURNING a, b;
 
-\set QUIET true
+\set QUIET true;
 
 -- Describe view should list triggers
-\d main_view
+\d main_view;
 
 -- Test dropping view triggers
 DROP TRIGGER instead_of_insert_trig ON main_view;
 DROP TRIGGER instead_of_delete_trig ON main_view;
-\d+ main_view
+\d+ main_view;
 DROP VIEW main_view;
 
 --
@@ -960,7 +960,7 @@ $$;
 CREATE TRIGGER city_update_trig INSTEAD OF UPDATE ON city_view
 FOR EACH ROW EXECUTE PROCEDURE city_update();
 
-\set QUIET false
+\set QUIET false;
 
 -- INSERT .. RETURNING
 INSERT INTO city_view(city_name) VALUES('Tokyo') RETURNING *;
@@ -984,7 +984,7 @@ UPDATE city_view v1 SET country_name = v2.country_name FROM city_view v2
 -- DELETE .. RETURNING
 DELETE FROM city_view WHERE city_name = 'Birmingham' RETURNING *;
 
-\set QUIET true
+\set QUIET true;
 
 -- read-only view with WHERE clause
 CREATE VIEW european_city_view AS
@@ -997,13 +997,13 @@ AS 'begin RETURN NULL; end';
 CREATE TRIGGER no_op_trig INSTEAD OF INSERT OR UPDATE OR DELETE
 ON european_city_view FOR EACH ROW EXECUTE PROCEDURE no_op_trig_fn();
 
-\set QUIET false
+\set QUIET false;
 
 INSERT INTO european_city_view VALUES (0, 'x', 10000, 'y', 'z');
 UPDATE european_city_view SET population = 10000;
 DELETE FROM european_city_view;
 
-\set QUIET true
+\set QUIET true;
 
 -- rules bypassing no-op triggers
 CREATE RULE european_city_insert_rule AS ON INSERT TO european_city_view
@@ -1022,7 +1022,7 @@ RETURNING NEW.*;
 CREATE RULE european_city_delete_rule AS ON DELETE TO european_city_view
 DO INSTEAD DELETE FROM city_view WHERE city_id = OLD.city_id RETURNING *;
 
-\set QUIET false
+\set QUIET false;
 
 -- INSERT not limited by view's WHERE clause, but UPDATE AND DELETE are
 INSERT INTO european_city_view(city_name, country_name)
@@ -1046,7 +1046,7 @@ UPDATE city_view v SET population = 599657
     RETURNING co.country_id, v.country_name,
               v.city_id, v.city_name, v.population;
 
-\set QUIET true
+\set QUIET true;
 
 SELECT * FROM city_view;
 
@@ -1446,7 +1446,7 @@ select tgrelid::regclass, tgname, tgfoid::regproc from pg_trigger
 
 -- check detach behavior
 create trigger trg1 after insert on trigpart for each row execute procedure trigger_nothing();
-\d trigpart3
+\d trigpart3;
 alter table trigpart detach partition trigpart3;
 drop trigger trg1 on trigpart3; -- fail due to "does not exist"
 alter table trigpart detach partition trigpart4;
@@ -1461,14 +1461,14 @@ select tgrelid::regclass::text, tgname, tgfoid::regproc, tgenabled, tgisinternal
   where tgname ~ '^trg1' order by 1;
 create table trigpart3 (like trigpart);
 create trigger trg1 after insert on trigpart3 for each row execute procedure trigger_nothing();
-\d trigpart3
+\d trigpart3;
 alter table trigpart attach partition trigpart3 FOR VALUES FROM (2000) to (3000); -- fail
 drop table trigpart3;
 
 -- check display of unrelated triggers
 create trigger samename after delete on trigpart execute function trigger_nothing();
 create trigger samename after delete on trigpart1 execute function trigger_nothing();
-\d trigpart1
+\d trigpart1;
 
 drop table trigpart;
 drop function trigger_nothing();
@@ -1558,12 +1558,12 @@ delete from parted_stmt_trig;
 copy parted_stmt_trig(a) from stdin;
 1
 2
-\.
+\.;
 
 -- insert via copy on the first partition
 copy parted_stmt_trig1(a) from stdin;
 1
-\.
+\.;
 
 -- Disabling a trigger in the parent table should disable children triggers too
 alter table parted_stmt_trig disable trigger trig_ins_after_parent;
@@ -2108,7 +2108,7 @@ copy parent (a, b) from stdin;
 AAA	42
 BBB	42
 CCC	42
-\.
+\.;
 
 -- DML affecting parent sees tuples collected from children even if
 -- there is no transition table trigger on the children
@@ -2129,7 +2129,7 @@ copy parent (a, b) from stdin;
 AAA	42
 BBB	42
 CCC	42
-\.
+\.;
 
 -- insert into parent with a before trigger on a child tuple before
 -- insertion, and we capture the newly modified row in parent format
@@ -2154,7 +2154,7 @@ copy parent (a, b) from stdin;
 AAA	42
 BBB	42
 CCC	234
-\.
+\.;
 
 drop table child1, child2, child3, parent;
 drop function intercept_insert();
@@ -2274,14 +2274,14 @@ copy parent (a, b) from stdin;
 AAA	42
 BBB	42
 CCC	42
-\.
+\.;
 
 -- same behavior for copy if there is an index (interesting because rows are
 -- captured by a different code path in copyfrom.c if there are indexes)
 create index on parent(b);
 copy parent (a, b) from stdin;
 DDD	42
-\.
+\.;
 
 -- DML affecting parent sees tuples collected from children even if
 -- there is no transition table trigger on the children
@@ -2802,7 +2802,7 @@ for each row execute procedure f();
 create trigger parenttrig after insert on child
 for each row execute procedure f();
 alter trigger parenttrig on parent rename to anothertrig;
-\d+ child
+\d+ child;
 
 drop table parent, child;
 drop function f();

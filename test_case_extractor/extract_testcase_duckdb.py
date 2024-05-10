@@ -2,9 +2,12 @@ import re
 import os
 import shutil
 
+test_folder = './test_case/duckdb/test_raw'
+output_folder = './test_case/duckdb/test'
+
 
 def extract_sql_queries(test_file, output_file):
-    with open(test_file, 'rb') as f:  # 以二进制模式打开文件
+    with open(test_file, 'rb') as f:  
         test_content = f.read()
 
     
@@ -23,7 +26,7 @@ def extract_sql_queries(test_file, output_file):
 
 
     try:
-        with open(output_file, 'wb') as f:  # 以二进制模式写入文件
+        with open(output_file, 'wb') as f:  
             for query in sql_queries:
                 query = query.strip()
                 if query[-1] != b';':
@@ -31,7 +34,7 @@ def extract_sql_queries(test_file, output_file):
                 f.write(query + b'\n')
     except FileNotFoundError as e:
         os.makedirs(os.path.dirname(output_file))
-        with open(output_file, 'wb') as f:  # 以二进制模式写入文件
+        with open(output_file, 'wb') as f: 
             for query in sql_queries:
                 query = query.strip()
                 if query[-1] != b';' or query[-1] != b';':
@@ -39,9 +42,8 @@ def extract_sql_queries(test_file, output_file):
                     query += b';'
                 f.write(query + b'\n')
 
-# 输入文件夹和输出文件夹的路径
-test_folder = './test_case/duckdb/test_raw'
-output_folder = './test_case/duckdb/test'
+
+
 
 # delete the file in output folder
 for folder in os.listdir(output_folder):
@@ -55,5 +57,5 @@ for group in os.listdir(test_folder):
     for filename in os.listdir(group_folder):
         if filename.endswith('.test'):
             test_file = os.path.join(group_folder, filename)
-            output_file = os.path.join(output_folder, group, filename[:-5] + '.sql')  # 将文件扩展名从 .test 改为 .sql
+            output_file = os.path.join(output_folder, group, filename[:-5] + '.sql') 
             extract_sql_queries(test_file, output_file)

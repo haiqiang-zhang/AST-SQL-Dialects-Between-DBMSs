@@ -5,9 +5,9 @@
 
 /* skip test if not UTF8 server encoding */
 SELECT getdatabaseencoding() <> 'UTF8' AS skip_test \gset
-\if :skip_test
-\quit
-\endif
+\if :skip_test;
+\quit;
+\endif;
 
 SET client_encoding TO UTF8;
 
@@ -28,11 +28,11 @@ CREATE TABLE test_pg_c_utf8 (
 );
 INSERT INTO test_pg_c_utf8 VALUES
   ('abc DEF 123abc'),
-  ('ábc sßs ßss DÉF'),
-  ('ǄxxǄ ǆxxǅ ǅxxǆ'),
-  ('ȺȺȺ'),
-  ('ⱥⱥⱥ'),
-  ('ⱥȺ');
+  ('Ã¡bc sÃs Ãss DÃF'),
+  ('ÇxxÇ ÇxxÇ ÇxxÇ'),
+  ('ÈºÈºÈº'),
+  ('â±¥â±¥â±¥'),
+  ('â±¥Èº');
 
 SELECT
     t, lower(t), initcap(t), upper(t),
@@ -45,9 +45,9 @@ SELECT
 DROP TABLE test_pg_c_utf8;
 
 -- negative test: Final_Sigma not used for builtin locale C.UTF-8
-SELECT lower('ΑΣ' COLLATE PG_C_UTF8);
-SELECT lower('ΑͺΣͺ' COLLATE PG_C_UTF8);
-SELECT lower('Α΄Σ΄' COLLATE PG_C_UTF8);
+SELECT lower('ÎÎ£' COLLATE PG_C_UTF8);
+SELECT lower('ÎÍºÎ£Íº' COLLATE PG_C_UTF8);
+SELECT lower('ÎÎÎ£Î' COLLATE PG_C_UTF8);
 
 -- properties
 
@@ -56,12 +56,12 @@ SELECT 'xyz' !~ '[[:upper:]]' COLLATE PG_C_UTF8;
 SELECT '@' !~ '[[:alnum:]]' COLLATE PG_C_UTF8;
 SELECT '=' ~ '[[:punct:]]' COLLATE PG_C_UTF8; -- symbols are punctuation in posix
 SELECT 'a8a' ~ '[[:digit:]]' COLLATE PG_C_UTF8;
-SELECT '൧' !~ '\d' COLLATE PG_C_UTF8; -- only 0-9 considered digits in posix
+SELECT 'àµ§' !~ '\d' COLLATE PG_C_UTF8; -- only 0-9 considered digits in posix
 
 -- case mapping
 
 SELECT 'xYz' ~* 'XyZ' COLLATE PG_C_UTF8;
 SELECT 'xAb' ~* '[W-Y]' COLLATE PG_C_UTF8;
 SELECT 'xAb' !~* '[c-d]' COLLATE PG_C_UTF8;
-SELECT 'Δ' ~* '[γ-λ]' COLLATE PG_C_UTF8;
-SELECT 'δ' ~* '[Γ-Λ]' COLLATE PG_C_UTF8; -- same as above with cases reversed
+SELECT 'Î' ~* '[Î³-Î»]' COLLATE PG_C_UTF8;
+SELECT 'Î´' ~* '[Î-Î]' COLLATE PG_C_UTF8; -- same as above with cases reversed

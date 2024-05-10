@@ -133,7 +133,7 @@ lock table pxtest3 in access share mode nowait;
 rollback;
 
 -- Disconnect, we will continue testing in a different backend
-\c -
+\c -;
 
 -- There should still be two prepared transactions
 SELECT gid FROM pg_prepared_xacts;
@@ -145,7 +145,7 @@ rollback;
 
 -- Commit table creation
 COMMIT PREPARED 'regress-one';
-\d pxtest2
+\d pxtest2;
 SELECT * FROM pxtest2;
 
 -- There should be one prepared transaction

@@ -6,9 +6,9 @@
 SELECT getdatabaseencoding() <> 'UTF8' OR
        (SELECT count(*) FROM pg_collation WHERE collprovider = 'i' AND collname <> 'unicode') = 0
        AS skip_test \gset
-\if :skip_test
-\quit
-\endif
+\if :skip_test;
+\quit;
+\endif;
 
 SET client_encoding TO UTF8;
 
@@ -21,7 +21,7 @@ CREATE TABLE collate_test1 (
     b text COLLATE "en-x-icu" NOT NULL
 );
 
-\d collate_test1
+\d collate_test1;
 
 CREATE TABLE collate_test_fail (
     a int,
@@ -42,7 +42,7 @@ CREATE TABLE collate_test_like (
     LIKE collate_test1
 );
 
-\d collate_test_like
+\d collate_test_like;
 
 CREATE TABLE collate_test2 (
     a int,
@@ -54,7 +54,7 @@ CREATE TABLE collate_test3 (
     b text COLLATE "C"
 );
 
-INSERT INTO collate_test1 VALUES (1, 'abc'), (2, 'äbc'), (3, 'bbc'), (4, 'ABC');
+INSERT INTO collate_test1 VALUES (1, 'abc'), (2, 'Ã¤bc'), (3, 'bbc'), (4, 'ABC');
 INSERT INTO collate_test2 SELECT * FROM collate_test1;
 INSERT INTO collate_test3 SELECT * FROM collate_test1;
 
@@ -98,8 +98,8 @@ SELECT * FROM collate_test2 ORDER BY b;
 SELECT * FROM collate_test3 ORDER BY b;
 
 -- constant expression folding
-SELECT 'bbc' COLLATE "en-x-icu" > 'äbc' COLLATE "en-x-icu" AS "true";
-SELECT 'bbc' COLLATE "sv-x-icu" > 'äbc' COLLATE "sv-x-icu" AS "false";
+SELECT 'bbc' COLLATE "en-x-icu" > 'Ã¤bc' COLLATE "en-x-icu" AS "true";
+SELECT 'bbc' COLLATE "sv-x-icu" > 'Ã¤bc' COLLATE "sv-x-icu" AS "false";
 
 -- upper/lower
 
@@ -125,11 +125,11 @@ SELECT * FROM collate_test1 WHERE b ILIKE 'abc';
 SELECT * FROM collate_test1 WHERE b ILIKE 'abc%';
 SELECT * FROM collate_test1 WHERE b ILIKE '%bc%';
 
-SELECT 'Türkiye' COLLATE "en-x-icu" ILIKE '%KI%' AS "true";
-SELECT 'Türkiye' COLLATE "tr-x-icu" ILIKE '%KI%' AS "false";
+SELECT 'TÃ¼rkiye' COLLATE "en-x-icu" ILIKE '%KI%' AS "true";
+SELECT 'TÃ¼rkiye' COLLATE "tr-x-icu" ILIKE '%KI%' AS "false";
 
-SELECT 'bıt' ILIKE 'BIT' COLLATE "en-x-icu" AS "false";
-SELECT 'bıt' ILIKE 'BIT' COLLATE "tr-x-icu" AS "true";
+SELECT 'bÄ±t' ILIKE 'BIT' COLLATE "en-x-icu" AS "false";
+SELECT 'bÄ±t' ILIKE 'BIT' COLLATE "tr-x-icu" AS "true";
 
 -- The following actually exercises the selectivity estimation for ILIKE.
 SELECT relname FROM pg_class WHERE relname ILIKE 'abc%';
@@ -149,7 +149,7 @@ CREATE TABLE collate_test6 (
 );
 INSERT INTO collate_test6 VALUES (1, 'abc'), (2, 'ABC'), (3, '123'), (4, 'ab1'),
                                  (5, 'a1!'), (6, 'a c'), (7, '!.;'), (8, '   '),
-                                 (9, 'äbç'), (10, 'ÄBÇ');
+                                 (9, 'Ã¤bÃ§'), (10, 'ÃBÃ');
 SELECT b,
        b ~ '^[[:alpha:]]+$' AS is_alpha,
        b ~ '^[[:upper:]]+$' AS is_upper,
@@ -162,11 +162,11 @@ SELECT b,
        b ~ '^[[:space:]]+$' AS is_space
 FROM collate_test6;
 
-SELECT 'Türkiye' COLLATE "en-x-icu" ~* 'KI' AS "true";
-SELECT 'Türkiye' COLLATE "tr-x-icu" ~* 'KI' AS "true";  -- true with ICU
+SELECT 'TÃ¼rkiye' COLLATE "en-x-icu" ~* 'KI' AS "true";
+SELECT 'TÃ¼rkiye' COLLATE "tr-x-icu" ~* 'KI' AS "true";  -- true with ICU
 
-SELECT 'bıt' ~* 'BIT' COLLATE "en-x-icu" AS "false";
-SELECT 'bıt' ~* 'BIT' COLLATE "tr-x-icu" AS "false";  -- false with ICU
+SELECT 'bÄ±t' ~* 'BIT' COLLATE "en-x-icu" AS "false";
+SELECT 'bÄ±t' ~* 'BIT' COLLATE "tr-x-icu" AS "false";  -- false with ICU
 
 -- The following actually exercises the selectivity estimation for ~*.
 SELECT relname FROM pg_class WHERE relname ~* '^abc';
@@ -438,8 +438,8 @@ CREATE INDEX collate_dep_test4i ON collate_dep_test4t (b COLLATE test0);
 DROP COLLATION test0 RESTRICT; -- fail
 DROP COLLATION test0 CASCADE;
 
-\d collate_dep_test1
-\d collate_dep_test2
+\d collate_dep_test1;
+\d collate_dep_test2;
 
 DROP TABLE collate_dep_test1, collate_dep_test4t;
 DROP TYPE collate_dep_test2;
@@ -469,12 +469,12 @@ SELECT * FROM collate_test2 ORDER BY b COLLATE UNICODE;
 SET client_min_messages=WARNING;
 CREATE COLLATION testcoll_ignore_accents (provider = icu, locale = '@colStrength=primary;colCaseLevel=yes');
 RESET client_min_messages;
-SELECT 'aaá' > 'AAA' COLLATE "und-x-icu", 'aaá' < 'AAA' COLLATE testcoll_ignore_accents;
+SELECT 'aaÃ¡' > 'AAA' COLLATE "und-x-icu", 'aaÃ¡' < 'AAA' COLLATE testcoll_ignore_accents;
 
 SET client_min_messages=WARNING;
 CREATE COLLATION testcoll_backwards (provider = icu, locale = '@colBackwards=yes');
 RESET client_min_messages;
-SELECT 'coté' < 'côte' COLLATE "und-x-icu", 'coté' > 'côte' COLLATE testcoll_backwards;
+SELECT 'cotÃ©' < 'cÃ´te' COLLATE "und-x-icu", 'cotÃ©' > 'cÃ´te' COLLATE testcoll_backwards;
 
 CREATE COLLATION testcoll_lower_first (provider = icu, locale = '@colCaseFirst=lower');
 CREATE COLLATION testcoll_upper_first (provider = icu, locale = '@colCaseFirst=upper');
@@ -493,7 +493,7 @@ CREATE COLLATION testcoll_error1 (provider = icu, locale = '@colNumeric=lower');
 -- test that attributes not handled by icu_set_collation_attributes()
 -- (handled by ucol_open() directly) also work
 CREATE COLLATION testcoll_de_phonebook (provider = icu, locale = 'de@collation=phonebook');
-SELECT 'Goldmann' < 'Götz' COLLATE "de-x-icu", 'Goldmann' > 'Götz' COLLATE testcoll_de_phonebook;
+SELECT 'Goldmann' < 'GÃ¶tz' COLLATE "de-x-icu", 'Goldmann' > 'GÃ¶tz' COLLATE testcoll_de_phonebook;
 
 
 -- rules
@@ -519,16 +519,16 @@ CREATE TABLE test6 (a int, b text);
 INSERT INTO test6 VALUES (1, U&'\00E4bc');
 INSERT INTO test6 VALUES (2, U&'\0061\0308bc');
 SELECT * FROM test6;
-SELECT * FROM test6 WHERE b = 'äbc' COLLATE ctest_det;
-SELECT * FROM test6 WHERE b = 'äbc' COLLATE ctest_nondet;
+SELECT * FROM test6 WHERE b = 'Ã¤bc' COLLATE ctest_det;
+SELECT * FROM test6 WHERE b = 'Ã¤bc' COLLATE ctest_nondet;
 
 -- same with arrays
 CREATE TABLE test6a (a int, b text[]);
 INSERT INTO test6a VALUES (1, ARRAY[U&'\00E4bc']);
 INSERT INTO test6a VALUES (2, ARRAY[U&'\0061\0308bc']);
 SELECT * FROM test6a;
-SELECT * FROM test6a WHERE b = ARRAY['äbc'] COLLATE ctest_det;
-SELECT * FROM test6a WHERE b = ARRAY['äbc'] COLLATE ctest_nondet;
+SELECT * FROM test6a WHERE b = ARRAY['Ã¤bc'] COLLATE ctest_det;
+SELECT * FROM test6a WHERE b = ARRAY['Ã¤bc'] COLLATE ctest_nondet;
 
 CREATE COLLATION case_sensitive (provider = icu, locale = '');
 CREATE COLLATION case_insensitive (provider = icu, locale = '@colStrength=secondary', deterministic = false);
@@ -649,10 +649,10 @@ RESET enable_seqscan;
 
 -- Unicode special case: different variants of Greek lower case sigma.
 -- A naive implementation like citext that just does lower(x) =
--- lower(y) will do the wrong thing here, because lower('Σ') is 'σ'
--- but upper('ς') is 'Σ'.
-SELECT 'ὀδυσσεύς' = 'ὈΔΥΣΣΕΎΣ' COLLATE case_sensitive;
-SELECT 'ὀδυσσεύς' = 'ὈΔΥΣΣΕΎΣ' COLLATE case_insensitive;
+-- lower(y) will do the wrong thing here, because lower('Î£') is 'Ï'
+-- but upper('Ï') is 'Î£'.
+SELECT 'á½Î´ÏÏÏÎµÏÏ' = 'á½ÎÎ¥Î£Î£ÎÎÎ£' COLLATE case_sensitive;
+SELECT 'á½Î´ÏÏÏÎµÏÏ' = 'á½ÎÎ¥Î£Î£ÎÎÎ£' COLLATE case_insensitive;
 
 -- name vs. text comparison operators
 SELECT relname FROM pg_class WHERE relname = 'PG_CLASS'::text COLLATE case_insensitive;
@@ -681,7 +681,7 @@ CREATE COLLATION ignore_accents (provider = icu, locale = '@colStrength=primary;
 RESET client_min_messages;
 
 CREATE TABLE test4 (a int, b text);
-INSERT INTO test4 VALUES (1, 'cote'), (2, 'côte'), (3, 'coté'), (4, 'côté');
+INSERT INTO test4 VALUES (1, 'cote'), (2, 'cÃ´te'), (3, 'cotÃ©'), (4, 'cÃ´tÃ©');
 SELECT * FROM test4 WHERE b = 'cote';
 SELECT * FROM test4 WHERE b = 'cote' COLLATE ignore_accents;
 SELECT * FROM test4 WHERE b = 'Cote' COLLATE ignore_accents;  -- still case-sensitive

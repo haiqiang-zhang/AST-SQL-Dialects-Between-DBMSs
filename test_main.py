@@ -2,16 +2,19 @@ import sqlite3
 import os
 from adapter.sqlite import SQLITE3
 from adapter.mysql_adapter import MYSQL
+from adapter.PostgresqlAdapter import PostgresqlAdapter
+from adapter.DBMSAdapter import DBMSAdapter
 import pandas as pd
 from utils import clean_query, clean_test_garbage, first_init_dbmss
 
 
 test_case_path = './test_case'
-dbms_test_case_used = ['sqlite', 'mysql']
+dbms_test_case_used = ['postgresql']
 
-DBMS_ADAPTERS = {
-    "sqlite": SQLITE3,
-    "mysql": MYSQL
+DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
+    # "sqlite": SQLITE3,
+    # "mysql": MYSQL,
+    "postgresql": PostgresqlAdapter
 }
 
 setup_query_keyword = [

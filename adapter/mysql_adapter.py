@@ -4,6 +4,7 @@ from typing import List
 import threading
 import mysql.connector
 from mysql.connector.errors import Error as DatabaseError
+from .DBMSAdapter import DBMSAdapter
 
 timeout_occurred = threading.Event()
 ECHO_SUCC = True
@@ -24,7 +25,7 @@ config_root = {
     'connection_timeout': 2 
 }
 
-class MYSQL:
+class MYSQL(DBMSAdapter):
 
     @staticmethod
     def init_dbms():

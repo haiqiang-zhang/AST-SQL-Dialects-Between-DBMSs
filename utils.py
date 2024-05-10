@@ -2,6 +2,11 @@ import os
 from typing import List
 
 
+def print_prevent_stopping(string:str):
+    string = string.replace(b'\xc2\x9e'.decode(), " ")
+    print(string)
+
+
 
 def first_init_dbmss(DBMS_ADAPTERS:dict):
     print("Start init DBMSs...")
@@ -37,6 +42,4 @@ def clean_query(query)->List[str]:
             continue
         i += 1
     return sql_query
-
-
 
