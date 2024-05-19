@@ -48,7 +48,6 @@ SELECT schema_to_xmlschema('testxmlschema', true, false, '');
 SELECT schema_to_xml_and_xmlschema('testxmlschema', true, true, 'foo');
 
 
--- test that domains are transformed like their base types
 
 CREATE DOMAIN testboolxmldomain AS bool;
 CREATE DOMAIN testdatexmldomain AS date;

@@ -1,25 +1,3 @@
---
--- PLPGSQL
---
--- Scenario:
---
---     A building with a modern TP cable installation where any
---     of the wall connectors can be used to plug in phones,
---     ethernet interfaces or local office hubs. The backside
---     of the wall connectors is wired to one of several patch-
---     fields in the building.
---
---     In the patchfields, there are hubs and all the slots
---     representing the wall connectors. In addition there are
---     slots that can represent a phone line from the central
---     phone system.
---
---     Triggers ensure consistency of the patching information.
---
---     Functions are used to build up powerful views that let
---     you look behind the wall when looking at a patchfield
---     or into a room.
---
 
 
 create table Room (
@@ -115,18 +93,8 @@ create table PHone (
 create unique index PHone_name on PHone using btree (slotname bpchar_ops);
 
 
--- ************************************************************
--- *
--- * Trigger procedures and functions for the patchfield
--- * test of PL/pgSQL
--- *
--- ************************************************************
 
 
--- ************************************************************
--- * AFTER UPDATE on Room
--- *	- If room no changes let wall slots follow
--- ************************************************************
 create function tg_room_au() returns trigger as '
 begin
     if new.roomno != old.roomno then
@@ -140,10 +108,6 @@ create trigger tg_room_au after update
     on Room for each row execute procedure tg_room_au();
 
 
--- ************************************************************
--- * AFTER DELETE on Room
--- *	- delete wall slots in this room
--- ************************************************************
 create function tg_room_ad() returns trigger as '
 begin
     delete from WSlot where roomno = old.roomno;
@@ -155,10 +119,6 @@ create trigger tg_room_ad after delete
     on Room for each row execute procedure tg_room_ad();
 
 
--- ************************************************************
--- * BEFORE INSERT or UPDATE on WSlot
--- *	- Check that room exists
--- ************************************************************
 create function tg_wslot_biu() returns trigger as $$
 begin
     if count(*) = 0 from Room where roomno = new.roomno then
@@ -172,10 +132,6 @@ create trigger tg_wslot_biu before insert or update
     on WSlot for each row execute procedure tg_wslot_biu();
 
 
--- ************************************************************
--- * AFTER UPDATE on PField
--- *	- Let PSlots of this field follow
--- ************************************************************
 create function tg_pfield_au() returns trigger as '
 begin
     if new.name != old.name then
@@ -189,10 +145,6 @@ create trigger tg_pfield_au after update
     on PField for each row execute procedure tg_pfield_au();
 
 
--- ************************************************************
--- * AFTER DELETE on PField
--- *	- Remove all slots of this patchfield
--- ************************************************************
 create function tg_pfield_ad() returns trigger as '
 begin
     delete from PSlot where pfname = old.name;
@@ -204,10 +156,6 @@ create trigger tg_pfield_ad after delete
     on PField for each row execute procedure tg_pfield_ad();
 
 
--- ************************************************************
--- * BEFORE INSERT or UPDATE on PSlot
--- *	- Ensure that our patchfield does exist
--- ************************************************************
 create function tg_pslot_biu() returns trigger as $proc$
 declare
     pfrec	record;
@@ -225,10 +173,6 @@ create trigger tg_pslot_biu before insert or update
     on PSlot for each row execute procedure tg_pslot_biu();
 
 
--- ************************************************************
--- * AFTER UPDATE on System
--- *	- If system name changes let interfaces follow
--- ************************************************************
 create function tg_system_au() returns trigger as '
 begin
     if new.name != old.name then
@@ -242,10 +186,6 @@ create trigger tg_system_au after update
     on System for each row execute procedure tg_system_au();
 
 
--- ************************************************************
--- * BEFORE INSERT or UPDATE on IFace
--- *	- set the slotname to IF.sysname.ifname
--- ************************************************************
 create function tg_iface_biu() returns trigger as $$
 declare
     sname	text;
@@ -270,10 +210,6 @@ create trigger tg_iface_biu before insert or update
     on IFace for each row execute procedure tg_iface_biu();
 
 
--- ************************************************************
--- * AFTER INSERT or UPDATE or DELETE on Hub
--- *	- insert/delete/rename slots as required
--- ************************************************************
 create function tg_hub_a() returns trigger as '
 declare
     hname	text;
@@ -301,9 +237,6 @@ create trigger tg_hub_a after insert or update or delete
     on Hub for each row execute procedure tg_hub_a();
 
 
--- ************************************************************
--- * Support function to add/remove slots of Hub
--- ************************************************************
 create function tg_hub_adjustslots(hname bpchar,
                                    oldnslots integer,
                                    newnslots integer)
@@ -324,16 +257,10 @@ begin
 end
 ' language plpgsql;
 
--- Test comments
 COMMENT ON FUNCTION tg_hub_adjustslots_wrong(bpchar, integer, integer) IS 'function with args';
 COMMENT ON FUNCTION tg_hub_adjustslots(bpchar, integer, integer) IS 'function with args';
 COMMENT ON FUNCTION tg_hub_adjustslots(bpchar, integer, integer) IS NULL;
 
--- ************************************************************
--- * BEFORE INSERT or UPDATE on HSlot
--- *	- prevent from manual manipulation
--- *	- set the slotname to HS.hubname.slotno
--- ************************************************************
 create function tg_hslot_biu() returns trigger as '
 declare
     sname	text;
@@ -367,10 +294,6 @@ create trigger tg_hslot_biu before insert or update
     on HSlot for each row execute procedure tg_hslot_biu();
 
 
--- ************************************************************
--- * BEFORE DELETE on HSlot
--- *	- prevent from manual manipulation
--- ************************************************************
 create function tg_hslot_bd() returns trigger as '
 declare
     hubrec	record;
@@ -390,10 +313,6 @@ create trigger tg_hslot_bd before delete
     on HSlot for each row execute procedure tg_hslot_bd();
 
 
--- ************************************************************
--- * BEFORE INSERT on all slots
--- *	- Check name prefix
--- ************************************************************
 create function tg_chkslotname() returns trigger as '
 begin
     if substr(new.slotname, 1, 2) != tg_argv[0] then
@@ -419,10 +338,6 @@ create trigger tg_chkslotname before insert
     on PHone for each row execute procedure tg_chkslotname('PH');
 
 
--- ************************************************************
--- * BEFORE INSERT or UPDATE on all slots with slotlink
--- *	- Set slotlink to empty string if NULL value given
--- ************************************************************
 create function tg_chkslotlink() returns trigger as '
 begin
     if new.slotlink isnull then
@@ -448,10 +363,6 @@ create trigger tg_chkslotlink before insert or update
     on PHone for each row execute procedure tg_chkslotlink();
 
 
--- ************************************************************
--- * BEFORE INSERT or UPDATE on all slots with backlink
--- *	- Set backlink to empty string if NULL value given
--- ************************************************************
 create function tg_chkbacklink() returns trigger as '
 begin
     if new.backlink isnull then
@@ -471,10 +382,6 @@ create trigger tg_chkbacklink before insert or update
     on PLine for each row execute procedure tg_chkbacklink();
 
 
--- ************************************************************
--- * BEFORE UPDATE on PSlot
--- *	- do delete/insert instead of update if name changes
--- ************************************************************
 create function tg_pslot_bu() returns trigger as '
 begin
     if new.slotname != old.slotname then
@@ -500,10 +407,6 @@ create trigger tg_pslot_bu before update
     on PSlot for each row execute procedure tg_pslot_bu();
 
 
--- ************************************************************
--- * BEFORE UPDATE on WSlot
--- *	- do delete/insert instead of update if name changes
--- ************************************************************
 create function tg_wslot_bu() returns trigger as '
 begin
     if new.slotname != old.slotname then
@@ -529,10 +432,6 @@ create trigger tg_wslot_bu before update
     on WSlot for each row execute procedure tg_Wslot_bu();
 
 
--- ************************************************************
--- * BEFORE UPDATE on PLine
--- *	- do delete/insert instead of update if name changes
--- ************************************************************
 create function tg_pline_bu() returns trigger as '
 begin
     if new.slotname != old.slotname then
@@ -558,10 +457,6 @@ create trigger tg_pline_bu before update
     on PLine for each row execute procedure tg_pline_bu();
 
 
--- ************************************************************
--- * BEFORE UPDATE on IFace
--- *	- do delete/insert instead of update if name changes
--- ************************************************************
 create function tg_iface_bu() returns trigger as '
 begin
     if new.slotname != old.slotname then
@@ -587,10 +482,6 @@ create trigger tg_iface_bu before update
     on IFace for each row execute procedure tg_iface_bu();
 
 
--- ************************************************************
--- * BEFORE UPDATE on HSlot
--- *	- do delete/insert instead of update if name changes
--- ************************************************************
 create function tg_hslot_bu() returns trigger as '
 begin
     if new.slotname != old.slotname or new.hubname != old.hubname then
@@ -616,10 +507,6 @@ create trigger tg_hslot_bu before update
     on HSlot for each row execute procedure tg_hslot_bu();
 
 
--- ************************************************************
--- * BEFORE UPDATE on PHone
--- *	- do delete/insert instead of update if name changes
--- ************************************************************
 create function tg_phone_bu() returns trigger as '
 begin
     if new.slotname != old.slotname then
@@ -643,10 +530,6 @@ create trigger tg_phone_bu before update
     on PHone for each row execute procedure tg_phone_bu();
 
 
--- ************************************************************
--- * AFTER INSERT or UPDATE or DELETE on slot with backlink
--- *	- Ensure that the opponent correctly points back to us
--- ************************************************************
 create function tg_backlink_a() returns trigger as '
 declare
     dummy	integer;
@@ -692,10 +575,6 @@ create trigger tg_backlink_a after insert or update or delete
     on PLine for each row execute procedure tg_backlink_a('PL');
 
 
--- ************************************************************
--- * Support function to set the opponents backlink field
--- * if it does not already point to the requested slot
--- ************************************************************
 create function tg_backlink_set(myname bpchar, blname bpchar)
 returns integer as '
 declare
@@ -748,10 +627,6 @@ end;
 ' language plpgsql;
 
 
--- ************************************************************
--- * Support function to clear out the backlink field if
--- * it still points to specific slot
--- ************************************************************
 create function tg_backlink_unset(bpchar, bpchar)
 returns integer as '
 declare
@@ -795,10 +670,6 @@ end
 ' language plpgsql;
 
 
--- ************************************************************
--- * AFTER INSERT or UPDATE or DELETE on slot with slotlink
--- *	- Ensure that the opponent correctly points back to us
--- ************************************************************
 create function tg_slotlink_a() returns trigger as '
 declare
     dummy	integer;
@@ -850,10 +721,6 @@ create trigger tg_slotlink_a after insert or update or delete
     on PHone for each row execute procedure tg_slotlink_a('PH');
 
 
--- ************************************************************
--- * Support function to set the opponents slotlink field
--- * if it does not already point to the requested slot
--- ************************************************************
 create function tg_slotlink_set(bpchar, bpchar)
 returns integer as '
 declare
@@ -936,10 +803,6 @@ end;
 ' language plpgsql;
 
 
--- ************************************************************
--- * Support function to clear out the slotlink field if
--- * it still points to specific slot
--- ************************************************************
 create function tg_slotlink_unset(bpchar, bpchar)
 returns integer as '
 declare
@@ -1003,9 +866,6 @@ end;
 ' language plpgsql;
 
 
--- ************************************************************
--- * Describe the backside of a patchfield slot
--- ************************************************************
 create function pslot_backlink_view(bpchar)
 returns text as '
 <<outer>>
@@ -1048,9 +908,6 @@ end;
 ' language plpgsql;
 
 
--- ************************************************************
--- * Describe the front of a patchfield slot
--- ************************************************************
 create function pslot_slotlink_view(bpchar)
 returns text as '
 declare
@@ -1084,9 +941,6 @@ end;
 ' language plpgsql;
 
 
--- ************************************************************
--- * Describe the front of a wall connector slot
--- ************************************************************
 create function wslot_slotlink_view(bpchar)
 returns text as '
 declare
@@ -1135,18 +989,12 @@ end;
 
 
 
--- ************************************************************
--- * View of a patchfield describing backside and patches
--- ************************************************************
 create view Pfield_v1 as select PF.pfname, PF.slotname,
 	pslot_backlink_view(PF.slotname) as backside,
 	pslot_slotlink_view(PF.slotname) as patch
     from PSlot PF;
 
 
---
--- First we build the house - so we create the rooms
---
 insert into Room values ('001', 'Entrance');
 insert into Room values ('002', 'Office');
 insert into Room values ('003', 'Office');
@@ -1158,9 +1006,6 @@ insert into Room values ('104', 'Technical');
 insert into Room values ('105', 'Office');
 insert into Room values ('106', 'Office');
 
---
--- Second we install the wall connectors
---
 insert into WSlot values ('WS.001.1a', '001', '', '');
 insert into WSlot values ('WS.001.1b', '001', '', '');
 insert into WSlot values ('WS.001.2a', '001', '', '');
@@ -1210,14 +1055,8 @@ insert into WSlot values ('WS.106.2b', '106', '', '');
 insert into WSlot values ('WS.106.3a', '106', '', '');
 insert into WSlot values ('WS.106.3b', '106', '', '');
 
---
--- Now create the patch fields and their slots
---
 insert into PField values ('PF0_1', 'Wallslots basement');
 
---
--- The cables for these will be made later, so they are unconnected for now
---
 insert into PSlot values ('PS.base.a1', 'PF0_1', '', '');
 insert into PSlot values ('PS.base.a2', 'PF0_1', '', '');
 insert into PSlot values ('PS.base.a3', 'PF0_1', '', '');
@@ -1225,9 +1064,6 @@ insert into PSlot values ('PS.base.a4', 'PF0_1', '', '');
 insert into PSlot values ('PS.base.a5', 'PF0_1', '', '');
 insert into PSlot values ('PS.base.a6', 'PF0_1', '', '');
 
---
--- These are already wired to the wall connectors
---
 insert into PSlot values ('PS.base.b1', 'PF0_1', '', 'WS.002.1a');
 insert into PSlot values ('PS.base.b2', 'PF0_1', '', 'WS.002.1b');
 insert into PSlot values ('PS.base.b3', 'PF0_1', '', 'WS.002.2a');
@@ -1242,10 +1078,6 @@ insert into PSlot values ('PS.base.c4', 'PF0_1', '', 'WS.003.2b');
 insert into PSlot values ('PS.base.c5', 'PF0_1', '', 'WS.003.3a');
 insert into PSlot values ('PS.base.c6', 'PF0_1', '', 'WS.003.3b');
 
---
--- This patchfield will be renamed later into PF0_2 - so its
--- slots references in pfname should follow
---
 insert into PField values ('PF0_X', 'Phonelines basement');
 
 insert into PSlot values ('PS.base.ta1', 'PF0_X', '', '');
@@ -1292,11 +1124,6 @@ insert into PSlot values ('PS.first.d4', 'PF1_1', '', 'WS.106.2b');
 insert into PSlot values ('PS.first.d5', 'PF1_1', '', 'WS.106.3a');
 insert into PSlot values ('PS.first.d6', 'PF1_1', '', 'WS.106.3b');
 
---
--- Now we wire the wall connectors 1a-2a in room 001 to the
--- patchfield. In the second update we make an error, and
--- correct it after
---
 update PSlot set backlink = 'WS.001.1a' where slotname = 'PS.base.a1';
 update PSlot set backlink = 'WS.001.1b' where slotname = 'PS.base.a3';
 select * from WSlot where roomno = '001' order by slotname;
@@ -1308,11 +1135,6 @@ update PSlot set backlink = 'WS.001.1b' where slotname = 'PS.base.a2';
 select * from WSlot where roomno = '001' order by slotname;
 select * from PSlot where slotname ~ 'PS.base.a' order by slotname;
 
---
--- Same procedure for 2b-3b but this time updating the WSlot instead
--- of the PSlot. Due to the triggers the result is the same:
--- WSlot and corresponding PSlot point to each other.
---
 update WSlot set backlink = 'PS.base.a4' where slotname = 'WS.001.2b';
 update WSlot set backlink = 'PS.base.a6' where slotname = 'WS.001.3a';
 select * from WSlot where roomno = '001' order by slotname;
@@ -1340,20 +1162,11 @@ insert into PSlot values ('PS.first.tb4', 'PF1_2', '', '');
 insert into PSlot values ('PS.first.tb5', 'PF1_2', '', '');
 insert into PSlot values ('PS.first.tb6', 'PF1_2', '', '');
 
---
--- Fix the wrong name for patchfield PF0_2
---
 update PField set name = 'PF0_2' where name = 'PF0_X';
 
 select * from PSlot order by slotname;
 select * from WSlot order by slotname;
 
---
--- Install the central phone system and create the phone numbers.
--- They are wired on insert to the patchfields. Again the
--- triggers automatically tell the PSlots to update their
--- backlink field.
---
 insert into PLine values ('PL.001', '-0', 'Central call', 'PS.base.ta1');
 insert into PLine values ('PL.002', '-101', '', 'PS.base.ta2');
 insert into PLine values ('PL.003', '-102', '', 'PS.base.ta3');
@@ -1375,10 +1188,6 @@ insert into PLine values ('PL.022', '-367', '', 'PS.first.tb6');
 insert into PLine values ('PL.028', '-501', 'Fax entrance', 'PS.base.ta2');
 insert into PLine values ('PL.029', '-502', 'Fax first floor', 'PS.first.ta1');
 
---
--- Buy some phones, plug them into the wall and patch the
--- phone lines to the corresponding patchfield slots.
---
 insert into PHone values ('PH.hc001', 'Hicom standard', 'WS.001.1a');
 update PSlot set slotlink = 'PS.base.ta1' where slotname = 'PS.base.a1';
 insert into PHone values ('PH.hc002', 'Hicom standard', 'WS.002.1a');
@@ -1388,24 +1197,14 @@ update PSlot set slotlink = 'PS.base.tb2' where slotname = 'PS.base.b3';
 insert into PHone values ('PH.fax001', 'Canon fax', 'WS.001.2a');
 update PSlot set slotlink = 'PS.base.ta2' where slotname = 'PS.base.a3';
 
---
--- Install a hub at one of the patchfields, plug a computers
--- ethernet interface into the wall and patch it to the hub.
---
 insert into Hub values ('base.hub1', 'Patchfield PF0_1 hub', 16);
 insert into System values ('orion', 'PC');
 insert into IFace values ('IF', 'orion', 'eth0', 'WS.002.1b');
 update PSlot set slotlink = 'HS.base.hub1.1' where slotname = 'PS.base.b2';
 
---
--- Now we take a look at the patchfield
---
 select * from PField_v1 where pfname = 'PF0_1' order by slotname;
 select * from PField_v1 where pfname = 'PF0_2' order by slotname;
 
---
--- Finally we want errors
---
 insert into PField values ('PF1_1', 'should fail due to unique index');
 update PSlot set backlink = 'WS.not.there' where slotname = 'PS.base.a1';
 update PSlot set backlink = 'XX.illegal' where slotname = 'PS.base.a1';
@@ -1418,14 +1217,7 @@ insert into IFace values ('IF', 'notthere', 'eth0', '');
 insert into IFace values ('IF', 'orion', 'ethernet_interface_name_too_long', '');
 
 
---
--- The following tests are unrelated to the scenario outlined above;
--- they merely exercise specific parts of PL/pgSQL
---
 
---
--- Test recursion, per bug report 7-Sep-01
---
 CREATE FUNCTION recursion_test(int,int) RETURNS text AS '
 DECLARE rslt text;
 BEGIN
@@ -1439,9 +1231,6 @@ END;' LANGUAGE plpgsql;
 
 SELECT recursion_test(4,3);
 
---
--- Test the FOUND magic variable
---
 CREATE TABLE found_test_tbl (a int);
 
 create function test_found()
@@ -1458,21 +1247,18 @@ create function test_found()
     insert into found_test_tbl values (3);
   end if;
 
-  delete from found_test_tbl where a = 9999; -- matches no rows
+  delete from found_test_tbl where a = 9999; 
   if not FOUND then
     insert into found_test_tbl values (4);
   end if;
 
   for i in 1 .. 10 loop
-    -- no need to do anything
   end loop;
   if FOUND then
     insert into found_test_tbl values (5);
   end if;
 
-  -- never executes the loop
   for i in 2 .. 1 loop
-    -- no need to do anything
   end loop;
   if not FOUND then
     insert into found_test_tbl values (6);
@@ -1483,9 +1269,6 @@ create function test_found()
 select test_found();
 select * from found_test_tbl;
 
---
--- Test set-returning functions for PL/pgSQL
---
 
 create function test_table_func_rec() returns setof found_test_tbl as '
 DECLARE
@@ -1558,9 +1341,6 @@ END;' language plpgsql;
 SELECT * FROM test_ret_rec_dyn(1500) AS (a int, b int, c int);
 SELECT * FROM test_ret_rec_dyn(5) AS (a int, b numeric, c text);
 
---
--- Test some simple polymorphism cases.
---
 
 create function f1(x anyelement) returns anyelement as $$
 begin
@@ -1568,7 +1348,7 @@ begin
 end$$ language plpgsql;
 
 select f1(42) as int, f1(4.5) as num;
-select f1(point(3,4));  -- fail for lack of + operator
+select f1(point(3,4));  
 
 drop function f1(x anyelement);
 
@@ -1588,7 +1368,7 @@ end$$ language plpgsql;
 
 select f1(array[2,4]) as int, f1(array[4.5, 7.7]) as num;
 
-select f1(stavalues1) from pg_statistic;  -- fail, can't infer element type
+select f1(stavalues1) from pg_statistic;  
 
 drop function f1(x anyarray);
 
@@ -1599,11 +1379,10 @@ end$$ language plpgsql;
 
 select f1(array[2,4]) as int, f1(array[4.5, 7.7]) as num;
 
-select f1(stavalues1) from pg_statistic;  -- fail, can't infer element type
+select f1(stavalues1) from pg_statistic;  
 
 drop function f1(x anyarray);
 
--- fail, can't infer type:
 create function f1(x anyelement) returns anyrange as $$
 begin
   return array[x + 1, x + 2];
@@ -1634,11 +1413,10 @@ end$$ language plpgsql;
 
 select f1(int4range(42, 49), 11, 2::smallint) as int, f1(float8range(4.5, 7.8), 7.8, 11::real) as num;
 
-select f1(int4range(42, 49), 11, 4.5) as fail;  -- range type doesn't fit
+select f1(int4range(42, 49), 11, 4.5) as fail;  
 
 drop function f1(x anycompatiblerange, y anycompatible, z anycompatible);
 
--- fail, can't infer type:
 create function f1(x anycompatible) returns anycompatiblerange as $$
 begin
   return array[x + 1, x + 2];
@@ -1669,17 +1447,12 @@ select x, pg_typeof(x), y, pg_typeof(y)
 select x, pg_typeof(x), y, pg_typeof(y)
   from f1(11, '{1,2}', point(1,2), '(3,4)');
 select x, pg_typeof(x), y, pg_typeof(y)
-  from f1(11, array[1, 2.2], 42, 34.5);  -- fail
+  from f1(11, array[1, 2.2], 42, 34.5);  
 
 drop function f1(a anyelement, b anyarray,
                  c anycompatible, d anycompatible);
 
---
--- Test handling of OUT parameters, including polymorphic cases.
--- Note that RETURN is optional with OUT params; we try both ways.
---
 
--- wrong way to do it:
 create function f1(in i int, out j int) returns int as $$
 begin
   return i+1;
@@ -1767,9 +1540,6 @@ select * from duplic(textrange('aaa', 'bbb'));
 
 drop function duplic(anycompatiblerange);
 
---
--- test PERFORM
---
 
 create table perform_test (
 	a	INT,
@@ -1812,9 +1582,6 @@ SELECT * FROM perform_test;
 
 drop table perform_test;
 
---
--- Test proper snapshot handling in simple expressions
---
 
 create temp table users(login text, id serial);
 
@@ -1836,12 +1603,12 @@ declare my_id_user int;
 begin
   my_id_user = sp_id_user( a_login );
   IF  my_id_user > 0 THEN
-    RETURN -1;  -- error code for existing user
+    RETURN -1;  
   END IF;
   INSERT INTO users ( login ) VALUES ( a_login );
   my_id_user = sp_id_user( a_login );
   IF  my_id_user = 0 THEN
-    RETURN -2;  -- error code for insertion failure
+    RETURN -2;  
   END IF;
   RETURN my_id_user;
 end$$ language plpgsql;
@@ -1855,15 +1622,11 @@ select sp_add_user('user3');
 drop function sp_add_user(text);
 drop function sp_id_user(text);
 
---
--- tests for refcursors
---
 create table rc_test (a int, b int);
 copy rc_test from stdin;
 5	10
 50	100
 500	1000
-\.;
 
 create function return_unnamed_refcursor() returns refcursor as $$
 declare
@@ -1911,7 +1674,6 @@ fetch all from test2;
 
 commit;
 
--- should fail
 fetch next from test1;
 
 create function refcursor_test2(int, int) returns boolean as $$
@@ -1933,7 +1695,6 @@ $$ language plpgsql;
 select refcursor_test2(20000, 20000) as "Should be false",
        refcursor_test2(20, 20) as "Should be true";
 
--- should fail
 create function constant_refcursor() returns refcursor as $$
 declare
     rc constant refcursor;
@@ -1945,7 +1706,6 @@ $$ language plpgsql;
 
 select constant_refcursor();
 
--- but it's okay like this
 create or replace function constant_refcursor() returns refcursor as $$
 declare
     rc constant refcursor := 'my_cursor_name';
@@ -1957,9 +1717,6 @@ $$ language plpgsql;
 
 select constant_refcursor();
 
---
--- tests for cursors with named parameter arguments
---
 create function namedparmcursor_test1(int, int) returns boolean as $$
 declare
     c1 cursor (param1 int, param12 int) for select * from rc_test where a > param1 and b > param12;
@@ -1979,7 +1736,6 @@ $$ language plpgsql;
 select namedparmcursor_test1(20000, 20000) as "Should be false",
        namedparmcursor_test1(20, 20) as "Should be true";
 
--- mixing named and positional argument notations
 create function namedparmcursor_test2(int, int) returns boolean as $$
 declare
     c1 cursor (param1 int, param2 int) for select * from rc_test where a > param1 and b > param2;
@@ -1997,8 +1753,6 @@ end
 $$ language plpgsql;
 select namedparmcursor_test2(20, 20);
 
--- mixing named and positional: param2 is given twice, once in named notation
--- and second time in positional notation. Should throw an error at parse time
 create function namedparmcursor_test3() returns void as $$
 declare
     c1 cursor (param1 int, param2 int) for select * from rc_test where a > param1 and b > param2;
@@ -2007,7 +1761,6 @@ begin
 end
 $$ language plpgsql;
 
--- mixing named and positional: same as previous test, but param1 is duplicated
 create function namedparmcursor_test4() returns void as $$
 declare
     c1 cursor (param1 int, param2 int) for select * from rc_test where a > param1 and b > param2;
@@ -2016,7 +1769,6 @@ begin
 end
 $$ language plpgsql;
 
--- duplicate named parameter, should throw an error at parse time
 create function namedparmcursor_test5() returns void as $$
 declare
   c1 cursor (p1 int, p2 int) for
@@ -2026,7 +1778,6 @@ begin
 end
 $$ language plpgsql;
 
--- not enough parameters, should throw an error at parse time
 create function namedparmcursor_test6() returns void as $$
 declare
   c1 cursor (p1 int, p2 int) for
@@ -2036,8 +1787,6 @@ begin
 end
 $$ language plpgsql;
 
--- division by zero runtime error, the context given in the error message
--- should be sensible
 create function namedparmcursor_test7() returns void as $$
 declare
   c1 cursor (p1 int, p2 int) for
@@ -2047,25 +1796,19 @@ begin
 end $$ language plpgsql;
 select namedparmcursor_test7();
 
--- check that line comments work correctly within the argument list (there
--- is some special handling of this case in the code: the newline after the
--- comment must be preserved when the argument-evaluating query is
--- constructed, otherwise the comment effectively comments out the next
--- argument, too)
 create function namedparmcursor_test8() returns int4 as $$
 declare
   c1 cursor (p1 int, p2 int) for
     select count(*) from tenk1 where thousand = p1 and tenthous = p2;
   n int4;
 begin
-  open c1 (77 -- test
+  open c1 (77 
   , 42);
   fetch c1 into n;
   return n;
 end $$ language plpgsql;
 select namedparmcursor_test8();
 
--- cursor parameter name can match plpgsql variable or unreserved keyword
 create function namedparmcursor_test9(p1 int) returns int4 as $$
 declare
   c1 cursor (p1 int, p2 int, debug int) for
@@ -2080,9 +1823,6 @@ begin
 end $$ language plpgsql;
 select namedparmcursor_test9(6);
 
---
--- tests for "raise" processing
---
 create function raise_test1(int) returns int as $$
 begin
     raise notice 'This message has too many parameters!', $1;
@@ -2106,8 +1846,6 @@ $$ language plpgsql;
 
 select raise_test3(1);
 
--- Test re-RAISE inside a nested exception block.  This case is allowed
--- by Oracle's PL/SQL but was handled differently by PG before 9.1.
 
 CREATE FUNCTION reraise_test() RETURNS void AS $$
 BEGIN
@@ -2131,10 +1869,6 @@ $$ LANGUAGE plpgsql;
 
 SELECT reraise_test();
 
---
--- reject function definitions that contain malformed SQL queries at
--- compile-time, where possible
---
 create function bad_sql1() returns int as $$
 declare a int;
 begin
@@ -2153,8 +1887,6 @@ begin
     return 5;
 end;$$ language plpgsql;
 
--- a RETURN expression is mandatory, except for void-returning
--- functions, where it is not allowed
 create function missing_return_expr() returns int as $$
 begin
     return ;
@@ -2165,7 +1897,6 @@ begin
     return 5;
 end;$$ language plpgsql;
 
--- VOID functions are allowed to omit RETURN
 create function void_return_expr() returns void as $$
 begin
     perform 2+2;
@@ -2173,7 +1904,6 @@ end;$$ language plpgsql;
 
 select void_return_expr();
 
--- but ordinary functions are not
 create function missing_return_expr() returns int as $$
 begin
     perform 2+2;
@@ -2184,9 +1914,6 @@ select missing_return_expr();
 drop function void_return_expr();
 drop function missing_return_expr();
 
---
--- EXECUTE ... INTO test
---
 
 create table eifoo (i integer, y integer);
 create type eitype as (i integer, y integer);
@@ -2216,16 +1943,11 @@ select execute_into_test('eifoo');
 drop table eifoo cascade;
 drop type eitype cascade;
 
---
--- SQLSTATE and SQLERRM test
---
 
 create function excpt_test1() returns void as $$
 begin
     raise notice '% %', sqlstate, sqlerrm;
 end; $$ language plpgsql;
--- should fail: SQLSTATE and SQLERRM are only in defined EXCEPTION
--- blocks
 select excpt_test1();
 
 create function excpt_test2() returns void as $$
@@ -2236,7 +1958,6 @@ begin
         end;
     end;
 end; $$ language plpgsql;
--- should fail
 select excpt_test2();
 
 create function excpt_test3() returns void as $$
@@ -2250,7 +1971,6 @@ begin
 	        perform 10/0;
         exception
             when substring_error then
-                -- this exception handler shouldn't be invoked
                 raise notice 'unexpected exception: % %', sqlstate, sqlerrm;
 	        when division_by_zero then
 	            raise notice 'caught exception % %', sqlstate, sqlerrm;
@@ -2272,7 +1992,6 @@ drop function excpt_test2();
 drop function excpt_test3();
 drop function excpt_test4();
 
--- parameters of raise stmt can be expressions
 create function raise_exprs() returns void as $$
 declare
     a integer[] = '{10,20,30}';
@@ -2286,10 +2005,6 @@ end;$$ language plpgsql;
 select raise_exprs();
 drop function raise_exprs();
 
--- regression test: verify that multiple uses of same plpgsql datum within
--- a SQL command all get mapped to the same $n parameter.  The return value
--- of the SELECT is not important, we only care that it doesn't fail with
--- a complaint about an ungrouped column reference.
 create function multi_datum_use(p1 int) returns bool as $$
 declare
   x int;
@@ -2301,11 +2016,6 @@ end$$ language plpgsql;
 
 select multi_datum_use(42);
 
---
--- Test STRICT limiter in both planned and EXECUTE invocations.
--- Note that a data-modifying query is quasi strict (disallow multi rows)
--- by default in the planned case, but not in EXECUTE.
---
 
 create temp table foo (f1 int, f2 int);
 
@@ -2314,7 +2024,6 @@ insert into foo values (1,2), (3,4);
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should work
   insert into foo values(5,6) returning * into x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2324,7 +2033,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should fail due to implicit strict
   insert into foo values(7,8),(9,10) returning * into x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2334,7 +2042,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should work
   execute 'insert into foo values(5,6) returning *' into x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2344,7 +2051,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- this should work since EXECUTE isn't as picky
   execute 'insert into foo values(7,8),(9,10) returning *' into x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2356,7 +2062,6 @@ select * from foo;
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should work
   select * from foo where f1 = 3 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2366,7 +2071,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should fail, no rows
   select * from foo where f1 = 0 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2376,7 +2080,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should fail, too many rows
   select * from foo where f1 > 3 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2386,7 +2089,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should work
   execute 'select * from foo where f1 = 3' into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2396,7 +2098,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should fail, no rows
   execute 'select * from foo where f1 = 0' into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2406,7 +2107,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- should fail, too many rows
   execute 'select * from foo where f1 > 3' into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2415,7 +2115,6 @@ select stricttest();
 
 drop function stricttest();
 
--- test printing parameters after failure due to STRICT
 
 set plpgsql.print_strict_params to true;
 
@@ -2425,7 +2124,6 @@ x record;
 p1 int := 2;
 p3 text := 'foo';
 begin
-  -- no rows
   select * from foo where f1 = p1 and f1::text = p3 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2438,7 +2136,6 @@ x record;
 p1 int := 2;
 p3 text := $a$'Valame Dios!' dijo Sancho; 'no le dije yo a vuestra merced que mirase bien lo que hacia?'$a$;
 begin
-  -- no rows
   select * from foo where f1 = p1 and f1::text = p3 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2451,7 +2148,6 @@ x record;
 p1 int := 2;
 p3 text := 'foo';
 begin
-  -- too many rows
   select * from foo where f1 > p1 or f1::text = p3  into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2461,7 +2157,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- too many rows, no params
   select * from foo where f1 > 3 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2471,7 +2166,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- no rows
   execute 'select * from foo where f1 = $1 or f1::text = $2' using 0, 'foo' into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2481,7 +2175,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- too many rows
   execute 'select * from foo where f1 > $1' using 1 into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2491,7 +2184,6 @@ select stricttest();
 create or replace function stricttest() returns void as $$
 declare x record;
 begin
-  -- too many rows, no parameters
   execute 'select * from foo where f1 > 3' into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2499,14 +2191,12 @@ end$$ language plpgsql;
 select stricttest();
 
 create or replace function stricttest() returns void as $$
--- override the global
 #print_strict_params off
 declare
 x record;
 p1 int := 2;
 p3 text := 'foo';
 begin
-  -- too many rows
   select * from foo where f1 > p1 or f1::text = p3  into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
@@ -2516,31 +2206,26 @@ select stricttest();
 reset plpgsql.print_strict_params;
 
 create or replace function stricttest() returns void as $$
--- override the global
 #print_strict_params on
 declare
 x record;
 p1 int := 2;
 p3 text := 'foo';
 begin
-  -- too many rows
   select * from foo where f1 > p1 or f1::text = p3  into strict x;
   raise notice 'x.f1 = %, x.f2 = %', x.f1, x.f2;
 end$$ language plpgsql;
 
 select stricttest();
 
--- test warnings and errors
 set plpgsql.extra_warnings to 'all';
 set plpgsql.extra_warnings to 'none';
 set plpgsql.extra_errors to 'all';
 set plpgsql.extra_errors to 'none';
 
--- test warnings when shadowing a variable
 
 set plpgsql.extra_warnings to 'shadowed_variables';
 
--- simple shadowing of input and output parameters
 create or replace function shadowtest(in1 int)
 	returns table (out1 int) as $$
 declare
@@ -2564,7 +2249,6 @@ $$ language plpgsql;
 select shadowtest(1);
 drop function shadowtest(int);
 
--- shadowing in a second DECLARE block
 create or replace function shadowtest()
 	returns void as $$
 declare
@@ -2577,7 +2261,6 @@ begin
 end$$ language plpgsql;
 drop function shadowtest();
 
--- several levels of shadowing
 create or replace function shadowtest(in1 int)
 	returns void as $$
 declare
@@ -2590,7 +2273,6 @@ begin
 end$$ language plpgsql;
 drop function shadowtest(int);
 
--- shadowing in cursor definitions
 create or replace function shadowtest()
 	returns void as $$
 declare
@@ -2600,7 +2282,6 @@ begin
 end$$ language plpgsql;
 drop function shadowtest();
 
--- test errors when shadowing a variable
 
 set plpgsql.extra_errors to 'shadowed_variables';
 
@@ -2619,7 +2300,6 @@ declare f1 int; begin return 1; end $$ language plpgsql;
 
 select shadowtest(1);
 
--- runtime extra checks
 set plpgsql.extra_warnings to 'too_many_rows';
 
 do $$
@@ -2671,7 +2351,6 @@ create table test_01(a int, b int, c int);
 
 alter table test_01 drop column a;
 
--- the check is active only when source table is not empty
 insert into test_01 values(10,20);
 
 do $$
@@ -2679,9 +2358,9 @@ declare
   x int;
   y int;
 begin
-  select * from test_01 into x, y; -- should be ok
+  select * from test_01 into x, y; 
   raise notice 'ok';
-  select * from test_01 into x;    -- should to fail
+  select * from test_01 into x;    
 end;
 $$;
 
@@ -2689,9 +2368,9 @@ do $$
 declare
   t test_01;
 begin
-  select 1, 2 into t;  -- should be ok
+  select 1, 2 into t;  
   raise notice 'ok';
-  select 1, 2, 3 into t; -- should fail;
+  select 1, 2, 3 into t; 
 end;
 $$;
 
@@ -2699,7 +2378,7 @@ do $$
 declare
   t test_01;
 begin
-  select 1 into t; -- should fail;
+  select 1 into t; 
 end;
 $$;
 
@@ -2708,7 +2387,6 @@ drop table test_01;
 reset plpgsql.extra_errors;
 reset plpgsql.extra_warnings;
 
--- test scrollable cursor support
 
 create function sc_test() returns setof integer as $$
 declare
@@ -2742,7 +2420,7 @@ begin
 end;
 $$ language plpgsql;
 
-select * from sc_test();  -- fails because of NO SCROLL specification
+select * from sc_test();  
 
 create or replace function sc_test() returns setof integer as $$
 declare
@@ -2837,7 +2515,6 @@ select * from sc_test();
 
 drop function sc_test();
 
--- test qualified variable names
 
 create function pl_qual_names (param1 int) returns void as $$
 <<outerblock>>
@@ -2860,7 +2537,6 @@ select pl_qual_names(42);
 
 drop function pl_qual_names(int);
 
--- tests for RETURN QUERY
 create function ret_query1(out int, out int) returns setof record as $$
 begin
     $1 := -1;
@@ -2884,7 +2560,6 @@ $$ language plpgsql;
 
 select * from ret_query2(8);
 
--- test EXECUTE USING
 create function exc_using(int, text) returns int as $$
 declare i int;
 begin
@@ -2920,7 +2595,6 @@ select exc_using(5);
 
 drop function exc_using(int);
 
--- test FOR-over-cursor
 
 create or replace function forc01() returns void as $$
 declare
@@ -2929,29 +2603,23 @@ declare
   c2 cursor
        for select * from generate_series(41,43) i;
 begin
-  -- assign portal names to cursors to get stable output
   c := 'c';
   c2 := 'c2';
   for r in c(5,7) loop
     raise notice '% from %', r.i, c;
   end loop;
-  -- again, to test if cursor was closed properly
   for r in c(9,10) loop
     raise notice '% from %', r.i, c;
   end loop;
-  -- and test a parameterless cursor
   for r in c2 loop
     raise notice '% from %', r.i, c2;
   end loop;
-  -- and try it with a hand-assigned name
   raise notice 'after loop, c2 = %', c2;
   c2 := 'special_name';
   for r in c2 loop
     raise notice '% from %', r.i, c2;
   end loop;
   raise notice 'after loop, c2 = %', c2;
-  -- and try it with a generated name
-  -- (which we can't show in the output because it's variable)
   c2 := null;
   for r in c2 loop
     raise notice '%', r.i;
@@ -2963,7 +2631,6 @@ $$ language plpgsql;
 
 select forc01();
 
--- try updating the cursor's current row
 
 create temp table forc_test as
   select n as i, n as j from generate_series(1,10) n;
@@ -2983,7 +2650,6 @@ select forc01();
 
 select * from forc_test;
 
--- same, with a cursor whose portal name doesn't match variable name
 create or replace function forc01() returns void as $$
 declare
   c refcursor := 'fooled_ya';
@@ -3005,7 +2671,6 @@ select * from forc_test;
 
 drop function forc01();
 
--- it's okay to re-use a cursor variable name, even when bound
 
 do $$
 declare cnt int := 0;
@@ -3022,7 +2687,6 @@ begin
   raise notice 'cnt = %', cnt;
 end $$;
 
--- fail because cursor has no query bound to it
 
 create or replace function forc_bad() returns void as $$
 declare
@@ -3034,7 +2698,6 @@ begin
 end;
 $$ language plpgsql;
 
--- test RETURN QUERY EXECUTE
 
 create or replace function return_dquery()
 returns setof int as $$
@@ -3048,7 +2711,6 @@ select * from return_dquery();
 
 drop function return_dquery();
 
--- test RETURN QUERY with dropped columns
 
 create table tabwithcols(a int, b int, c int, d int);
 insert into tabwithcols values(10,20,30,40),(50,60,70,80);
@@ -3078,13 +2740,9 @@ select * from returnqueryf();
 drop function returnqueryf();
 drop table tabwithcols;
 
---
--- Tests for composite-type results
---
 
 create type compostype as (x int, y varchar);
 
--- test: use of variable of composite type in return statement
 create or replace function compos() returns compostype as $$
 declare
   v compostype;
@@ -3096,7 +2754,6 @@ $$ language plpgsql;
 
 select compos();
 
--- test: use of variable of record type in return statement
 create or replace function compos() returns compostype as $$
 declare
   v record;
@@ -3108,7 +2765,6 @@ $$ language plpgsql;
 
 select compos();
 
--- test: use of row expr in return statement
 create or replace function compos() returns compostype as $$
 begin
   return (1, 'hello'::varchar);
@@ -3117,7 +2773,6 @@ $$ language plpgsql;
 
 select compos();
 
--- this does not work currently (no implicit casting)
 create or replace function compos() returns compostype as $$
 begin
   return (1, 'hello');
@@ -3126,7 +2781,6 @@ $$ language plpgsql;
 
 select compos();
 
--- ... but this does
 create or replace function compos() returns compostype as $$
 begin
   return (1, 'hello')::compostype;
@@ -3137,7 +2791,6 @@ select compos();
 
 drop function compos();
 
--- test: return a row expr as record.
 create or replace function composrec() returns record as $$
 declare
   v record;
@@ -3149,7 +2802,6 @@ $$ language plpgsql;
 
 select composrec();
 
--- test: return row expr in return statement.
 create or replace function composrec() returns record as $$
 begin
   return (1, 'hello');
@@ -3160,7 +2812,6 @@ select composrec();
 
 drop function composrec();
 
--- test: row expr in RETURN NEXT statement.
 create or replace function compos() returns setof compostype as $$
 begin
   for i in 1..3
@@ -3176,7 +2827,6 @@ select * from compos();
 
 drop function compos();
 
--- test: use invalid expr in return statement.
 create or replace function compos() returns compostype as $$
 begin
   return 1 + 1;
@@ -3185,7 +2835,6 @@ $$ language plpgsql;
 
 select compos();
 
--- RETURN variable is a different code path ...
 create or replace function compos() returns compostype as $$
 declare x int := 42;
 begin
@@ -3197,7 +2846,6 @@ select * from compos();
 
 drop function compos();
 
--- test: invalid use of composite variable in scalar-returning function
 create or replace function compos() returns int as $$
 declare
   v compostype;
@@ -3209,7 +2857,6 @@ $$ language plpgsql;
 
 select compos();
 
--- test: invalid use of composite expression in scalar-returning function
 create or replace function compos() returns int as $$
 begin
   return (1, 'hello')::compostype;
@@ -3221,9 +2868,6 @@ select compos();
 drop function compos();
 drop type compostype;
 
---
--- Tests for 8.4's new RAISE features
---
 
 create or replace function raise_test() returns void as $$
 begin
@@ -3236,8 +2880,6 @@ $$ language plpgsql;
 
 select raise_test();
 
--- Since we can't actually see the thrown SQLSTATE in default psql output,
--- test it like this; this also tests re-RAISE
 
 create or replace function raise_test() returns void as $$
 begin
@@ -3265,7 +2907,6 @@ $$ language plpgsql;
 
 select raise_test();
 
--- SQLSTATE specification in WHEN
 create or replace function raise_test() returns void as $$
 begin
   raise 'check me'
@@ -3323,7 +2964,6 @@ $$ language plpgsql;
 
 select raise_test();
 
--- conflict on message
 create or replace function raise_test() returns void as $$
 begin
   raise notice 'some message' using message = 'custom' || ' message', errcode = '22012';
@@ -3332,7 +2972,6 @@ $$ language plpgsql;
 
 select raise_test();
 
--- conflict on errcode
 create or replace function raise_test() returns void as $$
 begin
   raise division_by_zero using message = 'custom' || ' message', errcode = '22012';
@@ -3341,7 +2980,6 @@ $$ language plpgsql;
 
 select raise_test();
 
--- nothing to re-RAISE
 create or replace function raise_test() returns void as $$
 begin
   raise;
@@ -3350,7 +2988,6 @@ $$ language plpgsql;
 
 select raise_test();
 
--- test access to exception data
 create function zero_divide() returns int as $$
 declare v int := 0;
 begin
@@ -3401,7 +3038,6 @@ $$ language plpgsql;
 
 select stacked_diagnostics_test();
 
--- fail, cannot use stacked diagnostics statement outside handler
 create or replace function stacked_diagnostics_test() returns void as $$
 declare _detail text;
         _hint text;
@@ -3420,8 +3056,6 @@ select stacked_diagnostics_test();
 drop function zero_divide();
 drop function stacked_diagnostics_test();
 
--- check cases where implicit SQLSTATE variable could be confused with
--- SQLSTATE as a keyword, cf bug #5524
 create or replace function raise_test() returns void as $$
 begin
   perform 1/0;
@@ -3436,8 +3070,6 @@ select raise_test();
 
 drop function raise_test();
 
--- test passing column_name, constraint_name, datatype_name, table_name
--- and schema_name error fields
 
 create or replace function stacked_diagnostics_test() returns void as $$
 declare _column_name text;
@@ -3468,7 +3100,6 @@ select stacked_diagnostics_test();
 
 drop function stacked_diagnostics_test();
 
--- test variadic functions
 
 create or replace function vari(variadic int[])
 returns void as $$
@@ -3484,7 +3115,6 @@ select vari(variadic array[5,6,7]);
 
 drop function vari(int[]);
 
--- coercion test
 create or replace function pleast(variadic numeric[])
 returns numeric as $$
 declare aux numeric = $1[array_lower($1,1)];
@@ -3501,7 +3131,6 @@ select pleast(10.2,2.2,-1.1);
 select pleast(10.2,10, -20);
 select pleast(10,20, -1.0);
 
--- in case of conflict, non-variadic version is preferred
 create or replace function pleast(numeric)
 returns numeric as $$
 begin
@@ -3515,7 +3144,6 @@ select pleast(10);
 drop function pleast(numeric[]);
 drop function pleast(numeric);
 
--- test table functions
 
 create function tftest(int) returns table(a int, b int) as $$
 begin
@@ -3559,7 +3187,6 @@ $$ language plpgsql;
 
 select * from rttest();
 
--- check some error cases, too
 
 create or replace function rttest()
 returns setof int as $$
@@ -3583,8 +3210,6 @@ select * from no_such_table;
 
 drop function rttest();
 
--- Test for proper cleanup at subtransaction exit.  This example
--- exposed a bug in PG 8.2.
 
 CREATE FUNCTION leaker_1(fail BOOL) RETURNS INTEGER AS $$
 DECLARE
@@ -3617,8 +3242,6 @@ SELECT * FROM leaker_1(true);
 DROP FUNCTION leaker_1(bool);
 DROP FUNCTION leaker_2(bool);
 
--- Test for appropriate cleanup of non-simple expression evaluations
--- (bug in all versions prior to August 2010)
 
 CREATE FUNCTION nonsimple_expr_test() RETURNS text[] AS $$
 DECLARE
@@ -3629,7 +3252,6 @@ BEGIN
   arr := array[array['foo','bar'], array['baz', 'quux']];
   lr := 'fool';
   i := 1;
-  -- use sub-SELECTs to make expressions non-simple
   arr[(SELECT i)][(SELECT i+1)] := (SELECT lr);
   RETURN arr;
 END;
@@ -3644,7 +3266,7 @@ declare
    i integer NOT NULL := 0;
 begin
   begin
-    i := (SELECT NULL::integer);  -- should throw error
+    i := (SELECT NULL::integer);  
   exception
     WHEN OTHERS THEN
       i := (SELECT 1::integer);
@@ -3657,11 +3279,6 @@ SELECT nonsimple_expr_test();
 
 DROP FUNCTION nonsimple_expr_test();
 
---
--- Test cases involving recursion and error recovery in simple expressions
--- (bugs in all versions before October 2010).  The problems are most
--- easily exposed by mutual recursion between plpgsql and sql functions.
---
 
 create function recurse(float8) returns float8 as
 $$
@@ -3674,7 +3291,6 @@ begin
 end;
 $$ language plpgsql;
 
--- "limit" is to prevent this from being inlined
 create function sql_recurse(float8) returns float8 as
 $$ select recurse($1) limit 1; $$ language sql;
 
@@ -3699,7 +3315,6 @@ rollback;
 drop function error2(p_name_table text);
 drop function error1(text);
 
--- Test for proper handling of cast-expression caching
 
 create function sql_to_date(integer) returns date as $$
 select $1::text::date
@@ -3713,14 +3328,14 @@ begin
 end$$ language plpgsql;
 
 select cast_invoker(20150717);
-select cast_invoker(20150718);  -- second call crashed in pre-release 9.5
+select cast_invoker(20150718);  
 
 begin;
 select cast_invoker(20150717);
 select cast_invoker(20150718);
 savepoint s1;
 select cast_invoker(20150718);
-select cast_invoker(-1); -- fails
+select cast_invoker(-1); 
 rollback to savepoint s1;
 select cast_invoker(20150719);
 select cast_invoker(20150720);
@@ -3729,16 +3344,12 @@ commit;
 drop function cast_invoker(integer);
 drop function sql_to_date(integer) cascade;
 
--- Test handling of cast cache inside DO blocks
--- (to check the original crash case, this must be a cast not previously
--- used in this session)
 
 begin;
 do $$ declare x text[]; begin x := '{1.23, 4.56}'::numeric[]; end $$;
 do $$ declare x text[]; begin x := '{1.23, 4.56}'::numeric[]; end $$;
 end;
 
--- Test for consistent reporting of error context
 
 create function fail() returns int language plpgsql as $$
 begin
@@ -3751,7 +3362,6 @@ select fail();
 
 drop function fail();
 
--- Test handling of string literals.
 
 set standard_conforming_strings = off;
 
@@ -3795,7 +3405,6 @@ select strtest();
 
 drop function strtest();
 
--- Test anonymous code blocks.
 
 DO $$
 DECLARE r record;
@@ -3806,7 +3415,6 @@ BEGIN
     END LOOP;
 END$$;
 
--- these are to check syntax error reporting
 DO LANGUAGE plpgsql $$begin return 1; end$$;
 
 DO $$
@@ -3818,7 +3426,6 @@ BEGIN
     END LOOP;
 END$$;
 
--- Check handling of errors thrown from/into anonymous code blocks.
 do $outer$
 begin
   for i in 1..10 loop
@@ -3838,18 +3445,16 @@ begin
 end;
 $outer$;
 
--- Check variable scoping -- a var is not available in its own or prior
--- default expressions, but it is available in later ones.
 
 do $$
-declare x int := x + 1;  -- error
+declare x int := x + 1;  
 begin
   raise notice 'x = %', x;
 end;
 $$;
 
 do $$
-declare y int := x + 1;  -- error
+declare y int := x + 1;  
         x int := 42;
 begin
   raise notice 'x = %, y = %', x, y;
@@ -3876,7 +3481,6 @@ begin
 end;
 $$;
 
--- Check handling of conflicts between plpgsql vars and table columns.
 
 set plpgsql.variable_conflict = error;
 
@@ -3920,7 +3524,6 @@ select * from conflict_test();
 
 drop function conflict_test();
 
--- Check that an unreserved keyword can be used as a variable name
 
 create function unreserved_test() returns int as $$
 declare
@@ -3960,9 +3563,6 @@ select obj_description('unreserved_test()'::regprocedure, 'pg_proc');
 
 drop function unreserved_test();
 
---
--- Test FOREACH over arrays
---
 
 create function foreach_test(anyarray)
 returns void as $$
@@ -3989,7 +3589,6 @@ begin
   end;
 $$ language plpgsql;
 
--- should fail
 select foreach_test(ARRAY[1,2,3,4]);
 select foreach_test(ARRAY[[1,2],[3,4]]);
 
@@ -4007,7 +3606,6 @@ $$ language plpgsql;
 select foreach_test(ARRAY[1,2,3,4]);
 select foreach_test(ARRAY[[1,2],[3,4]]);
 
--- higher level of slicing
 create or replace function foreach_test(anyarray)
 returns void as $$
 declare x int[];
@@ -4019,15 +3617,12 @@ begin
   end;
 $$ language plpgsql;
 
--- should fail
 select foreach_test(ARRAY[1,2,3,4]);
--- ok
 select foreach_test(ARRAY[[1,2],[3,4]]);
 select foreach_test(ARRAY[[[1,2]],[[3,4]]]);
 
 create type xy_tuple AS (x int, y int);
 
--- iteration over array of records
 create or replace function foreach_test(anyarray)
 returns void as $$
 declare r record;
@@ -4056,7 +3651,6 @@ $$ language plpgsql;
 select foreach_test(ARRAY[(10,20),(40,69),(35,78)]::xy_tuple[]);
 select foreach_test(ARRAY[[(10,20),(40,69)],[(35,78),(88,76)]]::xy_tuple[]);
 
--- slicing over array of composite types
 create or replace function foreach_test(anyarray)
 returns void as $$
 declare x xy_tuple[];
@@ -4074,9 +3668,6 @@ select foreach_test(ARRAY[[(10,20),(40,69)],[(35,78),(88,76)]]::xy_tuple[]);
 drop function foreach_test(anyarray);
 drop type xy_tuple;
 
---
--- Assorted tests for array subscript assignment
---
 
 create temp table rtype (id int, ar text[]);
 
@@ -4090,13 +3681,13 @@ begin
 end$$;
 
 select arrayassign1();
-select arrayassign1(); -- try again to exercise internal caching
+select arrayassign1(); 
 
 create domain orderedarray as int[2]
   constraint sorted check (value[1] < value[2]);
 
 select '{1,2}'::orderedarray;
-select '{2,1}'::orderedarray;  -- fail
+select '{2,1}'::orderedarray;  
 
 create function testoa(x1 int, x2 int, x3 int) returns orderedarray
 language plpgsql as $$
@@ -4108,17 +3699,14 @@ begin
 end$$;
 
 select testoa(1,2,3);
-select testoa(1,2,3); -- try again to exercise internal caching
-select testoa(2,1,3); -- fail at initial assign
-select testoa(1,2,1); -- fail at update
+select testoa(1,2,3); 
+select testoa(2,1,3); 
+select testoa(1,2,1); 
 
 drop function arrayassign1();
 drop function testoa(x1 int, x2 int, x3 int);
 
 
---
--- Test handling of expanded arrays
---
 
 create function returns_rw_array(int) returns int[]
 language plpgsql as $$
@@ -4133,7 +3721,6 @@ $$ stable;
 
 select consumes_rw_array(returns_rw_array(42));
 
--- bug #14174
 explain (verbose, costs off)
 select i, a from
   (select returns_rw_array(1) as a offset 0) ss,
@@ -4163,9 +3750,6 @@ begin
 end$$;
 
 
---
--- Test access to call stack
---
 
 create function inner_func(int)
 returns int as $$
@@ -4173,7 +3757,6 @@ declare _context text;
 begin
   get diagnostics _context = pg_context;
   raise notice '***%***', _context;
-  -- lets do it again, just for fun..
   get diagnostics _context = pg_context;
   raise notice '***%***', _context;
   raise notice 'lets make sure we didnt break anything';
@@ -4206,14 +3789,12 @@ end;
 $$ language plpgsql;
 
 select outer_outer_func(10);
--- repeated call should work
 select outer_outer_func(20);
 
 drop function outer_outer_func(int);
 drop function outer_func(int);
 drop function inner_func(int);
 
--- access to call stack from exception
 create function inner_func(int)
 returns int as $$
 declare
@@ -4228,7 +3809,6 @@ begin
       raise notice '***%***', _context;
   end;
 
-  -- lets do it again, just for fun..
   get diagnostics _context = pg_context;
   raise notice '***%***', _context;
   raise notice 'lets make sure we didnt break anything';
@@ -4261,14 +3841,12 @@ end;
 $$ language plpgsql;
 
 select outer_outer_func(10);
--- repeated call should work
 select outer_outer_func(20);
 
 drop function outer_outer_func(int);
 drop function outer_func(int);
 drop function inner_func(int);
 
--- Test pg_routine_oid
 create function current_function(text)
 returns regprocedure as $$
 declare
@@ -4283,7 +3861,6 @@ select current_function('foo');
 
 drop function current_function(text);
 
--- shouldn't fail in DO, even though there's no useful data
 do $$
 declare
   fn_oid oid;
@@ -4293,38 +3870,33 @@ begin
 end;
 $$;
 
---
--- Test ASSERT
---
 
 do $$
 begin
-  assert 1=1;  -- should succeed
+  assert 1=1;  
 end;
 $$;
 
 do $$
 begin
-  assert 1=0;  -- should fail
+  assert 1=0;  
 end;
 $$;
 
 do $$
 begin
-  assert NULL;  -- should fail
+  assert NULL;  
 end;
 $$;
 
--- check controlling GUC
 set plpgsql.check_asserts = off;
 do $$
 begin
-  assert 1=0;  -- won't be tested
+  assert 1=0;  
 end;
 $$;
 reset plpgsql.check_asserts;
 
--- test custom message
 do $$
 declare var text := 'some value';
 begin
@@ -4332,16 +3904,14 @@ begin
 end;
 $$;
 
--- ensure assertions are not trapped by 'others'
 do $$
 begin
   assert 1=0, 'unhandled assertion';
 exception when others then
-  null; -- do nothing
+  null; 
 end;
 $$;
 
--- Test use of plpgsql in a domain check constraint (cf. bug #14414)
 
 create function plpgsql_domain_check(val int) returns boolean as $$
 begin return val > 0; end
@@ -4359,11 +3929,10 @@ $$;
 do $$
 declare v_test plpgsql_domain := 1;
 begin
-  v_test := 0;  -- fail
+  v_test := 0;  
 end;
 $$;
 
--- Test handling of expanded array passed to a domain constraint (bug #14472)
 
 create function plpgsql_arr_domain_check(val int[]) returns boolean as $$
 begin return val[1] > 0; end
@@ -4382,13 +3951,10 @@ $$;
 do $$
 declare v_test plpgsql_arr_domain := array[1];
 begin
-  v_test := 0 || v_test;  -- fail
+  v_test := 0 || v_test;  
 end;
 $$;
 
---
--- test usage of transition tables in AFTER triggers
---
 
 CREATE TABLE transition_table_base (id int PRIMARY KEY, val text);
 
@@ -4561,7 +4127,6 @@ CREATE TRIGGER transition_table_level2_ri_child_upd_trigger
   FOR EACH STATEMENT EXECUTE PROCEDURE
     transition_table_level2_ri_child_insupd_func();
 
--- create initial test data
 INSERT INTO transition_table_level1 (level1_no)
   SELECT generate_series(1,200);
 ANALYZE transition_table_level1;
@@ -4582,7 +4147,6 @@ INSERT INTO transition_table_level1(level1_no)
   SELECT generate_series(201,1000);
 ANALYZE transition_table_level1;
 
--- behave reasonably if someone tries to modify a transition table
 CREATE FUNCTION transition_table_level2_bad_usage_func()
   RETURNS TRIGGER
   LANGUAGE plpgsql
@@ -4605,7 +4169,6 @@ DELETE FROM transition_table_level2
 DROP TRIGGER transition_table_level2_bad_usage_trigger
   ON transition_table_level2;
 
--- attempt modifications which would break RI (should all fail)
 DELETE FROM transition_table_level1
   WHERE level1_no = 25;
 
@@ -4619,7 +4182,6 @@ UPDATE transition_table_level2 SET parent_no = 2000
   WHERE level2_no = 40;
 
 
--- attempt modifications which would not break RI (should all succeed)
 DELETE FROM transition_table_level1
   WHERE level1_no BETWEEN 201 AND 1000;
 
@@ -4652,14 +4214,12 @@ BEGIN
 END;
 $$;
 
--- should fail, TRUNCATE is not compatible with transition tables
 CREATE TRIGGER alter_table_under_transition_tables_upd_trigger
   AFTER TRUNCATE OR UPDATE ON alter_table_under_transition_tables
   REFERENCING OLD TABLE AS d NEW TABLE AS i
   FOR EACH STATEMENT EXECUTE PROCEDURE
     alter_table_under_transition_tables_upd_func();
 
--- should work
 CREATE TRIGGER alter_table_under_transition_tables_upd_trigger
   AFTER UPDATE ON alter_table_under_transition_tables
   REFERENCING OLD TABLE AS d NEW TABLE AS i
@@ -4671,21 +4231,16 @@ INSERT INTO alter_table_under_transition_tables
 UPDATE alter_table_under_transition_tables
   SET name = name || name;
 
--- now change 'name' to an integer to see what happens...
 ALTER TABLE alter_table_under_transition_tables
   ALTER COLUMN name TYPE int USING name::integer;
 UPDATE alter_table_under_transition_tables
   SET name = (name::text || name::text)::integer;
 
--- now drop column 'name'
 ALTER TABLE alter_table_under_transition_tables
   DROP column name;
 UPDATE alter_table_under_transition_tables
   SET id = id;
 
---
--- Test multiple reference to a transition table
---
 
 CREATE TABLE multi_test (i int);
 INSERT INTO multi_test VALUES (1);
@@ -4709,9 +4264,6 @@ UPDATE multi_test SET i = i;
 DROP TABLE multi_test;
 DROP FUNCTION multi_test_trig();
 
---
--- Check type parsing and record fetching from partitioned tables
---
 
 CREATE TABLE partitioned_table (a int, b text) PARTITION BY LIST (a);
 CREATE TABLE pt_part1 PARTITION OF partitioned_table FOR VALUES IN (1);
@@ -4748,9 +4300,6 @@ END; $$ LANGUAGE plpgsql;
 
 SELECT * FROM list_partitioned_table() AS t;
 
---
--- Check argument name is used instead of $n in error message
---
 CREATE FUNCTION fx(x WSlot) RETURNS void AS $$
 BEGIN
   GET DIAGNOSTICS x = ROW_COUNT;

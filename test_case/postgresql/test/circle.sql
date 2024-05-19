@@ -1,9 +1,4 @@
---
--- CIRCLE
---
 
--- Back off displayed precision a little bit to reduce platform-to-platform
--- variation in results.
 SET extra_float_digits = -1;
 
 CREATE TABLE CIRCLE_TBL (f1 circle);
@@ -20,11 +15,10 @@ INSERT INTO CIRCLE_TBL VALUES (' ( 100 , 200 ) , 10 ');
 
 INSERT INTO CIRCLE_TBL VALUES (' < ( 100 , 1 ) , 115 > ');
 
-INSERT INTO CIRCLE_TBL VALUES ('<(3,5),0>');	-- Zero radius
+INSERT INTO CIRCLE_TBL VALUES ('<(3,5),0>');	
 
-INSERT INTO CIRCLE_TBL VALUES ('<(3,5),NaN>');	-- NaN radius
+INSERT INTO CIRCLE_TBL VALUES ('<(3,5),NaN>');	
 
--- bad values
 
 INSERT INTO CIRCLE_TBL VALUES ('<(-100,0),-100>');
 

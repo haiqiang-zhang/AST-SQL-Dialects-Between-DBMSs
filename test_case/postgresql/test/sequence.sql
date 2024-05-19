@@ -1,8 +1,4 @@
---
--- CREATE SEQUENCE
---
 
--- various error cases
 CREATE SEQUENCE sequence_testx INCREMENT BY 0;
 CREATE SEQUENCE sequence_testx INCREMENT BY -1 MINVALUE 20;
 CREATE SEQUENCE sequence_testx INCREMENT BY 1 MAXVALUE -20;
@@ -10,15 +6,13 @@ CREATE SEQUENCE sequence_testx INCREMENT BY -1 START 10;
 CREATE SEQUENCE sequence_testx INCREMENT BY 1 START -10;
 CREATE SEQUENCE sequence_testx CACHE 0;
 
--- OWNED BY errors
-CREATE SEQUENCE sequence_testx OWNED BY nobody;  -- nonsense word
-CREATE SEQUENCE sequence_testx OWNED BY pg_class_oid_index.oid;  -- not a table
-CREATE SEQUENCE sequence_testx OWNED BY pg_class.relname;  -- not same schema
+CREATE SEQUENCE sequence_testx OWNED BY nobody;  
+CREATE SEQUENCE sequence_testx OWNED BY pg_class_oid_index.oid;  
+CREATE SEQUENCE sequence_testx OWNED BY pg_class.relname;  
 CREATE TABLE sequence_test_table (a int);
-CREATE SEQUENCE sequence_testx OWNED BY sequence_test_table.b;  -- wrong column
+CREATE SEQUENCE sequence_testx OWNED BY sequence_test_table.b;  
 DROP TABLE sequence_test_table;
 
--- sequence data types
 CREATE SEQUENCE sequence_test5 AS integer;
 CREATE SEQUENCE sequence_test6 AS smallint;
 CREATE SEQUENCE sequence_test7 AS bigint;
@@ -35,21 +29,18 @@ CREATE SEQUENCE sequence_testx AS nosuchtype;
 CREATE SEQUENCE sequence_testx AS smallint MAXVALUE 100000;
 CREATE SEQUENCE sequence_testx AS smallint MINVALUE -100000;
 
-ALTER SEQUENCE sequence_test5 AS smallint;  -- success, max will be adjusted
-ALTER SEQUENCE sequence_test8 AS smallint;  -- fail, max has to be adjusted
-ALTER SEQUENCE sequence_test8 AS smallint MAXVALUE 20000;  -- ok now
-ALTER SEQUENCE sequence_test9 AS smallint;  -- success, min will be adjusted
-ALTER SEQUENCE sequence_test10 AS smallint;  -- fail, min has to be adjusted
-ALTER SEQUENCE sequence_test10 AS smallint MINVALUE -20000;  -- ok now
+ALTER SEQUENCE sequence_test5 AS smallint;  
+ALTER SEQUENCE sequence_test8 AS smallint;  
+ALTER SEQUENCE sequence_test8 AS smallint MAXVALUE 20000;  
+ALTER SEQUENCE sequence_test9 AS smallint;  
+ALTER SEQUENCE sequence_test10 AS smallint;  
+ALTER SEQUENCE sequence_test10 AS smallint MINVALUE -20000;  
 
-ALTER SEQUENCE sequence_test11 AS int;  -- max will be adjusted
-ALTER SEQUENCE sequence_test12 AS int;  -- min will be adjusted
-ALTER SEQUENCE sequence_test13 AS int;  -- min and max will be adjusted
-ALTER SEQUENCE sequence_test14 AS int;  -- min and max will be adjusted
+ALTER SEQUENCE sequence_test11 AS int;  
+ALTER SEQUENCE sequence_test12 AS int;  
+ALTER SEQUENCE sequence_test13 AS int;  
+ALTER SEQUENCE sequence_test14 AS int;  
 
----
---- test creation of SERIAL column
----
 
 CREATE TABLE serialTest1 (f1 text, f2 serial);
 
@@ -62,7 +53,6 @@ SELECT * FROM serialTest1;
 
 SELECT pg_get_serial_sequence('serialTest1', 'f2');
 
--- test smallserial / bigserial
 CREATE TABLE serialTest2 (f1 text, f2 serial, f3 smallserial, f4 serial2,
   f5 bigserial, f6 serial8);
 
@@ -75,7 +65,6 @@ INSERT INTO serialTest2 (f1, f2, f3, f4, f5, f6)
          ('test_min_vals', -2147483648, -32768, -32768, -9223372036854775808,
           -9223372036854775808);
 
--- All these INSERTs should fail:
 INSERT INTO serialTest2 (f1, f3)
   VALUES ('bogus', -32769);
 
@@ -108,7 +97,6 @@ SELECT nextval('serialTest2_f4_seq');
 SELECT nextval('serialTest2_f5_seq');
 SELECT nextval('serialTest2_f6_seq');
 
--- basic sequence operations using both text and oid references
 CREATE SEQUENCE sequence_test;
 CREATE SEQUENCE IF NOT EXISTS sequence_test;
 
@@ -129,25 +117,18 @@ SELECT currval('sequence_test'::regclass);
 
 DROP SEQUENCE sequence_test;
 
--- renaming sequences
 CREATE SEQUENCE foo_seq;
 ALTER TABLE foo_seq RENAME TO foo_seq_new;
 SELECT * FROM foo_seq_new;
 SELECT nextval('foo_seq_new');
 SELECT nextval('foo_seq_new');
--- log_cnt can be higher if there is a checkpoint just at the right
--- time, so just test for the expected range
 SELECT last_value, log_cnt IN (31, 32) AS log_cnt_ok, is_called FROM foo_seq_new;
 DROP SEQUENCE foo_seq_new;
 
--- renaming serial sequences
 ALTER TABLE serialtest1_f2_seq RENAME TO serialtest1_f2_foo;
 INSERT INTO serialTest1 VALUES ('more');
 SELECT * FROM serialTest1;
 
---
--- Check dependencies of serial and ordinary sequences
---
 CREATE TEMP SEQUENCE myseq2;
 CREATE TEMP SEQUENCE myseq3;
 CREATE TEMP TABLE t1 (
@@ -155,25 +136,18 @@ CREATE TEMP TABLE t1 (
   f2 int DEFAULT nextval('myseq2'),
   f3 int DEFAULT nextval('myseq3'::text)
 );
--- Both drops should fail, but with different error messages:
 DROP SEQUENCE t1_f1_seq;
 DROP SEQUENCE myseq2;
--- This however will work:
 DROP SEQUENCE myseq3;
 DROP TABLE t1;
--- Fails because no longer existent:
 DROP SEQUENCE t1_f1_seq;
--- Now OK:
 DROP SEQUENCE myseq2;
 
---
--- Alter sequence
---
 
 ALTER SEQUENCE IF EXISTS sequence_test2 RESTART WITH 24
   INCREMENT BY 4 MAXVALUE 36 MINVALUE 5 CYCLE;
 
-ALTER SEQUENCE serialTest1 CYCLE;  -- error, not a sequence
+ALTER SEQUENCE serialTest1 CYCLE;  
 
 CREATE SEQUENCE sequence_test2 START WITH 32;
 CREATE SEQUENCE sequence_test4 INCREMENT BY -1;
@@ -184,17 +158,16 @@ SELECT nextval('sequence_test4');
 ALTER SEQUENCE sequence_test2 RESTART;
 SELECT nextval('sequence_test2');
 
-ALTER SEQUENCE sequence_test2 RESTART WITH 0;  -- error
-ALTER SEQUENCE sequence_test4 RESTART WITH 40;  -- error
+ALTER SEQUENCE sequence_test2 RESTART WITH 0;  
+ALTER SEQUENCE sequence_test4 RESTART WITH 40;  
 
--- test CYCLE and NO CYCLE
 ALTER SEQUENCE sequence_test2 RESTART WITH 24
   INCREMENT BY 4 MAXVALUE 36 MINVALUE 5 CYCLE;
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
-SELECT nextval('sequence_test2');  -- cycled
+SELECT nextval('sequence_test2');  
 
 ALTER SEQUENCE sequence_test2 RESTART WITH 24
   NO CYCLE;
@@ -202,7 +175,7 @@ SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
-SELECT nextval('sequence_test2');  -- error
+SELECT nextval('sequence_test2');  
 
 ALTER SEQUENCE sequence_test2 RESTART WITH -24 START WITH -24
   INCREMENT BY -4 MINVALUE -36 MAXVALUE -5 CYCLE;
@@ -210,7 +183,7 @@ SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
-SELECT nextval('sequence_test2');  -- cycled
+SELECT nextval('sequence_test2');  
 
 ALTER SEQUENCE sequence_test2 RESTART WITH -24
   NO CYCLE;
@@ -218,20 +191,18 @@ SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
 SELECT nextval('sequence_test2');
-SELECT nextval('sequence_test2');  -- error
+SELECT nextval('sequence_test2');  
 
--- reset
 ALTER SEQUENCE IF EXISTS sequence_test2 RESTART WITH 32 START WITH 32
   INCREMENT BY 4 MAXVALUE 36 MINVALUE 5 CYCLE;
 
-SELECT setval('sequence_test2', -100);  -- error
-SELECT setval('sequence_test2', 100);  -- error
+SELECT setval('sequence_test2', -100);  
+SELECT setval('sequence_test2', 100);  
 SELECT setval('sequence_test2', 5);
 
-CREATE SEQUENCE sequence_test3;  -- not read from, to test is_called
+CREATE SEQUENCE sequence_test3;  
 
 
--- Information schema
 SELECT * FROM information_schema.sequences
   WHERE sequence_name ~ ANY(ARRAY['sequence_test', 'serialtest'])
   ORDER BY sequence_name ASC;
@@ -245,16 +216,12 @@ WHERE sequencename ~ ANY(ARRAY['sequence_test', 'serialtest'])
 SELECT * FROM pg_sequence_parameters('sequence_test4'::regclass);
 
 
-\d sequence_test4;
-\d serialtest2_f2_seq;
 
 
--- Test comments
 COMMENT ON SEQUENCE asdf IS 'won''t work';
 COMMENT ON SEQUENCE sequence_test2 IS 'will work';
 COMMENT ON SEQUENCE sequence_test2 IS NULL;
 
--- Test lastval()
 CREATE SEQUENCE seq;
 SELECT nextval('seq');
 SELECT lastval();
@@ -268,34 +235,26 @@ SELECT nextval('seq2');
 SELECT lastval();
 
 DROP SEQUENCE seq2;
--- should fail
 SELECT lastval();
 
--- unlogged sequences
--- (more tests in src/test/recovery/)
 CREATE UNLOGGED SEQUENCE sequence_test_unlogged;
 ALTER SEQUENCE sequence_test_unlogged SET LOGGED;
-\d sequence_test_unlogged;
 ALTER SEQUENCE sequence_test_unlogged SET UNLOGGED;
-\d sequence_test_unlogged;
 DROP SEQUENCE sequence_test_unlogged;
 
--- Test sequences in read-only transactions
 CREATE TEMPORARY SEQUENCE sequence_test_temp1;
 START TRANSACTION READ ONLY;
-SELECT nextval('sequence_test_temp1');  -- ok
-SELECT nextval('sequence_test2');  -- error
+SELECT nextval('sequence_test_temp1');  
+SELECT nextval('sequence_test2');  
 ROLLBACK;
 START TRANSACTION READ ONLY;
-SELECT setval('sequence_test_temp1', 1);  -- ok
-SELECT setval('sequence_test2', 1);  -- error
+SELECT setval('sequence_test_temp1', 1);  
+SELECT setval('sequence_test2', 1);  
 ROLLBACK;
 
--- privileges tests
 
 CREATE USER regress_seq_user;
 
--- nextval
 BEGIN;
 SET LOCAL SESSION AUTHORIZATION regress_seq_user;
 CREATE SEQUENCE seq3;
@@ -320,7 +279,6 @@ GRANT USAGE ON seq3 TO regress_seq_user;
 SELECT nextval('seq3');
 ROLLBACK;
 
--- currval
 BEGIN;
 SET LOCAL SESSION AUTHORIZATION regress_seq_user;
 CREATE SEQUENCE seq3;
@@ -348,7 +306,6 @@ GRANT USAGE ON seq3 TO regress_seq_user;
 SELECT currval('seq3');
 ROLLBACK;
 
--- lastval
 BEGIN;
 SET LOCAL SESSION AUTHORIZATION regress_seq_user;
 CREATE SEQUENCE seq3;
@@ -376,7 +333,6 @@ GRANT USAGE ON seq3 TO regress_seq_user;
 SELECT lastval();
 ROLLBACK;
 
--- setval
 BEGIN;
 SET LOCAL SESSION AUTHORIZATION regress_seq_user;
 CREATE SEQUENCE seq3;
@@ -389,16 +345,13 @@ SELECT setval('seq3', 5);
 SELECT nextval('seq3');
 ROLLBACK;
 
--- ALTER SEQUENCE
 BEGIN;
 SET LOCAL SESSION AUTHORIZATION regress_seq_user;
 ALTER SEQUENCE sequence_test2 START WITH 1;
 ROLLBACK;
 
--- Sequences should get wiped out as well:
 DROP TABLE serialTest1, serialTest2;
 
--- Make sure sequences are gone:
 SELECT * FROM information_schema.sequences WHERE sequence_name IN
   ('sequence_test2', 'serialtest2_f2_seq', 'serialtest2_f3_seq',
    'serialtest2_f4_seq', 'serialtest2_f5_seq', 'serialtest2_f6_seq')
@@ -407,7 +360,6 @@ SELECT * FROM information_schema.sequences WHERE sequence_name IN
 DROP USER regress_seq_user;
 DROP SEQUENCE seq;
 
--- cache tests
 CREATE SEQUENCE test_seq1 CACHE 10;
 SELECT nextval('test_seq1');
 SELECT nextval('test_seq1');

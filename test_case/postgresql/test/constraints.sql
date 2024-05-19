@@ -1,19 +1,5 @@
---
--- CONSTRAINTS
--- Constraints can be specified with:
---  - DEFAULT clause
---  - CHECK clauses
---  - PRIMARY KEY clauses
---  - UNIQUE clauses
---  - EXCLUDE clauses
---
 
--- directory paths are passed to us in environment variables
-\getenv abs_srcdir PG_ABS_SRCDIR;
 
---
--- DEFAULT syntax
---
 
 CREATE TABLE DEFAULT_TBL (i int DEFAULT 100,
 	x text DEFAULT 'vadim', f float8 DEFAULT 123.456);
@@ -38,21 +24,12 @@ INSERT INTO DEFAULTEXPR_TBL (i2) VALUES (NULL);
 
 SELECT * FROM DEFAULTEXPR_TBL;
 
--- syntax errors
---  test for extraneous comma
 CREATE TABLE error_tbl (i int DEFAULT (100, ));
---  this will fail because gram.y uses b_expr not a_expr for defaults,
---  to avoid a shift/reduce conflict that arises from NOT NULL being
---  part of the column definition syntax:
 CREATE TABLE error_tbl (b1 bool DEFAULT 1 IN (1, 2));
---  this should work, however:
 CREATE TABLE error_tbl (b1 bool DEFAULT (1 IN (1, 2)));
 
 DROP TABLE error_tbl;
 
---
--- CHECK syntax
---
 
 CREATE TABLE CHECK_TBL (x int,
 	CONSTRAINT CHECK_CON CHECK (x > 3));
@@ -81,9 +58,6 @@ INSERT INTO CHECK2_TBL VALUES (7, 'check ok', 7);
 
 SELECT * from CHECK2_TBL;
 
---
--- Check constraints on INSERT
---
 
 CREATE SEQUENCE INSERT_SEQ;
 
@@ -122,16 +96,10 @@ INSERT INTO INSERT_TBL(y) VALUES ('Y');
 
 SELECT 'eight' AS one, currval('insert_seq');
 
--- According to SQL, it is OK to insert a record that gives rise to NULL
--- constraint-condition results.  Postgres used to reject this, but it
--- was wrong:
 INSERT INTO INSERT_TBL VALUES (null, null, null);
 
 SELECT * FROM INSERT_TBL;
 
---
--- Check constraints on system columns
---
 
 CREATE TABLE SYS_COL_CHECK_TBL (city text, state text, is_capital bool,
                   altitude int,
@@ -144,16 +112,10 @@ SELECT *, tableoid::regclass::text FROM SYS_COL_CHECK_TBL;
 
 DROP TABLE SYS_COL_CHECK_TBL;
 
---
--- Check constraints on system columns other then TableOid should return error
---
 CREATE TABLE SYS_COL_CHECK_TBL (city text, state text, is_capital bool,
                   altitude int,
 				  CHECK (NOT (is_capital AND ctid::text = 'sys_col_check_tbl')));
 
---
--- Check inheritance of defaults and constraints
---
 
 CREATE TABLE INSERT_CHILD (cx INT default 42,
 	cy INT CHECK (cy > x))
@@ -168,17 +130,12 @@ SELECT * FROM INSERT_CHILD;
 
 DROP TABLE INSERT_CHILD;
 
---
--- Check NO INHERIT type of constraints and inheritance
---
 
 CREATE TABLE ATACC1 (TEST INT
 	CHECK (TEST > 0) NO INHERIT);
 
 CREATE TABLE ATACC2 (TEST2 INT) INHERITS (ATACC1);
--- check constraint is not there on child
 INSERT INTO ATACC2 (TEST) VALUES (-3);
--- check constraint is there on parent
 INSERT INTO ATACC1 (TEST) VALUES (-3);
 DROP TABLE ATACC1 CASCADE;
 
@@ -186,35 +143,24 @@ CREATE TABLE ATACC1 (TEST INT, TEST2 INT
 	CHECK (TEST > 0), CHECK (TEST2 > 10) NO INHERIT);
 
 CREATE TABLE ATACC2 () INHERITS (ATACC1);
--- check constraint is there on child
 INSERT INTO ATACC2 (TEST) VALUES (-3);
--- check constraint is there on parent
 INSERT INTO ATACC1 (TEST) VALUES (-3);
--- check constraint is not there on child
 INSERT INTO ATACC2 (TEST2) VALUES (3);
--- check constraint is there on parent
 INSERT INTO ATACC1 (TEST2) VALUES (3);
 DROP TABLE ATACC1 CASCADE;
 
--- NOT NULL NO INHERIT
 CREATE TABLE ATACC1 (a int, not null a no inherit);
 CREATE TABLE ATACC2 () INHERITS (ATACC1);
-\d+ ATACC2;
 DROP TABLE ATACC1, ATACC2;
 CREATE TABLE ATACC1 (a int);
 ALTER TABLE ATACC1 ADD NOT NULL a NO INHERIT;
 CREATE TABLE ATACC2 () INHERITS (ATACC1);
-\d+ ATACC2;
 DROP TABLE ATACC1, ATACC2;
 CREATE TABLE ATACC1 (a int);
 CREATE TABLE ATACC2 () INHERITS (ATACC1);
 ALTER TABLE ATACC1 ADD NOT NULL a NO INHERIT;
-\d+ ATACC2;
 DROP TABLE ATACC1, ATACC2;
 
---
--- Check constraints on INSERT INTO
---
 
 DELETE FROM INSERT_TBL;
 
@@ -237,9 +183,6 @@ SELECT * FROM INSERT_TBL;
 
 DROP TABLE tmp;
 
---
--- Check constraints on UPDATE
---
 
 UPDATE INSERT_TBL SET x = NULL WHERE x = 5;
 UPDATE INSERT_TBL SET x = 6 WHERE x = 6;
@@ -248,29 +191,20 @@ UPDATE INSERT_TBL SET x = z, z = x;
 
 SELECT * FROM INSERT_TBL;
 
--- DROP TABLE INSERT_TBL;
 
---
--- Check constraints on COPY FROM
---
 
 CREATE TABLE COPY_TBL (x INT, y TEXT, z INT,
 	CONSTRAINT COPY_CON
 	CHECK (x > 3 AND y <> 'check failed' AND x < 7 ));
 
-\set filename :abs_srcdir '/data/constro.data';
 COPY COPY_TBL FROM :'filename';
 
 SELECT * FROM COPY_TBL;
 
-\set filename :abs_srcdir '/data/constrf.data';
 COPY COPY_TBL FROM :'filename';
 
 SELECT * FROM COPY_TBL;
 
---
--- Primary keys
---
 
 CREATE TABLE PRIMARY_TBL (i int PRIMARY KEY, t text);
 
@@ -299,9 +233,6 @@ SELECT * FROM PRIMARY_TBL;
 
 DROP TABLE PRIMARY_TBL;
 
---
--- Unique keys
---
 
 CREATE TABLE UNIQUE_TBL (i int UNIQUE, t text);
 
@@ -315,7 +246,6 @@ INSERT INTO UNIQUE_TBL (t) VALUES ('seven');
 
 INSERT INTO UNIQUE_TBL VALUES (5, 'five-upsert-insert') ON CONFLICT (i) DO UPDATE SET t = 'five-upsert-update';
 INSERT INTO UNIQUE_TBL VALUES (6, 'six-upsert-insert') ON CONFLICT (i) DO UPDATE SET t = 'six-upsert-update';
--- should fail
 INSERT INTO UNIQUE_TBL VALUES (1, 'a'), (2, 'b'), (2, 'b') ON CONFLICT (i) DO UPDATE SET t = 'fails';
 
 SELECT * FROM UNIQUE_TBL;
@@ -326,12 +256,12 @@ CREATE TABLE UNIQUE_TBL (i int UNIQUE NULLS NOT DISTINCT, t text);
 
 INSERT INTO UNIQUE_TBL VALUES (1, 'one');
 INSERT INTO UNIQUE_TBL VALUES (2, 'two');
-INSERT INTO UNIQUE_TBL VALUES (1, 'three');  -- fail
+INSERT INTO UNIQUE_TBL VALUES (1, 'three');  
 INSERT INTO UNIQUE_TBL VALUES (4, 'four');
 INSERT INTO UNIQUE_TBL VALUES (5, 'one');
 INSERT INTO UNIQUE_TBL (t) VALUES ('six');
-INSERT INTO UNIQUE_TBL (t) VALUES ('seven');  -- fail
-INSERT INTO UNIQUE_TBL (t) VALUES ('eight') ON CONFLICT DO NOTHING;  -- no-op
+INSERT INTO UNIQUE_TBL (t) VALUES ('seven');  
+INSERT INTO UNIQUE_TBL (t) VALUES ('eight') ON CONFLICT DO NOTHING;  
 
 SELECT * FROM UNIQUE_TBL;
 
@@ -351,9 +281,6 @@ SELECT * FROM UNIQUE_TBL;
 
 DROP TABLE UNIQUE_TBL;
 
---
--- Deferrable unique constraints
---
 
 CREATE TABLE unique_tbl (i int UNIQUE DEFERRABLE, t text);
 
@@ -365,29 +292,25 @@ INSERT INTO unique_tbl VALUES (4, 'five');
 
 BEGIN;
 
--- default is immediate so this should fail right away
 UPDATE unique_tbl SET i = 1 WHERE i = 0;
 
 ROLLBACK;
 
--- check is done at end of statement, so this should succeed
 UPDATE unique_tbl SET i = i+1;
 
 SELECT * FROM unique_tbl;
 
--- explicitly defer the constraint
 BEGIN;
 
 SET CONSTRAINTS unique_tbl_i_key DEFERRED;
 
 INSERT INTO unique_tbl VALUES (3, 'three');
-DELETE FROM unique_tbl WHERE t = 'tree'; -- makes constraint valid again
+DELETE FROM unique_tbl WHERE t = 'tree'; 
 
-COMMIT; -- should succeed
+COMMIT; 
 
 SELECT * FROM unique_tbl;
 
--- try adding an initially deferred constraint
 ALTER TABLE unique_tbl DROP CONSTRAINT unique_tbl_i_key;
 ALTER TABLE unique_tbl ADD CONSTRAINT unique_tbl_i_key
 	UNIQUE (i) DEFERRABLE INITIALLY DEFERRED;
@@ -405,32 +328,28 @@ COMMIT;
 
 SELECT * FROM unique_tbl;
 
--- should fail at commit-time
 BEGIN;
-INSERT INTO unique_tbl VALUES (3, 'Three'); -- should succeed for now
-COMMIT; -- should fail
+INSERT INTO unique_tbl VALUES (3, 'Three'); 
+COMMIT; 
 
--- make constraint check immediate
 BEGIN;
 
 SET CONSTRAINTS ALL IMMEDIATE;
 
-INSERT INTO unique_tbl VALUES (3, 'Three'); -- should fail
+INSERT INTO unique_tbl VALUES (3, 'Three'); 
 
 COMMIT;
 
--- forced check when SET CONSTRAINTS is called
 BEGIN;
 
 SET CONSTRAINTS ALL DEFERRED;
 
-INSERT INTO unique_tbl VALUES (3, 'Three'); -- should succeed for now
+INSERT INTO unique_tbl VALUES (3, 'Three'); 
 
-SET CONSTRAINTS ALL IMMEDIATE; -- should fail
+SET CONSTRAINTS ALL IMMEDIATE; 
 
 COMMIT;
 
--- test deferrable UNIQUE with a partitioned table
 CREATE TABLE parted_uniq_tbl (i int UNIQUE DEFERRABLE) partition by range (i);
 CREATE TABLE parted_uniq_tbl_1 PARTITION OF parted_uniq_tbl FOR VALUES FROM (0) TO (10);
 CREATE TABLE parted_uniq_tbl_2 PARTITION OF parted_uniq_tbl FOR VALUES FROM (20) TO (30);
@@ -439,14 +358,13 @@ SELECT conname, conrelid::regclass FROM pg_constraint
 BEGIN;
 INSERT INTO parted_uniq_tbl VALUES (1);
 SAVEPOINT f;
-INSERT INTO parted_uniq_tbl VALUES (1);	-- unique violation
+INSERT INTO parted_uniq_tbl VALUES (1);	
 ROLLBACK TO f;
 SET CONSTRAINTS parted_uniq_tbl_i_key DEFERRED;
-INSERT INTO parted_uniq_tbl VALUES (1);	-- OK now, fail at commit
+INSERT INTO parted_uniq_tbl VALUES (1);	
 COMMIT;
 DROP TABLE parted_uniq_tbl;
 
--- test naming a constraint in a partition when a conflict exists
 CREATE TABLE parted_fk_naming (
     id bigint NOT NULL default 1,
     id_abc bigint,
@@ -465,24 +383,20 @@ ALTER TABLE parted_fk_naming ATTACH PARTITION parted_fk_naming_1 FOR VALUES IN (
 SELECT conname FROM pg_constraint WHERE conrelid = 'parted_fk_naming_1'::regclass AND contype = 'f';
 DROP TABLE parted_fk_naming;
 
--- test a HOT update that invalidates the conflicting tuple.
--- the trigger should still fire and catch the violation
 
 BEGIN;
 
-INSERT INTO unique_tbl VALUES (3, 'Three'); -- should succeed for now
+INSERT INTO unique_tbl VALUES (3, 'Three'); 
 UPDATE unique_tbl SET t = 'THREE' WHERE i = 3 AND t = 'Three';
 
-COMMIT; -- should fail
+COMMIT; 
 
 SELECT * FROM unique_tbl;
 
--- test a HOT update that modifies the newly inserted tuple,
--- but should succeed because we then remove the other conflicting tuple.
 
 BEGIN;
 
-INSERT INTO unique_tbl VALUES(3, 'tree'); -- should succeed for now
+INSERT INTO unique_tbl VALUES(3, 'tree'); 
 UPDATE unique_tbl SET t = 'threex' WHERE t = 'tree';
 DELETE FROM unique_tbl WHERE t = 'three';
 
@@ -494,9 +408,6 @@ SELECT * FROM unique_tbl;
 
 DROP TABLE unique_tbl;
 
---
--- EXCLUDE constraints
---
 
 CREATE TABLE circles (
   c1 CIRCLE,
@@ -506,35 +417,25 @@ CREATE TABLE circles (
     WHERE (circle_center(c1) <> '(0,0)')
 );
 
--- these should succeed because they don't match the index predicate
 INSERT INTO circles VALUES('<(0,0), 5>', '<(0,0), 5>');
 INSERT INTO circles VALUES('<(0,0), 5>', '<(0,0), 4>');
 
--- succeed
 INSERT INTO circles VALUES('<(10,10), 10>', '<(0,0), 5>');
--- fail, overlaps
 INSERT INTO circles VALUES('<(20,20), 10>', '<(0,0), 4>');
--- succeed, because violation is ignored
 INSERT INTO circles VALUES('<(20,20), 10>', '<(0,0), 4>')
   ON CONFLICT ON CONSTRAINT circles_c1_c2_excl DO NOTHING;
--- fail, because DO UPDATE variant requires unique index
 INSERT INTO circles VALUES('<(20,20), 10>', '<(0,0), 4>')
   ON CONFLICT ON CONSTRAINT circles_c1_c2_excl DO UPDATE SET c2 = EXCLUDED.c2;
--- succeed because c1 doesn't overlap
 INSERT INTO circles VALUES('<(20,20), 1>', '<(0,0), 5>');
--- succeed because c2 doesn't overlap
 INSERT INTO circles VALUES('<(20,20), 10>', '<(10,10), 5>');
 
--- should fail on existing data without the WHERE clause
 ALTER TABLE circles ADD EXCLUDE USING gist
   (c1 WITH &&, (c2::circle) WITH &&);
 
--- try reindexing an existing constraint
 REINDEX INDEX circles_c1_c2_excl;
 
 DROP TABLE circles;
 
--- Check deferred exclusion constraint
 
 CREATE TABLE deferred_excl (
   f1 int,
@@ -544,62 +445,47 @@ CREATE TABLE deferred_excl (
 
 INSERT INTO deferred_excl VALUES(1);
 INSERT INTO deferred_excl VALUES(2);
-INSERT INTO deferred_excl VALUES(1); -- fail
-INSERT INTO deferred_excl VALUES(1) ON CONFLICT ON CONSTRAINT deferred_excl_con DO NOTHING; -- fail
+INSERT INTO deferred_excl VALUES(1); 
+INSERT INTO deferred_excl VALUES(1) ON CONFLICT ON CONSTRAINT deferred_excl_con DO NOTHING; 
 BEGIN;
-INSERT INTO deferred_excl VALUES(2); -- no fail here
-COMMIT; -- should fail here
+INSERT INTO deferred_excl VALUES(2); 
+COMMIT; 
 BEGIN;
 INSERT INTO deferred_excl VALUES(3);
-INSERT INTO deferred_excl VALUES(3); -- no fail here
-COMMIT; -- should fail here
+INSERT INTO deferred_excl VALUES(3); 
+COMMIT; 
 
--- bug #13148: deferred constraint versus HOT update
 BEGIN;
-INSERT INTO deferred_excl VALUES(2, 1); -- no fail here
-DELETE FROM deferred_excl WHERE f1 = 2 AND f2 IS NULL; -- remove old row
+INSERT INTO deferred_excl VALUES(2, 1); 
+DELETE FROM deferred_excl WHERE f1 = 2 AND f2 IS NULL; 
 UPDATE deferred_excl SET f2 = 2 WHERE f1 = 2;
-COMMIT; -- should not fail
+COMMIT; 
 
 SELECT * FROM deferred_excl;
 
 ALTER TABLE deferred_excl DROP CONSTRAINT deferred_excl_con;
 
--- This should fail, but worth testing because of HOT updates
 UPDATE deferred_excl SET f1 = 3;
 
 ALTER TABLE deferred_excl ADD EXCLUDE (f1 WITH =);
 
 DROP TABLE deferred_excl;
 
--- verify constraints created for NOT NULL clauses
 CREATE TABLE notnull_tbl1 (a INTEGER NOT NULL NOT NULL);
-\d+ notnull_tbl1;
 select conname, contype, conkey from pg_constraint where conrelid = 'notnull_tbl1'::regclass;
--- no-op
 ALTER TABLE notnull_tbl1 ADD CONSTRAINT nn NOT NULL a;
-\d+ notnull_tbl1;
--- duplicate name
 ALTER TABLE notnull_tbl1 ADD COLUMN b INT CONSTRAINT notnull_tbl1_a_not_null NOT NULL;
--- DROP NOT NULL gets rid of both the attnotnull flag and the constraint itself
 ALTER TABLE notnull_tbl1 ALTER a DROP NOT NULL;
-\d notnull_tbl1;
 select conname, contype, conkey from pg_constraint where conrelid = 'notnull_tbl1'::regclass;
--- SET NOT NULL puts both back
-ALTER TABLE notnull_tbl1 ALTER a SET NOT NULL;
-\d notnull_tbl1;
-select conname, contype, conkey from pg_constraint where conrelid = 'notnull_tbl1'::regclass;
--- Doing it twice doesn't create a redundant constraint
 ALTER TABLE notnull_tbl1 ALTER a SET NOT NULL;
 select conname, contype, conkey from pg_constraint where conrelid = 'notnull_tbl1'::regclass;
--- Using the "table constraint" syntax also works
+ALTER TABLE notnull_tbl1 ALTER a SET NOT NULL;
+select conname, contype, conkey from pg_constraint where conrelid = 'notnull_tbl1'::regclass;
 ALTER TABLE notnull_tbl1 ALTER a DROP NOT NULL;
 ALTER TABLE notnull_tbl1 ADD CONSTRAINT foobar NOT NULL a;
-\d notnull_tbl1;
 select conname, contype, conkey from pg_constraint where conrelid = 'notnull_tbl1'::regclass;
 DROP TABLE notnull_tbl1;
 
--- nope
 CREATE TABLE notnull_tbl2 (a INTEGER CONSTRAINT blah NOT NULL, b INTEGER CONSTRAINT blah NOT NULL);
 
 CREATE TABLE notnull_tbl2 (a INTEGER PRIMARY KEY);
@@ -608,12 +494,8 @@ ALTER TABLE notnull_tbl2 ALTER a DROP NOT NULL;
 CREATE TABLE notnull_tbl3 (a INTEGER NOT NULL, CHECK (a IS NOT NULL));
 ALTER TABLE notnull_tbl3 ALTER A DROP NOT NULL;
 ALTER TABLE notnull_tbl3 ADD b int, ADD CONSTRAINT pk PRIMARY KEY (a, b);
-\d notnull_tbl3;
 ALTER TABLE notnull_tbl3 DROP CONSTRAINT pk;
-\d notnull_tbl3;
 
--- Primary keys in parent table cause NOT NULL constraint to spawn on their
--- children.  Verify that they work correctly.
 CREATE TABLE cnn_parent (a int, b int);
 CREATE TABLE cnn_child () INHERITS (cnn_parent);
 CREATE TABLE cnn_grandchild (NOT NULL b) INHERITS (cnn_child);
@@ -621,14 +503,9 @@ CREATE TABLE cnn_child2 (NOT NULL a NO INHERIT) INHERITS (cnn_parent);
 CREATE TABLE cnn_grandchild2 () INHERITS (cnn_grandchild, cnn_child2);
 
 ALTER TABLE cnn_parent ADD PRIMARY KEY (b);
-\d+ cnn_grandchild;
-\d+ cnn_grandchild2;
 ALTER TABLE cnn_parent DROP CONSTRAINT cnn_parent_pkey;
-\set VERBOSITY terse;
 DROP TABLE cnn_parent CASCADE;
-\set VERBOSITY default;
 
--- As above, but create the primary key ahead of time
 CREATE TABLE cnn_parent (a int, b int PRIMARY KEY);
 CREATE TABLE cnn_child () INHERITS (cnn_parent);
 CREATE TABLE cnn_grandchild (NOT NULL b) INHERITS (cnn_child);
@@ -636,14 +513,9 @@ CREATE TABLE cnn_child2 (NOT NULL a NO INHERIT) INHERITS (cnn_parent);
 CREATE TABLE cnn_grandchild2 () INHERITS (cnn_grandchild, cnn_child2);
 
 ALTER TABLE cnn_parent ADD PRIMARY KEY (b);
-\d+ cnn_grandchild;
-\d+ cnn_grandchild2;
 ALTER TABLE cnn_parent DROP CONSTRAINT cnn_parent_pkey;
-\set VERBOSITY terse;
 DROP TABLE cnn_parent CASCADE;
-\set VERBOSITY default;
 
--- As above, but create the primary key using a UNIQUE index
 CREATE TABLE cnn_parent (a int, b int);
 CREATE TABLE cnn_child () INHERITS (cnn_parent);
 CREATE TABLE cnn_grandchild (NOT NULL b) INHERITS (cnn_child);
@@ -652,12 +524,8 @@ CREATE TABLE cnn_grandchild2 () INHERITS (cnn_grandchild, cnn_child2);
 
 CREATE UNIQUE INDEX b_uq ON cnn_parent (b);
 ALTER TABLE cnn_parent ADD PRIMARY KEY USING INDEX b_uq;
-\d+ cnn_grandchild;
-\d+ cnn_grandchild2;
 ALTER TABLE cnn_parent DROP CONSTRAINT cnn_parent_pkey;
--- keeps these tables around, for pg_upgrade testing
 
--- ensure columns in partitions are marked not-null
 create table cnn2_parted(a int primary key) partition by list (a);
 create table cnn2_part1(a int);
 alter table cnn2_parted attach partition cnn2_part1 for values in (1);
@@ -668,8 +536,6 @@ create table cnn2_part1(a int primary key);
 alter table cnn2_parted attach partition cnn2_part1 for values in (1);
 drop table cnn2_parted, cnn2_part1;
 
--- columns in regular and LIKE inheritance should be marked not-nullable
--- for primary keys, even if those are deferred
 CREATE TABLE notnull_tbl4 (a INTEGER PRIMARY KEY INITIALLY DEFERRED);
 CREATE TABLE notnull_tbl4_lk (LIKE notnull_tbl4);
 CREATE TABLE notnull_tbl4_lk2 (LIKE notnull_tbl4 INCLUDING INDEXES);
@@ -677,25 +543,12 @@ CREATE TABLE notnull_tbl4_lk3 (LIKE notnull_tbl4 INCLUDING INDEXES, CONSTRAINT a
 CREATE TABLE notnull_tbl4_cld () INHERITS (notnull_tbl4);
 CREATE TABLE notnull_tbl4_cld2 (PRIMARY KEY (a) DEFERRABLE) INHERITS (notnull_tbl4);
 CREATE TABLE notnull_tbl4_cld3 (PRIMARY KEY (a) DEFERRABLE, CONSTRAINT a_nn NOT NULL a) INHERITS (notnull_tbl4);
-\d+ notnull_tbl4;
-\d+ notnull_tbl4_lk;
-\d+ notnull_tbl4_lk2;
-\d+ notnull_tbl4_lk3;
-\d+ notnull_tbl4_cld;
-\d+ notnull_tbl4_cld2;
-\d+ notnull_tbl4_cld3;
--- leave these tables around for pg_upgrade testing
 
--- also, if a NOT NULL is dropped underneath a deferrable PK, the column
--- should still be nullable afterwards.  This mimics what pg_dump does.
 CREATE TABLE notnull_tbl5 (a INTEGER CONSTRAINT a_nn NOT NULL);
 ALTER TABLE notnull_tbl5 ADD PRIMARY KEY (a) DEFERRABLE;
 ALTER TABLE notnull_tbl5 DROP CONSTRAINT a_nn;
-\d+ notnull_tbl5;
 DROP TABLE notnull_tbl5;
 
--- Comments
--- Setup a low-level role to enforce non-superuser checks.
 CREATE ROLE regress_constraint_comments;
 SET SESSION AUTHORIZATION regress_constraint_comments;
 
@@ -705,18 +558,15 @@ CREATE DOMAIN constraint_comments_dom AS int CONSTRAINT the_constraint CHECK (va
 COMMENT ON CONSTRAINT the_constraint ON constraint_comments_tbl IS 'yes, the comment';
 COMMENT ON CONSTRAINT the_constraint ON DOMAIN constraint_comments_dom IS 'yes, another comment';
 
--- no such constraint
 COMMENT ON CONSTRAINT no_constraint ON constraint_comments_tbl IS 'yes, the comment';
 COMMENT ON CONSTRAINT no_constraint ON DOMAIN constraint_comments_dom IS 'yes, another comment';
 
--- no such table/domain
 COMMENT ON CONSTRAINT the_constraint ON no_comments_tbl IS 'bad comment';
 COMMENT ON CONSTRAINT the_constraint ON DOMAIN no_comments_dom IS 'another bad comment';
 
 COMMENT ON CONSTRAINT the_constraint ON constraint_comments_tbl IS NULL;
 COMMENT ON CONSTRAINT the_constraint ON DOMAIN constraint_comments_dom IS NULL;
 
--- unauthorized user
 RESET SESSION AUTHORIZATION;
 CREATE ROLE regress_constraint_comments_noaccess;
 SET SESSION AUTHORIZATION regress_constraint_comments_noaccess;

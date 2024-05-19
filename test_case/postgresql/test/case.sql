@@ -1,7 +1,3 @@
---
--- CASE
--- Test the case statement
---
 
 CREATE TABLE CASE_TBL (
   i integer,
@@ -25,9 +21,6 @@ INSERT INTO CASE2_TBL VALUES (2, -4);
 INSERT INTO CASE2_TBL VALUES (1, NULL);
 INSERT INTO CASE2_TBL VALUES (NULL, -6);
 
---
--- Simplest examples without tables
---
 
 SELECT '3' AS "One",
   CASE
@@ -63,20 +56,13 @@ SELECT '7' AS "None",
    CASE WHEN random() < 0 THEN 1
    END AS "NULL on no matches";
 
--- Constant-expression folding shouldn't evaluate unreachable subexpressions
 SELECT CASE WHEN 1=0 THEN 1/0 WHEN 1=1 THEN 1 ELSE 2/0 END;
 SELECT CASE 1 WHEN 0 THEN 1/0 WHEN 1 THEN 1 ELSE 2/0 END;
 
--- However we do not currently suppress folding of potentially
--- reachable subexpressions
 SELECT CASE WHEN i > 100 THEN 1/0 ELSE 0 END FROM case_tbl;
 
--- Test for cases involving untyped literals in test expression
 SELECT CASE 'a' WHEN 'a' THEN 1 ELSE 2 END;
 
---
--- Examples of targets involving tables
---
 
 SELECT
   CASE
@@ -108,15 +94,7 @@ SELECT
   END AS "Category"
   FROM CASE_TBL;
 
---
--- Examples of qualifications involving tables
---
 
---
--- NULLIF() and COALESCE()
--- Shorthand forms for typical CASE constructs
---  defined in the SQL standard.
---
 
 SELECT * FROM CASE_TBL WHERE COALESCE(f,i) = 4;
 
@@ -137,7 +115,6 @@ SELECT *
   FROM CASE_TBL a, CASE2_TBL b
   WHERE COALESCE(f,b.i) = 2;
 
--- Tests for constant subexpression simplification
 
 explain (costs off)
 SELECT * FROM CASE_TBL WHERE NULLIF(1, 2) = 2;
@@ -148,9 +125,6 @@ SELECT * FROM CASE_TBL WHERE NULLIF(1, 1) IS NOT NULL;
 explain (costs off)
 SELECT * FROM CASE_TBL WHERE NULLIF(1, null) = 2;
 
---
--- Examples of updates involving tables
---
 
 UPDATE CASE_TBL
   SET i = CASE WHEN i >= 3 THEN (- i)
@@ -172,19 +146,8 @@ UPDATE CASE_TBL
 
 SELECT * FROM CASE_TBL;
 
---
--- Nested CASE expressions
---
 
--- This test exercises a bug caused by aliasing econtext->caseValue_isNull
--- with the isNull argument of the inner CASE's CaseExpr evaluation.  After
--- evaluating the vol(null) expression in the inner CASE's second WHEN-clause,
--- the isNull flag for the case test value incorrectly became true, causing
--- the third WHEN-clause not to match.  The volatile function calls are needed
--- to prevent constant-folding in the planner, which would hide the bug.
 
--- Wrap this in a single transaction so the transient '=' operator doesn't
--- cause problems in concurrent sessions
 BEGIN;
 
 CREATE FUNCTION vol(text) returns text as
@@ -200,7 +163,6 @@ SELECT CASE
   WHEN 'it was bar!' THEN 'bar recognized'
   ELSE 'unrecognized' END;
 
--- In this case, we can't inline the SQL function without confusing things.
 CREATE DOMAIN foodomain AS text;
 
 CREATE FUNCTION volfoo(text) returns foodomain as
@@ -216,9 +178,6 @@ SELECT CASE volfoo('bar') WHEN 'foo'::foodomain THEN 'is foo' ELSE 'is not foo' 
 
 ROLLBACK;
 
--- Test multiple evaluation of a CASE arg that is a read/write object (#14472)
--- Wrap this in a single transaction so the transient '=' operator doesn't
--- cause problems in concurrent sessions
 BEGIN;
 
 CREATE DOMAIN arrdomain AS int[];
@@ -244,7 +203,6 @@ SELECT CASE make_ad(1,2)
 
 ROLLBACK;
 
--- Test interaction of CASE with ArrayCoerceExpr (bug #15471)
 BEGIN;
 
 CREATE TYPE casetestenum AS ENUM ('e', 'f', 'g');
@@ -257,9 +215,6 @@ SELECT
 
 ROLLBACK;
 
---
--- Clean up
---
 
 DROP TABLE CASE_TBL;
 DROP TABLE CASE2_TBL;

@@ -1,115 +1,88 @@
--- should fail, return type mismatch
 create event trigger regress_event_trigger
    on ddl_command_start
    execute procedure pg_backend_pid();
 
--- OK
 create function test_event_trigger() returns event_trigger as $$
 BEGIN
     RAISE NOTICE 'test_event_trigger: % %', tg_event, tg_tag;
 END
 $$ language plpgsql;
 
--- should fail, can't call it as a plain function
 SELECT test_event_trigger();
 
--- should fail, event triggers cannot have declared arguments
 create function test_event_trigger_arg(name text)
 returns event_trigger as $$ BEGIN RETURN 1; END $$ language plpgsql;
 
--- should fail, SQL functions cannot be event triggers
 create function test_event_trigger_sql() returns event_trigger as $$
 SELECT 1 $$ language sql;
 
--- should fail, no elephant_bootstrap entry point
 create event trigger regress_event_trigger on elephant_bootstrap
    execute procedure test_event_trigger();
 
--- OK
 create event trigger regress_event_trigger on ddl_command_start
    execute procedure test_event_trigger();
 
--- OK
 create event trigger regress_event_trigger_end on ddl_command_end
    execute function test_event_trigger();
 
--- should fail, food is not a valid filter variable
 create event trigger regress_event_trigger2 on ddl_command_start
    when food in ('sandwich')
    execute procedure test_event_trigger();
 
--- should fail, sandwich is not a valid command tag
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('sandwich')
    execute procedure test_event_trigger();
 
--- should fail, create skunkcabbage is not a valid command tag
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('create table', 'create skunkcabbage')
    execute procedure test_event_trigger();
 
--- should fail, can't have event triggers on event triggers
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('DROP EVENT TRIGGER')
    execute procedure test_event_trigger();
 
--- should fail, can't have event triggers on global objects
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('CREATE ROLE')
    execute procedure test_event_trigger();
 
--- should fail, can't have event triggers on global objects
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('CREATE DATABASE')
    execute procedure test_event_trigger();
 
--- should fail, can't have event triggers on global objects
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('CREATE TABLESPACE')
    execute procedure test_event_trigger();
 
--- should fail, can't have same filter variable twice
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('create table') and tag in ('CREATE FUNCTION')
    execute procedure test_event_trigger();
 
--- should fail, can't have arguments
 create event trigger regress_event_trigger2 on ddl_command_start
    execute procedure test_event_trigger('argument not allowed');
 
--- OK
 create event trigger regress_event_trigger2 on ddl_command_start
    when tag in ('create table', 'CREATE FUNCTION')
    execute procedure test_event_trigger();
 
--- OK
 comment on event trigger regress_event_trigger is 'test comment';
 
--- drop as non-superuser should fail
 create role regress_evt_user;
 set role regress_evt_user;
 create event trigger regress_event_trigger_noperms on ddl_command_start
    execute procedure test_event_trigger();
 reset role;
 
--- test enabling and disabling
 alter event trigger regress_event_trigger disable;
--- fires _trigger2 and _trigger_end should fire, but not _trigger
 create table event_trigger_fire1 (a int);
 alter event trigger regress_event_trigger enable;
 set session_replication_role = replica;
--- fires nothing
 create table event_trigger_fire2 (a int);
 alter event trigger regress_event_trigger enable replica;
--- fires only _trigger
 create table event_trigger_fire3 (a int);
 alter event trigger regress_event_trigger enable always;
--- fires only _trigger
 create table event_trigger_fire4 (a int);
 reset session_replication_role;
--- fires all three
 create table event_trigger_fire5 (a int);
--- non-top-level command
 create function f1() returns int
 language plpgsql
 as $$
@@ -118,7 +91,6 @@ begin
   return 0;
 end $$;
 select f1();
--- non-top-level command
 create procedure p1()
 language plpgsql
 as $$
@@ -127,12 +99,10 @@ begin
 end $$;
 call p1();
 
--- clean up
 alter event trigger regress_event_trigger disable;
 drop table event_trigger_fire2, event_trigger_fire3, event_trigger_fire4, event_trigger_fire5, event_trigger_fire6, event_trigger_fire7;
 drop routine f1(), p1();
 
--- regress_event_trigger_end should fire on these commands
 grant all on table event_trigger_fire1 to public;
 comment on table event_trigger_fire1 is 'here is a comment';
 revoke all on table event_trigger_fire1 from public;
@@ -143,33 +113,24 @@ create user mapping for regress_evt_user server useless_server;
 alter default privileges for role regress_evt_user
  revoke delete on tables from regress_evt_user;
 
--- alter owner to non-superuser should fail
 alter event trigger regress_event_trigger owner to regress_evt_user;
 
--- alter owner to superuser should work
 alter role regress_evt_user superuser;
 alter event trigger regress_event_trigger owner to regress_evt_user;
 
--- should fail, name collision
 alter event trigger regress_event_trigger rename to regress_event_trigger2;
 
--- OK
 alter event trigger regress_event_trigger rename to regress_event_trigger3;
 
--- should fail, doesn't exist any more
 drop event trigger regress_event_trigger;
 
--- should fail, regress_evt_user owns some objects
 drop role regress_evt_user;
 
--- cleanup before next test
--- these are all OK; the second one should emit a NOTICE
 drop event trigger if exists regress_event_trigger2;
 drop event trigger if exists regress_event_trigger2;
 drop event trigger regress_event_trigger3;
 drop event trigger regress_event_trigger_end;
 
--- test support for dropped objects
 CREATE SCHEMA schema_one authorization regress_evt_user;
 CREATE SCHEMA schema_two authorization regress_evt_user;
 CREATE SCHEMA audit_tbls authorization regress_evt_user;
@@ -207,8 +168,6 @@ CREATE TABLE dropped_objects (
 	object text
 );
 
--- This tests errors raised within event triggers; the one in audit_tbls
--- uses 2nd-level recursive invocation via test_evtrig_dropped_objects().
 CREATE OR REPLACE FUNCTION undroppable() RETURNS event_trigger
 LANGUAGE plpgsql AS $$
 DECLARE
@@ -273,7 +232,6 @@ DROP ROLE regress_evt_user;
 DROP EVENT TRIGGER regress_event_trigger_drop_objects;
 DROP EVENT TRIGGER undroppable;
 
--- Event triggers on relations.
 CREATE OR REPLACE FUNCTION event_trigger_report_dropped()
  RETURNS event_trigger
  LANGUAGE plpgsql
@@ -313,7 +271,6 @@ CREATE SCHEMA evttrig
 	CREATE TABLE two (col_c INTEGER CHECK (col_c > 0) REFERENCES one DEFAULT 42)
 	CREATE TABLE id (col_d int NOT NULL GENERATED ALWAYS AS IDENTITY);
 
--- Partitioned tables with a partitioned index
 CREATE TABLE evttrig.parted (
     id int PRIMARY KEY)
     PARTITION BY RANGE (id);
@@ -337,17 +294,13 @@ DROP INDEX evttrig.one_idx;
 DROP SCHEMA evttrig CASCADE;
 DROP TABLE a_temp_tbl;
 
--- CREATE OPERATOR CLASS without FAMILY clause should report
--- both CREATE OPERATOR FAMILY and CREATE OPERATOR CLASS
 CREATE OPERATOR CLASS evttrigopclass FOR TYPE int USING btree AS STORAGE int;
 
 DROP EVENT TRIGGER regress_event_trigger_report_dropped;
 DROP EVENT TRIGGER regress_event_trigger_report_end;
 
--- only allowed from within an event trigger function, should fail
 select pg_event_trigger_table_rewrite_oid();
 
--- test Table Rewrite Event Trigger
 CREATE OR REPLACE FUNCTION test_evtrig_no_rewrite() RETURNS event_trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -364,7 +317,6 @@ insert into rewriteme
 alter table rewriteme alter column foo type numeric;
 alter table rewriteme add column baz int default 0;
 
--- test with more than one reason to rewrite a single table
 CREATE OR REPLACE FUNCTION test_evtrig_no_rewrite() RETURNS event_trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -379,12 +331,10 @@ alter table rewriteme
  add column another int default -1,
  alter column foo type numeric(10,4);
 
--- matview rewrite when changing access method
 CREATE MATERIALIZED VIEW heapmv USING heap AS SELECT 1 AS a;
 ALTER MATERIALIZED VIEW heapmv SET ACCESS METHOD heap2;
 DROP MATERIALIZED VIEW heapmv;
 
--- shouldn't trigger a table_rewrite event
 alter table rewriteme alter column foo type numeric(12,4);
 begin;
 set timezone to 'UTC';
@@ -392,11 +342,9 @@ alter table rewriteme alter column bar type timestamp;
 set timezone to '0';
 alter table rewriteme alter column bar type timestamptz;
 set timezone to 'Europe/London';
-alter table rewriteme alter column bar type timestamp; -- does rewrite
+alter table rewriteme alter column bar type timestamp; 
 rollback;
 
--- typed tables are rewritten when their type changes.  Don't emit table
--- name, because firing order is not stable.
 CREATE OR REPLACE FUNCTION test_evtrig_no_rewrite() RETURNS event_trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -410,7 +358,6 @@ create table rewritemetoo1 of rewritetype;
 create table rewritemetoo2 of rewritetype;
 alter type rewritetype alter attribute a type text cascade;
 
--- but this doesn't work
 create table rewritemetoo3 (a rewritetype);
 alter type rewritetype alter attribute a type varchar cascade;
 
@@ -418,7 +365,6 @@ drop table rewriteme;
 drop event trigger no_rewrite_allowed;
 drop function test_evtrig_no_rewrite();
 
--- Tests for REINDEX
 CREATE OR REPLACE FUNCTION reindex_start_command()
 RETURNS event_trigger AS $$
 BEGIN
@@ -443,55 +389,43 @@ $$ LANGUAGE plpgsql;
 CREATE EVENT TRIGGER regress_reindex_end ON ddl_command_end
     WHEN TAG IN ('REINDEX')
     EXECUTE PROCEDURE reindex_end_command();
--- Extra event to force the use of a snapshot.
 CREATE FUNCTION reindex_end_command_snap() RETURNS EVENT_TRIGGER
     AS $$ BEGIN PERFORM 1; END $$ LANGUAGE plpgsql;
 CREATE EVENT TRIGGER regress_reindex_end_snap ON ddl_command_end
     EXECUTE FUNCTION reindex_end_command_snap();
 
--- With simple relation
 CREATE TABLE concur_reindex_tab (c1 int);
 CREATE INDEX concur_reindex_ind ON concur_reindex_tab (c1);
--- Both start and end triggers enabled.
 REINDEX INDEX concur_reindex_ind;
 REINDEX TABLE concur_reindex_tab;
 REINDEX INDEX CONCURRENTLY concur_reindex_ind;
 REINDEX TABLE CONCURRENTLY concur_reindex_tab;
--- with start trigger disabled.
 ALTER EVENT TRIGGER regress_reindex_start DISABLE;
 REINDEX INDEX concur_reindex_ind;
 REINDEX INDEX CONCURRENTLY concur_reindex_ind;
--- without an index
 DROP INDEX concur_reindex_ind;
 REINDEX TABLE concur_reindex_tab;
 REINDEX TABLE CONCURRENTLY concur_reindex_tab;
 
--- With a Schema
 CREATE SCHEMA concur_reindex_schema;
--- No indexes
 REINDEX SCHEMA concur_reindex_schema;
 REINDEX SCHEMA CONCURRENTLY concur_reindex_schema;
 CREATE TABLE concur_reindex_schema.tab (a int);
 CREATE INDEX ind ON concur_reindex_schema.tab (a);
--- One index reported
 REINDEX SCHEMA concur_reindex_schema;
 REINDEX SCHEMA CONCURRENTLY concur_reindex_schema;
--- One table on schema but no indexes
 DROP INDEX concur_reindex_schema.ind;
 REINDEX SCHEMA concur_reindex_schema;
 REINDEX SCHEMA CONCURRENTLY concur_reindex_schema;
 DROP SCHEMA concur_reindex_schema CASCADE;
 
--- With a partitioned table, and nothing else.
 CREATE TABLE concur_reindex_part (id int) PARTITION BY RANGE (id);
 REINDEX TABLE concur_reindex_part;
 REINDEX TABLE CONCURRENTLY concur_reindex_part;
--- Partition that would be reindexed, still nothing.
 CREATE TABLE concur_reindex_child PARTITION OF concur_reindex_part
   FOR VALUES FROM (0) TO (10);
 REINDEX TABLE concur_reindex_part;
 REINDEX TABLE CONCURRENTLY concur_reindex_part;
--- Now add some indexes.
 CREATE INDEX concur_reindex_partidx ON concur_reindex_part (id);
 REINDEX INDEX concur_reindex_partidx;
 REINDEX INDEX CONCURRENTLY concur_reindex_partidx;
@@ -499,7 +433,6 @@ REINDEX TABLE concur_reindex_part;
 REINDEX TABLE CONCURRENTLY concur_reindex_part;
 DROP TABLE concur_reindex_part;
 
--- Clean up
 DROP EVENT TRIGGER regress_reindex_start;
 DROP EVENT TRIGGER regress_reindex_end;
 DROP EVENT TRIGGER regress_reindex_end_snap;
@@ -508,7 +441,6 @@ DROP FUNCTION reindex_end_command_snap();
 DROP FUNCTION reindex_start_command();
 DROP TABLE concur_reindex_tab;
 
--- test Row Security Event Trigger
 RESET SESSION AUTHORIZATION;
 CREATE TABLE event_trigger_test (a integer, b text);
 
@@ -547,7 +479,6 @@ ALTER POLICY p1 ON event_trigger_test USING (TRUE);
 ALTER POLICY p1 ON event_trigger_test RENAME TO p2;
 DROP POLICY p2 ON event_trigger_test;
 
--- Check the object addresses of all the event triggers.
 SELECT
     e.evtname,
     pg_describe_object('pg_event_trigger'::regclass, e.oid, 0) as descr,
@@ -562,7 +493,6 @@ DROP EVENT TRIGGER start_rls_command;
 DROP EVENT TRIGGER end_rls_command;
 DROP EVENT TRIGGER sql_drop_command;
 
--- Check the GUC for disabling event triggers
 CREATE FUNCTION test_event_trigger_guc() RETURNS event_trigger
 LANGUAGE plpgsql AS $$
 DECLARE

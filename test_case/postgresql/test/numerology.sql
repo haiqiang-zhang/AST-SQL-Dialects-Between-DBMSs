@@ -1,18 +1,10 @@
---
--- NUMEROLOGY
--- Test various combinations of numeric types and functions.
---
 
 
---
--- numeric literals
---
 
 SELECT 0b100101;
 SELECT 0o273;
 SELECT 0x42F;
 
--- cases near int4 overflow
 SELECT 0b1111111111111111111111111111111;
 SELECT 0b10000000000000000000000000000000;
 SELECT 0o17777777777;
@@ -27,7 +19,6 @@ SELECT -0o20000000001;
 SELECT -0x80000000;
 SELECT -0x80000001;
 
--- cases near int8 overflow
 SELECT 0b111111111111111111111111111111111111111111111111111111111111111;
 SELECT 0b1000000000000000000000000000000000000000000000000000000000000000;
 SELECT 0o777777777777777777777;
@@ -42,7 +33,6 @@ SELECT -0o1000000000000000000001;
 SELECT -0x8000000000000000;
 SELECT -0x8000000000000001;
 
--- error cases
 SELECT 123abc;
 SELECT 0x0o;
 SELECT 0.a;
@@ -65,7 +55,6 @@ SELECT 0x;
 SELECT 1x;
 SELECT 0x0y;
 
--- underscores
 SELECT 1_000_000;
 SELECT 1_2_3;
 SELECT 0x1EEE_FFFF;
@@ -77,7 +66,6 @@ SELECT 1_000.;
 SELECT .000_005;
 SELECT 1_000.5e0_1;
 
--- error cases
 SELECT _100;
 SELECT 100_;
 SELECT 100__000;
@@ -89,11 +77,6 @@ SELECT 1_000.5_;
 SELECT 1_000.5e_1;
 
 
---
--- Test implicit type conversions
--- This fails for Postgres v6.1 (and earlier?)
---  so let's try explicit conversions for now - tgl 97/05/07
---
 
 CREATE TABLE TEMP_FLOAT (f1 FLOAT8);
 
@@ -106,7 +89,6 @@ INSERT INTO TEMP_FLOAT (f1)
 SELECT f1 FROM TEMP_FLOAT
   ORDER BY f1;
 
--- int4
 
 CREATE TABLE TEMP_INT4 (f1 INT4);
 
@@ -120,7 +102,6 @@ INSERT INTO TEMP_INT4 (f1)
 SELECT f1 FROM TEMP_INT4
   ORDER BY f1;
 
--- int2
 
 CREATE TABLE TEMP_INT2 (f1 INT2);
 
@@ -135,9 +116,6 @@ INSERT INTO TEMP_INT2 (f1)
 SELECT f1 FROM TEMP_INT2
   ORDER BY f1;
 
---
--- Group-by combinations
---
 
 CREATE TABLE TEMP_GROUP (f1 INT4, f2 INT4, f3 FLOAT8);
 
@@ -156,8 +134,6 @@ SELECT f1 AS two, max(f3) AS max_float, min(f3) as min_float
   GROUP BY f1
   ORDER BY two, max_float, min_float;
 
--- GROUP BY a result column name is not legal per SQL92, but we accept it
--- anyway (if the name is not the name of any column exposed by FROM).
 SELECT f1 AS two, max(f3) AS max_float, min(f3) AS min_float
   FROM TEMP_GROUP
   GROUP BY two

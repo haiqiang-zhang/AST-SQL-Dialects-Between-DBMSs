@@ -1,8 +1,4 @@
---
--- Test INSERT/UPDATE/DELETE RETURNING
---
 
--- Simple cases
 
 CREATE TEMP TABLE foo (f1 serial, f2 text, f3 int default 42);
 
@@ -20,7 +16,6 @@ DELETE FROM foo WHERE f1 > 2 RETURNING f3, f2, f1, least(f1,f3);
 
 SELECT * FROM foo;
 
--- Subplans and initplans in the RETURNING list
 
 INSERT INTO foo SELECT f1+10, f2, f3+99 FROM foo
   RETURNING *, f1+112 IN (SELECT q1 FROM int8_tbl) AS subplan,
@@ -36,7 +31,6 @@ DELETE FROM foo
   RETURNING *, f1+112 IN (SELECT q1 FROM int8_tbl) AS subplan,
     EXISTS(SELECT * FROM int4_tbl) AS initplan;
 
--- Joins
 
 UPDATE foo SET f3 = f3*2
   FROM int4_tbl i
@@ -52,7 +46,6 @@ DELETE FROM foo
 
 SELECT * FROM foo;
 
--- Check inheritance cases
 
 CREATE TEMP TABLE foochild (fc int) INHERITS (foo);
 
@@ -86,7 +79,6 @@ SELECT * FROM foochild;
 
 DROP TABLE foochild;
 
--- Rules and views
 
 CREATE TEMP VIEW voo AS SELECT f1, f2 FROM foo;
 
@@ -94,19 +86,15 @@ CREATE RULE voo_i AS ON INSERT TO voo DO INSTEAD
   INSERT INTO foo VALUES(new.*, 57);
 
 INSERT INTO voo VALUES(11,'zit');
--- fails:
 INSERT INTO voo VALUES(12,'zoo') RETURNING *, f1*2;
 
--- fails, incompatible list:
 CREATE OR REPLACE RULE voo_i AS ON INSERT TO voo DO INSTEAD
   INSERT INTO foo VALUES(new.*, 57) RETURNING *;
 
 CREATE OR REPLACE RULE voo_i AS ON INSERT TO voo DO INSTEAD
   INSERT INTO foo VALUES(new.*, 57) RETURNING f1, f2;
 
--- should still work
 INSERT INTO voo VALUES(13,'zit2');
--- works now
 INSERT INTO voo VALUES(14,'zoo2') RETURNING *;
 
 SELECT * FROM foo;
@@ -132,7 +120,6 @@ DELETE FROM foo WHERE f2 = 'zit' RETURNING *;
 SELECT * FROM foo;
 SELECT * FROM voo;
 
--- Try a join case
 
 CREATE TEMP TABLE joinme (f2j text, other int);
 INSERT INTO joinme VALUES('more', 12345);
@@ -155,8 +142,7 @@ SELECT * FROM joinview;
 SELECT * FROM foo;
 SELECT * FROM voo;
 
--- Check aliased target relation
-INSERT INTO foo AS bar DEFAULT VALUES RETURNING *; -- ok
-INSERT INTO foo AS bar DEFAULT VALUES RETURNING foo.*; -- fails, wrong name
-INSERT INTO foo AS bar DEFAULT VALUES RETURNING bar.*; -- ok
-INSERT INTO foo AS bar DEFAULT VALUES RETURNING bar.f3; -- ok
+INSERT INTO foo AS bar DEFAULT VALUES RETURNING *; 
+INSERT INTO foo AS bar DEFAULT VALUES RETURNING foo.*; 
+INSERT INTO foo AS bar DEFAULT VALUES RETURNING bar.*; 
+INSERT INTO foo AS bar DEFAULT VALUES RETURNING bar.f3; 

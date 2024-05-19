@@ -1,12 +1,6 @@
---
--- POINT
---
 
--- avoid bit-exact output here because operations may not be bit-exact.
 SET extra_float_digits = 0;
 
--- point_tbl was already created and filled in test_setup.sql.
--- Here we just try to insert bad values.
 
 INSERT INTO POINT_TBL(f1) VALUES ('asdfasdf');
 
@@ -16,27 +10,21 @@ INSERT INTO POINT_TBL(f1) VALUES ('(10.0, 10.0) x');
 
 INSERT INTO POINT_TBL(f1) VALUES ('(10.0,10.0');
 
-INSERT INTO POINT_TBL(f1) VALUES ('(10.0, 1e+500)');	-- Out of range
+INSERT INTO POINT_TBL(f1) VALUES ('(10.0, 1e+500)');	
 
 
 SELECT * FROM POINT_TBL;
 
--- left of
 SELECT p.* FROM POINT_TBL p WHERE p.f1 << '(0.0, 0.0)';
 
--- right of
 SELECT p.* FROM POINT_TBL p WHERE '(0.0,0.0)' >> p.f1;
 
--- above
 SELECT p.* FROM POINT_TBL p WHERE '(0.0,0.0)' |>> p.f1;
 
--- below
 SELECT p.* FROM POINT_TBL p WHERE p.f1 <<| '(0.0, 0.0)';
 
--- equal
 SELECT p.* FROM POINT_TBL p WHERE p.f1 ~= '(5.1, 34.5)';
 
--- point in box
 SELECT p.* FROM POINT_TBL p
    WHERE p.f1 <@ box '(0,0,100,100)';
 
@@ -64,19 +52,16 @@ SELECT p1.f1 AS point1, p2.f1 AS point2
    FROM POINT_TBL p1, POINT_TBL p2
    WHERE (p1.f1 <-> p2.f1) > 3;
 
--- put distance result into output to allow sorting with GEQ optimizer - tgl 97/05/10
 SELECT p1.f1 AS point1, p2.f1 AS point2, (p1.f1 <-> p2.f1) AS distance
    FROM POINT_TBL p1, POINT_TBL p2
    WHERE (p1.f1 <-> p2.f1) > 3 and p1.f1 << p2.f1
    ORDER BY distance, p1.f1[0], p2.f1[0];
 
--- put distance result into output to allow sorting with GEQ optimizer - tgl 97/05/10
 SELECT p1.f1 AS point1, p2.f1 AS point2, (p1.f1 <-> p2.f1) AS distance
    FROM POINT_TBL p1, POINT_TBL p2
    WHERE (p1.f1 <-> p2.f1) > 3 and p1.f1 << p2.f1 and p1.f1 |>> p2.f1
    ORDER BY distance;
 
--- Test that GiST indexes provide same behavior as sequential scan
 CREATE TEMP TABLE point_gist_tbl(f1 point);
 INSERT INTO point_gist_tbl SELECT '(0,0)' FROM generate_series(0,1000);
 CREATE INDEX point_gist_tbl_index ON point_gist_tbl USING gist (f1);
@@ -97,6 +82,5 @@ RESET enable_seqscan;
 RESET enable_indexscan;
 RESET enable_bitmapscan;
 
--- test non-error-throwing API for some core types
 SELECT pg_input_is_valid('1,y', 'point');
 SELECT * FROM pg_input_error_info('1,y', 'point');

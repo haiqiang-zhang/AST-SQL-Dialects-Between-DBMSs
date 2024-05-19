@@ -1,6 +1,3 @@
---
--- Verify system catalog foreign key relationships
---
 DO $doblock$
 declare
   fk record;
@@ -40,7 +37,6 @@ begin
       cmd := cmd || ' = fk.' || quote_ident(fk.fkcols[i]);
     end loop;
     cmd := cmd || ')';
-    -- raise notice 'cmd = %', cmd;
     for err in execute cmd loop
       raise warning 'FK VIOLATION IN %(%): %', fk.fktable, fk.fkcols, err;
     end loop;

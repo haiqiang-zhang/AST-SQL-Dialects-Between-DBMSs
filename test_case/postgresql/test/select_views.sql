@@ -1,7 +1,3 @@
---
--- SELECT_VIEWS
--- test the views defined in CREATE_VIEWS
---
 
 SELECT * FROM street;
 
@@ -9,9 +5,6 @@ SELECT name, #thepath FROM iexit ORDER BY name COLLATE "C", 2;
 
 SELECT * FROM toyemp WHERE name = 'sharon';
 
---
--- Test for Leaky view scenario
---
 CREATE ROLE regress_alice;
 
 CREATE FUNCTION f_leak (text)
@@ -80,25 +73,14 @@ GRANT SELECT ON my_credit_card_secure TO public;
 GRANT SELECT ON my_credit_card_usage_normal TO public;
 GRANT SELECT ON my_credit_card_usage_secure TO public;
 
---
--- Run leaky view scenarios
---
 SET SESSION AUTHORIZATION regress_alice;
 
---
--- scenario: if a qualifier with tiny-cost is given, it shall be launched
---           prior to the security policy of the view.
---
 SELECT * FROM my_property_normal WHERE f_leak(passwd);
 EXPLAIN (COSTS OFF) SELECT * FROM my_property_normal WHERE f_leak(passwd);
 
 SELECT * FROM my_property_secure WHERE f_leak(passwd);
 EXPLAIN (COSTS OFF) SELECT * FROM my_property_secure WHERE f_leak(passwd);
 
---
--- scenario: qualifiers can be pushed down if they contain leaky functions,
---           provided they aren't passed data from inside the view.
---
 SELECT * FROM my_property_normal v
 		WHERE f_leak('passwd') AND f_leak(passwd);
 EXPLAIN (COSTS OFF) SELECT * FROM my_property_normal v
@@ -109,22 +91,12 @@ SELECT * FROM my_property_secure v
 EXPLAIN (COSTS OFF) SELECT * FROM my_property_secure v
 		WHERE f_leak('passwd') AND f_leak(passwd);
 
---
--- scenario: if a qualifier references only one-side of a particular join-
---           tree, it shall be distributed to the most deep scan plan as
---           possible as we can.
---
 SELECT * FROM my_credit_card_normal WHERE f_leak(cnum);
 EXPLAIN (COSTS OFF) SELECT * FROM my_credit_card_normal WHERE f_leak(cnum);
 
 SELECT * FROM my_credit_card_secure WHERE f_leak(cnum);
 EXPLAIN (COSTS OFF) SELECT * FROM my_credit_card_secure WHERE f_leak(cnum);
 
---
--- scenario: an external qualifier can be pushed-down by in-front-of the
---           views with "security_barrier" attribute, except for operators
---           implemented with leakproof functions.
---
 SELECT * FROM my_credit_card_usage_normal
        WHERE f_leak(cnum) AND ymd >= '2011-10-01' AND ymd < '2011-11-01';
 EXPLAIN (COSTS OFF) SELECT * FROM my_credit_card_usage_normal
@@ -135,10 +107,6 @@ SELECT * FROM my_credit_card_usage_secure
 EXPLAIN (COSTS OFF) SELECT * FROM my_credit_card_usage_secure
        WHERE f_leak(cnum) AND ymd >= '2011-10-01' AND ymd < '2011-11-01';
 
---
--- Test for the case when security_barrier gets changed between rewriter
--- and planner stage.
---
 PREPARE p1 AS SELECT * FROM my_property_normal WHERE f_leak(passwd);
 PREPARE p2 AS SELECT * FROM my_property_secure WHERE f_leak(passwd);
 EXECUTE p1;
@@ -147,9 +115,8 @@ RESET SESSION AUTHORIZATION;
 ALTER VIEW my_property_normal SET (security_barrier=true);
 ALTER VIEW my_property_secure SET (security_barrier=false);
 SET SESSION AUTHORIZATION regress_alice;
-EXECUTE p1;		-- To be perform as a view with security-barrier
-EXECUTE p2;		-- To be perform as a view without security-barrier
+EXECUTE p1;		
+EXECUTE p2;		
 
--- Cleanup.
 RESET SESSION AUTHORIZATION;
 DROP ROLE regress_alice;

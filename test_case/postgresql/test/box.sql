@@ -1,22 +1,5 @@
---
--- BOX
---
 
---
--- box logic
---	     o
--- 3	  o--|X
---	  |  o|
--- 2	+-+-+ |
---	| | | |
--- 1	| o-+-o
---	|   |
--- 0	+---+
---
---	0 1 2 3
---
 
--- boxes are specified by two points, given by four floats x1,y1,x2,y2
 
 
 CREATE TABLE BOX_TBL (f1 box);
@@ -28,13 +11,10 @@ INSERT INTO BOX_TBL (f1) VALUES ('(1.0,1.0,3.0,3.0)');
 INSERT INTO BOX_TBL (f1) VALUES ('((-8, 2), (-2, -10))');
 
 
--- degenerate cases where the box is a line or a point
--- note that lines and points boxes all have zero area
 INSERT INTO BOX_TBL (f1) VALUES ('(2.5, 2.5, 2.5,3.5)');
 
 INSERT INTO BOX_TBL (f1) VALUES ('(3.0, 3.0,3.0,3.0)');
 
--- badly formatted box inputs
 INSERT INTO BOX_TBL (f1) VALUES ('(2.3, 4.5)');
 
 INSERT INTO BOX_TBL (f1) VALUES ('[1, 2, 3, 4)');
@@ -51,85 +31,67 @@ SELECT * FROM BOX_TBL;
 SELECT b.*, area(b.f1) as barea
    FROM BOX_TBL b;
 
--- overlap
 SELECT b.f1
    FROM BOX_TBL b
    WHERE b.f1 && box '(2.5,2.5,1.0,1.0)';
 
--- left-or-overlap (x only)
 SELECT b1.*
    FROM BOX_TBL b1
    WHERE b1.f1 &< box '(2.0,2.0,2.5,2.5)';
 
--- right-or-overlap (x only)
 SELECT b1.*
    FROM BOX_TBL b1
    WHERE b1.f1 &> box '(2.0,2.0,2.5,2.5)';
 
--- left of
 SELECT b.f1
    FROM BOX_TBL b
    WHERE b.f1 << box '(3.0,3.0,5.0,5.0)';
 
--- area <=
 SELECT b.f1
    FROM BOX_TBL b
    WHERE b.f1 <= box '(3.0,3.0,5.0,5.0)';
 
--- area <
 SELECT b.f1
    FROM BOX_TBL b
    WHERE b.f1 < box '(3.0,3.0,5.0,5.0)';
 
--- area =
 SELECT b.f1
    FROM BOX_TBL b
    WHERE b.f1 = box '(3.0,3.0,5.0,5.0)';
 
--- area >
 SELECT b.f1
-   FROM BOX_TBL b				-- zero area
+   FROM BOX_TBL b				
    WHERE b.f1 > box '(3.5,3.0,4.5,3.0)';
 
--- area >=
 SELECT b.f1
-   FROM BOX_TBL b				-- zero area
+   FROM BOX_TBL b				
    WHERE b.f1 >= box '(3.5,3.0,4.5,3.0)';
 
--- right of
 SELECT b.f1
    FROM BOX_TBL b
    WHERE box '(3.0,3.0,5.0,5.0)' >> b.f1;
 
--- contained in
 SELECT b.f1
    FROM BOX_TBL b
    WHERE b.f1 <@ box '(0,0,3,3)';
 
--- contains
 SELECT b.f1
    FROM BOX_TBL b
    WHERE box '(0,0,3,3)' @> b.f1;
 
--- box equality
 SELECT b.f1
    FROM BOX_TBL b
    WHERE box '(1,1,3,3)' ~= b.f1;
 
--- center of box, left unary operator
 SELECT @@(b1.f1) AS p
    FROM BOX_TBL b1;
 
--- wholly-contained
 SELECT b1.*, b2.*
    FROM BOX_TBL b1, BOX_TBL b2
    WHERE b1.f1 @> b2.f1 and not b1.f1 ~= b2.f1;
 
 SELECT height(f1), width(f1) FROM BOX_TBL;
 
---
--- Test the SP-GiST index
---
 
 CREATE TEMPORARY TABLE box_temp (f1 box);
 
@@ -189,9 +151,6 @@ RESET enable_seqscan;
 
 DROP INDEX box_spgist;
 
---
--- Test the SP-GiST index on the larger volume of data
---
 CREATE TABLE quad_box_tbl (id int, b box);
 
 INSERT INTO quad_box_tbl
@@ -199,7 +158,6 @@ INSERT INTO quad_box_tbl
   FROM generate_series(1, 100) x,
        generate_series(1, 100) y;
 
--- insert repeating data to test allTheSame
 INSERT INTO quad_box_tbl
   SELECT i, '((200, 300),(210, 310))'
   FROM generate_series(10001, 11000) AS i;
@@ -214,7 +172,6 @@ VALUES
 
 CREATE INDEX quad_box_tbl_idx ON quad_box_tbl USING spgist(b);
 
--- get reference results for ORDER BY distance from seq scan
 SET enable_seqscan = ON;
 SET enable_indexscan = OFF;
 SET enable_bitmapscan = OFF;
@@ -245,7 +202,6 @@ SELECT count(*) FROM quad_box_tbl WHERE b @>  box '((201,301),(202,303))';
 SELECT count(*) FROM quad_box_tbl WHERE b <@  box '((100,200),(300,500))';
 SELECT count(*) FROM quad_box_tbl WHERE b ~=  box '((200,300),(205,305))';
 
--- test ORDER BY distance
 SET enable_indexscan = ON;
 SET enable_bitmapscan = OFF;
 
@@ -282,7 +238,6 @@ RESET enable_seqscan;
 RESET enable_indexscan;
 RESET enable_bitmapscan;
 
--- test non-error-throwing API for some core types
 SELECT pg_input_is_valid('200', 'box');
 SELECT * FROM pg_input_error_info('200', 'box');
 SELECT pg_input_is_valid('((200,300),(500, xyz))', 'box');

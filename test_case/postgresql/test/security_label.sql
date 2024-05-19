@@ -1,8 +1,4 @@
---
--- Test for facilities of security label
---
 
--- initial setups
 SET client_min_messages TO 'warning';
 
 DROP ROLE IF EXISTS regress_seclabel_user1;
@@ -22,20 +18,16 @@ CREATE DOMAIN seclabel_domain AS text;
 ALTER TABLE seclabel_tbl1 OWNER TO regress_seclabel_user1;
 ALTER TABLE seclabel_tbl2 OWNER TO regress_seclabel_user2;
 
---
--- Test of SECURITY LABEL statement without a plugin
---
-SECURITY LABEL ON TABLE seclabel_tbl1 IS 'classified';			-- fail
-SECURITY LABEL FOR 'dummy' ON TABLE seclabel_tbl1 IS 'classified';		-- fail
-SECURITY LABEL ON TABLE seclabel_tbl1 IS '...invalid label...';		-- fail
-SECURITY LABEL ON TABLE seclabel_tbl3 IS 'unclassified';			-- fail
+SECURITY LABEL ON TABLE seclabel_tbl1 IS 'classified';			
+SECURITY LABEL FOR 'dummy' ON TABLE seclabel_tbl1 IS 'classified';		
+SECURITY LABEL ON TABLE seclabel_tbl1 IS '...invalid label...';		
+SECURITY LABEL ON TABLE seclabel_tbl3 IS 'unclassified';			
 
-SECURITY LABEL ON ROLE regress_seclabel_user1 IS 'classified';			-- fail
-SECURITY LABEL FOR 'dummy' ON ROLE regress_seclabel_user1 IS 'classified';		-- fail
-SECURITY LABEL ON ROLE regress_seclabel_user1 IS '...invalid label...';		-- fail
-SECURITY LABEL ON ROLE regress_seclabel_user3 IS 'unclassified';			-- fail
+SECURITY LABEL ON ROLE regress_seclabel_user1 IS 'classified';			
+SECURITY LABEL FOR 'dummy' ON ROLE regress_seclabel_user1 IS 'classified';		
+SECURITY LABEL ON ROLE regress_seclabel_user1 IS '...invalid label...';		
+SECURITY LABEL ON ROLE regress_seclabel_user3 IS 'unclassified';			
 
--- clean up objects
 DROP FUNCTION seclabel_four();
 DROP DOMAIN seclabel_domain;
 DROP VIEW seclabel_view1;

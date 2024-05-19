@@ -1,6 +1,3 @@
---
--- PORTALS_P2
---
 
 BEGIN;
 

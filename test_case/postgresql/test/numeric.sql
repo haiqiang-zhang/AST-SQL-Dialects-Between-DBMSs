@@ -1,6 +1,3 @@
---
--- NUMERIC
---
 
 CREATE TABLE num_data (id int4, val numeric(210,10));
 CREATE TABLE num_exp_add (id1 int4, id2 int4, expected numeric(210,10));
@@ -15,10 +12,6 @@ CREATE TABLE num_exp_power_10_ln (id int4, expected numeric(210,10));
 CREATE TABLE num_result (id1 int4, id2 int4, result numeric(210,10));
 
 
--- ******************************
--- * The following EXPECTED results are computed by bc(1)
--- * with a scale of 200
--- ******************************
 
 BEGIN TRANSACTION;
 INSERT INTO num_exp_add VALUES (0,0,'0');
@@ -483,9 +476,6 @@ INSERT INTO num_data VALUES (8, '74881');
 INSERT INTO num_data VALUES (9, '-24926804.045047420');
 COMMIT TRANSACTION;
 
--- ******************************
--- * Create indices for faster checks
--- ******************************
 
 CREATE UNIQUE INDEX num_exp_add_idx ON num_exp_add (id1, id2);
 CREATE UNIQUE INDEX num_exp_sub_idx ON num_exp_sub (id1, id2);
@@ -505,13 +495,7 @@ VACUUM ANALYZE num_exp_ln;
 VACUUM ANALYZE num_exp_log10;
 VACUUM ANALYZE num_exp_power_10_ln;
 
--- ******************************
--- * Now check the behaviour of the NUMERIC type
--- ******************************
 
--- ******************************
--- * Addition check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT t1.id, t2.id, t1.val + t2.val
     FROM num_data t1, num_data t2;
@@ -528,9 +512,6 @@ SELECT t1.id1, t1.id2, t1.result, round(t2.expected, 10) as expected
     WHERE t1.id1 = t2.id1 AND t1.id2 = t2.id2
     AND t1.result != round(t2.expected, 10);
 
--- ******************************
--- * Subtraction check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT t1.id, t2.id, t1.val - t2.val
     FROM num_data t1, num_data t2;
@@ -547,9 +528,6 @@ SELECT t1.id1, t1.id2, t1.result, round(t2.expected, 40)
     WHERE t1.id1 = t2.id1 AND t1.id2 = t2.id2
     AND t1.result != round(t2.expected, 40);
 
--- ******************************
--- * Multiply check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT t1.id, t2.id, t1.val * t2.val
     FROM num_data t1, num_data t2;
@@ -566,9 +544,6 @@ SELECT t1.id1, t1.id2, t1.result, round(t2.expected, 30) as expected
     WHERE t1.id1 = t2.id1 AND t1.id2 = t2.id2
     AND t1.result != round(t2.expected, 30);
 
--- ******************************
--- * Division check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT t1.id, t2.id, t1.val / t2.val
     FROM num_data t1, num_data t2
@@ -587,9 +562,6 @@ SELECT t1.id1, t1.id2, t1.result, round(t2.expected, 80) as expected
     WHERE t1.id1 = t2.id1 AND t1.id2 = t2.id2
     AND t1.result != round(t2.expected, 80);
 
--- ******************************
--- * Square root check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT id, 0, SQRT(ABS(val))
     FROM num_data;
@@ -598,9 +570,6 @@ SELECT t1.id1, t1.result, t2.expected
     WHERE t1.id1 = t2.id
     AND t1.result != t2.expected;
 
--- ******************************
--- * Natural logarithm check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT id, 0, LN(ABS(val))
     FROM num_data
@@ -610,9 +579,6 @@ SELECT t1.id1, t1.result, t2.expected
     WHERE t1.id1 = t2.id
     AND t1.result != t2.expected;
 
--- ******************************
--- * Logarithm base 10 check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT id, 0, LOG(numeric '10', ABS(val))
     FROM num_data
@@ -622,9 +588,6 @@ SELECT t1.id1, t1.result, t2.expected
     WHERE t1.id1 = t2.id
     AND t1.result != t2.expected;
 
--- ******************************
--- * POWER(10, LN(value)) check
--- ******************************
 DELETE FROM num_result;
 INSERT INTO num_result SELECT id, 0, POWER(numeric '10', LN(ABS(round(val,200))))
     FROM num_data
@@ -634,11 +597,6 @@ SELECT t1.id1, t1.result, t2.expected
     WHERE t1.id1 = t2.id
     AND t1.result != t2.expected;
 
--- ******************************
--- * Check behavior with Inf and NaN inputs.  It's easiest to handle these
--- * separately from the num_data framework used above, because some input
--- * combinations will throw errors.
--- ******************************
 
 WITH v(x) AS
   (VALUES('0'::numeric),('1'),('-1'),('4.2'),('inf'),('-inf'),('nan'))
@@ -679,7 +637,6 @@ WITH v(x) AS
 SELECT x, round(x), round(x,1) as round1, trunc(x), trunc(x,1) as trunc1
 FROM v;
 
--- the large values fall into the numeric abbreviation code's maximal classes
 WITH v(x) AS
   (VALUES('0'::numeric),('1'),('-1'),('4.2'),('-7.777'),('1e340'),('-1e340'),
          ('inf'),('-inf'),('nan'),
@@ -747,47 +704,40 @@ SELECT power('-inf'::numeric, '0');
 SELECT power('-inf'::numeric, 'inf');
 SELECT power('-inf'::numeric, '-inf');
 
--- ******************************
--- * miscellaneous checks for things that have been broken in the past...
--- ******************************
--- numeric AVG used to fail on some platforms
 SELECT AVG(val) FROM num_data;
 SELECT MAX(val) FROM num_data;
 SELECT MIN(val) FROM num_data;
 SELECT STDDEV(val) FROM num_data;
 SELECT VARIANCE(val) FROM num_data;
 
--- Check for appropriate rounding and overflow
 CREATE TABLE fract_only (id int, val numeric(4,4));
 INSERT INTO fract_only VALUES (1, '0.0');
 INSERT INTO fract_only VALUES (2, '0.1');
-INSERT INTO fract_only VALUES (3, '1.0');	-- should fail
+INSERT INTO fract_only VALUES (3, '1.0');	
 INSERT INTO fract_only VALUES (4, '-0.9999');
 INSERT INTO fract_only VALUES (5, '0.99994');
-INSERT INTO fract_only VALUES (6, '0.99995');  -- should fail
+INSERT INTO fract_only VALUES (6, '0.99995');  
 INSERT INTO fract_only VALUES (7, '0.00001');
 INSERT INTO fract_only VALUES (8, '0.00017');
 INSERT INTO fract_only VALUES (9, 'NaN');
-INSERT INTO fract_only VALUES (10, 'Inf');	-- should fail
-INSERT INTO fract_only VALUES (11, '-Inf');	-- should fail
+INSERT INTO fract_only VALUES (10, 'Inf');	
+INSERT INTO fract_only VALUES (11, '-Inf');	
 SELECT * FROM fract_only;
 DROP TABLE fract_only;
 
--- Check conversion to integers
-SELECT (-9223372036854775808.5)::int8; -- should fail
-SELECT (-9223372036854775808.4)::int8; -- ok
-SELECT 9223372036854775807.4::int8; -- ok
-SELECT 9223372036854775807.5::int8; -- should fail
-SELECT (-2147483648.5)::int4; -- should fail
-SELECT (-2147483648.4)::int4; -- ok
-SELECT 2147483647.4::int4; -- ok
-SELECT 2147483647.5::int4; -- should fail
-SELECT (-32768.5)::int2; -- should fail
-SELECT (-32768.4)::int2; -- ok
-SELECT 32767.4::int2; -- ok
-SELECT 32767.5::int2; -- should fail
+SELECT (-9223372036854775808.5)::int8; 
+SELECT (-9223372036854775808.4)::int8; 
+SELECT 9223372036854775807.4::int8; 
+SELECT 9223372036854775807.5::int8; 
+SELECT (-2147483648.5)::int4; 
+SELECT (-2147483648.4)::int4; 
+SELECT 2147483647.4::int4; 
+SELECT 2147483647.5::int4; 
+SELECT (-32768.5)::int2; 
+SELECT (-32768.4)::int2; 
+SELECT 32767.4::int2; 
+SELECT 32767.5::int2; 
 
--- Check inf/nan conversion behavior
 SELECT 'NaN'::float8::numeric;
 SELECT 'Infinity'::float8::numeric;
 SELECT '-Infinity'::float8::numeric;
@@ -811,7 +761,6 @@ SELECT 'NaN'::numeric::int8;
 SELECT 'Infinity'::numeric::int8;
 SELECT '-Infinity'::numeric::int8;
 
--- Simple check that ceil(), floor(), and round() work correctly
 CREATE TABLE ceil_floor_round (a numeric);
 INSERT INTO ceil_floor_round VALUES ('-5.5');
 INSERT INTO ceil_floor_round VALUES ('-5.499999');
@@ -823,7 +772,6 @@ INSERT INTO ceil_floor_round VALUES ('-0.000001');
 SELECT a, ceil(a), ceiling(a), floor(a), round(a) FROM ceil_floor_round;
 DROP TABLE ceil_floor_round;
 
--- Check rounding, it should round ties away from zero.
 SELECT i as pow,
 	round((-2.5 * 10 ^ i)::numeric, -i),
 	round((-1.5 * 10 ^ i)::numeric, -i),
@@ -833,10 +781,7 @@ SELECT i as pow,
 	round((2.5 * 10 ^ i)::numeric, -i)
 FROM generate_series(-5,5) AS t(i);
 
--- Testing for width_bucket(). For convenience, we test both the
--- numeric and float8 versions of the function in this file.
 
--- errors
 SELECT width_bucket(5.0, 3.0, 4.0, 0);
 SELECT width_bucket(5.0, 3.0, 4.0, -5);
 SELECT width_bucket(3.5, 3.0, 3.0, 888);
@@ -848,7 +793,6 @@ SELECT width_bucket(0::float8, 'NaN', 4.0::float8, 888);
 SELECT width_bucket(2.0, 3.0, '-inf', 888);
 SELECT width_bucket(0::float8, '-inf', 4.0::float8, 888);
 
--- normal operation
 CREATE TABLE width_bucket_test (operand_num numeric, operand_f8 float8);
 
 COPY width_bucket_test (operand_num) FROM stdin;
@@ -871,7 +815,6 @@ COPY width_bucket_test (operand_num) FROM stdin;
 9.99999999999999
 10
 10.0000000000001
-\.;
 
 UPDATE width_bucket_test SET operand_f8 = operand_num::float8;
 
@@ -889,33 +832,28 @@ SELECT
     width_bucket(operand_f8, -25, 25, 10) AS wb_5f
     FROM width_bucket_test;
 
--- Check positive and negative infinity: we require
--- finite bucket bounds, but allow an infinite operand
-SELECT width_bucket(0.0::numeric, 'Infinity'::numeric, 5, 10); -- error
-SELECT width_bucket(0.0::numeric, 5, '-Infinity'::numeric, 20); -- error
+SELECT width_bucket(0.0::numeric, 'Infinity'::numeric, 5, 10); 
+SELECT width_bucket(0.0::numeric, 5, '-Infinity'::numeric, 20); 
 SELECT width_bucket('Infinity'::numeric, 1, 10, 10),
        width_bucket('-Infinity'::numeric, 1, 10, 10);
-SELECT width_bucket(0.0::float8, 'Infinity'::float8, 5, 10); -- error
-SELECT width_bucket(0.0::float8, 5, '-Infinity'::float8, 20); -- error
+SELECT width_bucket(0.0::float8, 'Infinity'::float8, 5, 10); 
+SELECT width_bucket(0.0::float8, 5, '-Infinity'::float8, 20); 
 SELECT width_bucket('Infinity'::float8, 1, 10, 10),
        width_bucket('-Infinity'::float8, 1, 10, 10);
 
 DROP TABLE width_bucket_test;
 
--- Simple test for roundoff error when results should be exact
 SELECT x, width_bucket(x::float8, 10, 100, 9) as flt,
        width_bucket(x::numeric, 10, 100, 9) as num
 FROM generate_series(0, 110, 10) x;
 SELECT x, width_bucket(x::float8, 100, 10, 9) as flt,
        width_bucket(x::numeric, 100, 10, 9) as num
 FROM generate_series(0, 110, 10) x;
--- Another roundoff-error hazard
 SELECT width_bucket(0, -1e100::numeric, 1, 10);
 SELECT width_bucket(0, -1e100::float8, 1, 10);
 SELECT width_bucket(1, 1e100::numeric, 0, 10);
 SELECT width_bucket(1, 1e100::float8, 0, 10);
 
--- Check cases that could trigger overflow or underflow within the calculation
 SELECT oper, low, high, cnt, width_bucket(oper, low, high, cnt)
 FROM
   (SELECT 1.797e+308::float8 AS big, 5e-324::float8 AS tiny) as v,
@@ -933,13 +871,9 @@ FROM
     (0, 0, 1, 2147483647),
     (1, 1, 0, 2147483647)
   ) as sample(oper, low, high, cnt);
--- These fail because the result would be out of int32 range:
 SELECT width_bucket(1::float8, 0, 1, 2147483647);
 SELECT width_bucket(0::float8, 1, 0, 2147483647);
 
---
--- TO_CHAR()
---
 SELECT to_char(val, '9G999G999G999G999G999')
 	FROM num_data;
 
@@ -1008,7 +942,6 @@ SELECT to_char('100'::numeric, 'FM999.');
 SELECT to_char('100'::numeric, 'FM999');
 SELECT to_char('12345678901'::float8, 'FM9999999999D9999900000000000000000');
 
--- Check parsing of literal text in a format string
 SELECT to_char('100'::numeric, 'foo999');
 SELECT to_char('100'::numeric, 'f\oo999');
 SELECT to_char('100'::numeric, 'f\\oo999');
@@ -1020,8 +953,6 @@ SELECT to_char('100'::numeric, 'f"\\ool"999');
 SELECT to_char('100'::numeric, 'f"ool\"999');
 SELECT to_char('100'::numeric, 'f"ool\\"999');
 
--- TO_NUMBER()
---
 SET lc_numeric = 'C';
 SELECT to_number('-34,338,492', '99G999G999');
 SELECT to_number('-34,338,492.654,878', '99G999G999D999G999');
@@ -1047,13 +978,9 @@ SELECT to_number('1,234.56','L99,999.99');
 SELECT to_number('42nd', '99th');
 RESET lc_numeric;
 
---
--- Input syntax
---
 
 CREATE TABLE num_input_test (n1 numeric);
 
--- good inputs
 INSERT INTO num_input_test(n1) VALUES (' 123');
 INSERT INTO num_input_test(n1) VALUES ('   3245874    ');
 INSERT INTO num_input_test(n1) VALUES ('  -93853');
@@ -1079,7 +1006,6 @@ INSERT INTO num_input_test(n1) VALUES ('-0O0012_5524_5230_6334_3167_0261');
 INSERT INTO num_input_test(n1) VALUES ('-0x0000000000000000000000000deadbeef');
 INSERT INTO num_input_test(n1) VALUES (' 0X_30b1_F33a_6DF0_bD4E_64DF_9BdA_7D15 ');
 
--- bad inputs
 INSERT INTO num_input_test(n1) VALUES ('     ');
 INSERT INTO num_input_test(n1) VALUES ('   1234   %');
 INSERT INTO num_input_test(n1) VALUES ('xyz');
@@ -1110,7 +1036,6 @@ INSERT INTO num_input_test(n1) VALUES ('0x12__34');
 
 SELECT * FROM num_input_test;
 
--- Also try it with non-error-throwing API
 SELECT pg_input_is_valid('34.5', 'numeric');
 SELECT pg_input_is_valid('34xyz', 'numeric');
 SELECT pg_input_is_valid('1e400000', 'numeric');
@@ -1120,9 +1045,6 @@ SELECT pg_input_is_valid('1234.567', 'numeric(7,4)');
 SELECT * FROM pg_input_error_info('1234.567', 'numeric(7,4)');
 SELECT * FROM pg_input_error_info('0x1234.567', 'numeric');
 
---
--- Test precision and scale typemods
---
 
 CREATE TABLE num_typemod_test (
   millions numeric(3, -6),
@@ -1131,9 +1053,7 @@ CREATE TABLE num_typemod_test (
   thousandths numeric(3, 3),
   millionths numeric(3, 6)
 );
-\d num_typemod_test;
 
--- rounding of valid inputs
 INSERT INTO num_typemod_test VALUES (123456, 123, 0.123, 0.000123, 0.000000123);
 INSERT INTO num_typemod_test VALUES (654321, 654, 0.654, 0.000654, 0.000000654);
 INSERT INTO num_typemod_test VALUES (2345678, 2345, 2.345, 0.002345, 0.000002345);
@@ -1146,7 +1066,6 @@ INSERT INTO num_typemod_test VALUES ('NaN', 'NaN', 'NaN', 'NaN', 'NaN');
 
 SELECT scale(millions), * FROM num_typemod_test ORDER BY millions;
 
--- invalid inputs
 INSERT INTO num_typemod_test (millions) VALUES ('inf');
 INSERT INTO num_typemod_test (millions) VALUES (999500000);
 INSERT INTO num_typemod_test (thousands) VALUES (999500);
@@ -1154,9 +1073,6 @@ INSERT INTO num_typemod_test (units) VALUES (999.5);
 INSERT INTO num_typemod_test (thousandths) VALUES (0.9995);
 INSERT INTO num_typemod_test (millionths) VALUES (0.0009995);
 
---
--- Test some corner cases for multiplication
---
 
 select 4790999999999999999999999999999999999999999999999999999999999999999999999999999999999999 * 9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;
 
@@ -1168,9 +1084,6 @@ select 4769999999999999999999999999999999999999999999999999999999999999999999999
 
 select trim_scale((0.1 - 2e-16383) * (0.1 - 3e-16383));
 
---
--- Test some corner cases for division
---
 
 select 999999999999999999999::numeric/1000000000000000000000;
 select div(999999999999999999999::numeric,1000000000000000000000);
@@ -1186,9 +1099,6 @@ select 12345678901234567890 / 123;
 select div(12345678901234567890, 123);
 select div(12345678901234567890, 123) * 123 + 12345678901234567890 % 123;
 
---
--- Test some corner cases for square root
---
 
 select sqrt(1.000000000000003::numeric);
 select sqrt(1.000000000000004::numeric);
@@ -1199,16 +1109,12 @@ select sqrt(515549506212297735.073688290368::numeric);
 select sqrt(8015491789940783531003294973900306::numeric);
 select sqrt(8015491789940783531003294973900307::numeric);
 
---
--- Test code path for raising to integer powers
---
 
 select 10.0 ^ -2147483648 as rounds_to_zero;
 select 10.0 ^ -2147483647 as rounds_to_zero;
 select 10.0 ^ 2147483647 as overflows;
 select 117743296169.0 ^ 1000000000 as overflows;
 
--- cases that used to return inaccurate results
 select 3.789 ^ 21.0000000000000000;
 select 3.789 ^ 35.0000000000000000;
 select 1.2 ^ 345;
@@ -1217,57 +1123,42 @@ select 1.000000000123 ^ (-2147483648);
 select coalesce(nullif(0.9999999999 ^ 23300000000000, 0), 0) as rounds_to_zero;
 select round(((1 - 1.500012345678e-1000) ^ 1.45e1003) * 1e1000);
 
--- cases that used to error out
 select 0.12 ^ (-25);
 select 0.5678 ^ (-85);
 select coalesce(nullif(0.9999999999 ^ 70000000000000, 0), 0) as underflows;
 
--- negative base to integer powers
 select (-1.0) ^ 2147483646;
 select (-1.0) ^ 2147483647;
 select (-1.0) ^ 2147483648;
 select (-1.0) ^ 1000000000000000;
 select (-1.0) ^ 1000000000000001;
 
--- integer powers of 10
 select n, 10.0 ^ n as "10^n", (10.0 ^ n) * (10.0 ^ (-n)) = 1 as ok
 from generate_series(-20, 20) n;
 
---
--- Tests for raising to non-integer powers
---
 
--- special cases
 select 0.0 ^ 0.0;
 select (-12.34) ^ 0.0;
 select 12.34 ^ 0.0;
 select 0.0 ^ 12.34;
 
--- NaNs
 select 'NaN'::numeric ^ 'NaN'::numeric;
 select 'NaN'::numeric ^ 0;
 select 'NaN'::numeric ^ 1;
 select 0 ^ 'NaN'::numeric;
 select 1 ^ 'NaN'::numeric;
 
--- invalid inputs
 select 0.0 ^ (-12.34);
 select (-12.34) ^ 1.2;
 
--- cases that used to generate inaccurate results
 select 32.1 ^ 9.8;
 select 32.1 ^ (-9.8);
 select 12.3 ^ 45.6;
 select 12.3 ^ (-45.6);
 
--- big test
 select 1.234 ^ 5678;
 
---
--- Tests for EXP()
---
 
--- special cases
 select exp(0.0);
 select exp(1.0);
 select exp(1.0::numeric(71,70));
@@ -1277,22 +1168,16 @@ select exp('-inf'::numeric);
 select coalesce(nullif(exp(-5000::numeric), 0), 0) as rounds_to_zero;
 select coalesce(nullif(exp(-10000::numeric), 0), 0) as underflows;
 
--- cases that used to generate inaccurate results
 select exp(32.999);
 select exp(-32.999);
 select exp(123.456);
 select exp(-123.456);
 
--- big test
 select exp(1234.5678);
 
---
--- Tests for generate_series
---
 select * from generate_series(0.0::numeric, 4.0::numeric);
 select * from generate_series(0.1::numeric, 4.0::numeric, 1.3::numeric);
 select * from generate_series(4.0::numeric, -1.5::numeric, -2.2::numeric);
--- Trigger errors
 select * from generate_series(-100::numeric, 100::numeric, 0::numeric);
 select * from generate_series(-100::numeric, 100::numeric, 'nan'::numeric);
 select * from generate_series('nan'::numeric, 100::numeric, 10::numeric);
@@ -1300,25 +1185,18 @@ select * from generate_series(0::numeric, 'nan'::numeric, 10::numeric);
 select * from generate_series('inf'::numeric, 'inf'::numeric, 10::numeric);
 select * from generate_series(0::numeric, 'inf'::numeric, 10::numeric);
 select * from generate_series(0::numeric, '42'::numeric, '-inf'::numeric);
--- Checks maximum, output is truncated
 select (i / (10::numeric ^ 131071))::numeric(1,0)
 	from generate_series(6 * (10::numeric ^ 131071),
 			     9 * (10::numeric ^ 131071),
 			     10::numeric ^ 131071) as a(i);
--- Check usage with variables
 select * from generate_series(1::numeric, 3::numeric) i, generate_series(i,3) j;
 select * from generate_series(1::numeric, 3::numeric) i, generate_series(1,i) j;
 select * from generate_series(1::numeric, 3::numeric) i, generate_series(1,5,i) j;
 
---
--- Tests for LN()
---
 
--- Invalid inputs
 select ln(-12.34);
 select ln(0.0);
 
--- Some random tests
 select ln(1.2345678e-28);
 select ln(0.0456789);
 select ln(0.349873948359354029493948309745709580730482050975);
@@ -1328,15 +1206,10 @@ select ln(1234.567890123456789);
 select ln(5.80397490724e5);
 select ln(9.342536355e34);
 
---
--- Tests for LOG() (base 10)
---
 
--- invalid inputs
 select log(-12.34);
 select log(0.0);
 
--- some random tests
 select log(1.234567e-89);
 select log(3.4634998359873254962349856073435545);
 select log(9.999999999999999999);
@@ -1344,11 +1217,7 @@ select log(10.00000000000000000);
 select log(10.00000000000000001);
 select log(590489.45235237);
 
---
--- Tests for LOG() (arbitrary base)
---
 
--- invalid inputs
 select log(-12.34, 56.78);
 select log(-12.34, -56.78);
 select log(12.34, -56.78);
@@ -1356,15 +1225,11 @@ select log(0.0, 12.34);
 select log(12.34, 0.0);
 select log(1.0, 12.34);
 
--- some random tests
 select log(1.23e-89, 6.4689e45);
 select log(0.99923, 4.58934e34);
 select log(1.000016, 8.452010e18);
 select log(3.1954752e47, 9.4792021e-73);
 
---
--- Tests for scale()
---
 
 select scale(numeric 'NaN');
 select scale(numeric 'inf');
@@ -1377,26 +1242,20 @@ select scale(110123.12475871856128);
 select scale(-1123.12471856128);
 select scale(-13.000000000000000);
 
---
--- Tests for min_scale()
---
 
-select min_scale(numeric 'NaN') is NULL; -- should be true
-select min_scale(numeric 'inf') is NULL; -- should be true
-select min_scale(0);                     -- no digits
-select min_scale(0.00);                  -- no digits again
-select min_scale(1.0);                   -- no scale
-select min_scale(1.1);                   -- scale 1
-select min_scale(1.12);                  -- scale 2
-select min_scale(1.123);                 -- scale 3
-select min_scale(1.1234);                -- scale 4, filled digit
-select min_scale(1.12345);               -- scale 5, 2 NDIGITS
-select min_scale(1.1000);                -- 1 pos in NDIGITS
-select min_scale(1e100);                 -- very big number
+select min_scale(numeric 'NaN') is NULL; 
+select min_scale(numeric 'inf') is NULL; 
+select min_scale(0);                     
+select min_scale(0.00);                  
+select min_scale(1.0);                   
+select min_scale(1.1);                   
+select min_scale(1.12);                  
+select min_scale(1.123);                 
+select min_scale(1.1234);                
+select min_scale(1.12345);               
+select min_scale(1.1000);                
+select min_scale(1e100);                 
 
---
--- Tests for trim_scale()
---
 
 select trim_scale(numeric 'NaN');
 select trim_scale(numeric 'inf');
@@ -1409,17 +1268,10 @@ select trim_scale(-1123.124718561280000000);
 select trim_scale(-13.00000000000000000000);
 select trim_scale(1e100);
 
---
--- Tests for SUM()
---
 
--- cases that need carry propagation
 SELECT SUM(9999::numeric) FROM generate_series(1, 100000);
 SELECT SUM((-9999)::numeric) FROM generate_series(1, 100000);
 
---
--- Tests for VARIANCE()
---
 CREATE TABLE num_variance (a numeric);
 INSERT INTO num_variance VALUES (0);
 INSERT INTO num_variance VALUES (3e-500);
@@ -1427,10 +1279,8 @@ INSERT INTO num_variance VALUES (-3e-500);
 INSERT INTO num_variance VALUES (4e-500 - 1e-16383);
 INSERT INTO num_variance VALUES (-4e-500 + 1e-16383);
 
--- variance is just under 12.5e-1000 and so should round down to 12e-1000
 SELECT trim_scale(variance(a) * 1e1000) FROM num_variance;
 
--- check that parallel execution produces the same result
 BEGIN;
 ALTER TABLE num_variance SET (parallel_workers = 4);
 SET LOCAL parallel_setup_cost = 0;
@@ -1438,12 +1288,10 @@ SET LOCAL max_parallel_workers_per_gather = 4;
 SELECT trim_scale(variance(a) * 1e1000) FROM num_variance;
 ROLLBACK;
 
--- case where sum of squares would overflow but variance does not
 DELETE FROM num_variance;
 INSERT INTO num_variance SELECT 9e131071 + x FROM generate_series(1, 5) x;
 SELECT variance(a) FROM num_variance;
 
--- check that parallel execution produces the same result
 BEGIN;
 ALTER TABLE num_variance SET (parallel_workers = 4);
 SET LOCAL parallel_setup_cost = 0;
@@ -1453,9 +1301,6 @@ ROLLBACK;
 
 DROP TABLE num_variance;
 
---
--- Tests for GCD()
---
 SELECT a, b, gcd(a, b), gcd(a, -b), gcd(-b, a), gcd(-b, -a)
 FROM (VALUES (0::numeric, 0::numeric),
              (0::numeric, numeric 'NaN'),
@@ -1468,9 +1313,6 @@ FROM (VALUES (0::numeric, 0::numeric),
              ('inf', 'inf')
      ) AS v(a, b);
 
---
--- Tests for LCM()
---
 SELECT a,b, lcm(a, b), lcm(a, -b), lcm(-b, a), lcm(-b, -a)
 FROM (VALUES (0::numeric, 0::numeric),
              (0::numeric, numeric 'NaN'),
@@ -1484,20 +1326,14 @@ FROM (VALUES (0::numeric, 0::numeric),
              ('inf', 'inf')
      ) AS v(a, b);
 
-SELECT lcm(9999 * (10::numeric)^131068 + (10::numeric^131068 - 1), 2); -- overflow
+SELECT lcm(9999 * (10::numeric)^131068 + (10::numeric^131068 - 1), 2); 
 
---
--- Tests for factorial
---
 SELECT factorial(4);
 SELECT factorial(15);
 SELECT factorial(100000);
 SELECT factorial(0);
 SELECT factorial(-4);
 
---
--- Tests for pg_lsn()
---
 SELECT pg_lsn(23783416::numeric);
 SELECT pg_lsn(0::numeric);
 SELECT pg_lsn(18446744073709551615::numeric);

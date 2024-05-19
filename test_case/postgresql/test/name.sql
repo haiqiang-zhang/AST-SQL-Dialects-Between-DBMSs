@@ -1,16 +1,8 @@
---
--- NAME
--- all inputs are silently truncated at NAMEDATALEN-1 (63) characters
---
 
--- fixed-length by reference
 SELECT name 'name string' = name 'name string' AS "True";
 
 SELECT name 'name string' = name 'name string ' AS "False";
 
---
---
---
 
 CREATE TABLE NAME_TBL(f1 name);
 
@@ -64,10 +56,9 @@ END;
 $$;
 
 SELECT parse_ident('foo.boo');
-SELECT parse_ident('foo.boo[]'); -- should fail
-SELECT parse_ident('foo.boo[]', strict => false); -- ok
+SELECT parse_ident('foo.boo[]'); 
+SELECT parse_ident('foo.boo[]', strict => false); 
 
--- should fail
 SELECT parse_ident(' ');
 SELECT parse_ident(' .aaa');
 SELECT parse_ident(' aaa . ');

@@ -1,6 +1,3 @@
---
--- VACUUM
---
 
 CREATE TABLE vactst (i INT);
 INSERT INTO vactst VALUES (1);
@@ -54,16 +51,11 @@ CREATE INDEX ON vaccluster(wrap_do_analyze(i));
 INSERT INTO vaccluster VALUES (1), (2);
 ANALYZE vaccluster;
 
--- Test ANALYZE in transaction, where the transaction surrounding
--- analyze performed modifications. This tests for the bug at
--- https://postgr.es/m/c7988239-d42c-ddc4-41db-171b23b35e4f%40ssinger.info
--- (which hopefully is unlikely to be reintroduced), but also seems
--- independently worthwhile to cover.
 INSERT INTO vactst SELECT generate_series(1, 300);
-DELETE FROM vactst WHERE i % 7 = 0; -- delete a few rows outside
+DELETE FROM vactst WHERE i % 7 = 0; 
 BEGIN;
 INSERT INTO vactst SELECT generate_series(301, 400);
-DELETE FROM vactst WHERE i % 5 <> 0; -- delete a few rows inside
+DELETE FROM vactst WHERE i % 5 <> 0; 
 ANALYZE vactst;
 COMMIT;
 
@@ -75,7 +67,6 @@ VACUUM FULL vactst;
 
 VACUUM (DISABLE_PAGE_SKIPPING) vaccluster;
 
--- PARALLEL option
 CREATE TABLE pvactst (i INT, a INT[], p POINT) with (autovacuum_enabled = off);
 INSERT INTO pvactst SELECT i, array[1,2,3], point(i, i+1) FROM generate_series(1,1000) i;
 CREATE INDEX btree_pvactst ON pvactst USING btree (i);
@@ -85,68 +76,54 @@ CREATE INDEX gin_pvactst ON pvactst USING gin (a);
 CREATE INDEX gist_pvactst ON pvactst USING gist (p);
 CREATE INDEX spgist_pvactst ON pvactst USING spgist (p);
 
--- VACUUM invokes parallel index cleanup
 SET min_parallel_index_scan_size to 0;
 VACUUM (PARALLEL 2) pvactst;
 
--- VACUUM invokes parallel bulk-deletion
 UPDATE pvactst SET i = i WHERE i < 1000;
 VACUUM (PARALLEL 2) pvactst;
 
 UPDATE pvactst SET i = i WHERE i < 1000;
-VACUUM (PARALLEL 0) pvactst; -- disable parallel vacuum
+VACUUM (PARALLEL 0) pvactst; 
 
-VACUUM (PARALLEL -1) pvactst; -- error
+VACUUM (PARALLEL -1) pvactst; 
 VACUUM (PARALLEL 2, INDEX_CLEANUP FALSE) pvactst;
-VACUUM (PARALLEL 2, FULL TRUE) pvactst; -- error, cannot use both PARALLEL and FULL
-VACUUM (PARALLEL) pvactst; -- error, cannot use PARALLEL option without parallel degree
+VACUUM (PARALLEL 2, FULL TRUE) pvactst; 
+VACUUM (PARALLEL) pvactst; 
 
--- Test different combinations of parallel and full options for temporary tables
 CREATE TEMPORARY TABLE tmp (a int PRIMARY KEY);
 CREATE INDEX tmp_idx1 ON tmp (a);
-VACUUM (PARALLEL 1, FULL FALSE) tmp; -- parallel vacuum disabled for temp tables
-VACUUM (PARALLEL 0, FULL TRUE) tmp; -- can specify parallel disabled (even though that's implied by FULL)
+VACUUM (PARALLEL 1, FULL FALSE) tmp; 
+VACUUM (PARALLEL 0, FULL TRUE) tmp; 
 RESET min_parallel_index_scan_size;
 DROP TABLE pvactst;
 
--- INDEX_CLEANUP option
 CREATE TABLE no_index_cleanup (i INT PRIMARY KEY, t TEXT);
--- Use uncompressed data stored in toast.
 CREATE INDEX no_index_cleanup_idx ON no_index_cleanup(t);
 ALTER TABLE no_index_cleanup ALTER COLUMN t SET STORAGE EXTERNAL;
 INSERT INTO no_index_cleanup(i, t) VALUES (generate_series(1,30),
     repeat('1234567890',269));
--- index cleanup option is ignored if VACUUM FULL
 VACUUM (INDEX_CLEANUP TRUE, FULL TRUE) no_index_cleanup;
 VACUUM (FULL TRUE) no_index_cleanup;
--- Toast inherits the value from its parent table.
 ALTER TABLE no_index_cleanup SET (vacuum_index_cleanup = false);
 DELETE FROM no_index_cleanup WHERE i < 15;
--- Nothing is cleaned up.
 VACUUM no_index_cleanup;
--- Both parent relation and toast are cleaned up.
 ALTER TABLE no_index_cleanup SET (vacuum_index_cleanup = true);
 VACUUM no_index_cleanup;
 ALTER TABLE no_index_cleanup SET (vacuum_index_cleanup = auto);
 VACUUM no_index_cleanup;
--- Parameter is set for both the parent table and its toast relation.
 INSERT INTO no_index_cleanup(i, t) VALUES (generate_series(31,60),
     repeat('1234567890',269));
 DELETE FROM no_index_cleanup WHERE i < 45;
--- Only toast index is cleaned up.
 ALTER TABLE no_index_cleanup SET (vacuum_index_cleanup = off,
     toast.vacuum_index_cleanup = yes);
 VACUUM no_index_cleanup;
--- Only parent is cleaned up.
 ALTER TABLE no_index_cleanup SET (vacuum_index_cleanup = true,
     toast.vacuum_index_cleanup = false);
 VACUUM no_index_cleanup;
--- Test some extra relations.
 VACUUM (INDEX_CLEANUP FALSE) vaccluster;
-VACUUM (INDEX_CLEANUP AUTO) vactst; -- index cleanup option is ignored if no indexes
+VACUUM (INDEX_CLEANUP AUTO) vactst; 
 VACUUM (INDEX_CLEANUP FALSE, FREEZE TRUE) vaccluster;
 
--- TRUNCATE option
 CREATE TEMP TABLE vac_truncate_test(i INT NOT NULL, j text)
 	WITH (vacuum_truncate=true, autovacuum_enabled=false);
 INSERT INTO vac_truncate_test VALUES (1, NULL), (NULL, NULL);
@@ -157,7 +134,6 @@ SELECT pg_relation_size('vac_truncate_test') = 0;
 VACUUM (TRUNCATE FALSE, FULL TRUE) vac_truncate_test;
 DROP TABLE vac_truncate_test;
 
--- partitioned table
 CREATE TABLE vacparted (a int, b char) PARTITION BY LIST (a);
 CREATE TABLE vacparted1 PARTITION OF vacparted FOR VALUES IN (1);
 INSERT INTO vacparted VALUES (1, 'a');
@@ -166,11 +142,9 @@ VACUUM (ANALYZE) vacparted;
 VACUUM (FULL) vacparted;
 VACUUM (FREEZE) vacparted;
 
--- check behavior with duplicate column mentions
 VACUUM ANALYZE vacparted(a,b,a);
 ANALYZE vacparted(a,b,b);
 
--- partitioned table with index
 CREATE TABLE vacparted_i (a int primary key, b varchar(100))
   PARTITION BY HASH (a);
 CREATE TABLE vacparted_i1 PARTITION OF vacparted_i
@@ -186,7 +160,6 @@ SELECT relname, relhasindex FROM pg_class
   ORDER BY relname;
 DROP TABLE vacparted_i;
 
--- multiple tables specified
 VACUUM vaccluster, vactst;
 VACUUM vacparted, does_not_exist;
 VACUUM (FREEZE) vacparted, vaccluster, vactst;
@@ -200,29 +173,23 @@ ANALYZE vacparted (b), vactst;
 ANALYZE vactst, does_not_exist, vacparted;
 ANALYZE vactst (i), vacparted (does_not_exist);
 ANALYZE vactst, vactst;
-BEGIN;  -- ANALYZE behaves differently inside a transaction block
+BEGIN;  
 ANALYZE vactst, vactst;
 COMMIT;
 
--- parenthesized syntax for ANALYZE
 ANALYZE (VERBOSE) does_not_exist;
 ANALYZE (nonexistent-arg) does_not_exist;
 ANALYZE (nonexistentarg) does_not_exit;
 
--- ensure argument order independence, and that SKIP_LOCKED on non-existing
--- relation still errors out.  Suppress WARNING messages caused by concurrent
--- autovacuums.
 SET client_min_messages TO 'ERROR';
 ANALYZE (SKIP_LOCKED, VERBOSE) does_not_exist;
 ANALYZE (VERBOSE, SKIP_LOCKED) does_not_exist;
 
--- SKIP_LOCKED option
 VACUUM (SKIP_LOCKED) vactst;
 VACUUM (SKIP_LOCKED, FULL) vactst;
 ANALYZE (SKIP_LOCKED) vactst;
 RESET client_min_messages;
 
--- ensure VACUUM and ANALYZE don't have a problem with serializable
 SET default_transaction_isolation = serializable;
 VACUUM vactst;
 ANALYZE vactst;
@@ -231,13 +198,9 @@ BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 ANALYZE vactst;
 COMMIT;
 
--- PROCESS_TOAST option
 CREATE TABLE vac_option_tab (a INT, t TEXT);
 INSERT INTO vac_option_tab SELECT a, 't' || a FROM generate_series(1, 10) AS a;
 ALTER TABLE vac_option_tab ALTER COLUMN t SET STORAGE EXTERNAL;
--- Check the number of vacuums done on table vac_option_tab and on its
--- toast relation, to check that PROCESS_TOAST and PROCESS_MAIN work on
--- what they should.
 CREATE VIEW vac_option_tab_counts AS
   SELECT CASE WHEN c.relname IS NULL
     THEN 'main' ELSE 'toast' END as rel,
@@ -250,21 +213,16 @@ VACUUM (PROCESS_TOAST TRUE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
 VACUUM (PROCESS_TOAST FALSE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
-VACUUM (PROCESS_TOAST FALSE, FULL) vac_option_tab; -- error
+VACUUM (PROCESS_TOAST FALSE, FULL) vac_option_tab; 
 
--- PROCESS_MAIN option
--- Only the toast table is processed.
 VACUUM (PROCESS_MAIN FALSE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
--- Nothing is processed.
 VACUUM (PROCESS_MAIN FALSE, PROCESS_TOAST FALSE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
--- Check if the filenodes nodes have been updated as wanted after FULL.
 SELECT relfilenode AS main_filenode FROM pg_class
   WHERE relname = 'vac_option_tab' \gset
 SELECT t.relfilenode AS toast_filenode FROM pg_class c, pg_class t
   WHERE c.reltoastrelid = t.oid AND c.relname = 'vac_option_tab' \gset
--- Only the toast relation is processed.
 VACUUM (PROCESS_MAIN FALSE, FULL) vac_option_tab;
 SELECT relfilenode = :main_filenode AS is_same_main_filenode
   FROM pg_class WHERE relname = 'vac_option_tab';
@@ -272,27 +230,19 @@ SELECT t.relfilenode = :toast_filenode AS is_same_toast_filenode
   FROM pg_class c, pg_class t
   WHERE c.reltoastrelid = t.oid AND c.relname = 'vac_option_tab';
 
--- BUFFER_USAGE_LIMIT option
 VACUUM (BUFFER_USAGE_LIMIT '512 kB') vac_option_tab;
 ANALYZE (BUFFER_USAGE_LIMIT '512 kB') vac_option_tab;
--- try disabling the buffer usage limit
 VACUUM (BUFFER_USAGE_LIMIT 0) vac_option_tab;
 ANALYZE (BUFFER_USAGE_LIMIT 0) vac_option_tab;
--- value exceeds max size error
 VACUUM (BUFFER_USAGE_LIMIT 16777220) vac_option_tab;
--- value is less than min size error
 VACUUM (BUFFER_USAGE_LIMIT 120) vac_option_tab;
--- integer overflow error
 VACUUM (BUFFER_USAGE_LIMIT 10000000000) vac_option_tab;
--- incompatible with VACUUM FULL error
 VACUUM (BUFFER_USAGE_LIMIT '512 kB', FULL) vac_option_tab;
 
--- SKIP_DATABASE_STATS option
 VACUUM (SKIP_DATABASE_STATS) vactst;
 
--- ONLY_DATABASE_STATS option
 VACUUM (ONLY_DATABASE_STATS);
-VACUUM (ONLY_DATABASE_STATS) vactst;  -- error
+VACUUM (ONLY_DATABASE_STATS) vactst;  
 
 DROP VIEW vac_option_tab_counts;
 DROP TABLE vac_option_tab;
@@ -301,28 +251,21 @@ DROP TABLE vactst;
 DROP TABLE vacparted;
 DROP TABLE no_index_cleanup;
 
--- relation ownership, WARNING logs generated as all are skipped.
 CREATE TABLE vacowned (a int);
 CREATE TABLE vacowned_parted (a int) PARTITION BY LIST (a);
 CREATE TABLE vacowned_part1 PARTITION OF vacowned_parted FOR VALUES IN (1);
 CREATE TABLE vacowned_part2 PARTITION OF vacowned_parted FOR VALUES IN (2);
 CREATE ROLE regress_vacuum;
 SET ROLE regress_vacuum;
--- Simple table
 VACUUM vacowned;
 ANALYZE vacowned;
 VACUUM (ANALYZE) vacowned;
--- Catalog
 VACUUM pg_catalog.pg_class;
 ANALYZE pg_catalog.pg_class;
 VACUUM (ANALYZE) pg_catalog.pg_class;
--- Shared catalog
 VACUUM pg_catalog.pg_authid;
 ANALYZE pg_catalog.pg_authid;
 VACUUM (ANALYZE) pg_catalog.pg_authid;
--- Partitioned table and its partitions, nothing owned by other user.
--- Relations are not listed in a single command to test ownership
--- independently.
 VACUUM vacowned_parted;
 VACUUM vacowned_part1;
 VACUUM vacowned_part2;
@@ -333,7 +276,6 @@ VACUUM (ANALYZE) vacowned_parted;
 VACUUM (ANALYZE) vacowned_part1;
 VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
--- Partitioned table and one partition owned by other user.
 ALTER TABLE vacowned_parted OWNER TO regress_vacuum;
 ALTER TABLE vacowned_part1 OWNER TO regress_vacuum;
 SET ROLE regress_vacuum;
@@ -347,7 +289,6 @@ VACUUM (ANALYZE) vacowned_parted;
 VACUUM (ANALYZE) vacowned_part1;
 VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
--- Only one partition owned by other user.
 ALTER TABLE vacowned_parted OWNER TO CURRENT_USER;
 SET ROLE regress_vacuum;
 VACUUM vacowned_parted;
@@ -360,7 +301,6 @@ VACUUM (ANALYZE) vacowned_parted;
 VACUUM (ANALYZE) vacowned_part1;
 VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
--- Only partitioned table owned by other user.
 ALTER TABLE vacowned_parted OWNER TO regress_vacuum;
 ALTER TABLE vacowned_part1 OWNER TO CURRENT_USER;
 SET ROLE regress_vacuum;

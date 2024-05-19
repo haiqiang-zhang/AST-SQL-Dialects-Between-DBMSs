@@ -48,18 +48,14 @@ INSERT INTO brintest_bloom SELECT
 	format('%s/%s%s', odd, even, tenthous)::pg_lsn
 FROM tenk1 ORDER BY unique2 LIMIT 100;
 
--- throw in some NULL's and different values
 INSERT INTO brintest_bloom (inetcol, cidrcol) SELECT
 	inet 'fe80::6e40:8ff:fea9:8c46' + tenthous,
 	cidr 'fe80::6e40:8ff:fea9:8c46' + tenthous
 FROM tenk1 ORDER BY thousand, tenthous LIMIT 25;
 
--- test bloom specific index options
--- ndistinct must be >= -1.0
 CREATE INDEX brinidx_bloom ON brintest_bloom USING brin (
 	byteacol bytea_bloom_ops(n_distinct_per_range = -1.1)
 );
--- false_positive_rate must be between 0.0001 and 0.25
 CREATE INDEX brinidx_bloom ON brintest_bloom USING brin (
 	byteacol bytea_bloom_ops(false_positive_rate = 0.00009)
 );
@@ -221,14 +217,12 @@ DECLARE
 BEGIN
 	FOR r IN SELECT colname, oper, typ, value[ordinality], matches[ordinality] FROM brinopers_bloom, unnest(op) WITH ORDINALITY AS oper LOOP
 
-		-- prepare the condition
 		IF r.value IS NULL THEN
 			cond := format('%I %s %L', r.colname, r.oper, r.value);
 		ELSE
 			cond := format('%I %s %L::%s', r.colname, r.oper, r.value, r.typ);
 		END IF;
 
-		-- run the query using the brin index
 		SET enable_seqscan = 0;
 		SET enable_bitmapscan = 1;
 
@@ -245,7 +239,6 @@ BEGIN
 		EXECUTE format($y$SELECT array_agg(ctid) FROM brintest_bloom WHERE %s $y$, cond)
 			INTO idx_ctids;
 
-		-- run the query using a seqscan
 		SET enable_seqscan = 1;
 		SET enable_bitmapscan = 0;
 
@@ -262,13 +255,11 @@ BEGIN
 		EXECUTE format($y$SELECT array_agg(ctid) FROM brintest_bloom WHERE %s $y$, cond)
 			INTO ss_ctids;
 
-		-- make sure both return the same results
 		count := array_length(idx_ctids, 1);
 
 		IF NOT (count = array_length(ss_ctids, 1) AND
 				idx_ctids @> ss_ctids AND
 				idx_ctids <@ ss_ctids) THEN
-			-- report the results of each scan to make the differences obvious
 			RAISE WARNING 'something not right in %: count %', r, count;
 			SET enable_seqscan = 1;
 			SET enable_bitmapscan = 0;
@@ -283,7 +274,6 @@ BEGIN
 			END LOOP;
 		END IF;
 
-		-- make sure we found expected number of matches
 		IF count != r.matches THEN RAISE WARNING 'unexpected number of results % for %', count, r; END IF;
 	END LOOP;
 END;
@@ -318,28 +308,24 @@ INSERT INTO brintest_bloom SELECT
 FROM tenk1 ORDER BY unique2 LIMIT 5 OFFSET 5;
 
 SELECT brin_desummarize_range('brinidx_bloom', 0);
-VACUUM brintest_bloom;  -- force a summarization cycle in brinidx
+VACUUM brintest_bloom;  
 
 UPDATE brintest_bloom SET int8col = int8col * int4col;
 UPDATE brintest_bloom SET textcol = '' WHERE textcol IS NOT NULL;
 
--- Tests for brin_summarize_new_values
-SELECT brin_summarize_new_values('brintest_bloom'); -- error, not an index
-SELECT brin_summarize_new_values('tenk1_unique1'); -- error, not a BRIN index
-SELECT brin_summarize_new_values('brinidx_bloom'); -- ok, no change expected
+SELECT brin_summarize_new_values('brintest_bloom'); 
+SELECT brin_summarize_new_values('tenk1_unique1'); 
+SELECT brin_summarize_new_values('brinidx_bloom'); 
 
--- Tests for brin_desummarize_range
-SELECT brin_desummarize_range('brinidx_bloom', -1); -- error, invalid range
+SELECT brin_desummarize_range('brinidx_bloom', -1); 
 SELECT brin_desummarize_range('brinidx_bloom', 0);
 SELECT brin_desummarize_range('brinidx_bloom', 0);
 SELECT brin_desummarize_range('brinidx_bloom', 100000000);
 
--- Test brin_summarize_range
 CREATE TABLE brin_summarize_bloom (
     value int
 ) WITH (fillfactor=10, autovacuum_enabled=false);
 CREATE INDEX brin_summarize_bloom_idx ON brin_summarize_bloom USING brin (value) WITH (pages_per_range=2);
--- Fill a few pages
 DO $$
 DECLARE curtid tid;
 BEGIN
@@ -350,27 +336,19 @@ BEGIN
 END;
 $$;
 
--- summarize one range
 SELECT brin_summarize_range('brin_summarize_bloom_idx', 0);
--- nothing: already summarized
 SELECT brin_summarize_range('brin_summarize_bloom_idx', 1);
--- summarize one range
 SELECT brin_summarize_range('brin_summarize_bloom_idx', 2);
--- nothing: page doesn't exist in table
 SELECT brin_summarize_range('brin_summarize_bloom_idx', 4294967295);
--- invalid block number values
 SELECT brin_summarize_range('brin_summarize_bloom_idx', -1);
 SELECT brin_summarize_range('brin_summarize_bloom_idx', 4294967296);
 
 
--- test brin cost estimates behave sanely based on correlation of values
 CREATE TABLE brin_test_bloom (a INT, b INT);
 INSERT INTO brin_test_bloom SELECT x/100,x%100 FROM generate_series(1,10000) x(x);
 CREATE INDEX brin_test_bloom_a_idx ON brin_test_bloom USING brin (a) WITH (pages_per_range = 2);
 CREATE INDEX brin_test_bloom_b_idx ON brin_test_bloom USING brin (b) WITH (pages_per_range = 2);
 VACUUM ANALYZE brin_test_bloom;
 
--- Ensure brin index is used when columns are perfectly correlated
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test_bloom WHERE a = 1;
--- Ensure brin index is not used when values are not correlated
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test_bloom WHERE b = 1;

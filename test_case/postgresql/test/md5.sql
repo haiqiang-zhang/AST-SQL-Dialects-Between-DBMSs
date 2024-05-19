@@ -1,11 +1,4 @@
---
--- MD5 test suite - from IETF RFC 1321
--- (see: https://www.rfc-editor.org/rfc/rfc1321)
---
 
--- (The md5() function will error in OpenSSL FIPS mode.  By keeping
--- this test in a separate file, it is easier to manage variant
--- results.)
 
 select md5('') = 'd41d8cd98f00b204e9800998ecf8427e' AS "TRUE";
 

@@ -1,5 +1,13 @@
 import os
 from typing import List
+import re
+
+
+
+def save_result_to_csv(df, filename:str):
+    # Save the result to a CSV file
+    df.to_csv(f"{filename}.csv", index=False)
+    print(f"Save the result to {filename}.csv")
 
 
 def print_prevent_stopping(string:str):
@@ -21,6 +29,7 @@ def first_init_dbmss(DBMS_ADAPTERS:dict):
 class SQLFileEmptyError(Exception):
     pass
 
+
 def clean_test_garbage():
     # Delete all files in test_case_path
     cleaning_list = ["test.db", "cannot-read", "no-such-file"]
@@ -29,9 +38,12 @@ def clean_test_garbage():
         if file.endswith(".db") or any(keyword.lower() in file.lower() for keyword in cleaning_list):
             os.remove(os.path.join(os.getcwd(), file))
 
-def clean_query(query)->List[str]:
+def clean_query(query:str)->List[str]:
     # split sql_query with ';'
-    sql_query = query.split(';')
+    # if ; is in "" or '', it is not a split point
+    sql_query = re.split(r';(?=(?:[^"\']*["\'][^"\']*["\'])[^"\']*$)', query, flags=re.MULTILINE)
+
+
     sql_query.pop()
     i = 0
     while i < len(sql_query):
@@ -42,4 +54,34 @@ def clean_query(query)->List[str]:
             continue
         i += 1
     return sql_query
+
+def clean_query_postgresql(query:str)->List[str]:
+    # split sql_query with ';'
+    # if ; is in "" or '' or $TAG$  ;  $TAG$, it is not a split point
+    # if ; is in $tag$ ;  $tag$ (please note the left and right tag must be match($tag$...$tag$ matched, $tag$...$tag111$ do not matched ) and case sensitive), it is not a split point too.
+    pattern = re.compile(
+    r""";(?=(?:[^$"']|(?:\$[0-9]+?)|"[^"]*"|'[^']*'|(?:\$(\w*?)\$(?:(?!\$\$).)*\$(\w*?)\$))*$)""", re.DOTALL)
+    
+    # Split the query based on the pattern
+    sql_query = pattern.split(query)
+
+
+    # remove None values
+    sql_query = [i for i in sql_query if i is not None]
+
+
+    sql_query.pop()
+    i = 0
+    while i < len(sql_query):
+        sql_query[i] = sql_query[i].strip()     
+        # remove empty strings
+        if not sql_query[i]:
+            sql_query.pop(i)
+            continue
+        i += 1
+    return sql_query
+
+
+
+
 

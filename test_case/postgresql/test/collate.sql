@@ -1,7 +1,7 @@
 /*
  * This test is intended to pass on all platforms supported by Postgres.
  * We can therefore only assume that the default, C, and POSIX collations
- * are available --- and since the regression tests are often run in a
+ * are available 
  * C-locale database, these may well all have the same behavior.  But
  * fortunately, the system doesn't know that and will treat them as
  * incompatible collations.  It is therefore at least possible to test
@@ -18,7 +18,6 @@ CREATE TABLE collate_test1 (
     b text COLLATE "C" NOT NULL
 );
 
-\d collate_test1;
 
 CREATE TABLE collate_test_fail (
     a int COLLATE "C",
@@ -29,7 +28,6 @@ CREATE TABLE collate_test_like (
     LIKE collate_test1
 );
 
-\d collate_test_like;
 
 CREATE TABLE collate_test2 (
     a int,
@@ -42,10 +40,10 @@ INSERT INTO collate_test2 SELECT * FROM collate_test1;
 SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'abc';
 SELECT * FROM collate_test1 WHERE b >= 'abc' COLLATE "C";
 SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'abc' COLLATE "C";
-SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'bbc' COLLATE "POSIX"; -- fail
+SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'bbc' COLLATE "POSIX"; 
 
 CREATE DOMAIN testdomain_p AS text COLLATE "POSIX";
-CREATE DOMAIN testdomain_i AS int COLLATE "POSIX"; -- fail
+CREATE DOMAIN testdomain_i AS int COLLATE "POSIX"; 
 CREATE TABLE collate_test4 (
     a int,
     b testdomain_p
@@ -66,15 +64,12 @@ SELECT a, b FROM collate_test2 ORDER BY b;
 
 SELECT a, b FROM collate_test1 ORDER BY b COLLATE "C";
 
--- star expansion
 SELECT * FROM collate_test1 ORDER BY b;
 SELECT * FROM collate_test2 ORDER BY b;
 
--- constant expression folding
 SELECT 'bbc' COLLATE "C" > 'Abc' COLLATE "C" AS "true";
 SELECT 'bbc' COLLATE "POSIX" < 'Abc' COLLATE "POSIX" AS "false";
 
--- upper/lower
 
 CREATE TABLE collate_test10 (
     a int,
@@ -89,7 +84,6 @@ SELECT a, lower(x COLLATE "C"), lower(y COLLATE "C") FROM collate_test10;
 
 SELECT a, x, y FROM collate_test10 ORDER BY lower(y), a;
 
--- backwards parsing
 
 CREATE VIEW collview1 AS SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'bbc';
 CREATE VIEW collview2 AS SELECT a, b FROM collate_test1 ORDER BY b COLLATE "C";
@@ -99,7 +93,6 @@ SELECT table_name, view_definition FROM information_schema.views
   WHERE table_name LIKE 'collview%' ORDER BY 1;
 
 
--- collation propagation in various expression types
 
 SELECT a, coalesce(b, 'foo') FROM collate_test1 ORDER BY 2;
 SELECT a, coalesce(b, 'foo') FROM collate_test2 ORDER BY 2;
@@ -128,32 +121,29 @@ SELECT min(b), max(b) FROM collate_test2;
 SELECT array_agg(b ORDER BY b) FROM collate_test1;
 SELECT array_agg(b ORDER BY b) FROM collate_test2;
 
--- In aggregates, ORDER BY expressions don't affect aggregate's collation
-SELECT string_agg(x COLLATE "C", y COLLATE "POSIX") FROM collate_test10;  -- fail
+SELECT string_agg(x COLLATE "C", y COLLATE "POSIX") FROM collate_test10;  
 SELECT array_agg(x COLLATE "C" ORDER BY y COLLATE "POSIX") FROM collate_test10;
 SELECT array_agg(a ORDER BY x COLLATE "C", y COLLATE "POSIX") FROM collate_test10;
-SELECT array_agg(a ORDER BY x||y) FROM collate_test10;  -- fail
+SELECT array_agg(a ORDER BY x||y) FROM collate_test10;  
 
 SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test1 ORDER BY 2;
 SELECT a, b FROM collate_test2 UNION SELECT a, b FROM collate_test2 ORDER BY 2;
 SELECT a, b FROM collate_test2 WHERE a < 4 INTERSECT SELECT a, b FROM collate_test2 WHERE a > 1 ORDER BY 2;
 SELECT a, b FROM collate_test2 EXCEPT SELECT a, b FROM collate_test2 WHERE a < 2 ORDER BY 2;
 
-SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2 ORDER BY 2; -- fail
-SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2; -- ok
-SELECT a, b FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2; -- fail
-SELECT a, b COLLATE "C" FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2; -- ok
-SELECT a, b FROM collate_test1 INTERSECT SELECT a, b FROM collate_test2 ORDER BY 2; -- fail
-SELECT a, b FROM collate_test1 EXCEPT SELECT a, b FROM collate_test2 ORDER BY 2; -- fail
+SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2 ORDER BY 2; 
+SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2; 
+SELECT a, b FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2; 
+SELECT a, b COLLATE "C" FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2; 
+SELECT a, b FROM collate_test1 INTERSECT SELECT a, b FROM collate_test2 ORDER BY 2; 
+SELECT a, b FROM collate_test1 EXCEPT SELECT a, b FROM collate_test2 ORDER BY 2; 
 
-CREATE TABLE test_u AS SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2; -- fail
+CREATE TABLE test_u AS SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2; 
 
--- ideally this would be a parse-time error, but for now it must be run-time:
-select x < y from collate_test10; -- fail
-select x || y from collate_test10; -- ok, because || is not collation aware
-select x, y from collate_test10 order by x || y; -- not so ok
+select x < y from collate_test10; 
+select x || y from collate_test10; 
+select x, y from collate_test10 order by x || y; 
 
--- collation mismatch between recursive and non-recursive term
 WITH RECURSIVE foo(x) AS
    (SELECT x FROM (VALUES('a' COLLATE "C"),('b')) t(x)
    UNION ALL
@@ -163,13 +153,10 @@ SELECT * FROM foo;
 SELECT a, b, a < b as lt FROM
   (VALUES ('a', 'B'), ('A', 'b' COLLATE "C")) v(a,b);
 
--- collation mismatch in subselects
 SELECT * FROM collate_test10 WHERE (x, y) NOT IN (SELECT y, x FROM collate_test10);
--- now it works with overrides
 SELECT * FROM collate_test10 WHERE (x COLLATE "POSIX", y COLLATE "C") NOT IN (SELECT y, x FROM collate_test10);
 SELECT * FROM collate_test10 WHERE (x, y) NOT IN (SELECT y COLLATE "C", x COLLATE "POSIX" FROM collate_test10);
 
--- casting
 
 SELECT CAST('42' AS text COLLATE "C");
 
@@ -177,7 +164,6 @@ SELECT a, CAST(b AS varchar) FROM collate_test1 ORDER BY 2;
 SELECT a, CAST(b AS varchar) FROM collate_test2 ORDER BY 2;
 
 
--- result of a SQL function
 
 CREATE FUNCTION vc (text) RETURNS text LANGUAGE sql
     AS 'select $1::varchar';
@@ -185,7 +171,6 @@ CREATE FUNCTION vc (text) RETURNS text LANGUAGE sql
 SELECT a, b FROM collate_test1 ORDER BY a, vc(b);
 
 
--- polymorphism
 
 SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test1)) ORDER BY 1;
 SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test2)) ORDER BY 1;
@@ -197,23 +182,19 @@ SELECT a, dup(b) FROM collate_test1 ORDER BY 2;
 SELECT a, dup(b) FROM collate_test2 ORDER BY 2;
 
 
--- indexes
 
 CREATE INDEX collate_test1_idx1 ON collate_test1 (b);
 CREATE INDEX collate_test1_idx2 ON collate_test1 (b COLLATE "POSIX");
-CREATE INDEX collate_test1_idx3 ON collate_test1 ((b COLLATE "POSIX")); -- this is different grammatically
+CREATE INDEX collate_test1_idx3 ON collate_test1 ((b COLLATE "POSIX")); 
 CREATE INDEX collate_test1_idx4 ON collate_test1 (((b||'foo') COLLATE "POSIX"));
 
-CREATE INDEX collate_test1_idx5 ON collate_test1 (a COLLATE "POSIX"); -- fail
-CREATE INDEX collate_test1_idx6 ON collate_test1 ((a COLLATE "POSIX")); -- fail
+CREATE INDEX collate_test1_idx5 ON collate_test1 (a COLLATE "POSIX"); 
+CREATE INDEX collate_test1_idx6 ON collate_test1 ((a COLLATE "POSIX")); 
 
 SELECT relname, pg_get_indexdef(oid) FROM pg_class WHERE relname LIKE 'collate_test%_idx%' ORDER BY 1;
 
 
--- foreign keys
 
--- force indexes and mergejoins to be used for FK checking queries,
--- else they might not exercise collation-dependent operators
 SET enable_seqscan TO 0;
 SET enable_hashjoin TO 0;
 SET enable_nestloop TO 0;
@@ -222,10 +203,10 @@ CREATE TABLE collate_test20 (f1 text COLLATE "C" PRIMARY KEY);
 INSERT INTO collate_test20 VALUES ('foo'), ('bar');
 CREATE TABLE collate_test21 (f2 text COLLATE "POSIX" REFERENCES collate_test20);
 INSERT INTO collate_test21 VALUES ('foo'), ('bar');
-INSERT INTO collate_test21 VALUES ('baz'); -- fail
+INSERT INTO collate_test21 VALUES ('baz'); 
 CREATE TABLE collate_test22 (f2 text COLLATE "POSIX");
 INSERT INTO collate_test22 VALUES ('foo'), ('bar'), ('baz');
-ALTER TABLE collate_test22 ADD FOREIGN KEY (f2) REFERENCES collate_test20; -- fail
+ALTER TABLE collate_test22 ADD FOREIGN KEY (f2) REFERENCES collate_test20; 
 DELETE FROM collate_test22 WHERE f2 = 'baz';
 ALTER TABLE collate_test22 ADD FOREIGN KEY (f2) REFERENCES collate_test20;
 
@@ -234,7 +215,6 @@ RESET enable_hashjoin;
 RESET enable_nestloop;
 
 
--- EXPLAIN
 
 EXPLAIN (COSTS OFF)
   SELECT * FROM collate_test10 ORDER BY x, y;
@@ -242,69 +222,48 @@ EXPLAIN (COSTS OFF)
   SELECT * FROM collate_test10 ORDER BY x DESC, y COLLATE "C" ASC NULLS FIRST;
 
 
--- CREATE/DROP COLLATION
 
 CREATE COLLATION builtin_c ( PROVIDER = builtin, LOCALE = "C" );
 
 SELECT b FROM collate_test1 ORDER BY b COLLATE builtin_c;
 
-CREATE COLLATION builtin2 ( PROVIDER = builtin ); -- fails
-CREATE COLLATION builtin2 ( PROVIDER = builtin, LOCALE = "en_US" ); -- fails
-CREATE COLLATION builtin2 ( PROVIDER = builtin, LC_CTYPE = "C", LC_COLLATE = "C" ); -- fails
+CREATE COLLATION builtin2 ( PROVIDER = builtin ); 
+CREATE COLLATION builtin2 ( PROVIDER = builtin, LOCALE = "en_US" ); 
+CREATE COLLATION builtin2 ( PROVIDER = builtin, LC_CTYPE = "C", LC_COLLATE = "C" ); 
 
 CREATE COLLATION mycoll1 FROM "C";
 CREATE COLLATION mycoll2 ( LC_COLLATE = "POSIX", LC_CTYPE = "POSIX" );
-CREATE COLLATION mycoll3 FROM "default";  -- intentionally unsupported
+CREATE COLLATION mycoll3 FROM "default";  
 
 DROP COLLATION mycoll1;
 CREATE TABLE collate_test23 (f1 text collate mycoll2);
-DROP COLLATION mycoll2;  -- fail
+DROP COLLATION mycoll2;  
 
--- invalid: non-lowercase quoted identifiers
 CREATE COLLATION case_coll ("Lc_Collate" = "POSIX", "Lc_Ctype" = "POSIX");
 
--- 9.1 bug with useless COLLATE in an expression subject to length coercion
 
 CREATE TEMP TABLE vctable (f1 varchar(25));
 INSERT INTO vctable VALUES ('foo' COLLATE "C");
 
 
-SELECT collation for ('foo'); -- unknown type - null
+SELECT collation for ('foo'); 
 SELECT collation for ('foo'::text);
-SELECT collation for ((SELECT a FROM collate_test1 LIMIT 1)); -- non-collatable type - error
+SELECT collation for ((SELECT a FROM collate_test1 LIMIT 1)); 
 SELECT collation for ((SELECT b FROM collate_test1 LIMIT 1));
 
--- old bug with not dropping COLLATE when coercing to non-collatable type
 CREATE VIEW collate_on_int AS
 SELECT c1+1 AS c1p FROM
   (SELECT ('4' COLLATE "C")::INT AS c1) ss;
-\d+ collate_on_int;
 
--- Check conflicting or redundant options in CREATE COLLATION
--- LC_COLLATE
 CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LC_COLLATE = "NONSENSE", LC_CTYPE = "POSIX");
--- LC_CTYPE
 CREATE COLLATION coll_dup_chk (LC_CTYPE = "POSIX", LC_CTYPE = "NONSENSE", LC_COLLATE = "POSIX");
--- PROVIDER
 CREATE COLLATION coll_dup_chk (PROVIDER = icu, PROVIDER = NONSENSE, LC_COLLATE = "POSIX", LC_CTYPE = "POSIX");
--- LOCALE
 CREATE COLLATION case_sensitive (LOCALE = '', LOCALE = "NONSENSE");
--- DETERMINISTIC
 CREATE COLLATION coll_dup_chk (DETERMINISTIC = TRUE, DETERMINISTIC = NONSENSE, LOCALE = '');
--- VERSION
 CREATE COLLATION coll_dup_chk (VERSION = '1', VERSION = "NONSENSE", LOCALE = '');
--- LOCALE conflicts with LC_COLLATE and LC_CTYPE
 CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LC_CTYPE = "POSIX", LOCALE = '');
--- LOCALE conflicts with LC_COLLATE
 CREATE COLLATION coll_dup_chk (LC_COLLATE = "POSIX", LOCALE = '');
--- LOCALE conflicts with LC_CTYPE
 CREATE COLLATION coll_dup_chk (LC_CTYPE = "POSIX", LOCALE = '');
--- FROM conflicts with any other option
 CREATE COLLATION coll_dup_chk (FROM = "C", VERSION = "1");
 
---
--- Clean up.  Many of these table names will be re-used if the user is
--- trying to run any platform-specific collation tests later, so we
--- must get rid of them.
---
 DROP SCHEMA collate_tests CASCADE;

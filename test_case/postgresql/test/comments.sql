@@ -1,10 +1,7 @@
---
--- COMMENTS
---
 
-SELECT 'trailing' AS first; -- trailing single line
+SELECT 'trailing' AS first; 
 SELECT /* embedded single line */ 'embedded' AS second;
-SELECT /* both embedded and trailing single line */ 'both' AS third; -- trailing single line
+SELECT /* both embedded and trailing single line */ 'both' AS third; 
 
 SELECT 'before multi-line' AS fourth;
 /* This is an example of SQL which should not execute:
@@ -12,19 +9,16 @@ SELECT 'before multi-line' AS fourth;
  */
 SELECT 'after multi-line' AS fifth;
 
---
--- Nested comments
---
 
 /*
-SELECT 'trailing' as x1; -- inside block comment
+SELECT 'trailing' as x1; 
 */
 
 /* This block comment surrounds a query which itself has a block comment...
 SELECT /* embedded single line */ 'embedded' AS x2;
 */
 
-SELECT -- continued after the following block comments...
+SELECT 
 /* Deeply nested comment.
    This includes a single apostrophe to make sure we aren't decoding this part as a string.
 SELECT 'deep nest' AS n1;

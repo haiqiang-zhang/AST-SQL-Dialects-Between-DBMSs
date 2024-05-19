@@ -1,6 +1,3 @@
---
--- WINDOW FUNCTIONS
---
 
 CREATE TEMPORARY TABLE empsalary (
     depname varchar,
@@ -25,7 +22,6 @@ SELECT depname, empno, salary, sum(salary) OVER (PARTITION BY depname) FROM emps
 
 SELECT depname, empno, salary, rank() OVER (PARTITION BY depname ORDER BY salary) FROM empsalary;
 
--- with GROUP BY
 SELECT four, ten, SUM(SUM(four)) OVER (PARTITION BY four), AVG(ten) FROM tenk1
 GROUP BY four, ten ORDER BY four, ten;
 
@@ -33,15 +29,12 @@ SELECT depname, empno, salary, sum(salary) OVER w FROM empsalary WINDOW w AS (PA
 
 SELECT depname, empno, salary, rank() OVER w FROM empsalary WINDOW w AS (PARTITION BY depname ORDER BY salary) ORDER BY rank() OVER w;
 
--- empty window specification
 SELECT COUNT(*) OVER () FROM tenk1 WHERE unique2 < 10;
 
 SELECT COUNT(*) OVER w FROM tenk1 WHERE unique2 < 10 WINDOW w AS ();
 
--- no window operation
 SELECT four FROM tenk1 WHERE FALSE WINDOW w AS (PARTITION BY ten);
 
--- cumulative aggregate
 SELECT sum(four) OVER (PARTITION BY ten ORDER BY unique2) AS sum_1, ten, four FROM tenk1 WHERE unique2 < 10;
 
 SELECT row_number() OVER (ORDER BY unique2) FROM tenk1 WHERE unique2 < 10;
@@ -74,7 +67,6 @@ SELECT lead(ten * 2, 1, -1.4) OVER (PARTITION BY four ORDER BY ten), ten, four F
 
 SELECT first_value(ten) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
 
--- last_value returns the last row of the frame, which is CURRENT ROW in ORDER BY window.
 SELECT last_value(four) OVER (ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
 
 SELECT last_value(ten) OVER (PARTITION BY four), ten, four FROM
@@ -93,7 +85,6 @@ SELECT (count(*) OVER (PARTITION BY four ORDER BY ten) +
   sum(hundred) OVER (PARTITION BY four ORDER BY ten))::varchar AS cntsum
   FROM tenk1 WHERE unique2 < 10;
 
--- opexpr with different windows evaluation.
 SELECT * FROM(
   SELECT count(*) OVER (PARTITION BY four ORDER BY ten) +
     sum(hundred) OVER (PARTITION BY two ORDER BY ten) AS total,
@@ -108,27 +99,21 @@ SELECT avg(four) OVER (PARTITION BY four ORDER BY thousand / 100) FROM tenk1 WHE
 SELECT ten, two, sum(hundred) AS gsum, sum(sum(hundred)) OVER win AS wsum
 FROM tenk1 GROUP BY ten, two WINDOW win AS (PARTITION BY two ORDER BY ten);
 
--- more than one window with GROUP BY
 SELECT sum(salary),
 	row_number() OVER (ORDER BY depname),
 	sum(sum(salary)) OVER (ORDER BY depname DESC)
 FROM empsalary GROUP BY depname;
 
--- identical windows with different names
 SELECT sum(salary) OVER w1, count(*) OVER w2
 FROM empsalary WINDOW w1 AS (ORDER BY salary), w2 AS (ORDER BY salary);
 
--- subplan
 SELECT lead(ten, (SELECT two FROM tenk1 WHERE s.unique2 = unique2)) OVER (PARTITION BY four ORDER BY ten)
 FROM tenk1 s WHERE unique2 < 10;
 
--- empty table
 SELECT count(*) OVER (PARTITION BY four) FROM (SELECT * FROM tenk1 WHERE FALSE)s;
 
--- mixture of agg/wfunc in the same window
 SELECT sum(salary) OVER w, rank() OVER w FROM empsalary WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
 
--- strict aggs
 SELECT empno, depname, salary, bonus, depadj, MIN(bonus) OVER (ORDER BY empno), MAX(depadj) OVER () FROM(
 	SELECT *,
 		CASE WHEN enroll_date < '2008-01-01' THEN 2008 - extract(YEAR FROM enroll_date) END * 500 AS bonus,
@@ -137,27 +122,22 @@ SELECT empno, depname, salary, bonus, depadj, MIN(bonus) OVER (ORDER BY empno), 
 		THEN 200 END AS depadj FROM empsalary
 )s;
 
--- window function over ungrouped agg over empty row set (bug before 9.1)
 SELECT SUM(COUNT(f1)) OVER () FROM int4_tbl WHERE f1=42;
 
--- window function with ORDER BY an expression involving aggregates (9.1 bug)
 select ten,
   sum(unique1) + sum(unique2) as res,
   rank() over (order by sum(unique1) + sum(unique2)) as rank
 from tenk1
 group by ten order by ten;
 
--- window and aggregate with GROUP BY expression (9.2 bug)
 explain (costs off)
 select first_value(max(x)) over (), y
   from (select unique1 as x, ten+four as y from tenk1) ss
   group by y;
 
--- window functions returning pass-by-ref values from different rows
 select x, lag(x, 1) over (order by x), lead(x, 3) over (order by x)
 from (select x::numeric as x from generate_series(1,10) x);
 
--- test non-default frame specifications
 SELECT four, ten,
 	sum(ten) over (partition by four order by ten),
 	last_value(ten) over (partition by four order by ten)
@@ -330,7 +310,6 @@ CREATE TEMP VIEW v_window AS
 
 SELECT pg_get_viewdef('v_window');
 
--- RANGE offset PRECEDING/FOLLOWING tests
 
 SELECT sum(unique1) over (order by four range between 2::int8 preceding and 1::int2 preceding),
 	unique1, four
@@ -434,7 +413,6 @@ select first_value(salary) over(order by enroll_date range between unbounded pre
 	exclude current row),
 	salary, enroll_date from empsalary;
 
--- RANGE offset PRECEDING/FOLLOWING with null values
 select x, y,
        first_value(y) over w,
        last_value(y) over w
@@ -475,11 +453,6 @@ from
 window w as
   (order by x desc nulls last range between 2 preceding and 2 following);
 
--- There is a syntactic ambiguity in the SQL standard.  Since
--- UNBOUNDED is a non-reserved word, it could be the name of a
--- function parameter and be used as an expression.  There is a
--- grammar hack to resolve such cases as the keyword.  The following
--- tests record this behavior.
 
 CREATE FUNCTION unbounded_syntax_test1a(x int) RETURNS TABLE (a int, b int, c int)
 LANGUAGE SQL
@@ -497,7 +470,6 @@ AS $$
   FROM tenk1 WHERE unique1 < 10;
 $$;
 
--- These will apply the argument to the window specification inside the function.
 SELECT * FROM unbounded_syntax_test1a(2);
 SELECT * FROM unbounded_syntax_test1b(2);
 
@@ -517,14 +489,12 @@ AS $$
   FROM tenk1 WHERE unique1 < 10;
 $$;
 
--- These will not apply the argument but instead treat UNBOUNDED as a keyword.
 SELECT * FROM unbounded_syntax_test2a(2);
 SELECT * FROM unbounded_syntax_test2b(2);
 
 DROP FUNCTION unbounded_syntax_test1a, unbounded_syntax_test1b,
               unbounded_syntax_test2a, unbounded_syntax_test2b;
 
--- Other tests with token UNBOUNDED in potentially problematic position
 CREATE FUNCTION unbounded(x int) RETURNS int LANGUAGE SQL IMMUTABLE RETURN x;
 
 SELECT sum(unique1) over (rows between 1 preceding and 1 following),
@@ -541,7 +511,6 @@ FROM tenk1, (values (1)) as unbounded(x) WHERE unique1 < 10;
 
 DROP FUNCTION unbounded;
 
--- Check overflow behavior for various integer sizes
 
 select x, last_value(x) over (order by x::smallint range between current row and 2147450884 following)
 from generate_series(32764, 32766) x;
@@ -561,7 +530,6 @@ from generate_series(9223372036854775804, 9223372036854775806) x;
 select x, last_value(x) over (order by x desc range between current row and 5 following)
 from generate_series(-9223372036854775806, -9223372036854775804) x;
 
--- Test in_range for other numeric datatypes
 
 create temp table numerics(
     id int,
@@ -605,7 +573,7 @@ window w as (order by f_float4 range between
 select id, f_float4, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_float4 range between
-             1.1 preceding and 'NaN' following);  -- error, NaN disallowed
+             1.1 preceding and 'NaN' following);  
 
 select id, f_float8, first_value(id) over w, last_value(id) over w
 from numerics
@@ -630,7 +598,7 @@ window w as (order by f_float8 range between
 select id, f_float8, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_float8 range between
-             1.1 preceding and 'NaN' following);  -- error, NaN disallowed
+             1.1 preceding and 'NaN' following);  
 
 select id, f_numeric, first_value(id) over w, last_value(id) over w
 from numerics
@@ -643,7 +611,7 @@ window w as (order by f_numeric range between
 select id, f_numeric, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_numeric range between
-             1 preceding and 1.1::float8 following);  -- currently unsupported
+             1 preceding and 1.1::float8 following);  
 select id, f_numeric, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_numeric range between
@@ -659,9 +627,8 @@ window w as (order by f_numeric range between
 select id, f_numeric, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_numeric range between
-             1.1 preceding and 'NaN' following);  -- error, NaN disallowed
+             1.1 preceding and 'NaN' following);  
 
--- Test in_range for other datetime datatypes
 
 create temp table datetimes(
     id int,
@@ -699,7 +666,7 @@ window w as (order by f_time desc range between
 select id, f_time, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_time desc range between
-             '-70 min' preceding and '2 hours' following);  -- error, negative offset disallowed
+             '-70 min' preceding and '2 hours' following);  
 
 select id, f_time, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -720,7 +687,7 @@ select id, f_time, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_time range between
              '-infinity'::interval following and
-             'infinity'::interval following);  -- error, negative offset disallowed
+             'infinity'::interval following);  
 
 select id, f_timetz, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -735,7 +702,7 @@ window w as (order by f_timetz desc range between
 select id, f_timetz, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_timetz desc range between
-             '70 min' preceding and '-2 hours' following);  -- error, negative offset disallowed
+             '70 min' preceding and '-2 hours' following);  
 
 select id, f_timetz, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -756,7 +723,7 @@ select id, f_timetz, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_timetz range between
              'infinity'::interval following and
-             '-infinity'::interval following);  -- error, negative offset disallowed
+             '-infinity'::interval following);  
 
 select id, f_interval, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -771,7 +738,7 @@ window w as (order by f_interval desc range between
 select id, f_interval, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_interval desc range between
-             '-1 year' preceding and '1 year' following);  -- error, negative offset disallowed
+             '-1 year' preceding and '1 year' following);  
 
 select id, f_interval, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -792,7 +759,7 @@ select id, f_interval, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_interval range between
              '-infinity'::interval following and
-             'infinity'::interval following);  -- error, negative offset disallowed
+             'infinity'::interval following);  
 
 select id, f_timestamptz, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -807,7 +774,7 @@ window w as (order by f_timestamptz desc range between
 select id, f_timestamptz, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_timestamptz desc range between
-             '1 year' preceding and '-1 year' following);  -- error, negative offset disallowed
+             '1 year' preceding and '-1 year' following);  
 
 select id, f_timestamptz, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -828,7 +795,7 @@ select id, f_timestamptz, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_timestamptz range between
              '-infinity'::interval following and
-             'infinity'::interval following);  -- error, negative offset disallowed
+             'infinity'::interval following);  
 
 select id, f_timestamp, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -843,7 +810,7 @@ window w as (order by f_timestamp desc range between
 select id, f_timestamp, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_timestamp desc range between
-             '-1 year' preceding and '1 year' following);  -- error, negative offset disallowed
+             '-1 year' preceding and '1 year' following);  
 
 select id, f_timestamp, first_value(id) over w, last_value(id) over w
 from datetimes
@@ -864,9 +831,8 @@ select id, f_timestamp, first_value(id) over w, last_value(id) over w
 from datetimes
 window w as (order by f_timestamp range between
              '-infinity'::interval following and
-             'infinity'::interval following);  -- error, negative offset disallowed
+             'infinity'::interval following);  
 
--- RANGE offset PRECEDING/FOLLOWING error cases
 select sum(salary) over (order by enroll_date, salary range between '1 year'::interval preceding and '2 years'::interval following
 	exclude ties), salary, enroll_date from empsalary;
 
@@ -891,7 +857,6 @@ select max(enroll_date) over (order by salary range between '1 year'::interval p
 select max(enroll_date) over (order by enroll_date range between '1 year'::interval preceding and '-2 years'::interval following
 	exclude ties), salary, enroll_date from empsalary;
 
--- GROUPS tests
 
 SELECT sum(unique1) over (order by four groups between unbounded preceding and current row),
 	unique1, four
@@ -978,7 +943,6 @@ select last_value(salary) over(order by enroll_date groups between 1 following a
 	lag(salary) over(order by enroll_date groups between 1 following and 3 following exclude group),
 	salary, enroll_date from empsalary;
 
--- Show differences in offset interpretation between ROWS, RANGE, and GROUPS
 WITH cte (x) AS (
         SELECT * FROM generate_series(1, 35, 2)
 )
@@ -1024,16 +988,14 @@ SELECT x, (sum(x) over w)
 FROM cte
 WINDOW w AS (ORDER BY x groups between 1 preceding and 1 following);
 
--- with UNION
 SELECT count(*) OVER (PARTITION BY four) FROM (SELECT * FROM tenk1 UNION ALL SELECT * FROM tenk2)s LIMIT 0;
 
--- check some degenerate cases
 create temp table t1 (f1 int, f2 int8);
 insert into t1 values (1,1),(1,2),(2,2);
 
 select f1, sum(f1) over (partition by f1
                          range between 1 preceding and 1 following)
-from t1 where f1 = f2;  -- error, must have order by
+from t1 where f1 = f2;  
 explain (costs off)
 select f1, sum(f1) over (partition by f1 order by f2
                          range between 1 preceding and 1 following)
@@ -1050,7 +1012,7 @@ from t1 where f1 = f2;
 
 select f1, sum(f1) over (partition by f1
                          groups between 1 preceding and 1 following)
-from t1 where f1 = f2;  -- error, must have order by
+from t1 where f1 = f2;  
 explain (costs off)
 select f1, sum(f1) over (partition by f1 order by f2
                          groups between 1 preceding and 1 following)
@@ -1065,13 +1027,10 @@ select f1, sum(f1) over (partition by f1, f2 order by f2
                          groups between 1 following and 2 following)
 from t1 where f1 = f2;
 
--- ordering by a non-integer constant is allowed
 SELECT rank() OVER (ORDER BY length('abc'));
 
--- can't order by another window function
 SELECT rank() OVER (ORDER BY rank() OVER (ORDER BY random()));
 
--- some other errors
 SELECT * FROM empsalary WHERE row_number() OVER (ORDER BY salary) < 10;
 
 SELECT * FROM empsalary INNER JOIN tenk1 ON row_number() OVER (ORDER BY salary) < 10;
@@ -1096,7 +1055,6 @@ SELECT ntile(0) OVER (ORDER BY ten), ten, four FROM tenk1;
 
 SELECT nth_value(four, 0) OVER (ORDER BY ten), ten, four FROM tenk1;
 
--- filter
 
 SELECT sum(salary), row_number() OVER (ORDER BY depname), sum(
     sum(salary) FILTER (WHERE enroll_date > '2007-01-01')
@@ -1104,13 +1062,7 @@ SELECT sum(salary), row_number() OVER (ORDER BY depname), sum(
     depname
 FROM empsalary GROUP BY depname;
 
---
--- Test SupportRequestOptimizeWindowClause's ability to de-duplicate
--- WindowClauses
---
 
--- Ensure WindowClause frameOptions are changed so that only a single
--- WindowAgg exists in the plan.
 EXPLAIN (COSTS OFF)
 SELECT
     empno,
@@ -1128,8 +1080,6 @@ SELECT
                       CURRENT ROW AND UNBOUNDED FOLLOWING) cd
 FROM empsalary;
 
--- Ensure WindowFuncs which cannot support their WindowClause's frameOptions
--- being changed are untouched
 EXPLAIN (COSTS OFF, VERBOSE)
 SELECT
     empno,
@@ -1141,7 +1091,6 @@ SELECT
                    CURRENT ROW AND CURRENT ROW) cnt
 FROM empsalary;
 
--- Ensure the above query gives us the expected results
 SELECT
     empno,
     depname,
@@ -1152,9 +1101,7 @@ SELECT
                    CURRENT ROW AND CURRENT ROW) cnt
 FROM empsalary;
 
--- Test pushdown of quals into a subquery containing window functions
 
--- pushdown is safe because all PARTITION BY clauses include depname:
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT depname,
@@ -1163,7 +1110,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE depname = 'sales';
 
--- pushdown is unsafe because there's a PARTITION BY clause without depname:
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT depname,
@@ -1172,8 +1118,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE depname = 'sales';
 
--- Test window function run conditions are properly pushed down into the
--- WindowAgg
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1181,7 +1125,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE rn < 3;
 
--- The following 3 statements should result the same result.
 SELECT * FROM
   (SELECT empno,
           row_number() OVER (ORDER BY empno) rn
@@ -1200,7 +1143,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE 2 >= rn;
 
--- Ensure r <= 3 is pushed down into the run condition of the window agg
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1216,7 +1158,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE r <= 3;
 
--- Ensure dr = 1 is converted to dr <= 1 to get all rows leading up to dr = 1
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1232,7 +1173,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE dr = 1;
 
--- Check COUNT() and COUNT(*)
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1288,7 +1228,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE dr = 1;
 
--- Ensure we get a run condition when there's a PARTITION BY clause
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1297,7 +1236,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE rn < 3;
 
--- and ensure we get the correct results from the above plan
 SELECT * FROM
   (SELECT empno,
           depname,
@@ -1305,8 +1243,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE rn < 3;
 
--- ensure that "unused" subquery columns are not removed when the column only
--- exists in the run condition
 EXPLAIN (COSTS OFF)
 SELECT empno, depname FROM
   (SELECT empno,
@@ -1315,7 +1251,6 @@ SELECT empno, depname FROM
    FROM empsalary) emp
 WHERE rn < 3;
 
--- likewise with count(empno) instead of row_number()
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1325,7 +1260,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE c <= 3;
 
--- and again, check the results are what we expect.
 SELECT * FROM
   (SELECT empno,
           depname,
@@ -1334,8 +1268,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE c <= 3;
 
--- Ensure we get the correct run condition when the window function is both
--- monotonically increasing and decreasing.
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1345,31 +1277,27 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE c = 1;
 
--- Some more complex cases with multiple window clauses
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT *,
-          count(salary) OVER (PARTITION BY depname || '') c1, -- w1
-          row_number() OVER (PARTITION BY depname) rn, -- w2
-          count(*) OVER (PARTITION BY depname) c2, -- w2
-          count(*) OVER (PARTITION BY '' || depname) c3, -- w3
-          ntile(2) OVER (PARTITION BY depname) nt -- w2
+          count(salary) OVER (PARTITION BY depname || '') c1, 
+          row_number() OVER (PARTITION BY depname) rn, 
+          count(*) OVER (PARTITION BY depname) c2, 
+          count(*) OVER (PARTITION BY '' || depname) c3, 
+          ntile(2) OVER (PARTITION BY depname) nt 
    FROM empsalary
 ) e WHERE rn <= 1 AND c1 <= 3 AND nt < 2;
 
--- Ensure we correctly filter out all of the run conditions from each window
 SELECT * FROM
   (SELECT *,
-          count(salary) OVER (PARTITION BY depname || '') c1, -- w1
-          row_number() OVER (PARTITION BY depname) rn, -- w2
-          count(*) OVER (PARTITION BY depname) c2, -- w2
-          count(*) OVER (PARTITION BY '' || depname) c3, -- w3
-          ntile(2) OVER (PARTITION BY depname) nt -- w2
+          count(salary) OVER (PARTITION BY depname || '') c1, 
+          row_number() OVER (PARTITION BY depname) rn, 
+          count(*) OVER (PARTITION BY depname) c2, 
+          count(*) OVER (PARTITION BY '' || depname) c3, 
+          ntile(2) OVER (PARTITION BY depname) nt 
    FROM empsalary
 ) e WHERE rn <= 1 AND c1 <= 3 AND nt < 2;
 
--- Ensure we remove references to reduced outer joins as nulling rels in run
--- conditions
 EXPLAIN (COSTS OFF)
 SELECT 1 FROM
   (SELECT ntile(e2.salary) OVER (PARTITION BY e1.depname) AS c
@@ -1377,11 +1305,7 @@ SELECT 1 FROM
    WHERE e1.empno = e2.empno) s
 WHERE s.c = 1;
 
--- Tests to ensure we don't push down the run condition when it's not valid to
--- do so.
 
--- Ensure we don't push down when the frame options show that the window
--- function is not monotonically increasing
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1390,8 +1314,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE c <= 3;
 
--- Ensure we don't push down when the window function's monotonic properties
--- don't match that of the clauses.
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1400,8 +1322,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE 3 <= c;
 
--- Ensure we don't use a run condition when there's a volatile function in the
--- WindowFunc
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1410,7 +1330,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE c = 1;
 
--- Ensure we don't use a run condition when the WindowFunc contains subplans
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT empno,
@@ -1419,7 +1338,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE c = 1;
 
--- Test Sort node collapsing
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT depname,
@@ -1428,8 +1346,6 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE depname = 'sales';
 
--- Ensure that the evaluation order of the WindowAggs results in the WindowAgg
--- with the same sort order that's required by the ORDER BY is evaluated last.
 EXPLAIN (COSTS OFF)
 SELECT empno,
        enroll_date,
@@ -1439,8 +1355,6 @@ SELECT empno,
 FROM empsalary
 ORDER BY depname, empno;
 
--- As above, but with an adjusted ORDER BY to ensure the above plan didn't
--- perform only 2 sorts by accident.
 EXPLAIN (COSTS OFF)
 SELECT empno,
        enroll_date,
@@ -1452,8 +1366,6 @@ ORDER BY depname, enroll_date;
 
 SET enable_hashagg TO off;
 
--- Ensure we don't get a sort for both DISTINCT and ORDER BY.  We expect the
--- sort for the DISTINCT to provide presorted input for the ORDER BY.
 EXPLAIN (COSTS OFF)
 SELECT DISTINCT
        empno,
@@ -1464,8 +1376,6 @@ SELECT DISTINCT
 FROM empsalary
 ORDER BY depname, enroll_date;
 
--- As above but adjust the ORDER BY clause to help ensure the plan with the
--- minimum amount of sorting wasn't a fluke.
 EXPLAIN (COSTS OFF)
 SELECT DISTINCT
        empno,
@@ -1478,14 +1388,12 @@ ORDER BY depname, empno;
 
 RESET enable_hashagg;
 
--- Test Sort node reordering
 EXPLAIN (COSTS OFF)
 SELECT
   lead(1) OVER (PARTITION BY depname ORDER BY salary, enroll_date),
   lag(1) OVER (PARTITION BY depname ORDER BY salary,enroll_date,empno)
 FROM empsalary;
 
--- Test incremental sorting
 EXPLAIN (COSTS OFF)
 SELECT * FROM
   (SELECT depname,
@@ -1507,10 +1415,8 @@ SELECT * FROM
    FROM empsalary) emp
 WHERE first_emp = 1 OR last_emp = 1;
 
--- cleanup
 DROP TABLE empsalary;
 
--- test user-defined window function with named args and default args
 CREATE FUNCTION nth_value_def(val anyelement, n integer = 1) RETURNS anyelement
   LANGUAGE internal WINDOW IMMUTABLE STRICT AS 'window_nth_value';
 
@@ -1520,12 +1426,7 @@ SELECT nth_value_def(n := 2, val := ten) OVER (PARTITION BY four), ten, four
 SELECT nth_value_def(ten) OVER (PARTITION BY four), ten, four
   FROM (SELECT * FROM tenk1 WHERE unique2 < 10 ORDER BY four, ten) s;
 
---
--- Test the basic moving-aggregate machinery
---
 
--- create aggregates that record the series of transform calls (these are
--- intentionally not true inverses)
 
 CREATE FUNCTION logging_sfunc_nonstrict(text, anyelement) RETURNS text AS
 $$ SELECT COALESCE($1, '') || '*' || quote_nullable($2) $$
@@ -1591,7 +1492,6 @@ CREATE AGGREGATE logging_agg_strict_initcond (anyelement)
 	minitcond = 'MI'
 );
 
--- test strict and non-strict cases
 SELECT
 	p::text || ',' || i::text || ':' || COALESCE(v::text, 'NULL') AS row,
 	logging_agg_nonstrict(v) over wnd as nstrict,
@@ -1612,7 +1512,6 @@ FROM (VALUES
 WINDOW wnd AS (PARTITION BY P ORDER BY i ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
 ORDER BY p, i;
 
--- and again, but with filter
 SELECT
 	p::text || ',' || i::text || ':' ||
 		CASE WHEN f THEN COALESCE(v::text, 'NULL') ELSE '-' END as row,
@@ -1634,7 +1533,6 @@ FROM (VALUES
 WINDOW wnd AS (PARTITION BY p ORDER BY i ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
 ORDER BY p, i;
 
--- test that volatile arguments disable moving-aggregate mode
 SELECT
 	i::text || ':' || COALESCE(v::text, 'NULL') as row,
 	logging_agg_strict(v::text)
@@ -1663,7 +1561,6 @@ FROM (VALUES
 WINDOW wnd AS (ORDER BY i ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
 ORDER BY i;
 
--- test that non-overlapping windows don't use inverse transitions
 SELECT
 	logging_agg_strict(v::text) OVER wnd
 FROM (VALUES
@@ -1674,10 +1571,6 @@ FROM (VALUES
 WINDOW wnd AS (ORDER BY i ROWS BETWEEN CURRENT ROW AND CURRENT ROW)
 ORDER BY i;
 
--- test that returning NULL from the inverse transition functions
--- restarts the aggregation from scratch. The second aggregate is supposed
--- to test cases where only some aggregates restart, the third one checks
--- that one aggregate restarting doesn't cause others to restart.
 
 CREATE FUNCTION sum_int_randrestart_minvfunc(int4, int4) RETURNS int4 AS
 $$ SELECT CASE WHEN random() < 0.2 THEN NULL ELSE $1 - $2 END $$
@@ -1712,11 +1605,7 @@ WINDOW fwd AS (
 	ORDER BY vs.i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING
 );
 
---
--- Test various built-in aggregates that have moving-aggregate support
---
 
--- test inverse transition functions handle NULLs properly
 SELECT i,AVG(v::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
 
@@ -1732,7 +1621,6 @@ SELECT i,AVG(v::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED
 SELECT i,AVG(v::interval) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,'1 sec'),(2,'2 sec'),(3,NULL),(4,NULL)) t(i,v);
 
--- moving aggregates over infinite intervals
 SELECT  x
         ,avg(x) OVER(ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING ) as curr_next_avg
         ,avg(x) OVER(ROWS BETWEEN 1 PRECEDING AND CURRENT ROW ) as prev_curr_avg
@@ -1740,16 +1628,15 @@ SELECT  x
         ,sum(x) OVER(ROWS BETWEEN 1 PRECEDING AND CURRENT ROW ) as prev_curr_sum
 FROM (VALUES (NULL::interval),
                ('infinity'::interval),
-               ('-2147483648 days -2147483648 months -9223372036854775807 usecs'), -- extreme interval value
+               ('-2147483648 days -2147483648 months -9223372036854775807 usecs'), 
                ('-infinity'::interval),
-               ('2147483647 days 2147483647 months 9223372036854775806 usecs'), -- extreme interval value
+               ('2147483647 days 2147483647 months 9223372036854775806 usecs'), 
                ('infinity'::interval),
                ('6 days'::interval),
                ('7 days'::interval),
                (NULL::interval),
                ('-infinity'::interval)) v(x);
 
---should fail.
 SELECT x, avg(x) OVER(ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING)
 FROM (VALUES (NULL::interval),
                ('3 days'::interval),
@@ -1757,7 +1644,6 @@ FROM (VALUES (NULL::interval),
                ('6 days'::interval),
                ('-infinity'::interval)) v(x);
 
---should fail.
 SELECT x, sum(x) OVER(ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING)
 FROM (VALUES (NULL::interval),
                ('3 days'::interval),
@@ -1864,7 +1750,6 @@ SELECT STDDEV(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUND
 SELECT STDDEV(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
 
--- test that inverse transition functions work with various frame options
 SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND CURRENT ROW)
   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
 
@@ -1874,15 +1759,10 @@ SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING)
 SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING)
   FROM (VALUES(1,1),(2,2),(3,3),(4,4)) t(i,v);
 
--- ensure aggregate over numeric properly recovers from NaN values
 SELECT a, b,
        SUM(b) OVER(ORDER BY A ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
 FROM (VALUES(1,1::numeric),(2,2),(3,'NaN'),(4,3),(5,4)) t(a,b);
 
--- It might be tempting for someone to add an inverse trans function for
--- float and double precision. This should not be done as it can give incorrect
--- results. This test should fail if anyone ever does this without thinking too
--- hard about it.
 SELECT to_char(SUM(n::float8) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING),'999999999999999999999D9')
   FROM (VALUES(1,1e20),(2,1)) n(i,n);
 
@@ -1890,50 +1770,33 @@ SELECT i, b, bool_and(b) OVER w, bool_or(b) OVER w
   FROM (VALUES (1,true), (2,true), (3,false), (4,false), (5,true)) v(i,b)
   WINDOW w AS (ORDER BY i ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING);
 
---
--- Test WindowAgg costing takes into account the number of rows that need to
--- be fetched before the first row can be output.
---
 
--- Ensure we get a cheap start up plan as the WindowAgg can output the first
--- row after reading 1 row from the join.
 EXPLAIN (COSTS OFF)
 SELECT COUNT(*) OVER (ORDER BY t1.unique1)
 FROM tenk1 t1 INNER JOIN tenk1 t2 ON t1.unique1 = t2.tenthous
 LIMIT 1;
 
--- Ensure we get a cheap total plan.  Lack of ORDER BY in the WindowClause
--- means that all rows must be read from the join, so a cheap startup plan
--- isn't a good choice.
 EXPLAIN (COSTS OFF)
 SELECT COUNT(*) OVER ()
 FROM tenk1 t1 INNER JOIN tenk1 t2 ON t1.unique1 = t2.tenthous
 WHERE t2.two = 1
 LIMIT 1;
 
--- Ensure we get a cheap total plan.  This time use UNBOUNDED FOLLOWING, which
--- needs to read all join rows to output the first WindowAgg row.
 EXPLAIN (COSTS OFF)
 SELECT COUNT(*) OVER (ORDER BY t1.unique1 ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
 FROM tenk1 t1 INNER JOIN tenk1 t2 ON t1.unique1 = t2.tenthous
 LIMIT 1;
 
--- Ensure we get a cheap total plan.  This time use 10000 FOLLOWING so we need
--- to read all join rows.
 EXPLAIN (COSTS OFF)
 SELECT COUNT(*) OVER (ORDER BY t1.unique1 ROWS BETWEEN UNBOUNDED PRECEDING AND 10000 FOLLOWING)
 FROM tenk1 t1 INNER JOIN tenk1 t2 ON t1.unique1 = t2.tenthous
 LIMIT 1;
 
--- Tests for problems with failure to walk or mutate expressions
--- within window frame clauses.
 
--- test walker (fails with collation error if expressions are not walked)
 SELECT array_agg(i) OVER w
   FROM generate_series(1,5) i
 WINDOW w AS (ORDER BY i ROWS BETWEEN (('foo' < 'foobar')::integer) PRECEDING AND CURRENT ROW);
 
--- test mutator (fails when inlined if expressions are not mutated)
 CREATE FUNCTION pg_temp.f(group_size BIGINT) RETURNS SETOF integer[]
 AS $$
     SELECT array_agg(s) OVER w

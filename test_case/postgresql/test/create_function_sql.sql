@@ -1,10 +1,4 @@
---
--- CREATE_FUNCTION_SQL
---
--- Assorted tests using SQL-language functions
---
 
--- All objects made in this test are in temp_func_test schema
 
 CREATE USER regress_unpriv_user;
 
@@ -13,13 +7,7 @@ GRANT ALL ON SCHEMA temp_func_test TO public;
 
 SET search_path TO temp_func_test, public;
 
---
--- Make sanity checks on the pg_proc entries created by CREATE FUNCTION
---
 
---
--- ARGUMENT and RETURN TYPES
---
 CREATE FUNCTION functest_A_1(text, date) RETURNS bool LANGUAGE 'sql'
        AS 'SELECT $1 = ''abcd'' AND $2 > ''2001-01-01''';
 CREATE FUNCTION functest_A_2(text[]) RETURNS int LANGUAGE 'sql'
@@ -35,9 +23,6 @@ SELECT functest_A_1('abcd', '2020-01-01');
 SELECT functest_A_2(ARRAY['1', '2', '3']);
 SELECT functest_A_3();
 
---
--- IMMUTABLE | STABLE | VOLATILE
---
 CREATE FUNCTION functest_B_1(int) RETURNS bool LANGUAGE 'sql'
        AS 'SELECT $1 > 0';
 CREATE FUNCTION functest_B_2(int) RETURNS bool LANGUAGE 'sql'
@@ -53,16 +38,13 @@ SELECT proname, provolatile FROM pg_proc
 		     'functest_B_4'::regproc) ORDER BY proname;
 
 ALTER FUNCTION functest_B_2(int) VOLATILE;
-ALTER FUNCTION functest_B_3(int) COST 100;	-- unrelated change, no effect
+ALTER FUNCTION functest_B_3(int) COST 100;	
 SELECT proname, provolatile FROM pg_proc
        WHERE oid in ('functest_B_1'::regproc,
                      'functest_B_2'::regproc,
                      'functest_B_3'::regproc,
 		     'functest_B_4'::regproc) ORDER BY proname;
 
---
--- SECURITY DEFINER | INVOKER
---
 CREATE FUNCTION functest_C_1(int) RETURNS bool LANGUAGE 'sql'
        AS 'SELECT $1 > 0';
 CREATE FUNCTION functest_C_2(int) RETURNS bool LANGUAGE 'sql'
@@ -74,7 +56,7 @@ SELECT proname, prosecdef FROM pg_proc
                      'functest_C_2'::regproc,
                      'functest_C_3'::regproc) ORDER BY proname;
 
-ALTER FUNCTION functest_C_1(int) IMMUTABLE;	-- unrelated change, no effect
+ALTER FUNCTION functest_C_1(int) IMMUTABLE;	
 ALTER FUNCTION functest_C_2(int) SECURITY INVOKER;
 ALTER FUNCTION functest_C_3(int) SECURITY DEFINER;
 SELECT proname, prosecdef FROM pg_proc
@@ -82,9 +64,6 @@ SELECT proname, prosecdef FROM pg_proc
                      'functest_C_2'::regproc,
                      'functest_C_3'::regproc) ORDER BY proname;
 
---
--- LEAKPROOF
---
 CREATE FUNCTION functest_E_1(int) RETURNS bool LANGUAGE 'sql'
        AS 'SELECT $1 > 100';
 CREATE FUNCTION functest_E_2(int) RETURNS bool LANGUAGE 'sql'
@@ -94,17 +73,16 @@ SELECT proname, proleakproof FROM pg_proc
                      'functest_E_2'::regproc) ORDER BY proname;
 
 ALTER FUNCTION functest_E_1(int) LEAKPROOF;
-ALTER FUNCTION functest_E_2(int) STABLE;	-- unrelated change, no effect
+ALTER FUNCTION functest_E_2(int) STABLE;	
 SELECT proname, proleakproof FROM pg_proc
        WHERE oid in ('functest_E_1'::regproc,
                      'functest_E_2'::regproc) ORDER BY proname;
 
-ALTER FUNCTION functest_E_2(int) NOT LEAKPROOF;	-- remove leakproof attribute
+ALTER FUNCTION functest_E_2(int) NOT LEAKPROOF;	
 SELECT proname, proleakproof FROM pg_proc
        WHERE oid in ('functest_E_1'::regproc,
                      'functest_E_2'::regproc) ORDER BY proname;
 
--- it takes superuser privilege to turn on leakproof, but not to turn off
 ALTER FUNCTION functest_E_1(int) OWNER TO regress_unpriv_user;
 ALTER FUNCTION functest_E_2(int) OWNER TO regress_unpriv_user;
 
@@ -114,13 +92,10 @@ ALTER FUNCTION functest_E_1(int) NOT LEAKPROOF;
 ALTER FUNCTION functest_E_2(int) LEAKPROOF;
 
 CREATE FUNCTION functest_E_3(int) RETURNS bool LANGUAGE 'sql'
-       LEAKPROOF AS 'SELECT $1 < 200';	-- fail
+       LEAKPROOF AS 'SELECT $1 < 200';	
 
 RESET SESSION AUTHORIZATION;
 
---
--- CALLED ON NULL INPUT | RETURNS NULL ON NULL INPUT | STRICT
---
 CREATE FUNCTION functest_F_1(int) RETURNS bool LANGUAGE 'sql'
        AS 'SELECT $1 > 50';
 CREATE FUNCTION functest_F_2(int) RETURNS bool LANGUAGE 'sql'
@@ -135,7 +110,7 @@ SELECT proname, proisstrict FROM pg_proc
                      'functest_F_3'::regproc,
                      'functest_F_4'::regproc) ORDER BY proname;
 
-ALTER FUNCTION functest_F_1(int) IMMUTABLE;	-- unrelated change, no effect
+ALTER FUNCTION functest_F_1(int) IMMUTABLE;	
 ALTER FUNCTION functest_F_2(int) STRICT;
 ALTER FUNCTION functest_F_3(int) CALLED ON NULL INPUT;
 SELECT proname, proisstrict FROM pg_proc
@@ -145,7 +120,6 @@ SELECT proname, proisstrict FROM pg_proc
                      'functest_F_4'::regproc) ORDER BY proname;
 
 
--- pg_get_functiondef tests
 
 SELECT pg_get_functiondef('functest_A_1'::regproc);
 SELECT pg_get_functiondef('functest_B_3'::regproc);
@@ -153,9 +127,6 @@ SELECT pg_get_functiondef('functest_C_3'::regproc);
 SELECT pg_get_functiondef('functest_F_2'::regproc);
 
 
---
--- SQL-standard body
---
 CREATE FUNCTION functest_S_1(a text, b date) RETURNS boolean
     LANGUAGE SQL
     RETURN a = 'abcd' AND b > '2001-01-01';
@@ -180,7 +151,6 @@ CREATE FUNCTION functest_S_13() RETURNS boolean
         SELECT false;
     END;
 
--- check display of function arguments in sub-SELECT
 CREATE TABLE functest1 (i int);
 CREATE FUNCTION functest_S_16(a int, b int) RETURNS void
     LANGUAGE SQL
@@ -188,23 +158,19 @@ CREATE FUNCTION functest_S_16(a int, b int) RETURNS void
         INSERT INTO functest1 SELECT a + $2;
     END;
 
--- error: duplicate function body
 CREATE FUNCTION functest_S_xxx(x int) RETURNS int
     LANGUAGE SQL
     AS $$ SELECT x * 2 $$
     RETURN x * 3;
 
--- polymorphic arguments not allowed in this form
 CREATE FUNCTION functest_S_xx(x anyarray) RETURNS anyelement
     LANGUAGE SQL
     RETURN x[1];
 
--- check reporting of parse-analysis errors
 CREATE FUNCTION functest_S_xx(x date) RETURNS boolean
     LANGUAGE SQL
     RETURN x > 1;
 
--- tricky parsing
 CREATE FUNCTION functest_S_15(x int) RETURNS boolean
 LANGUAGE SQL
 BEGIN ATOMIC
@@ -229,7 +195,6 @@ SELECT pg_get_functiondef('functest_S_16'::regproc);
 
 DROP TABLE functest1 CASCADE;
 
--- test with views
 CREATE TABLE functest3 (a int);
 INSERT INTO functest3 VALUES (1), (2);
 CREATE VIEW functestv3 AS SELECT * FROM functest3;
@@ -242,7 +207,6 @@ SELECT functest_S_14();
 DROP TABLE functest3 CASCADE;
 
 
--- information_schema tests
 
 CREATE FUNCTION functest_IS_1(a int, b int default 1, c text default 'foo')
     RETURNS int
@@ -266,7 +230,6 @@ SELECT routine_name, ordinal_position, parameter_name, parameter_default
 
 DROP FUNCTION functest_IS_1(int, int, text), functest_IS_2(int), functest_IS_3(int);
 
--- routine usage views
 
 CREATE FUNCTION functest_IS_4a() RETURNS int LANGUAGE SQL AS 'SELECT 1';
 CREATE FUNCTION functest_IS_4b(x int DEFAULT functest_IS_4a()) RETURNS int LANGUAGE SQL AS 'SELECT x';
@@ -311,16 +274,14 @@ DROP SEQUENCE functest1 CASCADE;
 DROP TABLE functest2 CASCADE;
 
 
--- overload
 CREATE FUNCTION functest_B_2(bigint) RETURNS bool LANGUAGE 'sql'
        IMMUTABLE AS 'SELECT $1 > 0';
 
 DROP FUNCTION functest_b_1;
-DROP FUNCTION functest_b_1;  -- error, not found
-DROP FUNCTION functest_b_2;  -- error, ambiguous
+DROP FUNCTION functest_b_1;  
+DROP FUNCTION functest_b_2;  
 
 
--- CREATE OR REPLACE tests
 
 CREATE FUNCTION functest1(a int) RETURNS int LANGUAGE SQL AS 'SELECT $1';
 CREATE OR REPLACE FUNCTION functest1(a int) RETURNS int LANGUAGE SQL WINDOW AS 'SELECT $1';
@@ -328,7 +289,6 @@ CREATE OR REPLACE PROCEDURE functest1(a int) LANGUAGE SQL AS 'SELECT $1';
 DROP FUNCTION functest1(a int);
 
 
--- inlining of set-returning functions
 
 CREATE TABLE functest3 (a int);
 INSERT INTO functest3 VALUES (1), (2), (3);
@@ -356,7 +316,6 @@ EXPLAIN (verbose, costs off) SELECT * FROM functest_sri2();
 DROP TABLE functest3 CASCADE;
 
 
--- Check behavior of VOID-returning SQL functions
 
 CREATE FUNCTION voidtest1(a int) RETURNS VOID LANGUAGE SQL AS
 $$ SELECT a + 1 $$;
@@ -366,7 +325,6 @@ CREATE FUNCTION voidtest2(a int, b int) RETURNS VOID LANGUAGE SQL AS
 $$ SELECT voidtest1(a + b) $$;
 SELECT voidtest2(11,22);
 
--- currently, we can inline voidtest2 but not voidtest1
 EXPLAIN (verbose, costs off) SELECT voidtest2(11,22);
 
 CREATE TEMP TABLE sometable(f1 int);
@@ -385,12 +343,7 @@ CREATE FUNCTION voidtest5(a int) RETURNS SETOF VOID LANGUAGE SQL AS
 $$ SELECT generate_series(1, a) $$ STABLE;
 SELECT * FROM voidtest5(3);
 
--- Regression tests for bugs:
 
--- Check that arguments that are R/W expanded datums aren't corrupted by
--- multiple uses.  This test knows that array_append() returns a R/W datum
--- and will modify a R/W array input in-place.  We use SETOF to prevent
--- inlining of the SQL function.
 CREATE FUNCTION double_append(anyarray, anyelement) RETURNS SETOF anyarray
 LANGUAGE SQL IMMUTABLE AS
 $$ SELECT array_append($1, $2) || array_append($1, $2) $$;
@@ -398,7 +351,6 @@ $$ SELECT array_append($1, $2) || array_append($1, $2) $$;
 SELECT double_append(array_append(ARRAY[q1], q2), q3)
   FROM (VALUES(1,2,3), (4,5,6)) v(q1,q2,q3);
 
--- Things that shouldn't work:
 
 CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
     AS 'SELECT ''not an integer'';';
@@ -415,7 +367,6 @@ CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
 CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
     AS 'a', 'b';
 
--- Cleanup
 DROP SCHEMA temp_func_test CASCADE;
 DROP USER regress_unpriv_user;
 RESET search_path;

@@ -1,8 +1,4 @@
---
--- INET
---
 
--- prepare the table...
 
 DROP TABLE INET_TBL;
 CREATE TABLE INET_TBL (c cidr, i inet);
@@ -23,15 +19,12 @@ INSERT INTO INET_TBL (c, i) VALUES ('10', '9.1.2.3/8');
 INSERT INTO INET_TBL (c, i) VALUES ('10:23::f1', '10:23::f1/64');
 INSERT INTO INET_TBL (c, i) VALUES ('10:23::8000/113', '10:23::ffff');
 INSERT INTO INET_TBL (c, i) VALUES ('::ffff:1.2.3.4', '::4.3.2.1/24');
--- check that CIDR rejects invalid input:
 INSERT INTO INET_TBL (c, i) VALUES ('192.168.1.2/30', '192.168.1.226');
 INSERT INTO INET_TBL (c, i) VALUES ('1234::1234::1234', '::1.2.3.4');
--- check that CIDR rejects invalid input when converting from text:
 INSERT INTO INET_TBL (c, i) VALUES (cidr('192.168.1.2/30'), '192.168.1.226');
 INSERT INTO INET_TBL (c, i) VALUES (cidr('ffff:ffff:ffff:ffff::/24'), '::192.168.1.226');
 SELECT c AS cidr, i AS inet FROM INET_TBL;
 
--- now test some support functions
 
 SELECT i AS inet, host(i), text(i), family(i) FROM INET_TBL;
 SELECT c AS cidr, abbrev(c) FROM INET_TBL;
@@ -60,10 +53,8 @@ SELECT i, c,
 SELECT max(i) AS max, min(i) AS min FROM INET_TBL;
 SELECT max(c) AS max, min(c) AS min FROM INET_TBL;
 
--- check the conversion to/from text and set_netmask
 SELECT set_masklen(inet(text(i)), 24) FROM INET_TBL;
 
--- check that btree index works correctly
 CREATE INDEX inet_idx1 ON inet_tbl(i);
 SET enable_seqscan TO off;
 EXPLAIN (COSTS OFF)
@@ -81,7 +72,6 @@ SELECT * FROM inet_tbl WHERE '192.168.1.0/24'::cidr >> i;
 SET enable_seqscan TO on;
 DROP INDEX inet_idx1;
 
--- check that gist index works correctly
 CREATE INDEX inet_idx2 ON inet_tbl using gist (i inet_ops);
 SET enable_seqscan TO off;
 SELECT * FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
@@ -96,7 +86,6 @@ SELECT * FROM inet_tbl WHERE i >= '192.168.1.0/24'::cidr ORDER BY i;
 SELECT * FROM inet_tbl WHERE i > '192.168.1.0/24'::cidr ORDER BY i;
 SELECT * FROM inet_tbl WHERE i <> '192.168.1.0/24'::cidr ORDER BY i;
 
--- test index-only scans
 EXPLAIN (COSTS OFF)
 SELECT i FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
 SELECT i FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
@@ -104,7 +93,6 @@ SELECT i FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
 SET enable_seqscan TO on;
 DROP INDEX inet_idx2;
 
--- check that spgist index works correctly
 CREATE INDEX inet_idx3 ON inet_tbl using spgist (i);
 SET enable_seqscan TO off;
 SELECT * FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
@@ -119,7 +107,6 @@ SELECT * FROM inet_tbl WHERE i >= '192.168.1.0/24'::cidr ORDER BY i;
 SELECT * FROM inet_tbl WHERE i > '192.168.1.0/24'::cidr ORDER BY i;
 SELECT * FROM inet_tbl WHERE i <> '192.168.1.0/24'::cidr ORDER BY i;
 
--- test index-only scans
 EXPLAIN (COSTS OFF)
 SELECT i FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
 SELECT i FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
@@ -127,7 +114,6 @@ SELECT i FROM inet_tbl WHERE i << '192.168.1.0/24'::cidr ORDER BY i;
 SET enable_seqscan TO on;
 DROP INDEX inet_idx3;
 
--- simple tests of inet boolean and arithmetic operators
 SELECT i, ~i AS "~i" FROM inet_tbl;
 SELECT i, c, i & c AS "and" FROM inet_tbl;
 SELECT i, c, i | c AS "or" FROM inet_tbl;
@@ -142,23 +128,17 @@ SELECT '127.0.0.2'::inet  - ('127.0.0.2'::inet + 500);
 SELECT '127.0.0.2'::inet  - ('127.0.0.2'::inet - 500);
 SELECT '127::2'::inet  - ('127::2'::inet + 500);
 SELECT '127::2'::inet  - ('127::2'::inet - 500);
--- these should give overflow errors:
 SELECT '127.0.0.1'::inet + 10000000000;
 SELECT '127.0.0.1'::inet - 10000000000;
 SELECT '126::1'::inet - '127::2'::inet;
 SELECT '127::1'::inet - '126::2'::inet;
--- but not these
 SELECT '127::1'::inet + 10000000000;
 SELECT '127::1'::inet - '127::2'::inet;
 
--- insert one more row with addressed from different families
 INSERT INTO INET_TBL (c, i) VALUES ('10', '10::/8');
--- now, this one should fail
 SELECT inet_merge(c, i) FROM INET_TBL;
--- fix it by inet_same_family() condition
 SELECT inet_merge(c, i) FROM INET_TBL WHERE inet_same_family(c, i);
 
--- Test inet sortsupport with a variety of boundary inputs:
 SELECT a FROM (VALUES
   ('0.0.0.0/0'::inet),
   ('0.0.0.0/1'::inet),
@@ -253,7 +233,6 @@ SELECT a FROM (VALUES
   ('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff/128'::inet)
 ) AS i(a) ORDER BY a;
 
--- test non-error-throwing API for some core types
 SELECT pg_input_is_valid('1234', 'cidr');
 SELECT * FROM pg_input_error_info('1234', 'cidr');
 SELECT pg_input_is_valid('192.168.198.200/24', 'cidr');

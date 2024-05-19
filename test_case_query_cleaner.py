@@ -1,8 +1,8 @@
 import os
 from time import sleep
 from typing import List
-from adapter.sqlite import SQLiteAdapter
-from adapter.mysql_adapter import MYSQL
+from adapter.SQLiteAdapter import SQLiteAdapter
+from adapter.MySQLAdapter import MYSQL
 import pandas as pd
 from utils import clean_query, clean_test_garbage, SQLFileEmptyError, first_init_dbmss
 

@@ -1,14 +1,4 @@
---
--- CREATE_MISC
---
 
---
--- a is the type root
--- b and c inherit from a (one-level single inheritance)
--- d inherits from b and c (two-level multiple inheritance)
--- e inherits from c (two-level single inheritance)
--- f inherits from e (three-level single inheritance)
---
 CREATE TABLE a_star (
 	class		char,
 	a 			int4
@@ -166,7 +156,6 @@ INSERT INTO f_star (class, f)
 
 INSERT INTO f_star (class) VALUES ('f');
 
--- Analyze the X_star tables for better plan stability in later tests
 ANALYZE a_star;
 ANALYZE b_star;
 ANALYZE c_star;
@@ -174,9 +163,6 @@ ANALYZE d_star;
 ANALYZE e_star;
 ANALYZE f_star;
 
---
--- inheritance stress test
---
 SELECT * FROM a_star*;
 
 SELECT *
@@ -195,7 +181,6 @@ SELECT class, c FROM e_star* x WHERE x.c NOTNULL;
 
 SELECT * FROM f_star* x WHERE x.c ISNULL;
 
--- grouping and aggregation on inherited sets have been busted in the past...
 
 SELECT sum(a) FROM a_star*;
 
@@ -218,8 +203,6 @@ SELECT class, aa
    FROM a_star* x
    WHERE aa ISNULL;
 
--- As of Postgres 7.1, ALTER implicitly recurses,
--- so this should be same as ALTER a_star*
 
 ALTER TABLE a_star RENAME COLUMN aa TO foo;
 
@@ -239,20 +222,15 @@ UPDATE f_star SET f = 10;
 
 ALTER TABLE e_star* ADD COLUMN e int4;
 
---UPDATE e_star* SET e = 42;
 
 SELECT * FROM e_star*;
 
 ALTER TABLE a_star* ADD COLUMN a text;
 
--- That ALTER TABLE should have added TOAST tables.
 SELECT relname, reltoastrelid <> 0 AS has_toast_table
    FROM pg_class
    WHERE oid::regclass IN ('a_star', 'c_star')
    ORDER BY 1;
 
---UPDATE b_star*
---   SET a = text 'gazpacho'
---   WHERE aa > 4;
 
 SELECT class, aa, a FROM a_star*;

@@ -1,11 +1,7 @@
--- When there is a LIMIT clause, incremental sort is beneficial because
--- it only has to sort some of the groups, and not the entire table.
 explain (costs off)
 select * from (select * from tenk1 order by four) t order by four, ten
 limit 1;
 
--- When work_mem is not enough to sort the entire table, incremental sort
--- may be faster if individual groups still fit into work_mem.
 set work_mem to '2MB';
 explain (costs off)
 select * from (select * from tenk1 order by four) t order by four, ten;
@@ -113,7 +109,6 @@ begin
 end;
 $$;
 
--- A single large group tested around each mode transition point.
 insert into t(a, b) select i/100 + 1, i + 1 from generate_series(0, 999) n(i);
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 31;
@@ -128,33 +123,23 @@ explain (costs off) select * from (select * from t order by a) s order by a, b l
 select * from (select * from t order by a) s order by a, b limit 66;
 delete from t;
 
--- An initial large group followed by a small group.
 insert into t(a, b) select i/50 + 1, i + 1 from generate_series(0, 999) n(i);
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 55;
 select * from (select * from t order by a) s order by a, b limit 55;
--- Test EXPLAIN ANALYZE with only a fullsort group.
 select explain_analyze_without_memory('select * from (select * from t order by a) s order by a, b limit 55');
 select jsonb_pretty(explain_analyze_inc_sort_nodes_without_memory('select * from (select * from t order by a) s order by a, b limit 55'));
 select explain_analyze_inc_sort_nodes_verify_invariants('select * from (select * from t order by a) s order by a, b limit 55');
 delete from t;
 
--- An initial small group followed by a large group.
 insert into t(a, b) select (case when i < 5 then i else 9 end), i from generate_series(1, 1000) n(i);
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 70;
 select * from (select * from t order by a) s order by a, b limit 70;
--- Checks case where we hit a group boundary at the last tuple of a batch.
--- Because the full sort state is bounded, we scan 64 tuples (the mode
--- transition point) but only retain 5. Thus when we transition modes, all
--- tuples in the full sort state have different prefix keys.
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 5;
 select * from (select * from t order by a) s order by a, b limit 5;
 
--- Test rescan.
 begin;
--- We force the planner to choose a plan with incremental sort on the right side
--- of a nested loop join node. That way we trigger the rescan code path.
 set local enable_hashjoin = off;
 set local enable_mergejoin = off;
 set local enable_material = off;
@@ -162,13 +147,11 @@ set local enable_sort = off;
 explain (costs off) select * from t left join (select * from (select * from t order by a) v order by a, b) s on s.a = t.a where t.a in (1, 2);
 select * from t left join (select * from (select * from t order by a) v order by a, b) s on s.a = t.a where t.a in (1, 2);
 rollback;
--- Test EXPLAIN ANALYZE with both fullsort and presorted groups.
 select explain_analyze_without_memory('select * from (select * from t order by a) s order by a, b limit 70');
 select jsonb_pretty(explain_analyze_inc_sort_nodes_without_memory('select * from (select * from t order by a) s order by a, b limit 70'));
 select explain_analyze_inc_sort_nodes_verify_invariants('select * from (select * from t order by a) s order by a, b limit 70');
 delete from t;
 
--- Small groups of 10 tuples each tested around each mode transition point.
 insert into t(a, b) select i / 10, i from generate_series(1, 1000) n(i);
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 31;
@@ -183,7 +166,6 @@ explain (costs off) select * from (select * from t order by a) s order by a, b l
 select * from (select * from t order by a) s order by a, b limit 66;
 delete from t;
 
--- Small groups of only 1 tuple each tested around each mode transition point.
 insert into t(a, b) select i, i from generate_series(1, 1000) n(i);
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 31;
@@ -200,7 +182,6 @@ delete from t;
 
 drop table t;
 
--- Incremental sort vs. parallel queries
 set min_parallel_table_scan_size = '1kB';
 set min_parallel_index_scan_size = '1kB';
 set parallel_setup_cost = 0;
@@ -218,20 +199,13 @@ explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1
 set enable_incremental_sort = on;
 explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1;
 
--- Incremental sort vs. set operations with varno 0
 set enable_hashagg to off;
 explain (costs off) select * from t union select * from t order by 1,3;
 
--- Full sort, not just incremental sort can be pushed below a gather merge path
--- by generate_useful_gather_paths.
 explain (costs off) select distinct a,b from t;
 
 drop table t;
 
--- Sort pushdown can't go below where expressions are part of the rel target.
--- In particular this is interesting for volatile expressions which have to
--- go above joins since otherwise we'll incorrectly use expression evaluations
--- across multiple rows.
 set enable_hashagg=off;
 set enable_seqscan=off;
 set enable_incremental_sort = off;
@@ -240,27 +214,21 @@ set parallel_setup_cost=0;
 set min_parallel_table_scan_size = 0;
 set min_parallel_index_scan_size = 0;
 
--- Parallel sort below join.
 explain (costs off) select distinct sub.unique1, stringu1
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub;
 explain (costs off) select sub.unique1, stringu1
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub
 order by 1, 2;
--- Parallel sort but with expression that can be safely generated at the base rel.
 explain (costs off) select distinct sub.unique1, md5(stringu1)
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub;
 explain (costs off) select sub.unique1, md5(stringu1)
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub
 order by 1, 2;
--- Parallel sort with an aggregate that can be safely generated in parallel,
--- but we can't sort by partial aggregate values.
 explain (costs off) select count(*)
 from tenk1 t1
 join tenk1 t2 on t1.unique1 = t2.unique2
 join tenk1 t3 on t2.unique1 = t3.unique1
 order by count(*);
--- Parallel sort but with expression (correlated subquery) that
--- is prohibited in parallel plans.
 explain (costs off) select distinct
   unique1,
   (select t.unique1 from tenk1 where tenk1.unique1 = t.unique1)
@@ -270,7 +238,6 @@ explain (costs off) select
   (select t.unique1 from tenk1 where tenk1.unique1 = t.unique1)
 from tenk1 t, generate_series(1, 1000)
 order by 1, 2;
--- Parallel sort but with expression not available until the upper rel.
 explain (costs off) select distinct sub.unique1, stringu1 || random()::text
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub;
 explain (costs off) select sub.unique1, stringu1 || random()::text
@@ -285,10 +252,8 @@ reset parallel_setup_cost;
 reset min_parallel_table_scan_size;
 reset min_parallel_index_scan_size;
 
--- Ensure incremental sorts work for amcanorderbyop type indexes
 create table point_table (a point, b int);
 create index point_table_a_idx on point_table using gist(a);
 
--- Ensure we get an incremental sort plan for both of the following queries
 explain (costs off) select a, b, a <-> point(5, 5) dist from point_table order by dist, b limit 1;
 explain (costs off) select a, b, a <-> point(5, 5) dist from point_table order by dist, b desc limit 1;

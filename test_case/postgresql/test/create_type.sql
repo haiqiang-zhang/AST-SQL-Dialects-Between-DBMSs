@@ -1,17 +1,6 @@
---
--- CREATE_TYPE
---
 
--- directory path and dlsuffix are passed to us in environment variables
-\getenv libdir PG_LIBDIR;
-\getenv dlsuffix PG_DLSUFFIX;
 
-\set regresslib :libdir '/regress' :dlsuffix;
 
---
--- Test the "old style" approach of making the I/O functions first,
--- with no explicit shell type creation.
---
 CREATE FUNCTION widget_in(cstring)
    RETURNS widget
    AS :'regresslib'
@@ -46,29 +35,20 @@ CREATE TYPE city_budget (
    input = int44in,
    output = int44out,
    element = int4,
-   category = 'x',   -- just to verify the system will take it
-   preferred = true  -- ditto
+   category = 'x',   
+   preferred = true  
 );
 
--- Test creation and destruction of shell types
 CREATE TYPE shell;
-CREATE TYPE shell;   -- fail, type already present
+CREATE TYPE shell;   
 DROP TYPE shell;
-DROP TYPE shell;     -- fail, type not exist
+DROP TYPE shell;     
 
--- also, let's leave one around for purposes of pg_dump testing
 CREATE TYPE myshell;
 
---
--- Test type-related default values (broken in releases before PG 7.2)
---
--- This part of the test also exercises the "new style" approach of making
--- a shell type and then filling it in.
---
 CREATE TYPE int42;
 CREATE TYPE text_w_default;
 
--- Make dummy I/O routines using the existing internal support for int4, text
 CREATE FUNCTION int42_in(cstring)
    RETURNS int42
    AS 'int4in'
@@ -109,10 +89,8 @@ INSERT INTO default_test DEFAULT VALUES;
 
 SELECT * FROM default_test;
 
--- We need a shell type to test some CREATE TYPE failure cases with
 CREATE TYPE bogus_type;
 
--- invalid: non-lowercase quoted identifiers
 CREATE TYPE bogus_type (
 	"Internallength" = 4,
 	"Input" = int42_in,
@@ -122,7 +100,6 @@ CREATE TYPE bogus_type (
 	"Passedbyvalue"
 );
 
--- invalid: input/output function incompatibility
 CREATE TYPE bogus_type (INPUT = array_in,
     OUTPUT = array_out,
     ELEMENT = int,
@@ -130,13 +107,11 @@ CREATE TYPE bogus_type (INPUT = array_in,
 
 DROP TYPE bogus_type;
 
--- It no longer is possible to issue CREATE TYPE without making a shell first
 CREATE TYPE bogus_type (INPUT = array_in,
     OUTPUT = array_out,
     ELEMENT = int,
     INTERNALLENGTH = 32);
 
--- Test stand-alone composite type
 
 CREATE TYPE default_test_row AS (f1 text_w_default, f2 int42);
 
@@ -146,7 +121,6 @@ CREATE FUNCTION get_default_test() RETURNS SETOF default_test_row AS '
 
 SELECT * FROM get_default_test();
 
--- Test comments
 COMMENT ON TYPE bad IS 'bad comment';
 COMMENT ON TYPE default_test_row IS 'good comment';
 COMMENT ON TYPE default_test_row IS NULL;
@@ -154,53 +128,44 @@ COMMENT ON COLUMN default_test_row.nope IS 'bad comment';
 COMMENT ON COLUMN default_test_row.f1 IS 'good comment';
 COMMENT ON COLUMN default_test_row.f1 IS NULL;
 
--- Check shell type create for existing types
-CREATE TYPE text_w_default;		-- should fail
+CREATE TYPE text_w_default;		
 
 DROP TYPE default_test_row CASCADE;
 
 DROP TABLE default_test;
 
--- Check dependencies are established when creating a new type
 CREATE TYPE base_type;
 CREATE FUNCTION base_fn_in(cstring) RETURNS base_type AS 'boolin'
     LANGUAGE internal IMMUTABLE STRICT;
 CREATE FUNCTION base_fn_out(base_type) RETURNS cstring AS 'boolout'
     LANGUAGE internal IMMUTABLE STRICT;
 CREATE TYPE base_type(INPUT = base_fn_in, OUTPUT = base_fn_out);
-DROP FUNCTION base_fn_in(cstring); -- error
-DROP FUNCTION base_fn_out(base_type); -- error
-DROP TYPE base_type; -- error
+DROP FUNCTION base_fn_in(cstring); 
+DROP FUNCTION base_fn_out(base_type); 
+DROP TYPE base_type; 
 DROP TYPE base_type CASCADE;
 
--- Check usage of typmod with a user-defined type
--- (we have borrowed numeric's typmod functions)
 
-CREATE TEMP TABLE mytab (foo widget(42,13,7));     -- should fail
+CREATE TEMP TABLE mytab (foo widget(42,13,7));     
 CREATE TEMP TABLE mytab (foo widget(42,13));
 
 SELECT format_type(atttypid,atttypmod) FROM pg_attribute
 WHERE attrelid = 'mytab'::regclass AND attnum > 0;
 
--- might as well exercise the widget type while we're here
 INSERT INTO mytab VALUES ('(1,2,3)'), ('(-44,5.5,12)');
 TABLE mytab;
 
--- and test format_type() a bit more, too
 select format_type('varchar'::regtype, 42);
 select format_type('bpchar'::regtype, null);
--- this behavior difference is intentional
 select format_type('bpchar'::regtype, -1);
 
--- Test non-error-throwing APIs using widget, which still throws errors
 SELECT pg_input_is_valid('(1,2,3)', 'widget');
-SELECT pg_input_is_valid('(1,2)', 'widget');  -- hard error expected
+SELECT pg_input_is_valid('(1,2)', 'widget');  
 SELECT pg_input_is_valid('{"(1,2,3)"}', 'widget[]');
-SELECT pg_input_is_valid('{"(1,2)"}', 'widget[]');  -- hard error expected
+SELECT pg_input_is_valid('{"(1,2)"}', 'widget[]');  
 SELECT pg_input_is_valid('("(1,2,3)")', 'mytab');
-SELECT pg_input_is_valid('("(1,2)")', 'mytab');  -- hard error expected
+SELECT pg_input_is_valid('("(1,2)")', 'mytab');  
 
--- Test creation of an operator over a user-defined type
 
 CREATE FUNCTION pt_in_widget(point, widget)
    RETURNS bool
@@ -218,7 +183,6 @@ CREATE OPERATOR <% (
 SELECT point '(1,2)' <% widget '(0,0,3)' AS t,
        point '(1,2)' <% widget '(0,0,1)' AS f;
 
--- exercise city_budget type
 CREATE TABLE city (
 	name		name,
 	location 	box,
@@ -231,10 +195,6 @@ INSERT INTO city VALUES
 
 TABLE city;
 
---
--- Test CREATE/ALTER TYPE using a type that's compatible with varchar,
--- so we can re-use those support functions
---
 CREATE TYPE myvarchar;
 
 CREATE FUNCTION myvarcharin(cstring, oid, integer) RETURNS myvarchar
@@ -249,7 +209,6 @@ LANGUAGE internal STABLE PARALLEL SAFE STRICT AS 'varcharsend';
 CREATE FUNCTION myvarcharrecv(internal, oid, integer) RETURNS myvarchar
 LANGUAGE internal STABLE PARALLEL SAFE STRICT AS 'varcharrecv';
 
--- fail, it's still a shell:
 ALTER TYPE myvarchar SET (storage = extended);
 
 CREATE TYPE myvarchar (
@@ -259,10 +218,9 @@ CREATE TYPE myvarchar (
     storage = main
 );
 
--- want to check updating of a domain over the target type, too
 CREATE DOMAIN myvarchardom AS myvarchar;
 
-ALTER TYPE myvarchar SET (storage = plain);  -- not allowed
+ALTER TYPE myvarchar SET (storage = plain);  
 
 ALTER TYPE myvarchar SET (storage = extended);
 
@@ -271,7 +229,6 @@ ALTER TYPE myvarchar SET (
     receive = myvarcharrecv,
     typmod_in = varchartypmodin,
     typmod_out = varchartypmodout,
-    -- these are bogus, but it's safe as long as we don't use the type:
     analyze = ts_typanalyze,
     subscript = raw_array_subscript_handler
 );
@@ -292,8 +249,7 @@ SELECT typinput, typoutput, typreceive, typsend, typmodin, typmodout,
        typanalyze, typsubscript, typstorage
 FROM pg_type WHERE typname = '_myvarchardom';
 
--- ensure dependencies are straight
-DROP FUNCTION myvarcharsend(myvarchar);  -- fail
-DROP TYPE myvarchar;  -- fail
+DROP FUNCTION myvarcharsend(myvarchar);  
+DROP TYPE myvarchar;  
 
 DROP TYPE myvarchar CASCADE;

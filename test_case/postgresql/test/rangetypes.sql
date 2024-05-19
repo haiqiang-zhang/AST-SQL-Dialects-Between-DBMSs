@@ -1,11 +1,5 @@
--- Tests for range data types.
 
---
--- test input parser
--- (type textrange was already made in test_setup.sql)
---
 
--- negative tests; should fail
 select ''::textrange;
 select '-[a,z)'::textrange;
 select '[a,z) - '::textrange;
@@ -17,7 +11,6 @@ select '(],a)'::textrange;
 select '(a,])'::textrange;
 select '[z,a]'::textrange;
 
--- should succeed
 select '  empty  '::textrange;
 select ' ( empty, empty )  '::textrange;
 select ' ( " a " " a ", " z " " z " )  '::textrange;
@@ -35,12 +28,10 @@ select '([,z)'::textrange;
 select '(!,()'::textrange;
 select '(!,[)'::textrange;
 select '[a,a]'::textrange;
--- these are allowed but normalize to empty:
 select '[a,a)'::textrange;
 select '(a,a]'::textrange;
 select '(a,a)'::textrange;
 
--- Also try it with non-error-throwing API
 select pg_input_is_valid('(1,4)', 'int4range');
 select pg_input_is_valid('(1,4', 'int4range');
 select * from pg_input_error_info('(1,4', 'int4range');
@@ -53,9 +44,6 @@ select * from pg_input_error_info('[1,2147483647]', 'int4range');
 select pg_input_is_valid('[2000-01-01,5874897-12-31]', 'daterange');
 select * from pg_input_error_info('[2000-01-01,5874897-12-31]', 'daterange');
 
---
--- create some test data and test the operators
---
 
 CREATE TABLE numrange_test (nr NUMRANGE);
 create index numrange_test_btree on numrange_test(nr);
@@ -119,11 +107,11 @@ select numrange(1.1, 2.2) < numrange(1.1, 1.2);
 
 select numrange(1.0, 2.0) + numrange(2.0, 3.0);
 select numrange(1.0, 2.0) + numrange(1.5, 3.0);
-select numrange(1.0, 2.0) + numrange(2.5, 3.0); -- should fail
+select numrange(1.0, 2.0) + numrange(2.5, 3.0); 
 
 select range_merge(numrange(1.0, 2.0), numrange(2.0, 3.0));
 select range_merge(numrange(1.0, 2.0), numrange(1.5, 3.0));
-select range_merge(numrange(1.0, 2.0), numrange(2.5, 3.0)); -- shouldn't fail
+select range_merge(numrange(1.0, 2.0), numrange(2.5, 3.0)); 
 
 select numrange(1.0, 2.0) * numrange(2.0, 3.0);
 select numrange(1.0, 2.0) * numrange(1.5, 3.0);
@@ -165,12 +153,8 @@ set enable_nestloop to default;
 set enable_hashjoin to default;
 set enable_mergejoin to default;
 
--- keep numrange_test around to help exercise dump/reload
 DROP TABLE numrange_test2;
 
---
--- Apply a subset of the above tests on a collatable type, too
---
 
 CREATE TABLE textrange_test (tr textrange);
 create index textrange_test_btree on textrange_test(tr);
@@ -196,14 +180,12 @@ select * from textrange_test where tr = '["b","g")';
 select * from textrange_test where tr < 'empty';
 
 
--- test canonical form for int4range
 select int4range(1, 10, '[]');
 select int4range(1, 10, '[)');
 select int4range(1, 10, '(]');
 select int4range(1, 10, '()');
 select int4range(1, 2, '()');
 
--- test canonical form for daterange
 select daterange('2000-01-10'::date, '2000-01-20'::date, '[]');
 select daterange('2000-01-10'::date, '2000-01-20'::date, '[)');
 select daterange('2000-01-10'::date, '2000-01-20'::date, '(]');
@@ -215,7 +197,6 @@ select daterange('-infinity'::date, '2000-01-01'::date, '[)');
 select daterange('2000-01-01'::date, 'infinity'::date, '[)');
 select daterange('2000-01-01'::date, 'infinity'::date, '[]');
 
--- test GiST index that's been built incrementally
 create table test_range_gist(ir int4range);
 create index test_range_gist_idx on test_range_gist using gist (ir);
 
@@ -227,13 +208,8 @@ insert into test_range_gist select int4range(NULL,g*10,'(]') from generate_serie
 insert into test_range_gist select int4range(g*10,NULL,'(]') from generate_series(1,100) g;
 insert into test_range_gist select int4range(g, g+10) from generate_series(1,2000) g;
 
--- test statistics and selectivity estimation as well
---
--- We don't check the accuracy of selectivity estimation, but at least check
--- it doesn't fall.
 analyze test_range_gist;
 
--- first, verify non-indexed results
 SET enable_seqscan    = t;
 SET enable_indexscan  = f;
 SET enable_bitmapscan = f;
@@ -259,7 +235,6 @@ select count(*) from test_range_gist where ir &< int4multirange(int4range(100,20
 select count(*) from test_range_gist where ir &> int4multirange(int4range(100,200), int4range(400,500));
 select count(*) from test_range_gist where ir -|- int4multirange(int4range(100,200), int4range(400,500));
 
--- now check same queries using index
 SET enable_seqscan    = f;
 SET enable_indexscan  = t;
 SET enable_bitmapscan = f;
@@ -285,7 +260,6 @@ select count(*) from test_range_gist where ir &< int4multirange(int4range(100,20
 select count(*) from test_range_gist where ir &> int4multirange(int4range(100,200), int4range(400,500));
 select count(*) from test_range_gist where ir -|- int4multirange(int4range(100,200), int4range(400,500));
 
--- now check same queries using a bulk-loaded index
 drop index test_range_gist_idx;
 create index test_range_gist_idx on test_range_gist using gist (ir);
 
@@ -310,7 +284,6 @@ select count(*) from test_range_gist where ir &< int4multirange(int4range(100,20
 select count(*) from test_range_gist where ir &> int4multirange(int4range(100,200), int4range(400,500));
 select count(*) from test_range_gist where ir -|- int4multirange(int4range(100,200), int4range(400,500));
 
--- test SP-GiST index that's been built incrementally
 create table test_range_spgist(ir int4range);
 create index test_range_spgist_idx on test_range_spgist using spgist (ir);
 
@@ -322,7 +295,6 @@ insert into test_range_spgist select int4range(NULL,g*10,'(]') from generate_ser
 insert into test_range_spgist select int4range(g*10,NULL,'(]') from generate_series(1,100) g;
 insert into test_range_spgist select int4range(g, g+10) from generate_series(1,2000) g;
 
--- first, verify non-indexed results
 SET enable_seqscan    = t;
 SET enable_indexscan  = f;
 SET enable_bitmapscan = f;
@@ -339,7 +311,6 @@ select count(*) from test_range_spgist where ir &< int4range(100,500);
 select count(*) from test_range_spgist where ir &> int4range(100,500);
 select count(*) from test_range_spgist where ir -|- int4range(100,500);
 
--- now check same queries using index
 SET enable_seqscan    = f;
 SET enable_indexscan  = t;
 SET enable_bitmapscan = f;
@@ -356,7 +327,6 @@ select count(*) from test_range_spgist where ir &< int4range(100,500);
 select count(*) from test_range_spgist where ir &> int4range(100,500);
 select count(*) from test_range_spgist where ir -|- int4range(100,500);
 
--- now check same queries using a bulk-loaded index
 drop index test_range_spgist_idx;
 create index test_range_spgist_idx on test_range_spgist using spgist (ir);
 
@@ -372,7 +342,6 @@ select count(*) from test_range_spgist where ir &< int4range(100,500);
 select count(*) from test_range_spgist where ir &> int4range(100,500);
 select count(*) from test_range_spgist where ir -|- int4range(100,500);
 
--- test index-only scans
 explain (costs off)
 select ir from test_range_spgist where ir -|- int4range(10,20) order by ir;
 select ir from test_range_spgist where ir -|- int4range(10,20) order by ir;
@@ -381,7 +350,6 @@ RESET enable_seqscan;
 RESET enable_indexscan;
 RESET enable_bitmapscan;
 
--- test elem <@ range operator
 create table test_range_elem(i int4);
 create index test_range_elem_idx on test_range_elem (i);
 insert into test_range_elem select i from generate_series(1,100) i;
@@ -390,7 +358,6 @@ SET enable_seqscan    = f;
 
 select count(*) from test_range_elem where i <@ int4range(10,50);
 
--- also test spgist index on anyrange expression
 create index on test_range_elem using spgist(int4range(i,i+10));
 explain (costs off)
 select count(*) from test_range_elem where int4range(i,i+10) <@ int4range(10,30);
@@ -400,11 +367,6 @@ RESET enable_seqscan;
 
 drop table test_range_elem;
 
---
--- Btree_gist is not included by default, so to test exclusion
--- constraints with range types, use singleton int ranges for the "="
--- portion of the constraint.
---
 
 create table test_range_excl(
   room int4range,
@@ -425,21 +387,13 @@ insert into test_range_excl
 insert into test_range_excl
   values(int4range(125, 125, '[]'), int4range(1, 1, '[]'), '[2010-01-02 10:10, 2010-01-02 11:00)');
 
--- test bigint ranges
 select int8range(10000000000::int8, 20000000000::int8,'(]');
--- test tstz ranges
 set timezone to '-08';
 select '[2010-01-01 01:00:00 -05, 2010-01-01 02:00:00 -08)'::tstzrange;
--- should fail
 select '[2010-01-01 01:00:00 -08, 2010-01-01 02:00:00 -05)'::tstzrange;
 set timezone to default;
 
---
--- Test user-defined range of floats
--- (type float8range was already made in test_setup.sql)
---
 
---should fail
 create type bogus_float8range as range (subtype=float8, subtype_diff=float4mi);
 
 select '[123.001, 5.e9)'::float8range @> 888.882::float8;
@@ -448,28 +402,19 @@ insert into float8range_test values(float8range(-100.00007, '1.111113e9'), 42);
 select * from float8range_test;
 drop table float8range_test;
 
---
--- Test range types over domains
---
 
 create domain mydomain as int4;
 create type mydomainrange as range(subtype=mydomain);
 select '[4,50)'::mydomainrange @> 7::mydomain;
-drop domain mydomain;  -- fail
+drop domain mydomain;  
 drop domain mydomain cascade;
 
---
--- Test domains over range types
---
 
 create domain restrictedrange as int4range check (upper(value) < 10);
 select '[4,5)'::restrictedrange @> 7;
-select '[4,50)'::restrictedrange @> 7; -- should fail
+select '[4,50)'::restrictedrange @> 7; 
 drop domain restrictedrange;
 
---
--- Test multiple range types over the same subtype
---
 
 create type textrange1 as range(subtype=text, collation="C");
 create type textrange2 as range(subtype=text, collation="C");
@@ -480,25 +425,19 @@ select textrange2('a','z') @> 'b'::text;
 drop type textrange1;
 drop type textrange2;
 
---
--- Test polymorphic type system
---
 
 create function anyarray_anyrange_func(a anyarray, r anyrange)
   returns anyelement as 'select $1[1] + lower($2);' language sql;
 
 select anyarray_anyrange_func(ARRAY[1,2], int4range(10,20));
 
--- should fail
 select anyarray_anyrange_func(ARRAY[1,2], numrange(10,20));
 
 drop function anyarray_anyrange_func(anyarray, anyrange);
 
--- should fail
 create function bogus_func(anyelement)
   returns anyrange as 'select int4range(1,10)' language sql;
 
--- should fail
 create function bogus_func(int)
   returns anyrange as 'select int4range(1,10)' language sql;
 
@@ -513,7 +452,7 @@ create function rangetypes_sql(q anyrange, b anyarray, out c anyelement)
   language sql;
 
 select rangetypes_sql(int4range(1,10), ARRAY[2,20]);
-select rangetypes_sql(numrange(1,10), ARRAY[2,20]);  -- match failure
+select rangetypes_sql(numrange(1,10), ARRAY[2,20]);  
 
 create function anycompatiblearray_anycompatiblerange_func(a anycompatiblearray, r anycompatiblerange)
   returns anycompatible as 'select $1[1] + lower($2);' language sql;
@@ -522,18 +461,13 @@ select anycompatiblearray_anycompatiblerange_func(ARRAY[1,2], int4range(10,20));
 
 select anycompatiblearray_anycompatiblerange_func(ARRAY[1,2], numrange(10,20));
 
--- should fail
 select anycompatiblearray_anycompatiblerange_func(ARRAY[1.1,2], int4range(10,20));
 
 drop function anycompatiblearray_anycompatiblerange_func(anycompatiblearray, anycompatiblerange);
 
--- should fail
 create function bogus_func(anycompatible)
   returns anycompatiblerange as 'select int4range(1,10)' language sql;
 
---
--- Arrays of ranges
---
 
 select ARRAY[numrange(1.1, 1.2), numrange(12.3, 155.5)];
 
@@ -542,52 +476,37 @@ insert into i8r_array values (42, array[int8range(1,10), int8range(2,20)]);
 select * from i8r_array;
 drop table i8r_array;
 
---
--- Ranges of arrays
---
 
 create type arrayrange as range (subtype=int4[]);
 
 select arrayrange(ARRAY[1,2], ARRAY[2,1]);
-select arrayrange(ARRAY[2,1], ARRAY[1,2]);  -- fail
+select arrayrange(ARRAY[2,1], ARRAY[1,2]);  
 
 select array[1,1] <@ arrayrange(array[1,2], array[2,1]);
 select array[1,3] <@ arrayrange(array[1,2], array[2,1]);
 
---
--- Ranges of composites
---
 
 create type two_ints as (a int, b int);
 create type two_ints_range as range (subtype = two_ints);
 
--- with debug_parallel_query on, this exercises tqueue.c's range remapping
 select *, row_to_json(upper(t)) as u from
   (values (two_ints_range(row(1,2), row(3,4))),
           (two_ints_range(row(5,6), row(7,8)))) v(t);
 
--- this must be rejected to avoid self-inclusion issues:
 alter type two_ints add attribute c two_ints_range;
 
 drop type two_ints cascade;
 
---
--- Check behavior when subtype lacks a hash function
---
 
 create type varbitrange as range (subtype = varbit);
 
-set enable_sort = off;  -- try to make it pick a hash setop implementation
+set enable_sort = off;  
 
 select '(01,10)'::varbitrange except select '(10,11)'::varbitrange;
 
 reset enable_sort;
 
---
--- OUT/INOUT/TABLE functions
---
 
--- infer anyrange from anyrange
 create function outparam_succeed(i anyrange, out r anyrange, out t text)
   as $$ select $1, 'foo'::text $$ language sql;
 
@@ -599,13 +518,11 @@ create function outparam2_succeed(r anyrange, out lu anyarray, out ul anyarray)
 
 select * from outparam2_succeed(int4range(1,11));
 
--- infer anyarray from anyrange
 create function outparam_succeed2(i anyrange, out r anyarray, out t text)
   as $$ select ARRAY[upper($1)], 'foo'::text $$ language sql;
 
 select * from outparam_succeed2(int4range(int4range(1,2)));
 
--- infer anyelement from anyrange
 create function inoutparam_succeed(out i anyelement, inout r anyrange)
   as $$ select upper($1), $1 $$ language sql;
 
@@ -618,70 +535,53 @@ create function table_succeed(r anyrange)
 
 select * from table_succeed(int4range(1,11));
 
--- should fail
 create function outparam_fail(i anyelement, out r anyrange, out t text)
   as $$ select '[1,10]', 'foo' $$ language sql;
 
---should fail
 create function inoutparam_fail(inout i anyelement, out r anyrange)
   as $$ select $1, '[1,10]' $$ language sql;
 
---should fail
 create function table_fail(i anyelement) returns table(i anyelement, r anyrange)
   as $$ select $1, '[1,10]' $$ language sql;
 
---
--- Test support functions
---
 
--- empty range
 explain (verbose, costs off)
 select current_date <@ daterange 'empty';
 
--- unbounded range
 explain (verbose, costs off)
 select current_date <@ daterange(NULL, NULL);
 
--- only lower bound present
 explain (verbose, costs off)
 select current_date <@ daterange('2000-01-01', NULL, '[)');
 
--- only upper bound present
 explain (verbose, costs off)
 select current_date <@ daterange(NULL, '2000-01-01', '(]');
 
--- lower range "-Infinity" excluded
 explain (verbose, costs off)
 select current_date <@ daterange('-Infinity', '1997-04-10'::date, '()');
 
--- lower range "-Infinity" included
 explain (verbose, costs off)
 select current_date <@ daterange('-Infinity', '1997-04-10'::date, '[)');
 
--- upper range "Infinity" excluded
 explain (verbose, costs off)
 select current_date <@ daterange('2002-09-25'::date, 'Infinity', '[)');
 
--- upper range "Infinity" included
 explain (verbose, costs off)
 select current_date <@ daterange('2002-09-25'::date, 'Infinity', '[]');
 
--- should also work if we use "@>"
 explain (verbose, costs off)
 select daterange('-Infinity', '1997-04-10'::date, '()') @> current_date;
 
 explain (verbose, costs off)
 select daterange('2002-09-25'::date, 'Infinity', '[]') @> current_date;
 
--- Check that volatile cases are not optimized
 explain (verbose, costs off)
 select now() <@ tstzrange('2024-01-20 00:00', '2024-01-21 00:00');
-explain (verbose, costs off)  -- unsafe!
+explain (verbose, costs off)  
 select clock_timestamp() <@ tstzrange('2024-01-20 00:00', '2024-01-21 00:00');
 explain (verbose, costs off)
 select clock_timestamp() <@ tstzrange('2024-01-20 00:00', NULL);
 
--- test a custom range type with a non-default operator class
 create type textrange_supp as range (
    subtype = text,
    subtype_opclass = text_pattern_ops

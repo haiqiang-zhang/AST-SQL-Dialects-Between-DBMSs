@@ -26,12 +26,23 @@ for file in os.listdir(testcase_path):
             print(f"Error decoding {testcase_path}")
             continue
 
-        for i in range(len(lines)):
-            match = re.search(r'^\s*\\', lines[i])
+
+        i = 0
+        while i < len(lines):
+            # delete the line if it starts with \
+            if re.search(r'^\s*\\', lines[i]) or re.search(r'^\s*--', lines[i]):
+                print(f"delete {lines[i]} in {file}")
+                lines.pop(i)
+            else:
+                i += 1
+
+        pattern = re.compile(r"--.*")
+        lines = [pattern.sub("", line) for line in lines]
+
+        
+                    
             
-            if match:
-                print(f"add ; to {lines[i]} in {file}")
-                lines[i] = lines[i].strip().strip("\n") + ";\n"
+
         output_folder_path = os.path.join(output_folder, file)
         with open(output_folder_path, "w") as f:
             f.writelines(lines)

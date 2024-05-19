@@ -1,7 +1,5 @@
--- deal with numeric instability of ts_rank
 SET extra_float_digits = 0;
 
---Base tsvector test
 
 SELECT '1'::tsvector;
 SELECT '1 '::tsvector;
@@ -17,14 +15,12 @@ SELECT $$'\\as' ab\c ab\\c AB\\\c ab\\\\c$$::tsvector;
 SELECT tsvectorin(tsvectorout($$'\\as' ab\c ab\\c AB\\\c ab\\\\c$$::tsvector));
 SELECT '''w'':4A,3B,2C,1D,5 a:8';
 SELECT 'a:3A b:2a'::tsvector || 'ba:1234 a:1B';
-SELECT $$'' '1' '2'$$::tsvector;  -- error, empty lexeme is not allowed
+SELECT $$'' '1' '2'$$::tsvector;  
 
--- Also try it with non-error-throwing API
 SELECT pg_input_is_valid('foo', 'tsvector');
 SELECT pg_input_is_valid($$''$$, 'tsvector');
 SELECT * FROM pg_input_error_info($$''$$, 'tsvector');
 
---Base tsquery test
 SELECT '1'::tsquery;
 SELECT '1 '::tsquery;
 SELECT ' 1'::tsquery;
@@ -73,20 +69,17 @@ SELECT 'a & !!b'::tsquery;
 SELECT '!!a & b'::tsquery;
 SELECT '!!a & !!b'::tsquery;
 
--- Also try it with non-error-throwing API
 SELECT pg_input_is_valid('foo', 'tsquery');
 SELECT pg_input_is_valid('foo!', 'tsquery');
 SELECT * FROM pg_input_error_info('foo!', 'tsquery');
 SELECT * FROM pg_input_error_info('a <100000> b', 'tsquery');
 
---comparisons
 SELECT 'a' < 'b & c'::tsquery as "true";
 SELECT 'a' > 'b & c'::tsquery as "false";
 SELECT 'a | f' < 'b & c'::tsquery as "false";
 SELECT 'a | ff' < 'b & c'::tsquery as "false";
 SELECT 'a | f | g' < 'b & c'::tsquery as "false";
 
---concatenation
 SELECT numnode( 'new'::tsquery );
 SELECT numnode( 'new & york'::tsquery );
 SELECT numnode( 'new & york | qwery'::tsquery );
@@ -101,7 +94,6 @@ SELECT 'a & g' <-> 'b | d'::tsquery;
 SELECT 'a & g' <-> 'b <-> d'::tsquery;
 SELECT tsquery_phrase('a <3> g', 'b & d', 10);
 
--- tsvector-tsquery operations
 
 SELECT 'a b:89  ca:23A,64b d:34c'::tsvector @@ 'd:AC & ca' as "true";
 SELECT 'a b:89  ca:23A,64b d:34c'::tsvector @@ 'd:AC & ca:B' as "true";
@@ -120,7 +112,6 @@ SELECT 'wa:1A'::tsvector @@ 'w:*A'::tsquery as "true";
 SELECT 'wa:1A'::tsvector @@ 'w:*D'::tsquery as "false";
 SELECT 'wa:1A'::tsvector @@ '!w:*A'::tsquery as "false";
 SELECT 'wa:1A'::tsvector @@ '!w:*D'::tsquery as "true";
--- historically, a stripped tsvector matches queries ignoring weights:
 SELECT strip('wa:1A'::tsvector) @@ 'w:*A'::tsquery as "true";
 SELECT strip('wa:1A'::tsvector) @@ 'w:*D'::tsquery as "true";
 SELECT strip('wa:1A'::tsvector) @@ '!w:*A'::tsquery as "false";
@@ -133,7 +124,6 @@ SELECT 'supernova'::tsvector @@ 'super:*'::tsquery AS "true";
 SELECT 'supeanova supernova'::tsvector @@ 'super:*'::tsquery AS "true";
 SELECT 'supeznova supernova'::tsvector @@ 'super:*'::tsquery AS "true";
 
---phrase search
 SELECT to_tsvector('simple', '1 2 3 1') @@ '1 <-> 2' AS "true";
 SELECT to_tsvector('simple', '1 2 3 1') @@ '1 <2> 2' AS "false";
 SELECT to_tsvector('simple', '1 2 3 1') @@ '1 <-> 3' AS "false";
@@ -149,7 +139,6 @@ SELECT to_tsvector('simple', '1 2 3 4') @@ '1 <-> (2 <-> 3)' AS "true";
 SELECT to_tsvector('simple', '1 2 3 4') @@ '1 <2> (2 <-> 3)' AS "false";
 SELECT to_tsvector('simple', '1 2 1 2 3 4') @@ '(1 <-> 2) <-> 3' AS "true";
 SELECT to_tsvector('simple', '1 2 1 2 3 4') @@ '1 <-> 2 <-> 3' AS "true";
--- without position data, phrase search does not match
 SELECT strip(to_tsvector('simple', '1 2 3 4')) @@ '1 <-> 2 <-> 3' AS "false";
 
 select to_tsvector('simple', 'q x q y') @@ 'q <-> (x & y)' AS "false";
@@ -188,7 +177,6 @@ select strip(to_tsvector('simple', 'x y q y')) @@ '!(x <2> y)' AS "true";
 select to_tsvector('simple', 'x y q y') @@ '!foo' AS "true";
 select to_tsvector('simple', '') @@ '!foo' AS "true";
 
---ranking
 SELECT ts_rank(' a:1 s:2C d g'::tsvector, 'a | s');
 SELECT ts_rank(' a:1 sa:2C d g'::tsvector, 'a | s');
 SELECT ts_rank(' a:1 sa:2C d g'::tsvector, 'a | s:*');
@@ -232,7 +220,6 @@ SELECT 'a:1 b:3'::tsvector @@ 'a <2> b'::tsquery AS "true";
 SELECT 'a:1 b:3'::tsvector @@ 'a <3> b'::tsquery AS "false";
 SELECT 'a:1 b:3'::tsvector @@ 'a <0> a:*'::tsquery AS "true";
 
--- tsvector editing operations
 
 SELECT strip('w:12B w:13* w:12,5,6 a:1,3* a:3 w asd:1dc asd'::tsvector);
 SELECT strip('base:7 hidden:6 rebel:1 spaceship:2,33A,34B,35C,36D strike:3'::tsvector);
@@ -263,10 +250,8 @@ SELECT tsvector_to_array('base:7 hidden:6 rebel:1 spaceship:2,33A,34B,35C,36D st
 SELECT tsvector_to_array('base hidden rebel spaceship strike'::tsvector);
 
 SELECT array_to_tsvector(ARRAY['base','hidden','rebel','spaceship','strike']);
--- null and empty string are disallowed, since we mustn't make an empty lexeme
 SELECT array_to_tsvector(ARRAY['base','hidden','rebel','spaceship', NULL]);
 SELECT array_to_tsvector(ARRAY['base','hidden','rebel','spaceship', '']);
--- array_to_tsvector must sort and de-dup
 SELECT array_to_tsvector(ARRAY['foo','bar','baz','bar']);
 
 SELECT setweight('w:12B w:13* w:12,5,6 a:1,3* a:3 w asd:1dc asd zxc:81,567,222A'::tsvector, 'c');

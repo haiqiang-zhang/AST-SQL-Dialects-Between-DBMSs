@@ -9,7 +9,6 @@ INSERT INTO xmltest VALUES (3, '<wrong');
 
 SELECT * FROM xmltest;
 
--- test non-throwing API, too
 SELECT pg_input_is_valid('<value>one</value>', 'xml');
 SELECT pg_input_is_valid('<value>one</', 'xml');
 SELECT message FROM pg_input_error_info('<value>one</', 'xml');
@@ -20,7 +19,7 @@ SELECT message FROM pg_input_error_info('<?xml version="1.0" standalone="y"?><fo
 SELECT xmlcomment('test');
 SELECT xmlcomment('-test');
 SELECT xmlcomment('test-');
-SELECT xmlcomment('--test');
+SELECT xmlcomment('
 SELECT xmlcomment('te st');
 
 
@@ -132,40 +131,28 @@ SELECT xmlserialize(content data as character varying(20)) FROM xmltest;
 SELECT xmlserialize(content 'good' as char(10));
 SELECT xmlserialize(document 'bad' as text);
 
--- indent
 SELECT xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val></bar></foo>' AS text INDENT);
 SELECT xmlserialize(CONTENT  '<foo><bar><val x="y">42</val></bar></foo>' AS text INDENT);
--- no indent
 SELECT xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val></bar></foo>' AS text NO INDENT);
 SELECT xmlserialize(CONTENT  '<foo><bar><val x="y">42</val></bar></foo>' AS text NO INDENT);
--- indent non singly-rooted xml
 SELECT xmlserialize(DOCUMENT '<foo>73</foo><bar><val x="y">42</val></bar>' AS text INDENT);
 SELECT xmlserialize(CONTENT  '<foo>73</foo><bar><val x="y">42</val></bar>' AS text INDENT);
--- indent non singly-rooted xml with mixed contents
 SELECT xmlserialize(DOCUMENT 'text node<foo>73</foo>text node<bar><val x="y">42</val></bar>' AS text INDENT);
 SELECT xmlserialize(CONTENT  'text node<foo>73</foo>text node<bar><val x="y">42</val></bar>' AS text INDENT);
--- indent singly-rooted xml with mixed contents
 SELECT xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val><val x="y">text node<val>73</val></val></bar></foo>' AS text INDENT);
 SELECT xmlserialize(CONTENT  '<foo><bar><val x="y">42</val><val x="y">text node<val>73</val></val></bar></foo>' AS text INDENT);
--- indent empty string
 SELECT xmlserialize(DOCUMENT '' AS text INDENT);
 SELECT xmlserialize(CONTENT  '' AS text INDENT);
--- whitespaces
 SELECT xmlserialize(DOCUMENT '  ' AS text INDENT);
 SELECT xmlserialize(CONTENT  '  ' AS text INDENT);
--- indent null
 SELECT xmlserialize(DOCUMENT NULL AS text INDENT);
 SELECT xmlserialize(CONTENT  NULL AS text INDENT);
--- indent with XML declaration
 SELECT xmlserialize(DOCUMENT '<?xml version="1.0" encoding="UTF-8"?><foo><bar><val>73</val></bar></foo>' AS text INDENT);
 SELECT xmlserialize(CONTENT  '<?xml version="1.0" encoding="UTF-8"?><foo><bar><val>73</val></bar></foo>' AS text INDENT);
--- indent containing DOCTYPE declaration
 SELECT xmlserialize(DOCUMENT '<!DOCTYPE a><a/>' AS text INDENT);
 SELECT xmlserialize(CONTENT  '<!DOCTYPE a><a/>' AS text INDENT);
--- indent xml with empty element
 SELECT xmlserialize(DOCUMENT '<foo><bar></bar></foo>' AS text INDENT);
 SELECT xmlserialize(CONTENT  '<foo><bar></bar></foo>' AS text INDENT);
--- 'no indent' = not using 'no indent'
 SELECT xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val></bar></foo>' AS text) = xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val></bar></foo>' AS text NO INDENT);
 SELECT xmlserialize(CONTENT  '<foo><bar><val x="y">42</val></bar></foo>' AS text) = xmlserialize(CONTENT '<foo><bar><val x="y">42</val></bar></foo>' AS text NO INDENT);
 
@@ -181,7 +168,6 @@ SELECT xmlagg(data) FROM xmltest WHERE id > 10;
 SELECT xmlelement(name employees, xmlagg(xmlelement(name name, name))) FROM emp;
 
 
--- Check mapping SQL identifier to XML name
 
 SELECT xmlpi(name ":::_xml_abc135.%-&_");
 SELECT xmlpi(name "123");
@@ -197,15 +183,14 @@ SELECT xml '<!DOCTYPE a><a/><b/>';
 SET XML OPTION CONTENT;
 EXECUTE foo ('<bar/>');
 EXECUTE foo ('good');
-SELECT xml '<!-- in SQL:2006+ a doc is content too--> <?y z?> <!DOCTYPE a><a/>';
-SELECT xml '<?xml version="1.0"?> <!-- hi--> <!DOCTYPE a><a/>';
+SELECT xml '<!
+SELECT xml '<?xml version="1.0"?> <!
 SELECT xml '<!DOCTYPE a><a/>';
-SELECT xml '<!-- hi--> oops <!DOCTYPE a><a/>';
-SELECT xml '<!-- hi--> <oops/> <!DOCTYPE a><a/>';
+SELECT xml '<!
+SELECT xml '<!
 SELECT xml '<!DOCTYPE a><a/><b/>';
 
 
--- Test backwards parsing
 
 CREATE VIEW xmlview1 AS SELECT xmlcomment('test');
 CREATE VIEW xmlview2 AS SELECT xmlconcat('hello', 'you');
@@ -220,11 +205,10 @@ CREATE VIEW xmlview9 AS SELECT xmlserialize(content 'good' as text);
 SELECT table_name, view_definition FROM information_schema.views
   WHERE table_name LIKE 'xmlview%' ORDER BY 1;
 
--- Text XPath expressions evaluation
 
 SELECT xpath('/value', data) FROM xmltest;
 SELECT xpath(NULL, NULL) IS NULL FROM xmltest;
-SELECT xpath('', '<!-- error -->');
+SELECT xpath('', '<!
 SELECT xpath('//text()', '<local:data xmlns:local="http://127.0.0.1"><local:piece id="1">number one</local:piece><local:piece id="2" /></local:data>');
 SELECT xpath('//loc:piece/@id', '<local:data xmlns:local="http://127.0.0.1"><local:piece id="1">number one</local:piece><local:piece id="2" /></local:data>', ARRAY[ARRAY['loc', 'http://127.0.0.1']]);
 SELECT xpath('//loc:piece', '<local:data xmlns:local="http://127.0.0.1"><local:piece id="1">number one</local:piece><local:piece id="2" /></local:data>', ARRAY[ARRAY['loc', 'http://127.0.0.1']]);
@@ -240,17 +224,12 @@ SELECT xpath('name(/*)', '<root><sub/><sub/></root>');
 SELECT xpath('/nosuchtag', '<root/>');
 SELECT xpath('root', '<root/>');
 
--- Round-trip non-ASCII data through xpath().
 DO $$
 DECLARE
   xml_declaration text := '<?xml version="1.0" encoding="ISO-8859-1"?>';
   degree_symbol text;
   res xml[];
 BEGIN
-  -- Per the documentation, except when the server encoding is UTF8, xpath()
-  -- may not work on non-ASCII data.  The untranslatable_character and
-  -- undefined_function traps below, currently dead code, will become relevant
-  -- if we remove this limitation.
   IF current_setting('server_encoding') <> 'UTF8' THEN
     RAISE LOG 'skip: encoding % unsupported for xpath',
       current_setting('server_encoding');
@@ -266,17 +245,13 @@ BEGIN
       res[1], convert_to(res[1]::text, 'UTF8');
   END IF;
 EXCEPTION
-  -- character with byte sequence 0xc2 0xb0 in encoding "UTF8" has no equivalent in encoding "LATIN8"
   WHEN untranslatable_character
-  -- default conversion function for encoding "UTF8" to "MULE_INTERNAL" does not exist
   OR undefined_function
-  -- unsupported XML feature
   OR feature_not_supported THEN
     RAISE LOG 'skip: %', SQLERRM;
 END
 $$;
 
--- Test xmlexists and xpath_exists
 SELECT xmlexists('//town[text() = ''Toronto'']' PASSING BY REF '<towns><town>Bidford-on-Avon</town><town>Cwmbran</town><town>Bristol</town></towns>');
 SELECT xmlexists('//town[text() = ''Cwmbran'']' PASSING BY REF '<towns><town>Bidford-on-Avon</town><town>Cwmbran</town><town>Bristol</town></towns>');
 SELECT xmlexists('count(/nosuchtag)' PASSING BY REF '<root/>');
@@ -305,7 +280,6 @@ CREATE TABLE query ( expr TEXT );
 INSERT INTO query VALUES ('/menu/beers/cost[text() = ''lots'']');
 SELECT COUNT(id) FROM xmltest, query WHERE xmlexists(expr PASSING BY REF data);
 
--- Test xml_is_well_formed and variants
 
 SELECT xml_is_well_formed_document('<foo>bar</foo>');
 SELECT xml_is_well_formed_document('abc');
@@ -331,34 +305,16 @@ SELECT xml_is_well_formed('<twoerrors>&idontexist;</unbalanced>');
 SET xmloption TO CONTENT;
 SELECT xml_is_well_formed('abc');
 
--- Since xpath() deals with namespaces, it's a bit stricter about
--- what's well-formed and what's not. If we don't obey these rules
--- (i.e. ignore namespace-related errors from libxml), xpath()
--- fails in subtle ways. The following would for example produce
--- the xml value
---   <invalidns xmlns='<'/>
--- which is invalid because '<' may not appear un-escaped in
--- attribute values.
--- Since different libxml versions emit slightly different
--- error messages, we suppress the DETAIL in this test.
-\set VERBOSITY terse;
 SELECT xpath('/*', '<invalidns xmlns=''&lt;''/>');
-\set VERBOSITY default;
 
--- Again, the XML isn't well-formed for namespace purposes
 SELECT xpath('/*', '<nosuchprefix:tag/>');
 
--- XPath deprecates relative namespaces, but they're not supposed to
--- throw an error, only a warning.
 SELECT xpath('/*', '<relativens xmlns=''relative''/>');
 
--- External entity references should not leak filesystem information.
 SELECT XMLPARSE(DOCUMENT '<!DOCTYPE foo [<!ENTITY c SYSTEM "/etc/passwd">]><foo>&c;</foo>');
 SELECT XMLPARSE(DOCUMENT '<!DOCTYPE foo [<!ENTITY c SYSTEM "/etc/no.such.file">]><foo>&c;</foo>');
--- This might or might not load the requested DTD, but it mustn't throw error.
 SELECT XMLPARSE(DOCUMENT '<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"><chapter>&nbsp;</chapter>');
 
--- XMLPATH tests
 CREATE TABLE xmldata(data xml);
 INSERT INTO xmldata VALUES('<ROWS>
 <ROW id="1">
@@ -393,7 +349,6 @@ INSERT INTO xmldata VALUES('<ROWS>
 </ROW>
 </ROWS>');
 
--- XMLTABLE with columns
 SELECT  xmltable.*
    FROM (SELECT data FROM xmldata) x,
         LATERAL XMLTABLE('/ROWS/ROW'
@@ -422,15 +377,12 @@ CREATE VIEW xmltableview1 AS SELECT  xmltable.*
 
 SELECT * FROM xmltableview1;
 
-\sv xmltableview1;
 
 EXPLAIN (COSTS OFF) SELECT * FROM xmltableview1;
 EXPLAIN (COSTS OFF, VERBOSE) SELECT * FROM xmltableview1;
 
--- errors
 SELECT * FROM XMLTABLE (ROW () PASSING null COLUMNS v1 timestamp) AS f (v1, v2);
 
--- XMLNAMESPACES tests
 SELECT * FROM XMLTABLE(XMLNAMESPACES('http://x.y' AS zz),
                       '/zz:rows/zz:row'
                       PASSING '<rows xmlns="http://x.y"><row><a>10</a></row></rows>'
@@ -452,7 +404,6 @@ SELECT * FROM XMLTABLE('.'
                        PASSING '<foo/>'
                        COLUMNS a text PATH 'foo/namespace::node()');
 
--- used in prepare statements
 PREPARE pp AS
 SELECT  xmltable.*
    FROM (SELECT data FROM xmldata) x,
@@ -477,13 +428,11 @@ SELECT xmltable.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan"
 SELECT xmltable.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS id int PATH '@id', "COUNTRY_NAME" text, "REGION_ID" int, rawdata xml PATH '.');
 SELECT xmltable.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS id int PATH '@id', "COUNTRY_NAME" text, "REGION_ID" int, rawdata xml PATH './*');
 
-SELECT * FROM xmltable('/root' passing '<root><element>a1a<!-- aaaa -->a2a<?aaaaa?> <!--z-->  bbbb<x>xxx</x>cccc</element></root>' COLUMNS element text);
-SELECT * FROM xmltable('/root' passing '<root><element>a1a<!-- aaaa -->a2a<?aaaaa?> <!--z-->  bbbb<x>xxx</x>cccc</element></root>' COLUMNS element text PATH 'element/text()'); -- should fail
+SELECT * FROM xmltable('/root' passing '<root><element>a1a<!
+SELECT * FROM xmltable('/root' passing '<root><element>a1a<!
 
--- CDATA test
 select * from xmltable('d/r' passing '<d><r><c><![CDATA[<hello> &"<>!<a>foo</a>]]></c></r><r><c>2</c></r></d>' columns c text);
 
--- XML builtin entities
 SELECT * FROM xmltable('/x/a' PASSING '<x><a><ent>&apos;</ent></a><a><ent>&quot;</ent></a><a><ent>&amp;</ent></a><a><ent>&lt;</ent></a><a><ent>&gt;</ent></a></x>' COLUMNS ent text);
 SELECT * FROM xmltable('/x/a' PASSING '<x><a><ent>&apos;</ent></a><a><ent>&quot;</ent></a><a><ent>&amp;</ent></a><a><ent>&lt;</ent></a><a><ent>&gt;</ent></a></x>' COLUMNS ent xml);
 
@@ -501,7 +450,6 @@ SELECT  xmltable.*
                                   unit text PATH 'SIZE/@unit',
                                   premier_name text PATH 'PREMIER_NAME' DEFAULT 'not specified');
 
--- test qual
 SELECT xmltable.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS "COUNTRY_NAME" text, "REGION_ID" int) WHERE "COUNTRY_NAME" = 'Japan';
 
 EXPLAIN (VERBOSE, COSTS OFF)
@@ -510,7 +458,6 @@ SELECT f.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COU
 EXPLAIN (VERBOSE, FORMAT JSON, COSTS OFF)
 SELECT f.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS "COUNTRY_NAME" text, "REGION_ID" int) AS f WHERE "COUNTRY_NAME" = 'Japan';
 
--- should to work with more data
 INSERT INTO xmldata VALUES('<ROWS>
 <ROW id="10">
   <COUNTRY_ID>CZ</COUNTRY_ID>
@@ -584,7 +531,6 @@ SELECT  xmltable.*
                                   premier_name text PATH 'PREMIER_NAME' DEFAULT 'not specified')
   WHERE region_id = 2;
 
--- should fail, NULL value
 SELECT  xmltable.*
    FROM (SELECT data FROM xmldata) x,
         LATERAL XMLTABLE('/ROWS/ROW'
@@ -598,8 +544,6 @@ SELECT  xmltable.*
                                   unit text PATH 'SIZE/@unit',
                                   premier_name text PATH 'PREMIER_NAME' DEFAULT 'not specified');
 
--- if all is ok, then result is empty
--- one line xml test
 WITH
    x AS (SELECT proname, proowner, procost::numeric, pronargs,
                 array_to_string(proargnames,',') as proargnames,
@@ -622,7 +566,6 @@ WITH
    SELECT * FROM z
    EXCEPT SELECT * FROM x;
 
--- multi line xml test, result should be empty too
 WITH
    x AS (SELECT proname, proowner, procost::numeric, pronargs,
                 array_to_string(proargnames,',') as proargnames,
@@ -656,11 +599,8 @@ SELECT xmltable.* FROM xmltest2, LATERAL xmltable('/d/r' PASSING x COLUMNS a int
 SELECT xmltable.* FROM xmltest2, LATERAL xmltable(('/d/r/' || lower(_path) || 'c') PASSING x COLUMNS a int PATH '.');
 SELECT xmltable.* FROM xmltest2, LATERAL xmltable(('/d/r/' || lower(_path) || 'c') PASSING x COLUMNS a int PATH 'x' DEFAULT ascii(_path) - 54);
 
--- XPath result can be boolean or number too
 SELECT * FROM XMLTABLE('*' PASSING '<a>a</a>' COLUMNS a xml PATH '.', b text PATH '.', c text PATH '"hi"', d boolean PATH '. = "a"', e integer PATH 'string-length(.)');
-\x;
-SELECT * FROM XMLTABLE('*' PASSING '<e>pre<!--c1--><?pi arg?><![CDATA[&ent1]]><n2>&amp;deep</n2>post</e>' COLUMNS x xml PATH '/e/n2', y xml PATH '/');
-\x;
+SELECT * FROM XMLTABLE('*' PASSING '<e>pre<!
 
 SELECT * FROM XMLTABLE('.' PASSING XMLELEMENT(NAME a) columns a varchar(20) PATH '"<foo/>"', b xml PATH '"<foo/>"');
 

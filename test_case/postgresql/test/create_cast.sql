@@ -1,8 +1,4 @@
---
--- CREATE_CAST
---
 
--- Create some types to test with
 CREATE TYPE casttesttype;
 
 CREATE FUNCTION casttesttype_in(cstring)
@@ -21,49 +17,42 @@ CREATE TYPE casttesttype (
    alignment = int4
 );
 
--- a dummy function to test with
 CREATE FUNCTION casttestfunc(casttesttype) RETURNS int4 LANGUAGE SQL AS
 $$ SELECT 1; $$;
 
-SELECT casttestfunc('foo'::text); -- fails, as there's no cast
+SELECT casttestfunc('foo'::text); 
 
--- Try binary coercion cast
 CREATE CAST (text AS casttesttype) WITHOUT FUNCTION;
-SELECT casttestfunc('foo'::text); -- doesn't work, as the cast is explicit
-SELECT casttestfunc('foo'::text::casttesttype); -- should work
-DROP CAST (text AS casttesttype); -- cleanup
+SELECT casttestfunc('foo'::text); 
+SELECT casttestfunc('foo'::text::casttesttype); 
+DROP CAST (text AS casttesttype); 
 
--- Try IMPLICIT binary coercion cast
 CREATE CAST (text AS casttesttype) WITHOUT FUNCTION AS IMPLICIT;
-SELECT casttestfunc('foo'::text); -- Should work now
+SELECT casttestfunc('foo'::text); 
 
--- Try I/O conversion cast.
-SELECT 1234::int4::casttesttype; -- No cast yet, should fail
+SELECT 1234::int4::casttesttype; 
 
 CREATE CAST (int4 AS casttesttype) WITH INOUT;
-SELECT 1234::int4::casttesttype; -- Should work now
+SELECT 1234::int4::casttesttype; 
 
 DROP CAST (int4 AS casttesttype);
 
--- Try cast with a function
 
 CREATE FUNCTION int4_casttesttype(int4) RETURNS casttesttype LANGUAGE SQL AS
 $$ SELECT ('foo'::text || $1::text)::casttesttype; $$;
 
 CREATE CAST (int4 AS casttesttype) WITH FUNCTION int4_casttesttype(int4) AS IMPLICIT;
-SELECT 1234::int4::casttesttype; -- Should work now
+SELECT 1234::int4::casttesttype; 
 
 DROP FUNCTION int4_casttesttype(int4) CASCADE;
 
--- Try it with a function that requires an implicit cast
 
 CREATE FUNCTION bar_int4_text(int4) RETURNS text LANGUAGE SQL AS
 $$ SELECT ('bar'::text || $1::text); $$;
 
 CREATE CAST (int4 AS casttesttype) WITH FUNCTION bar_int4_text(int4) AS IMPLICIT;
-SELECT 1234::int4::casttesttype; -- Should work now
+SELECT 1234::int4::casttesttype; 
 
--- check dependencies generated for that
 SELECT pg_describe_object(classid, objid, objsubid) as obj,
        pg_describe_object(refclassid, refobjid, refobjsubid) as objref,
        deptype

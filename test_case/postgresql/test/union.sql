@@ -1,8 +1,4 @@
---
--- UNION (also INTERSECT, EXCEPT)
---
 
--- Simple UNION constructs
 
 SELECT 1 AS two UNION SELECT 2 ORDER BY 1;
 
@@ -20,7 +16,6 @@ SELECT 1 AS three UNION SELECT 2 UNION ALL SELECT 2 ORDER BY 1;
 
 SELECT 1.1 AS two UNION SELECT 2.2 ORDER BY 1;
 
--- Mixed types
 
 SELECT 1.1 AS two UNION SELECT 2 ORDER BY 1;
 
@@ -40,9 +35,6 @@ SELECT 1.1 AS three UNION SELECT 2 UNION ALL SELECT 2 ORDER BY 1;
 
 SELECT 1.1 AS two UNION (SELECT 2 UNION ALL SELECT 2) ORDER BY 1;
 
---
--- Try testing from tables...
---
 
 SELECT f1 AS five FROM FLOAT8_TBL
 UNION
@@ -90,9 +82,6 @@ UNION
 SELECT TRIM(TRAILING FROM f1) FROM CHAR_TBL
 ORDER BY 1;
 
---
--- INTERSECT and EXCEPT
---
 
 SELECT q2 FROM int8_tbl INTERSECT SELECT q1 FROM int8_tbl ORDER BY 1;
 
@@ -112,13 +101,11 @@ SELECT q1 FROM int8_tbl EXCEPT ALL SELECT DISTINCT q2 FROM int8_tbl ORDER BY 1;
 
 SELECT q1 FROM int8_tbl EXCEPT ALL SELECT q1 FROM int8_tbl FOR NO KEY UPDATE;
 
--- nested cases
 (SELECT 1,2,3 UNION SELECT 4,5,6) INTERSECT SELECT 4,5,6;
 (SELECT 1,2,3 UNION SELECT 4,5,6 ORDER BY 1,2) INTERSECT SELECT 4,5,6;
 (SELECT 1,2,3 UNION SELECT 4,5,6) EXCEPT SELECT 4,5,6;
 (SELECT 1,2,3 UNION SELECT 4,5,6 ORDER BY 1,2) EXCEPT SELECT 4,5,6;
 
--- exercise both hashed and sorted implementations of UNION/INTERSECT/EXCEPT
 
 set enable_hashagg to on;
 
@@ -158,7 +145,6 @@ select unique1 from tenk1 except select unique2 from tenk1 where unique2 != 10;
 
 reset enable_hashagg;
 
--- non-hashable type
 set enable_hashagg to on;
 
 explain (costs off)
@@ -171,7 +157,6 @@ select x from (values ('11'::varbit), ('10'::varbit)) _(x) union select x from (
 
 reset enable_hashagg;
 
--- arrays
 set enable_hashagg to on;
 
 explain (costs off)
@@ -184,7 +169,6 @@ explain (costs off)
 select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x);
 select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x);
 
--- non-hashable type
 explain (costs off)
 select x from (values (array['10'::varbit]), (array['11'::varbit])) _(x) union select x from (values (array['10'::varbit]), (array['01'::varbit])) _(x);
 select x from (values (array['10'::varbit]), (array['11'::varbit])) _(x) union select x from (values (array['10'::varbit]), (array['01'::varbit])) _(x);
@@ -203,7 +187,6 @@ select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (v
 
 reset enable_hashagg;
 
--- records
 set enable_hashagg to on;
 
 explain (costs off)
@@ -216,16 +199,11 @@ explain (costs off)
 select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x);
 select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x);
 
--- non-hashable type
 
--- With an anonymous row type, the typcache does not report that the
--- type is hashable.  (Otherwise, this would fail at execution time.)
 explain (costs off)
 select x from (values (row('10'::varbit)), (row('11'::varbit))) _(x) union select x from (values (row('10'::varbit)), (row('01'::varbit))) _(x);
 select x from (values (row('10'::varbit)), (row('11'::varbit))) _(x) union select x from (values (row('10'::varbit)), (row('01'::varbit))) _(x);
 
--- With a defined row type, the typcache can inspect the type's fields
--- for hashability.
 create type ct1 as (f1 varbit);
 explain (costs off)
 select x from (values (row('10'::varbit)::ct1), (row('11'::varbit)::ct1)) _(x) union select x from (values (row('10'::varbit)::ct1), (row('01'::varbit)::ct1)) _(x);
@@ -246,17 +224,11 @@ select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (value
 
 reset enable_hashagg;
 
---
--- Mixed types
---
 
 SELECT f1 FROM float8_tbl INTERSECT SELECT f1 FROM int4_tbl ORDER BY 1;
 
 SELECT f1 FROM float8_tbl EXCEPT SELECT f1 FROM int4_tbl ORDER BY 1;
 
---
--- Operator precedence and (((((extra))))) parentheses
---
 
 SELECT q1 FROM int8_tbl INTERSECT SELECT q2 FROM int8_tbl UNION ALL SELECT q2 FROM int8_tbl  ORDER BY 1;
 
@@ -270,41 +242,25 @@ SELECT q1 FROM int8_tbl UNION ALL (((SELECT q2 FROM int8_tbl EXCEPT SELECT q1 FR
 
 (((SELECT q1 FROM int8_tbl UNION ALL SELECT q2 FROM int8_tbl))) EXCEPT SELECT q1 FROM int8_tbl ORDER BY 1;
 
---
--- Subqueries with ORDER BY & LIMIT clauses
---
 
--- In this syntax, ORDER BY/LIMIT apply to the result of the EXCEPT
 SELECT q1,q2 FROM int8_tbl EXCEPT SELECT q2,q1 FROM int8_tbl
 ORDER BY q2,q1;
 
--- This should fail, because q2 isn't a name of an EXCEPT output column
 SELECT q1 FROM int8_tbl EXCEPT SELECT q2 FROM int8_tbl ORDER BY q2 LIMIT 1;
 
--- But this should work:
 SELECT q1 FROM int8_tbl EXCEPT (((SELECT q2 FROM int8_tbl ORDER BY q2 LIMIT 1))) ORDER BY 1;
 
---
--- New syntaxes (7.1) permit new tests
---
 
 (((((select * from int8_tbl)))));
 
---
--- Check behavior with empty select list (allowed since 9.4)
---
 
 select union select;
 select intersect select;
 select except select;
 
--- check hashed implementation
 set enable_hashagg = true;
 set enable_sort = false;
 
--- We've no way to check hashed UNION as the empty pathkeys in the Append are
--- fine to make use of Unique, which is cheaper than HashAggregate and we've
--- no means to disable Unique.
 explain (costs off)
 select from generate_series(1,5) intersect select from generate_series(1,3);
 
@@ -314,7 +270,6 @@ select from generate_series(1,5) intersect all select from generate_series(1,3);
 select from generate_series(1,5) except select from generate_series(1,3);
 select from generate_series(1,5) except all select from generate_series(1,3);
 
--- check sorted implementation
 set enable_hashagg = false;
 set enable_sort = true;
 
@@ -333,24 +288,14 @@ select from generate_series(1,5) except all select from generate_series(1,3);
 reset enable_hashagg;
 reset enable_sort;
 
---
--- Check handling of a case with unknown constants.  We don't guarantee
--- an undecorated constant will work in all cases, but historically this
--- usage has worked, so test we don't break it.
---
 
 SELECT a.f1 FROM (SELECT 'test' AS f1 FROM varchar_tbl) a
 UNION
 SELECT b.f1 FROM (SELECT f1 FROM varchar_tbl) b
 ORDER BY 1;
 
--- This should fail, but it should produce an error cursor
 SELECT '3.4'::numeric UNION SELECT 'foo';
 
---
--- Test that expression-index constraints can be pushed down through
--- UNION or UNION ALL
---
 
 CREATE TEMP TABLE t1 (a text, b text);
 CREATE INDEX t1_ab_idx on t1 ((a || b));
@@ -377,10 +322,6 @@ explain (costs off)
   SELECT * FROM t2) t
  WHERE ab = 'ab';
 
---
--- Test that ORDER BY for UNION ALL can be pushed down to inheritance
--- children.
---
 
 CREATE TEMP TABLE t1c (b text, a text);
 ALTER TABLE t1c INHERIT t1;
@@ -410,7 +351,6 @@ reset enable_indexscan;
 reset enable_bitmapscan;
 reset enable_sort;
 
--- This simpler variant of the above test has been observed to fail differently
 
 create table events (event_id int primary key);
 create table other_events (event_id int primary key);
@@ -427,7 +367,6 @@ drop table events_child, events, other_events;
 
 reset enable_indexonlyscan;
 
--- Test constraint exclusion of UNION ALL subqueries
 explain (costs off)
  SELECT * FROM
   (SELECT 1 AS t, * FROM tenk1 a
@@ -435,7 +374,6 @@ explain (costs off)
    SELECT 2 AS t, * FROM tenk1 b) c
  WHERE t = 2;
 
--- Test that we push quals into UNION sub-selects only when it's safe
 explain (costs off)
 SELECT * FROM
   (SELECT 1 AS t, 2 AS x
@@ -481,8 +419,6 @@ SELECT * FROM
 WHERE x > 3
 ORDER BY x;
 
--- Test cases where the native ordering of a sub-select has more pathkeys
--- than the outer query cares about
 explain (costs off)
 select distinct q1 from
   (select distinct * from int8_tbl i81
@@ -509,8 +445,6 @@ select distinct q1 from
    select distinct * from int8_tbl i82) ss
 where -q1 = q2;
 
--- Test proper handling of parameterized appendrel paths when the
--- potential join qual is expensive
 create function expensivefunc(int) returns int
 language plpgsql immutable strict cost 10000
 as $$begin return $1; end$$;
@@ -530,7 +464,6 @@ select * from
 drop table t3;
 drop function expensivefunc(int);
 
--- Test handling of appendrel quals that const-simplify into an AND
 explain (costs off)
 select * from
   (select *, 0 as x from int8_tbl a
@@ -543,18 +476,13 @@ select * from
    select *, 1 as x from int8_tbl b) ss
 where (x = 0) or (q1 >= q2 and q1 <= q2);
 
---
--- Test the planner's ability to produce cheap startup plans with Append nodes
---
 
--- Ensure we get a Nested Loop join between tenk1 and tenk2
 explain (costs off)
 select t1.unique1 from tenk1 t1
 inner join tenk2 t2 on t1.tenthous = t2.tenthous and t2.thousand = 0
    union all
 (values(1)) limit 1;
 
--- Ensure there is no problem if cheapest_startup_path is NULL
 explain (costs off)
 select * from tenk1 t1
 left join lateral

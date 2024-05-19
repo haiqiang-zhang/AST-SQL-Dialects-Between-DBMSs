@@ -58,7 +58,6 @@ INSERT INTO brintest SELECT
 	box(point(odd, even), point(thousand, twothousand))
 FROM tenk1 ORDER BY unique2 LIMIT 100;
 
--- throw in some NULL's and different values
 INSERT INTO brintest (inetcol, cidrcol, int4rangecol) SELECT
 	inet 'fe80::6e40:8ff:fea9:8c46' + tenthous,
 	cidr 'fe80::6e40:8ff:fea9:8c46' + tenthous,
@@ -302,14 +301,12 @@ DECLARE
 BEGIN
 	FOR r IN SELECT colname, oper, typ, value[ordinality], matches[ordinality] FROM brinopers, unnest(op) WITH ORDINALITY AS oper LOOP
 
-		-- prepare the condition
 		IF r.value IS NULL THEN
 			cond := format('%I %s %L', r.colname, r.oper, r.value);
 		ELSE
 			cond := format('%I %s %L::%s', r.colname, r.oper, r.value, r.typ);
 		END IF;
 
-		-- run the query using the brin index
 		SET enable_seqscan = 0;
 		SET enable_bitmapscan = 1;
 
@@ -326,7 +323,6 @@ BEGIN
 		EXECUTE format($y$SELECT array_agg(ctid) FROM brintest WHERE %s $y$, cond)
 			INTO idx_ctids;
 
-		-- run the query using a seqscan
 		SET enable_seqscan = 1;
 		SET enable_bitmapscan = 0;
 
@@ -343,13 +339,11 @@ BEGIN
 		EXECUTE format($y$SELECT array_agg(ctid) FROM brintest WHERE %s $y$, cond)
 			INTO ss_ctids;
 
-		-- make sure both return the same results
 		count := array_length(idx_ctids, 1);
 
 		IF NOT (count = array_length(ss_ctids, 1) AND
 				idx_ctids @> ss_ctids AND
 				idx_ctids <@ ss_ctids) THEN
-			-- report the results of each scan to make the differences obvious
 			RAISE WARNING 'something not right in %: count %', r, count;
 			SET enable_seqscan = 1;
 			SET enable_bitmapscan = 0;
@@ -364,7 +358,6 @@ BEGIN
 			END LOOP;
 		END IF;
 
-		-- make sure we found expected number of matches
 		IF count != r.matches THEN RAISE WARNING 'unexpected number of results % for %', count, r; END IF;
 	END LOOP;
 END;
@@ -404,28 +397,24 @@ INSERT INTO brintest SELECT
 FROM tenk1 ORDER BY unique2 LIMIT 5 OFFSET 5;
 
 SELECT brin_desummarize_range('brinidx', 0);
-VACUUM brintest;  -- force a summarization cycle in brinidx
+VACUUM brintest;  
 
 UPDATE brintest SET int8col = int8col * int4col;
 UPDATE brintest SET textcol = '' WHERE textcol IS NOT NULL;
 
--- Tests for brin_summarize_new_values
-SELECT brin_summarize_new_values('brintest'); -- error, not an index
-SELECT brin_summarize_new_values('tenk1_unique1'); -- error, not a BRIN index
-SELECT brin_summarize_new_values('brinidx'); -- ok, no change expected
+SELECT brin_summarize_new_values('brintest'); 
+SELECT brin_summarize_new_values('tenk1_unique1'); 
+SELECT brin_summarize_new_values('brinidx'); 
 
--- Tests for brin_desummarize_range
-SELECT brin_desummarize_range('brinidx', -1); -- error, invalid range
+SELECT brin_desummarize_range('brinidx', -1); 
 SELECT brin_desummarize_range('brinidx', 0);
 SELECT brin_desummarize_range('brinidx', 0);
 SELECT brin_desummarize_range('brinidx', 100000000);
 
--- Test brin_summarize_range
 CREATE TABLE brin_summarize (
     value int
 ) WITH (fillfactor=10, autovacuum_enabled=false);
 CREATE INDEX brin_summarize_idx ON brin_summarize USING brin (value) WITH (pages_per_range=2);
--- Fill a few pages
 DO $$
 DECLARE curtid tid;
 BEGIN
@@ -436,19 +425,13 @@ BEGIN
 END;
 $$;
 
--- summarize one range
 SELECT brin_summarize_range('brin_summarize_idx', 0);
--- nothing: already summarized
 SELECT brin_summarize_range('brin_summarize_idx', 1);
--- summarize one range
 SELECT brin_summarize_range('brin_summarize_idx', 2);
--- nothing: page doesn't exist in table
 SELECT brin_summarize_range('brin_summarize_idx', 4294967295);
--- invalid block number values
 SELECT brin_summarize_range('brin_summarize_idx', -1);
 SELECT brin_summarize_range('brin_summarize_idx', 4294967296);
 
--- test value merging in add_value
 CREATE TABLE brintest_2 (n numrange);
 CREATE INDEX brinidx_2 ON brintest_2 USING brin (n);
 INSERT INTO brintest_2 VALUES ('empty');
@@ -459,23 +442,17 @@ SELECT brin_desummarize_range('brinidx', 0);
 SELECT brin_summarize_range('brinidx', 0);
 DROP TABLE brintest_2;
 
--- test brin cost estimates behave sanely based on correlation of values
 CREATE TABLE brin_test (a INT, b INT);
 INSERT INTO brin_test SELECT x/100,x%100 FROM generate_series(1,10000) x(x);
 CREATE INDEX brin_test_a_idx ON brin_test USING brin (a) WITH (pages_per_range = 2);
 CREATE INDEX brin_test_b_idx ON brin_test USING brin (b) WITH (pages_per_range = 2);
 VACUUM ANALYZE brin_test;
 
--- Ensure brin index is used when columns are perfectly correlated
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test WHERE a = 1;
--- Ensure brin index is not used when values are not correlated
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test WHERE b = 1;
 
--- make sure data are properly de-toasted in BRIN index
 CREATE TABLE brintest_3 (a text, b text, c text, d text);
 
--- long random strings (~2000 chars each, so ~6kB for min/max on two
--- columns) to trigger toasting
 WITH rand_value AS (SELECT string_agg(fipshash(i::text),'') AS val FROM generate_series(1,60) s(i))
 INSERT INTO brintest_3
 SELECT val, val, val, val FROM rand_value;
@@ -483,23 +460,15 @@ SELECT val, val, val, val FROM rand_value;
 CREATE INDEX brin_test_toast_idx ON brintest_3 USING brin (b, c);
 DELETE FROM brintest_3;
 
--- We need to wait a bit for all transactions to complete, so that the
--- vacuum actually removes the TOAST rows. Creating an index concurrently
--- is a one way to achieve that, because it does exactly such wait.
 CREATE INDEX CONCURRENTLY brin_test_temp_idx ON brintest_3(a);
 DROP INDEX brin_test_temp_idx;
 
--- vacuum the table, to discard TOAST data
 VACUUM brintest_3;
 
--- retry insert with a different random-looking (but deterministic) value
--- the value is different, and so should replace either min or max in the
--- brin summary
 WITH rand_value AS (SELECT string_agg(fipshash((-i)::text),'') AS val FROM generate_series(1,60) s(i))
 INSERT INTO brintest_3
 SELECT val, val, val, val FROM rand_value;
 
--- now try some queries, accessing the brin index
 SET enable_seqscan = off;
 
 EXPLAIN (COSTS OFF)
@@ -510,13 +479,11 @@ SELECT * FROM brintest_3 WHERE b < '0';
 DROP TABLE brintest_3;
 RESET enable_seqscan;
 
--- test an unlogged table, mostly to get coverage of brinbuildempty
 CREATE UNLOGGED TABLE brintest_unlogged (n numrange);
 CREATE INDEX brinidx_unlogged ON brintest_unlogged USING brin (n);
 INSERT INTO brintest_unlogged VALUES (numrange(0, 2^1000::numeric));
 DROP TABLE brintest_unlogged;
 
--- test that the insert optimization works if no rows end up inserted
 CREATE TABLE brin_insert_optimization (a int);
 INSERT INTO brin_insert_optimization VALUES (1);
 CREATE INDEX ON brin_insert_optimization USING brin (a);

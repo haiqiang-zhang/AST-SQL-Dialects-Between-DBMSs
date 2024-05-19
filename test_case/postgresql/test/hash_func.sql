@@ -1,10 +1,3 @@
---
--- Test hash functions
---
--- When the salt is 0, the extended hash function should produce a result
--- whose low 32 bits match the standard hash function.  When the salt is
--- not 0, we should get a different result.
---
 
 SELECT v as value, hashint2(v)::bit(32) as standard,
        hashint2extended(v, 0)::bit(32) as extended0,
@@ -130,7 +123,6 @@ FROM   (VALUES ('{0}'::int4[]), ('{0,1,2,3,4}'), ('{17,18,19,20}'),
 WHERE  hash_array(v)::bit(32) != hash_array_extended(v, 0)::bit(32)
        OR hash_array(v)::bit(32) = hash_array_extended(v, 1)::bit(32);
 
--- array hashing with non-hashable element type
 SELECT v as value, hash_array(v)::bit(32) as standard
 FROM   (VALUES ('{101}'::varbit[])) x(v);
 SELECT v as value, hash_array_extended(v, 0)::bit(32) as extended0
@@ -246,7 +238,6 @@ WHERE  hash_record(v)::bit(32) != hash_record_extended(v, 0)::bit(32)
        OR hash_record(v)::bit(32) = hash_record_extended(v, 1)::bit(32);
 DROP TYPE hash_test_t1;
 
--- record hashing with non-hashable field type
 CREATE TYPE hash_test_t2 AS (a varbit, b text);
 SELECT v as value, hash_record(v)::bit(32) as standard
 FROM   (VALUES (row('10'::varbit, 'aaa')::hash_test_t2)) x(v);
@@ -254,9 +245,6 @@ SELECT v as value, hash_record_extended(v, 0)::bit(32) as extended0
 FROM   (VALUES (row('11'::varbit, 'aaa')::hash_test_t2)) x(v);
 DROP TYPE hash_test_t2;
 
---
--- Check special cases for specific data types
---
 SELECT hashfloat4('0'::float4) = hashfloat4('-0'::float4) AS t;
 SELECT hashfloat4('NaN'::float4) = hashfloat4(-'NaN'::float4) AS t;
 SELECT hashfloat8('0'::float8) = hashfloat8('-0'::float8) AS t;

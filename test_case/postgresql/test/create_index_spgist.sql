@@ -1,6 +1,3 @@
---
--- SP-GiST index tests
---
 
 CREATE TABLE quad_point_tbl AS
     SELECT point(unique1,unique2) AS p FROM tenk1;
@@ -26,7 +23,6 @@ INSERT INTO radix_text_tbl VALUES ('P0123456789abcdefF');
 
 CREATE INDEX sp_radix_ind ON radix_text_tbl USING spgist (t);
 
--- get non-indexed results for comparison purposes
 
 SET enable_seqscan = ON;
 SET enable_indexscan = OFF;
@@ -92,7 +88,6 @@ SELECT count(*) FROM radix_text_tbl WHERE t ~>~  'Worth                         
 
 SELECT count(*) FROM radix_text_tbl WHERE t ^@  'Worth';
 
--- Now check the results from plain indexscan
 SET enable_seqscan = OFF;
 SET enable_indexscan = ON;
 SET enable_bitmapscan = OFF;
@@ -225,8 +220,6 @@ SELECT * FROM quad_point_tbl_ord_seq3 seq FULL JOIN kd_point_tbl_ord_idx3 idx
 ON seq.n = idx.n
 WHERE seq.dist IS DISTINCT FROM idx.dist;
 
--- test KNN scan with included columns
--- the distance numbers are not exactly the same across platforms
 SET extra_float_digits = 0;
 CREATE INDEX ON quad_point_tbl_ord_seq1 USING spgist(p) INCLUDE(dist);
 EXPLAIN (COSTS OFF)
@@ -234,7 +227,6 @@ SELECT p, dist FROM quad_point_tbl_ord_seq1 ORDER BY p <-> '0,0' LIMIT 10;
 SELECT p, dist FROM quad_point_tbl_ord_seq1 ORDER BY p <-> '0,0' LIMIT 10;
 RESET extra_float_digits;
 
--- check ORDER BY distance to NULL
 SELECT (SELECT p FROM kd_point_tbl ORDER BY p <-> pt, p <-> '0,0' LIMIT 1)
 FROM (VALUES (point '1,2'), (NULL), ('1234,5678')) pts(pt);
 
@@ -299,7 +291,6 @@ EXPLAIN (COSTS OFF)
 SELECT count(*) FROM radix_text_tbl WHERE starts_with(t, 'Worth');
 SELECT count(*) FROM radix_text_tbl WHERE starts_with(t, 'Worth');
 
--- Now check the results from bitmap indexscan
 SET enable_seqscan = OFF;
 SET enable_indexscan = OFF;
 SET enable_bitmapscan = ON;
