@@ -9,13 +9,13 @@ from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query
 
 
 test_case_path = './test_case'
-dbms_test_case_used = ['sqlite']
+dbms_test_case_used = ['duckdb']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    "mysql": MySQLAdapter,
+    # "mysql": MySQLAdapter,
     "sqlite": SQLiteAdapter,
-    "postgresql": PostgresqlAdapter,
-    "duckdb": DuckDBAdapter
+    # "postgresql": PostgresqlAdapter,
+    # "duckdb": DuckDBAdapter
 }
 
 setup_query_keyword = [
@@ -62,7 +62,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
 
 
     df = pd.DataFrame(columns=['DBMS', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number'])
-    df_verbose_all_result_one_file = pd.DataFrame(columns=['DBMS', 'SQL_Query', 'Result', 'ERROR_Type', 'ERROR_Message'])
+    df_verbose_all_result_one_file = pd.DataFrame(columns=['DBMS', 'SQL_Query', 'Result', 'ERROR_Type', 'Message'])
     
 
     for dbms in DBMS_ADAPTERS:
@@ -75,14 +75,14 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
                 query = query.replace('\n', ' ')
                 if result[0]:
                     success_counter += 1
-                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'ERROR_Message': None}, ignore_index=True)
+                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'Message': result[1]}, ignore_index=True)
                 else:
                     failure_counter += 1
                     error_message = result[1][1]
                     error_message = error_message.replace('\n', ' ')
                     error_message = error_message.replace('^', '')
                     error_message = error_message.strip()
-                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "ERROR", 'ERROR_Type': result[1][0], 'ERROR_Message': error_message}, ignore_index=True)
+                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "ERROR", 'ERROR_Type': result[1][0], 'Message': error_message}, ignore_index=True)
         df = df._append({'DBMS': dbms, 'SAME_Number': success_counter, 'DIFFERENT_Number': 0, 'ERROR_Number': failure_counter}, ignore_index=True)
         db_adaptor.close_connection()
 
@@ -128,7 +128,7 @@ for dbms in os.listdir(test_case_path):
                 if os.path.getsize(test_paths) == 0:
                     continue
 
-                df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'ERROR_Message'])
+                df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
 
                 
                 try:
@@ -143,7 +143,7 @@ for dbms in os.listdir(test_case_path):
                             df.loc[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS']), 'ERROR_Number'] += df_one_file.iloc[i]['ERROR_Number']
                             df.loc[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS']), 'Total_Number_of_SQL_files'] += 1
                     for i in range(len(df_verbose_all_result_one_file)):
-                        df_verbose_all_result = df_verbose_all_result._append({'DBMS_Base': dbms, 'DBMS_Tested': df_verbose_all_result_one_file.iloc[i]['DBMS'], 'SQL_Query': df_verbose_all_result_one_file.iloc[i]['SQL_Query'], 'SQL_File_Name': filename, 'Result': df_verbose_all_result_one_file.iloc[i]['Result'], 'ERROR_Type': df_verbose_all_result_one_file.iloc[i]['ERROR_Type'], 'ERROR_Message': df_verbose_all_result_one_file.iloc[i]['ERROR_Message']}, ignore_index=True)
+                        df_verbose_all_result = df_verbose_all_result._append({'DBMS_Base': dbms, 'DBMS_Tested': df_verbose_all_result_one_file.iloc[i]['DBMS'], 'SQL_Query': df_verbose_all_result_one_file.iloc[i]['SQL_Query'], 'SQL_File_Name': filename, 'Result': df_verbose_all_result_one_file.iloc[i]['Result'], 'ERROR_Type': df_verbose_all_result_one_file.iloc[i]['ERROR_Type'], 'Message': df_verbose_all_result_one_file.iloc[i]['Message']}, ignore_index=True)
                     file_counter += 1
                 except ValueError as e:
                     print(f"Error decode sql file '{filename}': {e}")
