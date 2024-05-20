@@ -6,15 +6,17 @@ from adapter.DBMSAdapter import DBMSAdapter
 from adapter.DuckDBAdapter import DuckDBAdapter
 import pandas as pd
 from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv
+import decimal
 
+test_extract_mode = True
 
 test_case_path = './test_case'
 dbms_test_case_used = ['sqlite']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    "mysql": MySQLAdapter,
-    "sqlite": SQLiteAdapter,
-    "postgresql": PostgresqlAdapter,
+    # "mysql": MySQLAdapter,
+    # "sqlite": SQLiteAdapter,
+    # "postgresql": PostgresqlAdapter,
     "duckdb": DuckDBAdapter
 }
 
@@ -27,6 +29,28 @@ setup_query_keyword = [
 
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
 
+def convert_decimals(obj):
+    if isinstance(obj, list):
+        return [convert_decimals(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(convert_decimals(item) for item in obj)
+    elif isinstance(obj, dict):
+        return {key: convert_decimals(value) for key, value in obj.items()}
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
+    else:
+        return obj
+    
+def save_result_to_txt(result_list:list, filename:str, dbms:str):
+    result_list = convert_decimals(result_list)
+    with open(f"./test_case/{dbms}/result/{filename}.txt", 'w') as file:
+        for result in result_list:
+            if result == "QUERY ERROR":
+                file.write("QUERY ERROR\n")
+            else:
+                file.write(str(result) + '\n')
+            file.write('----------++++++++++\n')
+    print(f"Save the result to {filename}.txt")
 
 def run_setup_in_all_dbms(setup_paths:str):
     # check setup_paths exists
@@ -41,6 +65,7 @@ def run_setup_in_all_dbms(setup_paths:str):
 
 
 def run_test_in_all_dbms(test_paths:str, filename:str):
+    result_list = []
     # Read the contents of the test case file
     sql_query = None
     for encoding in encodings:
@@ -74,9 +99,13 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
             if not any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
                 query = query.replace('\n', ' ')
                 if result[0]:
+                    if test_extract_mode:
+                        result_list.append(result[1])
                     success_counter += 1
                     df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'ERROR_Message': None}, ignore_index=True)
                 else:
+                    if test_extract_mode:
+                        result_list.append("QUERY ERROR")
                     failure_counter += 1
                     error_message = result[1][1]
                     error_message = error_message.replace('\n', ' ')
@@ -86,6 +115,8 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
         df = df._append({'DBMS': dbms, 'SAME_Number': success_counter, 'DIFFERENT_Number': 0, 'ERROR_Number': failure_counter}, ignore_index=True)
         db_adaptor.close_connection()
 
+    if test_extract_mode:
+        save_result_to_txt(result_list, filename, dbms)
     
     return success_counter, failure_counter, df, df_verbose_all_result_one_file
 
@@ -110,9 +141,16 @@ save_result_to_csv(df_verbose_all_result, "init_result")
 for dbms in os.listdir(test_case_path):
     
     # for test_group in os.listdir(os.path.join(test_case_path, dbmss)):
-    if dbms not in dbms_test_case_used:
+    if not test_extract_mode and dbms not in dbms_test_case_used:
         continue
-    first_init_dbmss(DBMS_ADAPTERS)
+    
+    dbms_dict = DBMS_ADAPTERS
+    if test_extract_mode and dbms in DBMS_ADAPTERS:
+        dbms_dict = {dbms: DBMS_ADAPTERS[dbms]}
+    else:
+        continue
+        
+    first_init_dbmss(dbms_dict)
     print(f"Running test cases of {dbms}")
     test_folder=os.path.join(test_case_path, dbms, 'test')
     file_counter = 0
