@@ -49,6 +49,9 @@ class PostgresqlAdapter(DBMSAdapter):
 
     def query(self, sql_query: str, filename: str, timeout_duration:int = 5):
         # Execute the SQL query
+        print(f"DBMS: Postgresql")
+        print_prevent_stopping(f"Filename: {filename}")
+        print_prevent_stopping(f"SQL: {sql_query}")
         combined_result = None
         self.timeout_occurred.clear()
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
@@ -56,8 +59,7 @@ class PostgresqlAdapter(DBMSAdapter):
             with self.conn.cursor() as cur:
                 timer.start()
 
-                print_prevent_stopping(f"Filename: {filename}")
-                print_prevent_stopping(f"SQL: {sql_query}")
+                
 
                 cur.execute(sql_query)
                 result = cur.fetchall()

@@ -1,4 +1,3 @@
-import sqlite3
 import os
 from adapter.SQLiteAdapter import SQLiteAdapter
 from adapter.MySQLAdapter import MySQLAdapter
@@ -6,17 +5,17 @@ from adapter.PostgresqlAdapter import PostgresqlAdapter
 from adapter.DBMSAdapter import DBMSAdapter
 from adapter.DuckDBAdapter import DuckDBAdapter
 import pandas as pd
-from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv
+from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv
 
 
 test_case_path = './test_case'
-dbms_test_case_used = ['postgresql']
+dbms_test_case_used = ['sqlite']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    # "sqlite": SQLiteAdapter,
-    # "mysql": MYSQL,
+    "mysql": MySQLAdapter,
+    "sqlite": SQLiteAdapter,
     "postgresql": PostgresqlAdapter,
-    # "duckdb": DUCKDB
+    "duckdb": DuckDBAdapter
 }
 
 setup_query_keyword = [
@@ -72,9 +71,8 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
         failure_counter = 0
         for query in sql_query:
             result = db_adaptor.query(query, filename)
-            if any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
+            if not any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
                 query = query.replace('\n', ' ')
-
                 if result[0]:
                     success_counter += 1
                     df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'ERROR_Message': None}, ignore_index=True)
@@ -84,7 +82,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
                     error_message = error_message.replace('\n', ' ')
                     error_message = error_message.replace('^', '')
                     error_message = error_message.strip()
-                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "DIFFERENT", 'ERROR_Type': result[1][0], 'ERROR_Message': error_message}, ignore_index=True)
+                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "ERROR", 'ERROR_Type': result[1][0], 'ERROR_Message': error_message}, ignore_index=True)
         df = df._append({'DBMS': dbms, 'SAME_Number': success_counter, 'DIFFERENT_Number': 0, 'ERROR_Number': failure_counter}, ignore_index=True)
         db_adaptor.close_connection()
 
@@ -101,25 +99,21 @@ def run_all(test_paths:str, filename:str, setup_paths:str=""):
 
 
 
-
-
-first_init_dbmss(DBMS_ADAPTERS)
-
-
 # Define a pd.DataFrame to store the test results
 df = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number', 'Total_Number_of_SQL_files'])
 
 df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'ERROR_Message'])
+save_result_to_csv(df_verbose_all_result, "init_result")
+
 
 # Iterate over the test case files in the folder (it is a multi-level folder)
 for dbms in os.listdir(test_case_path):
+    
     # for test_group in os.listdir(os.path.join(test_case_path, dbmss)):
     if dbms not in dbms_test_case_used:
         continue
+    first_init_dbmss(DBMS_ADAPTERS)
     print(f"Running test cases of {dbms}")
-    success_all = 0
-    failure_all = 0
-    skip_file_list = []
     test_folder=os.path.join(test_case_path, dbms, 'test')
     file_counter = 0
 
@@ -130,9 +124,12 @@ for dbms in os.listdir(test_case_path):
                 test_paths = os.path.join(dirpath, filename)
                 # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)
                 # result_paths = os.path.join(test_case_path, dbmss, test_group, 'result', filename)
-                
+
                 if os.path.getsize(test_paths) == 0:
                     continue
+
+                df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'ERROR_Message'])
+
                 
                 try:
                     success_counter, failure_counter, df_one_file, df_verbose_all_result_one_file = run_all(test_paths, filename)
@@ -150,26 +147,20 @@ for dbms in os.listdir(test_case_path):
                     file_counter += 1
                 except ValueError as e:
                     print(f"Error decode sql file '{filename}': {e}")
-                    skip_file_list.append(filename)
                     continue
 
-                success_all += success_counter
-                failure_all += failure_counter
-    print(f"Success: {success_all}")
-    print(f"Failure: {failure_all}")
-    print(f"Total sql query: {success_all + failure_all}")
-    print(f"Total .sql file: {file_counter}")
-    print(f"Skip: {skip_file_list}")
+                append_result_to_csv(df_verbose_all_result, "init_result")
+                del df_verbose_all_result
+
+
+    clean_test_garbage()
 
 
 
 print()
 print(df)
-save_result_to_csv(df_verbose_all_result, "init_result")
 
     
             
 
 
-
-clean_test_garbage()

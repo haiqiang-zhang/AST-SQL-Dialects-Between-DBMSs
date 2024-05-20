@@ -78,6 +78,7 @@ class MySQLAdapter(DBMSAdapter):
         self.conn = None
         self.cursor = None
         self.connection(config)
+        
 
         timeout_occurred.clear()
 
@@ -92,17 +93,17 @@ class MySQLAdapter(DBMSAdapter):
         try:
             self.cursor.execute("CREATE DATABASE test_db")
             self.cursor.execute("USE test_db")
-            self.conn.commit()
+            # self.conn.commit()
         except DatabaseError as e:
-            self.conn.rollback()
             self.cursor.execute("USE test_db")
+
     
     def run_setup(self, setup_query:List, filename:str):
         # Execute the SQL query
         for query in setup_query:
             # try:
             self.cursor.execute(query)
-            self.conn.commit()
+            # self.conn.commit()
 
             # except:
             #     print(f"[Setup Error] Error setup database in '{filename}': {e}")
@@ -118,6 +119,9 @@ class MySQLAdapter(DBMSAdapter):
         conn.close()
 
     def query(self, sql_query:str, filename:str, timeout_duration=10):
+        print(f"DBMS: MySQL")
+        print(f"Filename: {filename}")
+        print(f"SQL: {sql_query}")
         self.create_test_db()
         combined_result = None
         timeout_occurred.clear()
@@ -135,8 +139,6 @@ class MySQLAdapter(DBMSAdapter):
             # timer.join()
             combined_result = (True, result)
             if ECHO_SUCC:
-                print(f"Filename: {filename}")
-                print(f"SQL: {sql_query}")
                 print("Success")
                 print("-"*50)
                 
@@ -147,11 +149,10 @@ class MySQLAdapter(DBMSAdapter):
             if timeout_occurred.is_set():
                 sleep(2)
                 self.connection(config)
+            self.conn.rollback()
             error_type = e.__class__.__name__  
-            combined_result = (False, [error_type, "{e}"])
+            combined_result = (False, [error_type, f"{e}"])
             if ECHO_ERR:
-                print(f"Filename: {filename}")
-                print(f"SQL: {sql_query}")
                 print(f"Error executing test case '{filename}': {e}")
                 print("-"*50)
             
@@ -170,9 +171,11 @@ class MySQLAdapter(DBMSAdapter):
         try:
             self.conn = mysql.connector.connect(**config)
             self.cursor = self.conn.cursor()
+            self.conn.autocommit = True
         except Exception as e:
             print(f"Error connecting to the database: {e}")
             self.init_dbms()
             self.conn = mysql.connector.connect(**config)
             self.cursor = self.conn.cursor()
+            self.conn.autocommit = True
         return self.conn, self.cursor

@@ -43,6 +43,9 @@ class SQLiteAdapter(DBMSAdapter):
 
     def query(self, sql_query:str, filename:str, timeout_duration=10):
         # Execute the SQL query
+        print(f"DBMS: SQLite")
+        print(f"Filename: {filename}")
+        print(f"SQL: {sql_query}")
         combined_result = None
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
         try:
@@ -51,17 +54,13 @@ class SQLiteAdapter(DBMSAdapter):
             self.cursor.execute(sql_query)
             self.conn.commit()
             result = self.cursor.fetchall()
-            # keyword include in query
-            # if any(keyword in query.lower() for keyword in setup_query_keyword):
-            # timer.join()
             combined_result = (True, result)
-            # print(result)
-            # print("=================================")
+
 
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             error_type = e.__class__.__name__  
-            combined_result = (False, [error_type, "{e}"])
+            combined_result = (False, [error_type, f"{e}"])
             print(f"Error executing test case '{filename}': {e}")
             print("#"*50)
         finally:
@@ -75,3 +74,8 @@ class SQLiteAdapter(DBMSAdapter):
 
         if os.path.exists(self.filename):
             os.remove(self.filename)
+
+
+    @staticmethod
+    def init_dbms():
+        pass
