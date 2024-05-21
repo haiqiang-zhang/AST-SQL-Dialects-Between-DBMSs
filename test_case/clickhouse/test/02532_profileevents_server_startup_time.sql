@@ -1,1 +1,1 @@
-SELECT event FROM system.events WHERE event = 'ServerStartupMilliseconds'
+SELECT event FROM system.events WHERE event = 'ServerStartupMilliseconds';

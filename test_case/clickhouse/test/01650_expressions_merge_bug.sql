@@ -1,4 +1,3 @@
-
 SELECT
     NULL IN 
     (
@@ -18,4 +17,4 @@ FROM
         ),
         NULL
     FROM numbers(1024)
-)
+);

@@ -1,5 +1,4 @@
 SET join_use_nulls = 1;
-
 SELECT b.id
 FROM (
     SELECT toLowCardinality(0 :: UInt32) AS id

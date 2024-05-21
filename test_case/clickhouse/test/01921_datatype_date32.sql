@@ -1,9 +1,6 @@
 drop table if exists t1;
 create table t1(x1 Date32) engine Memory;
-
 insert into t1 values ('1900-01-01'),('1899-01-01'),('2299-12-15'),('2300-12-31'),('2021-06-22');
-
-select x1 from t1;
 select '-------toYear---------';
 select toYear(x1) from t1;
 select '-------toMonth---------';
@@ -17,11 +14,8 @@ select toDayOfWeek(x1) from t1;
 select '-------toDayOfYear---------';
 select toDayOfYear(x1) from t1;
 select '-------toHour---------';
-select toHour(x1) from t1; -- { serverError 43 }
 select '-------toMinute---------';
-select toMinute(x1) from t1; -- { serverError 43 }
 select '-------toSecond---------';
-select toSecond(x1) from t1; -- { serverError 43 }
 select '-------toStartOfDay---------';
 select toStartOfDay(x1, 'Asia/Istanbul') from t1;
 select '-------toMonday---------';
@@ -45,17 +39,11 @@ select toStartOfQuarter(x1) from t1;
 select '-------toStartOfYear---------';
 select toStartOfYear(x1) from t1;
 select '-------toStartOfSecond---------';
-select toStartOfSecond(x1) from t1; -- { serverError 43 }
 select '-------toStartOfMinute---------';
-select toStartOfMinute(x1) from t1; -- { serverError 43 }
 select '-------toStartOfFiveMinutes---------';
-select toStartOfFiveMinutes(x1) from t1; -- { serverError 43 }
 select '-------toStartOfTenMinutes---------';
-select toStartOfTenMinutes(x1) from t1; -- { serverError 43 }
 select '-------toStartOfFifteenMinutes---------';
-select toStartOfFifteenMinutes(x1) from t1; -- { serverError 43 }
 select '-------toStartOfHour---------';
-select toStartOfHour(x1) from t1; -- { serverError 43 }
 select '-------toStartOfISOYear---------';
 select toStartOfISOYear(x1) from t1;
 select '-------toRelativeYearNum---------';
@@ -75,7 +63,6 @@ select toRelativeMinuteNum(x1, 'Asia/Istanbul') from t1;
 select '-------toRelativeSecondNum---------';
 select toRelativeSecondNum(x1, 'Asia/Istanbul') from t1;
 select '-------toTime---------';
-select toTime(x1) from t1; -- { serverError 43 }
 select '-------toYYYYMM---------';
 select toYYYYMM(x1) from t1;
 select '-------toYYYYMMDD---------';
@@ -89,15 +76,10 @@ select addMinutes(x1, 60) from t1;
 select '-------addHours---------';
 select addHours(x1, 1) from t1;
 select '-------addDays---------';
-select addDays(x1, 7) from t1;
 select '-------addWeeks---------';
-select addWeeks(x1, 1) from t1;
 select '-------addMonths---------';
-select addMonths(x1, 1) from t1;
 select '-------addQuarters---------';
-select addQuarters(x1, 1) from t1;
 select '-------addYears---------';
-select addYears(x1, 1) from t1;
 select '-------subtractSeconds---------';
 select subtractSeconds(x1, 3600) from t1;
 select '-------subtractMinutes---------';
@@ -105,15 +87,10 @@ select subtractMinutes(x1, 60) from t1;
 select '-------subtractHours---------';
 select subtractHours(x1, 1) from t1;
 select '-------subtractDays---------';
-select subtractDays(x1, 7) from t1;
 select '-------subtractWeeks---------';
-select subtractWeeks(x1, 1) from t1;
 select '-------subtractMonths---------';
-select subtractMonths(x1, 1) from t1;
 select '-------subtractQuarters---------';
-select subtractQuarters(x1, 1) from t1;
 select '-------subtractYears---------';
-select subtractYears(x1, 1) from t1;
 select '-------toDate32---------';
 select toDate32('1900-01-01'), toDate32(toDate('2000-01-01'));
 select toDate32OrZero('1899-01-01'), toDate32OrNull('1899-01-01');
@@ -130,4 +107,4 @@ FROM
     UNION ALL SELECT '2149-06-07'::Date32
     UNION ALL SELECT '2299-12-31'::Date32
     ) AS T
-ORDER BY T.d
+ORDER BY T.d;

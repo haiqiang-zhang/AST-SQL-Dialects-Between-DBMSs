@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS decimal;
-
 CREATE TABLE IF NOT EXISTS decimal
 (
     a DECIMAL(9,4) DEFAULT 0,
@@ -9,11 +8,8 @@ CREATE TABLE IF NOT EXISTS decimal
     e ALIAS b * 2,
     f ALIAS c * 6
 ) ENGINE = Memory;
-
 DESC TABLE decimal;
-
 INSERT INTO decimal (a) VALUES (0), (1), (2), (3);
 SELECT * FROM decimal;
 SELECT a, b, c, d, e, f FROM decimal;
-
 DROP TABLE IF EXISTS decimal;

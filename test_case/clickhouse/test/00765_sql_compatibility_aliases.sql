@@ -1,5 +1,4 @@
 SET send_logs_level = 'fatal';
-
 select lcase('FOO');
 select ucase('foo');
 select LOWER('Foo');

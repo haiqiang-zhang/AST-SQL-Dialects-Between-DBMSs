@@ -17,4 +17,4 @@ SELECT
     replaceAll(t, ' ', '_'),
     replaceAll(tr, ' ', '_')
 FROM numbers(100000)
-WHERE NOT ((sl = slr) AND (sr = srr) AND (t = tr))
+WHERE NOT ((sl = slr) AND (sr = srr) AND (t = tr));

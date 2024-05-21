@@ -5,13 +5,20 @@ import threading
 import clickhouse_driver
 import clickhouse_driver.errors
 from .DBMSAdapter import DBMSAdapter
+from utils import clean_query_char
 
 timeout_occurred = threading.Event()
 ECHO_SUCC = True
 ECHO_ERR = True
+EXECUTE_TIMEOUT = 1
 
 config = {
     'host': 'localhost',
+    'settings': {
+        'connections_with_failover_max_tries': 1,
+        'connect_timeout_with_failover_ms': EXECUTE_TIMEOUT*1000,
+        'max_execution_time': EXECUTE_TIMEOUT,
+    }
     # 'port': 9000,
 }
 
@@ -19,127 +26,132 @@ config = {
 config_tester = {
     'host': 'localhost',
     'user': 'tester',
-    'password': '123456',
 }
 
 class ClickHouseAdapter(DBMSAdapter):
     @staticmethod
     def init_dbms():
-            
-        return True
+        pass
     
     def __init__(self):
     
         # Connect to the SQLite database
         self.conn = None
-        self.cursor = None
+        # self.cursor = None
         self.connection(config)
+        
 
-        timeout_occurred.clear()
-
-        # reset mysql
-        #self.reset_mysql()
 
         # Create a new database and use it
-        self.cursor.execute("DROP DATABASE IF EXISTS test")
-        self.conn.commit()
+        self.conn.execute("DROP DATABASE IF EXISTS test")
+        self.create_test_db()
         
     def create_test_db(self):
         try:
-            self.cursor.execute("CREATE DATABASE test")
-            self.cursor.execute("USE test")
-            self.conn.commit()
+            self.conn.execute("CREATE DATABASE IF NOT EXISTS test")
+            self.conn.execute("USE test")
         except Exception as e:
-            self.conn.rollback()
-            self.cursor.execute("USE test")
+            self.conn.execute("USE test")
     
-    def run_setup(self, setup_query:List, filename:str):
-        # Execute the SQL query
-        for query in setup_query:
-            # try:
-            self.cursor.execute(query)
-            self.conn.commit()
-
-            # except:
-            #     print(f"[Setup Error] Error setup database in '{filename}': {e}")
-            #     continue
 
     def interrupt_connection(self, query:str):
         timeout_occurred.set()
-        print(f"Timeout occurred for query: {query}, killing query...")
-        conn = clickhouse_driver.connect(**config_tester)
-        cursor = conn.cursor()
-        # process_list = cursor.execute('SELECT * FROM system.processes ORDER BY \'create_time\' DESC')
-        # if process_list:
-        #     print("--------++++++++", process_list)
-        #     # process_list_sorted = sorted(process_list, key=lambda x: x['create_time'], reverse=True)
-        #     last_query_id = process_list[0]
-        #     # print("--------++++++++++", process_list_sorted)
-        #     cursor.execute("KILL QUERY WHERE query_id = '%s'", (last_query_id,))
-        #     conn.commit()
-        cursor.execute("KILL QUERY WHERE user = 'default' SYNC")
-        conn.close()
-        # self.conn.close()
-        # self.conn = clickhouse_driver.connect(**config)
-        # self.cursor = self.conn.cursor()
+        # print(f"Timeout occurred for query: '{query}', killing query...")
+        
 
-    def query(self, sql_query:str, filename:str, timeout_duration=10):
-        self.create_test_db()
+        conn = clickhouse_driver.Client(**config_tester)
+        # cursor = conn.cursor()
+        # process_list = conn.execute('SELECT query_id, query FROM system.processes ORDER BY \'create_time\' DESC')
+        # # process_list = cursor.fetchall()
+
+        # query = clean_query_char(query)
+        # for p in process_list:
+        #     selected_query = clean_query_char(p[1])
+
+        #     if query.startswith(selected_query):
+        #         print(f"Killing query: {p[1]}")
+        #         conn.execute(f'KILL QUERY WHERE query_id = \'{p[0]}\'')
+        result = conn.execute("KILL QUERY WHERE user = 'default'")
+        print(result)
+        print("Connection closed")
+        # sleep(1)
+        # self.conn.disconnect_connection()
+        conn.disconnect_connection()
+
+    def interrupt_connection_safe(self, query:str):
+        timeout_occurred.set()
+        self.conn.disconnect_connection()
+        print("Connection closed")
+        
+
+    def query(self, sql_query:str, filename:str, timeout_duration=EXECUTE_TIMEOUT+2):
+
+        print(f"Filename: {filename}")
+        # print(f"SQL: {sql_query}")
+
+
+        # check the 'format' keyword in the query
+        if 'format' in sql_query.lower():
+            print("FormatNotSupportError: Format keyword is not supported")
+            return (False, ["FormatNotSupportError", "Format keyword is not supported"])
+
+
+
         combined_result = None
         timeout_occurred.clear()
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
-
-        
+        timer_safe = threading.Timer(timeout_duration+2, self.interrupt_connection_safe, args=[sql_query])
         try:
             # print(query)
             timer.start()
-            self.cursor.execute(sql_query)
-            result = self.cursor.fetchall()
-            self.conn.commit()
+            timer_safe.start()
+            result = self.conn.execute(sql_query)
+            # self.conn.commit()
             # keyword include in query
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             # timer.join()
-            combined_result = (True, result)
-            if ECHO_SUCC:
-                print(f"Filename: {filename}")
-                print(f"SQL: {sql_query}")
-                print("Success")
-                print("-"*50)
-                
+            if timeout_occurred.is_set():
+                raise TimeoutError("Timeout occurred")
 
+
+            combined_result = (True, result)
+            
+
+            if ECHO_SUCC:
+                print("Success\n")
 
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             if timeout_occurred.is_set():
-                sleep(2)
-                self.connection(config)
-            error_type = e.__class__.__name__  
-            combined_result = (False, [error_type, f"{e}"])
-            if ECHO_ERR:
-                print(f"Filename: {filename}")
-                print(f"SQL: {sql_query}")
-                print(f"Error executing test case '{filename}': {e}")
-                print("-"*50)
+                self.conn.execute("USE test")
+                combined_result = (False, ["TimeoutError", f"{e}"])
+                if ECHO_ERR:
+                    print(f"Failed: TimeoutError\n")
+
+            else:
+                error_type = e.__class__.__name__  
+                combined_result = (False, [error_type, f"{e}"])
+                if ECHO_ERR:
+                    print(f"Failed: {error_type}\n")
+
             
         finally:
             timer.cancel()
+            timer_safe.cancel()
         
         return combined_result
 
     def close_connection(self):
         # Close the database connection
         # self.reset_mysql()
-        self.conn.close() 
+        if self.conn:
+            self.conn.disconnect_connection()
     
         
     def connection(self, config:dict):
-        try:
-            self.conn = clickhouse_driver.connect(**config)
-            self.cursor = self.conn.cursor()
-            print(self.conn)
-        except Exception as e:
-            print(f"Error connecting to the database: {e}")
-            # self.init_dbms()
-            # self.conn = mysql.connector.connect(**config)
-            # self.cursor = self.conn.cursor()
-        return self.conn, self.cursor
+        self.conn = clickhouse_driver.Client(**config)
+        self.conn.execute(f"SET max_execution_time={EXECUTE_TIMEOUT}")
+        # self.cursor = self.conn.cursor()
+        # self.conn.autocommit = True
+
+        return self.conn

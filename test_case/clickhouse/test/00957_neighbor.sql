@@ -1,15 +1,14 @@
--- no arguments
-select neighbor(); -- { serverError 42 }
+select neighbor();
 -- single argument
-select neighbor(1); -- { serverError 42 }
+select neighbor(1);
 -- greater than 3 arguments
-select neighbor(1,2,3,4); -- { serverError 42 }
+select neighbor(1,2,3,4);
 -- bad default value
-select neighbor(dummy, 1, 'hello'); -- { serverError 386 }
+select neighbor(dummy, 1, 'hello');
 -- types without common supertype (UInt64 and Int8)
-select number, neighbor(number, 1, -10) from numbers(3); -- { serverError 386 }
+select number, neighbor(number, 1, -10) from numbers(3);
 -- nullable offset is not allowed
-select number, if(number > 1, number, null) as offset, neighbor(number, offset) from numbers(3); -- { serverError 43 }
+select number, if(number > 1, number, null) as offset, neighbor(number, offset) from numbers(3);
 select 'Zero offset';
 select number, neighbor(number, 0) from numbers(3);
 select 'Nullable values';

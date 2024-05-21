@@ -1,119 +1,48 @@
-
-
-
 create temp table copytest (
 	style	text,
 	test 	text,
 	filler	int);
-
 insert into copytest values('DOS',E'abc\r\ndef',1);
 insert into copytest values('Unix',E'abc\ndef',2);
 insert into copytest values('Mac',E'abc\rdef',3);
 insert into copytest values(E'esc\\ape',E'a\\r\\\r\\\n\\nb',4);
-
-copy copytest to :'filename' csv;
-
 create temp table copytest2 (like copytest);
-
-copy copytest2 from :'filename' csv;
-
 select * from copytest except select * from copytest2;
-
 truncate copytest2;
-
-
-copy copytest to :'filename' csv quote '''' escape E'\\';
-
-copy copytest2 from :'filename' csv quote '''' escape E'\\';
-
 select * from copytest except select * from copytest2;
-
-
-
 create temp table copytest3 (
 	c1 int,
 	"col with , comma" text,
 	"col with "" quote"  int);
-
-copy copytest3 from stdin csv header;
-this is just a line full of junk that would error out if parsed
-1,a,1
-2,b,2
-
-copy copytest3 to stdout csv header;
-
 create temp table copytest4 (
 	c1 int,
 	"colname with tab: 	" text);
-
-copy copytest4 from stdin (header);
-this is just a line full of junk that would error out if parsed
-1	a
-2	b
-
-copy copytest4 to stdout (header);
-
 create table parted_copytest (
 	a int,
 	b int,
 	c text
 ) partition by list (b);
-
 create table parted_copytest_a1 (c text, b int, a int);
 create table parted_copytest_a2 (a int, c text, b int);
-
 alter table parted_copytest attach partition parted_copytest_a1 for values in(1);
 alter table parted_copytest attach partition parted_copytest_a2 for values in(2);
-
 insert into parted_copytest select x,1,'One' from generate_series(1,1000) x;
 insert into parted_copytest select x,2,'Two' from generate_series(1001,1010) x;
 insert into parted_copytest select x,1,'One' from generate_series(1011,1020) x;
-
-copy (select * from parted_copytest order by a) to :'filename';
-
 truncate parted_copytest;
-
-copy parted_copytest from :'filename';
-
 begin;
 truncate parted_copytest;
-copy parted_copytest from :'filename' (freeze);
 rollback;
-
 select tableoid::regclass,count(*),sum(a) from parted_copytest
 group by tableoid order by tableoid::regclass::name;
-
 truncate parted_copytest;
-
-create function part_ins_func() returns trigger language plpgsql as $$
-begin
-  return new;
 end;
-$$;
-
-create trigger part_ins_trig
-	before insert on parted_copytest_a2
-	for each row
-	execute procedure part_ins_func();
-
-copy parted_copytest from :'filename';
-
 select tableoid::regclass,count(*),sum(a) from parted_copytest
 group by tableoid order by tableoid::regclass::name;
-
 truncate table parted_copytest;
 create index on parted_copytest (b);
-drop trigger part_ins_trig on parted_copytest_a2;
-
-copy parted_copytest from stdin;
-1	1	str1
-2	2	str2
-
-select * from parted_copytest where b = 1;
 select * from parted_copytest where b = 2;
-
 drop table parted_copytest;
-
 create table tab_progress_reporting (
 	name text,
 	age int4,
@@ -121,48 +50,7 @@ create table tab_progress_reporting (
 	salary int4,
 	manager name
 );
-
-create function notice_after_tab_progress_reporting() returns trigger AS
-$$
-declare report record;
-begin
-  with progress_data as (
-    select
-       relid::regclass::text as relname,
-       command,
-       type,
-       bytes_processed > 0 as has_bytes_processed,
-       bytes_total > 0 as has_bytes_total,
-       tuples_processed,
-       tuples_excluded
-      from pg_stat_progress_copy
-      where pid = pg_backend_pid())
-  select into report (to_jsonb(r)) as value
-    from progress_data r;
-
-  raise info 'progress: %', report.value::text;
-  return new;
-end;
-$$ language plpgsql;
-
-create trigger check_after_tab_progress_reporting
-	after insert on tab_progress_reporting
-	for each statement
-	execute function notice_after_tab_progress_reporting();
-
-copy tab_progress_reporting from stdin;
-sharon	25	(15,12)	1000	sam
-sam	30	(10,5)	2000	bill
-bill	20	(11,10)	1000	sharon
-
-truncate tab_progress_reporting;
-copy tab_progress_reporting from :'filename'
-	where (salary < 2000);
-
-drop trigger check_after_tab_progress_reporting on tab_progress_reporting;
-drop function notice_after_tab_progress_reporting();
 drop table tab_progress_reporting;
-
 create table header_copytest (
 	a int,
 	b int,
@@ -170,72 +58,19 @@ create table header_copytest (
 );
 alter table header_copytest drop column c;
 alter table header_copytest add column c text;
-copy header_copytest to stdout with (header match);
-copy header_copytest from stdin with (header wrong_choice);
-copy header_copytest from stdin with (header match);
-a	b	c
-1	2	foo
-copy header_copytest (c, a, b) from stdin with (header match);
-c	a	b
-bar	3	4
-copy header_copytest from stdin with (header match, format csv);
-a,b,c
-5,6,baz
-copy header_copytest (c, b, a) from stdin with (header match);
-a	b	c
-1	2	foo
-copy header_copytest from stdin with (header match);
-a	b	\N
-1	2	foo
-copy header_copytest from stdin with (header match);
-a	b
-1	2
-copy header_copytest from stdin with (header match);
-a	b	c	d
-1	2	foo	bar
-copy header_copytest from stdin with (header match);
-a	b	d
-1	2	foo
-SELECT * FROM header_copytest ORDER BY a;
-
 alter table header_copytest drop column b;
-copy header_copytest (c, a) from stdin with (header match);
-c	a
-foo	7
-copy header_copytest (a, c) from stdin with (header match);
-a	c
-8	foo
-copy header_copytest from stdin with (header match);
-a	........pg.dropped.2........	c
-1	2	foo
-copy header_copytest (a, c) from stdin with (header match);
-a	c	b
-1	foo	2
-
-SELECT * FROM header_copytest ORDER BY a;
 drop table header_copytest;
-
 create temp table oversized_column_default (
     col1 varchar(5) DEFAULT 'more than 5 chars',
     col2 varchar(5));
-copy oversized_column_default from stdin;
-copy oversized_column_default (col2) from stdin;
-copy oversized_column_default from stdin (default '');
 drop table oversized_column_default;
-
-
 CREATE TABLE parted_si (
   id int not null,
   data text not null,
   rand float8 not null default random()
 )
 PARTITION BY LIST((id % 2));
-
 CREATE TABLE parted_si_p_even PARTITION OF parted_si FOR VALUES IN (0);
 CREATE TABLE parted_si_p_odd PARTITION OF parted_si FOR VALUES IN (1);
-
-COPY parted_si(id, data) FROM :'filename';
-
 SELECT tableoid::regclass, id % 2 = 0 is_even, count(*) from parted_si GROUP BY 1, 2 ORDER BY 1;
-
 DROP TABLE parted_si;

@@ -1,4 +1,3 @@
--- { echoOn }  
 SELECT fromUnixTimestampInJodaSyntax(1669804872, 'G', 'UTC');
 SELECT fromUnixTimestampInJodaSyntax(1669804872, 'GG', 'UTC');
 SELECT fromUnixTimestampInJodaSyntax(1669804872, 'GGG', 'UTC');
@@ -69,4 +68,3 @@ with '2018-01-12 22:33:44.55' as s, toDateTime64(s, 6) as datetime64 SELECT from
 with '2018-01-12 22:33:44.55' as s, toDateTime64(s, 6) as datetime64 SELECT fromUnixTimestampInJodaSyntax(datetime64, 'SSSSSSS', 'UTC');
 with '2018-01-12 22:33:44.55' as s, toDateTime64(s, 6) as datetime64 SELECT fromUnixTimestampInJodaSyntax(datetime64, 'SSSSSSSS', 'UTC');
 with '2018-01-12 22:33:44.55' as s, toDateTime64(s, 6) as datetime64 SELECT fromUnixTimestampInJodaSyntax(datetime64, 'SSSSSSSSS', 'UTC');
--- { echoOff }

@@ -11,10 +11,8 @@ FROM
     )
     ARRAY JOIN asds AS ASD
 );
-
 SELECT  intDivOrZero( CAST(-1000, 'Int64')   , CAST(1000, 'UInt64') );
 SELECT  intDivOrZero( CAST(-1000, 'Int64')   , CAST(1000, 'Int64') );
-
 SELECT intDiv(-1, number) FROM numbers(1, 10);
 SELECT intDivOrZero(-1, number) FROM numbers(1, 10);
 SELECT intDiv(toInt32(number), -1) FROM numbers(1, 10);
@@ -23,9 +21,8 @@ SELECT intDiv(toInt64(number), -1) FROM numbers(1, 10);
 SELECT intDivOrZero(toInt64(number), -1) FROM numbers(1, 10);
 SELECT intDiv(number, -number) FROM numbers(1, 10);
 SELECT intDivOrZero(number, -number) FROM numbers(1, 10);
-
 SELECT -1 DIV number FROM numbers(1, 10);
 SELECT toInt32(number) DIV -1 FROM numbers(1, 10);
 SELECT toInt64(number) DIV -1 FROM numbers(1, 10);
 SELECT number DIV -number FROM numbers(1, 10);
-SELECT -1 DIV 0;  -- { serverError 153 }
+SELECT -1 DIV 0;

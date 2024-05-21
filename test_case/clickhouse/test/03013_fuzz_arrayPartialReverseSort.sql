@@ -7,7 +7,6 @@ FROM
     FROM system.numbers
     LIMIT 7
 );
-
 SELECT res
 FROM
 (

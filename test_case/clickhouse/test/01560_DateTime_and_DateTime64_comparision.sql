@@ -40,4 +40,4 @@ FROM
         value - n as dt
     FROM system.numbers
     LIMIT 3
-)
+);

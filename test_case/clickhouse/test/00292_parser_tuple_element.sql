@@ -1,1 +1,1 @@
-SELECT ('a', 'b').2
+SELECT ('a', 'b').2;

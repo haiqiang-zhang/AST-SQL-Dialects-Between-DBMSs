@@ -5,4 +5,4 @@ FROM
 (
     SELECT 1 AS test
 )
-SETTINGS enable_global_with_statement = 1
+SETTINGS enable_global_with_statement = 1;

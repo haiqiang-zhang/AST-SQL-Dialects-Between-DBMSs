@@ -1,5 +1,4 @@
 drop view if exists slow_view1;
-
 create view slow_view1 as
 with c1 as (select 1 as a),
     c2 as (select a from c1),

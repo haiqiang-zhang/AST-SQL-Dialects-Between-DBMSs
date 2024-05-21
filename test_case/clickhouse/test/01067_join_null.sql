@@ -16,9 +16,7 @@ ALL FULL OUTER JOIN
     SELECT NULL
 ) js2 USING (id)
 ORDER BY id;
-
 SELECT '---';
-
 SELECT *
 FROM
 (
@@ -28,9 +26,7 @@ INNER JOIN
 (
     SELECT NULL AS x
 ) js2 USING (x);
-
 SELECT '---';
-
 SELECT *
 FROM
 (

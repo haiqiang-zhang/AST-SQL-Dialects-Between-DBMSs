@@ -1,2 +1,2 @@
-SELECT lowerUTF8(arrayJoin(['©--------------------------------------', '©--------------------'])) ORDER BY 1;
-SELECT upperUTF8(materialize('aaaaАБВГaaaaaaaaaaaaАБВГAAAAaaAA')) FROM numbers(2);
+SELECT lowerUTF8(arrayJoin(['Â©--------------------------------------', 'Â©--------------------'])) ORDER BY 1;
+SELECT upperUTF8(materialize('aaaaÐÐÐÐaaaaaaaaaaaaÐÐÐÐAAAAaaAA')) FROM numbers(2);

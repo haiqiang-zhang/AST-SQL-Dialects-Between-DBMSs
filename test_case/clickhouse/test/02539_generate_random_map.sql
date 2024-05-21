@@ -1,5 +1,3 @@
--- Check that max length works
-
 SELECT max(length(mapKeys(a)))
 FROM
 (
@@ -7,7 +5,6 @@ FROM
     FROM generateRandom('a Map(String, String)', 20, 5, 1)
     LIMIT 1000
 );
-
 SELECT max(length(mapKeys(a)))
 FROM
 (

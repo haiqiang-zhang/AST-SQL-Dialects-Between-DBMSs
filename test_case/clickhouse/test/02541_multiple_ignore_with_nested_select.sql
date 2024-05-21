@@ -17,4 +17,4 @@ FROM
         ORDER BY number ASC NULLS FIRST
     )
 WHERE ignore(2147483648)
-ORDER BY number DESC
+ORDER BY number DESC;

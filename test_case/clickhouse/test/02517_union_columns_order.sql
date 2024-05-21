@@ -29,4 +29,3 @@ FROM
     FROM t1
     WHERE t1.c0 > (0 IS NULL)
 );
-

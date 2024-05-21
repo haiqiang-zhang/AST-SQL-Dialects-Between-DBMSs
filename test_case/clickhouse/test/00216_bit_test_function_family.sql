@@ -3,7 +3,6 @@ select
 	bitTest(1, 0) = 1,
 	bitTest(1, 1) = 0,
 	bitTest(0xff, 7) = 1;
-
 select
 	bitTestAll(0, 0) = 0,
 	bitTestAll(1, 0) = 1,
@@ -39,7 +38,6 @@ select
 	bitTestAll(0x81, 4, 5, 6, 7) = 0,
 	bitTestAll(0x81, 0, 1, 2, 3, 4, 5, 6, 7) = 0,
 	bitTestAll(0x81, 0, 7) = 1;
-
 select
 	bitTestAny(0, 0) = 0,
 	bitTestAny(1, 0) = 1,
@@ -74,7 +72,6 @@ select
 	bitTestAny(0x81, 0, 1, 2, 3) = 1,
 	bitTestAny(0x81, 4, 5, 6, 7) = 1,
 	bitTestAny(0x81, 0, 1, 2, 3, 4, 5, 6, 7) = 1;
-
 select n = n_,
 	number as n,
 	bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(b7, 1), b6), 1), b5), 1), b4), 1), b3), 1), b2), 1), b1), 1), b0) as n_,
@@ -87,7 +84,6 @@ select n = n_,
 	bitTest(n, 1) as b1,
 	bitTest(n, 0) as b0
 from system.numbers limit 256;
-
 select n = n_,
 	number as n,
 	bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(b7, 1), b6), 1), b5), 1), b4), 1), b3), 1), b2), 1), b1), 1), b0) as n_,
@@ -100,7 +96,6 @@ select n = n_,
 	bitTestAll(n, 1) as b1,
 	bitTestAll(n, 0) as b0
 from system.numbers limit 256;
-
 select n = n_,
 	number as n,
 	bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(bitOr(bitShiftLeft(b7, 1), b6), 1), b5), 1), b4), 1), b3), 1), b2), 1), b1), 1), b0) as n_,

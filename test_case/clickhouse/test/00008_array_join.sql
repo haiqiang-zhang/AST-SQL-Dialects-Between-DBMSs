@@ -1,1 +1,1 @@
-SELECT arrayJoin(['Hello', 'Goodbye'])
+SELECT arrayJoin(['Hello', 'Goodbye']);

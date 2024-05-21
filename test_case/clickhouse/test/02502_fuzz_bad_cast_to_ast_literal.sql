@@ -4,4 +4,3 @@ CREATE TABLE test54378 (`part_date` Date, `pk_date` Date, `date` Date) ENGINE = 
 INSERT INTO test54378 values ('2018-04-19', '2018-04-19', '2018-04-19');
 SELECT 232 FROM test54378 PREWHERE (part_date = (SELECT toDate('2018-04-19'))) IN (SELECT toDate('2018-04-19')) GROUP BY toDate(toDate(-2147483649, NULL), NULL), -inf;
 DROP TABLE test54378;
-

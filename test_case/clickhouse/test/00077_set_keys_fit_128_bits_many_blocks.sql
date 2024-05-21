@@ -1,5 +1,4 @@
 SET max_block_size = 1000;
-
 SELECT number FROM
 (
     SELECT * FROM system.numbers LIMIT 10000

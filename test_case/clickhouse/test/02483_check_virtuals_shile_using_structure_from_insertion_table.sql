@@ -1,5 +1,3 @@
--- Tags: no-parallel
-
 drop table if exists test;
 create table test (line String, _file String, _path String) engine=Memory;
 insert into function file(02483_data.LineAsString) select 'Hello' settings engine_file_truncate_on_insert=1;

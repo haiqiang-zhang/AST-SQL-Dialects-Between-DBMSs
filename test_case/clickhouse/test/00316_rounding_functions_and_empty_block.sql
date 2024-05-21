@@ -1,5 +1,4 @@
 SET any_join_distinct_right_table_keys = 1;
-
 SELECT
     floor((ReferrerTimestamp - InstallTimestamp) / 86400) AS DaysSinceInstallations
 FROM

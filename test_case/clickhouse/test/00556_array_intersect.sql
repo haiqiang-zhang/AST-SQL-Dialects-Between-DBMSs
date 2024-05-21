@@ -12,4 +12,3 @@ select arrayIntersect([[1, 2], [1, 1]], [[2, 1], [1, 1]]);
 select arrayIntersect([[1, 2, Null], [1, 1]], [[-2, 1], [1, 1]]);
 select arrayIntersect([(1, ['a', 'b']), (Null, ['c'])], [(2, ['c', Null]), (1, ['a', 'b'])]);
 select toTypeName(arrayIntersect([(1, ['a', 'b']), (Null, ['c'])], [(2, ['c', Null]), (1, ['a', 'b'])]));
-

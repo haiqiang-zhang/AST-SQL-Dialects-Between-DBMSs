@@ -1,6 +1,4 @@
--- https://github.com/ClickHouse/ClickHouse/pull/40065
 SET allow_experimental_analyzer=1;
-
 SELECT
 (
   SELECT
@@ -14,7 +12,6 @@ SELECT
       number
   FROM numbers(1)
 ) AS s2;
-
 SELECT
 (
   SELECT

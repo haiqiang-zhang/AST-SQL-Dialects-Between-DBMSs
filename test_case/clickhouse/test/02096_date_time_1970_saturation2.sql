@@ -1,4 +1,3 @@
--- America/Paramaribo : partial hours timezones
 select toDateTime(0, 'America/Paramaribo');
 select toMonday(toDateTime(0, 'America/Paramaribo'));
 select toStartOfWeek(toDateTime(0, 'America/Paramaribo'));
@@ -11,8 +10,6 @@ select toStartOfFiveMinute(toDateTime(0, 'America/Paramaribo'));
 select toStartOfTenMinutes(toDateTime(0, 'America/Paramaribo'));
 select toStartOfFifteenMinutes(toDateTime(0, 'America/Paramaribo'));
 select toStartOfHour(toDateTime(0, 'America/Paramaribo'));
-
--- Africa/Monrovia : partial minutes timezones
 select toDateTime(0, 'Africa/Monrovia');
 select toMonday(toDateTime(0, 'Africa/Monrovia'));
 select toStartOfWeek(toDateTime(0, 'Africa/Monrovia'));

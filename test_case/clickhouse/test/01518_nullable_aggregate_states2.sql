@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS testNullableStates;
 DROP TABLE IF EXISTS testNullableStatesAgg;
-
 CREATE TABLE testNullableStates (
    ts DateTime,
    id String,
@@ -16,7 +15,6 @@ CREATE TABLE testNullableStates (
    int16 Nullable(Int16),
    int8 Nullable(Int8))
 ENGINE=MergeTree PARTITION BY toStartOfDay(ts) ORDER BY id;
-
 INSERT INTO testNullableStates SELECT
     toDateTime('2020-01-01 00:00:00') + number AS ts,
     toString(number % 999) AS id,
@@ -32,7 +30,6 @@ INSERT INTO testNullableStates SELECT
     toInt16(number),
     toInt8(number)
 FROM numbers(100000);
-
 INSERT INTO testNullableStates SELECT
     toDateTime('2020-01-01 00:00:00') + number AS ts,
     toString(number % 999 - 5) AS id,
@@ -48,8 +45,6 @@ INSERT INTO testNullableStates SELECT
     NULL,
     NULL
 FROM numbers(500);
-
-
 CREATE TABLE testNullableStatesAgg
 (
     `ts` DateTime,
@@ -94,10 +89,6 @@ CREATE TABLE testNullableStatesAgg
 ENGINE = AggregatingMergeTree()
 PARTITION BY toStartOfDay(ts)
 ORDER BY id;
-
-
-
-
 insert into testNullableStatesAgg
 select
    ts DateTime,
@@ -140,15 +131,10 @@ select
    sumState(int8) int8Sum
 from testNullableStates
 group by ts, id;
-
 OPTIMIZE TABLE testNullableStatesAgg FINAL;
-
 select count() from testNullableStates;
-
 select count() from testNullableStatesAgg;
-
 select ' ---- select without states ---- ';
-
 SELECT id, count(),
     min(string),
     max(string),
@@ -189,9 +175,7 @@ SELECT id, count(),
 FROM testNullableStates
 GROUP BY id
 ORDER BY id ASC;
-
 select ' ---- select with states ---- ';
-
 SELECT id, count(),
     minMerge(stringMin),
     maxMerge(stringMax),
@@ -232,10 +216,7 @@ SELECT id, count(),
 FROM testNullableStatesAgg
 GROUP BY id
 ORDER BY id ASC;
-
-
 select ' ---- select row with nulls without states ---- ';
-
 SELECT id, count(),
     min(string),
     max(string),
@@ -277,9 +258,7 @@ FROM testNullableStates
 WHERE id = '-2'
 GROUP BY id
 ORDER BY id ASC;
-
 select ' ---- select row with nulls with states ---- ';
-
 SELECT id, count(),
     minMerge(stringMin),
     maxMerge(stringMax),
@@ -321,10 +300,7 @@ FROM testNullableStatesAgg
 WHERE id = '-2'
 GROUP BY id
 ORDER BY id ASC;
-
-
 select ' ---- select no rows without states ---- ';
-
 SELECT count(),
     min(string),
     max(string),
@@ -364,9 +340,7 @@ SELECT count(),
     sum(int8)
 FROM testNullableStates
 WHERE id = '-22';
-
 select ' ---- select no rows with states ---- ';
-
 SELECT count(),
     minMerge(stringMin),
     maxMerge(stringMax),
@@ -406,6 +380,5 @@ SELECT count(),
     sumMerge(int8Sum)
 FROM testNullableStatesAgg
 WHERE id = '-22';
-
 DROP TABLE testNullableStates;
 DROP TABLE testNullableStatesAgg;

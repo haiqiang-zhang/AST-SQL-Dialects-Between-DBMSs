@@ -5,7 +5,6 @@ SELECT number % 3 + 1 AS n, min(n), max(n) FROM numbers(100) GROUP BY n WITH ROL
 SELECT 'cube';
 SELECT number % 3 + 1 AS n, min(n), max(n) FROM numbers(100) GROUP BY n WITH CUBE;
 SELECT '=======';
-
 SELECT
     x,
     min(x) AS lower,

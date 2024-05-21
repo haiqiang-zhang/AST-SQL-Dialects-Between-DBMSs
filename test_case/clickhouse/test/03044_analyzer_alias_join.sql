@@ -1,7 +1,5 @@
--- https://github.com/ClickHouse/ClickHouse/issues/17319
 SET allow_experimental_analyzer=1;
 CREATE TEMPORARY TABLE hits (date Date, data Float64) engine=Memory();
-
 SELECT
     subquery1.period AS period,
     if(1=1, 0, subquery1.data1) AS data,
@@ -15,4 +13,4 @@ LEFT JOIN
 (
     SELECT date AS period, data AS data
     FROM hits
-) AS subquery2 ON (subquery1.period = subquery2.period)
+) AS subquery2 ON (subquery1.period = subquery2.period);

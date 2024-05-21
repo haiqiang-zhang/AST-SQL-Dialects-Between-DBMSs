@@ -1,9 +1,7 @@
--- Tags: no-fasttest
 -- no-fasttest: json type needs rapidjson library, geo types need s2 geometry
 
 SET allow_experimental_object_type = 1;
 SET allow_suspicious_low_cardinality_types=1;
-
 SELECT '-- Const string + non-const arbitrary type';
 SELECT concat('With ', materialize(42 :: Int8));
 SELECT concat('With ', materialize(43 :: Int16));
@@ -48,7 +46,6 @@ SELECT concat('With ', materialize((42, 43) :: Point));
 SELECT concat('With ', materialize([(0,0),(10,0),(10,10),(0,10)] :: Ring));
 SELECT concat('With ', materialize([[(20, 20), (50, 20), (50, 50), (20, 50)], [(30, 30), (50, 50), (50, 30)]] :: Polygon));
 SELECT concat('With ', materialize([[[(0, 0), (10, 0), (10, 10), (0, 10)]], [[(20, 20), (50, 20), (50, 50), (20, 50)],[(30, 30), (50, 50), (50, 30)]]] :: MultiPolygon));
-
 SELECT '-- SimpleAggregateFunction';
 DROP TABLE IF EXISTS concat_saf_test;
 CREATE TABLE concat_saf_test(x SimpleAggregateFunction(max, Int32)) ENGINE=MergeTree ORDER BY tuple();
@@ -56,14 +53,12 @@ INSERT INTO concat_saf_test VALUES (42);
 INSERT INTO concat_saf_test SELECT max(number) FROM numbers(5);
 SELECT concat('With ', x) FROM concat_saf_test ORDER BY x DESC;
 DROP TABLE concat_saf_test;
-
 SELECT '-- Nested';
 DROP TABLE IF EXISTS concat_nested_test;
 CREATE TABLE concat_nested_test(attrs Nested(k String, v String)) ENGINE = MergeTree ORDER BY tuple();
 INSERT INTO concat_nested_test VALUES (['foo', 'bar'], ['qaz', 'qux']);
 SELECT concat('With ', attrs.k, attrs.v) FROM concat_nested_test;
 DROP TABLE concat_nested_test;
-
 SELECT '-- NULL arguments';
 SELECT concat(NULL, NULL);
 SELECT concat(NULL, materialize(NULL :: Nullable(UInt64)));
@@ -72,7 +67,6 @@ SELECT concat(42, materialize(NULL :: Nullable(UInt64)));
 SELECT concat('42', materialize(NULL :: Nullable(UInt64)));
 SELECT concat(42, materialize(NULL :: Nullable(UInt64)), materialize(NULL :: Nullable(UInt64)));
 SELECT concat('42', materialize(NULL :: Nullable(UInt64)), materialize(NULL :: Nullable(UInt64)));
-
 SELECT '-- Various arguments tests';
 SELECT concat(materialize('Non-const'), materialize(' strings'));
 SELECT concat('Two arguments ', 'test');
@@ -82,7 +76,6 @@ SELECT concat(materialize(42 :: Int32), materialize(144 :: UInt64));
 SELECT concat(materialize(42 :: Int32), materialize(144 :: UInt64), materialize(255 :: UInt32));
 SELECT concat(42, 144);
 SELECT concat(42, 144, 255);
-
 SELECT '-- Single argument tests';
 SELECT concat(42);
 SELECT concat(materialize(42));
@@ -90,7 +83,5 @@ SELECT concat('foo');
 SELECT concat(materialize('foo'));
 SELECT concat(NULL);
 SELECT concat(materialize(NULL :: Nullable(UInt64)));
-
 SELECT CONCAT('Testing the ', 'alias');
-
-SELECT concat();  -- { serverError 42 }
+SELECT concat();

@@ -7,7 +7,6 @@ SELECT toInt256(number) y, toDecimal32(y, 1), toDecimal64(y, 5), toDecimal128(y,
 SELECT toUInt256(number) y, toDecimal32(y, 1), toDecimal64(y, 5), toDecimal128(y, 6), toDecimal256(y, 7) FROM numbers(6, 1);
 SELECT toFloat32(number) y, toDecimal32(y, 1), toDecimal64(y, 5), toDecimal128(y, 6), toDecimal256(y, 7) FROM numbers(7, 1);
 SELECT toFloat64(number) y, toDecimal32(y, 1), toDecimal64(y, 5), toDecimal128(y, 6), toDecimal256(y, 7) FROM numbers(8, 1);
-
 SELECT toInt32(toDecimal32(number, 1)), toInt64(toDecimal32(number, 1)), toInt128(toDecimal32(number, 1)) FROM numbers(9, 1);
 SELECT toInt32(toDecimal64(number, 2)), toInt64(toDecimal64(number, 2)), toInt128(toDecimal64(number, 2)) FROM numbers(10, 1);
 SELECT toInt32(toDecimal128(number, 3)), toInt64(toDecimal128(number, 3)), toInt128(toDecimal128(number, 3)) FROM numbers(11, 1);

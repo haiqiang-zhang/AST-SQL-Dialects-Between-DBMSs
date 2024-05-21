@@ -1,9 +1,5 @@
--- this SELECT produces empty chunk in FillingTransform
-
 SET enable_positional_arguments = 0;
 SET allow_experimental_analyzer = 1;
-
--- With analyzer this special query has correct output
 SELECT
     2 AS x,
     arrayJoin([NULL, NULL, NULL])

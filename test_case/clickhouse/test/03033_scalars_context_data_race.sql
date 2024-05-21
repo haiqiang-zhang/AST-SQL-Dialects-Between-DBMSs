@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS test;
 DROP TABLE IF EXISTS test_tmp;
 DROP TABLE IF EXISTS dst;
 DROP TABLE IF EXISTS view;
-
 CREATE TABLE test 
 (
     `address` FixedString(20),
@@ -15,9 +14,7 @@ CREATE TABLE test
 ENGINE = MergeTree
 ORDER BY address
 SETTINGS index_granularity = 8192;
-
 CREATE TABLE test_tmp as test;
-
 CREATE TABLE dst
 (
     `block_timestamp` AggregateFunction(max, Nullable(DateTime('UTC'))),
@@ -41,7 +38,6 @@ CREATE TABLE dst
 ENGINE = MergeTree
 ORDER BY address
 SETTINGS index_granularity = 8192;
-
 CREATE MATERIALIZED VIEW view TO dst
 (
     `block_timestamp` AggregateFunction(max, Nullable(DateTime('UTC'))),
@@ -86,19 +82,14 @@ SELECT
 FROM test
 WHERE insertion_time > toDateTime('2024-03-14 11:38:09')
 GROUP BY address);
-
 set max_insert_threads=4;
 insert into test_tmp select * from generateRandom() limit 24;
 insert into test_tmp select * from generateRandom() limit 25;
 insert into test_tmp select * from generateRandom() limit 26;
 insert into test_tmp select * from generateRandom() limit 30;
-
 INSERT INTO test(address, deployer, block_number, block_hash, block_timestamp, insertion_time) SELECT * FROM test_tmp;
-
 select count() from test;
-
 DROP TABLE test;
 DROP TABLE test_tmp;
 DROP TABLE dst;
 DROP TABLE view;
-

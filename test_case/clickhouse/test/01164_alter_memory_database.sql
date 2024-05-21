@@ -1,5 +1,3 @@
--- Tags: zookeeper, no-parallel
-
 drop database if exists test_1164_memory;
 create database test_1164_memory engine=Memory;
 create table test_1164_memory.r1 (n int) engine=ReplicatedMergeTree('/test/01164/{database}/t', '1') order by n;

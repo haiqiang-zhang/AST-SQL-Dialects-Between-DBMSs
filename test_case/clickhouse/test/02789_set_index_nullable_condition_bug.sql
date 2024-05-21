@@ -7,9 +7,7 @@ CREATE TABLE test_table
 ) ENGINE = MergeTree()
       ORDER BY col1
 AS SELECT 'v1', 'v2';
-
 SELECT * FROM test_table
 WHERE 1 == 1 AND col1 == col1 OR
        0 AND col2 == NULL;
-
 drop table if exists test_table;

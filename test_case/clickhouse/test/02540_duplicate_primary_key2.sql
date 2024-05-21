@@ -1,7 +1,5 @@
 drop table if exists test;
-
 set allow_suspicious_low_cardinality_types = 1;
-
 CREATE TABLE test
 (
     `timestamp` DateTime,
@@ -88,4 +86,4 @@ CREATE TABLE test
 )
 ENGINE = MergeTree
 PARTITION BY toYYYYMM(timestamp)
-ORDER BY (xxxx17, xxxx14, xxxx16, toStartOfDay(timestamp), left(xxxx19, 10), timestamp); -- { serverError BAD_ARGUMENTS}
+ORDER BY (xxxx17, xxxx14, xxxx16, toStartOfDay(timestamp), left(xxxx19, 10), timestamp);

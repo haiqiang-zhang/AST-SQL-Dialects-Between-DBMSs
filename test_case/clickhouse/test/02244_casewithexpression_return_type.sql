@@ -1,4 +1,4 @@
- SELECT "number", CASE "number"
+SELECT "number", CASE "number"
           WHEN 3 THEN 55
           WHEN 6 THEN 77
           WHEN 9 THEN 95

@@ -1,8 +1,6 @@
--- Tags: no-fasttest
-
 -- { echo }
 SELECT '--JSON_VALUE--';
-SELECT JSON_VALUE('{"hello":1}', '$'); -- root is a complex object => default value (empty string)
+SELECT JSON_VALUE('{"hello":1}', '$');
 SELECT JSON_VALUE('{"hello":1}', '$.hello');
 SELECT JSON_VALUE('{"hello":1.2}', '$.hello');
 SELECT JSON_VALUE('{"hello":true}', '$.hello');
@@ -10,7 +8,7 @@ SELECT JSON_VALUE('{"hello":"world"}', '$.hello');
 SELECT JSON_VALUE('{"hello":null}', '$.hello');
 SELECT JSON_VALUE('{"hello":["world","world2"]}', '$.hello');
 SELECT JSON_VALUE('{"hello":{"world":"!"}}', '$.hello');
-SELECT JSON_VALUE('{hello:world}', '$.hello'); -- invalid json => default value (empty string)
+SELECT JSON_VALUE('{hello:world}', '$.hello');
 SELECT JSON_VALUE('', '$.hello');
 SELECT JSON_VALUE('{"foo foo":"bar"}', '$."foo foo"');
 SELECT JSON_VALUE('{"hello":"\\uD83C\\uDF3A \\uD83C\\uDF38 \\uD83C\\uDF37 Hello, World \\uD83C\\uDF37 \\uD83C\\uDF38 \\uD83C\\uDF3A"}', '$.hello');
@@ -25,11 +23,10 @@ SELECT JSON_VALUE('{"hello":1}', '$[hello]');
 SELECT JSON_VALUE('{"hello":1}', '$["hello"]');
 SELECT JSON_VALUE('{"hello":1}', '$[\'hello\']');
 SELECT JSON_VALUE('{"hello 1":1}', '$["hello 1"]');
-SELECT JSON_VALUE('{"1key":1}', '$..1key'); -- { serverError 36 }
-SELECT JSON_VALUE('{"1key":1}', '$1key'); -- { serverError 36 }
-SELECT JSON_VALUE('{"1key":1}', '$key'); -- { serverError 36 }
-SELECT JSON_VALUE('{"1key":1}', '$.[key]'); -- { serverError 36 }
-
+SELECT JSON_VALUE('{"1key":1}', '$..1key');
+SELECT JSON_VALUE('{"1key":1}', '$1key');
+SELECT JSON_VALUE('{"1key":1}', '$key');
+SELECT JSON_VALUE('{"1key":1}', '$.[key]');
 SELECT '--JSON_QUERY--';
 SELECT JSON_QUERY('{"hello":1}', '$');
 SELECT JSON_QUERY('{"hello":1}', '$.hello');
@@ -39,7 +36,7 @@ SELECT JSON_QUERY('{"hello":"world"}', '$.hello');
 SELECT JSON_QUERY('{"hello":null}', '$.hello');
 SELECT JSON_QUERY('{"hello":["world","world2"]}', '$.hello');
 SELECT JSON_QUERY('{"hello":{"world":"!"}}', '$.hello');
-SELECT JSON_QUERY( '{hello:{"world":"!"}}}', '$.hello'); -- invalid json => default value (empty string)
+SELECT JSON_QUERY( '{hello:{"world":"!"}}}', '$.hello');
 SELECT JSON_QUERY('', '$.hello');
 SELECT JSON_QUERY('{"array":[[0, 1, 2, 3, 4, 5], [0, -1, -2, -3, -4, -5]]}', '$.array[*][0 to 2, 4]');
 SELECT JSON_QUERY('{"1key":1}', '$.1key');
@@ -57,11 +54,10 @@ SELECT JSON_QUERY('{"hello":1}', '$[hello]');
 SELECT JSON_QUERY('{"hello":1}', '$["hello"]');
 SELECT JSON_QUERY('{"hello":1}', '$[\'hello\']');
 SELECT JSON_QUERY('{"hello 1":1}', '$["hello 1"]');
-SELECT JSON_QUERY('{"1key":1}', '$..1key'); -- { serverError 36 }
-SELECT JSON_QUERY('{"1key":1}', '$1key'); -- { serverError 36 }
-SELECT JSON_QUERY('{"1key":1}', '$key'); -- { serverError 36 }
-SELECT JSON_QUERY('{"1key":1}', '$.[key]'); -- { serverError 36 }
-
+SELECT JSON_QUERY('{"1key":1}', '$..1key');
+SELECT JSON_QUERY('{"1key":1}', '$1key');
+SELECT JSON_QUERY('{"1key":1}', '$key');
+SELECT JSON_QUERY('{"1key":1}', '$.[key]');
 SELECT '--JSON_EXISTS--';
 SELECT JSON_EXISTS('{"hello":1}', '$');
 SELECT JSON_EXISTS('', '$');
@@ -70,7 +66,7 @@ SELECT JSON_EXISTS('{"hello":1}', '$.hello');
 SELECT JSON_EXISTS('{"hello":1,"world":2}', '$.world');
 SELECT JSON_EXISTS('{"hello":{"world":1}}', '$.world');
 SELECT JSON_EXISTS('{"hello":{"world":1}}', '$.hello.world');
-SELECT JSON_EXISTS('{hello:world}', '$.hello'); -- invalid json => default value (zero integer)
+SELECT JSON_EXISTS('{hello:world}', '$.hello');
 SELECT JSON_EXISTS('', '$.hello');
 SELECT JSON_EXISTS('{"hello":["world"]}', '$.hello[*]');
 SELECT JSON_EXISTS('{"hello":["world"]}', '$.hello[0]');
@@ -78,7 +74,6 @@ SELECT JSON_EXISTS('{"hello":["world"]}', '$.hello[1]');
 SELECT JSON_EXISTS('{"a":[{"b":1},{"c":2}]}', '$.a[*].b');
 SELECT JSON_EXISTS('{"a":[{"b":1},{"c":2}]}', '$.a[*].f');
 SELECT JSON_EXISTS('{"a":[[{"b":1}, {"g":1}],[{"h":1},{"y":1}]]}', '$.a[*][0].h');
-
 SELECT '--MANY ROWS--';
 DROP TABLE IF EXISTS 01889_sql_json;
 CREATE TABLE 01889_sql_json (id UInt8, json String) ENGINE = MergeTree ORDER BY id;

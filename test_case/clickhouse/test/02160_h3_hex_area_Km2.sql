@@ -1,5 +1,3 @@
--- Tags: no-fasttest
-
 SELECT h3HexAreaKm2(0);
 SELECT h3HexAreaKm2(1);
 SELECT h3HexAreaKm2(2);

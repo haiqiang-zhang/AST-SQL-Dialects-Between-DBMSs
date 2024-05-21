@@ -1,7 +1,5 @@
 SET allow_suspicious_low_cardinality_types=1;
-
 DROP TABLE IF EXISTS lc_nullable;
-
 CREATE TABLE lc_nullable (
     order_key   Array(LowCardinality(Nullable(UInt64))),
 
@@ -22,7 +20,6 @@ CREATE TABLE lc_nullable (
     str Array(LowCardinality(Nullable(String))),
     fixed_string Array(LowCardinality(Nullable(FixedString(5))))
 ) ENGINE = MergeTree() ORDER BY order_key SETTINGS allow_nullable_key = 1;
-
 INSERT INTO lc_nullable SELECT
     groupArray(number) AS order_key,
     groupArray(toInt8(number)) AS i8,
@@ -40,7 +37,6 @@ INSERT INTO lc_nullable SELECT
     groupArray(toString(number)) AS str,
     groupArray(toFixedString(toString(number), 5)) AS fixed_string
     FROM (SELECT number FROM system.numbers LIMIT 15);
-
 INSERT INTO lc_nullable SELECT
     groupArray(num) AS order_key,
     groupArray(toInt8(num)) AS i8,
@@ -58,7 +54,6 @@ INSERT INTO lc_nullable SELECT
     groupArray(toString(num)) AS str,
     groupArray(toFixedString(toString(num), 5)) AS fixed_string
     FROM (SELECT negate(number) as num FROM system.numbers LIMIT 15);
-
 INSERT INTO lc_nullable SELECT
     groupArray(number) AS order_key,
     groupArray(toInt8(number)) AS i8,
@@ -76,7 +71,6 @@ INSERT INTO lc_nullable SELECT
     groupArray(toString(number)) AS str,
     groupArray(toFixedString(toString(number), 5)) AS fixed_string
     FROM (SELECT number FROM system.numbers WHERE number >= 5 LIMIT 15);
-
 INSERT INTO lc_nullable SELECT
     groupArray(number) AS order_key,
     groupArray(toInt8(number)) AS i8,
@@ -94,7 +88,6 @@ INSERT INTO lc_nullable SELECT
     groupArray(toString(number)) AS str,
     groupArray(toFixedString(toString(number), 5)) AS fixed_string
     FROM (SELECT number FROM system.numbers WHERE number >= 10 LIMIT 15);
-
 INSERT INTO lc_nullable SELECT
     n AS order_key,
     n AS i8,
@@ -112,7 +105,6 @@ INSERT INTO lc_nullable SELECT
     n AS str,
     n AS fixed_string
     FROM (SELECT [NULL] AS n);
-
 INSERT INTO lc_nullable SELECT
     [NULL, n] AS order_key,
     [NULL, toInt8(n)] AS i8,
@@ -130,7 +122,6 @@ INSERT INTO lc_nullable SELECT
     [NULL, toString(n)] AS str,
     [NULL, toFixedString(toString(n), 5)] AS fixed_string
     FROM (SELECT 100 as n);
-
 SELECT count() FROM lc_nullable WHERE has(i8, 1);
 SELECT count() FROM lc_nullable WHERE has(i16, 1);
 SELECT count() FROM lc_nullable WHERE has(i32, 1);
@@ -145,7 +136,6 @@ SELECT count() FROM lc_nullable WHERE has(date, toDate('1970-01-02'));
 SELECT count() FROM lc_nullable WHERE has(date_time, toDateTime('1970-01-01 02:00:01', 'Asia/Istanbul'));
 SELECT count() FROM lc_nullable WHERE has(str, '1');
 SELECT count() FROM lc_nullable WHERE has(fixed_string, toFixedString('1', 5));
-
 SELECT count() FROM lc_nullable WHERE has(i8,  -1);
 SELECT count() FROM lc_nullable WHERE has(i16, -1);
 SELECT count() FROM lc_nullable WHERE has(i32, -1);
@@ -158,7 +148,6 @@ SELECT count() FROM lc_nullable WHERE has(f32, -1);
 SELECT count() FROM lc_nullable WHERE has(f64, -1);
 SELECT count() FROM lc_nullable WHERE has(str, '-1');
 SELECT count() FROM lc_nullable WHERE has(fixed_string, toFixedString('-1', 5));
-
 SELECT count() FROM lc_nullable WHERE has(i8, 5);
 SELECT count() FROM lc_nullable WHERE has(i16, 5);
 SELECT count() FROM lc_nullable WHERE has(i32, 5);
@@ -173,7 +162,6 @@ SELECT count() FROM lc_nullable WHERE has(date, toDate('1970-01-06'));
 SELECT count() FROM lc_nullable WHERE has(date_time, toDateTime('1970-01-01 02:00:05', 'Asia/Istanbul'));
 SELECT count() FROM lc_nullable WHERE has(str, '5');
 SELECT count() FROM lc_nullable WHERE has(fixed_string, toFixedString('5', 5));
-
 SELECT count() FROM lc_nullable WHERE has(i8, 10);
 SELECT count() FROM lc_nullable WHERE has(i16, 10);
 SELECT count() FROM lc_nullable WHERE has(i32, 10);
@@ -188,7 +176,6 @@ SELECT count() FROM lc_nullable WHERE has(date, toDate('1970-01-11'));
 SELECT count() FROM lc_nullable WHERE has(date_time, toDateTime('1970-01-01 02:00:10', 'Asia/Istanbul'));
 SELECT count() FROM lc_nullable WHERE has(str, '10');
 SELECT count() FROM lc_nullable WHERE has(fixed_string, toFixedString('10', 5));
-
 SELECT count() FROM lc_nullable WHERE has(i8, NULL);
 SELECT count() FROM lc_nullable WHERE has(i16, NULL);
 SELECT count() FROM lc_nullable WHERE has(i32, NULL);
@@ -203,7 +190,6 @@ SELECT count() FROM lc_nullable WHERE has(date, NULL);
 SELECT count() FROM lc_nullable WHERE has(date_time, NULL);
 SELECT count() FROM lc_nullable WHERE has(str, NULL);
 SELECT count() FROM lc_nullable WHERE has(fixed_string, NULL);
-
 SELECT count() FROM lc_nullable WHERE has(i8, 100);
 SELECT count() FROM lc_nullable WHERE has(i16, 100);
 SELECT count() FROM lc_nullable WHERE has(i32, 100);
@@ -218,7 +204,5 @@ SELECT count() FROM lc_nullable WHERE has(date, toDate('1970-04-11'));
 SELECT count() FROM lc_nullable WHERE has(date_time, toDateTime('1970-01-01 02:01:40', 'Asia/Istanbul'));
 SELECT count() FROM lc_nullable WHERE has(str, '100');
 SELECT count() FROM lc_nullable WHERE has(fixed_string, toFixedString('100', 5));
-
 SELECT count() FROM lc_nullable WHERE has(date, toDate(has(u64, 1), '1970-01\002'));
-
 DROP TABLE IF EXISTS lc_nullable;

@@ -1,5 +1,4 @@
 select singleValueOrNull(number) from numbers(0) with totals;
-
 SELECT
         0.5 IN (
         SELECT singleValueOrNull(*)
@@ -31,5 +30,4 @@ FROM numbers(0)
     )
 GROUP BY NULL
 WITH CUBE;
-
 SELECT anyHeavy('1') FROM (SELECT anyHeavy(1));

@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS ip_bloom;
-
 CREATE TABLE ip_bloom
 (
     `a` UInt32,
@@ -10,9 +9,6 @@ CREATE TABLE ip_bloom
 )
 ENGINE = MergeTree
 ORDER BY a;
-
 INSERT INTO ip_bloom VALUES (1, '1.1.1.1', '::1');
-
 SELECT * FROM ip_bloom;
-
 DROP TABLE ip_bloom;

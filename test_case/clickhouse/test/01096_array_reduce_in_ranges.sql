@@ -4,7 +4,6 @@ SELECT
         [(1, 3), (2, 3), (3, 3)],
         ['a', 'b', 'c', 'd', 'e']
     );
-
 SELECT
     arrayReduceInRanges(
         'sum',
@@ -16,7 +15,6 @@ SELECT
         ],
         [100, 200, 300, 400]
     );
-
 WITH
     arrayMap(x -> x + 1, range(50)) as data
 SELECT

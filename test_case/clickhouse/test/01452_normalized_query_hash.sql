@@ -7,5 +7,3 @@ SELECT normalizedQueryHash('SELECT 1 AS `xyz`') != normalizedQueryHash('SELECT 1
 SELECT normalizedQueryHash('SELECT 1 AS xyz111') = normalizedQueryHash('SELECT 2 AS xyz234');
 SELECT normalizedQueryHash('SELECT $doc$VALUE$doc$ AS `xyz`') != normalizedQueryHash('SELECT $doc$VALUE$doc$ AS `abc`');
 SELECT normalizedQueryHash('SELECT $doc$VALUE$doc$ AS xyz111') = normalizedQueryHash('SELECT $doc$VALUE$doc$ AS xyz234');
-
-

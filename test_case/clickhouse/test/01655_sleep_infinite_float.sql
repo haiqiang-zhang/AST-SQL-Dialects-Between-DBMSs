@@ -1,2 +1,2 @@
-SELECT sleep(nan); -- { serverError 36 }
-SELECT sleep(inf); -- { serverError 36 }
+SELECT sleep(nan);
+SELECT sleep(inf);

@@ -1,9 +1,6 @@
--- https://github.com/ClickHouse/ClickHouse/issues/41964
 SET allow_experimental_analyzer=1;
-
 DROP TABLE IF EXISTS ab_12_aaa;
 DROP TABLE IF EXISTS ab_12_bbb;
-
 CREATE TABLE ab_12_aaa
 (
     `id` String,
@@ -30,7 +27,6 @@ CREATE TABLE ab_12_aaa
 ENGINE = MergeTree
 ORDER BY (_year, prodcat, prodtype, quality, d1, id)
 SETTINGS index_granularity = 8192;
-
 CREATE TABLE ab_12_bbb
 (
     `id` String,
@@ -56,12 +52,10 @@ CREATE TABLE ab_12_bbb
 ENGINE = MergeTree
 ORDER BY (theyear, themonth, _year, id, sales_type, date)
 SETTINGS index_granularity = 8192;
-
 SELECT *
 FROM ab_12_aaa aa
 LEFT JOIN ab_12_bbb bb
 ON bb.id = aa.id AND bb.`_year` = aa.`_year`
 WHERE bb.theyear >= 2019;
-
 DROP TABLE IF EXISTS ab_12_aaa;
 DROP TABLE IF EXISTS ab_12_bbb;

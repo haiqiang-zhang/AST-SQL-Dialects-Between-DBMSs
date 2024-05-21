@@ -1,29 +1,24 @@
 SELECT transform(0, [0, 1], ['ZERO', 'ONE'], 'DEFAULT') AS result;
 SELECT transform(0, [0, 1], ['ZERO', 'ONE'], NULL) AS result;
-
 SELECT CASE 1
   WHEN 0 THEN 'ZERO'
   WHEN 1 THEN 'ONE'
   ELSE 'NONE'
 END AS result;
-
 SELECT CASE 1
   WHEN 0 THEN NULL
   WHEN 1 THEN 'ONE'
   ELSE 'NONE'
 END AS result;
-
 select 
     case 1 
         when 1 then 'a' 
         else 'b'
     end value;
-
 select 
     case 1 
         when 1 then 'a' 
     end value;
-
 SELECT
     d,
     toInt16OrNull(d),

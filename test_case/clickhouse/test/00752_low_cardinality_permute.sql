@@ -4,4 +4,3 @@ insert into lc_perm values (1, 'w'), (10, 'x'), (3, 'y'), (8, 'z'), (4, 'w'), (6
 select * from lc_perm;
 select str from lc_perm where val < 12 order by str;
 drop table if exists lc_perm;
-

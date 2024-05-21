@@ -1,12 +1,7 @@
--- Tags: no-fasttest
 -- Tag no-fasttest: needs s2
 
 DROP TABLE IF EXISTS s2_indexes;
-
 CREATE TABLE s2_indexes (s2_index UInt64, longitude Float64, latitude Float64) ENGINE = Memory;
-
--- Random geo coordinates were generated using S2Testing::RandomPoint() method from s2 API.
-
 INSERT INTO s2_indexes VALUES (3814912406305146967, 125.938503, 25.519362);
 INSERT INTO s2_indexes VALUES (10654167528317613967, -64.364998, -13.206226);
 INSERT INTO s2_indexes VALUES (1913723177026859705, 8.774109, -3.271374);
@@ -27,11 +22,8 @@ INSERT INTO s2_indexes VALUES (145638248314527629, -19.826140, -41.192912);
 INSERT INTO s2_indexes VALUES (12793606480989360601, 74.006104, -68.321240);
 INSERT INTO s2_indexes VALUES (6317132534461540391, -165.907973, 54.205178);
 INSERT INTO s2_indexes VALUES (6944470717485986643, 140.428834, 28.399755);
-
 SELECT 'Checking s2 index generation.';
-
 SELECT s2ToGeo(s2_index), geoToS2(longitude, latitude) FROM s2_indexes ORDER BY s2_index;
-
 SELECT first, second, result FROM (
     SELECT
         s2ToGeo(geoToS2(longitude, latitude)) AS output_geo,
@@ -41,13 +33,9 @@ SELECT first, second, result FROM (
     FROM s2_indexes
     ORDER BY s2_index
  );
-
-SELECT s2ToGeo(toUInt64(-1)); -- { serverError 36 }
-SELECT s2ToGeo(nan); -- { serverError 43 }
-SELECT geoToS2(toFloat64(toUInt64(-1)), toFloat64(toUInt64(-1))); -- { serverError BAD_ARGUMENTS }
-SELECT geoToS2(nan, nan); -- { serverError 43 }
-SELECT geoToS2(-inf, 1.1754943508222875e-38); -- { serverError 43 }
-
-
-
+SELECT s2ToGeo(toUInt64(-1));
+SELECT s2ToGeo(nan);
+SELECT geoToS2(toFloat64(toUInt64(-1)), toFloat64(toUInt64(-1)));
+SELECT geoToS2(nan, nan);
+SELECT geoToS2(-inf, 1.1754943508222875e-38);
 DROP TABLE IF EXISTS s2_indexes;

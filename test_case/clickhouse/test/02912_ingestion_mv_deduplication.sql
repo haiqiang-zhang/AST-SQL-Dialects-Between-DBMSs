@@ -1,6 +1,4 @@
--- Tags: zookeeper
 SET session_timezone = 'UTC';
-
 SELECT '-- Original issue with max_insert_delayed_streams_for_parallel_write <= 1';
 /*
 
@@ -12,7 +10,6 @@ SELECT '-- Original issue with max_insert_delayed_streams_for_parallel_write <= 
 
 */
 SET deduplicate_blocks_in_dependent_materialized_views = 0, max_insert_delayed_streams_for_parallel_write = 0;
-
 CREATE TABLE landing
 (
     time DateTime,
@@ -21,7 +18,6 @@ CREATE TABLE landing
 Engine=ReplicatedReplacingMergeTree('/clickhouse/' || currentDatabase() || '/landing/{shard}/', '{replica}')
 PARTITION BY toYYYYMMDD(time)
 ORDER BY time;
-
 CREATE MATERIALIZED VIEW mv
 ENGINE = ReplicatedSummingMergeTree('/clickhouse/' || currentDatabase() || '/mv/{shard}/', '{replica}')
 PARTITION BY toYYYYMMDD(hour) ORDER BY hour
@@ -30,18 +26,14 @@ AS SELECT
     sum(number) AS sum_amount
 FROM landing
 GROUP BY hour;
-
 INSERT INTO landing VALUES ('2022-09-01 12:23:34', 42);
 INSERT INTO landing VALUES ('2022-09-01 12:23:34', 42),('2023-09-01 12:23:34', 42);
-
 SELECT '-- Landing';
 SELECT * FROM landing FINAL ORDER BY time;
 SELECT '-- MV';
 SELECT * FROM mv FINAL ORDER BY hour;
-
 DROP TABLE IF EXISTS landing SYNC;
 DROP TABLE IF EXISTS mv SYNC;
-
 SELECT '-- Original issue with deduplicate_blocks_in_dependent_materialized_views = 0 AND max_insert_delayed_streams_for_parallel_write > 1';
 /*
 
@@ -58,7 +50,6 @@ SELECT '-- Original issue with deduplicate_blocks_in_dependent_materialized_view
 
 */
 SET deduplicate_blocks_in_dependent_materialized_views = 0, max_insert_delayed_streams_for_parallel_write = 1000;
-
 CREATE TABLE landing
 (
     time DateTime,
@@ -67,7 +58,6 @@ CREATE TABLE landing
 Engine=ReplicatedReplacingMergeTree('/clickhouse/' || currentDatabase() || '/landing/{shard}/', '{replica}')
 PARTITION BY toYYYYMMDD(time)
 ORDER BY time;
-
 CREATE MATERIALIZED VIEW mv
 ENGINE = ReplicatedSummingMergeTree('/clickhouse/' || currentDatabase() || '/mv/{shard}/', '{replica}')
 PARTITION BY toYYYYMMDD(hour) ORDER BY hour
@@ -76,18 +66,14 @@ AS SELECT
     sum(number) AS sum_amount
 FROM landing
 GROUP BY hour;
-
 INSERT INTO landing VALUES ('2022-09-01 12:23:34', 42);
 INSERT INTO landing VALUES ('2022-09-01 12:23:34', 42),('2023-09-01 12:23:34', 42);
-
 SELECT '-- Landing';
 SELECT * FROM landing FINAL ORDER BY time;
 SELECT '-- MV';
 SELECT * FROM mv FINAL ORDER BY hour;
-
 DROP TABLE IF EXISTS landing SYNC;
 DROP TABLE IF EXISTS mv SYNC;
-
 SELECT '-- Original issue with deduplicate_blocks_in_dependent_materialized_views = 1 AND max_insert_delayed_streams_for_parallel_write > 1';
 /*
 
@@ -101,7 +87,6 @@ SELECT '-- Original issue with deduplicate_blocks_in_dependent_materialized_view
 
 */
 SET deduplicate_blocks_in_dependent_materialized_views = 1, max_insert_delayed_streams_for_parallel_write = 1000;
-
 CREATE TABLE landing
 (
     time DateTime,
@@ -110,7 +95,6 @@ CREATE TABLE landing
 Engine=ReplicatedReplacingMergeTree('/clickhouse/' || currentDatabase() || '/landing/{shard}/', '{replica}')
 PARTITION BY toYYYYMMDD(time)
 ORDER BY time;
-
 CREATE MATERIALIZED VIEW mv
 ENGINE = ReplicatedSummingMergeTree('/clickhouse/' || currentDatabase() || '/mv/{shard}/', '{replica}')
 PARTITION BY toYYYYMMDD(hour) ORDER BY hour
@@ -119,18 +103,14 @@ AS SELECT
     sum(number) AS sum_amount
 FROM landing
 GROUP BY hour;
-
 INSERT INTO landing VALUES ('2022-09-01 12:23:34', 42);
 INSERT INTO landing VALUES ('2022-09-01 12:23:34', 42),('2023-09-01 12:23:34', 42);
-
 SELECT '-- Landing';
 SELECT * FROM landing FINAL ORDER BY time;
 SELECT '-- MV';
 SELECT * FROM mv FINAL ORDER BY hour;
-
 DROP TABLE IF EXISTS landing SYNC;
 DROP TABLE IF EXISTS mv SYNC;
-
 SELECT '-- Regression introduced in https://github.com/ClickHouse/ClickHouse/pull/54184';
 /*
 
@@ -141,7 +121,6 @@ SELECT '-- Regression introduced in https://github.com/ClickHouse/ClickHouse/pul
 
 */
 SET deduplicate_blocks_in_dependent_materialized_views = 0, max_insert_delayed_streams_for_parallel_write = 0;
-
 CREATE TABLE landing
 (
     `time` DateTime,
@@ -152,7 +131,6 @@ CREATE TABLE landing
 )
 ENGINE = ReplicatedReplacingMergeTree('/clickhouse/' || currentDatabase() || '/landing/{shard}/', '{replica}')
 ORDER BY (pk1, pk2, pk3, pk4);
-
 CREATE TABLE ds
 (
     `pk1` LowCardinality(String),
@@ -163,7 +141,6 @@ CREATE TABLE ds
 )
 ENGINE = ReplicatedAggregatingMergeTree('/clickhouse/' || currentDatabase() || '/ds/{shard}/', '{replica}')
 ORDER BY (pk1, pk2, pk3, pk4);
-
 CREATE MATERIALIZED VIEW mv TO ds AS
 SELECT
     pk1,
@@ -173,10 +150,8 @@ SELECT
     countState() AS occurences
 FROM landing
 GROUP BY pk1, pk2, pk4, pk3;
-
 INSERT INTO landing (time, pk1, pk2, pk4, pk3)
 VALUES ('2023-01-01 00:00:00','org-1','prod','login','user'),('2023-01-01 00:00:00','org-1','prod','login','user'),('2023-01-01 00:00:00','org-1','prod','login','user'),('2023-02-01 00:00:00','org-1','stage','login','user'),('2023-02-01 00:00:00','org-1','prod','login','account'),('2023-02-01 00:00:00','org-1','prod','checkout','user'),('2023-03-01 00:00:00','org-1','prod','login','account'),('2023-03-01 00:00:00','org-1','prod','login','account');
-
 SELECT '-- Landing (Agg/Replacing)MergeTree';
 SELECT
     pk1,
@@ -187,7 +162,6 @@ SELECT
 FROM landing
 GROUP BY pk1, pk2, pk4, pk3
 ORDER BY pk1, pk2, pk4, pk3;
-
 SELECT '--- MV';
 SELECT
     pk1,
@@ -198,7 +172,6 @@ SELECT
 FROM ds
 GROUP BY pk1, pk2, pk4, pk3
 ORDER BY pk1, pk2, pk4, pk3;
-
 DROP TABLE IF EXISTS landing SYNC;
 DROP TABLE IF EXISTS ds SYNC;
 DROP TABLE IF EXISTS mv SYNC;

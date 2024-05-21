@@ -1,2 +1,1 @@
-SELECT positionCaseInsensitiveUTF8('иголка.ру', 'иголка.р�\0') AS res;
-SELECT sum(ignore(positionCaseInsensitiveUTF8('иголка.ру', randomString(rand() % 2)))) FROM numbers(1000000);
+SELECT positionCaseInsensitiveUTF8('ÃÂ¸ÃÂ³ÃÂ¾ÃÂ»ÃÂºÃÂ°.ÃÂÃÂ', 'ÃÂ¸ÃÂ³ÃÂ¾ÃÂ»ÃÂºÃÂ°.ÃÂÃ\0') AS res;

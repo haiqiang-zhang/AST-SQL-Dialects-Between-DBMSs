@@ -9,7 +9,6 @@ FROM
     FROM numbers(10)
     WHERE number > 10
 );
-
 SELECT
     count(),
     countOrNull(),

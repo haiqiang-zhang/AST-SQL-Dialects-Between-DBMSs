@@ -1,6 +1,3 @@
-
-
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE t1.typnamespace = 0 OR
@@ -9,8 +6,6 @@ WHERE t1.typnamespace = 0 OR
     NOT t1.typisdefined OR
     (t1.typalign not in ('c', 's', 'i', 'd')) OR
     (t1.typstorage not in ('p', 'x', 'e', 'm'));
-
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE t1.typbyval AND
@@ -18,20 +13,14 @@ WHERE t1.typbyval AND
     (t1.typlen != 2 OR t1.typalign != 's') AND
     (t1.typlen != 4 OR t1.typalign != 'i') AND
     (t1.typlen != 8 OR t1.typalign != 'd');
-
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE t1.typstorage != 'p' AND
     (t1.typbyval OR t1.typlen != -1);
-
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE (t1.typtype = 'c' AND t1.typrelid = 0) OR
     (t1.typtype != 'c' AND t1.typrelid != 0);
-
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE t1.typtype not in ('p') AND t1.typname NOT LIKE E'\\_%'
@@ -40,19 +29,16 @@ WHERE t1.typtype not in ('p') AND t1.typname NOT LIKE E'\\_%'
      WHERE t2.typname = ('_' || t1.typname)::name AND
            t2.typelem = t1.oid and t1.typarray = t2.oid)
 ORDER BY t1.oid;
-
 SELECT t1.oid, t1.typname as basetype, t2.typname as arraytype,
        t2.typsubscript
 FROM   pg_type t1 LEFT JOIN pg_type t2 ON (t1.typarray = t2.oid)
 WHERE  t1.typarray <> 0 AND
        (t2.oid IS NULL OR
         t2.typsubscript <> 'array_subscript_handler'::regproc);
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE t1.typtype = 'r' AND
    NOT EXISTS(SELECT 1 FROM pg_range r WHERE rngtypid = t1.oid);
-
 SELECT t1.oid, t1.typname, t1.typalign, t2.typname, t2.typalign
 FROM pg_type as t1
      LEFT JOIN pg_range as r ON rngtypid = t1.oid
@@ -61,13 +47,9 @@ WHERE t1.typtype = 'r' AND
     (t1.typalign != (CASE WHEN t2.typalign = 'd' THEN 'd'::"char"
                           ELSE 'i'::"char" END)
      OR t2.oid IS NULL);
-
-
 SELECT t1.oid, t1.typname
 FROM pg_type as t1
 WHERE (t1.typinput = 0 OR t1.typoutput = 0);
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typinput = p1.oid AND NOT
@@ -77,31 +59,25 @@ WHERE t1.typinput = p1.oid AND NOT
      (p1.pronargs = 3 AND p1.proargtypes[0] = 'cstring'::regtype AND
       p1.proargtypes[1] = 'oid'::regtype AND
       p1.proargtypes[2] = 'int4'::regtype));
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typinput = p1.oid AND t1.typtype in ('b', 'p') AND NOT
     (t1.typelem != 0 AND t1.typlen < 0) AND NOT
     (p1.prorettype = t1.oid AND NOT p1.proretset)
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typinput = p1.oid AND
     (t1.typelem != 0 AND t1.typlen < 0) AND NOT
     (p1.oid = 'array_in'::regproc)
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typinput = p1.oid AND p1.provolatile NOT IN ('i', 's');
-
 SELECT DISTINCT typtype, typinput
 FROM pg_type AS t1
 WHERE t1.typtype not in ('b', 'p')
 ORDER BY 1;
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typoutput = p1.oid AND t1.typtype in ('b', 'p') AND NOT
@@ -110,26 +86,20 @@ WHERE t1.typoutput = p1.oid AND t1.typtype in ('b', 'p') AND NOT
       (p1.oid = 'array_out'::regproc AND
        t1.typelem != 0 AND t1.typlen = -1)))
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typoutput = p1.oid AND NOT
     (p1.prorettype = 'cstring'::regtype AND NOT p1.proretset);
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typoutput = p1.oid AND p1.provolatile NOT IN ('i', 's');
-
 SELECT DISTINCT typtype, typoutput
 FROM pg_type AS t1
 WHERE t1.typtype not in ('b', 'd', 'p')
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, t2.oid, t2.typname
 FROM pg_type AS t1 LEFT JOIN pg_type AS t2 ON t1.typbasetype = t2.oid
 WHERE t1.typtype = 'd' AND t1.typoutput IS DISTINCT FROM t2.typoutput;
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typreceive = p1.oid AND NOT
@@ -139,36 +109,29 @@ WHERE t1.typreceive = p1.oid AND NOT
      (p1.pronargs = 3 AND p1.proargtypes[0] = 'internal'::regtype AND
       p1.proargtypes[1] = 'oid'::regtype AND
       p1.proargtypes[2] = 'int4'::regtype));
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typreceive = p1.oid AND t1.typtype in ('b', 'p') AND NOT
     (t1.typelem != 0 AND t1.typlen < 0) AND NOT
     (p1.prorettype = t1.oid AND NOT p1.proretset)
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typreceive = p1.oid AND
     (t1.typelem != 0 AND t1.typlen < 0) AND NOT
     (p1.oid = 'array_recv'::regproc)
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname, p2.oid, p2.proname
 FROM pg_type AS t1, pg_proc AS p1, pg_proc AS p2
 WHERE t1.typinput = p1.oid AND t1.typreceive = p2.oid AND
     p1.pronargs != p2.pronargs;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typreceive = p1.oid AND p1.provolatile NOT IN ('i', 's');
-
 SELECT DISTINCT typtype, typreceive
 FROM pg_type AS t1
 WHERE t1.typtype not in ('b', 'p')
 ORDER BY 1;
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typsend = p1.oid AND t1.typtype in ('b', 'p') AND NOT
@@ -177,161 +140,115 @@ WHERE t1.typsend = p1.oid AND t1.typtype in ('b', 'p') AND NOT
       (p1.oid = 'array_send'::regproc AND
        t1.typelem != 0 AND t1.typlen = -1)))
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typsend = p1.oid AND NOT
     (p1.prorettype = 'bytea'::regtype AND NOT p1.proretset);
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typsend = p1.oid AND p1.provolatile NOT IN ('i', 's');
-
 SELECT DISTINCT typtype, typsend
 FROM pg_type AS t1
 WHERE t1.typtype not in ('b', 'd', 'p')
 ORDER BY 1;
-
 SELECT t1.oid, t1.typname, t2.oid, t2.typname
 FROM pg_type AS t1 LEFT JOIN pg_type AS t2 ON t1.typbasetype = t2.oid
 WHERE t1.typtype = 'd' AND t1.typsend IS DISTINCT FROM t2.typsend;
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typmodin = p1.oid AND NOT
     (p1.pronargs = 1 AND
      p1.proargtypes[0] = 'cstring[]'::regtype AND
      p1.prorettype = 'int4'::regtype AND NOT p1.proretset);
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typmodin = p1.oid AND p1.provolatile NOT IN ('i', 's');
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typmodout = p1.oid AND NOT
     (p1.pronargs = 1 AND
      p1.proargtypes[0] = 'int4'::regtype AND
      p1.prorettype = 'cstring'::regtype AND NOT p1.proretset);
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typmodout = p1.oid AND p1.provolatile NOT IN ('i', 's');
-
-
 SELECT t1.oid, t1.typname, t2.oid, t2.typname
 FROM pg_type AS t1, pg_type AS t2
 WHERE t1.typelem = t2.oid AND NOT
     (t1.typmodin = t2.typmodin AND t1.typmodout = t2.typmodout);
-
-
 SELECT t1.oid, t1.typname, t2.oid, t2.typname
 FROM pg_type AS t1, pg_type AS t2
 WHERE t1.typarray = t2.oid AND NOT (t1.typdelim = t2.typdelim);
-
-
 SELECT t1.oid, t1.typname, t1.typalign, t2.typname, t2.typalign
 FROM pg_type AS t1, pg_type AS t2
 WHERE t1.typarray = t2.oid AND
     t2.typalign != (CASE WHEN t1.typalign = 'd' THEN 'd'::"char"
                          ELSE 'i'::"char" END);
-
-
 SELECT t1.oid, t1.typname, t1.typelem
 FROM pg_type AS t1
 WHERE t1.typelem != 0 AND t1.typsubscript = 0;
-
-
 SELECT t1.oid, t1.typname,
        t1.typelem, t1.typlen, t1.typbyval
 FROM pg_type AS t1
 WHERE t1.typsubscript = 'array_subscript_handler'::regproc AND NOT
     (t1.typelem != 0 AND t1.typlen = -1 AND NOT t1.typbyval);
-
 SELECT t1.oid, t1.typname,
        t1.typelem, t1.typlen, t1.typbyval
 FROM pg_type AS t1
 WHERE t1.typsubscript = 'raw_array_subscript_handler'::regproc AND NOT
     (t1.typelem != 0 AND t1.typlen > 0 AND NOT t1.typbyval);
-
-
 SELECT t1.oid, t1.typname, p1.oid, p1.proname
 FROM pg_type AS t1, pg_proc AS p1
 WHERE t1.typanalyze = p1.oid AND NOT
     (p1.pronargs = 1 AND
      p1.proargtypes[0] = 'internal'::regtype AND
      p1.prorettype = 'bool'::regtype AND NOT p1.proretset);
-
-
-
 SELECT d.oid, d.typname, d.typanalyze, t.oid, t.typname, t.typanalyze
 FROM pg_type d JOIN pg_type t ON d.typbasetype = t.oid
 WHERE d.typanalyze != t.typanalyze;
-
-
 SELECT t.oid, t.typname, t.typanalyze
 FROM pg_type t LEFT JOIN pg_range r on t.oid = r.rngtypid
 WHERE t.typbasetype = 0 AND
     (t.typanalyze = 'range_typanalyze'::regproc) != (r.rngtypid IS NOT NULL);
-
-
 SELECT t.oid, t.typname, t.typanalyze
 FROM pg_type t
 WHERE t.typbasetype = 0 AND
     (t.typanalyze = 'array_typanalyze'::regproc) !=
     (t.typsubscript = 'array_subscript_handler'::regproc)
 ORDER BY 1;
-
-
-
 SELECT c1.oid, c1.relname
 FROM pg_class as c1
 WHERE relkind NOT IN ('r', 'i', 'S', 't', 'v', 'm', 'c', 'f', 'p', 'I') OR
     relpersistence NOT IN ('p', 'u', 't') OR
     relreplident NOT IN ('d', 'n', 'f', 'i');
-
 SELECT c1.oid, c1.relname
 FROM pg_class as c1
 WHERE c1.relkind NOT IN ('S', 'v', 'f', 'c', 'p') and
     c1.relam = 0;
-
 SELECT c1.oid, c1.relname
 FROM pg_class as c1
 WHERE c1.relkind IN ('S', 'v', 'f', 'c', 'p') and
     c1.relam != 0;
-
 SELECT pc.oid, pc.relname, pa.amname, pa.amtype
 FROM pg_class as pc JOIN pg_am AS pa ON (pc.relam = pa.oid)
 WHERE pc.relkind IN ('i', 'I') and
     pa.amtype != 'i';
-
 SELECT pc.oid, pc.relname, pa.amname, pa.amtype
 FROM pg_class as pc JOIN pg_am AS pa ON (pc.relam = pa.oid)
 WHERE pc.relkind IN ('r', 't', 'm') and
     pa.amtype != 't';
-
-
-
 SELECT a1.attrelid, a1.attname
 FROM pg_attribute as a1
 WHERE a1.attrelid = 0 OR a1.atttypid = 0 OR a1.attnum = 0 OR
     a1.attcacheoff != -1 OR a1.attinhcount < 0 OR
     (a1.attinhcount = 0 AND NOT a1.attislocal);
-
-
 SELECT a1.attrelid, a1.attname, c1.oid, c1.relname
 FROM pg_attribute AS a1, pg_class AS c1
 WHERE a1.attrelid = c1.oid AND a1.attnum > c1.relnatts;
-
-
 SELECT c1.oid, c1.relname
 FROM pg_class AS c1
 WHERE c1.relnatts != (SELECT count(*) FROM pg_attribute AS a1
                       WHERE a1.attrelid = c1.oid AND a1.attnum > 0);
-
-
 SELECT a1.attrelid, a1.attname, t1.oid, t1.typname
 FROM pg_attribute AS a1, pg_type AS t1
 WHERE a1.atttypid = t1.oid AND
@@ -339,19 +256,12 @@ WHERE a1.atttypid = t1.oid AND
      a1.attalign != t1.typalign OR
      a1.attbyval != t1.typbyval OR
      (a1.attstorage != t1.typstorage AND a1.attstorage != 'p'));
-
-
-
 SELECT r.rngtypid, r.rngsubtype
 FROM pg_range as r
 WHERE r.rngtypid = 0 OR r.rngsubtype = 0 OR r.rngsubopc = 0;
-
-
 SELECT r.rngtypid, r.rngsubtype, r.rngcollation, t.typcollation
 FROM pg_range r JOIN pg_type t ON t.oid = r.rngsubtype
 WHERE (rngcollation = 0) != (typcollation = 0);
-
-
 SELECT r.rngtypid, r.rngsubtype, o.opcmethod, o.opcname
 FROM pg_range r JOIN pg_opclass o ON o.oid = r.rngsubopc
 WHERE o.opcmethod != 403 OR
@@ -360,24 +270,17 @@ WHERE o.opcmethod != 403 OR
       EXISTS(select 1 from pg_catalog.pg_type where
              oid = r.rngsubtype and typelem != 0 and
              typsubscript = 'array_subscript_handler'::regproc)));
-
-
 SELECT r.rngtypid, r.rngsubtype, p.proname
 FROM pg_range r JOIN pg_proc p ON p.oid = r.rngcanonical
 WHERE pronargs != 1 OR proargtypes[0] != rngtypid OR prorettype != rngtypid;
-
-
 SELECT r.rngtypid, r.rngsubtype, p.proname
 FROM pg_range r JOIN pg_proc p ON p.oid = r.rngsubdiff
 WHERE pronargs != 2
     OR proargtypes[0] != rngsubtype OR proargtypes[1] != rngsubtype
     OR prorettype != 'pg_catalog.float8'::regtype;
-
-
 SELECT r.rngtypid, r.rngsubtype, r.rngmultitypid
 FROM pg_range r
 WHERE r.rngmultitypid IS NULL OR r.rngmultitypid = 0;
-
 CREATE TABLE tab_core_types AS SELECT
   '(11,12)'::point,
   '(1,1),(2,2)'::line,
@@ -442,7 +345,6 @@ CREATE TABLE tab_core_types AS SELECT
   '{(2020-01-02 03:04:05, 2021-02-03 06:07:08)}'::tsmultirange,
   '(2020-01-02 03:04:05, 2021-02-03 06:07:08)'::tstzrange,
   '{(2020-01-02 03:04:05, 2021-02-03 06:07:08)}'::tstzmultirange;
-
 SELECT oid, typname, typtype, typelem, typarray
   FROM pg_type t
   WHERE oid < 16384 AND

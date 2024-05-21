@@ -1,4 +1,3 @@
---https://github.com/ClickHouse/ClickHouse/issues/47366
 SELECT
     id % 255,
     toTypeName(d.id)

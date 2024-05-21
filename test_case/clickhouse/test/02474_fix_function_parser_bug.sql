@@ -1,1 +1,1 @@
-CREATE DATABASE conv_mian ENGINE QALL(COLUMNS('|T.D'),¸mp} -- { clientError SYNTAX_ERROR }
+CREATE DATABASE conv_mian ENGINE QALL(COLUMNS('|T.D'),Â¸mp} -- { clientError SYNTAX_ERROR };

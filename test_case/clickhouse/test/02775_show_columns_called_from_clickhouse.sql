@@ -1,4 +1,3 @@
--- Tags: no-fasttest, no-parallel
 -- no-fasttest: json type needs rapidjson library, geo types need s2 geometry
 -- no-parallel: can't provide currentDatabase() to SHOW COLUMNS
 
@@ -9,10 +8,8 @@
 -- -----------------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS tab;
-
 SET allow_suspicious_low_cardinality_types=1;
 SET allow_experimental_object_type=1;
-
 CREATE TABLE tab
 (
     i8            Int8,
@@ -75,7 +72,5 @@ CREATE TABLE tab
     lns           LowCardinality(Nullable(String)),
     lnfs          LowCardinality(Nullable(FixedString(3))),
 ) ENGINE Memory;
-
 SHOW COLUMNS FROM tab;
-
 DROP TABLE tab;

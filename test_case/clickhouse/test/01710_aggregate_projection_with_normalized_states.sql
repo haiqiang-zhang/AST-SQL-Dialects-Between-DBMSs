@@ -1,7 +1,5 @@
 DROP TABLE IF EXISTS r;
-
 select finalizeAggregation(cast(quantileState(0)(arrayJoin([1,2,3])) as AggregateFunction(quantile(1), UInt8)));
-
 CREATE TABLE r (
      x String,
      a LowCardinality(String),
@@ -10,7 +8,6 @@ CREATE TABLE r (
      PROJECTION p
          (SELECT a, quantilesTimingMerge(0.5, 0.95, 0.99)(q), sum(s) GROUP BY a)
 ) Engine=SummingMergeTree order by (x, a);
-
 insert into r
 select number%100 x,
        'x' a,
@@ -18,14 +15,4 @@ select number%100 x,
        sum(1) s
 from numbers(1000)
 group by x,a;
-
-SELECT
-       ifNotFinite(quantilesTimingMerge(0.95)(q)[1],0) as d1,
-       ifNotFinite(quantilesTimingMerge(0.99)(q)[1],0) as d2,
-       ifNotFinite(quantilesTimingMerge(0.50)(q)[1],0) as d3,
-       sum(s)
-FROM cluster('test_cluster_two_shards', currentDatabase(), r)
-WHERE a = 'x'
-settings prefer_localhost_replica=0;
-
 DROP TABLE r;

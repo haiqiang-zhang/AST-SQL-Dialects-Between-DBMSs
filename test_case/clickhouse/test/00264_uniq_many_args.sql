@@ -13,8 +13,6 @@ FROM
         toString(intDiv(number, 100) % 10) AS z
     FROM system.numbers LIMIT 1000
 );
-
-
 SELECT k,
     uniq(x), uniq((x)), uniq(x, y), uniq((x, y)), uniq(x, y, z), uniq((x, y, z)),
     uniqCombined(x), uniqCombined((x)), uniqCombined(x, y), uniqCombined((x, y)), uniqCombined(x, y, z), uniqCombined((x, y, z)),

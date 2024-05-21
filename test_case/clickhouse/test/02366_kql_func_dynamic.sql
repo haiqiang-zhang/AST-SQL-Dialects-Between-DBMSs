@@ -65,7 +65,6 @@ print array_shift_right(dynamic([1,2,3,4,5]), 2);
 print array_shift_right(dynamic([1,2,3,4,5]), -2, -1);
 print array_shift_right(dynamic(['a', 'b', 'c']), -2);
 print '-- array_slice()';
---print array_slice(dynamic([1,2,3]), 1, 2); -- will enable whe analyzer dixed
 print array_slice(dynamic([1,2,3,4,5]), -3, -2);
 print '-- array_split()';
 print array_split(dynamic([1,2,3,4,5]), dynamic([1,-2]));
@@ -107,9 +106,8 @@ print jaccard_index(dynamic([1, 2, 3]), dynamic([4, 5, 6, 7]));
 print jaccard_index(dynamic(['a', 's', 'd']), dynamic(['f', 'd', 's', 'a']));
 print jaccard_index(dynamic(['Chewbacca', 'Darth Vader', 'Han Solo']), dynamic(['Darth Sidious', 'Darth Vader']));
 print '-- pack_array()';
-print pack_array(); -- { clientError NUMBER_OF_ARGUMENTS_DOESNT_MATCH }
+print pack_array();
 print x = 1 | extend y = x * 2 | extend z = y * 2 | extend pack_array(x,y,z);
-print pack_array(strcat('a', 'b'), format_ipv4(42), tostring(4.2));
 print '-- repeat()';
 print repeat(1, 0);
 print repeat(1, 3);

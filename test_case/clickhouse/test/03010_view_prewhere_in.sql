@@ -8,7 +8,6 @@ SELECT
     value AND (data.id IN (SELECT '' as d from system.one)) AS value
 FROM data
          LEFT JOIN r ON data.id = r.id;
-
 SELECT 1;
 SELECT date, value FROM v;
 SELECT 2;

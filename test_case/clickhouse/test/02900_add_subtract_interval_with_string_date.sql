@@ -1,5 +1,4 @@
 SELECT '-- const date, const delta';
-
 SELECT '   -- add';
 SELECT addYears('2023-10-22', 1), addYears('2023-10-22 12:34:56.123', 1);
 SELECT addQuarters('2023-10-22', 1), addQuarters('2023-10-22 12:34:56.123', 1);
@@ -12,7 +11,6 @@ SELECT addSeconds('2023-10-22', 1), addSeconds('2023-10-22 12:34:56.123', 1);
 SELECT addMilliseconds('2023-10-22', 1), addMilliseconds('2023-10-22 12:34:56.123', 1);
 SELECT addMicroseconds('2023-10-22', 1), addMicroseconds('2023-10-22 12:34:56.123', 1);
 SELECT addNanoseconds('2023-10-22', 1), addNanoseconds('2023-10-22 12:34:56.123', 1);
-
 SELECT '   -- subtract';
 SELECT subtractYears('2023-10-22', 1), subtractYears('2023-10-22 12:34:56.123', 1);
 SELECT subtractQuarters('2023-10-22', 1), subtractQuarters('2023-10-22 12:34:56.123', 1);
@@ -25,9 +23,7 @@ SELECT subtractSeconds('2023-10-22', 1), subtractSeconds('2023-10-22 12:34:56.12
 SELECT subtractMilliseconds('2023-10-22', 1), subtractMilliseconds('2023-10-22 12:34:56.123', 1);
 SELECT subtractMicroseconds('2023-10-22', 1), subtractMicroseconds('2023-10-22 12:34:56.123', 1);
 SELECT subtractNanoseconds('2023-10-22', 1), subtractNanoseconds('2023-10-22 12:34:56.123', 1);
-
 SELECT '-- non-const date, const delta';
-
 SELECT '   -- add';
 SELECT addYears(materialize('2023-10-22'), 1), addYears(materialize('2023-10-22 12:34:56.123'), 1);
 SELECT addQuarters(materialize('2023-10-22'), 1), addQuarters(materialize('2023-10-22 12:34:56.123'), 1);
@@ -40,7 +36,6 @@ SELECT addSeconds(materialize('2023-10-22'), 1), addSeconds(materialize('2023-10
 SELECT addMilliseconds(materialize('2023-10-22'), 1), addMilliseconds(materialize('2023-10-22 12:34:56.123'), 1);
 SELECT addMicroseconds(materialize('2023-10-22'), 1), addMicroseconds(materialize('2023-10-22 12:34:56.123'), 1);
 SELECT addNanoseconds(materialize('2023-10-22'), 1), addNanoseconds(materialize('2023-10-22 12:34:56.123'), 1);
-
 SELECT '   -- subtract';
 SELECT subtractYears(materialize('2023-10-22'), 1), subtractYears(materialize('2023-10-22 12:34:56.123'), 1);
 SELECT subtractQuarters(materialize('2023-10-22'), 1), subtractQuarters(materialize('2023-10-22 12:34:56.123'), 1);
@@ -53,9 +48,7 @@ SELECT subtractSeconds(materialize('2023-10-22'), 1), subtractSeconds(materializ
 SELECT subtractMilliseconds(materialize('2023-10-22'), 1), subtractMilliseconds(materialize('2023-10-22 12:34:56.123'), 1);
 SELECT subtractMicroseconds(materialize('2023-10-22'), 1), subtractMicroseconds(materialize('2023-10-22 12:34:56.123'), 1);
 SELECT subtractNanoseconds(materialize('2023-10-22'), 1), subtractNanoseconds(materialize('2023-10-22 12:34:56.123'), 1);
-
 SELECT '-- const date, non-const delta';
-
 SELECT '   -- add';
 SELECT addYears('2023-10-22', materialize(1)), addYears('2023-10-22 12:34:56.123', materialize(1));
 SELECT addQuarters('2023-10-22', materialize(1)), addQuarters('2023-10-22 12:34:56.123', materialize(1));
@@ -68,7 +61,6 @@ SELECT addSeconds('2023-10-22', materialize(1)), addSeconds('2023-10-22 12:34:56
 SELECT addMilliseconds('2023-10-22', materialize(1)), addMilliseconds('2023-10-22 12:34:56.123', materialize(1));
 SELECT addMicroseconds('2023-10-22', materialize(1)), addMicroseconds('2023-10-22 12:34:56.123', materialize(1));
 SELECT addNanoseconds('2023-10-22', materialize(1)), addNanoseconds('2023-10-22 12:34:56.123', materialize(1));
-
 SELECT '   -- subtract';
 SELECT subtractYears('2023-10-22', materialize(1)), subtractYears('2023-10-22 12:34:56.123', materialize(1));
 SELECT subtractQuarters('2023-10-22', materialize(1)), subtractQuarters('2023-10-22 12:34:56.123', materialize(1));
@@ -81,9 +73,7 @@ SELECT subtractSeconds('2023-10-22', materialize(1)), subtractSeconds('2023-10-2
 SELECT subtractMilliseconds('2023-10-22', materialize(1)), subtractMilliseconds('2023-10-22 12:34:56.123', materialize(1));
 SELECT subtractMicroseconds('2023-10-22', materialize(1)), subtractMicroseconds('2023-10-22 12:34:56.123', materialize(1));
 SELECT subtractNanoseconds('2023-10-22', materialize(1)), subtractNanoseconds('2023-10-22 12:34:56.123', materialize(1));
-
 SELECT '-- non-const date, non-const delta';
-
 SELECT '   -- add';
 SELECT addYears(materialize('2023-10-22'), materialize(1)), addYears(materialize('2023-10-22 12:34:56.123'), materialize(1));
 SELECT addQuarters(materialize('2023-10-22'), materialize(1)), addQuarters(materialize('2023-10-22 12:34:56.123'), materialize(1));
@@ -96,7 +86,6 @@ SELECT addSeconds(materialize('2023-10-22'), materialize(1)), addSeconds(materia
 SELECT addMilliseconds(materialize('2023-10-22'), materialize(1)), addMilliseconds(materialize('2023-10-22 12:34:56.123'), materialize(1));
 SELECT addMicroseconds(materialize('2023-10-22'), materialize(1)), addMicroseconds(materialize('2023-10-22 12:34:56.123'), materialize(1));
 SELECT addNanoseconds(materialize('2023-10-22'), materialize(1)), addNanoseconds(materialize('2023-10-22 12:34:56.123'), materialize(1));
-
 SELECT '   -- subtract';
 SELECT subtractYears(materialize('2023-10-22'), materialize(1)), subtractYears(materialize('2023-10-22 12:34:56.123'), materialize(1));
 SELECT subtractQuarters(materialize('2023-10-22'), materialize(1)), subtractQuarters(materialize('2023-10-22 12:34:56.123'), materialize(1));
@@ -109,9 +98,7 @@ SELECT subtractSeconds(materialize('2023-10-22'), materialize(1)), subtractSecon
 SELECT subtractMilliseconds(materialize('2023-10-22'), materialize(1)), subtractMilliseconds(materialize('2023-10-22 12:34:56.123'), materialize(1));
 SELECT subtractMicroseconds(materialize('2023-10-22'), materialize(1)), subtractMicroseconds(materialize('2023-10-22 12:34:56.123'), materialize(1));
 SELECT subtractNanoseconds(materialize('2023-10-22'), materialize(1)), subtractNanoseconds(materialize('2023-10-22 12:34:56.123'), 1);
-
 SELECT '-- plus operator';
-
 SELECT '2023-10-23' + INTERVAL 1 YEAR, '2023-10-23 12:34:56.123' + INTERVAL 1 YEAR;
 SELECT '2023-10-23' + INTERVAL 1 QUARTER, '2023-10-23 12:34:56.123' + INTERVAL 1 QUARTER;
 SELECT '2023-10-23' + INTERVAL 1 MONTH,'2023-10-23 12:34:56.123' + INTERVAL 1 MONTH;
@@ -123,9 +110,7 @@ SELECT '2023-10-23' + INTERVAL 1 SECOND, '2023-10-23 12:34:56.123' + INTERVAL 1 
 SELECT '2023-10-23' + INTERVAL 1 MILLISECOND, '2023-10-23 12:34:56.123' + INTERVAL 1 MILLISECOND;
 SELECT '2023-10-23' + INTERVAL 1 MICROSECOND, '2023-10-23 12:34:56.123' + INTERVAL 1 MICROSECOND;
 SELECT '2023-10-23' + INTERVAL 1 NANOSECOND, '2023-10-23 12:34:56.123' + INTERVAL 1 NANOSECOND;
-
 SELECT '-- minus operator';
-
 SELECT '2023-10-23' - INTERVAL 1 YEAR, '2023-10-23 12:34:56.123' - INTERVAL 1 YEAR;
 SELECT '2023-10-23' - INTERVAL 1 QUARTER, '2023-10-23 12:34:56.123' - INTERVAL 1 QUARTER;
 SELECT '2023-10-23' - INTERVAL 1 MONTH, '2023-10-23 12:34:56.123' - INTERVAL 1 MONTH;

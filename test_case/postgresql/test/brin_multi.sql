@@ -20,42 +20,6 @@ CREATE TABLE brintest_multi (
 	uuidcol uuid,
 	lsncol pg_lsn
 ) WITH (fillfactor=10);
-
-INSERT INTO brintest_multi SELECT
-	142857 * tenthous,
-	thousand,
-	twothousand,
-	unique1::oid,
-	format('(%s,%s)', tenthous, twenty)::tid,
-	(four + 1.0)/(hundred+1),
-	odd::float8 / (tenthous + 1),
-	format('%s:00:%s:00:%s:00', to_hex(odd), to_hex(even), to_hex(hundred))::macaddr,
-	substr(fipshash(unique1::text), 1, 16)::macaddr8,
-	inet '10.2.3.4/24' + tenthous,
-	cidr '10.2.3/24' + tenthous,
-	date '1995-08-15' + tenthous,
-	time '01:20:30' + thousand * interval '18.5 second',
-	timestamp '1942-07-23 03:05:09' + tenthous * interval '36.38 hours',
-	timestamptz '1972-10-10 03:00' + thousand * interval '1 hour',
-	justify_days(justify_hours(tenthous * interval '12 minutes')),
-	timetz '01:30:20+02' + hundred * interval '15 seconds',
-	tenthous::numeric(36,30) * fivethous * even / (hundred + 1),
-	format('%s%s-%s-%s-%s-%s%s%s', to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'))::uuid,
-	format('%s/%s%s', odd, even, tenthous)::pg_lsn
-FROM tenk1 ORDER BY unique2 LIMIT 100;
-
-INSERT INTO brintest_multi (inetcol, cidrcol) SELECT
-	inet 'fe80::6e40:8ff:fea9:8c46' + tenthous,
-	cidr 'fe80::6e40:8ff:fea9:8c46' + tenthous
-FROM tenk1 ORDER BY thousand, tenthous LIMIT 25;
-
-CREATE INDEX brinidx_multi ON brintest_multi USING brin (
-	int8col int8_minmax_multi_ops(values_per_range = 7)
-);
-CREATE INDEX brinidx_multi ON brintest_multi USING brin (
-	int8col int8_minmax_multi_ops(values_per_range = 257)
-);
-
 CREATE INDEX brinidx_multi ON brintest_multi USING brin (
 	int8col int8_minmax_multi_ops,
 	int2col int2_minmax_multi_ops,
@@ -78,9 +42,7 @@ CREATE INDEX brinidx_multi ON brintest_multi USING brin (
 	uuidcol uuid_minmax_multi_ops,
 	lsncol pg_lsn_minmax_multi_ops
 );
-
 DROP INDEX brinidx_multi;
-
 CREATE INDEX brinidx_multi ON brintest_multi USING brin (
 	int8col int8_minmax_multi_ops,
 	int2col int2_minmax_multi_ops,
@@ -103,12 +65,10 @@ CREATE INDEX brinidx_multi ON brintest_multi USING brin (
 	uuidcol uuid_minmax_multi_ops,
 	lsncol pg_lsn_minmax_multi_ops
 ) with (pages_per_range = 1);
-
 CREATE TABLE brinopers_multi (colname name, typ text,
 	op text[], value text[], matches int[],
 	check (cardinality(op) = cardinality(value)),
 	check (cardinality(op) = cardinality(matches)));
-
 INSERT INTO brinopers_multi VALUES
 	('int2col', 'int2',
 	 '{>, >=, =, <=, <}',
@@ -234,415 +194,185 @@ INSERT INTO brinopers_multi VALUES
 	 '{>, >=, =, <=, <, IS, IS NOT}',
 	 '{0/1200, 0/1200, 44/455222, 198/1999799, 198/1999799, NULL, NULL}',
 	 '{100, 100, 1, 100, 100, 25, 100}');
-
-DO $x$
-DECLARE
-	r record;
-	r2 record;
-	cond text;
-	idx_ctids tid[];
-	ss_ctids tid[];
-	count int;
-	plan_ok bool;
-	plan_line text;
-BEGIN
-	FOR r IN SELECT colname, oper, typ, value[ordinality], matches[ordinality] FROM brinopers_multi, unnest(op) WITH ORDINALITY AS oper LOOP
-
-		IF r.value IS NULL THEN
-			cond := format('%I %s %L', r.colname, r.oper, r.value);
-		ELSE
-			cond := format('%I %s %L::%s', r.colname, r.oper, r.value, r.typ);
-		END IF;
-
-		SET enable_seqscan = 0;
-		SET enable_bitmapscan = 1;
-
-		plan_ok := false;
-		FOR plan_line IN EXECUTE format($y$EXPLAIN SELECT array_agg(ctid) FROM brintest_multi WHERE %s $y$, cond) LOOP
-			IF plan_line LIKE '%Bitmap Heap Scan on brintest_multi%' THEN
-				plan_ok := true;
-			END IF;
-		END LOOP;
-		IF NOT plan_ok THEN
-			RAISE WARNING 'did not get bitmap indexscan plan for %', r;
-		END IF;
-
-		EXECUTE format($y$SELECT array_agg(ctid) FROM brintest_multi WHERE %s $y$, cond)
-			INTO idx_ctids;
-
-		SET enable_seqscan = 1;
-		SET enable_bitmapscan = 0;
-
-		plan_ok := false;
-		FOR plan_line IN EXECUTE format($y$EXPLAIN SELECT array_agg(ctid) FROM brintest_multi WHERE %s $y$, cond) LOOP
-			IF plan_line LIKE '%Seq Scan on brintest_multi%' THEN
-				plan_ok := true;
-			END IF;
-		END LOOP;
-		IF NOT plan_ok THEN
-			RAISE WARNING 'did not get seqscan plan for %', r;
-		END IF;
-
-		EXECUTE format($y$SELECT array_agg(ctid) FROM brintest_multi WHERE %s $y$, cond)
-			INTO ss_ctids;
-
-		count := array_length(idx_ctids, 1);
-
-		IF NOT (count = array_length(ss_ctids, 1) AND
-				idx_ctids @> ss_ctids AND
-				idx_ctids <@ ss_ctids) THEN
-			RAISE WARNING 'something not right in %: count %', r, count;
-			SET enable_seqscan = 1;
-			SET enable_bitmapscan = 0;
-			FOR r2 IN EXECUTE 'SELECT ' || r.colname || ' FROM brintest_multi WHERE ' || cond LOOP
-				RAISE NOTICE 'seqscan: %', r2;
-			END LOOP;
-
-			SET enable_seqscan = 0;
-			SET enable_bitmapscan = 1;
-			FOR r2 IN EXECUTE 'SELECT ' || r.colname || ' FROM brintest_multi WHERE ' || cond LOOP
-				RAISE NOTICE 'bitmapscan: %', r2;
-			END LOOP;
-		END IF;
-
-		IF count != r.matches THEN RAISE WARNING 'unexpected number of results % for %', count, r; END IF;
-	END LOOP;
+SET enable_seqscan = 0;
+SET enable_bitmapscan = 1;
+SET enable_seqscan = 1;
+SET enable_bitmapscan = 0;
+SET enable_seqscan = 1;
+SET enable_bitmapscan = 0;
+SET enable_seqscan = 0;
+SET enable_bitmapscan = 1;
 END;
-$x$;
-
 RESET enable_seqscan;
 RESET enable_bitmapscan;
-
-INSERT INTO brintest_multi SELECT
-	142857 * tenthous,
-	thousand,
-	twothousand,
-	unique1::oid,
-	format('(%s,%s)', tenthous, twenty)::tid,
-	(four + 1.0)/(hundred+1),
-	odd::float8 / (tenthous + 1),
-	format('%s:00:%s:00:%s:00', to_hex(odd), to_hex(even), to_hex(hundred))::macaddr,
-	substr(fipshash(unique1::text), 1, 16)::macaddr8,
-	inet '10.2.3.4' + tenthous,
-	cidr '10.2.3/24' + tenthous,
-	date '1995-08-15' + tenthous,
-	time '01:20:30' + thousand * interval '18.5 second',
-	timestamp '1942-07-23 03:05:09' + tenthous * interval '36.38 hours',
-	timestamptz '1972-10-10 03:00' + thousand * interval '1 hour',
-	justify_days(justify_hours(tenthous * interval '12 minutes')),
-	timetz '01:30:20' + hundred * interval '15 seconds',
-	tenthous::numeric(36,30) * fivethous * even / (hundred + 1),
-	format('%s%s-%s-%s-%s-%s%s%s', to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'), to_char(tenthous, 'FM0000'))::uuid,
-	format('%s/%s%s', odd, even, tenthous)::pg_lsn
-FROM tenk1 ORDER BY unique2 LIMIT 5 OFFSET 5;
-
 SELECT brin_desummarize_range('brinidx_multi', 0);
-VACUUM brintest_multi;  
-
+VACUUM brintest_multi;
 insert into public.brintest_multi (float4col) values (real 'nan');
 insert into public.brintest_multi (float8col) values (real 'nan');
-
 UPDATE brintest_multi SET int8col = int8col * int4col;
-
 CREATE TABLE brin_test_inet (a inet);
 CREATE INDEX ON brin_test_inet USING brin (a inet_minmax_multi_ops);
 INSERT INTO brin_test_inet VALUES ('127.0.0.1/0');
 INSERT INTO brin_test_inet VALUES ('0.0.0.0/12');
 DROP TABLE brin_test_inet;
-
-SELECT brin_summarize_new_values('brintest_multi'); 
-SELECT brin_summarize_new_values('tenk1_unique1'); 
-SELECT brin_summarize_new_values('brinidx_multi'); 
-
-SELECT brin_desummarize_range('brinidx_multi', -1); 
+SELECT brin_summarize_new_values('brinidx_multi');
 SELECT brin_desummarize_range('brinidx_multi', 0);
 SELECT brin_desummarize_range('brinidx_multi', 0);
 SELECT brin_desummarize_range('brinidx_multi', 100000000);
-
 CREATE TABLE brin_large_range (a int4);
 INSERT INTO brin_large_range SELECT i FROM generate_series(1,10000) s(i);
 CREATE INDEX brin_large_range_idx ON brin_large_range USING brin (a int4_minmax_multi_ops);
 DROP TABLE brin_large_range;
-
 CREATE TABLE brin_summarize_multi (
     value int
 ) WITH (fillfactor=10, autovacuum_enabled=false);
 CREATE INDEX brin_summarize_multi_idx ON brin_summarize_multi USING brin (value) WITH (pages_per_range=2);
-DO $$
-DECLARE curtid tid;
-BEGIN
-  LOOP
-    INSERT INTO brin_summarize_multi VALUES (1) RETURNING ctid INTO curtid;
-    EXIT WHEN curtid > tid '(2, 0)';
-  END LOOP;
-END;
-$$;
-
 SELECT brin_summarize_range('brin_summarize_multi_idx', 0);
 SELECT brin_summarize_range('brin_summarize_multi_idx', 1);
 SELECT brin_summarize_range('brin_summarize_multi_idx', 2);
 SELECT brin_summarize_range('brin_summarize_multi_idx', 4294967295);
-SELECT brin_summarize_range('brin_summarize_multi_idx', -1);
-SELECT brin_summarize_range('brin_summarize_multi_idx', 4294967296);
-
-
 CREATE TABLE brin_test_multi (a INT, b INT);
 INSERT INTO brin_test_multi SELECT x/100,x%100 FROM generate_series(1,10000) x(x);
 CREATE INDEX brin_test_multi_a_idx ON brin_test_multi USING brin (a) WITH (pages_per_range = 2);
 CREATE INDEX brin_test_multi_b_idx ON brin_test_multi USING brin (b) WITH (pages_per_range = 2);
 VACUUM ANALYZE brin_test_multi;
-
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test_multi WHERE a = 1;
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test_multi WHERE b = 1;
-
-
 CREATE TABLE brin_test_multi_1 (a INT, b BIGINT) WITH (fillfactor=10);
 INSERT INTO brin_test_multi_1
 SELECT i/5 + mod(911 * i + 483, 25),
        i/10 + mod(751 * i + 221, 41)
   FROM generate_series(1,1000) s(i);
-
 CREATE INDEX brin_test_multi_1_idx_1 ON brin_test_multi_1 USING brin (a int4_minmax_multi_ops) WITH (pages_per_range=5);
 CREATE INDEX brin_test_multi_1_idx_2 ON brin_test_multi_1 USING brin (b int8_minmax_multi_ops) WITH (pages_per_range=5);
-
 SET enable_seqscan=off;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 37;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 113;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 177;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 25;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 120;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 180;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 71;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 63;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 207;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 177;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 73;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 47;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 199;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 150;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 93;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 37;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b >= 215;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 201;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 88;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 103;
-
 TRUNCATE brin_test_multi_1;
-
 INSERT INTO brin_test_multi_1
 SELECT i/5 + mod(911 * i + 483, 25),
        i/10 + mod(751 * i + 221, 41)
   FROM generate_series(1,1000) s(i);
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 37;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 113;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 177;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 25;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 120;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 180;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 71;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 63;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 207;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 177;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 73;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 47;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 199;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 150;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 93;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 37;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b >= 215;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 201;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 88;
-
 SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 103;
-
-
 DROP TABLE brin_test_multi_1;
 RESET enable_seqscan;
-
-
 CREATE TABLE brin_test_multi_2 (a UUID) WITH (fillfactor=10);
-INSERT INTO brin_test_multi_2
-SELECT v::uuid FROM (SELECT row_number() OVER (ORDER BY v) c, v FROM (SELECT fipshash((i/13)::text) AS v FROM generate_series(1,1000) s(i)) foo) bar ORDER BY c + 25 * random();
-
 CREATE INDEX brin_test_multi_2_idx ON brin_test_multi_2 USING brin (a uuid_minmax_multi_ops) WITH (pages_per_range=5);
-
 SET enable_seqscan=off;
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a < '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a > '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a <= 'f369cb89-fc62-7e66-8987-007d121ed1ea';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a >= 'aea92132-c4cb-eb26-3e6a-c2bf6c183b5d';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '5feceb66-ffc8-6f38-d952-786c6d696c79';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '86e50149-6586-6131-2a9e-0b35558d84f6';
-
-
-
 TRUNCATE brin_test_multi_2;
-INSERT INTO brin_test_multi_2
-SELECT v::uuid FROM (SELECT row_number() OVER (ORDER BY v) c, v FROM (SELECT fipshash((i/13)::text) AS v FROM generate_series(1,1000) s(i)) foo) bar ORDER BY c + 25 * random();
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a < '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a > '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a <= 'f369cb89-fc62-7e66-8987-007d121ed1ea';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a >= 'aea92132-c4cb-eb26-3e6a-c2bf6c183b5d';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '5feceb66-ffc8-6f38-d952-786c6d696c79';
-
 SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '86e50149-6586-6131-2a9e-0b35558d84f6';
-
 DROP TABLE brin_test_multi_2;
 RESET enable_seqscan;
-
 CREATE TABLE brin_timestamp_test(a TIMESTAMPTZ);
-
 SET datestyle TO iso;
-
 INSERT INTO brin_timestamp_test
 SELECT '4713-01-01 00:00:01 BC'::timestamptz + (i || ' seconds')::interval
   FROM generate_series(1,30) s(i);
-
 INSERT INTO brin_timestamp_test
 SELECT '294276-12-01 00:00:01'::timestamptz + (i || ' seconds')::interval
   FROM generate_series(1,30) s(i);
-
 CREATE INDEX ON brin_timestamp_test USING brin (a timestamptz_minmax_multi_ops) WITH (pages_per_range=1);
 DROP TABLE brin_timestamp_test;
-
 CREATE TABLE brin_date_test(a DATE);
-
 INSERT INTO brin_date_test SELECT '4713-01-01 BC'::date + i FROM generate_series(1, 30) s(i);
-
 INSERT INTO brin_date_test SELECT '5874897-12-01'::date + i FROM generate_series(1, 30) s(i);
-
 CREATE INDEX ON brin_date_test USING brin (a date_minmax_multi_ops) WITH (pages_per_range=1);
-
 SET enable_seqscan = off;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_date_test WHERE a = '2023-01-01'::date;
-
 DROP TABLE brin_date_test;
 RESET enable_seqscan;
-
 CREATE TABLE brin_timestamp_test(a TIMESTAMP);
-
 INSERT INTO brin_timestamp_test VALUES ('-infinity'), ('infinity');
 INSERT INTO brin_timestamp_test
 SELECT i FROM generate_series('2000-01-01'::timestamp, '2000-02-09'::timestamp, '1 day'::interval) s(i);
-
 CREATE INDEX ON brin_timestamp_test USING brin (a timestamp_minmax_multi_ops) WITH (pages_per_range=1);
-
 SET enable_seqscan = off;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_timestamp_test WHERE a = '2023-01-01'::timestamp;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_timestamp_test WHERE a = '1900-01-01'::timestamp;
-
 DROP TABLE brin_timestamp_test;
 RESET enable_seqscan;
-
 CREATE TABLE brin_date_test(a DATE);
-
 INSERT INTO brin_date_test VALUES ('-infinity'), ('infinity');
 INSERT INTO brin_date_test SELECT '2000-01-01'::date + i FROM generate_series(1, 40) s(i);
-
 CREATE INDEX ON brin_date_test USING brin (a date_minmax_multi_ops) WITH (pages_per_range=1);
-
 SET enable_seqscan = off;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_date_test WHERE a = '2023-01-01'::date;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_date_test WHERE a = '1900-01-01'::date;
-
 DROP TABLE brin_date_test;
 RESET enable_seqscan;
 RESET datestyle;
-
 CREATE TABLE brin_interval_test(a INTERVAL);
-
 INSERT INTO brin_interval_test SELECT (i || ' years')::interval FROM generate_series(-178000000, -177999980) s(i);
-
 INSERT INTO brin_interval_test SELECT (i || ' years')::interval FROM generate_series( 177999980,  178000000) s(i);
-
 CREATE INDEX ON brin_interval_test USING brin (a interval_minmax_multi_ops) WITH (pages_per_range=1);
-
 SET enable_seqscan = off;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_interval_test WHERE a = '-30 years'::interval;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_interval_test WHERE a = '30 years'::interval;
-
 DROP TABLE brin_interval_test;
 RESET enable_seqscan;
-
 CREATE TABLE brin_interval_test(a INTERVAL);
-
-INSERT INTO brin_interval_test VALUES ('-infinity'), ('infinity');
 INSERT INTO brin_interval_test SELECT (i || ' days')::interval FROM generate_series(100, 140) s(i);
-
 CREATE INDEX ON brin_interval_test USING brin (a interval_minmax_multi_ops) WITH (pages_per_range=1);
-
 SET enable_seqscan = off;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_interval_test WHERE a = '-30 years'::interval;
-
 EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
 SELECT * FROM brin_interval_test WHERE a = '30 years'::interval;
-
 DROP TABLE brin_interval_test;
 RESET enable_seqscan;
 RESET datestyle;

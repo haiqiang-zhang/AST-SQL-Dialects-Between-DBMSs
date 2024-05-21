@@ -4,4 +4,3 @@ create table test (id UInt64, v Variant(UInt64, String)) engine=MergeTree order 
 insert into test values (1, 1), (1, 'str_1'), (1, 2), (1, 'str_2');
 select * from test;
 drop table test;
-

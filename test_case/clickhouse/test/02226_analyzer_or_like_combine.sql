@@ -1,29 +1,19 @@
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 0;
-EXPLAIN QUERY TREE run_passes=1 SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 0, allow_experimental_analyzer = 1;
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1;
-EXPLAIN QUERY TREE run_passes=1 SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
-
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s1, materialize('Привет, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%привет%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1;
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s1, materialize('Привет, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%привет%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_hyperscan = 0;
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s1, materialize('Привет, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%привет%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, max_hyperscan_regexp_length = 10;
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s1, materialize('Привет, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%привет%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, max_hyperscan_regexp_total_length = 10;
-EXPLAIN SYNTAX SELECT materialize('Привет, World') AS s1, materialize('Привет, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%привет%') OR (s1 ILIKE 'world%') OR s1 == 'Привет' SETTINGS optimize_or_like_chain = 1;
-
-
-SELECT materialize('Привет, optimized World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%привет%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 1;
-SELECT materialize('Привет, optimized World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%привет%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
-
-SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%привет%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 0;
-SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%привет%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 0, allow_experimental_analyzer = 1;
-
-SELECT materialize('Привет, optimized World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 1;
-SELECT materialize('Привет, optimized World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
-
-SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 0;
-SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 0, allow_experimental_analyzer = 1;
-
-SELECT materialize('Привет, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%привет%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
-
--- Aliases
-
-EXPLAIN SYNTAX SELECT test, materialize('Привет, World') AS s WHERE ((s LIKE 'hell%') AS test) OR (s ILIKE '%привет%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 0;
+EXPLAIN QUERY TREE run_passes=1 SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 0, allow_experimental_analyzer = 1;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1;
+EXPLAIN QUERY TREE run_passes=1 SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s1, materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s1, materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_hyperscan = 0;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s1, materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, max_hyperscan_regexp_length = 10;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s1, materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s1 ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, max_hyperscan_regexp_total_length = 10;
+EXPLAIN SYNTAX SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s1, materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s2 WHERE (s1 LIKE 'hell%') OR (s2 ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s1 ILIKE 'world%') OR s1 == 'ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ' SETTINGS optimize_or_like_chain = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, optimized World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, optimized World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 0;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s LIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE '%world') SETTINGS optimize_or_like_chain = 0, allow_experimental_analyzer = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, optimized World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, optimized World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 0;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s LIKE 'world%') SETTINGS optimize_or_like_chain = 0, allow_experimental_analyzer = 1;
+SELECT materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE (s LIKE 'hell%') OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1, allow_experimental_analyzer = 1;
+EXPLAIN SYNTAX SELECT test, materialize('ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ, World') AS s WHERE ((s LIKE 'hell%') AS test) OR (s ILIKE '%ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ²ÃÂÃÂµÃÂÃÂ%') OR (s ILIKE 'world%') SETTINGS optimize_or_like_chain = 1;

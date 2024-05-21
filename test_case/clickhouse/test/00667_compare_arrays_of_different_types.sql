@@ -6,9 +6,7 @@ SELECT
     [[], [1]] > [[], []],
     [[1]] < [[], []],
     [[], []] > [[]],
-    [([], ([], []))] < [([], ([], ['hello']))]
-;
-
+    [([], ([], []))] < [([], ([], ['hello']))];
 SELECT
     materialize([1]) < materialize([1000]),
     materialize(['abc']) = materialize([NULL]),
@@ -17,5 +15,4 @@ SELECT
     materialize([[], [1]]) > materialize([[], []]),
     materialize([[1]]) < materialize([[], []]),
     materialize([[], []]) > materialize([[]]),
-    materialize([([], ([], []))]) < materialize([([], ([], ['hello']))])
-;
+    materialize([([], ([], []))]) < materialize([([], ([], ['hello']))]);

@@ -1,6 +1,5 @@
 SELECT sum(toNullable('a') IN 'a');
 SELECT countIf(number, toNullable('a') IN ('a', 'b')) FROM numbers(100);
-
 SELECT
     uniqExact(x) AS u, 
     uniqExactIf(x, name = 'a') AS ue, 

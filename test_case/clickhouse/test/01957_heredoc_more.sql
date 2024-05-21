@@ -1,1 +1,1 @@
-SELECT hex($$ÿþ€»$$);
+SELECT hex($$Ã¿Ã¾Â€Â»$$);

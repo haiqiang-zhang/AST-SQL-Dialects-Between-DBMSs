@@ -1,1 +1,1 @@
-select arrayExists(x -> position(x, 'a') > 0, ['a'])
+select arrayExists(x -> position(x, 'a') > 0, ['a']);

@@ -23,7 +23,6 @@ select hasSubsequence(materialize('garbage'), 'arbw');
 select hasSubsequence(materialize('garbage'), materialize(''));
 select hasSubsequence(materialize('garbage'), materialize('arg'));
 select hasSubsequence(materialize('garbage'), materialize('garbage1'));
-
 select 'hasSubsequenceCaseInsensitive';
 select hasSubsequenceCaseInsensitive('garbage', 'w');
 select hasSubsequenceCaseInsensitive('garbage', 'ARG');
@@ -31,34 +30,31 @@ select hasSubsequenceCaseInsensitive('GARGAGE', 'arg');
 select hasSubsequenceCaseInsensitive(materialize('garbage'), materialize('w'));
 select hasSubsequenceCaseInsensitive(materialize('garbage'), materialize('ARG'));
 select hasSubsequenceCaseInsensitive(materialize('GARGAGE'), materialize('arg'));
-
 select 'hasSubsequenceUTF8';
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', '');
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'C');     -- eng
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'С');     -- cyrilic
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'House');
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'house');
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'система');
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'Система');
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', 'ссубд');
-select hasSubsequence(materialize('ClickHouse - столбцовая система управления базами данных'), 'субд');
-select hasSubsequence(materialize('ClickHouse - столбцовая система управления базами данных'), 'суббд');
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', materialize('стул'));
-select hasSubsequence('ClickHouse - столбцовая система управления базами данных', materialize('два стула'));
-select hasSubsequence(materialize('ClickHouse - столбцовая система управления базами данных'), materialize('орех'));
-select hasSubsequence(materialize('ClickHouse - столбцовая система управления базами данных'), materialize('два ореха'));
-
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', '');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'C');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'Ð¡');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'House');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'house');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'ÑÐ¸ÑÑÐµÐ¼Ð°');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'Ð¡Ð¸ÑÑÐµÐ¼Ð°');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', 'ÑÑÑÐ±Ð´');
+select hasSubsequence(materialize('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ'), 'ÑÑÐ±Ð´');
+select hasSubsequence(materialize('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ'), 'ÑÑÐ±Ð±Ð´');
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', materialize('ÑÑÑÐ»'));
+select hasSubsequence('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ', materialize('Ð´Ð²Ð° ÑÑÑÐ»Ð°'));
+select hasSubsequence(materialize('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ'), materialize('Ð¾ÑÐµÑ'));
+select hasSubsequence(materialize('ClickHouse - ÑÑÐ¾Ð»Ð±ÑÐ¾Ð²Ð°Ñ ÑÐ¸ÑÑÐµÐ¼Ð° ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð°Ð·Ð°Ð¼Ð¸ Ð´Ð°Ð½Ð½ÑÑ'), materialize('Ð´Ð²Ð° Ð¾ÑÐµÑÐ°'));
 select 'hasSubsequenceCaseInsensitiveUTF8';
-select hasSubsequenceCaseInsensitiveUTF8('для онлайн обработки аналитических запросов (OLAP)', 'oltp');
-select hasSubsequenceCaseInsensitiveUTF8('для онлайн обработки аналитических запросов (OLAP)', 'оОоОоO');
-select hasSubsequenceCaseInsensitiveUTF8('для онлайн обработки аналитических запросов (OLAP)', 'я раб');
-select hasSubsequenceCaseInsensitiveUTF8(materialize('для онлайн обработки аналитических запросов (OLAP)'), 'работа');
-select hasSubsequenceCaseInsensitiveUTF8(materialize('для онлайн обработки аналитических запросов (OLAP)'), 'work');
-select hasSubsequenceCaseInsensitiveUTF8('для онлайн обработки аналитических запросов (OLAP)', materialize('добро)'));
-select hasSubsequenceCaseInsensitiveUTF8('для онлайн обработки аналитических запросов (OLAP)', materialize('зло()'));
-select hasSubsequenceCaseInsensitiveUTF8(materialize('для онлайн обработки аналитических запросов (OLAP)'), materialize('аналитика'));
-select hasSubsequenceCaseInsensitiveUTF8(materialize('для онлайн обработки аналитических запросов (OLAP)'), materialize('аналитика для аналитиков'));
-
+select hasSubsequenceCaseInsensitiveUTF8('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)', 'oltp');
+select hasSubsequenceCaseInsensitiveUTF8('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)', 'Ð¾ÐÐ¾ÐÐ¾O');
+select hasSubsequenceCaseInsensitiveUTF8('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)', 'Ñ ÑÐ°Ð±');
+select hasSubsequenceCaseInsensitiveUTF8(materialize('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)'), 'ÑÐ°Ð±Ð¾ÑÐ°');
+select hasSubsequenceCaseInsensitiveUTF8(materialize('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)'), 'work');
+select hasSubsequenceCaseInsensitiveUTF8('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)', materialize('Ð´Ð¾Ð±ÑÐ¾)'));
+select hasSubsequenceCaseInsensitiveUTF8('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)', materialize('Ð·Ð»Ð¾()'));
+select hasSubsequenceCaseInsensitiveUTF8(materialize('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)'), materialize('Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÐºÐ°'));
+select hasSubsequenceCaseInsensitiveUTF8(materialize('Ð´Ð»Ñ Ð¾Ð½Ð»Ð°Ð¹Ð½ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÑÐµÑÐºÐ¸Ñ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð² (OLAP)'), materialize('Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÐºÐ° Ð´Ð»Ñ Ð°Ð½Ð°Ð»Ð¸ÑÐ¸ÐºÐ¾Ð²'));
 select 'Nullable';
 select hasSubsequence(Null, Null);
 select hasSubsequence(Null, 'a');

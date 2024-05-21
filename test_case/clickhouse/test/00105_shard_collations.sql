@@ -1,51 +1,18 @@
--- Tags: shard, no-fasttest
-
-SELECT 'Русский (default)';
-SELECT arrayJoin(['а', 'я', 'ё', 'А', 'Я', 'Ё']) AS x ORDER BY x;
-
-SELECT 'Русский (ru)';
-SELECT arrayJoin(['а', 'я', 'ё', 'А', 'Я', 'Ё']) AS x ORDER BY x COLLATE 'ru';
-
-SELECT 'Русский (ru distributed)';
-SELECT arrayJoin(['а', 'я', 'ё', 'А', 'Я', 'Ё']) AS x FROM remote('127.0.0.{2,3}', system, one) ORDER BY x COLLATE 'ru';
-
-SELECT 'Türk (default)';
-SELECT arrayJoin(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z', 'A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P', 'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z']) AS x ORDER BY x;
-
-SELECT 'Türk (tr)';
-SELECT arrayJoin(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z', 'A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P', 'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z']) AS x ORDER BY x COLLATE 'tr';
-
+SELECT 'ÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ¸ÃÂÃÂ¹ (default)';
+SELECT arrayJoin(['ÃÂÃÂ°', 'ÃÂÃÂ', 'ÃÂÃÂ', 'ÃÂÃÂ', 'ÃÂÃÂ¯', 'ÃÂÃÂ']) AS x ORDER BY x;
+SELECT 'ÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ¸ÃÂÃÂ¹ (ru)';
+SELECT 'ÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ¸ÃÂÃÂ¹ (ru distributed)';
+SELECT 'TÃÂÃÂ¼rk (default)';
+SELECT arrayJoin(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'ÃÂÃÂ§', 'd', 'e', 'f', 'g', 'ÃÂÃÂ', 'h', 'ÃÂÃÂ±', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ÃÂÃÂ¶', 'p', 'r', 's', 'ÃÂÃÂ', 't', 'u', 'ÃÂÃÂ¼', 'v', 'y', 'z', 'A', 'B', 'C', 'ÃÂÃÂ', 'D', 'E', 'F', 'G', 'ÃÂÃÂ', 'H', 'I', 'ÃÂÃÂ°', 'J', 'K', 'L', 'M', 'N', 'O', 'ÃÂÃÂ', 'P', 'R', 'S', 'ÃÂÃÂ', 'T', 'U', 'ÃÂÃÂ', 'V', 'Y', 'Z']) AS x ORDER BY x;
+SELECT 'TÃÂÃÂ¼rk (tr)';
 SELECT 'english (default)';
 SELECT arrayJoin(['A', 'c', 'Z', 'Q', 'e']) AS x ORDER BY x;
 SELECT 'english (en_US)';
-SELECT arrayJoin(['A', 'c', 'Z', 'Q', 'e']) AS x ORDER BY x COLLATE 'en_US';
 SELECT 'english (en)';
-SELECT arrayJoin(['A', 'c', 'Z', 'Q', 'e']) AS x ORDER BY x COLLATE 'en';
-
-SELECT 'español (default)';
-SELECT arrayJoin(['F', 'z', 'J', 'Ñ']) as x ORDER BY x;
-SELECT 'español (es)';
-SELECT arrayJoin(['F', 'z', 'J', 'Ñ']) as x ORDER BY x COLLATE 'es';
-
-SELECT 'Український (default)';
-SELECT arrayJoin(['ґ', 'ї', 'І', 'Б']) as x ORDER BY x;
-SELECT 'Український (uk)';
-SELECT arrayJoin(['ґ', 'ї', 'І', 'Б']) as x ORDER BY x COLLATE 'uk';
-
-SELECT 'Русский (ru group by)';
-SELECT x, n FROM (SELECT ['а', 'я', 'ё', 'А', 'Я', 'Ё'] AS arr) ARRAY JOIN arr AS x, arrayEnumerate(arr) AS n ORDER BY x COLLATE 'ru', n;
-
---- Const expression
-SELECT 'ζ' as x ORDER BY x COLLATE 'el';
-
--- check order by const with collation
-SELECT number FROM numbers(2) ORDER BY 'x' COLLATE 'el';
-
--- check const and non const columns in order
-SELECT number FROM numbers(11) ORDER BY 'x', toString(number), 'y' COLLATE 'el';
-
---- Trash locales
-SELECT '' as x ORDER BY x COLLATE 'qq'; --{serverError 186}
-SELECT '' as x ORDER BY x COLLATE 'qwe'; --{serverError 186}
-SELECT '' as x ORDER BY x COLLATE 'some_non_existing_locale'; --{serverError 186}
-SELECT '' as x ORDER BY x COLLATE 'ру'; --{serverError 186}
+SELECT 'espaÃÂÃÂ±ol (default)';
+SELECT arrayJoin(['F', 'z', 'J', 'ÃÂÃÂ']) as x ORDER BY x;
+SELECT 'espaÃÂÃÂ±ol (es)';
+SELECT 'ÃÂÃÂ£ÃÂÃÂºÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ¸ÃÂÃÂ¹ (default)';
+SELECT arrayJoin(['ÃÂÃÂ', 'ÃÂÃÂ', 'ÃÂÃÂ', 'ÃÂÃÂ']) as x ORDER BY x;
+SELECT 'ÃÂÃÂ£ÃÂÃÂºÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ¸ÃÂÃÂ¹ (uk)';
+SELECT 'ÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ¸ÃÂÃÂ¹ (ru group by)';

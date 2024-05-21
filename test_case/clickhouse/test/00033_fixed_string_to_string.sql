@@ -1,1 +1,1 @@
-SELECT toString(toFixedString('', 10))
+SELECT toString(toFixedString('', 10));

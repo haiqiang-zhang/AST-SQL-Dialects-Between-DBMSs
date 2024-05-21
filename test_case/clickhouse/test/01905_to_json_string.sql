@@ -1,5 +1,3 @@
--- Tags: no-fasttest
-
 create temporary table t engine Memory as select * from generateRandom(
 $$
     a Array(Int8),
@@ -12,8 +10,6 @@ $$
     h FixedString(2),
     i Array(Nullable(UUID))
 $$, 10, 5, 3) limit 2;
-
 select * apply toJSONString from t;
-
 set allow_experimental_map_type = 1;
 select toJSONString(map('1234', '5678'));

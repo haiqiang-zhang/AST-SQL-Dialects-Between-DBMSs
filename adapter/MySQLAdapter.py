@@ -87,7 +87,7 @@ class MySQLAdapter(DBMSAdapter):
 
         # Create a new database and use it
         self.cursor.execute("DROP DATABASE IF EXISTS test_db")
-        self.conn.commit()
+        self.create_test_db()
         
     def create_test_db(self):
         try:
@@ -122,7 +122,6 @@ class MySQLAdapter(DBMSAdapter):
         print(f"DBMS: MySQL")
         print(f"Filename: {filename}")
         print(f"SQL: {sql_query}")
-        self.create_test_db()
         combined_result = None
         timeout_occurred.clear()
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])

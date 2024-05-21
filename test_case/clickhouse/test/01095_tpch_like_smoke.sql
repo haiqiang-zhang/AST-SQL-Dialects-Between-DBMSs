@@ -6,9 +6,7 @@ DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS lineitem;
 DROP TABLE IF EXISTS nation;
 DROP TABLE IF EXISTS region;
-
 SET cross_to_inner_join_rewrite = 1;
-
 CREATE TABLE part
 (
     p_partkey       Int32,  -- PK
@@ -23,7 +21,6 @@ CREATE TABLE part
     CONSTRAINT pk CHECK p_partkey >= 0,
     CONSTRAINT positive CHECK (p_size >= 0 AND p_retailprice >= 0)
 ) engine = MergeTree ORDER BY (p_partkey);
-
 CREATE TABLE supplier
 (
     s_suppkey       Int32,  -- PK
@@ -35,7 +32,6 @@ CREATE TABLE supplier
     s_comment       String, -- variable text, size 101
     CONSTRAINT pk CHECK s_suppkey >= 0
 ) engine = MergeTree ORDER BY (s_suppkey);
-
 CREATE TABLE partsupp
 (
     ps_partkey      Int32,  -- PK(1), FK p_partkey
@@ -46,7 +42,6 @@ CREATE TABLE partsupp
     CONSTRAINT pk CHECK ps_partkey >= 0,
     CONSTRAINT c1 CHECK (ps_availqty >= 0 AND ps_supplycost >= 0)
 ) engine = MergeTree ORDER BY (ps_partkey, ps_suppkey);
-
 CREATE TABLE customer
 (
     c_custkey       Int32,  -- PK
@@ -59,7 +54,6 @@ CREATE TABLE customer
     c_comment       String, -- variable text, size 117
     CONSTRAINT pk CHECK c_custkey >= 0
 ) engine = MergeTree ORDER BY (c_custkey);
-
 CREATE TABLE orders
 (
     o_orderkey      Int32,  -- PK
@@ -73,7 +67,6 @@ CREATE TABLE orders
     o_comment       String, -- variable text, size 79
     CONSTRAINT c1 CHECK o_totalprice >= 0
 ) engine = MergeTree ORDER BY (o_orderdate, o_orderkey);
-
 CREATE TABLE lineitem
 (
     l_orderkey      Int32,  -- PK(1), FK o_orderkey
@@ -95,7 +88,6 @@ CREATE TABLE lineitem
     CONSTRAINT c1 CHECK (l_quantity >= 0 AND l_extendedprice >= 0 AND l_tax >= 0 AND l_shipdate <= l_receiptdate)
 --  CONSTRAINT c2 CHECK (l_discount >= 0 AND l_discount <= 1)
 ) engine = MergeTree ORDER BY (l_shipdate, l_receiptdate, l_orderkey, l_linenumber);
-
 CREATE TABLE nation
 (
     n_nationkey     Int32,  -- PK
@@ -104,7 +96,6 @@ CREATE TABLE nation
     n_comment       String, -- variable text, size 152
     CONSTRAINT pk CHECK n_nationkey >= 0
 ) Engine = MergeTree ORDER BY (n_nationkey);
-
 CREATE TABLE region
 (
     r_regionkey     Int32,  -- PK
@@ -112,7 +103,6 @@ CREATE TABLE region
     r_comment       String, -- variable text, size 152
     CONSTRAINT pk CHECK r_regionkey >= 0
 ) engine = MergeTree ORDER BY (r_regionkey);
-
 select 1;
 select
     l_returnflag,
@@ -135,8 +125,7 @@ group by
 order by
     l_returnflag,
     l_linestatus;
-
-select 2, 'fail: correlated subquery'; -- TODO: Missing columns: 'p_partkey'
+select 2, 'fail: correlated subquery';
 select
     s_acctbal,
     s_name,
@@ -180,8 +169,7 @@ order by
     n_name,
     s_name,
     p_partkey
-limit 100; -- { serverError 1, 47 }
-
+limit 100;
 select 3;
 select
     l_orderkey,
@@ -206,8 +194,7 @@ order by
     revenue desc,
     o_orderdate
 limit 10;
-
-select 4, 'fail: exists'; -- TODO
+select 4, 'fail: exists';
 -- select
 --     o_orderpriority,
 --     count(*) as order_count
@@ -229,7 +216,6 @@ select 4, 'fail: exists'; -- TODO
 --     o_orderpriority
 -- order by
 --     o_orderpriority;
-
 select 5;
 select
     n_name,
@@ -255,7 +241,6 @@ group by
     n_name
 order by
     revenue desc;
-
 select 6;
 select
     sum(l_extendedprice * l_discount) as revenue
@@ -267,7 +252,6 @@ where
     and l_discount between toDecimal32(0.06, 2) - toDecimal32(0.01, 2)
         and toDecimal32(0.06, 2) + toDecimal32(0.01, 2)
     and l_quantity < 24;
-
 select 7;
 select
     supp_nation,
@@ -308,7 +292,6 @@ order by
     supp_nation,
     cust_nation,
     l_year;
-
 select 8;
 select
     o_year,
@@ -347,7 +330,6 @@ group by
     o_year
 order by
     o_year;
-
 select 9;
 select
     nation,
@@ -381,7 +363,6 @@ group by
 order by
     nation,
     o_year desc;
-
 select 10;
 select
     c_custkey,
@@ -415,8 +396,7 @@ group by
 order by
     revenue desc
 limit 20;
-
-select 11; -- TODO: remove toDecimal()
+select 11;
 select
     ps_partkey,
     sum(ps_supplycost * ps_availqty) as value
@@ -447,7 +427,6 @@ group by
         )
 order by
     value desc;
-
 select 12;
 select
     l_shipmode,
@@ -477,7 +456,6 @@ group by
     l_shipmode
 order by
     l_shipmode;
-
 select 13;
 select
     c_count,
@@ -499,7 +477,6 @@ group by
 order by
     custdist desc,
     c_count desc;
-
 select 14;
 select
     toDecimal32(100.00, 2) * sum(case
@@ -514,8 +491,7 @@ where
     l_partkey = p_partkey
     and l_shipdate >= date '1995-09-01'
     and l_shipdate < date '1995-09-01' + interval '1' month;
-
-select 15, 'fail: correlated subquery'; -- TODO: Missing columns: 'total_revenue'
+select 15, 'fail: correlated subquery';
 drop view if exists revenue0;
 create view revenue0 as
     select
@@ -546,9 +522,8 @@ where
             revenue0
     )
 order by
-    s_suppkey; -- { serverError 47 }
+    s_suppkey;
 drop view revenue0;
-
 select 16;
 select
     p_brand,
@@ -580,8 +555,7 @@ order by
     p_brand,
     p_type,
     p_size;
-
-select 17, 'fail: correlated subquery'; -- TODO: Missing columns: 'p_partkey'
+select 17, 'fail: correlated subquery';
 select
     sum(l_extendedprice) / 7.0 as avg_yearly
 from
@@ -598,8 +572,7 @@ where
             lineitem
         where
             l_partkey = p_partkey
-    ); -- { serverError 1, 47 }
-
+    );
 select 18;
 select
     c_name,
@@ -634,7 +607,6 @@ order by
     o_totalprice desc,
     o_orderdate
 limit 100;
-
 select 19;
 select
     sum(l_extendedprice* (1 - l_discount)) as revenue
@@ -671,8 +643,7 @@ where
         and l_shipmode in ('AIR', 'AIR REG')
         and l_shipinstruct = 'DELIVER IN PERSON'
     );
-
-select 20, 'fail: correlated subquery'; -- TODO: Missing columns: 'ps_suppkey' 'ps_partkey'
+select 20, 'fail: correlated subquery';
 select
     s_name,
     s_address
@@ -709,9 +680,8 @@ where
     and s_nationkey = n_nationkey
     and n_name = 'CANADA'
 order by
-    s_name; -- { serverError 1, 47 }
-
-select 21, 'fail: exists, not exists'; -- TODO
+    s_name;
+select 21, 'fail: exists, not exists';
 -- select
 --     s_name,
 --     count(*) as numwait
@@ -752,8 +722,7 @@ select 21, 'fail: exists, not exists'; -- TODO
 --     numwait desc,
 --     s_name
 -- limit 100;
-
-select 22, 'fail: not exists'; -- TODO
+select 22, 'fail: not exists';
 -- select
 --     cntrycode,
 --     count(*) as numcust,
@@ -791,7 +760,6 @@ select 22, 'fail: not exists'; -- TODO
 --     cntrycode
 -- order by
 --     cntrycode;
-
 DROP TABLE part;
 DROP TABLE supplier;
 DROP TABLE partsupp;

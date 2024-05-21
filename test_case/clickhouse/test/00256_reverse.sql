@@ -1,7 +1,6 @@
 SELECT reverse('Hello');
 SELECT reverse(materialize('Hello'));
 SELECT reverse(toString(round(exp10(number)))) FROM system.numbers LIMIT 10;
-
 SELECT reverse(['Hello', 'World']);
 SELECT reverse(materialize(['Hello', 'World']));
 SELECT reverse(range(number)) FROM system.numbers LIMIT 10;

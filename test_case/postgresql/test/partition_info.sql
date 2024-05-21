@@ -4,7 +4,6 @@ SELECT * FROM pg_partition_ancestors(NULL);
 SELECT * FROM pg_partition_ancestors(0);
 SELECT pg_partition_root(NULL);
 SELECT pg_partition_root(0);
-
 CREATE TABLE ptif_test (a int, b int) PARTITION BY range (a);
 CREATE TABLE ptif_test0 PARTITION OF ptif_test
   FOR VALUES FROM (minvalue) TO (0) PARTITION BY list (b);
@@ -16,12 +15,10 @@ CREATE TABLE ptif_test2 PARTITION OF ptif_test
   FOR VALUES FROM (100) TO (200);
 CREATE TABLE ptif_test3 PARTITION OF ptif_test
   FOR VALUES FROM (200) TO (maxvalue) PARTITION BY list (b);
-
 SELECT pg_partition_root('ptif_test');
 SELECT pg_partition_root('ptif_test0');
 SELECT pg_partition_root('ptif_test01');
 SELECT pg_partition_root('ptif_test3');
-
 CREATE INDEX ptif_test_index ON ONLY ptif_test (a);
 CREATE INDEX ptif_test0_index ON ONLY ptif_test0 (a);
 ALTER INDEX ptif_test_index ATTACH PARTITION ptif_test0_index;
@@ -35,12 +32,10 @@ CREATE INDEX ptif_test2_index ON ptif_test2 (a);
 ALTER INDEX ptif_test_index ATTACH PARTITION ptif_test2_index;
 CREATE INDEX ptif_test3_index ON ptif_test3 (a);
 ALTER INDEX ptif_test_index ATTACH PARTITION ptif_test3_index;
-
 SELECT pg_partition_root('ptif_test_index');
 SELECT pg_partition_root('ptif_test0_index');
 SELECT pg_partition_root('ptif_test01_index');
 SELECT pg_partition_root('ptif_test3_index');
-
 SELECT relid, parentrelid, level, isleaf
   FROM pg_partition_tree('ptif_test');
 SELECT relid, parentrelid, level, isleaf
@@ -57,7 +52,6 @@ SELECT * FROM pg_partition_ancestors('ptif_test');
 SELECT relid, parentrelid, level, isleaf
   FROM pg_partition_tree(pg_partition_root('ptif_test01')) p
   JOIN pg_class c ON (p.relid = c.oid);
-
 SELECT relid, parentrelid, level, isleaf
   FROM pg_partition_tree('ptif_test_index');
 SELECT relid, parentrelid, level, isleaf
@@ -74,16 +68,13 @@ SELECT relid, parentrelid, level, isleaf
   JOIN pg_class c ON (p.relid = c.oid);
 SELECT * FROM pg_partition_ancestors('ptif_test01_index');
 SELECT * FROM pg_partition_ancestors('ptif_test_index');
-
 DROP TABLE ptif_test;
-
 CREATE TABLE ptif_normal_table(a int);
 SELECT relid, parentrelid, level, isleaf
   FROM pg_partition_tree('ptif_normal_table');
 SELECT * FROM pg_partition_ancestors('ptif_normal_table');
 SELECT pg_partition_root('ptif_normal_table');
 DROP TABLE ptif_normal_table;
-
 CREATE VIEW ptif_test_view AS SELECT 1;
 CREATE MATERIALIZED VIEW ptif_test_matview AS SELECT 1;
 CREATE TABLE ptif_li_parent ();

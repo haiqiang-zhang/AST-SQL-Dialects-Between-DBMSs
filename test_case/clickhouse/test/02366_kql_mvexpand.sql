@@ -1,4 +1,3 @@
--- datatable(a: int, b: dynamic, c: dynamic, d: dynamic) [
 --    1, dynamic(['Salmon', 'Steak', 'Chicken']), dynamic([1, 2, 3, 4]), dynamic([5, 6, 7, 8])
 -- ]
 
@@ -35,5 +34,5 @@ print '-- mv_expand_test_table | mv-expand c to typeof(bool) --';
 mv_expand_test_table | mv-expand c to typeof(bool);
 SET max_query_size = 28;
 SET dialect='kusto';
-mv_expand_test_table | mv-expand c, d; -- { serverError SYNTAX_ERROR }
+mv_expand_test_table | mv-expand c, d;
 SET max_query_size=262144;

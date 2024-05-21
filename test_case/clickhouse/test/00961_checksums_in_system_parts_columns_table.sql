@@ -1,7 +1,4 @@
--- Tags: no-random-merge-tree-settings
-
 DROP TABLE IF EXISTS test_00961;
-
 CREATE TABLE test_00961 (d Date, a String, b UInt8, x String, y Int8, z UInt32)
     ENGINE = MergeTree PARTITION BY d ORDER BY (a, b)
     SETTINGS index_granularity = 111,
@@ -11,9 +8,7 @@ CREATE TABLE test_00961 (d Date, a String, b UInt8, x String, y Int8, z UInt32)
     index_granularity_bytes = '10Mi',
     ratio_of_defaults_for_sparse_serialization = 1,
     replace_long_file_name_to_hash = 0;
-
 INSERT INTO test_00961 VALUES ('2000-01-01', 'Hello, world!', 123, 'xxx yyy', -123, 123456789);
-
 SELECT
     name,
     table,
@@ -22,5 +17,4 @@ SELECT
     uncompressed_hash_of_compressed_files
 FROM system.parts
 WHERE table = 'test_00961' and database = currentDatabase();
-
 DROP TABLE test_00961;

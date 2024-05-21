@@ -1,4 +1,3 @@
--- for small cardinality the 64 bit hash perform worse, but for 1e10:
 -- 4 byte hash: 2.8832809652e10
 -- 8 byte hash: 0.9998568925e10
 -- but hence checking with 1e10 values takes too much time (~45 secs), this

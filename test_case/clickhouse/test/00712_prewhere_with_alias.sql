@@ -32,4 +32,3 @@ select b from prewhere_alias prewhere c;
 select c from prewhere_alias prewhere c;
 select d from prewhere_alias prewhere c;
 drop table if exists prewhere_alias;
-

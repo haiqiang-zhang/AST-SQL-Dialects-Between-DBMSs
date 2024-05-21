@@ -4,20 +4,23 @@ from adapter.MySQLAdapter import MySQLAdapter
 from adapter.PostgresqlAdapter import PostgresqlAdapter
 from adapter.DBMSAdapter import DBMSAdapter
 from adapter.DuckDBAdapter import DuckDBAdapter
+from adapter.ClickHouseAdapter import ClickHouseAdapter
 import pandas as pd
 from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv
 import decimal
 
-test_extract_mode = True
+test_extract_mode = False
 
 test_case_path = './test_case'
-dbms_test_case_used = ['duckdb']
+dbms_test_case_used = ['clickhouse']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
     # "mysql": MySQLAdapter,
-    "sqlite": SQLiteAdapter,
+    # "sqlite": SQLiteAdapter,
     # "postgresql": PostgresqlAdapter,
-    # "duckdb": DuckDBAdapter
+    # "duckdb": DuckDBAdapter,
+    "clickhouse": ClickHouseAdapter
+
 }
 
 setup_query_keyword = [
@@ -114,6 +117,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
                     df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "ERROR", 'ERROR_Type': result[1][0], 'Message': error_message}, ignore_index=True)
         df = df._append({'DBMS': dbms, 'SAME_Number': success_counter, 'DIFFERENT_Number': 0, 'ERROR_Number': failure_counter}, ignore_index=True)
         db_adaptor.close_connection()
+        
 
     if test_extract_mode:
         save_result_to_txt(result_list, filename, dbms)
@@ -141,24 +145,23 @@ save_result_to_csv(df_verbose_all_result, "init_result")
 for dbms in os.listdir(test_case_path):
     
     # for test_group in os.listdir(os.path.join(test_case_path, dbmss)):
-    if not test_extract_mode and dbms not in dbms_test_case_used:
+    if dbms not in dbms_test_case_used:
         continue
     
-    dbms_dict = DBMS_ADAPTERS
-    if test_extract_mode and dbms in DBMS_ADAPTERS:
-        dbms_dict = {dbms: DBMS_ADAPTERS[dbms]}
-    else:
-        continue
+    # if test_extract_mode and dbms in DBMS_ADAPTERS:
+    #     dbms_dict = {dbms: DBMS_ADAPTERS[dbms]}
+    # else:
+    #     continue
         
-    first_init_dbmss(dbms_dict)
+    first_init_dbmss(DBMS_ADAPTERS)
     print(f"Running test cases of {dbms}")
     test_folder=os.path.join(test_case_path, dbms, 'test')
     file_counter = 0
 
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
     for dirpath, dirnames, filenames in os.walk(test_folder):
-        for filename in filenames:
-            if filename.endswith('.sql'):
+        for filename in sorted(filenames):
+            if filename.endswith('02267_insert_empty_data.sql'):
                 test_paths = os.path.join(dirpath, filename)
                 # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)
                 # result_paths = os.path.join(test_case_path, dbmss, test_group, 'result', filename)

@@ -1,4 +1,3 @@
--- Tags: no-cpu-x86_64, no-cpu-aarch64
 -- Tag no-cpu-x86_64 and no-cpu-aarch64: Depending on the target platform, CRC32C function returns different hash values. So, should not run on X86_64 and ARM. Whenever a new test gets added here, same has to be updated in 01016_simhash_minhash.sql
 
 SELECT ngramSimHash('');
@@ -10,7 +9,6 @@ SELECT wordShingleSimHash('what a cute cat.');
 SELECT wordShingleSimHashCaseInsensitive('what a cute cat.');
 SELECT wordShingleSimHashUTF8('what a cute cat.');
 SELECT wordShingleSimHashCaseInsensitiveUTF8('what a cute cat.');
-
 SELECT ngramMinHash('');
 SELECT ngramMinHash('what a cute cat.');
 SELECT ngramMinHashCaseInsensitive('what a cute cat.');
@@ -20,15 +18,12 @@ SELECT wordShingleMinHash('what a cute cat.');
 SELECT wordShingleMinHashCaseInsensitive('what a cute cat.');
 SELECT wordShingleMinHashUTF8('what a cute cat.');
 SELECT wordShingleMinHashCaseInsensitiveUTF8('what a cute cat.');
-
 DROP TABLE IF EXISTS defaults;
 CREATE TABLE defaults
 (
    s String
 )ENGINE = Memory();
-
 INSERT INTO defaults values ('It is the latest occurrence of the Southeast European haze, the issue that occurs in constant intensity during every wet season. It has mainly been caused by forest fires resulting from illegal slash-and-burn clearing performed on behalf of the palm oil industry in Kazakhstan, principally on the islands, which then spread quickly in the dry season.') ('It is the latest occurrence of the Southeast Asian haze, the issue that occurs in constant intensity during every wet season. It has mainly been caused by forest fires resulting from illegal slash-and-burn clearing performed on behalf of the palm oil industry in Kazakhstan, principally on the islands, which then spread quickly in the dry season.');
-
 SELECT ngramSimHash(s) FROM defaults;
 SELECT ngramSimHashCaseInsensitive(s) FROM defaults;
 SELECT ngramSimHashUTF8(s) FROM defaults;
@@ -37,7 +32,6 @@ SELECT wordShingleSimHash(s) FROM defaults;
 SELECT wordShingleSimHashCaseInsensitive(s) FROM defaults;
 SELECT wordShingleSimHashUTF8(s) FROM defaults;
 SELECT wordShingleSimHashCaseInsensitiveUTF8(s) FROM defaults;
-
 SELECT ngramMinHash(s) FROM defaults;
 SELECT ngramMinHashCaseInsensitive(s) FROM defaults;
 SELECT ngramMinHashUTF8(s) FROM defaults;
@@ -46,7 +40,6 @@ SELECT wordShingleMinHash(s) FROM defaults;
 SELECT wordShingleMinHashCaseInsensitive(s) FROM defaults;
 SELECT wordShingleMinHashUTF8(s) FROM defaults;
 SELECT wordShingleMinHashCaseInsensitiveUTF8(s) FROM defaults;
-
 TRUNCATE TABLE defaults;
 INSERT INTO defaults SELECT arrayJoin(splitByString('\n\n',
 'ClickHouse uses all available hardware to its full potential to process each query as fast as possible. Peak processing performance for a single query stands at more than 2 terabytes per second (after decompression, only used columns). In distributed setup reads are automatically balanced among healthy replicas to avoid increasing latency.
@@ -73,10 +66,7 @@ ClickHouse makes full use of all available hardware to process each request as q
 ClickHouse supports asynchronous multi-master replication and can be deployed across multiple data centers. All nodes are equal to avoid a single point of failure. Downtime for one site or the entire data center will not affect the read / write availability of the system.
 ClickHouse is simple and works out of the box. It simplifies all processing of your data: it loads all structured data into the system and immediately becomes available for building reports. The SQL dialect allows you to express the desired result without resorting to any of the non-standard APIs found in some alternative systems.'
 ));
-
 SELECT 'uniqExact', uniqExact(s) FROM defaults;
-
-
 SELECT 'ngramSimHash';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), ngramSimHash(s) as h FROM defaults GROUP BY h ORDER BY h;
 SELECT 'ngramSimHashCaseInsensitive';
@@ -93,7 +83,6 @@ SELECT 'wordShingleSimHashUTF8';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), wordShingleSimHashUTF8(s, 2) as h FROM defaults GROUP BY h ORDER BY h;
 SELECT 'wordShingleSimHashCaseInsensitiveUTF8';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), wordShingleSimHashCaseInsensitiveUTF8(s, 2) as h FROM defaults GROUP BY h ORDER BY h;
-
 SELECT 'ngramMinHash';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), ngramMinHash(s) as h FROM defaults GROUP BY h ORDER BY h;
 SELECT 'ngramMinHashCaseInsensitive';
@@ -110,9 +99,4 @@ SELECT 'wordShingleMinHashUTF8';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), wordShingleMinHashUTF8(s, 2, 3) as h FROM defaults GROUP BY h ORDER BY h;
 SELECT 'wordShingleMinHashCaseInsensitiveUTF8';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), wordShingleMinHashCaseInsensitiveUTF8(s, 2, 3) as h FROM defaults GROUP BY h ORDER BY h;
-
-SELECT wordShingleSimHash('foobar', 9223372036854775807); -- { serverError 69 }
-SELECT wordShingleSimHash('foobar', 1001); -- { serverError 69 }
-SELECT wordShingleSimHash('foobar', 0); -- { serverError 69 }
-
 DROP TABLE defaults;

@@ -1,13 +1,9 @@
--- Tags: no-fasttest
-
 drop table if exists test;
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk=disk(name='test1', type = object_storage, object_storage_type = local_blob_storage, path='./02963_test1/');
-
 drop table test;
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk='s3_disk_02963';
-
 drop table test;
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk=disk(name='test1',
@@ -16,7 +12,6 @@ settings disk=disk(name='test1',
                    endpoint = 'http://localhost:11111/test/common/',
                    access_key_id = clickhouse,
                    secret_access_key = clickhouse);
-
 drop table test;
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk=disk(name='test2',
@@ -26,7 +21,6 @@ settings disk=disk(name='test2',
                    endpoint = 'http://localhost:11111/test/common/',
                    access_key_id = clickhouse,
                    secret_access_key = clickhouse);
-
 drop table test;
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk=disk(name='test3',
@@ -35,8 +29,7 @@ settings disk=disk(name='test3',
                    metadata_type = lll,
                    endpoint = 'http://localhost:11111/test/common/',
                    access_key_id = clickhouse,
-                   secret_access_key = clickhouse); -- { serverError UNKNOWN_ELEMENT_IN_CONFIG }
-
+                   secret_access_key = clickhouse);
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk=disk(name='test4',
                    type = object_storage,
@@ -44,8 +37,7 @@ settings disk=disk(name='test4',
                    metadata_type = local,
                    endpoint = 'http://localhost:11111/test/common/',
                    access_key_id = clickhouse,
-                   secret_access_key = clickhouse); -- { serverError UNKNOWN_ELEMENT_IN_CONFIG }
-
+                   secret_access_key = clickhouse);
 create table test (a Int32) engine = MergeTree() order by tuple()
 settings disk=disk(name='test5',
                    type = kkk,
@@ -53,4 +45,4 @@ settings disk=disk(name='test5',
                    metadata_type = local,
                    endpoint = 'http://localhost:11111/test/common/',
                    access_key_id = clickhouse,
-                   secret_access_key = clickhouse); -- { serverError UNKNOWN_ELEMENT_IN_CONFIG }
+                   secret_access_key = clickhouse);

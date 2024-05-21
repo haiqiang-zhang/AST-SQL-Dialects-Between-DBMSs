@@ -58,7 +58,6 @@ SELECT arrayCumSum(x -> 0, range(number)) FROM system.numbers LIMIT 10;
 SELECT arrayCumSum(x -> 10, emptyArrayUInt8());
 SELECT arrayCumSum(x -> 10, [1, 2, 3]);
 SELECT arrayCumSum(x -> 10, range(number)) FROM system.numbers LIMIT 10;
-
 SELECT '---map--';
 SELECT arrayMap(x -> materialize(123), emptyArrayUInt8());
 SELECT arrayMap(x -> materialize(123), [1, 2, 3]);
@@ -119,7 +118,6 @@ SELECT arrayCumSum(x -> materialize(0), range(number)) FROM system.numbers LIMIT
 SELECT arrayCumSum(x -> materialize(10), emptyArrayUInt8());
 SELECT arrayCumSum(x -> materialize(10), [1, 2, 3]);
 SELECT arrayCumSum(x -> materialize(10), range(number)) FROM system.numbers LIMIT 10;
-
 SELECT '---map--';
 SELECT arrayMap(x -> 123, emptyArrayString());
 SELECT arrayMap(x -> 123, arrayMap(x -> toString(x), [1, 2, 3]));
@@ -180,7 +178,6 @@ SELECT arrayCumSum(x -> 0, arrayMap(x -> toString(x), range(number))) FROM syste
 SELECT arrayCumSum(x -> 10, emptyArrayString());
 SELECT arrayCumSum(x -> 10, arrayMap(x -> toString(x), [1, 2, 3]));
 SELECT arrayCumSum(x -> 10, arrayMap(x -> toString(x), range(number))) FROM system.numbers LIMIT 10;
-
 SELECT '---map--';
 SELECT arrayMap(x -> materialize(123), emptyArrayString());
 SELECT arrayMap(x -> materialize(123), arrayMap(x -> toString(x), [1, 2, 3]));
@@ -241,7 +238,6 @@ SELECT arrayCumSum(x -> materialize(0), arrayMap(x -> toString(x), range(number)
 SELECT arrayCumSum(x -> materialize(10), emptyArrayString());
 SELECT arrayCumSum(x -> materialize(10), arrayMap(x -> toString(x), [1, 2, 3]));
 SELECT arrayCumSum(x -> materialize(10), arrayMap(x -> toString(x), range(number))) FROM system.numbers LIMIT 10;
-
 SELECT '--- ---';
 SELECT arrayMap(x -> number % 2, range(number)) FROM system.numbers LIMIT 10;
 SELECT arrayFilter(x -> number % 2, range(number)) FROM system.numbers LIMIT 10;

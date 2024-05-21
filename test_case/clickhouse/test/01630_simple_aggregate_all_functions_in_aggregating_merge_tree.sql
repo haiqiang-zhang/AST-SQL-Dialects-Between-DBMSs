@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS simple_agf_summing_mt;
-
 CREATE TABLE simple_agf_summing_mt
 (
     a Int64,
@@ -30,7 +29,6 @@ CREATE TABLE simple_agf_summing_mt
 )
 ENGINE = SummingMergeTree
 ORDER BY a;
-
 INSERT INTO simple_agf_summing_mt SELECT
     number % 51 AS a,
     minState(number),
@@ -59,7 +57,6 @@ INSERT INTO simple_agf_summing_mt SELECT
     maxMap((arrayMap(i -> toString(i), range(13)), arrayMap(i -> (number + i), range(13))))
 FROM numbers(10000)
 GROUP BY a;
-
 INSERT INTO simple_agf_summing_mt SELECT
     number % 1151 AS a,
     minState(number),
@@ -88,9 +85,7 @@ INSERT INTO simple_agf_summing_mt SELECT
     maxMap((arrayMap(i -> toString(i), range(13)), arrayMap(i -> (number + i), range(13))))
 FROM numbers(10000)
 GROUP BY a;
-
 OPTIMIZE TABLE simple_agf_summing_mt FINAL;
-
 SELECT cityHash64(groupArray(cityHash64(*))) FROM (
   SELECT
     a % 31 AS g,
@@ -134,13 +129,10 @@ SELECT cityHash64(groupArray(cityHash64(*))) FROM (
   GROUP BY g
   ORDER BY g
 );
-
 SELECT '---mutation---';
-
 ALTER TABLE simple_agf_summing_mt
     DELETE WHERE (a % 3) = 0
 SETTINGS mutations_sync = 1;
-
 INSERT INTO simple_agf_summing_mt SELECT
     number % 11151 AS a,
     minState(number),
@@ -169,9 +161,7 @@ INSERT INTO simple_agf_summing_mt SELECT
     maxMap((arrayMap(i -> toString(i), range(13)), arrayMap(i -> (number + i), range(13))))
 FROM numbers(10000)
 GROUP BY a;
-
 OPTIMIZE TABLE simple_agf_summing_mt FINAL;
-
 SELECT cityHash64(groupArray(cityHash64(*))) FROM (
   SELECT
     a % 31 AS g,
@@ -215,5 +205,4 @@ SELECT cityHash64(groupArray(cityHash64(*))) FROM (
   GROUP BY g
   ORDER BY g
 );
-
 DROP TABLE simple_agf_summing_mt;

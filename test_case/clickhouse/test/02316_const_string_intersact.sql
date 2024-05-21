@@ -1,2 +1,1 @@
-
-SELECT 'Play ClickHouse' InterSect SELECT 'Play ClickHouse'
+SELECT 'Play ClickHouse' InterSect SELECT 'Play ClickHouse';

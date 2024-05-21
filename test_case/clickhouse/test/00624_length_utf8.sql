@@ -1,2 +1,2 @@
-SELECT 'привет пр' AS x, lengthUTF8(x) AS y;
-SELECT x, lengthUTF8(x) AS y FROM (SELECT arrayJoin(['', 'h', 'hello', 'hello hello hello', 'п', 'пр', 'привет', 'привет привет', 'привет привет привет', '你好', '你好 你好', '你好你好你好', '你好你好你好你好', '你好 你好 你好 你好 你好']) AS x);
+SELECT 'Ð¿ÑÐ¸Ð²ÐµÑ Ð¿Ñ' AS x, lengthUTF8(x) AS y;
+SELECT x, lengthUTF8(x) AS y FROM (SELECT arrayJoin(['', 'h', 'hello', 'hello hello hello', 'Ð¿', 'Ð¿Ñ', 'Ð¿ÑÐ¸Ð²ÐµÑ', 'Ð¿ÑÐ¸Ð²ÐµÑ Ð¿ÑÐ¸Ð²ÐµÑ', 'Ð¿ÑÐ¸Ð²ÐµÑ Ð¿ÑÐ¸Ð²ÐµÑ Ð¿ÑÐ¸Ð²ÐµÑ', 'ä½ å¥½', 'ä½ å¥½ ä½ å¥½', 'ä½ å¥½ä½ å¥½ä½ å¥½', 'ä½ å¥½ä½ å¥½ä½ å¥½ä½ å¥½', 'ä½ å¥½ ä½ å¥½ ä½ å¥½ ä½ å¥½ ä½ å¥½']) AS x);

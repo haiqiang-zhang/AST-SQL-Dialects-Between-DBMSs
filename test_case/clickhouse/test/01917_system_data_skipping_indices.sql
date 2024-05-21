@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS data_01917;
 DROP TABLE IF EXISTS data_01917_2;
-
 CREATE TABLE data_01917
 (
     key Int,
@@ -11,7 +10,6 @@ CREATE TABLE data_01917
 )
 Engine=MergeTree()
 ORDER BY key;
-
 CREATE TABLE data_01917_2
 (
     name String,
@@ -22,14 +20,9 @@ CREATE TABLE data_01917_2
 )
 Engine=MergeTree()
 ORDER BY name;
-
 SELECT * FROM system.data_skipping_indices WHERE database = currentDatabase();
-
 SELECT count(*) FROM system.data_skipping_indices WHERE table = 'data_01917' AND database = currentDatabase();
 SELECT count(*) FROM system.data_skipping_indices WHERE table = 'data_01917_2' AND database = currentDatabase();
-
 SELECT name FROM system.data_skipping_indices WHERE type = 'minmax' AND database = currentDatabase();
-
 DROP TABLE data_01917;
 DROP TABLE data_01917_2;
-

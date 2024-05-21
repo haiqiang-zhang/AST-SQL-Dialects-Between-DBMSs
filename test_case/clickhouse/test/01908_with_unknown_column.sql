@@ -6,7 +6,6 @@ from (
     FROM (select 1 as a, 2 as b)
     GROUP BY a
 ) as V;
-
 select a
 from (
     with a+1 as aa
@@ -17,7 +16,6 @@ from (
         (select 1 as a, 2 as b, 3 as c)
     GROUP BY a
 ) as V;
-
 select a
 from (
     with a+1 as aa

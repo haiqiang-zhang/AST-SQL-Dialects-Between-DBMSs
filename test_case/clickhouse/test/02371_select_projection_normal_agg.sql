@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS video_log;
-
 CREATE TABLE video_log
 (
     `datetime` DateTime,
@@ -13,9 +12,7 @@ ENGINE = MergeTree
 PARTITION BY toDate(datetime)
 ORDER BY (user_id, device_id)
 SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
-
 DROP TABLE IF EXISTS rng;
-
 CREATE TABLE rng
 (
     `user_id_raw` UInt64,
@@ -25,7 +22,6 @@ CREATE TABLE rng
     `duration_raw` UInt64
 )
 ENGINE = GenerateRandom(1024);
-
 INSERT INTO video_log SELECT
   toUnixTimestamp('2022-07-22 01:00:00')
   + (rowNumberInAllBlocks() / 20000),
@@ -36,7 +32,6 @@ INSERT INTO video_log SELECT
   (duration_raw % 300) + 100
 FROM rng
 LIMIT 1728000;
-
 INSERT INTO video_log SELECT
   toUnixTimestamp('2022-07-22 01:00:00')
   + (rowNumberInAllBlocks() / 20000),
@@ -47,9 +42,7 @@ INSERT INTO video_log SELECT
   (duration_raw % 300) + 100
 FROM rng
 LIMIT 10;
-
 DROP TABLE IF EXISTS video_log_result;
-
 CREATE TABLE video_log_result
 (
     `hour` DateTime,
@@ -60,7 +53,6 @@ ENGINE = MergeTree
 PARTITION BY toDate(hour)
 ORDER BY sum_bytes
 SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
-
 INSERT INTO video_log_result SELECT
     toStartOfHour(datetime) AS hour,
     sum(bytes),
@@ -68,8 +60,6 @@ INSERT INTO video_log_result SELECT
 FROM video_log
 WHERE (toDate(hour) = '2022-07-22') AND (device_id = '100') --(device_id = '100') Make sure it's not good and doesn't go into prewhere.
 GROUP BY hour;
-
-
 ALTER TABLE video_log ADD PROJECTION p_norm
 (
     SELECT
@@ -79,9 +69,7 @@ ALTER TABLE video_log ADD PROJECTION p_norm
         duration
     ORDER BY device_id
 );
-
 ALTER TABLE video_log MATERIALIZE PROJECTION p_norm settings mutations_sync=1;
-
 ALTER TABLE video_log ADD PROJECTION p_agg
 (
     SELECT
@@ -93,9 +81,7 @@ ALTER TABLE video_log ADD PROJECTION p_agg
         hour,
         domain
 );
-
 ALTER TABLE video_log MATERIALIZE PROJECTION p_agg settings mutations_sync=1;
-
 SELECT
     equals(sum_bytes1, sum_bytes2),
     equals(avg_duration1, avg_duration2)
@@ -118,9 +104,6 @@ LEFT JOIN
     FROM video_log_result
 )
 USING (hour) settings joined_subquery_requires_alias=0;
-
 DROP TABLE IF EXISTS video_log;
-
 DROP TABLE IF EXISTS rng;
-
 DROP TABLE IF EXISTS video_log_result;

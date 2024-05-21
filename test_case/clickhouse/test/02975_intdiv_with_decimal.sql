@@ -1,4 +1,3 @@
---intDiv--
 SELECT intDiv(4,2);
 SELECT intDiv(toDecimal32(4.4, 2), 2);
 SELECT intDiv(4, toDecimal32(2.2, 2));
@@ -33,7 +32,6 @@ SELECT intDiv(toDecimal32(4.4, 2), 2.2);
 SELECT intDiv(toDecimal64(4.4, 2), 2.2);
 SELECT intDiv(toDecimal128(4.4, 2), 2.2);
 SELECT intDiv(toDecimal256(4.4, 2), 2.2);
---intDivOrZero--
 SELECT intDivOrZero(4,2);
 SELECT intDivOrZero(toDecimal32(4.4, 2), 2);
 SELECT intDivOrZero(4, toDecimal32(2.2, 2));

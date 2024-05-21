@@ -1,9 +1,5 @@
--- Tags: no-parallel
-
 DROP DATABASE IF EXISTS database_for_range_dict;
-
 CREATE DATABASE database_for_range_dict;
-
 CREATE TABLE database_for_range_dict.date_table
 (
   CountryID UInt64,
@@ -13,11 +9,9 @@ CREATE TABLE database_for_range_dict.date_table
 )
 ENGINE = MergeTree()
 ORDER BY CountryID;
-
 INSERT INTO database_for_range_dict.date_table VALUES(1, toDate('2019-05-05'), toDate('2019-05-20'), 0.33);
 INSERT INTO database_for_range_dict.date_table VALUES(1, toDate('2019-05-21'), toDate('2019-05-30'), 0.42);
 INSERT INTO database_for_range_dict.date_table VALUES(2, toDate('2019-05-21'), toDate('2019-05-30'), 0.46);
-
 CREATE DICTIONARY database_for_range_dict.range_dictionary
 (
   CountryID UInt64,
@@ -30,9 +24,7 @@ SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'date_tab
 LIFETIME(MIN 1 MAX 1000)
 LAYOUT(RANGE_HASHED())
 RANGE(MIN StartDate MAX EndDate)
-SETTINGS(dictionary_use_async_executor=1, max_threads=8)
-;
-
+SETTINGS(dictionary_use_async_executor=1, max_threads=8);
 SELECT 'Dictionary not nullable';
 SELECT 'dictGet';
 SELECT dictGet('database_for_range_dict.range_dictionary', 'Tax', toUInt64(1), toDate('2019-05-15'));
@@ -54,10 +46,8 @@ SELECT 'onlySpecificColumns';
 SELECT CountryID, StartDate, Tax FROM database_for_range_dict.range_dictionary ORDER BY CountryID, StartDate, EndDate;
 SELECT 'onlySpecificColumn';
 SELECT Tax FROM database_for_range_dict.range_dictionary ORDER BY CountryID, StartDate, EndDate;
-
 DROP DICTIONARY database_for_range_dict.range_dictionary;
 DROP TABLE database_for_range_dict.date_table;
-
 CREATE TABLE database_for_range_dict.date_table
 (
   CountryID UInt64,
@@ -67,11 +57,9 @@ CREATE TABLE database_for_range_dict.date_table
 )
 ENGINE = MergeTree()
 ORDER BY CountryID;
-
 INSERT INTO database_for_range_dict.date_table VALUES(1, toDate('2019-05-05'), toDate('2019-05-20'), 0.33);
 INSERT INTO database_for_range_dict.date_table VALUES(1, toDate('2019-05-21'), toDate('2019-05-30'), 0.42);
 INSERT INTO database_for_range_dict.date_table VALUES(2, toDate('2019-05-21'), toDate('2019-05-30'), NULL);
-
 CREATE DICTIONARY database_for_range_dict.range_dictionary_nullable
 (
   CountryID UInt64,
@@ -84,7 +72,6 @@ SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'date_tab
 LIFETIME(MIN 1 MAX 1000)
 LAYOUT(RANGE_HASHED())
 RANGE(MIN StartDate MAX EndDate);
-
 SELECT 'Dictionary nullable';
 SELECT 'dictGet';
 SELECT dictGet('database_for_range_dict.range_dictionary_nullable', 'Tax', toUInt64(1), toDate('2019-05-15'));
@@ -106,9 +93,6 @@ SELECT 'onlySpecificColumns';
 SELECT CountryID, StartDate, Tax FROM database_for_range_dict.range_dictionary_nullable ORDER BY CountryID, StartDate, EndDate;
 SELECT 'onlySpecificColumn';
 SELECT Tax FROM database_for_range_dict.range_dictionary_nullable ORDER BY CountryID, StartDate, EndDate;
-
 DROP DICTIONARY database_for_range_dict.range_dictionary_nullable;
 DROP TABLE database_for_range_dict.date_table;
-
 DROP DATABASE database_for_range_dict;
-

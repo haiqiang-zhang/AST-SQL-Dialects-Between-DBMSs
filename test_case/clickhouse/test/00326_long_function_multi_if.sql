@@ -1,18 +1,10 @@
--- Tags: long
-
 SELECT 'Trivial case';
-
 SELECT multiIf(1, 2, 1, 3, 4);
 SELECT multiIf(1, 'A', 1, 'BC', 'DEF');
 SELECT multiIf(1, toFixedString('A', 16), 1, toFixedString('BC', 16), toFixedString('DEF', 16));
 SELECT multiIf(1, [1,2], 1, [3,4], [5,6]);
 SELECT multiIf(1, ['A', 'B'], 1, ['C', 'D'], ['E', 'F']);
-SELECT multiIf(rand() % 2 = 0, emptyArrayString(), emptyArrayString());
-SELECT multiIf(rand() % 2 = 0, emptyArrayUInt8(), emptyArrayUInt8());
-SELECT multiIf(rand() % 2 = 0, '', '');
-
 SELECT 'Numeric branches';
-
 SELECT multiIf((number % 2) = 0, toInt8(1), (number % 3) = 0, toInt8(2), toInt8(3)) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, toInt8(1), (number % 3) = 0, toInt8(2), toInt16(3)) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, toInt8(1), (number % 3) = 0, toInt8(2), toInt32(3)) FROM system.numbers LIMIT 10;
@@ -689,9 +681,7 @@ SELECT multiIf((number % 2) = 0, toFloat64(1), (number % 3) = 0, toFloat64(2), t
 SELECT multiIf((number % 2) = 0, toFloat64(1), (number % 3) = 0, toFloat64(2), toUInt32(3)) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, toFloat64(1), (number % 3) = 0, toFloat64(2), toFloat32(3)) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, toFloat64(1), (number % 3) = 0, toFloat64(2), toFloat64(3)) FROM system.numbers LIMIT 10;
-
 SELECT 'Numeric array branches';
-
 SELECT multiIf((number % 2) = 0, [toInt8(1), toInt8(2)], (number % 3) = 0, [toInt8(2), toInt8(3)], [toInt8(3), toInt8(3)]) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, [toInt8(1), toInt8(2)], (number % 3) = 0, [toInt8(2), toInt8(3)], [toInt16(3), toInt16(3)]) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, [toInt8(1), toInt8(2)], (number % 3) = 0, [toInt8(2), toInt8(3)], [toInt32(3), toInt32(3)]) FROM system.numbers LIMIT 10;
@@ -1368,9 +1358,7 @@ SELECT multiIf((number % 2) = 0, [toFloat64(1), toFloat64(2)], (number % 3) = 0,
 SELECT multiIf((number % 2) = 0, [toFloat64(1), toFloat64(2)], (number % 3) = 0, [toFloat64(2), toFloat64(3)], [toUInt32(3), toUInt32(3)]) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, [toFloat64(1), toFloat64(2)], (number % 3) = 0, [toFloat64(2), toFloat64(3)], [toFloat32(3), toFloat32(3)]) FROM system.numbers LIMIT 10;
 SELECT multiIf((number % 2) = 0, [toFloat64(1), toFloat64(2)], (number % 3) = 0, [toFloat64(2), toFloat64(3)], [toFloat64(3), toFloat64(3)]) FROM system.numbers LIMIT 10;
-
 SELECT 'String branches';
-
 DROP TABLE IF EXISTS multi_if_check;
 CREATE TABLE multi_if_check(col1 UInt64, col2 String, col3 String, col4 String) ENGINE=TinyLog;
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(1, 'A', 'AB', 'ABC');
@@ -1383,7 +1371,6 @@ INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(7, 'G', 'GH', 'GHI');
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(8, 'H', 'HI', 'HIJ');
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(9, 'I', 'IJ', 'IJK');
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(10, 'J', 'JK', 'JKL');
-
 SELECT multiIf((col1 % 2) = 0, col2, (col1 % 3) = 0, col3, col4) FROM multi_if_check;
 SELECT multiIf((col1 % 2) = 0, col2, (col1 % 3) = 0, col3, toFixedString(col4, 16)) FROM multi_if_check;
 SELECT multiIf((col1 % 2) = 0, col2, (col1 % 3) = 0, col3, toFixedString('baz', 16)) FROM multi_if_check;
@@ -1640,11 +1627,8 @@ SELECT multiIf(1, 'foo', 1, 'bar', col4) FROM multi_if_check;
 SELECT multiIf(1, 'foo', 1, 'bar', toFixedString(col4, 16)) FROM multi_if_check;
 SELECT multiIf(1, 'foo', 1, 'bar', toFixedString('baz', 16)) FROM multi_if_check;
 SELECT multiIf(1, 'foo', 1, 'bar', 'baz') FROM multi_if_check;
-
 DROP TABLE IF EXISTS multi_if_check;
-
 SELECT 'String array branches';
-
 CREATE TABLE multi_if_check(col1 UInt64, col2 String, col3 String, col4 String, col5 String, col6 String, col7 String) ENGINE=TinyLog;
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(1, 'A', 'AB', 'ABC', 'ABCD', 'ABCDE', 'ABCDEF');
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(2, 'B', 'BC', 'BCD', 'BCDE', 'BCDEF', 'BCDEFG');
@@ -1656,7 +1640,6 @@ INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(7, '
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(8, 'H', 'HI', 'HIJ', 'HIJK', 'HIJKL', 'HIJKLM');
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(9, 'I', 'IJ', 'IJK', 'IJKL', 'IJKLM', 'IJKLMN');
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(10, 'J', 'JK', 'JKL', 'JKLM', 'JKLMN', 'JKLMNO');
-
 SELECT multiIf((col1 % 2) = 0, [col2, col3], (col1 % 3) = 0, [col4, col5], [col6, col7]) FROM multi_if_check;
 SELECT multiIf((col1 % 2) = 0, [col2, col3], (col1 % 3) = 0, [col4, col5], [col6, 'bar']) FROM multi_if_check;
 SELECT multiIf((col1 % 2) = 0, [col2, col3], (col1 % 3) = 0, [col4, col5], ['foo', col7]) FROM multi_if_check;
@@ -1913,11 +1896,8 @@ SELECT multiIf(1, ['foo', 'bar'], 1, ['foo', 'bar'], [col6, col7]) FROM multi_if
 SELECT multiIf(1, ['foo', 'bar'], 1, ['foo', 'bar'], [col6, 'bar']) FROM multi_if_check;
 SELECT multiIf(1, ['foo', 'bar'], 1, ['foo', 'bar'], ['foo', col7]) FROM multi_if_check;
 SELECT multiIf(1, ['foo', 'bar'], 1, ['foo', 'bar'], ['foo', 'bar']) FROM multi_if_check;
-
 DROP TABLE IF EXISTS multi_if_check;
-
 SELECT 'Miscellaneous';
-
 CREATE TABLE multi_if_check(col1 UInt64) ENGINE=TinyLog;
 INSERT INTO multi_if_check(col1) VALUES (11225),(20273),(213),(240),(12),(187),(29252);
 INSERT INTO multi_if_check(col1) VALUES (1),(65),(208),(9),(154),(20),(191),(2),(66),(970),(56),(144),(49),(10317),(145),(21623),(225);
@@ -1936,18 +1916,13 @@ INSERT INTO multi_if_check(col1) VALUES (11139),(10347),(146),(11079),(961),(112
 INSERT INTO multi_if_check(col1) VALUES (5),(10716),(102),(974),(10691),(102444),(11391),(10897),(10306),(10298),(10896),(21609),(118),(11148),(11451);
 INSERT INTO multi_if_check(col1) VALUES (10398),(221),(975),(80),(162),(28051),(10838),(10765),(1058),(11464),(74),(21134),(21422),(10313),(28401),(20539);
 INSERT INTO multi_if_check(col1) VALUES (10418),(235),(25),(179),(26030),(28381),(11091),(27398),(11108),(968),(10300),(11469),(35393),(10733),(11283),(11202);
-
-SELECT DISTINCT col1, multiIf(col1 != 213, 'Москва', 'Мир') AS k FROM multi_if_check LIMIT 10;
+SELECT DISTINCT col1, multiIf(col1 != 213, 'ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂºÃÂÃÂ²ÃÂÃÂ°', 'ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ') AS k FROM multi_if_check LIMIT 10;
 DROP TABLE IF EXISTS multi_if_check;
-
 SELECT 'Constant result';
-
 CREATE TABLE multi_if_check(value String) ENGINE=TinyLog;
 INSERT INTO multi_if_check VALUES ('1');
-
 SELECT multiIf(2 > 1, 'Value', 'ElseValue') as a, isConstant(a) FROM multi_if_check;
 SELECT multiIf(2 > 1, 'Value', value) as a, isConstant(a) FROM multi_if_check;
 SELECT multiIf(value == '1', 'ValueFirst', 2 > 1, 'ValueSecond', 'ElseValue') as a, isConstant(a) FROM multi_if_check;
 SELECT multiIf(1 > 2, 'Value', 'ElseValue') as a, isConstant(a);
-
 DROP TABLE IF EXISTS multi_if_check;

@@ -1,6 +1,4 @@
-
 SET join_algorithm = 'partial_merge';
-
 SELECT NULL
 FROM
 (
@@ -19,5 +17,4 @@ ALL LEFT JOIN
     SELECT 2 :: Nullable(UInt8) AS a
 ) AS js2
 USING (a)
-ORDER BY c
-;
+ORDER BY c;

@@ -1,12 +1,8 @@
-
--- Bug reproduction form #25411
 WITH a AS (select (select 1 WHERE 0) as b)
 select 1
 from system.one
 cross join a
 where a.b = 0;
-
--- Reported query
 drop table if exists t_q1ht4gq_5;
 create table t_q1ht4gq_5 (c_zeij INTEGER NOT NULL, c_fehk75l TEXT, c_jz TEXT, c_wynzuek TEXT, c_nkt INTEGER NOT NULL, c_g TEXT, c_mc2 TEXT, primary key(c_nkt)) engine = MergeTree();
 WITH
@@ -34,5 +30,4 @@ select
               t_q1ht4gq_5 as ref_14
                 cross join cte_0 as ref_15
             where ref_15.c4 > ref_15.c2));
-
 drop table if exists t_q1ht4gq_5;

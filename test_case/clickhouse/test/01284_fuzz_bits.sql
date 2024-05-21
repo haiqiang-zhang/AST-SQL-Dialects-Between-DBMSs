@@ -1,10 +1,9 @@
-SELECT fuzzBits(toString('string'), 1); -- { serverError 43 }
-SELECT fuzzBits('string', -1.0); -- { serverError 69 }
+SELECT fuzzBits(toString('string'), 1);
+SELECT fuzzBits('string', -1.0);
 SELECT fuzzBits('', 0.3);
 SELECT length(fuzzBits(randomString(100), 0.5));
 SELECT toTypeName(fuzzBits(randomString(100), 0.5));
 SELECT toTypeName(fuzzBits(toFixedString('abacaba', 10), 0.9));
-
 SELECT
   (
     0.29 * 8 * 10000 < sum
@@ -28,4 +27,4 @@ FROM
         ),
         range(10000)
       ) as sum
-  )
+  );

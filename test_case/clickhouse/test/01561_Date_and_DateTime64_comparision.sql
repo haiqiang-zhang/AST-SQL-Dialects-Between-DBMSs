@@ -40,4 +40,4 @@ FROM
         toDate(val, 'UTC') - n as d
     FROM system.numbers
     LIMIT 3
-)
+);

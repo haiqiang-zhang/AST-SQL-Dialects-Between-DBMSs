@@ -5,4 +5,4 @@ FROM
     FROM system.numbers
     LIMIT 3
 )
-ORDER BY x DESC NULLS LAST
+ORDER BY x DESC NULLS LAST;

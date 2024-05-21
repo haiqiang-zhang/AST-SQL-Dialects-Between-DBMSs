@@ -1,10 +1,7 @@
 DROP TABLE IF EXISTS test;
 CREATE TABLE test (a UInt8, b UInt8, c UInt16 ALIAS a + b) ENGINE = MergeTree ORDER BY a;
-
 SELECT b FROM test PREWHERE c = 1;
-
 DROP TABLE test;
-
 drop table if exists audience_local;
 create table audience_local
 (
@@ -28,9 +25,7 @@ engine = SummingMergeTree
 PARTITION BY (toISOYear(Date), toISOWeek(Date))
 ORDER BY (AudienceType, UMA, APIKey, Date, TrialNameID, TrialGroupID, AppVersion, Arch, UserID, GroupID, OSName, Channel)
 SETTINGS index_granularity = 8192;
-
 SELECT DISTINCT UserID
 FROM audience_local
 PREWHERE Date = toDate('2019-07-25') AND Release = '17.11.0.542';
-
 drop table if exists audience_local;

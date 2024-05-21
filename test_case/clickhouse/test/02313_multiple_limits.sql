@@ -10,7 +10,6 @@ FROM
     )
     SETTINGS max_rows_to_read = 20, read_overflow_mode = 'break', max_block_size = 2
 );
-
 SELECT sum(x)
 FROM
 (
@@ -23,8 +22,6 @@ FROM
     )
     SETTINGS max_rows_to_read = 10, read_overflow_mode = 'break', max_block_size = 2
 );
-
-
 SELECT count() >= 20, count() <= 22
 FROM
 (
@@ -44,7 +41,6 @@ FROM
         SETTINGS max_block_size = 2, max_rows_to_read = 20, read_overflow_mode = 'break'
     )
 );
-
 SELECT sum(x) >= 10
 FROM
 (
@@ -64,7 +60,6 @@ FROM
         SETTINGS max_block_size = 2, max_rows_to_read = 20, read_overflow_mode = 'break'
     )
 );
-
 SELECT count() >= 20, count() <= 22
 FROM
 (
@@ -84,7 +79,6 @@ FROM
         SETTINGS max_block_size = 2, max_rows_to_read = 10, read_overflow_mode = 'break'
     )
 );
-
 SELECT sum(x) <= 10
 FROM
 (

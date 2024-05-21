@@ -1,12 +1,8 @@
--- Tags: no-parallel
-
 -- Check that Buffer will be flushed before shutdown
 -- (via DETACH DATABASE)
 
 drop database if exists db_01870;
 create database db_01870;
-
--- Right now the order for shutdown is defined and it is:
 -- (prefixes are important, to define the order)
 -- - a_data_01870
 -- - z_buffer_01870
@@ -24,5 +20,4 @@ select count() from db_01870.a_data_01870;
 detach database db_01870;
 attach database db_01870;
 select count() from db_01870.a_data_01870;
-
 drop database db_01870;

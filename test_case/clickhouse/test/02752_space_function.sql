@@ -8,22 +8,18 @@ SELECT space(3::Int8), length(space(3::Int8));
 SELECT space(3::Int16), length(space(3::Int16));
 SELECT space(3::Int32), length(space(3::Int32));
 SELECT space(3::Int64), length(space(3::Int64));
-
 SELECT 'const, int, negative';
 SELECT space(-3::Int8), length(space(-3::Int8));
 SELECT space(-3::Int16), length(space(-3::Int16));
 SELECT space(-3::Int32), length(space(-3::Int32));
 SELECT space(-3::Int64), length(space(-3::Int64));
-
 SELECT 'negative tests';
-SELECT space('abc'); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
-SELECT space(['abc']); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
-SELECT space(('abc')); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
-SELECT space(30303030303030303030303030303030::UInt64); -- { serverError TOO_LARGE_STRING_SIZE }
-
+SELECT space('abc');
+SELECT space(['abc']);
+SELECT space(('abc'));
+SELECT space(30303030303030303030303030303030::UInt64);
 SELECT 'null';
 SELECT space(NULL);
-
 DROP TABLE IF EXISTS defaults;
 CREATE TABLE defaults
 (
@@ -36,9 +32,7 @@ CREATE TABLE defaults
     i32 Int32,
     i64 Int64
 ) ENGINE = Memory();
-
 INSERT INTO defaults values (3, 12, 4, 56, 3, 12, -4, 56) (2, 10, 21, 20, 2, 10, -21, 20) (1, 4, 9, 5, 1, 4, -9, 5) (0, 5, 7, 7, 0, 5, -7, 7);
-
 SELECT 'const, uint, multiple';
 SELECT space(30::UInt8) FROM defaults;
 SELECT space(30::UInt16) FROM defaults;
@@ -49,7 +43,6 @@ SELECT space(30::Int8) FROM defaults;
 SELECT space(30::Int16) FROM defaults;
 SELECT space(30::Int32) FROM defaults;
 SELECT space(30::Int64) FROM defaults;
-
 SELECT 'non-const, uint';
 SELECT space(u8), length(space(u8)) FROM defaults;
 SELECT space(u16), length(space(u16)) FROM defaults;
@@ -60,5 +53,4 @@ SELECT space(i8), length(space(i8)) FROM defaults;
 SELECT space(i16), length(space(i16)) FROM defaults;
 SELECT space(i32), length(space(i32)) from defaults;
 SELECT space(i64), length(space(i64)) FROM defaults;
-
 DROP TABLE defaults;

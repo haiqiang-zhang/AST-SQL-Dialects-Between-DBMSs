@@ -1,6 +1,4 @@
 DROP TABLE IF EXISTS tbl;
-
--- Checks that (floating-point) time series codecs can be combined
 --   with Nullable and
 --   with composite types Array and Tuple
 
@@ -27,5 +25,4 @@ CREATE TABLE tbl (
     v9_gor Tuple(Array(Float64)) CODEC(Gorilla),
     v9_fpc Tuple(Array(Float64)) CODEC(FPC),
 ) Engine = MergeTree ORDER BY tuple();
-
 DROP TABLE IF EXISTS tbl;

@@ -26,8 +26,6 @@ CROSS JOIN
     UNION ALL SELECT 'aaaaaaacaaaaaaaa'
 ) js2
 ORDER BY a, b;
-
-
 SELECT
     toFixedString(a, 16) AS a,
     toFixedString('aaaaaaaaaaaaaaaa', 16) AS b1,

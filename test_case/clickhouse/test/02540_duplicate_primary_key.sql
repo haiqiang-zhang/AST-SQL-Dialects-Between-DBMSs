@@ -1,7 +1,5 @@
 drop table if exists test;
-
 set allow_suspicious_low_cardinality_types = 1;
-
 CREATE TABLE test
 (
     `coverage` DateTime,
@@ -86,4 +84,4 @@ CREATE TABLE test
 )
 ENGINE = MergeTree
 PARTITION BY toYYYYMM(coverage)
-ORDER BY (coverage, situation_name, NAME_toe, NAME_cockroach); -- { serverError BAD_ARGUMENTS }
+ORDER BY (coverage, situation_name, NAME_toe, NAME_cockroach);

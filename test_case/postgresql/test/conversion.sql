@@ -1,25 +1,10 @@
-
-
-
-CREATE FUNCTION test_enc_conversion(bytea, name, name, bool, validlen OUT int, result OUT bytea)
-    AS :'regresslib', 'test_enc_conversion'
-    LANGUAGE C STRICT;
-
-CREATE USER regress_conversion_user WITH NOCREATEDB NOCREATEROLE;
-SET SESSION AUTHORIZATION regress_conversion_user;
-CREATE CONVERSION myconv FOR 'LATIN1' TO 'UTF8' FROM iso8859_1_to_utf8;
 CREATE CONVERSION myconv FOR 'LATIN1' TO 'UTF8' FROM iso8859_1_to_utf8;
 CREATE DEFAULT CONVERSION public.mydef FOR 'LATIN1' TO 'UTF8' FROM iso8859_1_to_utf8;
-CREATE DEFAULT CONVERSION public.mydef2 FOR 'LATIN1' TO 'UTF8' FROM iso8859_1_to_utf8;
-COMMENT ON CONVERSION myconv_bad IS 'foo';
 COMMENT ON CONVERSION myconv IS 'bar';
 COMMENT ON CONVERSION myconv IS NULL;
 DROP CONVERSION myconv;
 DROP CONVERSION mydef;
 RESET SESSION AUTHORIZATION;
-DROP USER regress_conversion_user;
-
-
 create or replace function test_conv(
   input IN bytea,
   src_encoding IN text,
@@ -45,8 +30,6 @@ begin
   return;
 end;
 $$;
-
-
 CREATE TABLE utf8_verification_inputs (inbytes bytea, description text PRIMARY KEY);
 insert into utf8_verification_inputs  values
   ('\x66006f',	'NUL byte'),
@@ -72,98 +55,6 @@ insert into utf8_verification_inputs  values
   ('\xf48fbfbf',	'largest 4-byte'),
   ('\xf4908080',	'smallest too large'),
   ('\xfa9a9a8a8a',	'5-byte');
-
-select description, (test_conv(inbytes, 'utf8', 'utf8')).* from utf8_verification_inputs;
-
-
-with test_bytes as (
-  select
-    inbytes,
-    description,
-    (test_conv(inbytes || repeat('.', 3)::bytea, 'utf8', 'utf8')).error
-  from utf8_verification_inputs
-), test_padded as (
-  select
-    description,
-    (test_conv(inbytes || repeat('.', 64)::bytea, 'utf8', 'utf8')).error
-  from test_bytes
-)
-select
-  description,
-  b.error as orig_error,
-  p.error as error_after_padding
-from test_padded p
-join test_bytes b
-using (description)
-where p.error is distinct from b.error
-order by description;
-
-with test_bytes as (
-  select
-    inbytes,
-    description,
-    (test_conv(inbytes || repeat('.', 3)::bytea, 'utf8', 'utf8')).error
-  from utf8_verification_inputs
-), test_padded as (
-  select
-    description,
-    (test_conv(repeat('.', 64 - length(inbytes))::bytea || inbytes || repeat('.', 64)::bytea, 'utf8', 'utf8')).error
-  from test_bytes
-)
-select
-  description,
-  b.error as orig_error,
-  p.error as error_after_padding
-from test_padded p
-join test_bytes b
-using (description)
-where p.error is distinct from b.error
-order by description;
-
-with test_bytes as (
-  select
-    inbytes,
-    description,
-    (test_conv(inbytes || repeat('.', 3)::bytea, 'utf8', 'utf8')).error
-  from utf8_verification_inputs
-), test_padded as (
-  select
-    description,
-    (test_conv(repeat('.', 64)::bytea || inbytes || repeat('.', 3)::bytea, 'utf8', 'utf8')).error
-  from test_bytes
-)
-select
-  description,
-  b.error as orig_error,
-  p.error as error_after_padding
-from test_padded p
-join test_bytes b
-using (description)
-where p.error is distinct from b.error
-order by description;
-
-with test_bytes as (
-  select
-    inbytes,
-    description,
-    (test_conv(inbytes || repeat('.', 3)::bytea, 'utf8', 'utf8')).error
-  from utf8_verification_inputs
-), test_padded as (
-  select
-    description,
-    (test_conv(repeat('.', 64 - length(inbytes))::bytea || inbytes || repeat('.', 3)::bytea, 'utf8', 'utf8')).error
-  from test_bytes
-)
-select
-  description,
-  b.error as orig_error,
-  p.error as error_after_padding
-from test_padded p
-join test_bytes b
-using (description)
-where p.error is distinct from b.error
-order by description;
-
 CREATE TABLE utf8_inputs (inbytes bytea, description text);
 insert into utf8_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -179,15 +70,6 @@ insert into utf8_inputs  values
   ('\x66006f',		'invalid, NUL byte'),
   ('\x666f6fe8b100',	'invalid, NUL byte'),
   ('\x666f6fe8b1',	'incomplete character at end');
-
-select description, (test_conv(inbytes, 'utf8', 'utf8')).* from utf8_inputs;
-select description, inbytes, (test_conv(inbytes, 'utf8', 'euc_jis_2004')).* from utf8_inputs;
-select description, inbytes, (test_conv(inbytes, 'utf8', 'latin1')).* from utf8_inputs;
-select description, inbytes, (test_conv(inbytes, 'utf8', 'latin2')).* from utf8_inputs;
-select description, inbytes, (test_conv(inbytes, 'utf8', 'latin5')).* from utf8_inputs;
-select description, inbytes, (test_conv(inbytes, 'utf8', 'koi8r')).* from utf8_inputs;
-select description, inbytes, (test_conv(inbytes, 'utf8', 'gb18030')).* from utf8_inputs;
-
 CREATE TABLE euc_jis_2004_inputs (inbytes bytea, description text);
 insert into euc_jis_2004_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -198,10 +80,6 @@ insert into euc_jis_2004_inputs  values
   ('\x666f6fbe00dd',	'invalid, NUL byte'),
   ('\x666f6fbedd00',	'invalid, NUL byte'),
   ('\xbe04',		'invalid byte sequence');
-
-select description, inbytes, (test_conv(inbytes, 'euc_jis_2004', 'euc_jis_2004')).* from euc_jis_2004_inputs;
-select description, inbytes, (test_conv(inbytes, 'euc_jis_2004', 'utf8')).* from euc_jis_2004_inputs;
-
 CREATE TABLE shiftjis2004_inputs (inbytes bytea, description text);
 insert into shiftjis2004_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -213,11 +91,6 @@ insert into shiftjis2004_inputs  values
   ('\x666f6f008fdb',	'invalid, NUL byte'),
   ('\x666f6f8f00db',	'invalid, NUL byte'),
   ('\x666f6f8fdb00',	'invalid, NUL byte');
-
-select description, inbytes, (test_conv(inbytes, 'shiftjis2004', 'shiftjis2004')).* from shiftjis2004_inputs;
-select description, inbytes, (test_conv(inbytes, 'shiftjis2004', 'utf8')).* from shiftjis2004_inputs;
-select description, inbytes, (test_conv(inbytes, 'shiftjis2004', 'euc_jis_2004')).* from shiftjis2004_inputs;
-
 CREATE TABLE gb18030_inputs (inbytes bytea, description text);
 insert into gb18030_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -228,11 +101,6 @@ insert into gb18030_inputs  values
   ('\x666f6f84309c0a',	'incomplete char, followed by newline '),
   ('\x666f6f84309c3800', 'invalid, NUL byte'),
   ('\x666f6f84309c0038', 'invalid, NUL byte');
-
-select description, inbytes, (test_conv(inbytes, 'gb18030', 'gb18030')).* from gb18030_inputs;
-select description, inbytes, (test_conv(inbytes, 'gb18030', 'utf8')).* from gb18030_inputs;
-
-
 CREATE TABLE iso8859_5_inputs (inbytes bytea, description text);
 insert into iso8859_5_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -240,12 +108,6 @@ insert into iso8859_5_inputs  values
   ('\x00',		'invalid, NUL byte'),
   ('\xe400dede',	'invalid, NUL byte'),
   ('\xe4dede00',	'invalid, NUL byte');
-
-select description, inbytes, (test_conv(inbytes, 'iso8859-5', 'iso8859-5')).* from iso8859_5_inputs;
-select description, inbytes, (test_conv(inbytes, 'iso8859-5', 'utf8')).* from iso8859_5_inputs;
-select description, inbytes, (test_conv(inbytes, 'iso8859-5', 'koi8r')).* from iso8859_5_inputs;
-select description, inbytes, (test_conv(inbytes, 'iso8859_5', 'mule_internal')).* from iso8859_5_inputs;
-
 CREATE TABLE big5_inputs (inbytes bytea, description text);
 insert into big5_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -253,11 +115,6 @@ insert into big5_inputs  values
   ('\x666f6fa27f',	'valid, no translation to UTF-8'),
   ('\x666f6fb60048',	'invalid, NUL byte'),
   ('\x666f6fb64800',	'invalid, NUL byte');
-
-select description, inbytes, (test_conv(inbytes, 'big5', 'big5')).* from big5_inputs;
-select description, inbytes, (test_conv(inbytes, 'big5', 'utf8')).* from big5_inputs;
-select description, inbytes, (test_conv(inbytes, 'big5', 'mule_internal')).* from big5_inputs;
-
 CREATE TABLE mic_inputs (inbytes bytea, description text);
 insert into mic_inputs  values
   ('\x666f6f',		'valid, pure ASCII'),
@@ -270,10 +127,3 @@ insert into mic_inputs  values
   ('\x9200bedd',	'invalid, NUL byte'),
   ('\x92bedd00',	'invalid, NUL byte'),
   ('\x8b00c68bcf8bcf',	'invalid, NUL byte');
-
-select description, inbytes, (test_conv(inbytes, 'mule_internal', 'mule_internal')).* from mic_inputs;
-select description, inbytes, (test_conv(inbytes, 'mule_internal', 'koi8r')).* from mic_inputs;
-select description, inbytes, (test_conv(inbytes, 'mule_internal', 'iso8859-5')).* from mic_inputs;
-select description, inbytes, (test_conv(inbytes, 'mule_internal', 'sjis')).* from mic_inputs;
-select description, inbytes, (test_conv(inbytes, 'mule_internal', 'big5')).* from mic_inputs;
-select description, inbytes, (test_conv(inbytes, 'mule_internal', 'euc_jp')).* from mic_inputs;

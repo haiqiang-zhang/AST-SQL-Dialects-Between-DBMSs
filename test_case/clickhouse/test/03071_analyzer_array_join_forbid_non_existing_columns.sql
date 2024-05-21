@@ -1,4 +1,3 @@
--- https://github.com/ClickHouse/ClickHouse/issues/9233
 SET allow_experimental_analyzer=1;
 SELECT *
 FROM
@@ -9,4 +8,4 @@ FROM
 )
 ARRAY JOIN
     x,
-    Y; -- { serverError UNKNOWN_IDENTIFIER }
+    Y;

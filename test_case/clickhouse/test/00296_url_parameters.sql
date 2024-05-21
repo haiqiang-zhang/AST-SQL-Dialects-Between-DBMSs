@@ -13,7 +13,6 @@ SELECT
     extractURLParameters('//bigmir.net/?a=b&c=d#e'),
     extractURLParameters('//bigmir.net/?a=b&c=d#e&g=h'),
     extractURLParameters('//bigmir.net/?a=b&c=d#test?e=f&g=h');
-
 SELECT
     extractURLParameterNames('http://bigmir.net/?a=b&c=d'),
     extractURLParameterNames('http://bigmir.net/?a=b&c=d#e=f'),
@@ -29,7 +28,6 @@ SELECT
     extractURLParameterNames('//bigmir.net/?a=b&c=d#e'),
     extractURLParameterNames('//bigmir.net/?a=b&c=d#e&g=h'),
     extractURLParameterNames('//bigmir.net/?a=b&c=d#test?e=f&g=h');
-
 SELECT
     extractURLParameter('http://bigmir.net/?a=b&c=d', 'a'),
     extractURLParameter('http://bigmir.net/?a=b&c=d', 'c'),
@@ -63,7 +61,6 @@ SELECT
     extractURLParameter('//bigmir.net/?a=b&c=d#test?e=f&g=h', 'test'),
     extractURLParameter('//bigmir.net/?a=b&c=d#test?e=f&g=h', 'e'),
     extractURLParameter('//bigmir.net/?a=b&c=d#test?e=f&g=h', 'g');
-
 SELECT
     cutURLParameter('http://bigmir.net/?a=b&c=d', 'a'),
     cutURLParameter('http://bigmir.net/?a=b&c=d', 'c'),
@@ -97,8 +94,6 @@ SELECT
     cutURLParameter('//bigmir.net/?a=b&c=d#test?e=f&g=h', 'test'),
     cutURLParameter('//bigmir.net/?a=b&c=d#test?e=f&g=h', 'e'),
     cutURLParameter('//bigmir.net/?a=b&c=d#test?e=f&g=h', 'g');
-
-
 SELECT
     extractURLParameters(materialize('http://bigmir.net/?a=b&c=d')),
     extractURLParameters(materialize('http://bigmir.net/?a=b&c=d#e=f')),
@@ -114,7 +109,6 @@ SELECT
     extractURLParameters(materialize('//bigmir.net/?a=b&c=d#e')),
     extractURLParameters(materialize('//bigmir.net/?a=b&c=d#e&g=h')),
     extractURLParameters(materialize('//bigmir.net/?a=b&c=d#test?e=f&g=h'));
-
 SELECT
     extractURLParameterNames(materialize('http://bigmir.net/?a=b&c=d')),
     extractURLParameterNames(materialize('http://bigmir.net/?a=b&c=d#e=f')),
@@ -130,7 +124,6 @@ SELECT
     extractURLParameterNames(materialize('//bigmir.net/?a=b&c=d#e')),
     extractURLParameterNames(materialize('//bigmir.net/?a=b&c=d#e&g=h')),
     extractURLParameterNames(materialize('//bigmir.net/?a=b&c=d#test?e=f&g=h'));
-
 SELECT
     extractURLParameter(materialize('http://bigmir.net/?a=b&c=d'), 'a'),
     extractURLParameter(materialize('http://bigmir.net/?a=b&c=d'), 'c'),
@@ -164,7 +157,6 @@ SELECT
     extractURLParameter(materialize('//bigmir.net/?a=b&c=d#test?e=f&g=h'), 'test'),
     extractURLParameter(materialize('//bigmir.net/?a=b&c=d#test?e=f&g=h'), 'e'),
     extractURLParameter(materialize('//bigmir.net/?a=b&c=d#test?e=f&g=h'), 'g');
-
 SELECT
     cutURLParameter(materialize('http://bigmir.net/?a=b&c=d'), 'a'),
     cutURLParameter(materialize('http://bigmir.net/?a=b&c=d'), 'c'),

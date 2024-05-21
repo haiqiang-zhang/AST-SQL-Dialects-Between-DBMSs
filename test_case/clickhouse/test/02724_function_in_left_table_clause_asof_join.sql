@@ -5,4 +5,4 @@ from (
 ASOF LEFT JOIN (
   select 1 as session_id, 4 as id
 ) as visitors
-ON visitors.session_id <= sessions.id AND arrayFirst(a -> a, arrayMap((a) -> a, sessions.arr)) = visitors.id
+ON visitors.session_id <= sessions.id AND arrayFirst(a -> a, arrayMap((a) -> a, sessions.arr)) = visitors.id;

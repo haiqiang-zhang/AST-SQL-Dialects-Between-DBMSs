@@ -1,6 +1,4 @@
--- https://github.com/ClickHouse/ClickHouse/issues/26674
 SET allow_experimental_analyzer = true;
-
 SELECT
     Carrier,
     sum(toFloat64(C3)) AS C1,

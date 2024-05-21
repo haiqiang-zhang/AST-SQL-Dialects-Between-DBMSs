@@ -1,5 +1,3 @@
-
--- Tests codepath for ternary logic
 SELECT
     -- x1, x2, x3, x4,
     xor(x1, x2, x3, x4) AS xor1,
@@ -20,11 +18,7 @@ FROM (
 )
 WHERE
     (xor1 != xor2 OR (xor1 is NULL) != (xor2 is NULL)) OR
-    (or1 != or2 OR (or1 is NULL) != (or2 is NULL) OR (and1 != and2 OR (and1 is NULL) != (and2 is NULL)))
-;
-
-
--- Test ternary logic over multiple batches of columns (currently batch spans over 10 columns)
+    (or1 != or2 OR (or1 is NULL) != (or2 is NULL) OR (and1 != and2 OR (and1 is NULL) != (and2 is NULL)));
 SELECT
     -- x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11,
     xor(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) AS xor1,
@@ -52,8 +46,5 @@ FROM (
 )
 WHERE
     (xor1 != xor2 OR (xor1 is NULL) != (xor2 is NULL)) OR
-    (or1 != or2 OR (or1 is NULL) != (or2 is NULL) OR (and1 != and2 OR (and1 is NULL) != (and2 is NULL)))
-;
-
-
+    (or1 != or2 OR (or1 is NULL) != (or2 is NULL) OR (and1 != and2 OR (and1 is NULL) != (and2 is NULL)));
 SELECT 'OK';

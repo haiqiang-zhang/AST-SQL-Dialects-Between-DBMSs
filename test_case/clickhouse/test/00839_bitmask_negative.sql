@@ -6,7 +6,6 @@ SELECT bitmaskToList(-1);
 SELECT bitmaskToArray(-1);
 SELECT bitmaskToList(-128);
 SELECT bitmaskToArray(-128);
-
 SELECT bitmaskToList(toInt64(0));
 SELECT bitmaskToArray(toInt64(0));
 SELECT bitmaskToList(toInt64(7));

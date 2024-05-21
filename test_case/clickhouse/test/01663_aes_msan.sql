@@ -1,4 +1,3 @@
--- Tags: no-fasttest
 -- Tag no-fasttest: Depends on OpenSSL
 
 SELECT hex(encrypt('aes-128-cbc', 'text', 'keykeykeykeykeyk', ''));

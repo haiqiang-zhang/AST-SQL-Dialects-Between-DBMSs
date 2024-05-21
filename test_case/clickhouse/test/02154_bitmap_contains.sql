@@ -1,1 +1,1 @@
-select bitmapContains(bitmapBuild([9]), 964291337)
+select bitmapContains(bitmapBuild([9]), 964291337);

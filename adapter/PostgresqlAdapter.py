@@ -51,7 +51,7 @@ class PostgresqlAdapter(DBMSAdapter):
         # Execute the SQL query
         print(f"DBMS: Postgresql")
         print_prevent_stopping(f"Filename: {filename}")
-        print_prevent_stopping(f"SQL: {sql_query}")
+        # print_prevent_stopping(f"SQL: {sql_query}")
         combined_result = None
         self.timeout_occurred.clear()
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
@@ -65,30 +65,36 @@ class PostgresqlAdapter(DBMSAdapter):
                 result = cur.fetchall()
                 combined_result = (True, result)
                 print_prevent_stopping("Success")
+                print()
 
                 
 
         except psycopg2.ProgrammingError as e:
             if "no results to fetch" in str(e):
                 combined_result = (True, [])
+                print_prevent_stopping("Success")
+                print()
             else:
                 error_type = e.__class__.__name__  
                 combined_result = (False, [error_type, str(e)])
                 
                 print_prevent_stopping(f"Error : {error_type}: {e}")
-                print("-"*50)
+                print()
+                # print("-"*50)
 
         except Exception as e:
             if self.timeout_occurred.is_set():
                 self.conn = psycopg2.connect(**config)
                 combined_result = (False, ["TimeoutError", f"Query timed out"])
-                print_prevent_stopping(f"Timeout occurred for query: {sql_query}, killing query...")
-                print("-"*50)
+                print_prevent_stopping(f"Error : Timeout occurred for query: {sql_query}")
+                print()
+                # print("-"*50)
             else:
                 error_type = e.__class__.__name__  
                 combined_result = (False, [error_type, str(e)])
                 print_prevent_stopping(f"Error : {error_type}: {e}")
-                print("-"*50)
+                print()
+                # print("-"*50)
 
         finally:
             timer.cancel()

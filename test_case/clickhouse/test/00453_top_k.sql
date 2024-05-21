@@ -1,5 +1,4 @@
 SELECT topK(10)(n) FROM (SELECT if(number % 100 < 10, number % 10, number) AS n FROM system.numbers LIMIT 100000);
-
 SELECT
     k,
     topK(v)
@@ -12,4 +11,4 @@ FROM
     LIMIT 10
 )
 GROUP BY k
-ORDER BY k ASC
+ORDER BY k ASC;

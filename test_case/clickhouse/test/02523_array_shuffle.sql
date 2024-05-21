@@ -20,7 +20,7 @@ SELECT arrayShuffle(groupArray(x),0xbad_cafe) FROM (SELECT number as x from syst
 SELECT arrayShuffle(groupArray(toUInt64(x)),0xbad_cafe) FROM (SELECT number as x from system.numbers LIMIT 100);
 SELECT arrayShuffle([tuple(1, -1), tuple(99999999, -99999999), tuple(3, -3)], 0xbad_cafe);
 SELECT arrayShuffle([tuple(1, NULL), tuple(2, 'a'), tuple(3, 'A')], 0xbad_cafe);
-SELECT arrayPartialShuffle([]); -- trivial cases (equivalent to arrayShuffle)
+SELECT arrayPartialShuffle([]);
 SELECT arrayPartialShuffle([], 0);
 SELECT arrayPartialShuffle([], 0, 0xbad_cafe);
 SELECT arrayPartialShuffle([9223372036854775808]);
@@ -42,7 +42,7 @@ SELECT arrayPartialShuffle(groupArray(x),0,0xbad_cafe) FROM (SELECT number as x 
 SELECT arrayPartialShuffle(groupArray(toUInt64(x)),0,0xbad_cafe) FROM (SELECT number as x from system.numbers LIMIT 100);
 SELECT arrayPartialShuffle([tuple(1, -1), tuple(99999999, -99999999), tuple(3, -3)], 0, 0xbad_cafe);
 SELECT arrayPartialShuffle([tuple(1, NULL), tuple(2, 'a'), tuple(3, 'A')], 0, 0xbad_cafe);
-SELECT arrayPartialShuffle([NULL,NULL,NULL], 2); -- other, mostly non-trivial cases
+SELECT arrayPartialShuffle([NULL,NULL,NULL], 2);
 SELECT arrayPartialShuffle([1,2,3,4,5,6,7,8,9,10], 1, 0xbad_cafe);
 SELECT arrayPartialShuffle([1,2,3,4,5,6,7,8,9,10], 2, 0xbad_cafe);
 SELECT arrayPartialShuffle([1,2,3,4,5,6,7,8,9,10], 4, 0xbad_cafe);
@@ -63,9 +63,9 @@ SELECT arrayPartialShuffle(groupArray(x),20,0xbad_cafe) FROM (SELECT number as x
 SELECT arrayPartialShuffle(groupArray(toUInt64(x)),20,0xbad_cafe) FROM (SELECT number as x from system.numbers LIMIT 100);
 SELECT arrayPartialShuffle([tuple(1, -1), tuple(99999999, -99999999), tuple(3, -3)], 2, 0xbad_cafe);
 SELECT arrayPartialShuffle([tuple(1, NULL), tuple(2, 'a'), tuple(3, 'A')], 2, 0xbad_cafe);
-SELECT arrayShuffle([1, 2, 3], 42) FROM numbers(10); -- for constant array we do not materialize it and each row gets the same permutation
+SELECT arrayShuffle([1, 2, 3], 42) FROM numbers(10);
 SELECT arrayShuffle(materialize([1, 2, 3]), 42) FROM numbers(10);
-SELECT arrayShuffle(1); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
-SELECT arrayShuffle([1], 'a'); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
-SELECT arrayShuffle([1], 1.1); -- { serverError ILLEGAL_TYPE_OF_ARGUMENT }
-SELECT arrayShuffle([1], 0xcafe, 1); -- { serverError NUMBER_OF_ARGUMENTS_DOESNT_MATCH }
+SELECT arrayShuffle(1);
+SELECT arrayShuffle([1], 'a');
+SELECT arrayShuffle([1], 1.1);
+SELECT arrayShuffle([1], 0xcafe, 1);

@@ -1,5 +1,3 @@
--- Tags: no-parallel
-
 drop table if exists merge;
 set allow_experimental_analyzer = 1;
 create table merge
@@ -13,10 +11,8 @@ create table merge
     colAlias3 UInt32
 )
 engine = Merge(currentDatabase(), '^alias_');
-
 drop table if exists alias_1;
 drop table if exists alias_2;
-
 create table alias_1
 (
     dt Date,
@@ -30,14 +26,11 @@ create table alias_1
 )
 engine = MergeTree()
 order by (dt);
-
 insert into alias_1 (dt, col, col2, col3) values ('2020-02-02', 1, 2, 3);
-
 select 'alias1';
 select colAlias0, colAlias1, colAlias2, colAlias3 from alias_1;
 select colAlias3, colAlias2, colAlias1, colAlias0 from merge;
 select * from merge;
-
 create table alias_2
 (
     dt Date,
@@ -51,9 +44,7 @@ create table alias_2
 )
 engine = MergeTree()
 order by (dt);
-
 insert into alias_2 (dt, col, col2, col3) values ('2020-02-01', 1, 2, 3);
-
 select 'alias2';
 select colAlias0, colAlias1, colAlias2, colAlias3 from alias_2;
 select colAlias3, colAlias2, colAlias1, colAlias0 from merge order by dt;

@@ -1,4 +1,3 @@
-
 CREATE TABLE vactst (i INT);
 INSERT INTO vactst VALUES (1);
 INSERT INTO vactst SELECT * FROM vactst;
@@ -35,38 +34,29 @@ DELETE FROM vactst WHERE i != 0;
 VACUUM (FULL) vactst;
 DELETE FROM vactst;
 SELECT * FROM vactst;
-
 VACUUM (FULL, FREEZE) vactst;
 VACUUM (ANALYZE, FULL) vactst;
-
 CREATE TABLE vaccluster (i INT PRIMARY KEY);
 ALTER TABLE vaccluster CLUSTER ON vaccluster_pkey;
 CLUSTER vaccluster;
-
 CREATE FUNCTION do_analyze() RETURNS VOID VOLATILE LANGUAGE SQL
 	AS 'ANALYZE pg_am';
 CREATE FUNCTION wrap_do_analyze(c INT) RETURNS INT IMMUTABLE LANGUAGE SQL
 	AS 'SELECT $1 FROM public.do_analyze()';
 CREATE INDEX ON vaccluster(wrap_do_analyze(i));
 INSERT INTO vaccluster VALUES (1), (2);
-ANALYZE vaccluster;
-
 INSERT INTO vactst SELECT generate_series(1, 300);
-DELETE FROM vactst WHERE i % 7 = 0; 
+DELETE FROM vactst WHERE i % 7 = 0;
 BEGIN;
 INSERT INTO vactst SELECT generate_series(301, 400);
-DELETE FROM vactst WHERE i % 5 <> 0; 
+DELETE FROM vactst WHERE i % 5 <> 0;
 ANALYZE vactst;
 COMMIT;
-
 VACUUM FULL pg_am;
 VACUUM FULL pg_class;
 VACUUM FULL pg_database;
-VACUUM FULL vaccluster;
 VACUUM FULL vactst;
-
 VACUUM (DISABLE_PAGE_SKIPPING) vaccluster;
-
 CREATE TABLE pvactst (i INT, a INT[], p POINT) with (autovacuum_enabled = off);
 INSERT INTO pvactst SELECT i, array[1,2,3], point(i, i+1) FROM generate_series(1,1000) i;
 CREATE INDEX btree_pvactst ON pvactst USING btree (i);
@@ -75,28 +65,19 @@ CREATE INDEX brin_pvactst ON pvactst USING brin (i);
 CREATE INDEX gin_pvactst ON pvactst USING gin (a);
 CREATE INDEX gist_pvactst ON pvactst USING gist (p);
 CREATE INDEX spgist_pvactst ON pvactst USING spgist (p);
-
 SET min_parallel_index_scan_size to 0;
 VACUUM (PARALLEL 2) pvactst;
-
 UPDATE pvactst SET i = i WHERE i < 1000;
 VACUUM (PARALLEL 2) pvactst;
-
 UPDATE pvactst SET i = i WHERE i < 1000;
-VACUUM (PARALLEL 0) pvactst; 
-
-VACUUM (PARALLEL -1) pvactst; 
+VACUUM (PARALLEL 0) pvactst;
 VACUUM (PARALLEL 2, INDEX_CLEANUP FALSE) pvactst;
-VACUUM (PARALLEL 2, FULL TRUE) pvactst; 
-VACUUM (PARALLEL) pvactst; 
-
 CREATE TEMPORARY TABLE tmp (a int PRIMARY KEY);
 CREATE INDEX tmp_idx1 ON tmp (a);
-VACUUM (PARALLEL 1, FULL FALSE) tmp; 
-VACUUM (PARALLEL 0, FULL TRUE) tmp; 
+VACUUM (PARALLEL 1, FULL FALSE) tmp;
+VACUUM (PARALLEL 0, FULL TRUE) tmp;
 RESET min_parallel_index_scan_size;
 DROP TABLE pvactst;
-
 CREATE TABLE no_index_cleanup (i INT PRIMARY KEY, t TEXT);
 CREATE INDEX no_index_cleanup_idx ON no_index_cleanup(t);
 ALTER TABLE no_index_cleanup ALTER COLUMN t SET STORAGE EXTERNAL;
@@ -121,19 +102,16 @@ ALTER TABLE no_index_cleanup SET (vacuum_index_cleanup = true,
     toast.vacuum_index_cleanup = false);
 VACUUM no_index_cleanup;
 VACUUM (INDEX_CLEANUP FALSE) vaccluster;
-VACUUM (INDEX_CLEANUP AUTO) vactst; 
+VACUUM (INDEX_CLEANUP AUTO) vactst;
 VACUUM (INDEX_CLEANUP FALSE, FREEZE TRUE) vaccluster;
-
 CREATE TEMP TABLE vac_truncate_test(i INT NOT NULL, j text)
 	WITH (vacuum_truncate=true, autovacuum_enabled=false);
-INSERT INTO vac_truncate_test VALUES (1, NULL), (NULL, NULL);
 VACUUM (TRUNCATE FALSE, DISABLE_PAGE_SKIPPING) vac_truncate_test;
 SELECT pg_relation_size('vac_truncate_test') > 0;
 VACUUM (DISABLE_PAGE_SKIPPING) vac_truncate_test;
 SELECT pg_relation_size('vac_truncate_test') = 0;
 VACUUM (TRUNCATE FALSE, FULL TRUE) vac_truncate_test;
 DROP TABLE vac_truncate_test;
-
 CREATE TABLE vacparted (a int, b char) PARTITION BY LIST (a);
 CREATE TABLE vacparted1 PARTITION OF vacparted FOR VALUES IN (1);
 INSERT INTO vacparted VALUES (1, 'a');
@@ -141,10 +119,6 @@ UPDATE vacparted SET b = 'b';
 VACUUM (ANALYZE) vacparted;
 VACUUM (FULL) vacparted;
 VACUUM (FREEZE) vacparted;
-
-VACUUM ANALYZE vacparted(a,b,a);
-ANALYZE vacparted(a,b,b);
-
 CREATE TABLE vacparted_i (a int primary key, b varchar(100))
   PARTITION BY HASH (a);
 CREATE TABLE vacparted_i1 PARTITION OF vacparted_i
@@ -159,37 +133,21 @@ SELECT relname, relhasindex FROM pg_class
   WHERE relname LIKE 'vacparted_i%' AND relkind IN ('p','r')
   ORDER BY relname;
 DROP TABLE vacparted_i;
-
 VACUUM vaccluster, vactst;
-VACUUM vacparted, does_not_exist;
 VACUUM (FREEZE) vacparted, vaccluster, vactst;
-VACUUM (FREEZE) does_not_exist, vaccluster;
 VACUUM ANALYZE vactst, vacparted (a);
-VACUUM ANALYZE vactst (does_not_exist), vacparted (b);
 VACUUM FULL vacparted, vactst;
-VACUUM FULL vactst, vacparted (a, b), vaccluster (i);
 ANALYZE vactst, vacparted;
 ANALYZE vacparted (b), vactst;
-ANALYZE vactst, does_not_exist, vacparted;
-ANALYZE vactst (i), vacparted (does_not_exist);
 ANALYZE vactst, vactst;
-BEGIN;  
+BEGIN;
 ANALYZE vactst, vactst;
 COMMIT;
-
-ANALYZE (VERBOSE) does_not_exist;
-ANALYZE (nonexistent-arg) does_not_exist;
-ANALYZE (nonexistentarg) does_not_exit;
-
 SET client_min_messages TO 'ERROR';
-ANALYZE (SKIP_LOCKED, VERBOSE) does_not_exist;
-ANALYZE (VERBOSE, SKIP_LOCKED) does_not_exist;
-
 VACUUM (SKIP_LOCKED) vactst;
 VACUUM (SKIP_LOCKED, FULL) vactst;
 ANALYZE (SKIP_LOCKED) vactst;
 RESET client_min_messages;
-
 SET default_transaction_isolation = serializable;
 VACUUM vactst;
 ANALYZE vactst;
@@ -197,7 +155,6 @@ RESET default_transaction_isolation;
 BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 ANALYZE vactst;
 COMMIT;
-
 CREATE TABLE vac_option_tab (a INT, t TEXT);
 INSERT INTO vac_option_tab SELECT a, 't' || a FROM generate_series(1, 10) AS a;
 ALTER TABLE vac_option_tab ALTER COLUMN t SET STORAGE EXTERNAL;
@@ -213,50 +170,26 @@ VACUUM (PROCESS_TOAST TRUE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
 VACUUM (PROCESS_TOAST FALSE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
-VACUUM (PROCESS_TOAST FALSE, FULL) vac_option_tab; 
-
 VACUUM (PROCESS_MAIN FALSE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
 VACUUM (PROCESS_MAIN FALSE, PROCESS_TOAST FALSE) vac_option_tab;
 SELECT * FROM vac_option_tab_counts;
-SELECT relfilenode AS main_filenode FROM pg_class
-  WHERE relname = 'vac_option_tab' \gset
-SELECT t.relfilenode AS toast_filenode FROM pg_class c, pg_class t
-  WHERE c.reltoastrelid = t.oid AND c.relname = 'vac_option_tab' \gset
-VACUUM (PROCESS_MAIN FALSE, FULL) vac_option_tab;
-SELECT relfilenode = :main_filenode AS is_same_main_filenode
-  FROM pg_class WHERE relname = 'vac_option_tab';
-SELECT t.relfilenode = :toast_filenode AS is_same_toast_filenode
-  FROM pg_class c, pg_class t
-  WHERE c.reltoastrelid = t.oid AND c.relname = 'vac_option_tab';
-
 VACUUM (BUFFER_USAGE_LIMIT '512 kB') vac_option_tab;
 ANALYZE (BUFFER_USAGE_LIMIT '512 kB') vac_option_tab;
 VACUUM (BUFFER_USAGE_LIMIT 0) vac_option_tab;
 ANALYZE (BUFFER_USAGE_LIMIT 0) vac_option_tab;
-VACUUM (BUFFER_USAGE_LIMIT 16777220) vac_option_tab;
-VACUUM (BUFFER_USAGE_LIMIT 120) vac_option_tab;
-VACUUM (BUFFER_USAGE_LIMIT 10000000000) vac_option_tab;
-VACUUM (BUFFER_USAGE_LIMIT '512 kB', FULL) vac_option_tab;
-
 VACUUM (SKIP_DATABASE_STATS) vactst;
-
 VACUUM (ONLY_DATABASE_STATS);
-VACUUM (ONLY_DATABASE_STATS) vactst;  
-
 DROP VIEW vac_option_tab_counts;
 DROP TABLE vac_option_tab;
 DROP TABLE vaccluster;
 DROP TABLE vactst;
 DROP TABLE vacparted;
 DROP TABLE no_index_cleanup;
-
 CREATE TABLE vacowned (a int);
 CREATE TABLE vacowned_parted (a int) PARTITION BY LIST (a);
 CREATE TABLE vacowned_part1 PARTITION OF vacowned_parted FOR VALUES IN (1);
 CREATE TABLE vacowned_part2 PARTITION OF vacowned_parted FOR VALUES IN (2);
-CREATE ROLE regress_vacuum;
-SET ROLE regress_vacuum;
 VACUUM vacowned;
 ANALYZE vacowned;
 VACUUM (ANALYZE) vacowned;
@@ -276,9 +209,6 @@ VACUUM (ANALYZE) vacowned_parted;
 VACUUM (ANALYZE) vacowned_part1;
 VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
-ALTER TABLE vacowned_parted OWNER TO regress_vacuum;
-ALTER TABLE vacowned_part1 OWNER TO regress_vacuum;
-SET ROLE regress_vacuum;
 VACUUM vacowned_parted;
 VACUUM vacowned_part1;
 VACUUM vacowned_part2;
@@ -290,7 +220,6 @@ VACUUM (ANALYZE) vacowned_part1;
 VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
 ALTER TABLE vacowned_parted OWNER TO CURRENT_USER;
-SET ROLE regress_vacuum;
 VACUUM vacowned_parted;
 VACUUM vacowned_part1;
 VACUUM vacowned_part2;
@@ -301,9 +230,7 @@ VACUUM (ANALYZE) vacowned_parted;
 VACUUM (ANALYZE) vacowned_part1;
 VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
-ALTER TABLE vacowned_parted OWNER TO regress_vacuum;
 ALTER TABLE vacowned_part1 OWNER TO CURRENT_USER;
-SET ROLE regress_vacuum;
 VACUUM vacowned_parted;
 VACUUM vacowned_part1;
 VACUUM vacowned_part2;
@@ -316,4 +243,3 @@ VACUUM (ANALYZE) vacowned_part2;
 RESET ROLE;
 DROP TABLE vacowned;
 DROP TABLE vacowned_parted;
-DROP ROLE regress_vacuum;

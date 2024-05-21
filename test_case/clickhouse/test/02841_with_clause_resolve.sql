@@ -1,5 +1,4 @@
 set allow_experimental_analyzer = 1;
-
 WITH
     -- Input
     44100 AS sample_frequency
@@ -17,7 +16,6 @@ SELECT
 
 FROM system.numbers
 LIMIT 5;
-
 WITH
     -- Input
     44100 AS sample_frequency

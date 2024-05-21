@@ -1,1 +1,1 @@
-SELECT CAST(a, b -> c) ++; -- { clientError SYNTAX_ERROR }
+SELECT CAST(a, b -> c) ++;

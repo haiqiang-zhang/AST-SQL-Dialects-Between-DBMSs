@@ -1,9 +1,7 @@
 SELECT 'exponentialMovingAverage';
-
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialMovingAverage(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialMovingAverage(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number AS value, number AS time, exponentialMovingAverage(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
-
 SELECT
     value,
     time,
@@ -17,7 +15,6 @@ FROM
         exponentialMovingAverage(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT
     value,
     time,
@@ -31,13 +28,10 @@ FROM
         exponentialMovingAverage(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT 'exponentialTimeDecayedSum';
-
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedSum(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedSum(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number AS value, number AS time, exponentialTimeDecayedSum(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
-
 SELECT
     value,
     time,
@@ -51,7 +45,6 @@ FROM
         exponentialTimeDecayedSum(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT
     value,
     time,
@@ -65,13 +58,10 @@ FROM
         exponentialTimeDecayedSum(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT 'exponentialTimeDecayedMax';
-
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedMax(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedMax(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number AS value, number AS time, exponentialTimeDecayedMax(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
-
 SELECT
     value,
     time,
@@ -85,7 +75,6 @@ FROM
         exponentialTimeDecayedMax(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT
     value,
     time,
@@ -99,13 +88,10 @@ FROM
         exponentialTimeDecayedMax(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT 'exponentialTimeDecayedCount';
-
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedCount(1)(time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedCount(10)(time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number AS value, number AS time, exponentialTimeDecayedCount(1)(time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
-
 SELECT
     value,
     time,
@@ -119,7 +105,6 @@ FROM
         exponentialTimeDecayedCount(5)(time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT
     value,
     time,
@@ -133,13 +118,10 @@ FROM
         exponentialTimeDecayedCount(10)(time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT 'exponentialTimeDecayedAvg';
-
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedAvg(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number = 0 AS value, number AS time, exponentialTimeDecayedAvg(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
 SELECT value, time, round(exp_smooth, 3) FROM (SELECT number AS value, number AS time, exponentialTimeDecayedAvg(1)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth FROM numbers(10));
-
 SELECT
     value,
     time,
@@ -153,7 +135,6 @@ FROM
         exponentialTimeDecayedAvg(10)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT
     value,
     time,
@@ -167,9 +148,7 @@ FROM
         exponentialTimeDecayedAvg(100)(value, time) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS exp_smooth
     FROM numbers(50)
 );
-
 SELECT 'Check `exponentialTimeDecayed.*` supports sliding windows';
-
 SELECT
     x,
     t,
@@ -193,30 +172,7 @@ FROM
     ARRAY JOIN d
     WINDOW w AS (ORDER BY 1 ASC Rows BETWEEN 2 PRECEDING AND 2 FOLLOWING)
 );
-
-SELECT
-    x,
-    t,
-    round(sum, 12),
-    round(max, 12),
-    round(count, 12),
-    round(avg, 12)
-FROM
-(
-    SELECT
-        sin(number) AS x,
-        number AS t,
-        exponentialTimeDecayedSum(100)(x, t) OVER w AS sum,
-        exponentialTimeDecayedMax(100)(x, t) OVER w AS max,
-        exponentialTimeDecayedCount(100)(t) OVER w AS count,
-        exponentialTimeDecayedAvg(100)(x, t) OVER w AS avg
-    FROM numbers(1000000)
-    WINDOW w AS (ORDER BY 1 ASC Rows BETWEEN 2 PRECEDING AND 2 FOLLOWING)
-)
-FORMAT `Null`;
-
 SELECT 'Check `exponentialTimeDecayedMax` works with negative values';
-
 SELECT
     x,
     t,

@@ -4,7 +4,6 @@ SET param_date='2022-08-04 18:30:53';
 SET param_map={'2b95a497-3a5d-49af-bf85-15763318cde7': [1.2, 3.4]};
 SELECT {num:UInt64}, {str:String}, {date:DateTime}, {map:Map(UUID, Array(Float32))};
 SELECT toTypeName({num:UInt64}), toTypeName({str:String}), toTypeName({date:DateTime}), toTypeName({map:Map(UUID, Array(Float32))});
-
 SET param_id=42;
 SET param_arr=[1, 2, 3];
 SET param_map_2={'abc': 22, 'def': 33};
@@ -13,12 +12,10 @@ SET param_map_arr={10: [11, 12], 13: [14, 15]};
 SET param_map_map_arr={'ghj': {'klm': [16, 17]}, 'nop': {'rst': [18]}};
 SELECT {id: Int64}, {arr: Array(UInt8)}, {map_2: Map(String, UInt8)}, {mul_arr: Array(Array(UInt8))}, {map_arr: Map(UInt8, Array(UInt8))}, {map_map_arr: Map(String, Map(String, Array(UInt8)))};
 SELECT toTypeName({id: Int64}), toTypeName({arr: Array(UInt8)}), toTypeName({map_2: Map(String, UInt8)}), toTypeName({mul_arr: Array(Array(UInt8))}), toTypeName({map_arr: Map(UInt8, Array(UInt8))}), toTypeName({map_map_arr: Map(String, Map(String, Array(UInt8)))});
-
 SET param_tbl=numbers;
 SET param_db=system;
 SET param_col=number;
 SELECT {col:Identifier} FROM {db:Identifier}.{tbl:Identifier} LIMIT 1 OFFSET 5;
-
 SET param_arr_arr_arr=[[['a', 'b', 'c'], ['d', 'e', 'f']], [['g', 'h', 'i'], ['j', 'k', 'l']]];
 SET param_tuple_tuple_tuple=(((1, 'a', '2b95a497-3a5d-49af-bf85-15763318cde7', 3.14)));
 SET param_arr_map_tuple=[{1:(2, '2022-08-04 18:30:53', 's'), 3:(4, '2020-08-04 18:30:53', 't')}];

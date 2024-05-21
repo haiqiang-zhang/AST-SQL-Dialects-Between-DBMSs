@@ -16,8 +16,3 @@ SELECT tupleHammingDistance(('abc', 2), ('abc', 257));
 SELECT tupleHammingDistance(('abc', (1, 2)), ('abc', (1, 2)));
 SELECT tupleHammingDistance(('abc', (1, 2)), ('def', (1, 2)));
 SELECT tupleHammingDistance(('abc', (1, 2)), ('def', (1, 3)));
-
-
-SELECT tupleHammingDistance(tuple(1), tuple(1, 1)); --{serverError 43}
-SELECT tupleHammingDistance(tuple(1), tuple('a')); --{serverError 386}
-SELECT tupleHammingDistance((1, 3), (3, 'a')); --{serverError 386}

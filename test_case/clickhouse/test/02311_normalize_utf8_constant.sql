@@ -1,7 +1,5 @@
--- Tags: no-fasttest
-
 SELECT
-    'â' AS s,
+    'Ã¢' AS s,
     normalizeUTF8NFC(s) s1,
     normalizeUTF8NFD(s) s2,
     normalizeUTF8NFKC(s) s3,

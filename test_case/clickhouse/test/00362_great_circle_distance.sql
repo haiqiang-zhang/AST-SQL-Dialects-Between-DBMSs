@@ -1,5 +1,4 @@
 SELECT floor(greatCircleDistance(33.3, 55.3, 33.3, 55.3)) AS distance;
--- consts are from vincenty formula from geopy
 -- k = '158.756175, 53.006373'
 -- u = '37.531014, 55.703050'
 -- y = '37.588144, 55.733842'

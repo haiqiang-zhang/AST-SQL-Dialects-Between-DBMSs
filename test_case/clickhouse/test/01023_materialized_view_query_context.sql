@@ -1,5 +1,3 @@
--- Tags: no-parallel, no-replicated-database
-
 -- FIXME: old analyzer does not check db exist, new one checks it and test fails. test is suppressed for replicated.
 --    without analyzer:
 --    2024.02.22 18:55:00.320120 [ 116105 ] {61f04f21-6d66-4064-926f-20657de2e66c} <Debug> executeQuery: (from 0.0.0.0:0, user: ) (comment: 01023_materialized_view_query_context.sql) /* ddl_entry=query-0000000009 */ CREATE MATERIALIZED VIEW test_143n70zj.mv UUID '0572ef25-139a-4705-a213-601675435648' TO test_143n70zj.output (`key` UInt64, `val` UInt64) AS SELECT key, dictGetUInt64('dict_in_01023.dict', 'val', key) AS val FROM test_143n70zj.dist_out (stage: Complete)
@@ -16,13 +14,10 @@
 -- (To cover scope of the Context in PushingToViews chain)
 
 set distributed_foreground_insert=1;
-
 DROP TABLE IF EXISTS mv;
 DROP DATABASE IF EXISTS dict_in_01023;
 CREATE DATABASE dict_in_01023;
-
 CREATE TABLE dict_in_01023.input (key UInt64, val UInt64) Engine=Memory();
-
 CREATE DICTIONARY dict_in_01023.dict
 (
   key UInt64 DEFAULT 0,
@@ -32,25 +27,13 @@ PRIMARY KEY key
 SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'input' PASSWORD '' DB 'dict_in_01023'))
 LIFETIME(MIN 0 MAX 0)
 LAYOUT(HASHED());
-
-CREATE TABLE input    (key UInt64) Engine=Distributed(test_shard_localhost, currentDatabase(), buffer_, key);
 CREATE TABLE null_    (key UInt64) Engine=Null();
 CREATE TABLE buffer_  (key UInt64) Engine=Buffer(currentDatabase(), dist_out, 1, 0, 0, 0, 0, 0, 0);
-CREATE TABLE dist_out (key UInt64) Engine=Distributed(test_shard_localhost, currentDatabase(), null_, key);
-
 CREATE TABLE output (key UInt64, val UInt64) Engine=Memory();
-CREATE MATERIALIZED VIEW mv TO output AS SELECT key, dictGetUInt64('dict_in_01023.dict', 'val', key) val FROM dist_out;
-
-INSERT INTO input VALUES (1);
-
 SELECT count() FROM output;
-
-DROP TABLE mv;
 DROP TABLE output;
-DROP TABLE dist_out;
 DROP TABLE buffer_;
 DROP TABLE null_;
-DROP TABLE input;
 DROP DICTIONARY dict_in_01023.dict;
 DROP TABLE dict_in_01023.input;
 DROP DATABASE dict_in_01023;

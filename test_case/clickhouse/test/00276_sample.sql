@@ -1,12 +1,9 @@
 DROP TABLE IF EXISTS sample_00276;
-
 set allow_deprecated_syntax_for_merge_tree=1;
 SET min_insert_block_size_rows = 0, min_insert_block_size_bytes = 0;
 SET max_block_size = 10;
-
 CREATE TABLE sample_00276 (d Date DEFAULT '2000-01-01', x UInt8) ENGINE = MergeTree(d, x, x, 10);
 INSERT INTO sample_00276 (x) SELECT toUInt8(number) AS x FROM system.numbers LIMIT 256;
-
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 0.1;
@@ -19,10 +16,8 @@ SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/10 OFFSET 9/10;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/10 OFFSET 10/10;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/10 OFFSET 19/20;
-
 SELECT count() >= 100 FROM sample_00276 SAMPLE 100;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1000;
-
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/2;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/2 OFFSET 1/2;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/2 SETTINGS parallel_replicas_count = 3;
@@ -33,8 +28,6 @@ SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/2 OFFSET 1/2 SETTINGS parallel_replicas_count = 3, parallel_replica_offset = 0;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/2 OFFSET 1/2 SETTINGS parallel_replicas_count = 3, parallel_replica_offset = 1;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 1/2 OFFSET 1/2 SETTINGS parallel_replicas_count = 3, parallel_replica_offset = 2;
-
-
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM
 (
           SELECT x FROM sample_00276 SAMPLE 0.1 OFFSET 0.0
@@ -48,10 +41,8 @@ UNION ALL SELECT x FROM sample_00276 SAMPLE 0.1 OFFSET 0.7
 UNION ALL SELECT x FROM sample_00276 SAMPLE 0.1 OFFSET 0.8
 UNION ALL SELECT x FROM sample_00276 SAMPLE 0.1 OFFSET 0.9
 );
-
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 0.05 OFFSET 0.35;
 SELECT count(), min(x), max(x), sum(x), uniqExact(x) FROM sample_00276 SAMPLE 0.05 OFFSET 0.4;
-
 SELECT count()
 FROM
 (
@@ -165,14 +156,10 @@ FROM
     HAVING c = 1
     ORDER BY x ASC
 );
-
 DROP TABLE sample_00276;
-
 SET max_block_size = 8192;
-
 CREATE TABLE sample_00276 (d Date DEFAULT '2000-01-01', x UInt16) ENGINE = MergeTree(d, x, x, 10);
 INSERT INTO sample_00276 (x) SELECT toUInt16(number) AS x FROM system.numbers LIMIT 65536;
-
 SELECT count()
 FROM
 (
@@ -286,5 +273,4 @@ FROM
     HAVING c = 1
     ORDER BY x ASC
 );
-
 DROP TABLE sample_00276;

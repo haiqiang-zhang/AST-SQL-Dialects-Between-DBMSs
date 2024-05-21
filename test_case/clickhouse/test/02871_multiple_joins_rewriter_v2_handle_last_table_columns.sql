@@ -1,5 +1,3 @@
--- { echo }
-
 -- no clash name
 SELECT
   c + 1,
@@ -10,8 +8,6 @@ CROSS JOIN
   (SELECT 20 b) Y
 CROSS JOIN
   (SELECT 30 c) Z;
-
--- alias clash
 SELECT
   (a + 1) AS c,
   Z.c + 1
@@ -21,8 +17,6 @@ CROSS JOIN
   (SELECT 20 b) Y
 CROSS JOIN
   (SELECT 30 c) Z;
-
--- column clash
 SELECT
   (X.c + 1) AS c,
   Z.c + 1
@@ -32,7 +26,6 @@ CROSS JOIN
   (SELECT 20 b) Y
 CROSS JOIN
   (SELECT 30 c) Z;
-
 SELECT
    (X.a + 1) AS a,
    (Y.a + 1) AS Y_a,

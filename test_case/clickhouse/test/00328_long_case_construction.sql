@@ -1,5 +1,3 @@
--- Tags: long
-
 /* Trivial case */
 
 SELECT CASE WHEN 1 THEN 2 WHEN 3 THEN  4 ELSE 5 END;
@@ -7,7 +5,6 @@ SELECT CASE WHEN 1 THEN 'A' WHEN 2 THEN 'BC' ELSE 'DEF' END;
 SELECT CASE WHEN 1 THEN toFixedString('A', 16) WHEN 2 THEN toFixedString('BC', 16) ELSE toFixedString('DEF', 16) END;
 SELECT CASE WHEN 1 THEN [1,2] WHEN 2 THEN [3,4] ELSE [5,6] END;
 SELECT CASE WHEN 1 THEN ['A','B'] WHEN 2 THEN ['C','D'] ELSE ['E','F'] END;
-
 /* No CASE expression. Numeric clauses */
 
 SELECT CASE WHEN (number % 2) = 0 THEN toInt8(1) WHEN (number % 3) = 0 THEN toInt8(2) ELSE toInt8(3) END FROM system.numbers LIMIT 10;
@@ -686,7 +683,6 @@ SELECT CASE WHEN (number % 2) = 0 THEN toFloat64(1) WHEN (number % 3) = 0 THEN t
 SELECT CASE WHEN (number % 2) = 0 THEN toFloat64(1) WHEN (number % 3) = 0 THEN toFloat64(2) ELSE toUInt32(3) END FROM system.numbers LIMIT 10;
 SELECT CASE WHEN (number % 2) = 0 THEN toFloat64(1) WHEN (number % 3) = 0 THEN toFloat64(2) ELSE toFloat32(3) END FROM system.numbers LIMIT 10;
 SELECT CASE WHEN (number % 2) = 0 THEN toFloat64(1) WHEN (number % 3) = 0 THEN toFloat64(2) ELSE toFloat64(3) END FROM system.numbers LIMIT 10;
-
 /* No CASE expression. Numeric array clauses. */
 
 SELECT CASE WHEN (number % 2) = 0 THEN [toInt8(1), toInt8(2)] WHEN (number % 3) = 0 THEN [toInt8(2), toInt8(3)] ELSE [toInt8(3), toInt8(3)] END FROM system.numbers LIMIT 10;
@@ -1365,7 +1361,6 @@ SELECT CASE WHEN (number % 2) = 0 THEN [toFloat64(1), toFloat64(2)] WHEN (number
 SELECT CASE WHEN (number % 2) = 0 THEN [toFloat64(1), toFloat64(2)] WHEN (number % 3) = 0 THEN [toFloat64(2), toFloat64(3)] ELSE [toUInt32(3), toUInt32(3)] END FROM system.numbers LIMIT 10;
 SELECT CASE WHEN (number % 2) = 0 THEN [toFloat64(1), toFloat64(2)] WHEN (number % 3) = 0 THEN [toFloat64(2), toFloat64(3)] ELSE [toFloat32(3), toFloat32(3)] END FROM system.numbers LIMIT 10;
 SELECT CASE WHEN (number % 2) = 0 THEN [toFloat64(1), toFloat64(2)] WHEN (number % 3) = 0 THEN [toFloat64(2), toFloat64(3)] ELSE [toFloat64(3), toFloat64(3)] END FROM system.numbers LIMIT 10;
-
 /* No CASE expression. String clauses. */
 
 DROP TABLE IF EXISTS multi_if_check;
@@ -1380,7 +1375,6 @@ INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(7, 'G', 'GH', 'GHI');
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(8, 'H', 'HI', 'HIJ');
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(9, 'I', 'IJ', 'IJK');
 INSERT INTO multi_if_check(col1, col2, col3, col4) VALUES(10, 'J', 'JK', 'JKL');
-
 SELECT CASE WHEN (col1 % 2) = 0 THEN col2 WHEN (col1 % 3) = 0 THEN col3 ELSE col4 END FROM multi_if_check;
 SELECT CASE WHEN (col1 % 2) = 0 THEN col2 WHEN (col1 % 3) = 0 THEN col3 ELSE toFixedString(col4, 16) END FROM multi_if_check;
 SELECT CASE WHEN (col1 % 2) = 0 THEN col2 WHEN (col1 % 3) = 0 THEN col3 ELSE toFixedString('baz', 16) END FROM multi_if_check;
@@ -1637,9 +1631,7 @@ SELECT CASE WHEN 1 THEN 'foo' WHEN 1 THEN 'bar' ELSE col4 END FROM multi_if_chec
 SELECT CASE WHEN 1 THEN 'foo' WHEN 1 THEN 'bar' ELSE toFixedString(col4, 16) END FROM multi_if_check;
 SELECT CASE WHEN 1 THEN 'foo' WHEN 1 THEN 'bar' ELSE toFixedString('baz', 16) END FROM multi_if_check;
 SELECT CASE WHEN 1 THEN 'foo' WHEN 1 THEN 'bar' ELSE 'baz' END FROM multi_if_check;
-
 DROP TABLE IF EXISTS multi_if_check;
-
 /* No CASE expression. String array clauses. */
 
 CREATE TABLE multi_if_check(col1 UInt64, col2 String, col3 String, col4 String, col5 String, col6 String, col7 String) ENGINE=TinyLog;
@@ -1653,7 +1645,6 @@ INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(7, '
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(8, 'H', 'HI', 'HIJ', 'HIJK', 'HIJKL', 'HIJKLM');
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(9, 'I', 'IJ', 'IJK', 'IJKL', 'IJKLM', 'IJKLMN');
 INSERT INTO multi_if_check(col1, col2, col3, col4, col5, col6, col7) VALUES(10, 'J', 'JK', 'JKL', 'JKLM', 'JKLMN', 'JKLMNO');
-
 SELECT CASE WHEN (col1 % 2) = 0 THEN [col2, col3] WHEN (col1 % 3) = 0 THEN [col4, col5] ELSE [col6, col7] END FROM multi_if_check;
 SELECT CASE WHEN (col1 % 2) = 0 THEN [col2, col3] WHEN (col1 % 3) = 0 THEN [col4, col5] ELSE [col6, 'bar'] END FROM multi_if_check;
 SELECT CASE WHEN (col1 % 2) = 0 THEN [col2, col3] WHEN (col1 % 3) = 0 THEN [col4, col5] ELSE ['foo', col7] END FROM multi_if_check;
@@ -1910,18 +1901,13 @@ SELECT CASE WHEN 1 THEN ['foo', 'bar'] WHEN 1 THEN ['foo', 'bar'] ELSE [col6, co
 SELECT CASE WHEN 1 THEN ['foo', 'bar'] WHEN 1 THEN ['foo', 'bar'] ELSE [col6, 'bar'] END FROM multi_if_check;
 SELECT CASE WHEN 1 THEN ['foo', 'bar'] WHEN 1 THEN ['foo', 'bar'] ELSE ['foo', col7] END FROM multi_if_check;
 SELECT CASE WHEN 1 THEN ['foo', 'bar'] WHEN 1 THEN ['foo', 'bar'] ELSE ['foo', 'bar'] END FROM multi_if_check;
-
 DROP TABLE IF EXISTS multi_if_check;
-
 /* CASE expression. Numeric clauses. */
 
 CREATE TABLE multi_if_check(col1 UInt64) ENGINE=TinyLog;
 INSERT INTO multi_if_check(col1) SELECT toUInt64((number * 37 + 13) % 3) AS col1 FROM system.numbers LIMIT 10;
-
 SELECT CASE col1 WHEN 0 THEN 1 WHEN 1 THEN 2 ELSE 3 END FROM multi_if_check;
-
 /* CASE expression. String clauses. */
 
 SELECT CASE col1 WHEN 1 THEN 'A' WHEN 2 THEN 'AB' ELSE 'ABC' END FROM multi_if_check;
-
 DROP TABLE IF EXISTS multi_if_check;

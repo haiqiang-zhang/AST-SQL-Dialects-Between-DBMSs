@@ -16,5 +16,4 @@ SETTINGS
     group_by_two_level_threshold=10000,
     /* explicitly */
     max_block_size=1000,
-    max_threads=1
-;
+    max_threads=1;

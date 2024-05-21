@@ -1,6 +1,4 @@
--- https://github.com/ClickHouse/ClickHouse/issues/55647
 SET allow_experimental_analyzer=1;
-
 SELECT
 *
 FROM (
@@ -14,4 +12,4 @@ JOIN (
 JOIN (
     SELECT *
     FROM system.one
-) c USING dummy
+) c USING dummy;

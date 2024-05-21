@@ -5,7 +5,6 @@ CREATE TABLE map_lc
     `kv` Map(LowCardinality(String), LowCardinality(String))
 )
 ENGINE = Memory;
-
 INSERT INTO map_lc select map('a', 'b');
 SELECT kv['a'] FROM map_lc;
 DROP TABLE map_lc;

@@ -87,6 +87,13 @@ def clean_query_postgresql(query:str)->List[str]:
 
 
 
+def clean_query_char(query:str) -> str:
+    query = query.strip()
+    query = query.replace("\n", "")
+    query = query.replace("\t", "")
+    query = query.replace("\r", "")
+    query = query.replace(" ", "")
+    return query
 
 
 
