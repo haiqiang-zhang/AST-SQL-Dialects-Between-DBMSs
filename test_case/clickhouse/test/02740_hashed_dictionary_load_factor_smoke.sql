@@ -89,7 +89,6 @@ CREATE DICTIONARY test_dictionary_load_factor_string
 SOURCE(CLICKHOUSE(TABLE test_table_string))
 LAYOUT(HASHED(MAX_LOAD_FACTOR 1))
 LIFETIME(0);
-SYSTEM RELOAD DICTIONARY test_dictionary_load_factor_string;
 DROP DICTIONARY test_dictionary_load_factor_string;
 DROP TABLE test_table;
 DROP TABLE test_table_nullable;

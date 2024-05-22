@@ -34,5 +34,4 @@ print '-- mv_expand_test_table | mv-expand c to typeof(bool) --';
 mv_expand_test_table | mv-expand c to typeof(bool);
 SET max_query_size = 28;
 SET dialect='kusto';
-mv_expand_test_table | mv-expand c, d;
 SET max_query_size=262144;

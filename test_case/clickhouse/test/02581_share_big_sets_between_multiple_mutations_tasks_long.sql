@@ -14,6 +14,4 @@ ALTER TABLE 02581_trips UPDATE description='6' WHERE id IN (SELECT (number*10 + 
 ALTER TABLE 02581_trips DELETE WHERE id IN (SELECT (number*10 + 7)::UInt32 FROM numbers(200000000)) SETTINGS mutations_sync=0;
 ALTER TABLE 02581_trips UPDATE description='8' WHERE id IN (SELECT (number*10 + 8)::UInt32 FROM numbers(200000000)) SETTINGS mutations_sync=0;
 SYSTEM START MERGES 02581_trips;
-DELETE FROM 02581_trips WHERE id IN (SELECT (number*10 + 9)::UInt32 FROM numbers(200000000));
 SELECT count(), _part from 02581_trips WHERE description = '' GROUP BY _part ORDER BY _part;
-DROP TABLE 02581_trips;

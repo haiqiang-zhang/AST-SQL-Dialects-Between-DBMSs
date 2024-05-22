@@ -18,7 +18,6 @@ SELECT '-----------';
 ALTER TABLE 02416_rocksdb UPDATE value = 'Another' WHERE key > 2;
 SELECT * FROM 02416_rocksdb ORDER BY key;
 SELECT '-----------';
-ALTER TABLE 02416_rocksdb UPDATE key = key * 10 WHERE 1 = 1;
 SELECT * FROM 02416_rocksdb ORDER BY key;
 SELECT '-----------';
 ALTER TABLE 02416_rocksdb UPDATE value2 = value2 * 10 + 2 WHERE 1 = 1;

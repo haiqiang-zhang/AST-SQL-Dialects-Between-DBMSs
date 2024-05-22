@@ -63,5 +63,4 @@ SELECT arrayMap(x -> concat(concat(concat(concat(concat(toString(id), '___\0____
     concat(toString(id), NULL), toString(id)), toString(id))) AS lambda, [NULL, NULL, 2147483647])
 FROM test_table WHERE concat(concat(concat(toString(id), '___\0_______\0____'), toString(id)), concat(toString(id), NULL), toString(id));
 SELECT '--';
-SELECT arrayMap(x -> splitByChar(toString(id), arrayMap(x -> toString(1), [NULL])), [NULL]) FROM test_table;
 DROP TABLE test_table;

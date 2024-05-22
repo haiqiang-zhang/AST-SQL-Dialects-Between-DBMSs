@@ -37,8 +37,3 @@ print '-- extend #7 --';
 print a = 4 | extend a = 5;
 print '-- extend #8 --';
 print '-- extend #9 --';
-print x = 19 | extend = 4 +;
-print '-- extend #10 --';
-Ledger | extend PriceInCents = * Price | sort by PriceInCents asc | project Fruit, PriceInCents | summarize AveragePrice = avg(PriceInCents), Purchases = count() by Fruit | extend Sentence = strcat(Fruit, ' cost ', tostring(AveragePrice), ' on average based on ', tostring(Purchases), ' samples.') | project Sentence;
-print '-- extend #11 --';
-print x = 5 | extend ex = array_sort_desc(dynamic([1, 2]), dynamic([3, 4]));

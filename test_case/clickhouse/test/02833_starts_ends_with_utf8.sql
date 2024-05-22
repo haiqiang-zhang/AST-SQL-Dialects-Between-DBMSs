@@ -1,13 +1,11 @@
-select startsWithUTF8('å¯å¼ºæ°ä¸»ææåè°', 'å¯å¼º');
-select startsWithUTF8('å¯å¼ºæ°ä¸»ææåè°', '\xe5');
-select startsWithUTF8('å¯å¼ºæ°ä¸»ææåè°', '');
+select startsWithUTF8('Ã¥Â¯ÂÃ¥Â¼ÂºÃ¦Â°ÂÃ¤Â¸Â»Ã¦ÂÂÃ¦ÂÂÃ¥ÂÂÃ¨Â°Â', 'Ã¥Â¯ÂÃ¥Â¼Âº');
+select startsWithUTF8('Ã¥Â¯ÂÃ¥Â¼ÂºÃ¦Â°ÂÃ¤Â¸Â»Ã¦ÂÂÃ¦ÂÂÃ¥ÂÂÃ¨Â°Â', '');
 SELECT startsWithUTF8('123', '123');
 SELECT startsWithUTF8('123', '12');
 SELECT startsWithUTF8('123', '1234');
 SELECT startsWithUTF8('123', '');
-select endsWithUTF8('å¯å¼ºæ°ä¸»ææåè°', 'åè°');
-select endsWithUTF8('å¯å¼ºæ°ä¸»ææåè°', '\x90');
-select endsWithUTF8('å¯å¼ºæ°ä¸»ææåè°', '');
+select endsWithUTF8('Ã¥Â¯ÂÃ¥Â¼ÂºÃ¦Â°ÂÃ¤Â¸Â»Ã¦ÂÂÃ¦ÂÂÃ¥ÂÂÃ¨Â°Â', 'Ã¥ÂÂÃ¨Â°Â');
+select endsWithUTF8('Ã¥Â¯ÂÃ¥Â¼ÂºÃ¦Â°ÂÃ¤Â¸Â»Ã¦ÂÂÃ¦ÂÂÃ¥ÂÂÃ¨Â°Â', '');
 SELECT endsWithUTF8('123', '3');
 SELECT endsWithUTF8('123', '23');
 SELECT endsWithUTF8('123', '32');

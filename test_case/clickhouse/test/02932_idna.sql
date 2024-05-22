@@ -58,18 +58,18 @@ SELECT tryIdnaEncode(NULL);
 SELECT idnaDecode(NULL);
 SELECT '---- Garbage inputs for idnaEncode';
 SELECT tryIdnaEncode('xn--');
-SELECT tryIdnaEncode('ÃÂ¯ÃÂ»ÃÂ±a');
+SELECT tryIdnaEncode('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ±a');
 SELECT tryIdnaEncode('xn--a-yoc');
-SELECT tryIdnaEncode('xn--teÃÂÃÂ¡la');
+SELECT tryIdnaEncode('xn--teÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡la');
 SELECT '---- Long input';
 SELECT '---- Non-const input';
 DROP TABLE IF EXISTS tab;
 CREATE TABLE tab (idna String) ENGINE=MergeTree ORDER BY idna;
-INSERT INTO tab VALUES ('straÃÂÃÂe.mÃÂÃÂ¼nchen.de') ('') ('mÃÂÃÂ¼nchen');
+INSERT INTO tab VALUES ('straÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂe.mÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼nchen.de') ('') ('mÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼nchen');
 DROP TABLE tab;
 SELECT '---- Non-const input with invalid values sprinkled in';
 DROP TABLE IF EXISTS tab;
 CREATE TABLE tab (idna String) ENGINE=MergeTree ORDER BY idna;
-INSERT INTO tab VALUES ('xn--') ('london.co.uk') ('ytraÃÂÃÂe.mÃÂÃÂ¼nchen.de') ('xn--teÃÂÃÂ¡la') ('microsoft.com') ('xn--');
+INSERT INTO tab VALUES ('xn--') ('london.co.uk') ('ytraÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂe.mÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼nchen.de') ('xn--teÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡la') ('microsoft.com') ('xn--');
 SELECT idna, tryIdnaEncode(idna) AS ascii, idnaDecode(ascii) AS original FROM tab;
 DROP TABLE tab;

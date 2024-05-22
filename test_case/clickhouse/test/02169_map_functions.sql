@@ -6,7 +6,6 @@ SELECT mapFilter((k, v) -> k like '%3' and v > 102, col) FROM table_map ORDER BY
 SELECT col, mapFilter((k, v) -> ((v % 10) > 1), col) FROM table_map ORDER BY id ASC;
 SELECT mapApply((k, v) -> (k, v + 1), col) FROM table_map ORDER BY id;
 SELECT mapFilter((k, v) -> 0, col) from table_map;
-SELECT mapApply((k, v) -> tuple(v + 9223372036854775806), col) FROM table_map;
 SELECT mapConcat(col, map('key5', 500), map('key6', 600)) FROM table_map ORDER BY id;
 SELECT mapConcat(col, materialize(map('key5', 500)), map('key6', 600)) FROM table_map ORDER BY id;
 SELECT concat(map('key5', 500), map('key6', 600));
@@ -36,24 +35,5 @@ SELECT mapUpdate(materialize(map('k1', 1, 'k2', 2)), materialize(map('k3', 33, '
 WITH (range(0, number % 10), range(0, number % 10))::Map(UInt64, UInt64) AS m1,
      (range(0, number % 10, 2), arrayMap(x -> x * x, range(0, number % 10, 2)))::Map(UInt64, UInt64) AS m2
 SELECT DISTINCT mapUpdate(m1, m2) FROM numbers (100000);
-SELECT mapApply();
-SELECT mapApply((x, y) -> (x), map(1, 0, 2, 0));
-SELECT mapApply((x, y) -> ('x'), map(1, 0, 2, 0));
 SELECT mapApply((x) -> (x, x), map(1, 0, 2, 0));
-SELECT mapApply((x, y) -> (x, 1, 2), map(1, 0, 2, 0));
-SELECT mapApply((x, y) -> (x, x + 1));
-SELECT mapApply(map(1, 0, 2, 0), (x, y) -> (x, x + 1));
-SELECT mapApply((x, y) -> (x, x+1), map(1, 0, 2, 0), map(1, 0, 2, 0));
-SELECT mapFilter();
-SELECT mapFilter((x, y) -> (toInt32(x)), map(1, 0, 2, 0));
-SELECT mapFilter((x, y) -> ('x'), map(1, 0, 2, 0));
-SELECT mapFilter((x) -> (x, x), map(1, 0, 2, 0));
-SELECT mapFilter((x, y) -> (x, 1, 2), map(1, 0, 2, 0));
-SELECT mapFilter((x, y) -> (x, x + 1));
-SELECT mapFilter(map(1, 0, 2, 0), (x, y) -> (x > 0));
-SELECT mapFilter((x, y) -> (x, x + 1), map(1, 0, 2, 0), map(1, 0, 2, 0));
-SELECT mapConcat([1, 2], map(1, 2));
-SELECT mapSort(map(1, 2), map(3, 4));
-SELECT mapUpdate();
-SELECT mapUpdate(map(1, 3, 3, 2), map(1, 0, 2, 0),  map(1, 0, 2, 0));
 DROP TABLE table_map;

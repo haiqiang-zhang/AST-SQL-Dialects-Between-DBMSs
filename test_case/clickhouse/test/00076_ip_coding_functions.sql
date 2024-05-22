@@ -22,7 +22,7 @@ select IPv6StringToNum(materialize('not an ip string')) == toFixedString(materia
 /* IPv4ToIPv6 */
 
 SELECT hex(IPv4ToIPv6(1297626935));
-/* Ð¢ÐµÑÑ Ñ ÑÐ°Ð±Ð»Ð¸ÑÐµÐ¹ */
+/* ÃÂ¢ÃÂµÃÂÃÂ ÃÂ ÃÂÃÂ°ÃÂ±ÃÂ»ÃÂ¸ÃÂÃÂµÃÂ¹ */
 
 DROP TABLE IF EXISTS addresses;
 CREATE TABLE addresses(addr UInt32) ENGINE = Memory;
@@ -30,7 +30,7 @@ INSERT INTO addresses(addr) VALUES (1297626935), (2130706433), (3254522122);
 SELECT hex(IPv4ToIPv6(addr)) FROM addresses ORDER BY addr ASC;
 /* cutIPv6 */
 
-/*  Ð ÐµÐ°Ð»ÑÐ½ÑÐ¹ IPv6-Ð°Ð´ÑÐµÑ */
+/*  ÃÂ ÃÂµÃÂ°ÃÂ»ÃÂÃÂ½ÃÂÃÂ¹ IPv6-ÃÂ°ÃÂ´ÃÂÃÂµÃÂ */
 
 SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 0, 0);
 SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 1, 0);
@@ -65,7 +65,7 @@ SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 0, 13
 SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 0, 14);
 SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 0, 15);
 SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 0, 16);
-/*  IPv4-mapped IPv6-Ð°Ð´ÑÐµÑ */
+/*  IPv4-mapped IPv6-ÃÂ°ÃÂ´ÃÂÃÂµÃÂ */
 
 SELECT cutIPv6(toFixedString(unhex('00000000000000000000FFFFC1FC110A'), 16), 0, 0);
 SELECT cutIPv6(toFixedString(unhex('00000000000000000000FFFFC1FC110A'), 16), 1, 0);
@@ -100,15 +100,15 @@ SELECT cutIPv6(toFixedString(unhex('00000000000000000000FFFFC1FC110A'), 16), 0, 
 SELECT cutIPv6(toFixedString(unhex('00000000000000000000FFFFC1FC110A'), 16), 0, 14);
 SELECT cutIPv6(toFixedString(unhex('00000000000000000000FFFFC1FC110A'), 16), 0, 15);
 SELECT cutIPv6(toFixedString(unhex('00000000000000000000FFFFC1FC110A'), 16), 0, 16);
-/* Ð¢ÐµÑÑ Ñ ÑÐ°Ð±Ð»Ð¸ÑÐ°Ð¼Ð¸ */
+/* ÃÂ¢ÃÂµÃÂÃÂ ÃÂ ÃÂÃÂ°ÃÂ±ÃÂ»ÃÂ¸ÃÂÃÂ°ÃÂ¼ÃÂ¸ */
 
-/*  Ð ÐµÐ°Ð»ÑÐ½ÑÐµ IPv6-Ð°Ð´ÑÐµÑÐ° */
+/*  ÃÂ ÃÂµÃÂ°ÃÂ»ÃÂÃÂ½ÃÂÃÂµ IPv6-ÃÂ°ÃÂ´ÃÂÃÂµÃÂÃÂ° */
 
 DROP TABLE IF EXISTS addresses;
 CREATE TABLE addresses(addr String) ENGINE = Memory;
 INSERT INTO addresses(addr) VALUES ('20010DB8AC10FE01FEEDBABECAFEF00D'), ('20010DB8AC10FE01DEADC0DECAFED00D'), ('20010DB8AC10FE01ABADBABEFACEB00C');
 SELECT cutIPv6(toFixedString(unhex(addr), 16), 3, 0) FROM addresses ORDER BY addr ASC;
-/*  IPv4-mapped IPv6-Ð°Ð´ÑÐµÑÐ° */
+/*  IPv4-mapped IPv6-ÃÂ°ÃÂ´ÃÂÃÂµÃÂÃÂ° */
 
 DROP TABLE IF EXISTS addresses;
 CREATE TABLE addresses(addr String) ENGINE = Memory;

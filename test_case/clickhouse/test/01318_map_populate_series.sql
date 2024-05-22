@@ -23,6 +23,3 @@ select mapPopulateSeries([toInt32(-10), 2], [toInt32(1), 1]) as res, toTypeName(
 select mapPopulateSeries([toInt64(-10), 2], [toInt64(1), 1]) as res, toTypeName(res);
 select mapPopulateSeries([toInt64(-10), 2], [toInt64(1), 1], toInt64(-5)) as res, toTypeName(res);
 select mapPopulateSeries(cast([], 'Array(UInt8)'), cast([], 'Array(UInt8)'), 5);
-select mapPopulateSeries(['1', '2'], [1, 1]) as res, toTypeName(res);
-select mapPopulateSeries([1, 2, 3], [1, 1]) as res, toTypeName(res);
-select mapPopulateSeries([1, 2], [1, 1, 1]) as res, toTypeName(res);

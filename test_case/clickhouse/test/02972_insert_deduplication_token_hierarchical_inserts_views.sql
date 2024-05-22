@@ -29,12 +29,8 @@ SELECT
 FROM landing
 GROUP BY t;
 INSERT INTO landing SELECT 1 as timestamp, 1 AS value FROM numbers(10);
-SELECT sleep(3);
 INSERT INTO landing SELECT 1 as timestamp, 1 AS value FROM numbers(10);
 SYSTEM FLUSH LOGS;
-SELECT table, name, error FROM system.part_log
-WHERE database = currentDatabase()
-ORDER BY table, name;
 SELECT count() FROM landing;
 DROP TABLE landing;
 DROP TABLE ds_1_1;

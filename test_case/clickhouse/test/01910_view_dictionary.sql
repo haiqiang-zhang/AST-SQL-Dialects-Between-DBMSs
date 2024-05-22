@@ -13,7 +13,7 @@ CREATE TABLE dictionary_source_ru
     id UInt64,
     value String
 ) ENGINE = TinyLog;
-INSERT INTO dictionary_source_ru VALUES (1, 'ÐÐ´Ð¸Ð½'), (2,'ÐÐ²Ð°'), (3, 'Ð¢ÑÐ¸');
+INSERT INTO dictionary_source_ru VALUES (1, 'ÃÂÃÂ´ÃÂ¸ÃÂ½'), (2,'ÃÂÃÂ²ÃÂ°'), (3, 'ÃÂ¢ÃÂÃÂ¸');
 CREATE VIEW dictionary_source_view AS
     SELECT id, dictionary_source_en.value as value_en, dictionary_source_ru.value as value_ru
     FROM dictionary_source_en LEFT JOIN dictionary_source_ru USING (id);

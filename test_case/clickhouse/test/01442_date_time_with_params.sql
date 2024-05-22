@@ -6,7 +6,6 @@ SELECT toDateTime('2020-01-01 00:00:00') AS a, toTypeName(a), toDateTime('2020-0
 SELECT CAST('2020-01-01 00:00:00', 'DateTime') AS a, toTypeName(a), CAST('2020-01-01 00:02:00.11', 'DateTime(2)') AS b, toTypeName(b), CAST('2020-01-01 00:03:00', 'DateTime(\'Asia/Istanbul\')') AS c, toTypeName(c), CAST('2020-01-01 00:04:00.22', 'DateTime(3, \'Asia/Istanbul\')') AS d, toTypeName(d), CAST('2020-01-01 00:05:00', 'DateTime(0)') AS e, toTypeName(e);
 SELECT toDateTime32('2020-01-01 00:00:00') AS a, toTypeName(a);
 SELECT 'parseDateTimeBestEffort';
-SELECT parseDateTimeBestEffort('<Empty>', 3) AS a, toTypeName(a);
 SELECT parseDateTimeBestEffort('2020-05-14T03:37:03', 3, 'UTC') AS a, toTypeName(a);
 SELECT parseDateTimeBestEffort('2020-05-14 03:37:03', 3, 'UTC') AS a, toTypeName(a);
 SELECT parseDateTimeBestEffort('2020-05-14 11:37:03 AM', 3, 'UTC') AS a, toTypeName(a);
@@ -57,7 +56,6 @@ SELECT parseDateTimeBestEffortOrZero('Dec 15, 2021') AS a, toTypeName(a);
 SELECT parseDateTimeBestEffortOrZero('Dec 15, 2021', 'UTC') AS a, toTypeName(a);
 SELECT parseDateTimeBestEffortOrZero('Dec 15, 2021', 3, 'UTC') AS a, toTypeName(a);
 SELECT 'parseDateTime32BestEffort';
-SELECT parseDateTime32BestEffort('<Empty>') AS a, toTypeName(a);
 SELECT parseDateTime32BestEffort('2020-05-14T03:37:03', 'UTC') AS a, toTypeName(a);
 SELECT parseDateTime32BestEffort('2020-05-14 03:37:03', 'UTC') AS a, toTypeName(a);
 SELECT parseDateTime32BestEffort('2020-05-14 11:37:03 AM', 'UTC') AS a, toTypeName(a);

@@ -10,9 +10,6 @@ select i from a where _part_offset = 3 order by i settings max_rows_to_read = 2;
 select i from a where _part_offset = 4 order by i settings max_rows_to_read = 1;
 select i from a where _part_offset in (1, 4) order by i settings max_rows_to_read = 3;
 select i from a where _part_offset not in (1, 4) order by i settings max_rows_to_read = 4;
-select i from a where _part_offset = 4 order by i settings force_primary_key = 1;
--- combining with other primary keys doesn't work (makes no sense)
-select i from a where i = -3 or _part_offset = 4 order by i settings force_primary_key = 1;
 drop table a;
 drop table if exists b;
 create table b (i int) engine MergeTree order by tuple() settings index_granularity = 2;

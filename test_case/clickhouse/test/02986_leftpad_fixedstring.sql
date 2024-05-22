@@ -15,18 +15,10 @@ SELECT
     hex(rightPadUTF8(s, number)) = result
 FROM numbers(20);
 SELECT
-    hex(leftPadUTF8(toFixedString('abc34324' as s, 8), number, 'ðªð¸')) as result,
-    hex(leftPadUTF8(s, number, 'ðªð¸')) = result
+    hex(leftPadUTF8(toFixedString('abc34324' as s, 8), number, 'Ã°ÂÂÂªÃ°ÂÂÂ¸')) as result,
+    hex(leftPadUTF8(s, number, 'Ã°ÂÂÂªÃ°ÂÂÂ¸')) = result
 FROM numbers(20);
 SELECT
-    hex(rightPadUTF8(toFixedString('abc34324' as s, 8), number, 'ðªð¸')) as result,
-    hex(rightPadUTF8(s, number, 'ðªð¸')) = result
-FROM numbers(20);
-SELECT
-    hex(leftPadUTF8(toFixedString('ðªð¸' as s, 8), number, 'Ã')) as result,
-    hex(leftPadUTF8(s, number, 'Ã')) = result
-FROM numbers(20);
-SELECT
-    hex(rightPadUTF8(toFixedString('ðªð¸' as s, 8), number, 'Ã')) as result,
-    hex(rightPadUTF8(s, number, 'Ã')) = result
+    hex(rightPadUTF8(toFixedString('abc34324' as s, 8), number, 'Ã°ÂÂÂªÃ°ÂÂÂ¸')) as result,
+    hex(rightPadUTF8(s, number, 'Ã°ÂÂÂªÃ°ÂÂÂ¸')) = result
 FROM numbers(20);

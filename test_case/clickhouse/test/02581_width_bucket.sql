@@ -9,15 +9,6 @@ CREATE TABLE mytable
 INSERT INTO mytable VALUES (3, -100, 200, 10), (0, 0, 10, 4), (3, 0, 10, 3), (4.333, 1, 11, 3), (4.34, 1, 11, 3), (-7.6, -10, 0, 4), (-6, -5, -1, 2), (1, 3, 0, 1), (3, 2, 5, 0);
 SELECT operand, low, high, count, WIDTH_BUCKET(operand, low, high, count) FROM mytable WHERE count != 0;
 SELECT '----------';
-SELECT operand, low, high, count, WIDTH_BUCKET(operand, low, high, count) FROM mytable WHERE count = 0;
--- operand, low and high cannot be NaN
-SELECT WIDTH_BUCKET(0, 10, NaN, 10);
-SELECT WIDTH_BUCKET(NaN, 0, 10, 10);
-SELECT WIDTH_BUCKET(0, NaN, 10, 10);
--- low and high cannot be Inf
-SELECT WIDTH_BUCKET(1, -Inf, 10, 10);
--- low and high cannot be Inf
-SELECT WIDTH_BUCKET(1, 0, Inf, 10);
 -- operand can be Inf
 SELECT WIDTH_BUCKET(-Inf, 0, 10, 10);
 SELECT WIDTH_BUCKET(Inf, 0, 10, 10);
@@ -26,12 +17,6 @@ SELECT toInt64(operand) AS operand, toInt32(low) AS low, toInt16(high) AS high, 
 SELECT '----------';
 SELECT toUInt8(toInt8(operand)) AS operand, toUInt16(toInt16(low)) AS low, toUInt32(toInt32(high)) AS high, count, WIDTH_BUCKET(operand, low, high, count) FROM mytable WHERE count != 0;
 SELECT '----------';
-SELECT WIDTH_BUCKET(1, 2, 3, -1);
-SELECT WIDTH_BUCKET(1, 2, 3, 1.3);
-SELECT WIDTH_BUCKET('a', 1, 2, 3);
-SELECT WIDTH_BUCKET(1, toUInt128(42), 2, 3);
-SELECT WIDTH_BUCKET(1, 2, toInt128(42), 3);
-SELECT WIDTH_BUCKET(1, 2, 3, toInt256(42));
 SELECT '----------';
 SELECT toTypeName(WIDTH_BUCKET(1, 2, 3, toUInt8(1)));
 SELECT toTypeName(WIDTH_BUCKET(1, 2, 3, toUInt16(1)));

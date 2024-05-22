@@ -24,7 +24,6 @@ SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'table_fo
 LIFETIME(MIN 1 MAX 10)
 LAYOUT(FLAT()) SETTINGS(max_result_bytes=1);
 SELECT 'INITIALIZING DICTIONARY';
-SELECT dictGetUInt64('ordinary_db.dict1', 'second_column', toUInt64(100500));
 SELECT 'END';
 DROP DICTIONARY IF EXISTS ordinary_db.dict1;
 DROP DATABASE IF EXISTS ordinary_db;

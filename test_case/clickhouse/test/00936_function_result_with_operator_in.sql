@@ -9,9 +9,6 @@ SELECT 'empty:';
 SELECT count() FROM samples WHERE key IN arraySlice(range(100), 10, 10);
 SELECT 'a' IN splitByChar('c', 'abcdef');
 SELECT 'errors:';
-SELECT count() FROM samples WHERE 1 IN range(samples.value);
 -- index is not used
 SELECT count() FROM samples WHERE value IN range(3);
--- wrong type
-SELECT 123 IN splitByChar('c', 'abcdef');
 DROP TABLE samples;

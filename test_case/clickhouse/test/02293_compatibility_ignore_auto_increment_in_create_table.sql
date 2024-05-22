@@ -5,9 +5,6 @@ select 'disable AUTO_INCREMENT compatibility mode';
 set compatibility_ignore_auto_increment_in_create_table=false;
 select 'create table failed, column +type +AUTO_INCREMENT, compatibility disabled';
 DROP TABLE IF EXISTS ignore_auto_increment SYNC;
-CREATE TABLE ignore_auto_increment (
-    id int AUTO_INCREMENT
-) ENGINE=MergeTree() ORDER BY tuple();
 select 'enable AUTO_INCREMENT compatibility mode';
 set compatibility_ignore_auto_increment_in_create_table=true;
 select 'create table, +type +AUTO_INCREMENT';
@@ -35,14 +32,10 @@ CREATE TABLE ignore_auto_increment (
 DESCRIBE TABLE ignore_auto_increment;
 select 'create table failed, column +type +DEFAULT +AUTO_INCREMENT';
 DROP TABLE IF EXISTS ignore_auto_increment SYNC;
-CREATE TABLE ignore_auto_increment (id int DEFAULT 1 AUTO_INCREMENT) ENGINE=MergeTree() ORDER BY tuple();
 select 'create table failed, column -type +DEFAULT +AUTO_INCREMENT';
 DROP TABLE IF EXISTS ignore_auto_increment SYNC;
-CREATE TABLE ignore_auto_increment (id int DEFAULT 1 AUTO_INCREMENT) ENGINE=MergeTree() ORDER BY tuple();
 select 'create table failed, column +type +AUTO_INCREMENT +DEFAULT';
 DROP TABLE IF EXISTS ignore_auto_increment SYNC;
-CREATE TABLE ignore_auto_increment (id int AUTO_INCREMENT DEFAULT 1) ENGINE=MergeTree() ORDER BY tuple();
 select 'create table failed, column -type +AUTO_INCREMENT +DEFAULT';
 DROP TABLE IF EXISTS ignore_auto_increment SYNC;
-CREATE TABLE ignore_auto_increment (id int AUTO_INCREMENT DEFAULT 1) ENGINE=MergeTree() ORDER BY tuple();
 DROP TABLE IF EXISTS ignore_auto_increment SYNC;

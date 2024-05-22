@@ -96,7 +96,6 @@ SELECT dictGetStringOrDefault('db_01268.dict2', 'region_name', toUInt64(7), 'NON
 SELECT dictGetStringOrDefault('db_01268.dict2', 'region_name', toUInt64(8), 'NONE');
 SELECT dictGetStringOrDefault('db_01268.dict2', 'region_name', toUInt64(9), 'NONE');
 SELECT dictGetStringOrDefault('db_01268.dict2', 'region_name', toUInt64(10), 'NONE');
-SELECT dictGetUInt64('db_01268.dict1', 'second_column', toUInt64(100500));
 SELECT 'END';
 DROP DICTIONARY IF EXISTS db_01268.dict1;
 DROP DICTIONARY IF EXISTS db_01268.dict2;

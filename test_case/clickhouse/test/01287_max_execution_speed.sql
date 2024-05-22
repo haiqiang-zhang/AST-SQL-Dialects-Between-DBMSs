@@ -11,6 +11,5 @@ INSERT INTO times SELECT now();
 SELECT 'Ok (3)';
 SET max_execution_speed = 0;
 SET max_execution_speed_bytes = 8000000;
-SELECT count() FROM numbers(2000000);
 SELECT 'Ok (4)';
 SET max_execution_speed_bytes = 0;

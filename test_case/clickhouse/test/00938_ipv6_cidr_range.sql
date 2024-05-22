@@ -1,8 +1,4 @@
 SELECT 'check invalid params';
-SELECT IPv6CIDRToRange(1, 1);
-SELECT IPv6CIDRToRange('1234', 1);
-SELECT IPv6CIDRToRange(toFixedString('1234', 10), 1);
-SELECT IPv6CIDRToRange(toFixedString('1234', 16), toUInt16(1));
 SELECT 'tests';
 DROP TABLE IF EXISTS ipv6_range;
 CREATE TABLE ipv6_range(ip IPv6, cidr UInt8) ENGINE = Memory;

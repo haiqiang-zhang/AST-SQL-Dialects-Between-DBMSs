@@ -123,7 +123,6 @@ class ClickHouseAdapter(DBMSAdapter):
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             if timeout_occurred.is_set():
-                self.conn.execute("USE test")
                 combined_result = (False, ["TimeoutError", f"{e}"])
                 if ECHO_ERR:
                     print(f"Failed: TimeoutError\n")

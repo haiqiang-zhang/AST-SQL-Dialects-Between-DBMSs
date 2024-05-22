@@ -1,4 +1,3 @@
-SET session_timezone = 'ÐÐ±ÑÑÐ²Ð°Ð»Ð³';
 SELECT timezone(), timezoneOf(now()) SETTINGS session_timezone = 'Pacific/Pitcairn';
 SET session_timezone = 'Asia/Novosibirsk';
 SELECT timezone(), timezoneOf(now());

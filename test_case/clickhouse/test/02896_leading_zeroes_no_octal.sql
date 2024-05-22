@@ -48,7 +48,6 @@ INSERT INTO t_leading_zeroes_f VALUES (2003, '01', 01, 1, 'Octal like, interpret
 INSERT INTO t_leading_zeroes_f VALUES (2004, '08', 08, 8, 'Octal like, interpret as decimal');
 INSERT INTO t_leading_zeroes_f VALUES (2005, '0100', 0100, 100, 'Octal like, interpret as decimal');
 INSERT INTO t_leading_zeroes_f VALUES (2006, '0000000000100', 0000000000100, 100, 'Octal like, interpret as decimal, multiple leading zeroes');
--- INSERT INTO t_leading_zeroes_f VALUES (2010, '-0', -0, 0, 'Single zero negative');
 INSERT INTO t_leading_zeroes_f VALUES (2013, '-01', -01, -1, 'Octal like, interpret as decimal negative');
 INSERT INTO t_leading_zeroes_f VALUES (2014, '-08', -08, -8, 'Octal like, interpret as decimal negative');
 INSERT INTO t_leading_zeroes_f VALUES (2015, '-0100', -0100, -100, 'Octal like, interpret as decimal negative');
@@ -76,8 +75,6 @@ INSERT INTO t_leading_zeroes_f VALUES (2066, '0x0abcdP01', 0x0abcdP01, 87962, 'H
 INSERT INTO t_leading_zeroes_f VALUES (2067, '0x0abcdP+01', 0x0abcdP+01, 87962, 'Hex should be parsed');
 INSERT INTO t_leading_zeroes_f VALUES (2068, '0x0abcdP-01', 0x0abcdP-01, 21990.5, 'Hex should be parsed');
 INSERT INTO t_leading_zeroes_f VALUES (2069, '0x01P-01', 0x01P-01, 0.5, 'Hex should be parsed');
--- using readUIntTextUpToNSignificantDigits<4>(exponent, in)
--- INSERT INTO t_leading_zeroes_f VALUES (2070, '00009e00009', 00009e00009, 9e9, '???');
 INSERT INTO t_leading_zeroes_f VALUES (2051, '-0b10000', -0b10000, -16, 'Binary should not be parsed');
 INSERT INTO t_leading_zeroes_f VALUES (2052, '+0b10000', +0b10000, 16, 'Binary should not be parsed');
 INSERT INTO t_leading_zeroes VALUES (1050, '0b10000', 0b10000, 16, 'Binary should not be parsed');
@@ -132,7 +129,6 @@ INSERT INTO t_leading_zeroes_f VALUES (12003, '01', 01, 1, 'Octal like, interpre
 INSERT INTO t_leading_zeroes_f VALUES (12004, '08', 08, 8, 'Octal like, interpret as decimal');
 INSERT INTO t_leading_zeroes_f VALUES (12005, '0100', 0100, 100, 'Octal like, interpret as decimal');
 INSERT INTO t_leading_zeroes_f VALUES (12006, '0000000000100', 0000000000100, 100, 'Octal like, interpret as decimal, multiple leading zeroes');
--- INSERT INTO t_leading_zeroes_f VALUES (12010, '-0', -0, 0, 'Single zero negative');
 INSERT INTO t_leading_zeroes_f VALUES (12013, '-01', -01, -1, 'Octal like, interpret as decimal negative');
 INSERT INTO t_leading_zeroes_f VALUES (12014, '-08', -08, -8, 'Octal like, interpret as decimal negative');
 INSERT INTO t_leading_zeroes_f VALUES (12015, '-0100', -0100, -100, 'Octal like, interpret as decimal negative');

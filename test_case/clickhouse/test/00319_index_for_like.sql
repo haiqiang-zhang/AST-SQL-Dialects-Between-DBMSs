@@ -22,8 +22,6 @@ SELECT s FROM index_for_like WHERE s LIKE 'Hello %';
 SET max_rows_to_read = 3;
 SELECT s FROM index_for_like WHERE s LIKE 'Hello,%';
 SET max_rows_to_read = 1;
-SELECT s FROM index_for_like WHERE s LIKE 'Hello;
-%';
 SET max_rows_to_read = 5;
 SELECT s FROM index_for_like WHERE s LIKE 'H%';
 SET max_rows_to_read = 4;

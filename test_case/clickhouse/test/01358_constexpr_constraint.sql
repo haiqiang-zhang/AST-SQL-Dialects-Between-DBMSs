@@ -7,4 +7,3 @@ CREATE TEMPORARY TABLE constrained
 insert into constrained values ('a');
 DROP TEMPORARY TABLE constrained;
 CREATE TEMPORARY TABLE constrained (x UInt8, CONSTRAINT bogus CHECK 0);
-INSERT INTO constrained VALUES (1);

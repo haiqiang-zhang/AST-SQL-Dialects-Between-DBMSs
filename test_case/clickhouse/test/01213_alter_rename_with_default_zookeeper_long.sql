@@ -18,20 +18,4 @@ SELECT value2 FROM table_rename_with_default WHERE key = 1;
 SELECT value3 FROM table_rename_with_default WHERE key = 1;
 DROP TABLE IF EXISTS table_rename_with_default;
 DROP TABLE IF EXISTS table_rename_with_ttl;
-CREATE TABLE table_rename_with_ttl
-(
-  date1 Date,
-  date2 Date,
-  value1 String,
-  value2 String TTL date1 + INTERVAL 500 MONTH
-)
-ENGINE = ReplicatedMergeTree('/clickhouse/{database}/test_01213/table_rename_with_ttl', '1')
-ORDER BY tuple()
-TTL date2 + INTERVAL 500 MONTH;
-INSERT INTO table_rename_with_ttl SELECT toDateTime(toDate('2019-10-01') + number % 3, 'Asia/Istanbul'), toDateTime(toDate('2018-10-01') + number % 3, 'Asia/Istanbul'), toString(number), toString(number) from numbers(9);
-SHOW CREATE TABLE table_rename_with_ttl;
-ALTER TABLE table_rename_with_ttl RENAME COLUMN date1 TO renamed_date1;
-SHOW CREATE TABLE table_rename_with_ttl;
-ALTER TABLE table_rename_with_ttl RENAME COLUMN date2 TO renamed_date2;
-SHOW CREATE TABLE table_rename_with_ttl;
 DROP TABLE IF EXISTS table_rename_with_ttl;

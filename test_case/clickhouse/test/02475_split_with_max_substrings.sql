@@ -1,11 +1,4 @@
 SELECT '-- negative tests';
-SELECT splitByChar(',', '1,2,3', '');
-SELECT splitByRegexp('[ABC]', 'oneAtwoBthreeC', '');
-SELECT alphaTokens('abca1abc', '');
-SELECT splitByAlpha('abca1abc', '');
-SELECT splitByNonAlpha('  1!  a,  b.  ',  '');
-SELECT splitByWhitespace('  1!  a,  b.  ', '');
-SELECT splitByString(', ', '1, 2 3, 4,5, abcde', '');
 SELECT '-- splitByChar';
 SELECT '-- (default)';
 SELECT splitByChar('=', 'a==b=c=d');

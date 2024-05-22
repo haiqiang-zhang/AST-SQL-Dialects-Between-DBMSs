@@ -21,7 +21,6 @@ create materialized view mv_02231 to buffer_02231 as select
     groupArrayState(toString(number)) as v1
 from in_02231
 group by key;
-insert into in_02231 select * from numbers(10e6) settings max_memory_usage='310Mi', max_threads=1;
 drop table buffer_02231;
 drop table out_02231;
 drop table in_02231;

@@ -24,6 +24,4 @@ SET local_filesystem_read_method = 'pread';
 set load_marks_asynchronously = 0;
 SELECT max(x) FROM select_final FINAL;
 SYSTEM FLUSH LOGS;
-SELECT length(thread_ids) FROM system.query_log WHERE query='SELECT max(x) FROM select_final FINAL;
-' AND type='QueryFinish' AND current_database = currentDatabase() ORDER BY event_time DESC LIMIT 1;
 DROP TABLE select_final;

@@ -86,7 +86,6 @@ CREATE DICTIONARY test_dictionary_10_shards_incremental
 SOURCE(CLICKHOUSE(TABLE test_table_last_access UPDATE_FIELD last_access))
 LAYOUT(SPARSE_HASHED(SHARDS 10))
 LIFETIME(0);
-SYSTEM RELOAD DICTIONARY test_dictionary_10_shards_incremental;
 DROP DICTIONARY test_dictionary_10_shards_incremental;
 DROP TABLE test_table;
 DROP TABLE test_table_nullable;

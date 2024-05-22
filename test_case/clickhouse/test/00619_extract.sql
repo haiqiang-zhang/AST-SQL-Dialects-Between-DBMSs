@@ -13,5 +13,3 @@ insert into Orders values (1,   'Jarlsberg Cheese',    toDateTime('2008-10-11 13
 SELECT EXTRACT(YYYY FROM OrderDate) AS OrderYear, EXTRACT(MONTH FROM OrderDate) AS OrderMonth, EXTRACT(DAY FROM OrderDate) AS OrderDay,
      EXTRACT(HOUR FROM OrderDate), EXTRACT(MINUTE FROM OrderDate), EXTRACT(SECOND FROM OrderDate) FROM Orders WHERE OrderId=1;
 DROP TABLE Orders;
--- SELECT EXTRACT(WEEK FROM toDate('2017-06-15'));
--- SELECT EXTRACT (YEAR FROM DATE '2014-08-22') AS RESULT;

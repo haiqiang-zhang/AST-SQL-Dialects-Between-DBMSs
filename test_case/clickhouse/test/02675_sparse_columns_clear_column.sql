@@ -20,4 +20,3 @@ WHERE database = currentDatabase() AND table = 't_sparse_columns_clear' AND acti
 ORDER BY column;
 DROP TABLE t_sparse_columns_clear SYNC;
 SYSTEM FLUSH LOGS;
-SELECT count(), groupArray(message) FROM system.text_log WHERE logger_name LIKE '%' || currentDatabase() || '.t_sparse_columns_clear' || '%' AND level = 'Error';

@@ -25,7 +25,6 @@ CREATE TABLE pk_order (d DateTime, a Int32, b Int32) ENGINE = MergeTree ORDER BY
 INSERT INTO pk_order
     SELECT toDateTime('2019-05-05 00:00:00') + INTERVAL number % 10 DAY, number, intHash32(number) from numbers(100);
 set max_block_size = 1;
--- SET max_rows_to_read = 10;
 SELECT d FROM pk_order ORDER BY d LIMIT 5;
 SELECT d, b FROM pk_order ORDER BY d, b LIMIT 5;
 SELECT d, a FROM pk_order ORDER BY d DESC, a DESC LIMIT 5;

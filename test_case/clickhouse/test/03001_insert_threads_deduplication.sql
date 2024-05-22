@@ -30,15 +30,7 @@ INSERT INTO ds SELECT * FROM landing
 SETTINGS insert_deduplicate=1, insert_deduplication_token='token2',
          max_insert_threads=1;
 SELECT count() FROM ds;
--- due to the being using the two shards cluster
-
-INSERT INTO ds SELECT * FROM landing_dist
-SETTINGS insert_deduplicate=1, insert_deduplication_token='token3',
-         max_insert_threads=5;
 SELECT count() FROM ds;
-INSERT INTO ds SELECT * FROM landing_dist
-SETTINGS insert_deduplicate=1, insert_deduplication_token='token4',
-         max_insert_threads=1;
 SELECT count() FROM ds;
 DROP TABLE IF EXISTS landing SYNC;
 DROP TABLE IF EXISTS landing_dist SYNC;

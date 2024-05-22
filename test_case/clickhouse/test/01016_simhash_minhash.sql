@@ -99,7 +99,4 @@ SELECT 'wordShingleMinHashUTF8';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), wordShingleMinHashUTF8(s, 2, 3) as h FROM defaults GROUP BY h ORDER BY h;
 SELECT 'wordShingleMinHashCaseInsensitiveUTF8';
 SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), wordShingleMinHashCaseInsensitiveUTF8(s, 2, 3) as h FROM defaults GROUP BY h ORDER BY h;
-SELECT wordShingleSimHash('foobar', 9223372036854775807);
-SELECT wordShingleSimHash('foobar', 1001);
-SELECT wordShingleSimHash('foobar', 0);
 DROP TABLE defaults;

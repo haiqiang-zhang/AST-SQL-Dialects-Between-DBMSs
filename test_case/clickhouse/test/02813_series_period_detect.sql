@@ -12,7 +12,3 @@ SELECT seriesPeriodDetectFFT(arrayMap(x -> if((x % 6) < 3, 3, 0), range(1000)));
 SELECT seriesPeriodDetectFFT([1,2,3]);
 SELECT seriesPeriodDetectFFT(a) FROM tb1;
 DROP TABLE IF EXISTS tb1;
-SELECT seriesPeriodDetectFFT();
-SELECT seriesPeriodDetectFFT([]);
-SELECT seriesPeriodDetectFFT([NULL, NULL, NULL]);
-SELECT seriesPeriodDetectFFT([10, 20, 30, 10, 202, 30, NULL]);

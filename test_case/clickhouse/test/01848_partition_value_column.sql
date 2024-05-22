@@ -9,7 +9,5 @@ select count() from tbl where _partition_value.2 = 0 settings max_rows_to_read =
 select count() from tbl where _partition_value.3 = 4 settings max_rows_to_read = 1;
 create table tbl2(i int) engine MergeTree order by i;
 insert into tbl2 values (1);
-select _partition_value from tbl2;
-select _partition_value from tbl2 group by 1;
 drop table tbl;
 drop table tbl2;

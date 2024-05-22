@@ -8,6 +8,5 @@ EXPLAIN SYNTAX SELECT * FROM test_view WHERE id = 1;
 EXPLAIN SYNTAX SELECT * FROM test_view WHERE id = 2;
 EXPLAIN SYNTAX SELECT id FROM test_view WHERE id  = 1;
 EXPLAIN SYNTAX SELECT s.id FROM test_view AS s WHERE s.id = 1;
-SELECT * FROM (SELECT toUInt64(b), sum(id) AS b FROM test) WHERE `toUInt64(sum(id))` = 3;
 DROP TABLE IF EXISTS test;
 DROP TABLE IF EXISTS test_view;

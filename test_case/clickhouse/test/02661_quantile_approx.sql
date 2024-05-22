@@ -21,22 +21,7 @@ FROM
     SELECT quantilesGKState(100, 0.5, 0.9, 0.99)(number + 1) AS x
     FROM numbers(49999)
 );
-select medianGK()(number) from numbers(10) SETTINGS allow_experimental_analyzer = 0;
-select medianGK()(number) from numbers(10) SETTINGS allow_experimental_analyzer = 1;
-select quantileGK()(number) from numbers(10) SETTINGS allow_experimental_analyzer = 0;
-select quantileGK()(number) from numbers(10) SETTINGS allow_experimental_analyzer = 1;
 select medianGK(100)(number) from numbers(10);
 select quantileGK(100)(number) from numbers(10);
 select quantileGK(100, 0.5)(number) from numbers(10);
-select quantileGK(100, 0.5, 0.75)(number) from numbers(10);
-select quantileGK('abc', 0.5)(number) from numbers(10);
-select quantileGK(1.23, 0.5)(number) from numbers(10);
-select quantileGK(-100, 0.5)(number) from numbers(10);
-select quantilesGK()(number) from numbers(10) SETTINGS allow_experimental_analyzer = 0;
-select quantilesGK()(number) from numbers(10) SETTINGS allow_experimental_analyzer = 1;
-select quantilesGK(100)(number) from numbers(10);
 select quantilesGK(100, 0.5)(number) from numbers(10);
-select quantilesGK('abc', 0.5, 0.75)(number) from numbers(10);
-select quantilesGK(1.23, 0.5, 0.75)(number) from numbers(10);
-select quantilesGK(-100, 0.5, 0.75)(number) from numbers(10);
--- { echoOff };

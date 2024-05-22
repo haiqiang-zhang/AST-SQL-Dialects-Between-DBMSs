@@ -16,9 +16,3 @@ SELECT number, argMaxState(number::String, '2023-04-12 16:23:01'::DateTime)
 FROM numbers(990)
 GROUP BY number;
 SYSTEM FLUSH LOGS;
-' AND
-    type = 2 AND event_date >= yesterday()
-ORDER BY event_time_microseconds;
-' AND
-    type = 2 AND event_date >= yesterday()
-ORDER BY event_time_microseconds;

@@ -24,6 +24,3 @@ select mapPopulateSeries(map(toInt16(-10), toInt16(1), 2, 1)) as res, toTypeName
 select mapPopulateSeries(map(toInt32(-10), toInt32(1), 2, 1)) as res, toTypeName(res);
 select mapPopulateSeries(map(toInt64(-10), toInt64(1), 2, 1)) as res, toTypeName(res);
 select mapPopulateSeries(map(toInt64(-10), toInt64(1), 2, 1), toInt64(-5)) as res, toTypeName(res);
-select mapPopulateSeries();
-select mapPopulateSeries('asdf');
-select mapPopulateSeries(map('1', 1, '2', 1)) as res, toTypeName(res);

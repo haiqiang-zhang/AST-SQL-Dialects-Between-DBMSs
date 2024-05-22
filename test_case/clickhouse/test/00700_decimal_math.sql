@@ -28,6 +28,3 @@ SELECT toDecimal128('42.42', 4) AS x, round(lgamma(x), 6), round(tgamma(x) / 1e5
 SELECT toDecimal128('0.0', 2) AS x, round(sin(x), 8), round(cos(x), 8), round(tan(x), 8);
 SELECT toDecimal128(pi(), 14) AS x, round(sin(x), 8), round(cos(x), 8), round(tan(x), 8);
 SELECT toDecimal128('1.0', 2) AS x, asin(x), acos(x), atan(x);
-SELECT toDecimal32('4.2', 1) AS x, pow(x, 2), pow(x, 0.5);
-SELECT toDecimal64('4.2', 1) AS x, pow(x, 2), pow(x, 0.5);
-SELECT toDecimal128('4.2', 1) AS x, pow(x, 2), pow(x, 0.5);

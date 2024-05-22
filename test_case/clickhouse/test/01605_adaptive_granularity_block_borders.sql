@@ -12,7 +12,6 @@ min_bytes_for_wide_part = 0,
 min_rows_for_wide_part = 0,
 enable_vertical_merge_algorithm = 0;
 SET max_block_size=900;
-INSERT INTO adaptive_table SELECT number, if(number > 700, randomPrintableASCII(102400), randomPrintableASCII(1)) FROM numbers(10000);
 OPTIMIZE TABLE adaptive_table FINAL;
 SELECT marks FROM system.parts WHERE table = 'adaptive_table' and database=currentDatabase() and active;
 SET enable_filesystem_cache = 0;

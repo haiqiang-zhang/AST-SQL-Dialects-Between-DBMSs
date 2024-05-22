@@ -183,9 +183,8 @@ select [1] = multiSearchAllPositions(materialize('abc'), materialize([''])) from
 select [1] = multiSearchAllPositions(materialize('abab'), materialize(['ab']));
 select [2] = multiSearchAllPositions(materialize('abab'), materialize(['ba']));
 select [1] = multiSearchAllPositionsCaseInsensitive(materialize('aBaB'), materialize(['abab']));
-select [3] = multiSearchAllPositionsUTF8(materialize('abâ¬ab'), materialize(['â¬']));
-select [3] = multiSearchAllPositionsCaseInsensitiveUTF8(materialize('abâ¬AB'), materialize(['â¬ab']));
-select [0] = multiSearchAllPositionsCaseInsensitiveUTF8(materialize(''), materialize(['a\x90\x90\x90\x90\x90\x90']));
+select [3] = multiSearchAllPositionsUTF8(materialize('abÃÂ¢ÃÂÃÂ¬ab'), materialize(['ÃÂ¢ÃÂÃÂ¬']));
+select [3] = multiSearchAllPositionsCaseInsensitiveUTF8(materialize('abÃÂ¢ÃÂÃÂ¬AB'), materialize(['ÃÂ¢ÃÂÃÂ¬ab']));
 select 1 = multiSearchAny(materialize('abcdefgh'), ['b']);
 select 1 = multiSearchAny(materialize('abcdefgh'), ['bc']);
 select 1 = multiSearchAny(materialize('abcdefgh'), ['bcd']);
@@ -361,18 +360,18 @@ select 1 = multiSearchFirstPositionCaseInsensitive(materialize('abCDefgh'), ['de
 select 1 = multiSearchFirstPositionCaseInsensitive(materialize('abCdeFgH'), ['', 'bcd', 'bcd', 'c']) from system.numbers limit 10;
 select 2 = multiSearchFirstPositionCaseInsensitive(materialize('ABCDEFGH'), ['something', 'bcd', 'bcd', 'c']) from system.numbers limit 10;
 select 6 = multiSearchFirstPositionCaseInsensitive(materialize('abcdefgh'), ['sOmEthIng', 'bcdZ', 'fGh', 'F']) from system.numbers limit 10;
-select 0 = multiSearchFirstPositionUTF8(materialize('Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·'), ['Ð»', 'Ñ']) from system.numbers limit 10;
-select 1 = multiSearchFirstPositionUTF8(materialize('Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·'), ['Ð°', 'Ð±', 'Ð²', 'Ð³']) from system.numbers limit 10;
-select 1 = multiSearchFirstPositionUTF8(materialize('Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·'), ['Ð³Ð´ÐµÐ¶Ð·', 'Ð±Ð²Ð³', 'Ð°Ð±Ð²Ð³', 'Ð²Ð³']) from system.numbers limit 10;
-select 1 = multiSearchFirstPositionUTF8(materialize('Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·'), ['', 'Ð±Ð²Ð³', 'Ð±Ð²Ð³', 'Ð²']) from system.numbers limit 10;
-select 2 = multiSearchFirstPositionUTF8(materialize('Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·'), ['ÑÑÐ¾', 'Ð²', 'Ð³Ð´Ð·', 'Ð±Ð²Ð³']) from system.numbers limit 10;
-select 6 = multiSearchFirstPositionUTF8(materialize('Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·'), ['Ð·', 'Ð±Ð²Ð³Ñ', 'ÐµÐ¶Ð·', 'Ð·']) from system.numbers limit 10;
-select 0 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('Ð°ÐÐ²Ð³ÐÐµÐ¶Ð·'), ['Ð', 'Ðª']) from system.numbers limit 10;
-select 1 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('Ð°ÐÐ²Ð³ÐÐµÐ¶Ð·'), ['Ð', 'Ð±', 'Ð²', 'Ð³']) from system.numbers limit 10;
-select 1 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('Ð°ÐÐ²Ð³ÐÐµÐ¶Ð·'), ['Ð³ÐÐµÐÐ·', 'Ð±ÐÐ³', 'ÐÐÐÐ³', 'Ð²Ð³']) from system.numbers limit 10;
-select 1 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('Ð°ÐÐ²Ð³ÐÐµÐ¶Ð·'), ['', 'Ð±Ð²Ð³', 'ÐÐ²Ð³', 'Ð²']) from system.numbers limit 10;
-select 2 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('Ð°ÐÐ²Ð³ÐÐµÐ¶Ð·'), ['ÑÑÐ¾', 'Ð²', 'Ð³Ð´Ð·', 'Ð±Ð²Ð³']) from system.numbers limit 10;
-select 6 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('Ð°ÐÐ²Ð³ÐÐµÐ¶Ð'), ['Ð', 'Ð±Ð²Ð³Ð¯', 'ÐÐÐ·', 'Ð·']) from system.numbers limit 10;
+select 0 = multiSearchFirstPositionUTF8(materialize('ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ»', 'ÃÂÃÂ']) from system.numbers limit 10;
+select 1 = multiSearchFirstPositionUTF8(materialize('ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ°', 'ÃÂÃÂ±', 'ÃÂÃÂ²', 'ÃÂÃÂ³']) from system.numbers limit 10;
+select 1 = multiSearchFirstPositionUTF8(materialize('ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³', 'ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³', 'ÃÂÃÂ²ÃÂÃÂ³']) from system.numbers limit 10;
+select 1 = multiSearchFirstPositionUTF8(materialize('ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³', 'ÃÂÃÂ²']) from system.numbers limit 10;
+select 2 = multiSearchFirstPositionUTF8(materialize('ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂÃÂÃÂÃÂÃÂ¾', 'ÃÂÃÂ²', 'ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ·', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³']) from system.numbers limit 10;
+select 6 = multiSearchFirstPositionUTF8(materialize('ÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ·', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ', 'ÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·', 'ÃÂÃÂ·']) from system.numbers limit 10;
+select 0 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('ÃÂÃÂ°ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ', 'ÃÂÃÂª']) from system.numbers limit 10;
+select 1 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('ÃÂÃÂ°ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ', 'ÃÂÃÂ±', 'ÃÂÃÂ²', 'ÃÂÃÂ³']) from system.numbers limit 10;
+select 1 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('ÃÂÃÂ°ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ·', 'ÃÂÃÂ±ÃÂÃÂÃÂÃÂ³', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³', 'ÃÂÃÂ²ÃÂÃÂ³']) from system.numbers limit 10;
+select 1 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('ÃÂÃÂ°ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³', 'ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³', 'ÃÂÃÂ²']) from system.numbers limit 10;
+select 2 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('ÃÂÃÂ°ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ·'), ['ÃÂÃÂÃÂÃÂÃÂÃÂ¾', 'ÃÂÃÂ²', 'ÃÂÃÂ³ÃÂÃÂ´ÃÂÃÂ·', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³']) from system.numbers limit 10;
+select 6 = multiSearchFirstPositionCaseInsensitiveUTF8(materialize('ÃÂÃÂ°ÃÂÃÂÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ'), ['ÃÂÃÂ', 'ÃÂÃÂ±ÃÂÃÂ²ÃÂÃÂ³ÃÂÃÂ¯', 'ÃÂÃÂÃÂÃÂÃÂÃÂ·', 'ÃÂÃÂ·']) from system.numbers limit 10;
 select
 [
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -431,21 +430,3 @@ select 255 = multiSearchFirstIndex(materialize('string'),
 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'str']);
-select multiSearchAllPositions(materialize('string'),
-['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'str']);
-select multiSearchFirstIndex(materialize('string'),
-['o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'str']);

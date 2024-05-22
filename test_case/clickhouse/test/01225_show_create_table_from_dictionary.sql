@@ -14,6 +14,5 @@ PRIMARY KEY key
 SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'dict_data' PASSWORD '' DB 'dict_db_01225'))
 LIFETIME(MIN 0 MAX 0)
 LAYOUT(FLAT());
-SHOW CREATE TABLE dict_db_01225_dictionary.`dict_db_01225.no_such_dict`;
 DROP DATABASE dict_db_01225;
 DROP DATABASE dict_db_01225_dictionary;

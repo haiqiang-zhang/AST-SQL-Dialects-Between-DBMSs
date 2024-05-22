@@ -40,16 +40,4 @@ select regexpExtract(materialize('100-200'), '(\\d+)-(\\d+)', number) from numbe
 select regexpExtract(number::String || '-' || (2*number)::String, '(\\d+)-(\\d+)', 1) from numbers(3);
 select regexpExtract(number::String || '-' || (2*number)::String, '(\\d+)-(\\d+)', number%3) from numbers(5);
 select regexpExtract('100-200100-200', '(\\d+)-(\\d+)(\\d+)-(\\d+)', materialize(3));
-select regexpExtract('100-200');
-select regexpExtract('100-200', '(\\d+)-(\\d+)', 1, 2);
-select regexpExtract(cast('100-200' as FixedString(10)), '(\\d+)-(\\d+)', 1);
-select regexpExtract('100-200', cast('(\\d+)-(\\d+)' as FixedString(20)), 1);
-select regexpExtract('100-200', '(\\d+)-(\\d+)', 'a');
-select regexpExtract(100, '(\\d+)-(\\d+)', 1);
-select regexpExtract('100-200', 1, 1);
-select regexpExtract('100-200', materialize('(\\d+)-(\\d+)'), 1);
-select regexpExtract('100-200', '(\\d+)-(\\d+)', 3);
-select regexpExtract('100-200', '(\\d+)-(\\d+)', -1);
 select regexpExtract('100-200', '\\d+-\\d+', 0);
-select regexpExtract('100-200', '\\d+-\\d+', 1);
--- { echoOff };

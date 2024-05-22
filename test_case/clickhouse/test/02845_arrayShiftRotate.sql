@@ -66,5 +66,3 @@ select arrayShiftRight(a, s, d) from t02845;
 select '== problematic cast cases';
 select arrayShiftLeft([30000], 3, 5);
 select arrayShiftLeft([[1]], 3, []);
-select arrayShiftLeft(['foo'], 3, 3);
-select arrayShiftLeft([1], 3, 'foo');

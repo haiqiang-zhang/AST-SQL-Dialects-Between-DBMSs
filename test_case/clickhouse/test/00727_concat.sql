@@ -84,4 +84,3 @@ SELECT concat(materialize('foo'));
 SELECT concat(NULL);
 SELECT concat(materialize(NULL :: Nullable(UInt64)));
 SELECT CONCAT('Testing the ', 'alias');
-SELECT concat();

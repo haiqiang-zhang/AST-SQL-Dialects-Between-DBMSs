@@ -14,22 +14,6 @@ SELECT n, source, inter FROM (
 SELECT n, source, inter FROM (
    SELECT toFloat32(number % 10) AS n, 'original' AS source, number as inter FROM numbers(10) WHERE number % 3 = 1
 ) ORDER BY n WITH FILL FROM 0 TO 11.51 STEP 0.5 INTERPOLATE (inter AS inter + 1);
-# Test INTERPOLATE with incompatible const - should produce error
-SELECT n, source, inter FROM (
-   SELECT toFloat32(number % 10) AS n, 'original' AS source, number as inter FROM numbers(10) WHERE number % 3 = 1
-) ORDER BY n WITH FILL FROM 0 TO 11.51 STEP 0.5 INTERPOLATE (inter AS 'inter');
-# Test INTERPOLATE with incompatible expression - should produce error
-SELECT n, source, inter FROM (
-   SELECT toFloat32(number % 10) AS n, 'original' AS source, number as inter FROM numbers(10) WHERE number % 3 = 1
-) ORDER BY n WITH FILL FROM 0 TO 11.51 STEP 0.5 INTERPOLATE (inter AS reverse(inter));
-# Test INTERPOLATE with column from WITH FILL expression - should produce error
-SELECT n, source, inter FROM (
-   SELECT toFloat32(number % 10) AS n, 'original' AS source, number as inter FROM numbers(10) WHERE number % 3 = 1
-) ORDER BY n WITH FILL FROM 0 TO 11.51 STEP 0.5 INTERPOLATE (n AS n);
-# Test INTERPOLATE with inconsistent column - should produce error
-SELECT n, source, inter FROM (
-   SELECT toFloat32(number % 10) AS n, 'original' AS source, number as inter FROM numbers(10) WHERE number % 3 = 1
-) ORDER BY n WITH FILL FROM 0 TO 11.51 STEP 0.5 INTERPOLATE (inter AS source);
 # Test INTERPOLATE with aliased column
 SELECT n, source, inter + 1 AS inter_p FROM (
     SELECT toFloat32(number % 10) AS n, 'original' AS source, number AS inter FROM numbers(10) WHERE (number % 3) = 1

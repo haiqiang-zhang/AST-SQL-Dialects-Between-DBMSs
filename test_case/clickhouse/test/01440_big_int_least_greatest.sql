@@ -24,5 +24,3 @@ SELECT  least(toUInt8(255), toUInt256(0)) x, least(toUInt8(255), toUInt256(256))
 SELECT  least(toUInt64('18446744073709551615'), toUInt256(0)) x, least(toUInt64('18446744073709551615'), toUInt256('18446744073709551616')) x2,
         greatest(toUInt64('18446744073709551615'), toUInt256(0)) y, greatest(toUInt64('18446744073709551615'), toUInt256('18446744073709551616')) y2,
         toTypeName(x), toTypeName(y);
-SELECT least(toUInt32(0), toInt256(0)), greatest(toInt32(0), toUInt256(0));
-SELECT least(toInt32(0), toUInt256(0)), greatest(toInt32(0), toUInt256(0));

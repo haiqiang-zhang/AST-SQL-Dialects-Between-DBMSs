@@ -7,5 +7,4 @@ CREATE TABLE test_table (
 ORDER BY fingerprint;
 INSERT INTO test_table VALUES (0, [[1]], ['1']);
 SELECT fields.name FROM (SELECT fields.name FROM test_table);
-SELECT fields.name, fields.value FROM (SELECT fields.name FROM test_table);
 DROP TABLE IF EXISTS test_table;

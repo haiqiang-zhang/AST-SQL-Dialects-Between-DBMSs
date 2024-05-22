@@ -30,11 +30,6 @@ SELECT anyIf (number, isNull(number)) RESPECT NULLS from (SELECT if(number > 8, 
 SELECT anyLastIf (number, isNull(number)) RESPECT NULLS from (SELECT if(number > 8, NULL, number) as number FROM numbers(10));
 SELECT toTypeName(FIRST_VALUEIfState(number, isNull(number)) RESPECT NULLS) from (SELECT if(number > 8, NULL, number) as number FROM numbers(10));
 SELECT toTypeName(LAST_VALUEIfState(number, isNull(number)) RESPECT NULLS) from (SELECT if(number > 8, NULL, number) as number FROM numbers(10));
-SELECT number, sum (number) RESPECT NULLS over (order by number) from numbers(1);
-SELECT number, avgIf (number) RESPECT NULLS over (order by number) from numbers(1);
--- Same for double RESPECT NULLS
-SELECT number, first_value_respect_nulls (number) RESPECT NULLS over (order by number) from numbers(1);
-SELECT number, last_value_respect_nulls (number) RESPECT NULLS over (order by number) from numbers(1);
 -- Aggregate_functions_null_for_empty should work the same way
 SELECT toTypeName(any(number) RESPECT NULLS) from numbers(1);
 SELECT toTypeName(anyOrNull(number) RESPECT NULLS) from numbers(1);

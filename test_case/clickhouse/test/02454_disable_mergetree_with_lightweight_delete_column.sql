@@ -1,11 +1,5 @@
 drop table if exists t_row_exists;
-create table t_row_exists(a int, _row_exists int) engine=MergeTree order by a;
 create table t_row_exists(a int, b int) engine=MergeTree order by a;
-alter table t_row_exists add column _row_exists int;
-alter table t_row_exists rename column b to _row_exists;
-alter table t_row_exists rename column _row_exists to c;
-alter table t_row_exists drop column _row_exists;
-alter table t_row_exists drop column unknown_column;
 drop table t_row_exists;
 create table t_row_exists(a int, _row_exists int) engine=Memory;
 insert into t_row_exists values(1,1);

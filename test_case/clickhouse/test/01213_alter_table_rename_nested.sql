@@ -18,9 +18,4 @@ ALTER TABLE table_for_rename_nested RENAME COLUMN n.y TO n.renamed_y;
 SHOW CREATE TABLE table_for_rename_nested;
 SELECT key, n.renamed_x FROM table_for_rename_nested WHERE key = 7;
 SELECT key, n.renamed_y FROM table_for_rename_nested WHERE key = 7;
-ALTER TABLE table_for_rename_nested RENAME COLUMN n.renamed_x TO not_nested_x;
-ALTER TABLE table_for_rename_nested RENAME COLUMN n.renamed_x TO q.renamed_x;
-ALTER TABLE table_for_rename_nested RENAME COLUMN value1 TO q.renamed_x;
--- Currently not implemented
-ALTER TABLE table_for_rename_nested RENAME COLUMN n TO renamed_n;
 DROP TABLE IF EXISTS table_for_rename_nested;

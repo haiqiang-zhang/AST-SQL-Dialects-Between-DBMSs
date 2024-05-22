@@ -1,1 +1,0 @@
-SELECT number FROM system.numbers WHERE reinterpretAsString(number) = 'Ð' LIMIT 1;

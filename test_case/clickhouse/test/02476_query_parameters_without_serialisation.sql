@@ -10,8 +10,6 @@ SET param_map_2={'abc': 22, 'def': 33};
 SET param_mul_arr=[[4, 5, 6], [7], [8, 9]];
 SET param_map_arr={10: [11, 12], 13: [14, 15]};
 SET param_map_map_arr={'ghj': {'klm': [16, 17]}, 'nop': {'rst': [18]}};
-SELECT {id: Int64}, {arr: Array(UInt8)}, {map_2: Map(String, UInt8)}, {mul_arr: Array(Array(UInt8))}, {map_arr: Map(UInt8, Array(UInt8))}, {map_map_arr: Map(String, Map(String, Array(UInt8)))};
-SELECT toTypeName({id: Int64}), toTypeName({arr: Array(UInt8)}), toTypeName({map_2: Map(String, UInt8)}), toTypeName({mul_arr: Array(Array(UInt8))}), toTypeName({map_arr: Map(UInt8, Array(UInt8))}), toTypeName({map_map_arr: Map(String, Map(String, Array(UInt8)))});
 SET param_tbl=numbers;
 SET param_db=system;
 SET param_col=number;
@@ -23,4 +21,3 @@ SET param_map_arr_tuple_map={'a':[(1,{10:1, 20:2}),(2, {30:3, 40:4})], 'b':[(3, 
 SELECT {arr_arr_arr: Array(Array(Array(String)))}, toTypeName({arr_arr_arr: Array(Array(Array(String)))});
 SELECT {tuple_tuple_tuple: Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))}, toTypeName({tuple_tuple_tuple: Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))});
 SELECT {arr_map_tuple: Array(Map(UInt64, Tuple(Int16, DateTime, String)))}, toTypeName({arr_map_tuple: Array(Map(UInt64, Tuple(Int16, DateTime, String)))});
-SELECT {map_arr_tuple_map: Map(String, Array(Tuple(UInt8, Map(UInt32, Int64))))}, toTypeName({map_arr_tuple_map: Map(String, Array(Tuple(UInt8, Map(UInt32, Int64))))});

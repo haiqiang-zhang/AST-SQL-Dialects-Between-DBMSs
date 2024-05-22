@@ -1,1 +1,0 @@
-show create database {CLICKHOUSE_DATABASE:Identifier};

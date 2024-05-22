@@ -8,11 +8,7 @@ SELECT transform(toString(number), ['3', '5', '7'], [111, 222, 333], 0) FROM sys
 SELECT transform(toString(number), ['3', '5', '7'], [111, 222, 333], -1) FROM system.numbers LIMIT 10;
 SELECT transform(toString(number), ['3', '5', '7'], [111, 222, 333], -1.1) FROM system.numbers LIMIT 10;
 SELECT transform(toString(number), ['3', '5', '7'], [111, 222.2, 333], 1) FROM system.numbers LIMIT 10;
-SELECT transform(1, [2, 3], ['Bigmir)net', 'Google'], 'ÐÑÑÐ°Ð»ÑÐ½ÑÐµ') AS title;
-SELECT transform(2, [2, 3], ['Bigmir)net', 'Google'], 'ÐÑÑÐ°Ð»ÑÐ½ÑÐµ') AS title;
-SELECT transform(3, [2, 3], ['Bigmir)net', 'Google'], 'ÐÑÑÐ°Ð»ÑÐ½ÑÐµ') AS title;
-SELECT transform(4, [2, 3], ['Bigmir)net', 'Google'], 'ÐÑÑÐ°Ð»ÑÐ½ÑÐµ') AS title;
-SELECT transform('hello', 'wrong', 1);
-SELECT transform('hello', ['wrong'], 1);
-SELECT transform('hello', ['wrong'], [1]);
-SELECT transform(tuple(1), ['sdf'], [1]);
+SELECT transform(1, [2, 3], ['Bigmir)net', 'Google'], 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂµ') AS title;
+SELECT transform(2, [2, 3], ['Bigmir)net', 'Google'], 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂµ') AS title;
+SELECT transform(3, [2, 3], ['Bigmir)net', 'Google'], 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂµ') AS title;
+SELECT transform(4, [2, 3], ['Bigmir)net', 'Google'], 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂµ') AS title;

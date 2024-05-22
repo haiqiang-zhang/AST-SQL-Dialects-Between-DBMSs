@@ -13,5 +13,4 @@ insert into test_collation values ('C', 'C');
 insert into test_collation values ('a', 'a');
 insert into test_collation values ('b', 'b');
 insert into test_collation values ('c', 'c');
-SELECT * FROM test_collation ORDER BY v ASC COLLATE 'en';
 DROP TABLE test_collation;

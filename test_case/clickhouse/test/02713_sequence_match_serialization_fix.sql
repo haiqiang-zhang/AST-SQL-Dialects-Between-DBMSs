@@ -24,5 +24,3 @@ FROM
 );
 SELECT 'serialized state is used', sequenceMatchMerge('(?1)(?2)')(seq) AS seq
 FROM 02713_seqt;
-CREATE TABLE 02713_seqt_distr ( seq AggregateFunction(sequenceMatch('(?1)(?2)'), UInt64, UInt8, UInt8) , n UInt8) ENGINE = Distributed(test_shard_localhost, currentDatabase(), '02713_seqt');
-SELECT 'via Distributed', sequenceMatchMerge('(?1)(?2)')(seq) AS seq FROM 02713_seqt_distr;

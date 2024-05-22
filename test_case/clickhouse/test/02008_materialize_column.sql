@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS tmp;
 SET mutations_sync = 2;
 CREATE TABLE tmp (x Int64) ENGINE = MergeTree() ORDER BY tuple() PARTITION BY tuple();
 INSERT INTO tmp SELECT * FROM system.numbers LIMIT 20;
-ALTER TABLE tmp MATERIALIZE COLUMN x;
 ALTER TABLE tmp ADD COLUMN s String DEFAULT toString(x);
 SELECT arraySort(arraySort(groupArray(x))), groupArray(s) FROM tmp;
 ALTER TABLE tmp MODIFY COLUMN s String DEFAULT toString(x+1);

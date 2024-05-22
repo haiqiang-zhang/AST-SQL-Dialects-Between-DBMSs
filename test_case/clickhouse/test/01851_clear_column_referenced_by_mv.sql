@@ -15,10 +15,6 @@ SELECT
     n2,
     n3
 FROM `01851_merge_tree`;
-ALTER TABLE `01851_merge_tree`
-    DROP COLUMN n3;
-ALTER TABLE `01851_merge_tree`
-    DROP COLUMN n2;
 -- ok
 ALTER TABLE `01851_merge_tree`
     DROP COLUMN n4;

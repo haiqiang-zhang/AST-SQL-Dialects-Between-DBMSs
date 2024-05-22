@@ -1,11 +1,5 @@
 set allow_suspicious_primary_key = 0;
 DROP TABLE IF EXISTS data;
-create table data (key Int, value AggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() order by (key, value);
-create table data (key Int, value SimpleAggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() order by (key, value);
-create table data (key Int, value AggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() primary key value;
-create table data (key Int, value SimpleAggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() primary key value;
-create table data (key Int, value AggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() primary key value order by (value, key);
-create table data (key Int, value SimpleAggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() primary key value order by (value, key);
 set allow_suspicious_primary_key = 1;
 create table data (key Int, value SimpleAggregateFunction(sum, UInt64)) engine=AggregatingMergeTree() primary key value order by (value, key);
 DROP TABLE data;

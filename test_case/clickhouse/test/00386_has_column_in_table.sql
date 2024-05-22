@@ -17,10 +17,4 @@ SELECT hasColumnInTable('localhost', currentDatabase(), 'has_column_in_table', '
 SELECT hasColumnInTable(currentDatabase(), 'has_column_in_table', 'not_existing');
 SELECT hasColumnInTable('localhost', currentDatabase(), 'has_column_in_table', 'not_existing');
 SELECT hasColumnInTable('system', 'one', '');
-/* bad queries */
-SELECT hasColumnInTable('', '', '');
-SELECT hasColumnInTable('', 't', 'c');
-SELECT hasColumnInTable(currentDatabase(), '', 'c');
-SELECT hasColumnInTable('d', 't', 's');
-SELECT hasColumnInTable(currentDatabase(), 't', 's');
 DROP TABLE has_column_in_table;

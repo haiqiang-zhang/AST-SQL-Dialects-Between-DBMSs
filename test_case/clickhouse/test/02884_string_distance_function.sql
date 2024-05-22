@@ -10,10 +10,6 @@ SELECT '-- test aliases';
 SELECT 'clickhouse' AS s1, 'mouse' AS s2, mismatches(s1, s2);
 SELECT 'clickhouse' AS s1, 'mouse' AS s2, levenshteinDistance(s1, s2);
 SELECT '-- Deny DoS using too large inputs';
-SELECT editDistance(randomString(power(2, 17)), 'abc');
-SELECT damerauLevenshteinDistance(randomString(power(2, 17)), 'abc');
-SELECT jaroSimilarity(randomString(power(2, 17)), 'abc');
-SELECT jaroWinklerSimilarity(randomString(power(2, 17)), 'abc');
 DROP TABLE IF EXISTS t;
 CREATE TABLE t
 (
@@ -31,15 +27,7 @@ SELECT 'jaroSimilarity', s1, s2, jaroSimilarity(s1, s2) FROM t ORDER BY ALL;
 SELECT 'jaroWinklerSimilarity', s1, s2, jaroWinklerSimilarity(s1, s2) FROM t ORDER BY ALL;
 SELECT '-- Special UTF-8 tests';
 SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\x48\x65\x6C'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xFF\xFF\xFF\xFF'));
 SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\x41\xE2\x82\xAC'));
 SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xF0\x9F\x99\x82'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xFF'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xC2\x01'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xC1\x81'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xF0\x80\x80\x41'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xC0\x80'));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xD8\x00 '));
-SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xDC\x00'));
-SELECT stringJaccardIndexUTF8('ðð', 'ððð'), stringJaccardIndex('ðð', 'ððð');
+SELECT stringJaccardIndexUTF8('Ã°ÂÂÂÃ°ÂÂÂ', 'Ã°ÂÂÂÃ°ÂÂÂÃ°ÂÂÂ'), stringJaccardIndex('Ã°ÂÂÂÃ°ÂÂÂ', 'Ã°ÂÂÂÃ°ÂÂÂÃ°ÂÂÂ');
 DROP TABLE t;

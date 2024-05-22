@@ -1,5 +1,3 @@
-SELECT fuzzBits(toString('string'), 1);
-SELECT fuzzBits('string', -1.0);
 SELECT fuzzBits('', 0.3);
 SELECT length(fuzzBits(randomString(100), 0.5));
 SELECT toTypeName(fuzzBits(randomString(100), 0.5));

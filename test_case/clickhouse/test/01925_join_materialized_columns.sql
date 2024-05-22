@@ -48,6 +48,4 @@ SELECT t1.time as talias FROM t1 JOIN t2 ON talias = t2.time;
 SELECT t1.time as talias FROM t1 JOIN t2 ON talias = t2.time_alias;
 SELECT t2.time as talias FROM t1 JOIN t2 ON t1.time = talias;
 SELECT t2.time as talias FROM t1 JOIN t2 ON t1.time_alias = talias;
-SELECT time as talias FROM t1 JOIN t2 ON t1.time = talias;
-SELECT time as talias FROM t1 JOIN t2 ON talias = t2.time settings allow_experimental_analyzer=0;
 SELECT time as talias FROM t1 JOIN t2 ON talias = t2.time settings allow_experimental_analyzer=1;

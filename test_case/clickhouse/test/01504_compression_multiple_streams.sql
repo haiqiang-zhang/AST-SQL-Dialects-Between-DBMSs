@@ -50,16 +50,6 @@ INSERT INTO columns_with_multiple_streams_compact VALUES(3, 3, [[3]], tuple(3, [
 SELECT * FROM columns_with_multiple_streams_compact ORDER BY field0;
 DROP TABLE IF EXISTS columns_with_multiple_streams_compact;
 DROP TABLE IF EXISTS columns_with_multiple_streams_bad_case;
-CREATE TABLE columns_with_multiple_streams_bad_case (
-  field0 Nullable(String) CODEC(Delta, LZ4)
-)
-ENGINE = MergeTree
-ORDER BY tuple();
-CREATE TABLE columns_with_multiple_streams_bad_case (
-  field0 Tuple(Array(UInt64), String) CODEC(T64, LZ4)
-)
-ENGINE = MergeTree
-ORDER BY tuple();
 SET allow_suspicious_codecs = 1;
 CREATE TABLE columns_with_multiple_streams_bad_case (
   field0 Nullable(UInt64) CODEC(Delta)

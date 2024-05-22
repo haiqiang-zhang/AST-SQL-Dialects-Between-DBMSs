@@ -1,6 +1,4 @@
 SET allow_suspicious_low_cardinality_types=1;
-SELECT concatWithSeparator(materialize('|'), 'a', 'b');
-SELECT concatWithSeparator();
 -- special cases
 SELECT concatWithSeparator('|') = '';
 SELECT concatWithSeparator('|', 'a') == 'a';
@@ -48,8 +46,6 @@ SELECT concatWithSeparator('|', 'a', materialize('foo' :: LowCardinality(String)
 SELECT concatWithSeparator('|', 'a', materialize('bar' :: LowCardinality(FixedString(3)))) == 'a|bar';
 SELECT concatWithSeparator('|', 'a', materialize('foo' :: LowCardinality(Nullable(String)))) == 'a|foo';
 SELECT concatWithSeparator('|', 'a', materialize('bar' :: LowCardinality(Nullable(FixedString(3))))) == 'a|bar';
-SELECT concatWithSeparator('|', 'a', materialize(42 :: LowCardinality(Nullable(UInt32)))) == 'a|42';
-SELECT concatWithSeparator('|', 'a', materialize(42 :: LowCardinality(UInt32))) == 'a|42';
 SELECT concatWithSeparator('|', 'a', materialize('fae310ca-d52a-4923-9e9b-02bf67f4b009' :: UUID)) == 'a|fae310ca-d52a-4923-9e9b-02bf67f4b009';
 SELECT concatWithSeparator('|', 'a', materialize('2023-11-14' :: Date)) == 'a|2023-11-14';
 SELECT concatWithSeparator('|', 'a', materialize('2123-11-14' :: Date32)) == 'a|2123-11-14';

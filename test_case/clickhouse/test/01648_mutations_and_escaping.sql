@@ -6,6 +6,4 @@ INSERT INTO mutations_and_escaping_1648 (d, e) VALUES ('2018-01-02', 'bar');
 ALTER TABLE mutations_and_escaping_1648 UPDATE e = CAST('foo', 'Enum8(\'foo\' = 1, \'bar\' = 2)') WHERE d='2018-01-02' and sleepEachRow(1) = 0;
 DETACH TABLE mutations_and_escaping_1648;
 ATTACH TABLE mutations_and_escaping_1648;
-ALTER TABLE mutations_and_escaping_1648 UPDATE e = CAST('foo', 'Enum8(\'foo\' = 1, \'bar\' = 2)') WHERE d='2018-01-02' SETTINGS mutations_sync = 1;
 SELECT e FROM mutations_and_escaping_1648 ORDER BY d;
-DROP TABLE mutations_and_escaping_1648;

@@ -16,7 +16,3 @@ CREATE TABLE test02008 (
 INSERT INTO test02008 VALUES (tuple(3.3, 5.5, 6.6));
 SELECT untuple(arrayJoin(tupleToNameValuePairs(col))) from test02008;
 DROP TABLE IF EXISTS test02008;
-SELECT tupleToNameValuePairs(tuple(1, 1.3));
-SELECT tupleToNameValuePairs(tuple(1, [1,2]));
-SELECT tupleToNameValuePairs(tuple(1, 'a'));
-SELECT tupleToNameValuePairs(33);

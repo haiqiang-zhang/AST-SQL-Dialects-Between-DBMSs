@@ -33,11 +33,6 @@ CREATE TABLE 02919_test_table_reuse_args(str String) ENGINE = FuzzJSON(
 SELECT count() FROM (SELECT * FROM 02919_test_table_reuse_args LIMIT 100);
 DROP TABLE IF EXISTS 02919_test_table_reuse_args;
 DROP TABLE IF EXISTS 02919_test_table_invalid_col_type;
-CREATE TABLE 02919_test_table_invalid_col_type
-(
-   str Nullable(Int64)
-)
-ENGINE = FuzzJSON('{"pet":"rat"}', NULL);
 DROP TABLE IF EXISTS 02919_test_table_invalid_col_type;
 DROP TABLE IF EXISTS 02919_test_multi_col;
 CREATE TABLE 02919_test_multi_col

@@ -65,8 +65,5 @@ SELECT stddevPop(a) AS da, stddevPop(b) AS db, stddevPop(c) AS dc, toTypeName(da
 SELECT stddevPop(toFloat64(a)), stddevPop(toFloat64(b)), stddevPop(toFloat64(c)) FROM decimal;
 SELECT stddevSamp(a) AS da, stddevSamp(b) AS db, stddevSamp(c) AS dc, toTypeName(da), toTypeName(db), toTypeName(dc) FROM decimal;
 SELECT stddevSamp(toFloat64(a)), stddevSamp(toFloat64(b)), stddevSamp(toFloat64(c)) FROM decimal;
-SELECT covarPop(a, a), covarPop(b, b), covarPop(c, c) FROM decimal;
-SELECT covarSamp(a, a), covarSamp(b, b), covarSamp(c, c) FROM decimal;
-SELECT corr(a, a), corr(b, b), corr(c, c) FROM decimal;
 SELECT 1 LIMIT 0;
 DROP TABLE decimal;

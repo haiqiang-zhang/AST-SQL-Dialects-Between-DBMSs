@@ -1,5 +1,3 @@
--- https://github.com/ClickHouse/ClickHouse/issues/11469
-SELECT dictGet('default.countryId', 'country', toUInt64(number)) AS country FROM numbers(2) GROUP BY country;
 -- with real dictionary
 DROP TABLE IF EXISTS dictdb_01376.table_for_dict;
 DROP DICTIONARY IF EXISTS dictdb_01376.dict_exists;

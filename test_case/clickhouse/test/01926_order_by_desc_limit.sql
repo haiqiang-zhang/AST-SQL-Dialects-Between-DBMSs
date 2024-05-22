@@ -6,7 +6,3 @@ SETTINGS index_granularity = 1024, index_granularity_bytes = '10Mi';
 INSERT INTO order_by_desc SELECT number, repeat('a', 1024) FROM numbers(1024 * 300);
 OPTIMIZE TABLE order_by_desc FINAL;
 SYSTEM FLUSH LOGS;
-SELECT read_rows < 110000 FROM system.query_log
-WHERE type = 'QueryFinish' AND current_database = currentDatabase()
-AND event_date >= yesterday()
-AND lower(query) LIKE lower('SELECT s FROM order_by_desc ORDER BY u%');

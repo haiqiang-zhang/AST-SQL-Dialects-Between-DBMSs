@@ -22,8 +22,4 @@ SET force_primary_key = 0;
 SELECT * FROM test_tuple_filter WHERE (1, value) = (id, 'A');
 SELECT * FROM test_tuple_filter WHERE tuple(id) = tuple(1);
 SELECT * FROM test_tuple_filter WHERE (id, (id, id) = (1, NULL)) == (NULL, NULL);
-SELECT * FROM test_tuple_filter WHERE (log_date, value) = tuple('2021-01-01');
-SELECT * FROM test_tuple_filter WHERE (id, value) = tuple(1);
-SELECT * FROM test_tuple_filter WHERE tuple(id, value) = tuple(value, id);
-SELECT * FROM test_tuple_filter WHERE equals((id, value));
 DROP TABLE IF EXISTS test_tuple_filter;

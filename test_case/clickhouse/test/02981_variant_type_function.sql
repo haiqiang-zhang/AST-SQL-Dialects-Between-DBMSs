@@ -3,8 +3,3 @@ CREATE TABLE test (v Variant(UInt64, String, Array(UInt64))) ENGINE = Memory;
 INSERT INTO test VALUES (NULL), (42), ('Hello, World!'), ([1, 2, 3]);
 SELECT variantType(v) as type FROM test;
 SELECT toTypeName(variantType(v)) from test limit 1;
-SELECT variantType() FROM test;
-SELECT variantType(v, v) FROM test;
-SELECT variantType(v.String) FROM test;
-SELECT variantType(v::Variant(UInt64, String, Array(UInt64), Date)) as type FROM test;
-SELECT toTypeName(variantType(v::Variant(UInt64, String, Array(UInt64), Date))) from test limit 1;

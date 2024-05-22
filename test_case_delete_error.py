@@ -99,7 +99,7 @@ for dbms in os.listdir(test_case_path):
 
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
     for dirpath, dirnames, filenames in os.walk(test_folder):
-        for filename in filenames:
+        for filename in sorted(filenames):
             if filename.endswith('.sql'):
                 test_paths = os.path.join(dirpath, filename)
                 try:

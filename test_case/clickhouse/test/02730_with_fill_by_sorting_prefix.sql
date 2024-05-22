@@ -35,4 +35,3 @@ select * from ts order by sensor_id, timestamp with fill to 10 step 1 interpolat
 select * from ts order by sensor_id, timestamp with fill to 10 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0;
 select * from ts order by sensor_id DESC, timestamp with fill to 10 step 1 interpolate (value as 9999);
 select * from ts order by sensor_id DESC, timestamp with fill to 10 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0;
-SELECT * FROM ts ORDER BY sensor_id, value, timestamp WITH FILL FROM 6 TO 10 INTERPOLATE ( value AS 1 );

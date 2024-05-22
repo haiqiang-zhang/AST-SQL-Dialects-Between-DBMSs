@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS check_system_tables;
-INSERT INTO check_system_tables VALUES (1, 1, 1);
 SELECT total_bytes_uncompressed, total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase();
 DROP TABLE IF EXISTS check_system_tables;
 CREATE TABLE check_system_tables
@@ -13,12 +12,6 @@ CREATE TABLE check_system_tables
     ORDER BY date
     SETTINGS compress_marks=false, compress_primary_key=false;
 DROP TABLE IF EXISTS check_system_tables;
-CREATE TABLE check_system_tables
-  (
-    Event Date,
-    UserId UInt32,
-    Counter UInt32
-  ) ENGINE = MergeTree(Event, intHash32(UserId), (Counter, Event, intHash32(UserId)), 8192);
 DROP TABLE IF EXISTS check_system_tables;
 SELECT 'Check total_bytes/total_rows for TinyLog';
 CREATE TABLE check_system_tables (key UInt8) ENGINE = TinyLog();

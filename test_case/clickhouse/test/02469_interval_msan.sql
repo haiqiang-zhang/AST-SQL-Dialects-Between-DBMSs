@@ -1,11 +1,3 @@
-SELECT now() + 1::Int128;
-SELECT now() + 1::Int256;
-SELECT now() + 1::UInt128;
-SELECT now() + 1::UInt256;
-SELECT now() - 1::Int128;
-SELECT now() - 1::Int256;
-SELECT now() - 1::UInt128;
-SELECT now() - 1::UInt256;
 SELECT now() + INTERVAL 1::Int128 SECOND - now();
 SELECT now() + INTERVAL 1::Int256 SECOND - now();
 SELECT now() + INTERVAL 1::UInt128 SECOND - now();

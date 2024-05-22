@@ -16,5 +16,4 @@ SELECT avgMerge(x * 10) FROM (SELECT avgState(b) AS x FROM mult_aggregation);
 SELECT groupArrayMerge(y * 5) FROM (SELECT groupArrayState(x) AS y FROM (SELECT 1 AS x));
 SELECT groupArrayMerge(2)(y * 5) FROM (SELECT groupArrayState(2)(x) AS y FROM (SELECT 1 AS x));
 SELECT groupUniqArrayMerge(y * 5) FROM (SELECT groupUniqArrayState(x) AS y FROM (SELECT 1 AS x));
-SELECT sumMerge(y * a) FROM (SELECT a, sumState(b) AS y FROM mult_aggregation GROUP BY a);
 DROP TABLE IF EXISTS mult_aggregation;

@@ -64,12 +64,8 @@ CREATE MATERIALIZED VIEW mv_3_1 TO ds_3_1 as
 SELECT '3_1' l, t, v
 FROM ds_2_1;
 INSERT INTO landing SELECT 1 as timestamp, 1 AS value FROM numbers(10);
-SELECT sleep(3);
 INSERT INTO landing SELECT 1 as timestamp, 1 AS value FROM numbers(10);
 SYSTEM FLUSH LOGS;
-SELECT table, name, error FROM system.part_log
-WHERE database = currentDatabase()
-ORDER BY table, name;
 SELECT count() FROM landing;
 DROP TABLE landing;
 DROP TABLE ds_1_1;

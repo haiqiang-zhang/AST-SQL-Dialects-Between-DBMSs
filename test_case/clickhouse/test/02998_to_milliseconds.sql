@@ -1,7 +1,3 @@
-SELECT toMillisecond();
-SELECT toMillisecond('string');
-SELECT toMillisecond(toDate('2024-02-28'));
-SELECT toMillisecond(toDate32('2024-02-28'));
 -- Tests with constant and non-constant arguments
 SELECT toDateTime('2023-04-21 10:20:30') AS dt, toMillisecond(dt), toMillisecond(materialize(dt));
 SELECT toDateTime64('2023-04-21 10:20:30', 0) AS dt64, toMillisecond(dt64), toMillisecond(materialize(dt64));

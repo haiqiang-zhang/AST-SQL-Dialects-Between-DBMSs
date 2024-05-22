@@ -48,7 +48,6 @@ DROP DATABASE IF EXISTS db_01018;
 DROP DATABASE IF EXISTS memory_db;
 CREATE DATABASE memory_db ENGINE = Memory;
 SELECT '=DICTIONARY in Memory DB';
-SHOW CREATE DICTIONARY memory_db.dict2;
 SHOW DICTIONARIES FROM memory_db LIKE 'dict2';
 EXISTS DICTIONARY memory_db.dict2;
 SELECT database, name FROM system.dictionaries WHERE database='memory_db' AND name LIKE 'dict2';
@@ -85,7 +84,6 @@ LIFETIME(MIN 1 MAX 10)
 LAYOUT(FLAT());
 SHOW DICTIONARIES FROM db_01018;
 DROP DATABASE IF EXISTS db_01018;
-DROP DICTIONARY memory_db.dict2;
 DROP TABLE IF EXISTS database_for_dict_01018.table_for_dict;
 DROP DATABASE IF EXISTS database_for_dict_01018;
 DROP DATABASE IF EXISTS memory_db;

@@ -35,8 +35,6 @@ select max(id) from bloom_filter2 where hasToken(s, 'ABC');
 select max(id) from bloom_filter2 where hasToken(s, 'abc');
 select max(id) from bloom_filter2 where hasTokenCaseInsensitive(s, 'abc');
 select max(id) from bloom_filter2 where hasTokenCaseInsensitive(s, 'ABC');
--- this syntax is not supported by tokenbf
-SELECT max(id) FROM bloom_filter WHERE hasToken(s, 'zzz') == 1;
 DROP TABLE bloom_filter;
 CREATE TABLE tab (row_id UInt32, str String, INDEX idx str TYPE tokenbf_v1(256, 2, 0)) ENGINE = MergeTree ORDER BY row_id;
 INSERT INTO tab VALUES (0, 'a');

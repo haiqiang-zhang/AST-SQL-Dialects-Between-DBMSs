@@ -13,8 +13,6 @@ SELECT toDate(toDate32('1900-01-01'));
 SELECT toDate(toDate32('2299-12-31'));
 SELECT 'No output on `throw`';
 SET date_time_overflow_behavior = 'throw';
-SELECT toDateTime(toDateTime64('2299-12-31 23:59:59.999', 3));
-SELECT toDateTime(toDate32('1900-01-01'));
 SELECT toDateTime(toDate32('2299-12-31'));
 SELECT toDateTime(toDate('2149-06-06'));
 SELECT toDate(toDateTime64('1900-01-01 00:00:00.123', 3));

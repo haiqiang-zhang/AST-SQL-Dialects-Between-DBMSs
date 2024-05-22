@@ -5,14 +5,10 @@ CREATE TABLE src (x UInt8) ENGINE = Memory;
 CREATE TABLE dst (x UInt8) ENGINE = Memory;
 CREATE MATERIALIZED VIEW mv TO dst AS SELECT x FROM src;
 SET check_referential_table_dependencies = 1;
-DROP TABLE src;
-DROP TABLE dst;
 -- Ok to drop in the correct order
 DROP TABLE mv;
 DROP TABLE src;
-DROP TABLE dst;
 CREATE TABLE src (x UInt8) ENGINE = Memory;
-CREATE TABLE dst (x UInt8) ENGINE = Memory;
 CREATE MATERIALIZED VIEW mv TO dst AS SELECT x FROM src;
 SET check_referential_table_dependencies = 0;
 DROP TABLE src;

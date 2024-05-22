@@ -28,6 +28,4 @@ ENGINE = MergeTree
 PARTITION BY toDate(created_at)
 ORDER BY (created_at, id0, id1);
 SET send_logs_level = 'fatal';
-ALTER TABLE uuid MODIFY COLUMN id0 UUID;
-ALTER TABLE uuid MODIFY COLUMN id1 UUID;
 DROP TABLE uuid;

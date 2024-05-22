@@ -1,8 +1,5 @@
 SELECT '-- argument validation';
-SELECT substring('hello', []);
-SELECT substring('hello', 1, []);
 SELECT substring(materialize('hello'), -1, -1);
-SELECT substring(materialize('hello'), 0);
 SELECT '-- FixedString arguments';
 SELECT substring(toFixedString('hello', 16), 1, 8);
 SELECT substring(toFixedString(materialize('hello'), 16), 1, 8);

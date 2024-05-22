@@ -3,5 +3,4 @@ DROP TABLE IF EXISTS t;
 CREATE TABLE t (x UInt64) ENGINE = StripeLog;
 INSERT INTO t SELECT * FROM numbers_mt(1000000);
 SET max_threads = 1;
-SELECT DISTINCT blockSize(), runningDifference(x) FROM t;
 DROP TABLE t;

@@ -1,2 +1,0 @@
-SELECT func(1)(2)(3);
-SELECT * FROM VALUES(1)(2);

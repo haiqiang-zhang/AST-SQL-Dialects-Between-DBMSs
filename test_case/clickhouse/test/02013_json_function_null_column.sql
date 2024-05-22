@@ -2,7 +2,6 @@ SELECT JSONExtract('{"string_value":null}', 'string_value', 'Nullable(String)') 
 SELECT JSONExtract('{"string_value":null}', 'string_value', 'LowCardinality(Nullable(String))') as x, toTypeName(x);
 SELECT JSONExtract('{"string_value":null}', 'string_value', 'String') as x, toTypeName(x);
 SELECT JSONExtract(toNullable('{"string_value":null}'), 'string_value', 'Nullable(String)') as x, toTypeName(x);
-SELECT JSONExtract(toNullable('{"string_value":null}'), 'string_value', 'LowCardinality(Nullable(String))') as x, toTypeName(x);
 SELECT JSONExtract(toNullable('{"string_value":null}'), 'string_value', 'String') as x, toTypeName(x);
 SELECT JSONExtract(NULL, 'string_value', 'Nullable(String)') as x, toTypeName(x);
 SELECT JSONExtract(NULL, 'string_value', 'LowCardinality(Nullable(String))') as x, toTypeName(x);
@@ -12,10 +11,6 @@ SELECT JSONExtractInt('[1]', toNullable(1));
 SELECT JSONExtractBool('[1]', toNullable(1));
 SELECT JSONExtractFloat('[1]', toNullable(1));
 SELECT JSONExtractString('["a"]', toNullable(1));
-SELECT JSONExtractInt('[1]', toLowCardinality(toNullable(1)));
-SELECT JSONExtractArrayRaw('["1"]', toNullable(1));
-SELECT JSONExtractKeysAndValuesRaw('["1"]', toNullable(1));
-SELECT JSONExtractKeysAndValues('["1"]', toNullable(1));
 SELECT JSONExtract('[1]', toNullable(1), 'Nullable(Int)');
 SELECT JSONExtract('[1]', toNullable(1), 'Nullable(UInt8)');
 SELECT JSONExtract('[1]', toNullable(1), 'Nullable(Bool)');

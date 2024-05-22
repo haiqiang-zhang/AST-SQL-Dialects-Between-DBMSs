@@ -1,9 +1,5 @@
 SET allow_suspicious_low_cardinality_types = 1;
 SELECT '-- negative tests';
-SELECT sqidEncode();
-SELECT sqidDecode();
-SELECT sqidEncode('1');
-SELECT sqidDecode(1);
 SELECT '-- const UInt*';
 SELECT sqidEncode(1) AS sqid, sqidDecode(sqid);
 SELECT sqidEncode(1, 2) AS sqid, sqidDecode(sqid);

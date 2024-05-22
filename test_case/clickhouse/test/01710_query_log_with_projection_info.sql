@@ -30,7 +30,4 @@ ORDER BY id
 SETTINGS index_granularity = 8;
 insert into t SELECT number, -number, number FROM numbers(10000);
 SYSTEM FLUSH LOGS;
-';
-';
-';
 DROP TABLE t;

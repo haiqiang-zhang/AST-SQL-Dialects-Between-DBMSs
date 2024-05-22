@@ -33,9 +33,4 @@ CREATE TABLE largestTriangleTreeBucketsBucketSizeTest
     y UInt32
 ) ENGINE = MergeTree ORDER BY x;
 INSERT INTO largestTriangleTreeBucketsBucketSizeTest (x, y) SELECT (number + 1) AS x, (x % 1000) AS y FROM numbers(9999);
-SELECT 
-  arrayJoin(lttb(1000)(x, y)) AS point, 
-  tupleElement(point, 1) AS point_x, 
-  point_x - neighbor(point_x, -1) AS point_x_diff_with_previous_row 
-FROM largestTriangleTreeBucketsBucketSizeTest LIMIT 990, 10;
 DROP TABLE largestTriangleTreeBucketsBucketSizeTest;

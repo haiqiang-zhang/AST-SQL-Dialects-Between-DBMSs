@@ -3,6 +3,5 @@ CREATE TABLE column_size_bug (date_time DateTime, value SimpleAggregateFunction(
 INSERT INTO column_size_bug VALUES(now(),1);
 INSERT INTO column_size_bug VALUES(now(),1);
 ALTER TABLE column_size_bug DELETE WHERE value=1;
-SELECT sleep(1);
 OPTIMIZE TABLE column_size_bug;
 DROP TABLE column_size_bug;

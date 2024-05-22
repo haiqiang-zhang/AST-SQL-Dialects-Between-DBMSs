@@ -16,8 +16,6 @@ PRIMARY KEY id
 SOURCE(CLICKHOUSE(TABLE '02181_test_table'))
 LAYOUT(HASHED())
 LIFETIME(0);
-DETACH TABLE 02181_test_dictionary;
-ATTACH TABLE 02181_test_dictionary;
 DETACH DICTIONARY 02181_test_dictionary;
 ATTACH DICTIONARY 02181_test_dictionary;
 SELECT * FROM 02181_test_dictionary;

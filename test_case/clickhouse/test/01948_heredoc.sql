@@ -5,10 +5,10 @@ SELECT $doc$VALUE$doc$;
 SELECT $doc$'VALUE'$doc$;
 SELECT $doc$$do$ $ doc$ $doc $ $doco$$doc$;
 SELECT $doc$$do$ $ doc$ $doc $ $doco$$doc$, $doc$$do$ $ doc$ $doc $ $doco$$doc$;
-SELECT $doc$Ð¢ÐÐ¡Ð¢$doc$;
-SELECT $doc$è¯¥ç±»åçå¼æ$doc$;
-SELECT $Ð ÐÐÐÐÐÐÐ¢ÐÐÐ¬$VALUE$Ð ÐÐÐÐÐÐÐ¢ÐÐÐ¬$;
-SELECT $è¯¥ç±»åçå¼æ$VALUE$è¯¥ç±»åçå¼æ$;
+SELECT $doc$ÃÂ¢ÃÂÃÂ¡ÃÂ¢$doc$;
+SELECT $doc$Ã¨Â¯Â¥Ã§Â±Â»Ã¥ÂÂÃ§ÂÂÃ¥Â¼ÂÃ¦ÂÂ$doc$;
+SELECT $ÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¬$VALUE$ÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¬$;
+SELECT $Ã¨Â¯Â¥Ã§Â±Â»Ã¥ÂÂÃ§ÂÂÃ¥Â¼ÂÃ¦ÂÂ$VALUE$Ã¨Â¯Â¥Ã§Â±Â»Ã¥ÂÂÃ§ÂÂÃ¥Â¼ÂÃ¦ÂÂ$;
 SELECT $$
 value1
 value2

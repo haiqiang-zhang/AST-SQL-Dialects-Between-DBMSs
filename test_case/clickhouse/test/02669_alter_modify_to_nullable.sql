@@ -15,7 +15,4 @@ WHERE database = currentDatabase() AND table = 't_modify_to_nullable' AND column
 ORDER BY name;
 SELECT count(s), countIf(s != ''), arraySort(groupUniqArray(s)) FROM t_modify_to_nullable;
 SYSTEM FLUSH LOGS;
-SELECT part_name, read_rows FROM system.part_log
-WHERE database = currentDatabase() AND table = 't_modify_to_nullable' AND event_type = 'MutatePart'
-ORDER BY part_name;
 DROP TABLE t_modify_to_nullable;

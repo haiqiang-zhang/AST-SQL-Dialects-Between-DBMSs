@@ -27,7 +27,6 @@ INSERT INTO test_table_join_3 VALUES (0, 'Join_3_Value_0');
 INSERT INTO test_table_join_3 VALUES (1, 'Join_3_Value_1');
 INSERT INTO test_table_join_3 VALUES (4, 'Join_3_Value_4');
 SELECT * FROM test_table_join_1 AS t1 INNER JOIN test_table_join_2 AS t2 USING (id) ORDER BY id, t1.value;
-SELECT * FROM test_table_join_1 AS t1 INNER JOIN test_table_join_2 AS t2 USING (id, id, id) ORDER BY id, t1.value;
 SELECT '--';
 SELECT * FROM test_table_join_1 AS t1 LEFT JOIN test_table_join_2 AS t2 USING (id) ORDER BY id, t1.value;
 SELECT '--';

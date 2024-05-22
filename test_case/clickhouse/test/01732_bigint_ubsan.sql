@@ -5,5 +5,3 @@ CREATE TEMPORARY TABLE decimal
 INSERT INTO decimal VALUES (0);
 INSERT INTO decimal VALUES (0.42);
 INSERT INTO decimal VALUES (-0.42);
-SELECT f + 1048575, f - 21, f - 84, f * 21, f * -21, f / 21, f / 84 FROM decimal WHERE f > 0;
-SELECT f + -2, f - 21, f - 84, f * 21, f * -21, f / 9223372036854775807, f / 84 FROM decimal WHERE f > 0;

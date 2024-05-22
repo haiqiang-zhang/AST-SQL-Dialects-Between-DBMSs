@@ -27,15 +27,6 @@ select minMap(val) from values ('val Map(Int128, Int128)',  (map(1, 1)), (map(1,
 select minMap(val) from values ('val Map(Int256, Int256)',  (map(1, 1)), (map(1, 2)));
 select minMap(val) from values ('val Map(UInt128, UInt128)',  (map(1, 1)), (map(1, 2)));
 select minMap(val) from values ('val Map(UInt256, UInt256)',  (map(1, 1)), (map(1, 2)));
-select sumMap(map(1,2), 1, 2);
-select sumMap(map(1,2), map(1,3));
--- array and tuple arguments
-select avgMap([1,1,1], [2,2,2]);
-select minMap((1,1));
-select minMap(([1,1,1],1));
-select minMap([1,1,1],1);
-select minMap([1,1,1]);
-select minMap(([1,1,1]));
 DROP TABLE IF EXISTS sum_map_decimal;
 CREATE TABLE sum_map_decimal(statusMap Map(UInt16,Decimal32(5))) ENGINE = Log;
 INSERT INTO sum_map_decimal VALUES (map(1,'1.0',2,'2.0',3,'3.0')), (map(3,'3.0',4,'4.0',5,'5.0')), (map(4,'4.0',5,'5.0',6,'6.0')), (map(6,'6.0',7,'7.0',8,'8.0'));

@@ -9,5 +9,3 @@ select JSONArrayLength('{"key":"not a json array"}');
 select JSONArrayLength('[1,2,3,4,5');
 select JSON_ARRAY_LENGTH('[1,2,3,4,5');
 select JSON_ARRAY_LENGTH('[1,2,3,4,5]');
-select JSONArrayLength(2);
-select JSONArrayLength();

@@ -5,7 +5,6 @@ DROP TABLE IF EXISTS t_json_str_5;
 CREATE TABLE t_json_str_5 (data String) ENGINE = MergeTree ORDER BY tuple();
 CREATE TABLE t_json_5 (data JSON) ENGINE = MergeTree ORDER BY tuple();
 INSERT INTO t_json_5 SELECT data FROM t_json_str_5;
-SELECT data.k1, data.k2.k3, data.k2.k4 FROM t_json_5 ORDER BY data.k1;
 SELECT DISTINCT toTypeName(data) FROM t_json_5;
 DROP TABLE t_json_5;
 DROP TABLE t_json_str_5;

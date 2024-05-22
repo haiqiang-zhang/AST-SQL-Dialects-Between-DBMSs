@@ -94,7 +94,6 @@ SOURCE(CLICKHOUSE(HOST 'localhost' port tcpPort() TABLE 'dictionary_nullable_sou
 LIFETIME(MIN 10 MAX 1000)
 LAYOUT(IP_TRIE());
 SELECT 'IPTrie dictionary';
-SELECT dictGet('ip_trie_dictionary', 'value', tuple(IPv4StringToNum('127.0.0.0')));
 DROP TABLE dictionary_nullable_source_table;
 DROP TABLE dictionary_nullable_default_source_table;
 DROP TABLE IF EXISTS polygon_dictionary_nullable_source_table;

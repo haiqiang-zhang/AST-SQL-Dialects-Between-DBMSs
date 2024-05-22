@@ -17,12 +17,3 @@ INSERT INTO runningConcurrency_test VALUES ('2020-12-01 00:00:00.000', '2020-12-
 SELECT runningConcurrency(begin, end) FROM runningConcurrency_test;
 DROP TABLE runningConcurrency_test;
 SELECT 'Erroneous cases';
-SELECT runningConcurrency(toDate(arrayJoin([1, 2])), toDate('2000-01-01'));
--- Unsupported data types
-SELECT runningConcurrency('strings are', 'not supported');
-SELECT runningConcurrency(NULL, NULL);
-SELECT runningConcurrency(CAST(NULL, 'Nullable(DateTime)'), CAST(NULL, 'Nullable(DateTime)'));
--- Mismatching data types
-SELECT runningConcurrency(toDate('2000-01-01'), toDateTime('2000-01-01 00:00:00'));
--- begin > end
-SELECT runningConcurrency(toDate('2000-01-02'), toDate('2000-01-01'));

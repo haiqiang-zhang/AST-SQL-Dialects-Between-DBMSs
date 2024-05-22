@@ -1,10 +1,3 @@
-SELECT extractAllGroupsVertical();
-SELECT extractAllGroupsVertical('hello');
-SELECT extractAllGroupsVertical('hello', 123);
-SELECT extractAllGroupsVertical(123, 'world');
-SELECT extractAllGroupsVertical('hello world', '(((');
-SELECT extractAllGroupsVertical('hello world', materialize('\\w+'));
-SELECT extractAllGroupsVertical('hello world', '\\w+');
 SELECT '1 group, multiple matches, String and FixedString';
 SELECT extractAllGroupsVertical('hello world', '(\\w+)');
 SELECT extractAllGroupsVertical('hello world', CAST('(\\w+)' as FixedString(5)));

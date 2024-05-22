@@ -20,8 +20,3 @@ SET function_sleep_max_microseconds_per_block = 6000000;
 select * from data_02572;
 select * from copy_02572;
 system flush logs;
-select count() > 0, lower(status::String), errorCodeToName(exception_code)
-    from system.query_views_log where
-    view_name = concatWithSeparator('.', currentDatabase(), 'mv_02572') and
-    view_target = concatWithSeparator('.', currentDatabase(), 'copy_02572')
-    group by 2, 3;

@@ -25,5 +25,4 @@ ALTER TABLE t_ttl_modify_column MODIFY COLUMN InsertionDateTime Date;
 INSERT INTO t_ttl_modify_column VALUES (now());
 SELECT sum(rows), groupUniqArray(type) FROM system.parts_columns
 WHERE database = currentDatabase() AND table = 't_ttl_modify_column' AND column = 'InsertionDateTime' AND active;
-ALTER TABLE t_ttl_modify_column MODIFY COLUMN InsertionDateTime Float32;
 DROP TABLE IF EXISTS t_ttl_modify_column;

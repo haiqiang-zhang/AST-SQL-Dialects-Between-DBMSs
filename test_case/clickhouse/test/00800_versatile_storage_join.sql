@@ -32,17 +32,5 @@ CREATE TABLE join_string_key (s String, x Array(UInt8), k UInt64) ENGINE = Join(
 INSERT INTO join_string_key VALUES ('abc', [0], 1), ('def', [1, 2], 2);
 SELECT joinGet('join_string_key', 'x', 'abc'), joinGet('join_string_key', 'k', 'abc');
 USE default;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_any_inner;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_any_left;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_any_left_null;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_all_inner;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_all_left;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_string_key;
-DROP TABLE IF EXISTS {CLICKHOUSE_DATABASE:Identifier}.join_test;
-CREATE TABLE {CLICKHOUSE_DATABASE:Identifier}.join_test (a UInt8, b UInt8) Engine = Join(ANY, LEFT, a);
-USE {CLICKHOUSE_DATABASE:Identifier};
-select joinGet('join_test', 'b', 1);
 USE system;
-SELECT joinGet({CLICKHOUSE_DATABASE:String} || '.join_test', 'b', 1);
 USE default;
-DROP TABLE {CLICKHOUSE_DATABASE:Identifier}.join_test;

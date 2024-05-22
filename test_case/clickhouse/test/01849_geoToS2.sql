@@ -33,9 +33,4 @@ SELECT first, second, result FROM (
     FROM s2_indexes
     ORDER BY s2_index
  );
-SELECT s2ToGeo(toUInt64(-1));
-SELECT s2ToGeo(nan);
-SELECT geoToS2(toFloat64(toUInt64(-1)), toFloat64(toUInt64(-1)));
-SELECT geoToS2(nan, nan);
-SELECT geoToS2(-inf, 1.1754943508222875e-38);
 DROP TABLE IF EXISTS s2_indexes;

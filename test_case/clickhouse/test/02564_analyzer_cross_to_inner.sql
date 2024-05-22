@@ -24,9 +24,6 @@ SETTINGS cross_to_inner_join_rewrite = 0;
 EXPLAIN QUERY TREE
 SELECT * FROM t1, t2, (SELECT a as x from t3 where a + 1 = b ) as t3
 WHERE t1.a = if(t2.b > 0, t2.a, 0);
-SELECT * FROM t1, t2, (SELECT a as x from t3 where a + 1 = b ) as t3
-WHERE t1.a = if(t2.b > 0, t2.a, 0)
-SETTINGS cross_to_inner_join_rewrite = 2;
 DROP TABLE IF EXISTS t1;
 DROP TABLE IF EXISTS t2;
 DROP TABLE IF EXISTS t3;

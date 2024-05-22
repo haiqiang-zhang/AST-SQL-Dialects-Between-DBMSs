@@ -18,7 +18,6 @@ SELECT '--';
 WITH [1, 2, 3] AS constant_array SELECT id, value, value_1 FROM test_table ARRAY JOIN constant_array AS value_1;
 SELECT '--';
 SELECT id, value, value_1, value_2 FROM test_table ARRAY JOIN [[1, 2, 3]] AS value_1 ARRAY JOIN value_1 AS value_2;
-SELECT 1 AS value FROM test_table ARRAY JOIN [1,2,3] AS value;
 SELECT 'ARRAY JOIN with column';
 SELECT id, value, test_table.value_array FROM test_table ARRAY JOIN value_array;
 SELECT '--';
@@ -28,7 +27,6 @@ SELECT id, value, value_array, value_array_element FROM test_table ARRAY JOIN va
 SELECT '--';
 SELECT id, value, value_array AS value_array_array_alias FROM test_table ARRAY JOIN value_array_array_alias;
 SELECT '--';
-SELECT id AS value FROM test_table ARRAY JOIN value_array AS value;
 SELECT '--';
 SELECT id, value, value_array AS value_array_array_alias, value_array_array_alias_element FROM test_table ARRAY JOIN value_array_array_alias AS value_array_array_alias_element;
 SELECT '--';

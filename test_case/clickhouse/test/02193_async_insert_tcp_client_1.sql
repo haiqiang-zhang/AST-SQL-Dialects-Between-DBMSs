@@ -5,10 +5,4 @@ SET async_insert = 1;
 INSERT INTO t_async_insert_02193_1 VALUES (3, 'ccc');
 SELECT * FROM t_async_insert_02193_1 ORDER BY id;
 SYSTEM FLUSH LOGS;
-SELECT count(), sum(ProfileEvents['AsyncInsertQuery']) FROM system.query_log
-WHERE
-    event_date >= yesterday() AND
-    type = 'QueryFinish' AND
-    current_database = currentDatabase() AND
-    query ILIKE 'INSERT INTO t_async_insert_02193_1%';
 DROP TABLE IF EXISTS t_async_insert_02193_1;

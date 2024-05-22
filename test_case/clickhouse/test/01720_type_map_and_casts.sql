@@ -35,7 +35,6 @@ SELECT
     m[toUUID('00001192-0000-4000-7000-000000000001')],
     m[toUUID('00001192-0000-4000-8000-000000000001')]
 FROM table_map_with_key_integer;
-SELECT m[257], m[1] FROM table_map_with_key_integer;
 DROP TABLE IF EXISTS table_map_with_key_integer;
 CREATE TABLE table_map_with_key_integer (d DATE, m Map(Int128, String))
 ENGINE = MergeTree() ORDER BY d;
@@ -48,5 +47,3 @@ SELECT m[-1], m[0], m[toInt128('1234567898765432123456789')], m[toInt128('-12345
 SELECT m[toUInt64(0)], m[toInt64(0)], m[toUInt8(0)], m[toUInt16(0)] FROM table_map_with_key_integer;
 DROP TABLE IF EXISTS table_map_with_key_integer;
 CREATE TABLE table_map_with_key_integer (m Map(Float32, String)) ENGINE = MergeTree() ORDER BY tuple();
-CREATE TABLE table_map_with_key_integer (m Map(Nullable(String), String)) ENGINE = MergeTree() ORDER BY tuple();
-CREATE TABLE table_map_with_key_integer (m Map(Array(UInt32), String)) ENGINE = MergeTree() ORDER BY tuple();

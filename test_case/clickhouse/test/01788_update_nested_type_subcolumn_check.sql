@@ -21,7 +21,6 @@ select * from test_wide_nested;
 alter table test_wide_nested update `info.id` = [100,200], `info.age`=[68,72] where id = 3;
 alter table test_wide_nested update `info.id` = `info.age` where id = 3;
 select * from test_wide_nested;
-alter table test_wide_nested update `info.id` = [100,200], `info.age` = [10,20,30], `info.name` = ['a','b','c']  where id = 0;
 SELECT '********* test 2 **********';
 DROP TABLE test_wide_nested;
 CREATE TABLE test_wide_nested
@@ -39,7 +38,6 @@ ALTER TABLE test_wide_nested ADD COLUMN `info2.id` Array(Int);
 ALTER TABLE test_wide_nested ADD COLUMN `info2.name` Array(String);
 ALTER table test_wide_nested update `info2.id` = `info.id`, `info2.name` = `info.name` where 1;
 select * from test_wide_nested;
-alter table test_wide_nested update `info.id` = [100,200,300], `info.age` = [10,20,30] where id = 1;
 DROP TABLE test_wide_nested;
 SELECT '********* test 3 **********';
 DROP TABLE IF EXISTS test_wide_not_nested;

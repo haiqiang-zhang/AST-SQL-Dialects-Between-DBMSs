@@ -1,16 +1,1 @@
 SET allow_experimental_nlp_functions = 1;
-SELECT lemmatize('en', 'wolves');
-SELECT lemmatize('en', 'dogs');
-SELECT lemmatize('en', 'looking');
-SELECT lemmatize('en', 'took');
-SELECT lemmatize('en', 'imported');
-SELECT lemmatize('en', 'tokenized');
-SELECT lemmatize('en', 'flown');
-SELECT synonyms('en', 'crucial');
-SELECT synonyms('en', 'cheerful');
-SELECT synonyms('en', 'yet');
-SELECT synonyms('en', 'quiz');
-SELECT synonyms('ru', 'Ð³Ð»Ð°Ð²Ð½ÑÐ¹');
-SELECT synonyms('ru', 'Ð²ÐµÑÐµÐ»ÑÐ¹');
-SELECT synonyms('ru', 'Ð¿ÑÐ°Ð²Ð´Ð°');
-SELECT synonyms('ru', 'ÑÐºÐ·Ð°Ð¼ÐµÐ½');
