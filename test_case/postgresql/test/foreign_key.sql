@@ -336,34 +336,6 @@ BEGIN;
 SET CONSTRAINTS ALL DEFERRED;
 INSERT INTO fktable VALUES (1000, 2000);
 BEGIN;
-ALTER TABLE fktable ALTER CONSTRAINT fktable_fk_fkey NOT DEFERRABLE;
-CREATE TEMP TABLE users (
-  id INT PRIMARY KEY,
-  name VARCHAR NOT NULL
-);
-INSERT INTO users VALUES (1, 'Jozko');
-INSERT INTO users VALUES (2, 'Ferko');
-INSERT INTO users VALUES (3, 'Samko');
-CREATE TEMP TABLE tasks (
-  id INT PRIMARY KEY,
-  owner INT REFERENCES users ON UPDATE CASCADE ON DELETE SET NULL,
-  worker INT REFERENCES users ON UPDATE CASCADE ON DELETE SET NULL,
-  checked_by INT REFERENCES users ON UPDATE CASCADE ON DELETE SET NULL
-);
-INSERT INTO tasks VALUES (1,1,NULL,NULL);
-INSERT INTO tasks VALUES (2,2,2,NULL);
-INSERT INTO tasks VALUES (3,3,3,3);
-SELECT * FROM tasks;
-UPDATE users SET id = 4 WHERE id = 3;
-SELECT * FROM tasks;
-DELETE FROM users WHERE id = 4;
-SELECT * FROM tasks;
-BEGIN;
-UPDATE tasks set id=id WHERE id=2;
-SELECT * FROM tasks;
-DELETE FROM users WHERE id = 2;
-SELECT * FROM tasks;
-COMMIT;
 create temp table selfref (
     a int primary key,
     b int,
@@ -379,7 +351,6 @@ update selfref set a = 123 where a = 0;
 select a, b from selfref;
 update selfref set a = 456 where a = 123;
 select a, b from selfref;
-commit;
 create temp table defp (f1 int primary key);
 create temp table defc (f1 int default 0
                         references defp on delete set default);
@@ -436,16 +407,7 @@ insert into fktable2 values(1);
 savepoint x;
 delete from fktable2;
 rollback to x;
-commit;
 begin;
-insert into fktable2 values(2);
-savepoint x;
-delete from fktable2;
-rollback to x;
-begin;
-insert into fktable2 values(2);
-begin;
-delete from pktable2 where f1 = 1;
 ROLLBACK;
 BEGIN;
 ROLLBACK;

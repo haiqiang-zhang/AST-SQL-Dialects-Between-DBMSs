@@ -43,7 +43,7 @@ class DuckDBAdapter(DBMSAdapter):
         # Execute the SQL query
         print(f"DBMS: DuckDB")
         print_prevent_stopping(f"Filename: {filename}")
-        print_prevent_stopping(f"SQL: {sql_query}")
+        # print_prevent_stopping(f"SQL: {sql_query}")
         combined_result = None
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
         try:
@@ -58,15 +58,17 @@ class DuckDBAdapter(DBMSAdapter):
             combined_result = (True, result)
             # print(result)
             # print("=================================")
+            print("Success")
 
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             error_type = e.__class__.__name__
             combined_result = (False, [error_type, f"{e}"])
-            print_prevent_stopping(f"Error executing test case '{filename}': {e}")
-            print_prevent_stopping("=================================")
+            print_prevent_stopping(f"Error: {e}")
+
         finally:
             timer.cancel()
+            print()
         
         return combined_result
 

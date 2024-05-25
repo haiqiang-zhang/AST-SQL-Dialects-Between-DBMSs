@@ -12,10 +12,8 @@ SELECT 'after_transaction_target', count() FROM target;
 SELECT 'after_implicit_txn_in_query_settings_landing', count() FROM landing;
 SELECT 'after_implicit_txn_in_query_settings_target', count() FROM target;
 SET implicit_transaction=True;
-SELECT 'after_implicit_txn_in_session_target', count() FROM target;
 -- Verify that you don't have to manually close transactions with implicit_transaction
 SET implicit_transaction=True;
-SELECT 'in_transaction', count() FROM target;
 SELECT 'out_transaction', count() FROM target;
 SET implicit_transaction=False;
 SYSTEM FLUSH LOGS;

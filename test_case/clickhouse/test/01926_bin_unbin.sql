@@ -9,7 +9,7 @@ select bin(511);
 select bin(512);
 select bin('0');
 select bin('10');
-select bin('ÃÂ¦ÃÂµÃÂÃÂ¨ÃÂ¯ÃÂ');
+select bin('ÃÂÃÂ¦ÃÂÃÂµÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂ');
 select bin(toFloat32(1.2));
 select bin(toFloat64(1.2));
 select bin(toDecimal32(1.2, 8));

@@ -9,24 +9,25 @@ import pandas as pd
 from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv
 import decimal
 
-test_extract_mode = False
+result_generate_mode = False
 
 test_case_path = './test_case'
-dbms_test_case_used = ['clickhouse']
+dbms_test_case_used = ['postgresql']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
     # "mysql": MySQLAdapter,
     # "sqlite": SQLiteAdapter,
-    # "postgresql": PostgresqlAdapter,
+    "postgresql": PostgresqlAdapter,
     # "duckdb": DuckDBAdapter,
-    "clickhouse": ClickHouseAdapter
+    # "clickhouse": ClickHouseAdapter
 
 }
 
 setup_query_keyword = [
     "create table",
     "insert into",
-    "drop table"
+    "drop table",
+    "create database"
 ]
 
 
@@ -102,12 +103,12 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
             if not any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
                 query = query.replace('\n', ' ')
                 if result[0]:
-                    if test_extract_mode:
+                    if result_generate_mode:
                         result_list.append(result[1])
                     success_counter += 1
                     df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'Message': result[1]}, ignore_index=True)
                 else:
-                    if test_extract_mode:
+                    if result_generate_mode:
                         result_list.append("QUERY ERROR")
                     failure_counter += 1
                     error_message = result[1][1]
@@ -119,7 +120,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
         db_adaptor.close_connection()
         
 
-    if test_extract_mode:
+    if result_generate_mode:
         save_result_to_txt(result_list, filename, dbms)
     
     return success_counter, failure_counter, df, df_verbose_all_result_one_file
@@ -161,7 +162,7 @@ for dbms in os.listdir(test_case_path):
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
     for dirpath, dirnames, filenames in os.walk(test_folder):
         for filename in sorted(filenames):
-            if filename.endswith('02267_insert_empty_data.sql'):
+            if filename.endswith('.sql'):
                 test_paths = os.path.join(dirpath, filename)
                 # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)
                 # result_paths = os.path.join(test_case_path, dbmss, test_group, 'result', filename)

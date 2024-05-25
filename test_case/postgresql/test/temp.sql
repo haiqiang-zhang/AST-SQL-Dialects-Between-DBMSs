@@ -103,18 +103,9 @@ create temp table temp_inh_oncommit_test (a int) on commit drop;
 create temp table temp_inh_oncommit_test1 ()
   inherits(temp_inh_oncommit_test) on commit delete rows;
 insert into temp_inh_oncommit_test1 values (1);
-commit;
 select relname from pg_class where relname ~ '^temp_inh_oncommit_test';
 begin;
-create temp table temp_inh_oncommit_test (a int) on commit delete rows;
-create temp table temp_inh_oncommit_test1 ()
-  inherits(temp_inh_oncommit_test) on commit drop;
-insert into temp_inh_oncommit_test1 values (1);
-insert into temp_inh_oncommit_test values (1);
-commit;
-select * from temp_inh_oncommit_test;
 select relname from pg_class where relname ~ '^temp_inh_oncommit_test';
-drop table temp_inh_oncommit_test;
 begin;
 create function pg_temp.twophase_func() returns void as
   $$ select '2pc_func'::text $$ language sql;

@@ -10,7 +10,6 @@ CREATE TABLE non_metadata_alters (
 ENGINE = MergeTree()
 ORDER BY tuple();
 SET allow_non_metadata_alters = 0;
-ALTER TABLE non_metadata_alters MODIFY COLUMN value3 UInt16 TTL value5 + INTERVAL 5 DAY;
 SET materialize_ttl_after_modify = 0;
 ALTER TABLE non_metadata_alters MODIFY COLUMN value3 UInt16 TTL value5 + INTERVAL 5 DAY;
 SHOW CREATE TABLE non_metadata_alters;

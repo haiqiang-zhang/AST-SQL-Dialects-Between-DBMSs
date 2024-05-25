@@ -30,7 +30,6 @@ set use_hedged_requests = 0;
 set cluster_for_parallel_replicas = 'test_cluster_one_shard_three_replicas_localhost';
 set distributed_aggregation_memory_efficient=1;
 select count() from pr_t;
-select a, count() from pr_t group by a order by a limit 5 offset 500;
 select a, count() from pr_t group by a, b order by a limit 5 offset 500;
 drop table if exists pr_t;
 drop table if exists dist_t_different_dbs;

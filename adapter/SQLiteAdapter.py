@@ -45,7 +45,6 @@ class SQLiteAdapter(DBMSAdapter):
         # Execute the SQL query
         print(f"DBMS: SQLite")
         print(f"Filename: {filename}")
-        print(f"SQL: {sql_query}")
         combined_result = None
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
         try:
@@ -61,10 +60,10 @@ class SQLiteAdapter(DBMSAdapter):
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             error_type = e.__class__.__name__  
             combined_result = (False, [error_type, f"{e}"])
-            print(f"Error executing test case '{filename}': {e}")
-            print("#"*50)
+            print(f"Error: {e}")
         finally:
             timer.cancel()
+            print()
         
         return combined_result
 

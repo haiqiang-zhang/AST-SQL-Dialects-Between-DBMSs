@@ -29,5 +29,5 @@ SELECT '-- Special UTF-8 tests';
 SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\x48\x65\x6C'));
 SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\x41\xE2\x82\xAC'));
 SELECT stringJaccardIndexUTF8(materialize('hello'), materialize('\xF0\x9F\x99\x82'));
-SELECT stringJaccardIndexUTF8('Ã°ÂÂÂÃ°ÂÂÂ', 'Ã°ÂÂÂÃ°ÂÂÂÃ°ÂÂÂ'), stringJaccardIndex('Ã°ÂÂÂÃ°ÂÂÂ', 'Ã°ÂÂÂÃ°ÂÂÂÃ°ÂÂÂ');
+SELECT stringJaccardIndexUTF8('ÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂ', 'ÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂ'), stringJaccardIndex('ÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂ', 'ÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂ');
 DROP TABLE t;

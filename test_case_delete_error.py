@@ -14,13 +14,13 @@ from utils import clean_query, clean_test_garbage, SQLFileEmptyError, first_init
 DBMS_ADAPTERS = {
     # "sqlite": SQLiteAdapter,
     # "mysql": MySQLAdapter,
-    # "postgresql": PostgresqlAdapter,
+    "postgresql": PostgresqlAdapter,
     # "duckdb": DuckDBAdapter,
-    "clickhouse": ClickHouseAdapter
+    # "clickhouse": ClickHouseAdapter
 }
 
 test_case_path = './test_case'
-dbms_test_case_used = ['clickhouse']
+dbms_test_case_used = ['postgresql']
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
 
 

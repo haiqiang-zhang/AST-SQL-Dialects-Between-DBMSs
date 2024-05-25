@@ -121,7 +121,6 @@ class MySQLAdapter(DBMSAdapter):
     def query(self, sql_query:str, filename:str, timeout_duration=10):
         print(f"DBMS: MySQL")
         print(f"Filename: {filename}")
-        print(f"SQL: {sql_query}")
         combined_result = None
         timeout_occurred.clear()
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
@@ -139,7 +138,7 @@ class MySQLAdapter(DBMSAdapter):
             combined_result = (True, result)
             if ECHO_SUCC:
                 print("Success")
-                print("-"*50)
+
                 
 
 
@@ -152,11 +151,12 @@ class MySQLAdapter(DBMSAdapter):
             error_type = e.__class__.__name__  
             combined_result = (False, [error_type, f"{e}"])
             if ECHO_ERR:
-                print(f"Error executing test case '{filename}': {e}")
-                print("-"*50)
+                print(f"Error: {e}")
+
             
         finally:
             timer.cancel()
+            print()
         
         return combined_result
 

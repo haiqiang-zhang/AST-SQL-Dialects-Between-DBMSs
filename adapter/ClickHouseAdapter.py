@@ -118,25 +118,26 @@ class ClickHouseAdapter(DBMSAdapter):
             
 
             if ECHO_SUCC:
-                print("Success\n")
+                print("Success")
 
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):
             if timeout_occurred.is_set():
                 combined_result = (False, ["TimeoutError", f"{e}"])
                 if ECHO_ERR:
-                    print(f"Failed: TimeoutError\n")
+                    print(f"Error: TimeoutError")
 
             else:
                 error_type = e.__class__.__name__  
                 combined_result = (False, [error_type, f"{e}"])
                 if ECHO_ERR:
-                    print(f"Failed: {error_type}\n")
+                    print(f"Error: {error_type}")
 
             
         finally:
             timer.cancel()
             timer_safe.cancel()
+            print()
         
         return combined_result
 

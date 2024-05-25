@@ -23,7 +23,6 @@ SELECT * FROM t1 RIGHT JOIN right_join j USING(x) ORDER BY x, str, s;
 SELECT 'full';
 SELECT * FROM t1 FULL JOIN full_join j USING(x) ORDER BY x, str, s;
 SET join_use_nulls = 1;
-SELECT * FROM t1 FULL JOIN full_join j USING(x) ORDER BY x, str, s;
 SELECT 'inner (join_use_nulls mix)';
 SELECT * FROM t1 INNER JOIN inner_join j USING(x) ORDER BY x, str, s;
 SELECT 'right (join_use_nulls mix)';

@@ -7,7 +7,7 @@ SELECT
     firstSignificantSubdomain('https://www.bigmir.net/news.html'),
     firstSignificantSubdomain('magnet:ukr.abc'),
     firstSignificantSubdomain('ftp://www.yahoo.co.jp/news.html'),
-    firstSignificantSubdomain('https://api.www3.static.dev.ÃÂÃÂÃÂÃÂ²ÃÂÃÂÃÂÃÂ²ÃÂÃÂÃÂÃÂ².ÃÂÃÂÃÂÃÂ³ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³ÃÂÃÂÃÂÃÂ».ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¼'),
+    firstSignificantSubdomain('https://api.www3.static.dev.ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ²ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ²ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ².ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ».ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼'),
     firstSignificantSubdomain('//www.meta.com.ua/news.html');
 SELECT
     firstSignificantSubdomain('http://hello.canada.c'),

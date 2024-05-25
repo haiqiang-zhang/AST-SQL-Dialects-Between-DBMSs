@@ -1,6 +1,6 @@
 select toValidUTF8('') from system.numbers limit 10;
 select toValidUTF8('some text') from system.numbers limit 10;
-select toValidUTF8('ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¹-ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ') from system.numbers limit 10;
+select toValidUTF8('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¹-ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ') from system.numbers limit 10;
 select toValidUTF8('\x00') from system.numbers limit 10;
 select toValidUTF8('\x66') from system.numbers limit 10;
 select toValidUTF8('\x7F') from system.numbers limit 10;
@@ -19,10 +19,10 @@ select toValidUTF8('a') from system.numbers limit 10;
 select toValidUTF8('\xc3\xb1') from system.numbers limit 10;
 select toValidUTF8('\xe2\x82\xa1') from system.numbers limit 10;
 select toValidUTF8('\xf0\x90\x8c\xbc') from system.numbers limit 10;
-select toValidUTF8('ÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ­ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¬ÃÂÃÂÃÂÃÂ, ÃÂÃÂ¬ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¬ÃÂÃÂÃÂÃÂ') from system.numbers limit 10;
+select toValidUTF8('ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ­ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ') from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('some text')) from system.numbers limit 10;
-select 1 = isValidUTF8(toValidUTF8('ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¹-ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ')) from system.numbers limit 10;
+select 1 = isValidUTF8(toValidUTF8('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¹-ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('\x00')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('\x66')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('\x7F')) from system.numbers limit 10;
@@ -41,4 +41,4 @@ select 1 = isValidUTF8(toValidUTF8('a')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('\xc3\xb1')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('\xe2\x82\xa1')) from system.numbers limit 10;
 select 1 = isValidUTF8(toValidUTF8('\xf0\x90\x8c\xbc')) from system.numbers limit 10;
-select 1 = isValidUTF8(toValidUTF8('ÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂ­ÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¬ÃÂÃÂÃÂÃÂ, ÃÂÃÂ¬ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¬ÃÂÃÂÃÂÃÂ')) from system.numbers limit 10;
+select 1 = isValidUTF8(toValidUTF8('ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ­ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ')) from system.numbers limit 10;

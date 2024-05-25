@@ -6,7 +6,6 @@ SET cluster_for_parallel_replicas='';
 SET cluster_for_parallel_replicas='parallel_replicas';
 SYSTEM FLUSH LOGS;
 SET use_hedged_requests=1;
-SELECT count() FROM test_parallel_replicas_settings WHERE NOT ignore(*) settings log_comment='1_f621c4f2-4da7-4a7c-bb6d-052c442d0f7f';
 SYSTEM FLUSH LOGS;
 SET allow_experimental_parallel_reading_from_replicas=0;
 DROP TABLE test_parallel_replicas_settings;

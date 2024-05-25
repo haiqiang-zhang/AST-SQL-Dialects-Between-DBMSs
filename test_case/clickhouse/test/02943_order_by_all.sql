@@ -45,7 +45,6 @@ INSERT INTO order_by_all VALUES ('B', 3, 10), ('C', NULL, 40), ('D', 1, 20), ('A
 SELECT '  -- columns';
 SET allow_experimental_analyzer = 0;
 SELECT a, b, all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
-SELECT a FROM order_by_all ORDER BY all;
 SELECT a FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SELECT * FROM order_by_all ORDER BY all;
 SELECT * FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;

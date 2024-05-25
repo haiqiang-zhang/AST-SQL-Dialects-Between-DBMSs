@@ -3,7 +3,6 @@ set max_hyperscan_regexp_total_length = 1;
 SELECT '- const pattern';
 select multiMatchAny('123', ['1']);
 select multiMatchAnyIndex('123', ['1']);
-select multiMatchAnyIndex('123', ['12']);
 select multiMatchAnyIndex('123', ['1', '2']);
 select multiMatchAllIndices('123', ['1']);
 select multiMatchAllIndices('123', ['12']);
