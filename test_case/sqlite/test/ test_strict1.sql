@@ -1,10 +1,3 @@
-CREATE TABLE t1(
-    a INT,
-    b INTEGER,
-    c BLOB,
-    d TEXT,
-    e REAL
-  ) STRICT;
 SELECT strict FROM pragma_table_list('t1');
 INSERT INTO t1(a, b) VALUES(1,2),('3','4'),(5.0, 6.0),(null,null);
 SELECT a, b, '|' FROM t1;

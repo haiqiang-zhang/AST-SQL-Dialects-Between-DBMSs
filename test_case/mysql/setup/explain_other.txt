@@ -1,0 +1,3 @@
+CREATE DATABASE mysqltest1;
+CREATE TABLE t1 (f1 int);
+INSERT INTO t1 VALUES (1),(2);

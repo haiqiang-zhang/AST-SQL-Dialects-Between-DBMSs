@@ -1,5 +1,3 @@
-CREATE TABLE t1 (c1 INT) ENGINE=myisam;
-INSERT INTO t1 VALUES (1);
 SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and

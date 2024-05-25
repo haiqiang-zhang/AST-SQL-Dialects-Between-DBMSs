@@ -1,8 +1,3 @@
-CREATE TABLE t1 (
-  e1 enum('ÃÂÃÂ¿ÃÂÃÂ¡ÃÂÃÂºÃÂÃÂ«ÃÂÃÂªÃÂÃÂ '),
-  e2 enum('ÃÂÃÂ¬ÃÂÃÂ«ÃÂÃÂ¿)ÃÂÃÂªÃÂÃÂ®')
-) ENGINE=MYISAM character set cp1251;
-DROP TABLE t1;
 SELECT @@collation_connection;
 CREATE TABLE t1 (a MEDIUMINT NULL) ENGINE=MYISAM;
 INSERT INTO t1 VALUES (1234567);

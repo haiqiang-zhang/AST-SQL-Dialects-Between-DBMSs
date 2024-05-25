@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS test1;
+CREATE TABLE test1(i int, j int) ENGINE Log;
+INSERT INTO test1 VALUES (1, 2), (3, 4);

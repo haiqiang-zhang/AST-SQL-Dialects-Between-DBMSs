@@ -1,4 +1,3 @@
-create table t1 (a bigint);
 lock tables t1 write;
 insert into t1 values(0);
 unlock tables;

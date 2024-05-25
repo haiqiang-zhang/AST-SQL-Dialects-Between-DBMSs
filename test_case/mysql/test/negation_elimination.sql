@@ -1,7 +1,3 @@
-drop table if exists t1;
-create table t1 (a int, key (a));
-insert into t1 values (NULL), (0), (1), (2), (3), (4), (5), (6), (7), (8), (9),
-(10), (11), (12), (13), (14), (15), (16), (17), (18), (19);
 select * from t1 where not(not(a));
 select * from t1 where not(not(not(a > 10)));
 select * from t1 where not(not(not(a < 5) and not(a > 10)));

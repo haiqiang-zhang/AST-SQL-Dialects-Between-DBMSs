@@ -1,4 +1,3 @@
-drop table if exists t1Aa,t2Aa,v1Aa,v2Aa;
 drop view if exists t1Aa,t2Aa,v1Aa,v2Aa;
 drop database if exists MySQLTest;
 create database MySQLTest;

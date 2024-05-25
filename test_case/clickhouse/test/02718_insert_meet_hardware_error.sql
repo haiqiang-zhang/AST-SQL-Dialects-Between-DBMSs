@@ -1,3 +1,2 @@
-DROP TABLE IF EXISTS t_hardware_error NO DELAY;
 system enable failpoint replicated_merge_tree_commit_zk_fail_after_op;
 system disable failpoint replicated_commit_zk_fail_after_op;

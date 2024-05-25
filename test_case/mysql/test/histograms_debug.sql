@@ -1,4 +1,3 @@
-CREATE TABLE t1 (col1 INT, col2 INT);
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 SELECT schema_name, table_name, column_name

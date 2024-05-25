@@ -1,7 +1,3 @@
-insert into function file(02458_data.jsonl) select NULL as x, 42 as y settings engine_file_truncate_on_insert=1;
-insert into function file(02458_data.jsoncompacteachrow) select NULL as x, 42 as y settings engine_file_truncate_on_insert=1;
-drop table if exists test;
-create table test (x Nullable(UInt32), y UInt32) engine=Memory();
 set use_structure_from_insertion_table_in_table_functions=2;
 insert into test select * from file(02458_data.jsonl);
 insert into test select x, 1 from file(02458_data.jsonl);

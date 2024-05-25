@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS t1;
 select 'a' = 'a', 'a' = 'a ', 'a ' = 'a';
 select 'a\t' = 'a' , 'a\t' < 'a' , 'a\t' > 'a';
 select 'a\t' = 'a ', 'a\t' < 'a ', 'a\t' > 'a ';

@@ -1,5 +1,3 @@
-CREATE TABLE customer (id INT PRIMARY KEY);
-CREATE TABLE apr (id INT PRIMARY KEY, apr REAL);
 CREATE VIEW v1 AS
   SELECT c.id, i.apr
   FROM customer c

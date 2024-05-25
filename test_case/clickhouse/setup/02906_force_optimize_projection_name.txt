@@ -1,0 +1,13 @@
+CREATE TABLE test
+(
+   `id` UInt64,
+   `name` String,
+   PROJECTION projection_name
+   (
+       SELECT sum(id) GROUP BY id, name
+   )
+)
+ENGINE = MergeTree()
+ORDER BY id
+SETTINGS index_granularity_bytes = 10000;
+INSERT INTO test SELECT number, 'test' FROM numbers(1, 100);

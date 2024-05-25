@@ -1,5 +1,3 @@
-CREATE TABLE tidscan(id integer);
-INSERT INTO tidscan VALUES (1), (2), (3);
 SELECT ctid, * FROM tidscan;
 EXPLAIN (COSTS OFF)
 SELECT ctid, * FROM tidscan WHERE ctid = '(0,1)';

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS xp;
-DROP TABLE IF EXISTS xp_d;
 SET log_queries = 1;
 CREATE TABLE xp (`A` Date, `B` Int64, `S` String) ENGINE = MergeTree PARTITION BY toYYYYMM(A) ORDER BY B;
 INSERT INTO xp SELECT '2020-01-01', number, '' FROM numbers(100000);

@@ -1,4 +1,3 @@
-CREATE TABLE t1(a,b,c);
 SELECT rowid, * FROM t1;
 SELECT rowid, * FROM t1;
 SELECT rowid, * FROM t1;

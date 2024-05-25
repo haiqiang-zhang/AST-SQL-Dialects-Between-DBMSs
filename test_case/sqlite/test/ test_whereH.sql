@@ -1,4 +1,3 @@
-CREATE TABLE t1(a,b,c,d);
 CREATE INDEX t1abc ON t1(a,b,c);
 CREATE INDEX t1bc ON t1(b,c);
 DROP TABLE t1;

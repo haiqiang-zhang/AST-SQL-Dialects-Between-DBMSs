@@ -1,10 +1,3 @@
-CREATE DATABASE IF NOT EXISTS events_test;
-CREATE DATABASE events_conn1_test2;
-CREATE TABLE events_test.fill_it1(test_name varchar(20), occur datetime);
-CREATE TABLE events_test.fill_it2(test_name varchar(20), occur datetime);
-CREATE TABLE events_test.fill_it3(test_name varchar(20), occur datetime);
-CREATE DATABASE events_conn2_db;
-CREATE DATABASE events_conn3_db;
 CREATE EVENT ev_drop1 ON SCHEDULE EVERY 10 MINUTE DISABLE DO SELECT 1;
 CREATE EVENT ev_drop2 ON SCHEDULE EVERY 10 MINUTE DISABLE DO SELECT 1;
 CREATE EVENT ev_drop3 ON SCHEDULE EVERY 10 MINUTE DISABLE DO SELECT 1;

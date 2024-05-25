@@ -1,7 +1,3 @@
-CREATE TABLE t1(
-  c1 TEXT,
-  c2 CHAR(255) DEFAULT NULL
-);
 SELECT JSON_PRETTY(JSON_EXTRACT(trace,"$.steps[*].join_execution"))
    FROM information_schema.optimizer_trace;
 SELECT MAX( c1 ) OVER ( ORDER BY c2 ROWS CURRENT ROW ) FROM t1

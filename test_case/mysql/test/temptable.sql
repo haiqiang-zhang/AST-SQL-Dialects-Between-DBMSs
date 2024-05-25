@@ -1,4 +1,3 @@
-CREATE DATABASE temptable_test;
 SELECT * FROM information_schema.table_constraints
 WHERE table_schema = 'mysql' AND table_name != 'ndb_binlog_index'
 ORDER BY table_schema,table_name,constraint_name COLLATE utf8mb3_general_ci;

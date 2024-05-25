@@ -1,7 +1,3 @@
-drop table if exists t1;
-create table t1 (a int);
-drop table t1;
-CREATE TABLE t1 (a INT);
 SELECT a FROM t1 WHERE a IN(1, (SELECT IF(1=0,1,2/0)));
 INSERT INTO t1 VALUES(1);
 SELECT a FROM t1 WHERE a IN(1, (SELECT IF(1=0,1,2/0)));

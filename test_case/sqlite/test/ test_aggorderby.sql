@@ -1,7 +1,3 @@
-CREATE TABLE t1(a TEXT,b INT,c INT,d INT);
-WITH RECURSIVE c(x) AS (VALUES(0) UNION ALL SELECT x+1 FROM c WHERE x<9)
-  INSERT INTO t1(a,b,c,d) SELECT printf('%d',(x*7)%10),1,x,10-x FROM c;
-INSERT INTO t1(a,b,c,d) SELECT a, 2, c, 10-d FROM t1;
 CREATE INDEX t1b ON t1(b);
 SELECT group_concat(a ORDER BY a) FROM t1 WHERE b=1;
 SELECT group_concat(a ORDER BY c) FROM t1 WHERE b=1;

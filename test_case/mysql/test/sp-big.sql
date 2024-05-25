@@ -1,6 +1,3 @@
-drop table if exists t1;
-create table t1 (a int);
-insert into t1 values (1),(2),(3);
 select length(routine_definition) from information_schema.routines where routine_schema = 'test' and routine_name = 'longprocedure';
 drop table t1;
 create table t1 (f1 char(100) , f2 mediumint , f3 int , f4 real, f5 numeric);

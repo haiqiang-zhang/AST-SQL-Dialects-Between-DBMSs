@@ -1,7 +1,3 @@
-CREATE TABLE t1(f0 int auto_increment primary key, f1 int, f2 varchar(200));
-INSERT INTO t1(f1, f2) VALUES 
-(0,"0"),(1,"1"),(2,"2"),(3,"3"),(4,"4"),(5,"5"),
-(6,"6"),(7,"7"),(8,"8"),(9,"9"),(10,"10");
 SELECT * FROM t1 ORDER BY f1 ASC, f0 LIMIT 1;
 DROP TABLE t1;
 CREATE TABLE t1(f0 int auto_increment primary key, f1 int);

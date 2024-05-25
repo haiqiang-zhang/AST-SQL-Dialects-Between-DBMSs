@@ -1,8 +1,3 @@
-drop table if exists source;
-drop table if exists target1;
-drop table if exists target2;
-drop table if exists v_heavy;
-create table source(type String) engine=MergeTree order by type;
 create view v_heavy as
 with nums as (select number from numbers(1e5))
 select count(*) n from (select number from numbers(1e5) n1 cross join nums);

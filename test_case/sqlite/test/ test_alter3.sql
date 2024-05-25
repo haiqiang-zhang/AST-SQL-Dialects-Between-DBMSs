@@ -1,4 +1,3 @@
-CREATE TABLE abc(a, b, c);
 SELECT sql FROM sqlite_master;
 ALTER TABLE abc ADD d INTEGER;
 SELECT sql FROM sqlite_master;

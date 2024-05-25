@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS t;
-CREATE TABLE t (n UInt8) ENGINE=MergeTree ORDER BY tuple();

@@ -1,9 +1,3 @@
-CREATE DATABASE db1;
-CREATE TABLE t1 (a INT, KEY a(a)) ENGINE=INNODB;
-INSERT INTO t1 VALUES (1),(2),(3),(4),(5);
-CREATE TABLE t3 (a INT) ENGINE=InnoDB;
-INSERT INTO t3 SELECT * FROM t1;
-CREATE TABLE trans (a INT) ENGINE=INNODB;
 SELECT IF (COUNT(*) > 0, "YES", "NO") AS "IMPLICIT COMMIT" FROM trans;
 DELETE FROM trans;
 select 1 as res from t1 where (1) in (select * from t1);

@@ -1,8 +1,3 @@
-create table t1 (a int not null);
-insert into t1 values (1);
-insert into t1 values (a+2);
-insert into t1 values (a+3),(a+4);
-insert into t1 values (5),(a+6);
 select * from t1;
 drop table t1;
 create table t1 (id int not null auto_increment primary key, username varchar(32) not null, unique (username));

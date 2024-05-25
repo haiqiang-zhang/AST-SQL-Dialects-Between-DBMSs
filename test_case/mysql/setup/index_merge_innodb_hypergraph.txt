@@ -1,0 +1,1 @@
+CREATE TABLE t1 (f1 INT, f2 INT, f3 INT, PRIMARY KEY(f1), KEY(f2), KEY(f3));

@@ -1,0 +1,4 @@
+CREATE TABLE t1(x INT);
+CREATE TABLE t2(pk INT PRIMARY KEY);
+INSERT INTO t1 VALUES (1);
+INSERT INTO t2 VALUES (1), (2), (3), (4), (5), (6), (7), (8), (9), (10);

@@ -1,14 +1,2 @@
-CREATE TABLE g9(a INT) ENGINE=INNODB;
-DROP TABLE g9;
-CREATE TABLE g1(a INT PRIMARY KEY, b INT) ENGINE=INNODB;
-INSERT INTO g1 VALUES (1,2),(2,3),(4,5);
-CREATE TABLE g2(a INT PRIMARY KEY, b INT) ENGINE=INNODB;
-INSERT INTO g2 VALUES (1,2),(2,3),(4,5);
-DROP TABLE g1,g2;
-CREATE TABLE t_innodb(c1 INT NOT NULL PRIMARY KEY,
-                      c2 INT NOT NULL,
-                      c3 char(20),
-                      KEY c3_idx(c3))ENGINE=INNODB;
-INSERT INTO t_innodb VALUES (1, 1, 'a'), (2,2,'a'), (3,3,'a');
 SELECT COUNT(*) FROM t_innodb;
 DROP TABLE t_innodb;

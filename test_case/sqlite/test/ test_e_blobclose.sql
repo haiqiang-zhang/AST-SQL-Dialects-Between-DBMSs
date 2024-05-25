@@ -1,4 +1,3 @@
-CREATE TABLE x1(a INTEGER PRIMARY KEY, b DOTS);
 PRAGMA lock_status;
 PRAGMA lock_status;
 PRAGMA lock_status;

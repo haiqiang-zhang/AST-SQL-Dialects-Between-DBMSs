@@ -1,4 +1,3 @@
-CREATE TABLE t5(a, b, c, d, e, f, g, x, y);
 CREATE INDEX t5xb ON t5(x, b);
 CREATE INDEX t5xc ON t5(x, c);
 CREATE INDEX t5xd ON t5(x, d);

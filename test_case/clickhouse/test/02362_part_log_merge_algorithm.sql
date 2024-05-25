@@ -1,9 +1,3 @@
-CREATE TABLE data_horizontal (
-    key Int
-)
-Engine=MergeTree()
-ORDER BY key;
-INSERT INTO data_horizontal VALUES (1);
 OPTIMIZE TABLE data_horizontal FINAL;
 SYSTEM FLUSH LOGS;
 CREATE TABLE data_vertical

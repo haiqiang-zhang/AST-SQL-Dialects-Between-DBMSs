@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS t3;
-CREATE TABLE t3(a TEXT PRIMARY KEY);
-INSERT INTO t3 VALUES('a'), ('b'), ('c'), ('d'), ('e');
-INSERT INTO t3 VALUES('f'), ('g'), ('h'), ('i'), ('j');
 SELECT a, ntile(1) OVER (ORDER BY a) FROM t3;
 SELECT a, ntile(2) OVER (ORDER BY a) FROM t3;
 SELECT a, ntile(3) OVER (ORDER BY a) FROM t3;

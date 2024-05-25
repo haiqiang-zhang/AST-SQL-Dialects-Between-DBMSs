@@ -1,4 +1,3 @@
-drop table if exists t1,t2;
 select @test, @`test`, @TEST, @`TEST`, @"teSt";
 select @test, @`test`, @TEST, @`TEST`, @"teSt";
 select @test, @`test`, @TEST, @`TEST`, @"teSt";

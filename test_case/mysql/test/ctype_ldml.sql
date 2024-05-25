@@ -1,4 +1,3 @@
-drop table if exists t1;
 select collation_name, character_set_name, id from information_schema.collations where id>256 order by id;
 CREATE TABLE t1 AS SELECT REPEAT(' ', 16) AS a LIMIT 0;
 INSERT INTO t1 VALUES ('012345'),('001234'),('000123'),('000012'),('000001');

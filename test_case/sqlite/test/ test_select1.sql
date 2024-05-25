@@ -1,5 +1,3 @@
-CREATE TABLE test1(f1 int, f2 int);
-INSERT INTO test1(f1,f2) VALUES(11,22);
 SELECT f1 FROM test1;
 SELECT f2 FROM test1;
 SELECT f2, f1 FROM test1;

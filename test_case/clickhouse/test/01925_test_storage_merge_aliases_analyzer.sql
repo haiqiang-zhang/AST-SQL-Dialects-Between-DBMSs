@@ -1,4 +1,3 @@
-drop table if exists merge;
 set allow_experimental_analyzer = 1;
 create table merge
 (

@@ -1,4 +1,3 @@
-CREATE TABLE t1(a integer primary key, b INTEGER NOT NULL);
 PRAGMA temp_store = file;
 BEGIN;
 INSERT INTO t1 VALUES(1, 1);

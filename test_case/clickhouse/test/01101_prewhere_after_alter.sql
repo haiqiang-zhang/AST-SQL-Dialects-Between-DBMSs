@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS test_a;
-DROP TABLE IF EXISTS test_b;
 set allow_deprecated_syntax_for_merge_tree=1;
 CREATE TABLE test_a
 (

@@ -1,4 +1,3 @@
-CREATE TABLE t1(x, y);
 BEGIN;
 INSERT INTO t1 VALUES(1, 2);
 PRAGMA journal_mode = wal;

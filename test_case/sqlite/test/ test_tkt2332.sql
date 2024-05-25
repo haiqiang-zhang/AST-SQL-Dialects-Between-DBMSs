@@ -1,2 +1,1 @@
-CREATE TABLE blobs (k INTEGER PRIMARY KEY, v BLOB);
 PRAGMA cache_size = 100;

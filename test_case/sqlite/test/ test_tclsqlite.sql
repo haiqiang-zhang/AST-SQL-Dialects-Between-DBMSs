@@ -1,6 +1,3 @@
-CREATE TABLE t1(a int, b int);
-INSERT INTO t1 VALUES(10,20);
-CREATE TABLE tÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£x(a int, bÃÂÃÂÃÂÃÂ¡ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµ float);
 PRAGMA table_info(tÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£x);
 INSERT INTO tÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£x VALUES(1,2.3);
 INSERT INTO t1 SELECT a*2, b*2 FROM t1;

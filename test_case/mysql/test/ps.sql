@@ -1,4 +1,3 @@
-drop table if exists t1,t2,t3,t4;
 drop database if exists client_test_db;
 create table t1
 (

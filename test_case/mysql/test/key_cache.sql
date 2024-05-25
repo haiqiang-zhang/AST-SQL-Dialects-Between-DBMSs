@@ -1,4 +1,3 @@
-drop table if exists t1, t2, t3;
 SELECT @@key_buffer_size, @@small.key_buffer_size;
 SELECT @@key_buffer_size;
 SELECT @@global.key_buffer_size;

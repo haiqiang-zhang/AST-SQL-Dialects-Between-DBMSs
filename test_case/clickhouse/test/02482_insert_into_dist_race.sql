@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS tmp_02482;
-DROP TABLE IF EXISTS dist_02482;
 SET send_logs_level = 'error';
 SET prefer_localhost_replica=0;
 CREATE TABLE tmp_02482 (i UInt64, n LowCardinality(String)) ENGINE = Memory;

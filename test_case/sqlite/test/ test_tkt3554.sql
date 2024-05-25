@@ -1,5 +1,3 @@
-CREATE TABLE test ( obj, t1, t2, PRIMARY KEY(obj, t1, t2) );
-INSERT INTO test VALUES('a', 10000, 11000);
 SELECT * FROM test;
 INSERT INTO test VALUES('a', 9000, 10500);
 SELECT * FROM test;

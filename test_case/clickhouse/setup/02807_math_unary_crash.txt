@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS t10;
+CREATE TABLE t10 (`c0` Int32) ENGINE = MergeTree ORDER BY tuple();

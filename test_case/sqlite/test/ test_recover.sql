@@ -1,6 +1,3 @@
-CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c);
-INSERT INTO t1 VALUES(1, 4, X'1234567800');
-INSERT INTO t1 VALUES(2, 'test', 8.1);
 PRAGMA writable_schema = on;
 PRAGMA encoding = 'UTF-8';
 PRAGMA page_size = '1024';

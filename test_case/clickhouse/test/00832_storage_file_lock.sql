@@ -1,5 +1,2 @@
-DROP TABLE IF EXISTS file;
-CREATE TABLE file (number UInt64) ENGINE = File(TSV);
-INSERT INTO file VALUES (1);
 SELECT * FROM file;
 DROP TABLE file;

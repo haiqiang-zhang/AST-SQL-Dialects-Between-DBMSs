@@ -1,0 +1,16 @@
+DROP TABLE IF EXISTS prewhere_int128;
+DROP TABLE IF EXISTS prewhere_int256;
+DROP TABLE IF EXISTS prewhere_uint128;
+DROP TABLE IF EXISTS prewhere_uint256;
+CREATE TABLE prewhere_int128 (a Int128) ENGINE=MergeTree ORDER BY a;
+INSERT INTO prewhere_int128 VALUES (1);
+DROP TABLE prewhere_int128;
+CREATE TABLE prewhere_int256 (a Int256) ENGINE=MergeTree ORDER BY a;
+INSERT INTO prewhere_int256 VALUES (1);
+DROP TABLE prewhere_int256;
+CREATE TABLE prewhere_uint128 (a UInt128) ENGINE=MergeTree ORDER BY a;
+INSERT INTO prewhere_uint128 VALUES (1);
+DROP TABLE prewhere_uint128;
+CREATE TABLE prewhere_uint256 (a UInt256) ENGINE=MergeTree ORDER BY a;
+INSERT INTO prewhere_uint256 VALUES (1);
+DROP TABLE prewhere_uint256;

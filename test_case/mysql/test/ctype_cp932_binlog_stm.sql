@@ -1,5 +1,3 @@
-CREATE TABLE t1 (a varchar(16)) character set cp932;
-INSERT INTO t1 VALUES (0x8372835E),(0x8352835E);
 SELECT hex(a), hex(lower(a)), hex(upper(a)) FROM t1 ORDER BY binary(a);
 DROP TABLE t1;
 CREATE TABLE t1 (b VARCHAR(2));

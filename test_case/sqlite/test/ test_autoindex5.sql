@@ -1,9 +1,3 @@
-CREATE TABLE source_package_status
-          (bug_name TEXT NOT NULL,
-           package INTEGER NOT NULL,
-           vulnerable INTEGER NOT NULL,
-           urgency TEXT NOT NULL,
-           PRIMARY KEY (bug_name, package));
 CREATE INDEX source_package_status_package
               ON source_package_status(package);
 CREATE TABLE source_packages

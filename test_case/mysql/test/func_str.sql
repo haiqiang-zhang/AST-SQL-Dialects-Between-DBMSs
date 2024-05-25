@@ -1,4 +1,3 @@
-drop table if exists t1,t2;
 select 'hello',"'hello'",'""hello""','''h''e''l''l''o''',"hel""lo",'hel\'lo';
 select 'hello' 'monty';
 select length('\n\t\r\b\0\_\%\\');

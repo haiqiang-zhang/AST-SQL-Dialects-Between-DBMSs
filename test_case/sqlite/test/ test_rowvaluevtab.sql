@@ -1,4 +1,3 @@
-CREATE TABLE t1(a, b, c);
 CREATE INDEX t1b ON t1(b);
 INSERT INTO t1 VALUES('one', 1, 1);
 INSERT INTO t1 VALUES('two', 1, 2);

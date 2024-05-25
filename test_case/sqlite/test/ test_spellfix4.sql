@@ -1,16 +1,3 @@
-CREATE TABLE cost1(iLang, cFrom, cTo, iCost);
-INSERT INTO cost1 VALUES
-    (0, '', '?',  97),
-    (0, '?', '',  98),
-    (0, '?', '?', 99),
-    (0, 'm', 'n', 50),
-    (0, 'n', 'm', 50);
-INSERT INTO cost1 VALUES
-    (0, 'a', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤', 5),
-    (0, 'ss', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ', 8);
-INSERT INTO cost1 VALUES
-    (0, 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤', 'a', 5),
-    (0, 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ', 'ss', 8);
 DELETE FROM cost1;
 INSERT INTO cost1 VALUES
     (0, '', '?',  97),

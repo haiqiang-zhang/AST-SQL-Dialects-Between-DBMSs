@@ -1,4 +1,3 @@
-CREATE TABLE t1(x);
 SELECT name FROM sqlite_master;
 CREATE TABLE t2(y);
 CREATE TABLE t3(z);

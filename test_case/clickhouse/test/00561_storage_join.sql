@@ -1,4 +1,3 @@
-drop table IF EXISTS joinbug;
 set allow_deprecated_syntax_for_merge_tree=1;
 CREATE TABLE joinbug (
   event_date Date MATERIALIZED toDate(created, 'Asia/Istanbul'),

@@ -1,0 +1,15 @@
+-- no-parallel: creates a custom database schema and expects to use it exclusively
+
+-- Create a test table and verify that the output of SHOW COLUMNS is sane.
+-- The matching of actual/expected results relies on the fact that the output of SHOW COLUMNS is sorted.
+DROP TABLE IF EXISTS tab;
+CREATE TABLE tab
+(
+    `uint64` UInt64,
+    `int32` Nullable(Int32) COMMENT 'example comment',
+    `str` String,
+    INDEX idx str TYPE set(1000)
+)
+ENGINE = MergeTree
+PRIMARY KEY (uint64)
+ORDER BY (uint64, str);

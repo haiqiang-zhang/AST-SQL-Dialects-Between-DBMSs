@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS pk;
 set allow_deprecated_syntax_for_merge_tree=1;
 -- timezones" (timezones that does not starts from 00:00), like
 -- Africa/Monrovia, for which toStartOfMinute(0) and toStartOfMinute(59) can

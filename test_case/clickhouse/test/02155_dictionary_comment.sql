@@ -1,10 +1,3 @@
-DROP TABLE IF EXISTS 02155_test_table;
-CREATE TABLE 02155_test_table
-(
-    id UInt64,
-    value String
-) ENGINE=TinyLog;
-INSERT INTO 02155_test_table VALUES (0, 'Value');
 DROP DICTIONARY IF EXISTS 02155_test_dictionary;
 CREATE DICTIONARY 02155_test_dictionary
 (

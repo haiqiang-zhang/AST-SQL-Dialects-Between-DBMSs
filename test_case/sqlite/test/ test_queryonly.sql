@@ -1,5 +1,3 @@
-CREATE TABLE t1(a);
-INSERT INTO t1 VALUES(123),(456);
 SELECT a FROM t1 ORDER BY a;
 PRAGMA query_only;
 PRAGMA query_only=ON;

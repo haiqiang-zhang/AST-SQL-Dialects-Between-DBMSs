@@ -1,5 +1,3 @@
-CREATE TABLE reloptions_test(i INT) WITH (FiLLFaCToR=30,
-	autovacuum_enabled = false, autovacuum_analyze_scale_factor = 0.2);
 SELECT reloptions FROM pg_class WHERE oid = 'reloptions_test'::regclass;
 ALTER TABLE reloptions_test SET (fillfactor=31,
 	autovacuum_analyze_scale_factor = 0.3);

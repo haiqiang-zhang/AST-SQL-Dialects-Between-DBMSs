@@ -1,4 +1,3 @@
-create table test (number UInt64) engine=MergeTree order by number;
 system stop merges test;
 INSERT INTO test select number from numbers(100000);
 INSERT INTO test select number from numbers(100000);

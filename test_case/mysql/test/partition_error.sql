@@ -1,5 +1,3 @@
-drop table if exists t1, t2;
-CREATE TABLE t1 (a int);
 CREATE OR REPLACE VIEW v1 AS SELECT * FROM t1;
 DROP VIEW v1;
 DROP TABLE t1;

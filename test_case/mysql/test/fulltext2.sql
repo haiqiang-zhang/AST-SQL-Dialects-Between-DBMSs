@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS t1;
-CREATE TABLE t1 (
-  i int(10) unsigned not null auto_increment primary key,
-  a varchar(255) not null,
-  FULLTEXT KEY (a)
-) ENGINE=MyISAM;
 select count(*) from t1 where match a against ('aaaxxx');
 select count(*) from t1 where match a against ('aaayyy');
 select count(*) from t1 where match a against ('aaazzz');

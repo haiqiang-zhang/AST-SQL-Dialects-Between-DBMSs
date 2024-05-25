@@ -1,4 +1,3 @@
-CREATE TABLE treal(a PRIMARY KEY, b, c);
 BEGIN;
 CREATE TABLE sreal(a, b, c UNIQUE);
 BEGIN;

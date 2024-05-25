@@ -1,9 +1,3 @@
--- Tag no-replicated-database: Unsupported type of ALTER query
-
-DROP TABLE IF EXISTS t;
-# Memory, MergeTree, and ReplicatedMergeTree
-
-CREATE TABLE t (x UInt8) ENGINE = Memory COMMENT 'Hello';
 SELECT comment FROM system.tables WHERE database = currentDatabase() AND table = 't';
 ALTER TABLE t MODIFY COMMENT 'World';
 SELECT comment FROM system.tables WHERE database = currentDatabase() AND table = 't';

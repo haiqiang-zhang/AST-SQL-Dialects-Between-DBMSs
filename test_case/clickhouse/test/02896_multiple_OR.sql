@@ -1,6 +1,3 @@
-DROP TABLE IF EXISTS or_bug;
-CREATE TABLE or_bug (key UInt8) ENGINE=MergeTree ORDER BY key;
-INSERT INTO TABLE or_bug VALUES (0), (1);
 SELECT * FROM or_bug WHERE (key = 1) OR false OR false;
 SELECT * FROM or_bug WHERE (key = 1) OR false;
 SELECT * FROM or_bug WHERE (key = 1);

@@ -1,4 +1,3 @@
-drop table if exists simple_agg_groupArrayLastArray;
 -- groupArrayLast by number
 select groupArrayLast(1)(number+1) from numbers(5);
 select groupArrayLast(3)(number+1) from numbers(5);

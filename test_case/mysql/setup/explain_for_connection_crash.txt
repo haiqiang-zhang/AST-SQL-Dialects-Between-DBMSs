@@ -1,0 +1,10 @@
+create table t1 (a int, c int);
+insert into t1 values (1, 2), (2, 3), (2, 4), (3, 5);
+create table t2 (a int, c int);
+insert into t2 values (1, 5), (2, 4), (3, 3), (3,3);
+drop table t1,t2;
+CREATE TABLE t1 (a VARCHAR(10), FULLTEXT KEY a (a));
+INSERT INTO t1 VALUES (1),(2);
+CREATE TABLE t2 (b INT);
+INSERT INTO t2 VALUES (1),(2);
+DROP TABLE t1,t2;

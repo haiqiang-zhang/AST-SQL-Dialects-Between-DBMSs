@@ -1,7 +1,3 @@
-drop table if exists t1, t2, t3, t4;
-create table t1 (a int)
-partition by list (a)
-(partition p1 values in (0));
 alter table t1 truncate partition p1,p1;
 drop table t1;
 create table t1 (a int)

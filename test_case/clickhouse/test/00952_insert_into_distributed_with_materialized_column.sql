@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS local_00952;
-DROP TABLE IF EXISTS distributed_00952;
 -- insert_allow_materialized_columns=0
 --
 SELECT 'insert_allow_materialized_columns=0';

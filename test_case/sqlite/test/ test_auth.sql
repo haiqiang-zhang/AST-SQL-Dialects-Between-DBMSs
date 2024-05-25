@@ -1,4 +1,3 @@
-CREATE TABLE t1(a,b,c);
 SELECT name FROM sqlite_master;
 SELECT name FROM sqlite_master;
 CREATE TEMP TABLE t1(a,b,c);

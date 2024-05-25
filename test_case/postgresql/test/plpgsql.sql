@@ -1,7 +1,3 @@
-create table Room (
-    roomno	char(8),
-    comment	text
-);
 create unique index Room_rno on Room using btree (roomno bpchar_ops);
 create table WSlot (
     slotname	char(20),

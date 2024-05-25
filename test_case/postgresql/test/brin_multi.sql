@@ -1,25 +1,3 @@
-CREATE TABLE brintest_multi (
-	int8col bigint,
-	int2col smallint,
-	int4col integer,
-	oidcol oid,
-	tidcol tid,
-	float4col real,
-	float8col double precision,
-	macaddrcol macaddr,
-	macaddr8col macaddr8,
-	inetcol inet,
-	cidrcol cidr,
-	datecol date,
-	timecol time without time zone,
-	timestampcol timestamp without time zone,
-	timestamptzcol timestamp with time zone,
-	intervalcol interval,
-	timetzcol time with time zone,
-	numericcol numeric,
-	uuidcol uuid,
-	lsncol pg_lsn
-) WITH (fillfactor=10);
 CREATE INDEX brinidx_multi ON brintest_multi USING brin (
 	int8col int8_minmax_multi_ops,
 	int2col int2_minmax_multi_ops,

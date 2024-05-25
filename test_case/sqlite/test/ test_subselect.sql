@@ -1,7 +1,3 @@
-CREATE TABLE t1(a int, b int);
-INSERT INTO t1 VALUES(1,2);
-INSERT INTO t1 VALUES(3,4);
-INSERT INTO t1 VALUES(5,6);
 SELECT * FROM t1 WHERE a = (SELECT count(*) FROM t1);
 SELECT b from t1 where a = (SELECT a FROM t1 WHERE b=2);
 SELECT b from t1 where a = (SELECT a FROM t1 WHERE b=4);

@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS columns_with_multiple_streams;
 SET mutations_sync = 2;
 CREATE TABLE columns_with_multiple_streams (
   field0 Nullable(Int64) CODEC(Delta(2), LZ4),

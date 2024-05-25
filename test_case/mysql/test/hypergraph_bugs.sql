@@ -1,9 +1,3 @@
-CREATE TABLE t1(a INT);
-CREATE TABLE t2(a INT);
-CREATE TABLE t3(a INT);
-INSERT INTO t1 VALUES (1),(2),(5);
-INSERT INTO t2 VALUES (2);
-INSERT INTO t3 VALUES (3);
 SELECT
 IF(TRACE LIKE '%Left join [companion set %] (extra join condition = (t1.a = 5) AND (t2.a = 5))%',
    'OK', TRACE)

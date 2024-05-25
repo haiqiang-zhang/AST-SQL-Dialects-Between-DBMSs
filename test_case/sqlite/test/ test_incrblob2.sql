@@ -1,9 +1,3 @@
-CREATE TABLE blobs(id INTEGER PRIMARY KEY, data BLOB);
-INSERT INTO blobs VALUES(NULL, zeroblob(5000));
-INSERT INTO blobs VALUES(NULL, zeroblob(5000));
-INSERT INTO blobs VALUES(NULL, zeroblob(5000));
-INSERT INTO blobs VALUES(NULL, zeroblob(5000));
-INSERT INTO blobs VALUES(5, zeroblob(10240));
 BEGIN;
 PRAGMA read_uncommitted=1;
 BEGIN;

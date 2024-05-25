@@ -1,5 +1,3 @@
-CREATE TABLE '@abc' ( '#xyz' int, '!pqr' text );
-INSERT INTO '@abc' VALUES(5,'hello');
 SELECT * FROM '@abc';
 SELECT * FROM [@abc];
 SELECT * FROM `@abc`;

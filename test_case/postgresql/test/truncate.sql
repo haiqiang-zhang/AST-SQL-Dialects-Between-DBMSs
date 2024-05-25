@@ -1,6 +1,3 @@
-CREATE TABLE truncate_a (col1 integer primary key);
-INSERT INTO truncate_a VALUES (1);
-INSERT INTO truncate_a VALUES (2);
 SELECT * FROM truncate_a;
 BEGIN;
 TRUNCATE truncate_a;

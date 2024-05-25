@@ -1,4 +1,3 @@
-CREATE TABLE t1(a);
 CREATE INDEX i1 ON t1(a);
 INSERT INTO t1 VALUES(1), (2), (3), (4), (5), (6), (7), (8), (9);
 SELECT sum(a) FROM t1;

@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS test_table;
-CREATE TABLE test_table
-(
-    number UInt64
-)
-ENGINE=MergeTree ORDER BY number;
 DROP VIEW IF EXISTS test_mv;
 CREATE MATERIALIZED VIEW test_mv ENGINE=MergeTree ORDER BY arr
 AS

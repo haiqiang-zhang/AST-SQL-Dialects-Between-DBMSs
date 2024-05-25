@@ -1,0 +1,12 @@
+CREATE TABLE t_innodb(c1 INT NOT NULL PRIMARY KEY,
+                      c2 INT NOT NULL,
+                      c3 char(20),
+                      KEY c3_idx(c3))ENGINE=INNODB;
+INSERT INTO t_innodb VALUES (1, 1, 'a'), (2,2,'a'), (3,3,'a');
+CREATE TABLE t_myisam(c1 INT NOT NULL PRIMARY KEY,
+                      c2 INT NOT NULL DEFAULT 1,
+                      c3 char(20),
+                      KEY c3_idx(c3)) ENGINE=MYISAM;
+INSERT INTO t_myisam(c1) VALUES (1), (2);
+CREATE TABLE t_nopk(c1 INT NOT NULL , c2 INT NOT NULL)ENGINE=INNODB;
+INSERT INTO t_nopk SELECT c1, c2 FROM t_innodb;

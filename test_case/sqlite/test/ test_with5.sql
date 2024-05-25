@@ -1,4 +1,3 @@
-CREATE TABLE link(aa INT, bb INT);
 CREATE INDEX link_f ON link(aa,bb);
 CREATE INDEX link_t ON link(bb,aa);
 INSERT INTO link(aa,bb) VALUES

@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS A;
 WITH 'UTC' as timezone SELECT timezone, timeZoneOf(now64(3, timezone)) == timezone;
 WITH 'Europe/Minsk' as timezone SELECT timezone, timeZoneOf(now64(3, timezone)) == timezone;
 SELECT toDateTime64('2019-09-16 19:20:11', 3, 'UTC');

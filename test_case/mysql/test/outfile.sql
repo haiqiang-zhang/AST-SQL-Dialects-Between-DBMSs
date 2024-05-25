@@ -1,6 +1,3 @@
-drop table if exists t1;
-create table t1 (`a` blob);
-insert into t1 values("hello world"),("Hello mars"),(NULL);
 select load_file(concat(@tmpdir,"/outfile-test.1"));
 select load_file(concat(@tmpdir,"/outfile-test.2"));
 select length(load_file(concat(@tmpdir,"/outfile-test.3")));

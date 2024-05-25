@@ -1,5 +1,3 @@
-CREATE TABLE t1(i INT);
-CREATE TABLE t2(i INT);
 SELECT        * FROM t1;
 SELECT /*+ */ * FROM t1;
 SELECT * FROM t1, t2;

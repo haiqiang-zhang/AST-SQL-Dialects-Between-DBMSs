@@ -1,0 +1,2 @@
+CREATE TABLE t1(a, b, c, PRIMARY KEY(a,b)) WITHOUT rowid;
+CREATE TABLE t2(x);

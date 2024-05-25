@@ -1,4 +1,3 @@
-CREATE TABLE t1(a, b);
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 CREATE TABLE t1(a, b);

@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS test;
 SELECT arrayCumSumNonNegative([1, 2, 3, 4]);
 SELECT arrayCumSumNonNegative([1, -5, 5, -2]);
 SELECT arrayDifference([1, 2, 3, 4]);

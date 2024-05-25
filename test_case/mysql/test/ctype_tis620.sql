@@ -1,4 +1,3 @@
-drop table if exists t1;
 SELECT hex(@u0:=convert(@pl0 using utf8mb3));
 SELECT hex(@u1:=convert(@pl1 using utf8mb3));
 SELECT hex(@u2:=convert(@pl2 using utf8mb3));

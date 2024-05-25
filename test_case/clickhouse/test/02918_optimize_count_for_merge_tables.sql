@@ -1,13 +1,3 @@
--- optimization if all underlying tables support it
-
-DROP TABLE IF EXISTS mt1;
-DROP TABLE IF EXISTS mt2;
-DROP TABLE IF EXISTS merge;
-CREATE TABLE mt1 (id UInt64) ENGINE = MergeTree ORDER BY id;
-CREATE TABLE mt2 (id UInt64) ENGINE = MergeTree ORDER BY id;
-CREATE TABLE merge (id UInt64) ENGINE = Merge(currentDatabase(), '^mt[0-9]+$');
-INSERT INTO mt1 VALUES (1);
-INSERT INTO mt2 VALUES (1);
 SELECT count() FROM merge;
 EXPLAIN SELECT count() FROM merge settings allow_experimental_analyzer=0;
 CREATE TABLE mt3 (id UInt64) ENGINE = TinyLog;

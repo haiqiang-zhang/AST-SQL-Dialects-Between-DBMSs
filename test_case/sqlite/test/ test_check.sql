@@ -1,8 +1,3 @@
-CREATE TABLE t1(
-      x INTEGER CHECK( x<5 ),
-      y REAL CHECK( y>x )
-    );
-INSERT INTO t1 VALUES(3,4);
 SELECT * FROM t1;
 SELECT * FROM t1;
 SELECT * FROM t1;

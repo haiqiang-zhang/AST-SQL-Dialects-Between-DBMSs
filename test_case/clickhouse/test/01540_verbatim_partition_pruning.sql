@@ -1,9 +1,3 @@
-drop table if exists xy;
-create table xy(x int, y int) engine MergeTree partition by intHash64(x) % 2 order by y settings index_granularity = 1;
--- intHash64(2) % 2 = 1
--- intHash64(8) % 2 = 0
--- intHash64(9) % 2 = 1
-insert into xy values (0, 2), (2, 3), (8, 4), (9, 5);
 -- minmax index for the first partition is 0 <= x <= 8
 -- minmax index for the second partition is 2 <= x <= 9
 

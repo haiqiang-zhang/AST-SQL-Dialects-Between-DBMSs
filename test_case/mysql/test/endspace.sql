@@ -1,6 +1,3 @@
-drop table if exists t1;
-create table t1 (text1 varchar(32) not NULL, KEY key1 (text1)) charset latin1;
-insert into t1 values ('teststring'), ('nothing'), ('teststring\t');
 select * from t1 ignore key (key1) where text1='teststring' or 
   text1 like 'teststring_%' ORDER BY text1;
 select * from t1 where text1='teststring' or text1 like 'teststring_%';

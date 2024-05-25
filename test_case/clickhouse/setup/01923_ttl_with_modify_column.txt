@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS t_ttl_modify_column;
+CREATE TABLE t_ttl_modify_column
+(
+    InsertionDateTime DateTime,
+    TTLDays Int32 DEFAULT CAST(365, 'Int32')
+)
+ENGINE = MergeTree
+ORDER BY tuple()
+TTL InsertionDateTime + toIntervalDay(TTLDays)
+SETTINGS min_bytes_for_wide_part = 0;
+INSERT INTO t_ttl_modify_column VALUES (now(), 23);

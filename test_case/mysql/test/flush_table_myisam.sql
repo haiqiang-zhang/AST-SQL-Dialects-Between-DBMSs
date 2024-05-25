@@ -1,2 +1,0 @@
-CREATE TABLE t1(a INT) engine= MyISAM;
-DROP TABLE t1;

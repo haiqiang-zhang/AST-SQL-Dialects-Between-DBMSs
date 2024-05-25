@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS t1;
-CREATE TABLE t1(a, b);
 /* no-op */;
 SELECT count(*) FROM t1;
 INSERT INTO t1 VALUES(1, 2);

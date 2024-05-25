@@ -1,8 +1,3 @@
-CREATE TABLE real_city (
-	pop			int4,
-	cname		text,
-	outline 	path
-);
 ANALYZE real_city;
 CREATE TABLE view_base_table (key int PRIMARY KEY, data varchar(20));
 CREATE VIEW key_dependent_view AS

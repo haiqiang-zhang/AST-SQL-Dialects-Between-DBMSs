@@ -1,4 +1,3 @@
-CREATE TABLE t1(a, b);
 PRAGMA lock_status;
 PRAGMA lock_status;
 INSERT INTO t1 VALUES(1, 1);
