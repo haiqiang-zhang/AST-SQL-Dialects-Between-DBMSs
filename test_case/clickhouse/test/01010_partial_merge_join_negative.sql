@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS t0;
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t0 (x UInt32, y UInt64) engine = MergeTree ORDER BY (x,y);
+CREATE TABLE t1 (x UInt32, y UInt64) engine = MergeTree ORDER BY (x,y);
 SET join_algorithm = 'partial_merge';
 SELECT 'all';
 SELECT * FROM t0 LEFT JOIN t1 ON t1.x = t0.x;

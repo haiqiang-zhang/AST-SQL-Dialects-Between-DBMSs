@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS 02919_test_table_noarg;
+CREATE TABLE 02919_test_table_noarg(str String) ENGINE = FuzzJSON('{}');
 SELECT count() FROM (SELECT * FROM 02919_test_table_noarg LIMIT 100);
 DROP TABLE IF EXISTS 02919_test_table_noarg;
 DROP TABLE IF EXISTS 02919_test_table_valid_args;

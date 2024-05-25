@@ -1,3 +1,9 @@
+CREATE TABLE FLOAT4_TBL (f1  float4);
+INSERT INTO FLOAT4_TBL(f1) VALUES ('    0.0');
+INSERT INTO FLOAT4_TBL(f1) VALUES ('1004.30   ');
+INSERT INTO FLOAT4_TBL(f1) VALUES ('     -34.84    ');
+INSERT INTO FLOAT4_TBL(f1) VALUES ('1.2345678901234e+20');
+INSERT INTO FLOAT4_TBL(f1) VALUES ('1.2345678901234e-20');
 SELECT pg_input_is_valid('34.5', 'float4');
 SELECT pg_input_is_valid('xyz', 'float4');
 SELECT pg_input_is_valid('1e400', 'float4');

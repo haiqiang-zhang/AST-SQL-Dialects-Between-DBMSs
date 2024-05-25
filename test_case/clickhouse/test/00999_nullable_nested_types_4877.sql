@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS l;
+DROP TABLE IF EXISTS r;
+CREATE TABLE l (a String, b Tuple(String, String)) ENGINE = Memory();
+CREATE TABLE r (a String, c Tuple(String, String)) ENGINE = Memory();
+INSERT INTO l (a, b) VALUES ('a', ('b', 'c')), ('d', ('e', 'f'));
+INSERT INTO r (a, c) VALUES ('a', ('b', 'c')), ('x', ('y', 'z'));
 SET join_use_nulls = 0;
 SELECT * from l LEFT JOIN r USING a ORDER BY a;
 SELECT a from l RIGHT JOIN r USING a ORDER BY a;

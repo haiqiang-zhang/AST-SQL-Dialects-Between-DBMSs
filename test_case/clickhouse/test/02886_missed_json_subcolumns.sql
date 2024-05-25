@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t_missed_subcolumns;
 SET allow_experimental_object_type = 1;
 CREATE TABLE t_missed_subcolumns (id UInt64, n String, obj Object(Nullable('json')))
 ENGINE = MergeTree ORDER BY id;

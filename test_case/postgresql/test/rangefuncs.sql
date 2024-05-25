@@ -1,3 +1,7 @@
+CREATE TABLE rngfunc2(rngfuncid int, f2 int);
+INSERT INTO rngfunc2 VALUES(1, 11);
+INSERT INTO rngfunc2 VALUES(2, 22);
+INSERT INTO rngfunc2 VALUES(1, 111);
 select a,ord from unnest(array['a','b']) with ordinality as z(a,ord);
 select * from unnest(array['a','b']) with ordinality as z(a,ord);
 select a,ord from unnest(array[1.0::float8]) with ordinality as z(a,ord);

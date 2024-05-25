@@ -1,3 +1,6 @@
+CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, d, e, f);
+INSERT INTO t1 VALUES(1,11,12,13,14,15);
+INSERT INTO t1 VALUES(2,21,22,23,24,25);
 SELECT b, -b, ~b, NOT b, NOT NOT b, b-b, b+b, b*b, b/b, b FROM t1;
 SELECT b, b%b, b==b, b!=b, b<b, b<=b, b IS NULL, b NOT NULL, b FROM t1;
 SELECT b, abs(b), coalesce(b,-b,NOT b,c,NOT c), c, -c FROM t1;

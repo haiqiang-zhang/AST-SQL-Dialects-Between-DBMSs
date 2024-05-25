@@ -1,3 +1,17 @@
+drop table if exists t1;
+create table t1 (a int check (a>0));
+insert into t1 values (1);
+drop table t1;
+create table t1 (a int, b int, check (a>b));
+insert into t1 values (1,0);
+drop table t1;
+create table t1 (a int ,b int, constraint abc check (a>b));
+insert into t1 values (1,0);
+drop table t1;
+create table t1 (a int null);
+insert into t1 values (1),(NULL);
+drop table t1;
+create table t1 (a int null);
 alter table t1 add constraint constraint_1 unique (a);
 alter table t1 add constraint unique key_1(a);
 alter table t1 add constraint constraint_2 unique key_2(a);

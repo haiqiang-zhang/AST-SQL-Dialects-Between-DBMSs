@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS test_table_ipv4;
+CREATE TABLE test_table_ipv4
+(
+    ip String,
+    ipv4 IPv4
+) ENGINE = TinyLog;
 SELECT ip, ipv4 FROM test_table_ipv4;
 DROP TABLE test_table_ipv4;
 DROP TABLE IF EXISTS test_table_ipv4_materialized;

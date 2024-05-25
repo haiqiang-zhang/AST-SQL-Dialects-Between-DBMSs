@@ -1,3 +1,5 @@
+CREATE TABLE t1(a);
+DROP TABLE t1;
 SELECT name FROM sqlite_master ORDER BY 1;
 PRAGMA integrity_check;
 PRAGMA integrity_check;

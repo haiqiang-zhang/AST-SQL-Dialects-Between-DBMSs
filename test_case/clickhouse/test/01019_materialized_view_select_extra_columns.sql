@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS mv_extra_columns_dst;
+DROP TABLE IF EXISTS mv_extra_columns_src;
+DROP TABLE IF EXISTS mv_extra_columns_view;
+CREATE TABLE mv_extra_columns_dst (
+    v UInt64
+) ENGINE = MergeTree()
+    PARTITION BY tuple()
+    ORDER BY v;
+CREATE TABLE mv_extra_columns_src (
+    v1 UInt64,
+    v2 UInt64
+) ENGINE = Null;
 -- This test exists to prevent unintended changes to existing behaviour.
 --
 -- Although this behaviour might not be ideal it can be exploited for 0-downtime changes to materialized views.

@@ -1,3 +1,7 @@
+create table t1 (c varchar(30) character set utf8mb4, unique(c(10))) engine=innodb;
+insert into t1 values ('1'),('2'),('3'),('x'),('y'),('z');
+insert into t1 values ('aaaaaaaaaa');
+insert into t1 values (repeat('b',20));
 select c c1 from t1 where c='1';
 select c c2 from t1 where c='2';
 select c c3 from t1 where c='3';

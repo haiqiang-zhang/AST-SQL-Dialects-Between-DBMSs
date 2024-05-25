@@ -1,3 +1,13 @@
+-- Raw data (RBS) --------
+    
+    create table records (
+      date          real,
+      type          text,
+      description   text,
+      value         integer,
+      acc_name      text,
+      acc_no        text
+    );
 -- Direct Debits ----------------
     create view direct_debits as
       select * from records where type = 'D/D';

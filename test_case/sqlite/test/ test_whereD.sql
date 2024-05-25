@@ -1,3 +1,4 @@
+CREATE TABLE t(i,j,k,m,n);
 CREATE INDEX ijk ON t(i,j,k);
 CREATE INDEX jmn ON t(j,m,n);
 INSERT INTO t VALUES(3, 3, 'three', 3, 'tres');

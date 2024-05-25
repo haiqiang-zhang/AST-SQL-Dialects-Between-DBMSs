@@ -1,3 +1,4 @@
+drop table if exists t1;
 select @@sql_mode;
 SELECT 'A' || 'B';
 CREATE TABLE t1 (id INT, id2 int);

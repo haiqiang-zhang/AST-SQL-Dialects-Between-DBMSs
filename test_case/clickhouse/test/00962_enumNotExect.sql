@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS t_enum8;
+CREATE TABLE t_enum8( x Enum('hello' = 1, 'world' = 2) ) ENGINE = TinyLog;
+INSERT INTO t_enum8 Values('hello'),('world'),('hello');
 SELECT * FROM t_enum8;
 SELECT CAST(x, 'Int8') FROM t_enum8;
 DROP TABLE t_enum8;

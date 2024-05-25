@@ -1,3 +1,4 @@
+drop table if exists t1,t2;
 drop view if exists v1;
 CREATE TABLE t1 (c int not null, d char (10) not null);
 insert into t1 values(1,""),(2,"a"),(3,"b");

@@ -1,3 +1,33 @@
+drop table if exists t1_30237_bool;
+create table t1_30237_bool(A boolean, B boolean, C boolean);
+insert into t1_30237_bool values
+(FALSE, FALSE, FALSE),
+(FALSE, FALSE, NULL),
+(FALSE, FALSE, TRUE),
+(FALSE, NULL, FALSE),
+(FALSE, NULL, NULL),
+(FALSE, NULL, TRUE),
+(FALSE, TRUE, FALSE),
+(FALSE, TRUE, NULL),
+(FALSE, TRUE, TRUE),
+(NULL, FALSE, FALSE),
+(NULL, FALSE, NULL),
+(NULL, FALSE, TRUE),
+(NULL, NULL, FALSE),
+(NULL, NULL, NULL),
+(NULL, NULL, TRUE),
+(NULL, TRUE, FALSE),
+(NULL, TRUE, NULL),
+(NULL, TRUE, TRUE),
+(TRUE, FALSE, FALSE),
+(TRUE, FALSE, NULL),
+(TRUE, FALSE, TRUE),
+(TRUE, NULL, FALSE),
+(TRUE, NULL, NULL),
+(TRUE, NULL, TRUE),
+(TRUE, TRUE, FALSE),
+(TRUE, TRUE, NULL),
+(TRUE, TRUE, TRUE);
 select A, B, A OR B, A XOR B, A AND B
   from t1_30237_bool where C is null order by A, B;
 select A, B, C, (A OR B) OR C, A OR (B OR C), A OR B OR C

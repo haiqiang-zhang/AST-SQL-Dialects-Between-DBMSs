@@ -1,3 +1,9 @@
+CREATE DATABASE db1;
+CREATE DATABASE db2;
+CREATE TABLE db1.t1 (c1 INT, c2 INT, c3 INT);
+CREATE TABLE db1.t2 (c1 INT, c2 INT, c3 INT);
+CREATE TABLE db2.t1 (c1 INT, c2 INT, c3 INT);
+CREATE TABLE db2.t2 (c1 INT, c2 INT, c3 INT);
 SELECT CURRENT_USER(), CURRENT_ROLE();
 SELECT ExtractValue(ROLES_GRAPHML(),'count(//node)') as num_nodes;
 SELECT ExtractValue(ROLES_GRAPHML(),'count(//edge)') as num_edges;

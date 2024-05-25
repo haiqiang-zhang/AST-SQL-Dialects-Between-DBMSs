@@ -1,3 +1,5 @@
+CREATE TABLE sequence_test_table (a int);
+DROP TABLE sequence_test_table;
 CREATE SEQUENCE sequence_test5 AS integer;
 CREATE SEQUENCE sequence_test6 AS smallint;
 CREATE SEQUENCE sequence_test7 AS bigint;

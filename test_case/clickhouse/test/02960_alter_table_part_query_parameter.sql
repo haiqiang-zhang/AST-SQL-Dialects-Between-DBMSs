@@ -1,3 +1,6 @@
+drop table if exists data;
+create table data (key Int) engine=MergeTree() order by key;
+insert into data values (1);
 set param_part='all_1_1_0';
 alter table data detach part {part:String};
 alter table data attach part {part:String};

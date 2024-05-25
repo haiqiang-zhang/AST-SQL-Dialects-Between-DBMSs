@@ -1,3 +1,6 @@
+CREATE TABLE PG_LSN_TBL (f1 pg_lsn);
+INSERT INTO PG_LSN_TBL VALUES ('0/0');
+INSERT INTO PG_LSN_TBL VALUES ('FFFFFFFF/FFFFFFFF');
 SELECT pg_input_is_valid('16AE7F7', 'pg_lsn');
 SELECT * FROM pg_input_error_info('16AE7F7', 'pg_lsn');
 SELECT MIN(f1), MAX(f1) FROM PG_LSN_TBL;

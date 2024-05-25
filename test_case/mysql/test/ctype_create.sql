@@ -1,3 +1,7 @@
+CREATE DATABASE mysqltest1 DEFAULT CHARACTER SET cp1251;
+CREATE DATABASE mysqltest2;
+CREATE TABLE mysqltest2.t1 (a char(10));
+DROP TABLE mysqltest2.t1;
 ALTER DATABASE mysqltest2 DEFAULT CHARACTER SET latin7;
 CREATE TABLE mysqltest2.t1 (a char(10));
 DROP DATABASE mysqltest2;

@@ -1,3 +1,6 @@
+create table pkeys (pkey1 int4 not null, pkey2 text not null);
+create table fkeys (fkey1 int4, fkey2 text, fkey3 int);
+create table fkeys2 (fkey21 int4, fkey22 text, pkey23 int not null);
 create index fkeys_i on fkeys (fkey1, fkey2);
 create index fkeys2_i on fkeys2 (fkey21, fkey22);
 create index fkeys2p_i on fkeys2 (pkey23);

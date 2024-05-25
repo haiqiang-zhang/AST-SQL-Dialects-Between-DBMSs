@@ -1,3 +1,4 @@
+CREATE TABLE t1(id INTEGER PRIMARY KEY, grp_id);
 CREATE INDEX i1 ON t1(grp_id);
 CREATE VIEW lll AS SELECT
     row_number() OVER (PARTITION BY grp_id), 

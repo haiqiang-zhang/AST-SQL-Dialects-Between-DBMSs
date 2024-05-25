@@ -1,3 +1,5 @@
+create table t1(f1 int);
+create table t2(f1 int);
 SELECT 'end of proc';
 drop table t1, t2;
 CREATE TABLE t_bug_12490(a int);

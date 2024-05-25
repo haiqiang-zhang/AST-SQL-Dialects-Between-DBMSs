@@ -1,3 +1,29 @@
+CREATE TABLE t1(f1 INT) ENGINE=MyISAM;
+INSERT INTO t1 VALUES (1);
+CREATE TABLE t2(f1 INT) ENGINE=InnoDB;
+INSERT INTO t2 VALUES (1);
+DROP TABLE t1, t2;
+CREATE TABLE t1
+(
+  f1 DATETIME,
+  f2 DATE,
+  f3 VARCHAR(1),
+  KEY (f1)
+) ENGINE=myisam;
+CREATE TABLE t2
+(
+  f1 VARCHAR(1),
+  f2 INT,
+  f3 VARCHAR(1),
+  KEY (f1)
+) ENGINE=innodb;
+CREATE TABLE t3
+(
+  f1 VARCHAR(1),
+  f2 DATE,
+  f3 DATETIME,
+  f4 INT
+) ENGINE=myisam;
 UPDATE /*+ JOIN_ORDER(t2, als1, als3) JOIN_FIXED_ORDER()  */ t3 AS als1
    JOIN t1 AS als2 ON (als1.f3 = als2 .f1)
      JOIN t1 AS als3 ON (als1.f1 = als3.f3)

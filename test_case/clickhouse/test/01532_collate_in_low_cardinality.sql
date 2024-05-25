@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS test_collate;
+DROP TABLE IF EXISTS test_collate_null;
+CREATE TABLE test_collate (x UInt32, s LowCardinality(String)) ENGINE=Memory();
+CREATE TABLE test_collate_null (x UInt32, s LowCardinality(Nullable(String))) ENGINE=Memory();
+INSERT INTO test_collate VALUES (1, 'ÃÂÃÂ'), (1, 'ÃÂÃÂ'), (1, 'ÃÂÃÂ°'), (2, 'ÃÂÃÂ'), (2, 'ÃÂÃÂ'), (2, 'ÃÂÃÂ¯');
+INSERT INTO test_collate_null VALUES (1, 'ÃÂÃÂ'), (1, 'ÃÂÃÂ'), (1, 'ÃÂÃÂ°'), (2, 'ÃÂÃÂ'), (2, 'ÃÂÃÂ'), (2, 'ÃÂÃÂ¯'), (1, null), (2, null);
 SELECT 'Order by without collate';
 SELECT * FROM test_collate ORDER BY s;
 SELECT 'Order by with collate';

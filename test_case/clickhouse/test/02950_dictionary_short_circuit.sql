@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS dictionary_source_table;
+CREATE TABLE dictionary_source_table
+(
+    id UInt64,
+    v1 String,
+    v2 Nullable(String),
+    v3 Nullable(UInt64)
+) ENGINE=TinyLog;
+INSERT INTO dictionary_source_table VALUES (0, 'zero', 'zero', 0), (1, 'one', NULL, 1);
 DROP DICTIONARY IF EXISTS flat_dictionary;
 CREATE DICTIONARY flat_dictionary
 (

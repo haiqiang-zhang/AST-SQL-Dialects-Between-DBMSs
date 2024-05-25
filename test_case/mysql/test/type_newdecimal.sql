@@ -1,3 +1,4 @@
+drop table if exists t1;
 select 1.1 IN (1.0, 1.2);
 select 1.1 IN (1.0, 1.2, 1.1, 1.4, 0.5);
 select 1.1 IN (1.0, 1.2, NULL, 1.4, 0.5);

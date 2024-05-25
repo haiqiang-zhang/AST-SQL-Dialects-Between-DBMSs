@@ -1,3 +1,8 @@
+-- Tag no-replicated-database: Fails due to additional replicas or shards
+-- Tag no-parallel: static zk path
+
+DROP TABLE IF EXISTS execute_on_single_replica_r1 SYNC;
+DROP TABLE IF EXISTS execute_on_single_replica_r2 SYNC;
 SET optimize_throw_if_noop=1;
 SELECT '****************************';
 SELECT '*** emulate normal feature operation - merges are distributed between replicas';

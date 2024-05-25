@@ -1,3 +1,6 @@
+CREATE TABLE t1 (word varchar(64) NOT NULL, PRIMARY KEY (word))
+ENGINE=MyISAM CHARACTER SET ucs2 COLLATE ucs2_general_ci;
+INSERT INTO t1 (word) VALUES ("cat");
 SELECT * FROM t1 WHERE word LIKE "c%";
 SELECT * FROM t1 WHERE word LIKE "ca_";
 SELECT * FROM t1 WHERE word LIKE "cat";

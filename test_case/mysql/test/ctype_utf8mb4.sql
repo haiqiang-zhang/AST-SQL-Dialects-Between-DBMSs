@@ -1,3 +1,4 @@
+drop table if exists t1,t2;
 select left(_utf8mb4 0xD0B0D0B1D0B2,1);
 select right(_utf8mb4 0xD0B0D0B2D0B2,1);
 select locate('he','hello');

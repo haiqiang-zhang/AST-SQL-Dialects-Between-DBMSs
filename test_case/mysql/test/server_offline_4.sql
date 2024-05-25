@@ -1,3 +1,6 @@
+CREATE TABLE t2 (c1 int,c2 char(10));
+INSERT INTO t2 VALUES (1,'aaaaaaaaaa');
+INSERT INTO t2 VALUES (2,'bbbbbbbbbb');
 LOCK TABLE t2 read;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and

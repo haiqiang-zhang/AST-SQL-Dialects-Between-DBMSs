@@ -1,3 +1,5 @@
+CREATE TABLE abc(a, b, c);
+CREATE TABLE log(msg);
 SELECT * FROM log;
 INSERT INTO log VALUES('xSync');
 SELECT * FROM log;

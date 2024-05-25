@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS collapsing_table;
 SET optimize_on_insert = 0;
 CREATE TABLE collapsing_table
 (

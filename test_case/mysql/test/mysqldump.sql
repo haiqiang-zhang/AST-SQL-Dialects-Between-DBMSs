@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t1, `"t"1`, t1aa, t2, t2aa, t3;
 drop database if exists mysqldump_test_db;
 drop database if exists db1;
 drop database if exists db2;

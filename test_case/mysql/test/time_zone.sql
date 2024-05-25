@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t1;
 select @a:=FROM_UNIXTIME(1);
 select unix_timestamp(@a);
 CREATE TABLE t1 (ts int);

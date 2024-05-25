@@ -1,3 +1,31 @@
+CREATE TABLE t1(
+    t1_id largeint,
+    did char(9),
+    ptime largeint,
+    exbyte char(4),
+    pe_id int,
+    field_id int,
+    mass float,
+    param10 float,
+    param11 float,
+    exmass float,
+    deviation float,
+    trange float,
+    vstatus int,
+    commit_status int,
+    formula char(329),
+    tier int DEFAULT 2,
+    ssid int DEFAULT 0,
+    last_operation largeint DEFAULT 0,
+    admin_uuid int DEFAULT 0,
+    previous_value float,
+    job_id largeint,
+    last_t1 largeint DEFAULT 0,
+    data_t1 int,
+    previous_date largeint DEFAULT 0,
+    flg8 int DEFAULT 1,
+    failed_fields char(100)
+  );
 CREATE INDEX t1x0 on t1 (t1_id);
 CREATE INDEX t1x1 on t1 (ptime, vstatus);
 CREATE INDEX t1x2 on t1 (did, ssid, ptime, vstatus, exbyte, t1_id);

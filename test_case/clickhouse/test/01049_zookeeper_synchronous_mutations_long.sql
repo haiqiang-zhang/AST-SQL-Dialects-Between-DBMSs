@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS table_for_synchronous_mutations1;
+DROP TABLE IF EXISTS table_for_synchronous_mutations2;
 SELECT 'Replicated';
 SELECT is_done FROM system.mutations where database = currentDatabase() and table = 'table_for_synchronous_mutations1';
 SELECT is_done FROM system.mutations where database = currentDatabase() and table = 'table_for_synchronous_mutations1';

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS 00662_has_nullable;
 SELECT 'Nullable(UInt64), non-null array';
 CREATE TABLE 00662_has_nullable(a Nullable(UInt64)) ENGINE = Memory;
 INSERT INTO 00662_has_nullable VALUES (1), (Null);

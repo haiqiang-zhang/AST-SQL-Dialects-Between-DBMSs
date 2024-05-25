@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS test_distributed;
+DROP TABLE IF EXISTS test_local;
 SET prefer_localhost_replica = 1;
 CREATE TABLE test_local (text String, text2 String) ENGINE = MergeTree() ORDER BY text;
 SET joined_subquery_requires_alias = 0;

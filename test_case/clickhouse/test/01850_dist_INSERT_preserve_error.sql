@@ -1,3 +1,8 @@
+create database if not exists shard_0;
+create database if not exists shard_1;
+drop table if exists dist_01850;
+drop table if exists shard_0.data_01850;
+create table shard_0.data_01850 (key Int) engine=Memory();
 set distributed_foreground_insert=1;
 set prefer_localhost_replica=0;
 drop table if exists dist_01850;

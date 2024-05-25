@@ -1,3 +1,4 @@
+drop table if exists t1,t2,t3,t4,t5,t6;
 drop database if exists mysqltest;
 CREATE TABLE t1 (a varchar(30) binary NOT NULL DEFAULT ' ',
                  b varchar(1) binary NOT NULL DEFAULT ' ',

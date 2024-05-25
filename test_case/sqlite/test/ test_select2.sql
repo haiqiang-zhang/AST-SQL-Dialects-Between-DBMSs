@@ -1,3 +1,4 @@
+CREATE TABLE tbl1(f1 int, f2 int);
 BEGIN;
 INSERT INTO tbl1 VALUES(0,0);
 INSERT INTO tbl1 VALUES(1,1);

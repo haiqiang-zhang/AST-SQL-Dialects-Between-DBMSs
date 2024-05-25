@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS check_system_tables;
 SELECT total_bytes_uncompressed, total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase();
 DROP TABLE IF EXISTS check_system_tables;
 CREATE TABLE check_system_tables

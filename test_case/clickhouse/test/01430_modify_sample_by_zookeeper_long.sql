@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS modify_sample;
 SET min_insert_block_size_rows = 0, min_insert_block_size_bytes = 0;
 SET max_block_size = 10;
 CREATE TABLE modify_sample (d Date DEFAULT '2000-01-01', x UInt8) ENGINE = MergeTree PARTITION BY d ORDER BY x;

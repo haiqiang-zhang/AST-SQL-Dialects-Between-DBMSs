@@ -1,3 +1,5 @@
+CREATE TABLE t1(x, y);
+CREATE TABLE log(a, b, c);
 SELECT * FROM t1;
 SELECT * FROM log;
 DELETE FROM t1;

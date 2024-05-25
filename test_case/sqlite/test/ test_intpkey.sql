@@ -1,3 +1,4 @@
+CREATE TABLE t1(a TEXT PRIMARY KEY, b, c);
 SELECT name FROM sqlite_master
     WHERE type='index' AND tbl_name='t1';
 DROP TABLE t1;

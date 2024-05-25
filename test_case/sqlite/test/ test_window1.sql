@@ -1,3 +1,7 @@
+CREATE TABLE t1(a, b, c, d);
+INSERT INTO t1 VALUES(1, 2, 3, 4);
+INSERT INTO t1 VALUES(5, 6, 7, 8);
+INSERT INTO t1 VALUES(9, 10, 11, 12);
 SELECT sum(b) OVER () FROM t1;
 SELECT a, sum(b) OVER () FROM t1;
 SELECT a, 4 + sum(b) OVER () FROM t1;

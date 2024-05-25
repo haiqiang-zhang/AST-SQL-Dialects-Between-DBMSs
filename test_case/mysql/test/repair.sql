@@ -1,3 +1,5 @@
+drop table if exists t1;
+create table t1 SELECT 1,"table 1";
 alter table t1 ENGINE=HEAP;
 drop table t1;
 create table t1(id int PRIMARY KEY, st varchar(10), KEY st_key(st));

@@ -1,3 +1,7 @@
+CREATE TABLE t1 (f1 int);
+INSERT INTO t1 VALUES (1);
+CREATE TABLE t2 AS SELECT * FROM t1;
+CREATE TABLE t3 AS SELECT * FROM t1;
 CREATE VIEW v1 AS SELECT * FROM t3;
 SELECT COUNT(*) FROM information_schema.columns
                 WHERE table_name='db';

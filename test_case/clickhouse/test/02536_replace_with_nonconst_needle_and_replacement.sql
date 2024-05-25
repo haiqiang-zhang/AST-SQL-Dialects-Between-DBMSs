@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS test_tab;
+CREATE TABLE test_tab
+  (id UInt32, haystack String, needle String, replacement String)
+  engine = MergeTree()
+  ORDER BY id;
 SELECT '- non-const needle, const replacement';
 SELECT id, haystack, needle, 'x', replaceAll(haystack, needle, 'x') FROM test_tab ORDER BY id;
 SELECT id, haystack, needle, 'x', replaceAll('Hello World', needle, 'x') FROM test_tab ORDER BY id;

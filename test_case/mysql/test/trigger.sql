@@ -1,3 +1,4 @@
+create table t1 (i int);
 select @a;
 insert into t1 values (1);
 select @a;

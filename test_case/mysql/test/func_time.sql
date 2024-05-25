@@ -1,3 +1,4 @@
+drop table if exists t1,t2,t3;
 select from_days(to_days("960101")),to_days(960201)-to_days("19960101"),to_days(date_add(curdate(), interval 1 day))-to_days(curdate()),weekday("1997-11-29");
 select period_add("9602",-12),period_diff(199505,"9404");
 select now()-now(),weekday(curdate())-weekday(now()),unix_timestamp()-unix_timestamp(now());

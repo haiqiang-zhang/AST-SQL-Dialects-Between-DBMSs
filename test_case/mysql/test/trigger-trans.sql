@@ -1,3 +1,5 @@
+drop table if exists t1;
+create table t1 (a varchar(16), b int) engine=innodb;
 select trigger_schema, trigger_name, event_object_schema,
        event_object_table, action_statement from information_schema.triggers
        where event_object_schema = 'test' and event_object_table = 't1';

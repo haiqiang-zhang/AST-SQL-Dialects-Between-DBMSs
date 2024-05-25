@@ -1,3 +1,5 @@
+drop table if exists  data_proj_order_by_incomp;
+create table data_proj_order_by_incomp (t UInt64) ENGINE MergeTree() order by tuple();
 system stop merges data_proj_order_by_incomp;
 insert into data_proj_order_by_incomp values (5);
 insert into data_proj_order_by_incomp values (5);

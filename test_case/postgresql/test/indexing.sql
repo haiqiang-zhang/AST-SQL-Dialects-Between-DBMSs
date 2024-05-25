@@ -1,3 +1,4 @@
+create table idxpart (a int, b int, c text) partition by range (a);
 create index idxpart_idx on idxpart (a);
 select relhassubclass from pg_class where relname = 'idxpart_idx';
 select indexdef from pg_indexes where indexname like 'idxpart_idx%';

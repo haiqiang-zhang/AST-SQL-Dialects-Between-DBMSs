@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t_merge_tree_index;
 SET print_pretty_type_names = 0;
 CREATE TABLE t_merge_tree_index
 (

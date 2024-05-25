@@ -1,3 +1,4 @@
+CREATE TABLE vocab2(w TEXT);
 CREATE INDEX vocab2w ON vocab2(w COLLATE nocase);
 INSERT INTO vocab2 VALUES('abc'), ('ABD'), ('aBe'), ('AbF');
 CREATE TABLE costs(iLang, cFrom, cTo, iCost);

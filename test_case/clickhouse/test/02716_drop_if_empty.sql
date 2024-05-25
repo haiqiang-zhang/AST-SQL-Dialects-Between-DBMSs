@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS data_02716_1;
+DROP TABLE IF EXISTS data_02716_2;
+CREATE TABLE data_02716_1 (v UInt64) ENGINE = MergeTree ORDER BY v;
+CREATE TABLE data_02716_2 (v UInt64) ENGINE = MergeTree ORDER BY v;
+INSERT INTO data_02716_1 SELECT * FROM system.numbers LIMIT 1;
+DROP TABLE IF EMPTY data_02716_2;
 TRUNCATE TABLE data_02716_1;
 DROP TABLE IF EMPTY data_02716_1;
 SELECT count() FROM system.tables WHERE database = 'default' AND name IN ('data_02716_1', 'data_02716_2');

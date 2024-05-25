@@ -1,3 +1,4 @@
+drop table if exists t1;
 show tables;
 create or replace table t1 (n UInt64, s String) engine=MergeTree order by n;
 show tables;

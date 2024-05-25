@@ -1,3 +1,4 @@
+drop table if exists t1,t2,v1,v2;
 drop view if exists t1,t2,v1,v2;
 CREATE TABLE `t1` (
   a int not null auto_increment,

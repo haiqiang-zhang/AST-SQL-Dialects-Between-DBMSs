@@ -1,3 +1,4 @@
+drop table if exists t1;
 select {fn length("hello")}, { date "1997-10-20" };
 create table t1 (a int not null auto_increment,b int not null,primary key (a,b));
 insert into t1 SET A=NULL,B=1;

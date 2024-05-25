@@ -1,3 +1,7 @@
+drop table if exists t1;
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1 (a char(16)) character set cp1250 collate cp1250_czech_cs;
+INSERT INTO t1 VALUES ('');
 SELECT a, length(a), a='', a=' ', a='  ' FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (

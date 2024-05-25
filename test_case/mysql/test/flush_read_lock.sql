@@ -1,3 +1,5 @@
+drop tables if exists t1_base, t2_base, t3_trans;
+drop tables if exists tm_base, tm_base_temp;
 drop database if exists mysqltest1;
 drop database if exists `#mysql50#mysqltest-2`;
 drop procedure if exists p1;

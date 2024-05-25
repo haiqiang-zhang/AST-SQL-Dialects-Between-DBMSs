@@ -1,3 +1,4 @@
+CREATE DATABASE test_user_db;
 select USER(),CURRENT_USER();
 select USER(),CURRENT_USER();
 select USER(),CURRENT_USER();

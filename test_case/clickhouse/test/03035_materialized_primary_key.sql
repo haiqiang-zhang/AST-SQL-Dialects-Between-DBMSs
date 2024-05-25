@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS test;
+CREATE TABLE test
+(
+    id UInt64,
+    value String
+) ENGINE=MergeTree ORDER BY id;
+INSERT INTO test VALUES (1, 'Alice'), (2, 'Bob');
 DROP VIEW IF EXISTS test_mv;
 CREATE MATERIALIZED VIEW test_mv
 (

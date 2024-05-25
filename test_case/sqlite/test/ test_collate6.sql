@@ -1,3 +1,6 @@
+CREATE TABLE collate6log(a, b);
+CREATE TABLE collate6tab(a COLLATE NOCASE, b COLLATE BINARY);
+INSERT INTO collate6tab VALUES('a', 'b');
 SELECT * FROM collate6log;
 INSERT INTO collate6tab VALUES('A', 'B');
 SELECT * FROM collate6log;

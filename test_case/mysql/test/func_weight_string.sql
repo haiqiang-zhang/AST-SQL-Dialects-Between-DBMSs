@@ -1,3 +1,4 @@
+drop table if exists t1;
 select hex(weight_string(0x010203));
 select hex(weight_string('aa' as char(3)));
 select hex(weight_string('a' as char(1)));

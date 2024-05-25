@@ -1,3 +1,11 @@
+CREATE TABLE fruits(
+     name TEXT COLLATE NOCASE,
+     color TEXT COLLATE NOCASE
+  );
+INSERT INTO fruits (name, color) VALUES ('apple', 'RED');
+INSERT INTO fruits (name, color) VALUES ('APPLE', 'yellow');
+INSERT INTO fruits (name, color) VALUES ('pear', 'YELLOW');
+INSERT INTO fruits (name, color) VALUES ('PEAR', 'green');
 SELECT name, color, dense_rank() OVER (ORDER BY name) FROM fruits;
 SELECT name, color,
     dense_rank() OVER (PARTITION BY name ORDER BY color)

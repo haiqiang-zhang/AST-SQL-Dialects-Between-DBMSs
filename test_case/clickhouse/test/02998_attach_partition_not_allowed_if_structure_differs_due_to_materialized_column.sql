@@ -1,3 +1,9 @@
+CREATE TABLE attach_partition_t7 (
+                                     a UInt32,
+                                     b UInt32
+)
+    ENGINE = MergeTree
+PARTITION BY a ORDER BY a;
 ALTER TABLE attach_partition_t7
     ADD COLUMN mat_column
         UInt32 MATERIALIZED a+b;

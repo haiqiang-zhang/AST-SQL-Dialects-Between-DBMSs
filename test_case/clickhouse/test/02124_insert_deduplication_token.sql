@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS insert_dedup_token SYNC;
 select 'create and check deduplication';
 CREATE TABLE insert_dedup_token (
     id Int32, val UInt32

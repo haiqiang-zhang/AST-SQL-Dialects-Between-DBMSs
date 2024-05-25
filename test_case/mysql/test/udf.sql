@@ -1,3 +1,6 @@
+drop table if exists t1;
+create table t1(sum int, price float(24));
+insert into t1 values(100, 50.00), (100, 100.00);
 delete from t1;
 insert into t1 values(100, 54.33), (200, 199.99);
 drop table t1;

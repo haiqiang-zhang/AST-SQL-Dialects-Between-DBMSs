@@ -1,3 +1,14 @@
+DROP TABLE IF EXISTS `01746_merge_tree`;
+CREATE TABLE `01746_merge_tree`
+(
+    `n1` Int8,
+    `n2` Int8,
+    `n3` Int8,
+    `n4` Int8
+)
+ENGINE = MergeTree
+ORDER BY n1;
+DROP TABLE IF EXISTS `01746_merge_tree_mv`;
 CREATE MATERIALIZED VIEW `01746_merge_tree_mv`
 ENGINE = Memory AS
 SELECT

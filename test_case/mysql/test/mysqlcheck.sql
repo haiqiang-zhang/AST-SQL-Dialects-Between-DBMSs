@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t1, `t``1`, `t 1`;
 drop view if exists v1;
 drop database if exists client_test_db;
 create view v1 as select * from information_schema.routines;

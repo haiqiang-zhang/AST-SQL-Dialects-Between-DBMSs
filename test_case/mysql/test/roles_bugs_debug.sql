@@ -1,3 +1,5 @@
+CREATE DATABASE my_db;
+CREATE table my_db.t1 (id int primary key);
 DROP DATABASE my_db;
 CREATE TABLE t35471453(c1 INT);
 DROP TABLE t35471453;

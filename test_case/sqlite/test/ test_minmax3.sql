@@ -1,3 +1,4 @@
+CREATE TABLE t1(x, y, z);
 BEGIN;
 INSERT INTO t1 VALUES('1', 'I',   'one');
 INSERT INTO t1 VALUES('2', 'IV',  'four');

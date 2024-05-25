@@ -1,3 +1,4 @@
+drop table if exists t1,t1aa,t2aa;
 DROP DATABASE IF EXISTS testdb;
 CREATE DATABASE testdb;
 CREATE TABLE testdb.t1 (

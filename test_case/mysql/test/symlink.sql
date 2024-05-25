@@ -1,3 +1,4 @@
+drop table if exists t1,t2,t7,t8,t9;
 drop database if exists mysqltest;
 create table t1 (a int not null auto_increment, b char(16) not null, primary key (a)) engine=myisam;
 create table t2 (a int not null auto_increment, b char(16) not null, primary key (a)) engine=myisam;

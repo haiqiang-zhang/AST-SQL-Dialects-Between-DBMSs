@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1 (a INT) ENGINE=innodb;
+INSERT INTO t1 VALUES(1);
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for commit lock" and info = "COMMIT";
 SELECT * FROM t1;

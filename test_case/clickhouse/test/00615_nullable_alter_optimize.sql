@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS test_00615;
 set allow_deprecated_syntax_for_merge_tree=1;
 CREATE TABLE test_00615
 (

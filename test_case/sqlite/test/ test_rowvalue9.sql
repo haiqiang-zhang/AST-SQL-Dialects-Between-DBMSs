@@ -1,3 +1,13 @@
+CREATE TABLE a1(c, b INTEGER, a TEXT, PRIMARY KEY(a, b));
+INSERT INTO a1 (rowid, c, b, a) VALUES(3,  '0x03', 1, 1);
+INSERT INTO a1 (rowid, c, b, a) VALUES(14, '0x0E', 2, 2);
+INSERT INTO a1 (rowid, c, b, a) VALUES(15, '0x0F', 3, 3);
+INSERT INTO a1 (rowid, c, b, a) VALUES(92, '0x5C', 4, 4);
+CREATE TABLE a2(x BLOB, y BLOB);
+INSERT INTO a2(x, y) VALUES(1, 1);
+INSERT INTO a2(x, y) VALUES(2, '2');
+INSERT INTO a2(x, y) VALUES('3', 3);
+INSERT INTO a2(x, y) VALUES('4', '4');
 SELECT x, typeof(x), y, typeof(y) FROM a2 ORDER BY rowid;
 SELECT (SELECT rowid FROM a1 WHERE a=x AND b=y) FROM a2;
 SELECT (SELECT rowid FROM a1 WHERE (a, b) = (x, y)) FROM a2;

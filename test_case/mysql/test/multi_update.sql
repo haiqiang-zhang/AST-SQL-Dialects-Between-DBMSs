@@ -1,3 +1,4 @@
+drop table if exists t1,t2,t3;
 drop database if exists mysqltest;
 drop view if exists v1;
 create table t1(id1 int not null auto_increment primary key, t char(12));

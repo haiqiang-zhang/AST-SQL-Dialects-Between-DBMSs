@@ -1,3 +1,7 @@
+CREATE TABLE t3(id INTEGER PRIMARY KEY, w TEXT);
+CREATE TABLE t4(id INTEGER PRIMARY KEY, x TEXT);
+CREATE TABLE t5(id INTEGER PRIMARY KEY, y TEXT);
+CREATE TABLE t6(id INTEGER PRIMARY KEY, z INT);
 CREATE VIEW dual(dummy) AS VALUES('x');
 INSERT INTO t3(id,w) VALUES(2,'two'),(3,'three'),(6,'six'),(7,'seven');
 INSERT INTO t4(id,x) VALUES(2,'alice'),(4,'bob'),(6,'cindy'),(8,'dave');

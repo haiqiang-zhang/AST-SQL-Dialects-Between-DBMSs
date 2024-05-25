@@ -1,3 +1,5 @@
+CREATE TABLE t1(x JSON);
+INSERT INTO t1(x) VALUES('{a:{b:{c:"hello",},},}');
 SELECT fullkey FROM t1, json_tree(x);
 SELECT json_error_position('{a:null,{"h":[1,[1,2,3]],"j":"abc"}:true}');
 SELECT '{"a\x62c":123}' ->> 'abc';

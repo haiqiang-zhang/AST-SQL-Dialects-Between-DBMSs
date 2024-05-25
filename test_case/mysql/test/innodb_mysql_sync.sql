@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1 (id INT) engine=innodb;
 ALTER TABLE t1 engine=memory;
 DROP TABLE t1;
 DROP TABLE IF EXISTS t1;

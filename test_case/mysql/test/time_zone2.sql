@@ -1,3 +1,4 @@
+drop table if exists t1, t2;
 drop function if exists f1;
 create table t1 (ts timestamp);
 select unix_timestamp(utc_timestamp())-unix_timestamp(current_timestamp());

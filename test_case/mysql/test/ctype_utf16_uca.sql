@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t1;
 select hex('a'), hex('a ');
 select 'c' like '\_' as want0;
 create table t1 (c1 char(10) character set utf16 collate utf16_bin);

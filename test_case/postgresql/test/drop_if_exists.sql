@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS test_exists;
+CREATE TABLE test_exists (a int, b text);
 DROP VIEW IF EXISTS test_view_exists;
 CREATE VIEW test_view_exists AS select * from test_exists;
 DROP VIEW IF EXISTS test_view_exists;

@@ -1,3 +1,5 @@
+CREATE TABLE "t a" ("""cb""");
+INSERT INTO "t a" ("""cb""") VALUES (1);
 SELECT """cb""" FROM "t a";
 SELECT * FROM "t a";
 SELECT "t a".* FROM "t a";

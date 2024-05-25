@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS t;
+DROP TABLE IF EXISTS r;
 SET allow_suspicious_low_cardinality_types = 1;
 CREATE TABLE t (`x` UInt32, `s` LowCardinality(String)) ENGINE = Memory;
 INSERT INTO t SELECT number, toString(number) FROM numbers(5);

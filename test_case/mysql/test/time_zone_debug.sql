@@ -1,3 +1,5 @@
+CREATE TABLE t1 (a INT);
+INSERT INTO t1 VALUES (1);
 SELECT CONVERT_TZ(a, a, a) FROM t1;
 DROP TABLE t1;
 SELECT CONVERT_TZ('2003-10-26 01:00:00', 'There-is-no-such-time-zone-1', 'UTC');

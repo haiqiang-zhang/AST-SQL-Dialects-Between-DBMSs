@@ -1,3 +1,4 @@
+CREATE DATABASE i_s_parameters_test;
 SELECT * FROM INFORMATION_SCHEMA.PARAMETERS
 WHERE SPECIFIC_SCHEMA = 'i_s_parameters_test' AND SPECIFIC_NAME = 'test_func1';
 DROP DATABASE IF EXISTS i_s_parameters_test;

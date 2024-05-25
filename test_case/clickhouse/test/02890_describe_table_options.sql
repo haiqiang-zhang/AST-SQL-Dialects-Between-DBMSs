@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t_describe_options;
 SET print_pretty_type_names = 0;
 CREATE TABLE t_describe_options (
     id UInt64 COMMENT 'index column',

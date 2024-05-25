@@ -1,3 +1,12 @@
+drop table if exists t0,t1,t2,t3,t4,t5;
+CREATE TABLE t1 (
+  grp int(11) default NULL,
+  a bigint(20) unsigned default NULL,
+  c char(10) NOT NULL default ''
+) ENGINE=MyISAM;
+INSERT INTO t1 VALUES (1,1,'a'),(2,2,'b'),(2,3,'c'),(3,4,'E'),(3,5,'C'),(3,6,'D'),(NULL,NULL,'');
+create table t2 (id int, a bigint unsigned not null, c char(10), d int, primary key (a));
+insert into t2 values (1,1,"a",1),(3,4,"A",4),(3,5,"B",5),(3,6,"C",6),(4,7,"D",7);
 select t1.*,t2.* from t1 JOIN t2 where t1.a=t2.a;
 select t1.*,t2.* from t1 left join t2 on (t1.a=t2.a) order by t1.grp,t1.a,t2.c;
 select t1.*,t2.* from { oj t2 left outer join t1 on (t1.a=t2.a) };

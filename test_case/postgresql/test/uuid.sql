@@ -1,3 +1,13 @@
+CREATE TABLE guid1
+(
+	guid_field UUID,
+	text_field TEXT DEFAULT(now())
+);
+CREATE TABLE guid2
+(
+	guid_field UUID,
+	text_field TEXT DEFAULT(now())
+);
 SELECT pg_input_is_valid('11', 'uuid');
 SELECT * FROM pg_input_error_info('11', 'uuid');
 INSERT INTO guid1(guid_field) VALUES('11111111-1111-1111-1111-111111111111');

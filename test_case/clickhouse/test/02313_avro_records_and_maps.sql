@@ -1,3 +1,4 @@
+insert into function file(data_02313.avro) select tuple(number, 'String')::Tuple(a UInt32, b String) as t from numbers(3) settings engine_file_truncate_on_insert=1;
 desc file(data_02313.avro);
 select * from file(data_02313.avro);
 insert into function file(data_02313.avro) select tuple(number, tuple(number + 1, number + 2), range(number))::Tuple(a UInt32, b Tuple(c UInt32, d UInt32), e Array(UInt32)) as t from numbers(3) settings engine_file_truncate_on_insert=1;

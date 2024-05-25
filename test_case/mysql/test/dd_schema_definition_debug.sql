@@ -1,3 +1,6 @@
+CREATE TABLE dd_check_table (id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   t TEXT NOT NULL,
+   row_hash VARCHAR(64) DEFAULT NULL);
 UPDATE dd_check_table SET row_hash = SHA2(t, 256);
 CREATE TABLE whole_schema(row_checksums LONGTEXT, checksum VARCHAR(64));
 INSERT INTO whole_schema (row_checksums)

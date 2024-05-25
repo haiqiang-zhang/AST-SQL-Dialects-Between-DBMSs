@@ -1,3 +1,4 @@
+drop table if exists t1, t2;
 select CASE "b" when "a" then 1 when "b" then 2 END;
 select CASE "c" when "a" then 1 when "b" then 2 END;
 select CASE "c" when "a" then 1 when "b" then 2 ELSE 3 END;

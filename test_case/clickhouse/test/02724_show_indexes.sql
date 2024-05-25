@@ -1,3 +1,22 @@
+-- no-parallel: creates a custom database schema and expects to use it exclusively
+
+-- Create a test table and verify that the output of SHOW INDEXES is sane.
+-- The matching of actual/expected results relies on the fact that the output of SHOW INDEX is sorted.
+DROP TABLE IF EXISTS tbl;
+CREATE TABLE tbl
+(
+    a UInt64,
+    b UInt64,
+    c UInt64,
+    d UInt64,
+    e UInt64,
+    INDEX mm1_idx (a, c, d) TYPE minmax,
+    INDEX mm2_idx (c, d, e) TYPE minmax,
+    INDEX set_idx (e)       TYPE set(100),
+    INDEX blf_idx (d, b)    TYPE bloom_filter(0.8)
+)
+ENGINE = MergeTree
+PRIMARY KEY (c, a);
 SELECT '--- Aliases of SHOW INDEX';
 SHOW INDEX FROM tbl;
 SHOW INDEXES FROM tbl;

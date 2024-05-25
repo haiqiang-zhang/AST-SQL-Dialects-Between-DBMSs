@@ -1,3 +1,9 @@
+drop table if exists t;
+drop table if exists s;
+create table t(a Int64, b Int64) engine = Memory;
+create table s(a Int64, b Int64) engine = Memory;
+insert into t values (1,1), (2,2);
+insert into s values (1,1);
 select 'join_use_nulls = 1';
 set join_use_nulls = 1;
 select * from t left outer join s using (a,b) order by t.a;

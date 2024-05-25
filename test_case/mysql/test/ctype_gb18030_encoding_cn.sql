@@ -1,3 +1,5 @@
+CREATE DATABASE `ÃÂÃÂÃÂÃÂ`;
+CREATE DATABASE `ÃÂÃÂ½ÃÂ¾ÃÂÃÂ¿ÃÂ¢`;
 SELECT schema_name, HEX(schema_name)
   FROM information_schema.schemata
   WHERE schema_name NOT IN ('mtr', 'sys')

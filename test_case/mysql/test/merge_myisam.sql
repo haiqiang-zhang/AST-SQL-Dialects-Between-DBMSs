@@ -1,3 +1,4 @@
+drop table if exists t1,t2,t3,t4,t5,t6;
 drop database if exists mysqltest;
 create table t1 (a int not null primary key auto_increment, message char(20));
 create table t2 (a int not null primary key auto_increment, message char(20));

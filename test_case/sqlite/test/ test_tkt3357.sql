@@ -1,3 +1,9 @@
+create table a(id integer primary key, b_id integer, myvalue varchar);
+create table b(id integer primary key, bvalue varchar);
+insert into a(b_id, myvalue) values(1,'Test');
+insert into a(b_id, myvalue) values(1,'Test2');
+insert into a(b_id, myvalue) values(1,'Test3');
+insert into b(bvalue) values('btest');
 SELECT cc.id, cc.b_id, cc.myvalue, dd.bvalue 
     FROM (
       SELECT DISTINCT a.id, a.b_id, a.myvalue FROM a

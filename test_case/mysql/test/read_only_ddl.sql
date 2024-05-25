@@ -1,3 +1,5 @@
+create table t_alter(i int);
+insert into t_alter values(1);
 alter table t_alter comment = '';
 select @@innodb_read_only, @@transaction_read_only, @@read_only, @@super_read_only;
 create table t_create (a int);

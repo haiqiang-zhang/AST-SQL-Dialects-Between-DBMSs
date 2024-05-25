@@ -1,3 +1,11 @@
+CREATE TABLE t1 (
+  `pseudo` char(35) NOT NULL default '',
+  `pseudo1` char(35) NOT NULL default '',
+  `same` tinyint(1) unsigned NOT NULL default '1',
+  PRIMARY KEY  (`pseudo1`),
+  KEY `pseudo` (`pseudo`)
+) ENGINE=MyISAM;
+INSERT INTO t1 (pseudo,pseudo1,same) VALUES ('joce', 'testtt', 1),('joce', 'tsestset', 1),('dekad', 'joce', 1);
 SELECT pseudo FROM t1 WHERE pseudo1='joce' UNION SELECT pseudo FROM t1 WHERE pseudo='joce';
 SELECT pseudo1 FROM t1 WHERE pseudo1='joce' UNION SELECT pseudo1 FROM t1 WHERE pseudo='joce';
 SELECT * FROM t1 WHERE pseudo1='joce' UNION SELECT * FROM t1 WHERE pseudo='joce' order by pseudo desc,pseudo1 desc;

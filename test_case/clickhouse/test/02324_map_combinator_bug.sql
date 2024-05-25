@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS segfault;
+DROP TABLE IF EXISTS segfault_mv;
+CREATE TABLE segfault
+(
+    id          UInt32,
+    uuid        UUID,
+    tags_ids    Array(UInt32)
+) ENGINE = MergeTree()
+ORDER BY (id);
 CREATE MATERIALIZED VIEW segfault_mv
     ENGINE = AggregatingMergeTree()
     ORDER BY (id)

@@ -1,3 +1,16 @@
+-- Check that `DICTIONARY` can be created with a `COMMENT` clause
+-- and comment is visible both in `comment` column of `system.dictionaries`
+-- and `SHOW CREATE DICTIONARY`.
+-----------------------------------------------------------------------------------
+
+-- prerequisites
+CREATE TABLE source_table
+(
+    id UInt64,
+    value String
+) ENGINE = Memory();
+INSERT INTO source_table VALUES (1, 'First');
+INSERT INTO source_table VALUES (2, 'Second');
 DROP DICTIONARY IF EXISTS 2024_dictionary_with_comment;
 CREATE DICTIONARY 2024_dictionary_with_comment
 (

@@ -1,3 +1,5 @@
+CREATE TABLE x1(a COLLATE nocase, b INTEGER, c BLOB);
+INSERT INTO x1 VALUES('lEtTeRs', 1234, 1234);
 WITH wrapper(c1, c2, c3) AS (
     SELECT a, b, c FROM x1
   )

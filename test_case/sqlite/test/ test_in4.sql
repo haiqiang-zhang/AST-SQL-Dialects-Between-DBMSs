@@ -1,3 +1,4 @@
+CREATE TABLE t1(a, b);
 CREATE INDEX i1 ON t1(a);
 SELECT * FROM t1 WHERE a IN ('aaa', 'bbb', 'ccc');
 INSERT INTO t1 VALUES('aaa', 1);

@@ -1,3 +1,4 @@
+CREATE TABLE t1(x);
 SELECT count(*) FROM sqlite_master;
 SELECT name FROM sqlite_master;
 CREATE TABLE m(a);

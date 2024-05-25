@@ -1,3 +1,5 @@
+drop table if exists summing_merge_tree_aggregate_function;
+drop table if exists summing_merge_tree_null;
 set allow_deprecated_syntax_for_merge_tree=1;
 create table summing_merge_tree_aggregate_function (
     d Date,

@@ -1,3 +1,4 @@
+drop table if exists t1,t2;
 select 0<=>0,0.0<=>0.0,0E0=0E0,"A"<=>"A",NULL<=>NULL;
 select 1<=>0,0<=>NULL,NULL<=>0;
 select 1.0<=>0.0,0.0<=>NULL,NULL<=>0.0;

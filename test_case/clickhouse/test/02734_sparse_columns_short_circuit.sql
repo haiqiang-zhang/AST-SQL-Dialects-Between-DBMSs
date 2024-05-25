@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t_sparse_short_circuit;
 SET short_circuit_function_evaluation = 'force_enable';
 CREATE TABLE t_sparse_short_circuit (a UInt64, b UInt64)
 ENGINE = MergeTree ORDER BY tuple()

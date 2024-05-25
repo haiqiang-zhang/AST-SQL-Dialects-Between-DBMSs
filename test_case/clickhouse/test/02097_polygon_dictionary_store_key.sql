@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS polygons_test_table;
+CREATE TABLE polygons_test_table
+(
+    key Array(Array(Array(Tuple(Float64, Float64)))),
+    name String
+) ENGINE = TinyLog;
+INSERT INTO polygons_test_table VALUES ([[[(3, 1), (0, 1), (0, -1), (3, -1)]]], 'Value');
 DROP DICTIONARY IF EXISTS polygons_test_dictionary_no_option;
 CREATE DICTIONARY polygons_test_dictionary_no_option
 (

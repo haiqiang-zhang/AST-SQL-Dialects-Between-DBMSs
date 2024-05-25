@@ -1,3 +1,4 @@
+CREATE TABLE t1(a,b,c,d);
 CREATE INDEX t1x ON t1(a,b);
 INSERT INTO t1(a,b,c,d) VALUES(1,2,0,0),(3,4,0,0),(5,6,0,0);
 CREATE TABLE t2(w,x,y,z);

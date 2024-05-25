@@ -1,3 +1,6 @@
+drop table if exists t1;
+CREATE TABLE t1 (a text) character set euckr;
+INSERT INTO t1 VALUES (0xA2E6),(0xFEF7);
 SELECT hex(a) FROM t1 ORDER BY a;
 DROP TABLE t1;
 create table t1 (s1 varchar(5) character set euckr);

@@ -1,3 +1,6 @@
+create table t1 (c1 int);
+create table t2 (c1 int);
+create table t3 (c1 int);
 lock tables t1 write, t2 write, t3 write;
 drop table t2, t3, t1;
 create table t1 (c1 int);

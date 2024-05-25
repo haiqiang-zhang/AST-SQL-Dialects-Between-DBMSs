@@ -1,3 +1,11 @@
+-- Tag no-ordinary-database: Sometimes cannot lock file most likely due to concurrent or adjacent tests, but we don't care how it works in Ordinary database
+-- Tag no-fasttest: In fasttest, ENABLE_LIBRARIES=0, so rocksdb engine is not enabled by default
+
+DROP TABLE IF EXISTS 01504_test;
+CREATE TABLE 01504_test (key Tuple(String, UInt32), value UInt64) Engine=EmbeddedRocksDB PRIMARY KEY(key);
+DROP TABLE IF EXISTS 01504_test;
+CREATE TABLE 01504_test (key String, value UInt32) Engine=EmbeddedRocksDB PRIMARY KEY(key);
+INSERT INTO 01504_test SELECT '1_1', number FROM numbers(10000);
 SELECT COUNT(1) == 1 FROM 01504_test;
 INSERT INTO 01504_test SELECT concat(toString(number), '_1'), number FROM numbers(10000);
 SELECT COUNT(1) == 10000 FROM 01504_test;

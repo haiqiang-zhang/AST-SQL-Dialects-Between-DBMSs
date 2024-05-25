@@ -1,3 +1,12 @@
+create table t1 (
+        a int not null,
+        b int not null references t2 (c),
+        primary key (a,b),
+        foreign key (a,b) references t3 (c,d) on delete no action
+          on update no action,
+        foreign key (a,b) references t3 (c,d) on update cascade,
+        foreign key (a,b) references t3 (c,d) on delete set default,
+        foreign key (a,b) references t3 (c,d) on update set null) engine=myisam;
 create index a on t1 (a);
 create unique index b on t1 (a,b);
 drop table t1;

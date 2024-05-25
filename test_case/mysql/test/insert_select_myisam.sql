@@ -1,3 +1,16 @@
+CREATE TABLE t1(
+ Month date NOT NULL,
+ Type tinyint(3) unsigned NOT NULL auto_increment,
+ Field int(10) unsigned NOT NULL,
+ Count int(10) unsigned NOT NULL,
+ UNIQUE KEY Month (Month,Type,Field)
+)engine=myisam;
+insert into t1 Values
+(20030901, 1, 1, 100),
+(20030901, 1, 2, 100),
+(20030901, 2, 1, 100),
+(20030901, 2, 2, 100),
+(20030901, 3, 1, 100);
 select * from t1;
 Select null, Field, Count From t1 Where Month=20030901 and Type=2;
 create table t2(No int not null, Field int not null, Count int not null);

@@ -1,3 +1,8 @@
+-- Tag no-replicated-database: Old syntax is not allowed
+-- The test use replicated table to test serialize and deserialize column with settings declaration on zookeeper
+-- Tests column-level settings for MergeTree* tables
+
+DROP TABLE IF EXISTS tab;
 SELECT '---';
 SET allow_experimental_object_type = 1;
 CREATE TABLE tab

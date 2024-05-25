@@ -1,3 +1,4 @@
+drop table if exists t1;
 select 0x41,0x41+0,0x41 | 0x7fffffffffffffff | 0,0xffffffffffffffff | 0;
 select 0x31+1,concat(0x31)+1,-0xf;
 select x'31',X'ffff'+0;

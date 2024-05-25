@@ -1,3 +1,6 @@
+drop table if exists t1;
+create table t1 (a bit not null) partition by key (a);
+insert into t1 values (b'1');
 select hex(a) from t1 where a = b'1';
 drop table t1;
 create table t1 (a tinyint not null) partition by key (a);

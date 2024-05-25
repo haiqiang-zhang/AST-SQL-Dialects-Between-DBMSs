@@ -1,3 +1,4 @@
+drop table if exists t1;
 select floor(5.5),floor(-5.5);
 select ceiling(5.5),ceiling(-5.5);
 select truncate(52.64,1),truncate(52.64,2),truncate(52.64,-1),truncate(52.64,-2), truncate(-52.64,1),truncate(-52.64,-1);

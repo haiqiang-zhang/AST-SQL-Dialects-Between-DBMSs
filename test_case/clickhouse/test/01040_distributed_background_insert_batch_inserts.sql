@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS test_01040;
+DROP TABLE IF EXISTS dist_test_01040;
+CREATE TABLE test_01040 (key UInt64) ENGINE=TinyLog();
 SELECT 'test_cluster_two_shards prefer_localhost_replica=0';
 SET prefer_localhost_replica=0;
 TRUNCATE TABLE test_01040;

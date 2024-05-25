@@ -1,3 +1,43 @@
+DROP TABLE IF EXISTS test;
+DROP TABLE IF EXISTS test_tmp;
+DROP TABLE IF EXISTS dst;
+DROP TABLE IF EXISTS view;
+CREATE TABLE test 
+(
+    `address` FixedString(20),
+    `deployer` FixedString(20),
+    `block_number` UInt256,
+    `block_hash` FixedString(32),
+    `block_timestamp` DateTime('UTC'),
+    `insertion_time` DateTime('UTC')
+)
+ENGINE = MergeTree
+ORDER BY address
+SETTINGS index_granularity = 8192;
+CREATE TABLE test_tmp as test;
+CREATE TABLE dst
+(
+    `block_timestamp` AggregateFunction(max, Nullable(DateTime('UTC'))),
+    `block_hash` AggregateFunction(argMax, Nullable(FixedString(32)), DateTime('UTC')),
+    `block_number` AggregateFunction(argMax, Nullable(UInt256), DateTime('UTC')),
+    `deployer` AggregateFunction(argMax, Nullable(FixedString(20)), DateTime('UTC')),
+    `address` FixedString(20),
+    `name` AggregateFunction(argMax, Nullable(String), DateTime('UTC')),
+    `symbol` AggregateFunction(argMax, Nullable(String), DateTime('UTC')),
+    `decimals` AggregateFunction(argMax, Nullable(UInt8), DateTime('UTC')),
+    `is_proxy` AggregateFunction(argMax, Nullable(Bool), DateTime('UTC')),
+    `blacklist_flags` AggregateFunction(argMax, Array(Nullable(String)), DateTime('UTC')),
+    `whitelist_flags` AggregateFunction(argMax, Array(Nullable(String)), DateTime('UTC')),
+    `detected_standards` AggregateFunction(argMax, Array(Nullable(String)), DateTime('UTC')),
+    `amended_type` AggregateFunction(argMax, Nullable(String), DateTime('UTC')),
+    `comment` AggregateFunction(argMax, Nullable(String), DateTime('UTC')),
+    `_sources` AggregateFunction(groupUniqArray, String),
+    `_updated_at` AggregateFunction(max, DateTime('UTC')),
+    `_active` AggregateFunction(argMax, Bool, DateTime('UTC'))
+)
+ENGINE = MergeTree
+ORDER BY address
+SETTINGS index_granularity = 8192;
 CREATE MATERIALIZED VIEW view TO dst
 (
     `block_timestamp` AggregateFunction(max, Nullable(DateTime('UTC'))),

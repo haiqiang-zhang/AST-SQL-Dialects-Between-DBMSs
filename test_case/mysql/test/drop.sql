@@ -1,3 +1,4 @@
+drop table if exists t1;
 drop database if exists mysqltest;
 drop database if exists client_test_db;
 create table t1(n int);

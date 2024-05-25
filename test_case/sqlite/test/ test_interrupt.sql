@@ -1,3 +1,4 @@
+CREATE TABLE t1(a,b);
 SELECT name FROM sqlite_master;
 DROP TABLE t1;
 SELECT name FROM sqlite_master;

@@ -1,3 +1,5 @@
+CREATE TABLE money_data (m money);
+INSERT INTO money_data VALUES ('123');
 SELECT * FROM money_data;
 SELECT m + '123' FROM money_data;
 SELECT m + '123.45' FROM money_data;

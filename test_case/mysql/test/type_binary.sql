@@ -1,3 +1,5 @@
+create table t1 (s1 binary(3));
+insert into t1 values (0x61), (0x6120), (0x612020);
 select hex(s1) from t1;
 drop table t1;
 create table t1 (s1 binary(2), s2 varbinary(2));

@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS data_01660;
+CREATE TABLE data_01660 (key Int) Engine=MergeTree() ORDER BY key;
 SYSTEM STOP MERGES data_01660;
 SELECT _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660';
 SELECT name, _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660';

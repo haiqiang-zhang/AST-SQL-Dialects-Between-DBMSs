@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS t1;
 SET allow_experimental_statistic = 1;
 CREATE TABLE t1 
 (

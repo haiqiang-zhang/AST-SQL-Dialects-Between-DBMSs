@@ -1,3 +1,6 @@
+drop table if exists t1;
+create table t1 (a int auto_increment primary key, b char(20)) charset utf8mb4;
+insert into t1 values(1,"test");
 SELECT SQL_BUFFER_RESULT * from t1;
 update t1 set b="a" where a=1;
 delete from t1 where a=1;

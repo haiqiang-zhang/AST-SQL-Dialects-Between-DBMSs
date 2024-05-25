@@ -1,3 +1,5 @@
+CREATE TABLE one(o);
+INSERT INTO one VALUES(1);
 SELECT (1, 2, 3) == (1, 2, 3);
 SELECT (1, 2, 3) != (1, 2, 3);
 SELECT (1, 2, 3) IS (1, 2, 3);

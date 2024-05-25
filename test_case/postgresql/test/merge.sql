@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS target;
+DROP TABLE IF EXISTS source;
+CREATE TABLE target (tid integer, balance integer)
+  WITH (autovacuum_enabled=off);
+CREATE TABLE source (sid integer, delta integer) 
+  WITH (autovacuum_enabled=off);
+INSERT INTO target VALUES (1, 10);
+INSERT INTO target VALUES (2, 20);
+INSERT INTO target VALUES (3, 30);
 SELECT t.ctid is not null as matched, t.*, s.* FROM source s FULL OUTER JOIN target t ON s.sid = t.tid ORDER BY t.tid, s.sid;
 CREATE TABLE target2 (tid integer, balance integer)
   WITH (autovacuum_enabled=off);

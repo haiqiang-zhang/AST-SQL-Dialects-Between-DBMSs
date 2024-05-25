@@ -1,3 +1,6 @@
+CREATE TABLE t1(a,b,c);
+INSERT INTO t1(a,b,c)
+    VALUES(1,2,3),(7,8,9),(4,5,6),(10,11,12),(4,8,12),(1,11,111);
 CREATE INDEX t1a ON t1(a);
 CREATE INDEX t1b ON t1(b);
 ANALYZE;

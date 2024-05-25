@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS data_01283;
 set allow_asynchronous_read_from_io_pool_for_merge_tree = 0;
 set local_filesystem_read_method = 'pread';
 set load_marks_asynchronously = 0;

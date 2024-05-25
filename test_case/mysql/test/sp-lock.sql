@@ -1,3 +1,4 @@
+drop table if exists t1;
 drop procedure if exists p1;
 drop procedure if exists p2;
 drop procedure if exists p3;

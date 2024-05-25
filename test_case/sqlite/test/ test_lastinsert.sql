@@ -1,3 +1,7 @@
+create table t1 (k integer primary key);
+insert into t1 values (1);
+insert into t1 values (NULL);
+insert into t1 values (NULL);
 select last_insert_rowid();
 create table t1w (k integer primary key) WITHOUT ROWID;
 insert into t1w values (123456);

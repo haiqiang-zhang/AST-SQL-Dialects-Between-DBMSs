@@ -1,3 +1,17 @@
+-- Tag no-replicated-database: Unsupported type of ALTER query
+
+DROP TABLE IF EXISTS log_for_alter;
+CREATE TABLE log_for_alter (
+  id UInt64,
+  Data String
+) ENGINE = Log();
+DROP TABLE IF EXISTS log_for_alter;
+DROP TABLE IF EXISTS table_for_alter;
+CREATE TABLE table_for_alter (
+  id UInt64,
+  Data String
+) ENGINE = MergeTree() ORDER BY id SETTINGS index_granularity=4096, index_granularity_bytes = '10Mi';
+SHOW CREATE TABLE table_for_alter;
 ALTER TABLE table_for_alter MODIFY SETTING  parts_to_throw_insert = 1, parts_to_delay_insert = 1;
 SHOW CREATE TABLE table_for_alter;
 INSERT INTO table_for_alter VALUES (1, '1');

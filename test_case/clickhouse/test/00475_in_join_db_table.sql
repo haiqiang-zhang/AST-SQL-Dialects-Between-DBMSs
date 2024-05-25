@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS set;
+CREATE TABLE set (x String) ENGINE = Memory;
+INSERT INTO set VALUES ('hello');
 SELECT (arrayJoin(['hello', 'world']) AS s) IN set, s;
 DROP TABLE set;
 CREATE TABLE set (x String) ENGINE = Set;

@@ -1,3 +1,18 @@
+-- Another test for window functions because the other one is too long.
+
+-- some craziness with a mix of materialized and unmaterialized const columns
+-- after merging sorted transform, that used to break the peer group detection in
+-- the window transform.
+CREATE TABLE order_by_const
+(
+    `a` UInt64,
+    `b` UInt64,
+    `c` UInt64,
+    `d` UInt64
+)
+ENGINE = MergeTree
+ORDER BY (a, b)
+SETTINGS index_granularity = 8192;
 truncate table order_by_const;
 system stop merges order_by_const;
 INSERT INTO order_by_const(a, b, c, d) VALUES (1, 1, 101, 1), (1, 2, 102, 1), (1, 3, 103, 1), (1, 4, 104, 1);

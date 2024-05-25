@@ -1,6 +1,0 @@
-CREATE TABLE t(x INT);
-INSERT INTO t VALUES (0), (1), (2);
-DROP TABLE t;
-CREATE TABLE t(x INT PRIMARY KEY);
-INSERT INTO t VALUES (0), (1), (2), (3), (4), (5), (6), (7), (8), (9);
-DROP TABLE t;

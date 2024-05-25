@@ -1,3 +1,4 @@
+drop table if exists t1,t2;
 select @a - connection_id();
 select @b;
 CREATE TABLE t1 ( i int not null, v int not null,index (i));

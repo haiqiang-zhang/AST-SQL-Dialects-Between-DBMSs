@@ -1,3 +1,12 @@
+create table t0 (x);
+insert into t0 values (1);
+insert into t0 values (1);
+insert into t0 values (2);
+insert into t0 values (2);
+insert into t0 values (1);
+insert into t0 values (1);
+insert into t0 values (1);
+insert into t0 values (2);
 select changes(), total_changes();
 update t0 set x=3 where x=1;
 select changes(), total_changes();

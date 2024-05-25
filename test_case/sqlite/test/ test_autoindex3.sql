@@ -1,3 +1,5 @@
+CREATE TABLE t1(a,b,x);
+CREATE TABLE t2(c,d,y);
 CREATE INDEX t1b ON t1(b);
 CREATE INDEX t2d ON t2(d);
 ANALYZE sqlite_master;

@@ -1,3 +1,10 @@
+drop table if exists pr_t;
+drop table if exists dist_t_different_dbs;
+drop table if exists shard_1.t_different_dbs;
+drop table if exists t_different_dbs;
+drop table if exists dist_t;
+drop table if exists t;
+create table t(a UInt64, b UInt64) engine=MergeTree order by a;
 system stop merges t;
 insert into t select number, number from numbers_mt(1e6);
 set enable_memory_bound_merging_of_aggregation_results = 1;
