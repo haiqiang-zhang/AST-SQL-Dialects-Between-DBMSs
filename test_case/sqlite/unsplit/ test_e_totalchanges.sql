@@ -20,11 +20,8 @@ CREATE TABLE log(detail);
 INSERT INTO log VALUES('here we go!');
 DELETE FROM log;
 INSERT INTO t1 VALUES('a', 'b');
--- 1 + 1
-  UPDATE t1 SET b='c';
--- 1 + 1 + 2
-  DELETE FROM t1;
--- 1 + 1 + 1;
+UPDATE t1 SET b='c';
+DELETE FROM t1;
 INSERT INTO t1 VALUES(1, 2), (3, 4);
 INSERT INTO t2 VALUES(1, 2), (3, 4);
 SELECT count(*) FROM t1;

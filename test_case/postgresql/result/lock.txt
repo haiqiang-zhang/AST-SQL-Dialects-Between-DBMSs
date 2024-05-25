@@ -1,0 +1,205 @@
+--Query--
+LOCK TABLE lock_tbl1 IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK lock_tbl1 IN ROW SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN SHARE UPDATE EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK lock_tbl1 IN SHARE ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN ACCESS SHARE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN ROW SHARE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN ROW EXCLUSIVE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN SHARE UPDATE EXCLUSIVE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN SHARE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN SHARE ROW EXCLUSIVE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN EXCLUSIVE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 IN ACCESS EXCLUSIVE MODE NOWAIT
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_view1 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_view1',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view2 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_tbl1a',), ('lock_view2',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view3 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_tbl1a',), ('lock_view2',), ('lock_view3',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view4 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_tbl1a',), ('lock_view4',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view5 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_tbl1a',), ('lock_view5',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view6 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'ExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_view6',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view2 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_view7 IN EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 * IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_tbl1 * IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE ONLY lock_tbl1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_view1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_view1 IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'AccessExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_tbl2',), ('lock_tbl3',), ('lock_view1',)]
++--------------------+
+--Query--
+LOCK TABLE lock_view8
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_view8
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_view8 IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+select relname from pg_locks l, pg_class c  where l.relation = c.oid and relname like '%lock_%' and mode = 'AccessExclusiveLock'  order by relname
+--Result--
+[('lock_tbl1',), ('lock_tbl2',), ('lock_tbl3',), ('lock_view8',)]
++--------------------+

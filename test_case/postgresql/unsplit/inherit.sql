@@ -161,7 +161,7 @@ where (mlp.a = ss.a and mlp.b = 'b') or mlp.a = 3;
 select tableoid::regclass::text as relname, mlparted_tab.* from mlparted_tab order by 1,2;
 drop table mlparted_tab;
 drop table some_tab cascade;
-/* Test multiple inheritance of column defaults */
+
 
 CREATE TABLE firstparent (tomorrow date default now()::date + 1);
 CREATE TABLE secondparent (tomorrow date default  now() :: date  +  1);
@@ -627,9 +627,9 @@ explain (costs off) select * from range_list_parted;
 explain (costs off) select * from range_list_parted where a = 5;
 explain (costs off) select * from range_list_parted where b = 'ab';
 explain (costs off) select * from range_list_parted where a between 3 and 23 and b in ('ab');
-/* Should select no rows because range partition key cannot be null */
+
 explain (costs off) select * from range_list_parted where a is null;
-/* Should only select rows from the null-accepting partition */
+
 explain (costs off) select * from range_list_parted where b is null;
 explain (costs off) select * from range_list_parted where a is not null and a < 67;
 explain (costs off) select * from range_list_parted where a >= 30;

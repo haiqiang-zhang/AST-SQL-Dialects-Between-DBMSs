@@ -1,5 +1,4 @@
--- no-fasttest because we need an S3 storage policy
--- no-parallel because we look at server-wide counters about page cache usage
+
 
 set use_page_cache_for_disks_without_file_cache = 1;
 set page_cache_inject_eviction = 0;
@@ -40,7 +39,6 @@ select * from events_diff;
 truncate table events_snapshot;
 insert into events_snapshot select * from system.events;
 system drop page cache;
--- (Not checking PageCacheBytesUnpinned* because it's unreliable in this case because of an intentional race condition, see PageCache::evictChunk.)
 select event, if(event in ('PageCacheChunkMisses', 'ReadBufferFromS3Bytes'), diff >= 1, diff) from events_diff where event not in ('PageCacheChunkDataHits', 'PageCacheBytesUnpinnedRoundedToPages', 'PageCacheBytesUnpinnedRoundedToHugePages');
 truncate table events_snapshot;
 insert into events_snapshot select * from system.events;

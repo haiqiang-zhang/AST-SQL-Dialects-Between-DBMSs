@@ -2,9 +2,7 @@ SELECT text 'this is a text string' = text 'this is a text string' AS true;
 SELECT text 'this is a text string' = text 'this is a text strin' AS false;
 select 'four: '::text || 2+2;
 select 'four: ' || 2+2;
-/*
- * various string functions
- */
+
 select concat('one');
 select concat(1,2,3,'hello',true, false, to_date('20100309','YYYYMMDD'));
 select concat_ws('#','one');
@@ -22,9 +20,7 @@ select concat_ws(',', variadic array[1,2,3]);
 select concat_ws(',', variadic NULL::int[]);
 select concat(variadic NULL::int[]) is NULL;
 select concat(variadic '{}'::int[]) = '';
-/*
- * format
- */
+
 select format(NULL);
 select format('Hello');
 select format('Hello %s', 'World');

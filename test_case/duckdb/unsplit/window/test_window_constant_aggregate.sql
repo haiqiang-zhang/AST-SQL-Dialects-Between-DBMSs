@@ -5,7 +5,7 @@ CREATE TABLE issue7353 (
     Sex VARCHAR,
     Ct INT,
     Depth INT
-);;
+);
 INSERT INTO issue7353 (Season, Medal, Sex, Ct, Depth) VALUES
     (NULL, NULL, NULL, 271116, 0),
     ('Summer', NULL, NULL, 222552, 1),
@@ -33,14 +33,14 @@ INSERT INTO issue7353 (Season, Medal, Sex, Ct, Depth) VALUES
     ('Summer', 'Silver', 'F', 3128, 3),
     ('Winter', 'Bronze', 'F', 597, 3),
     ('Winter', 'Gold', 'F', 607, 3),
-    ('Winter', 'Silver', 'F', 607, 3);;
-PRAGMA default_null_order='NULLS LAST';;
+    ('Winter', 'Silver', 'F', 607, 3);
+PRAGMA default_null_order='NULLS LAST';
 SELECT part, id, sum(val) OVER(PARTITION BY part ORDER BY id), lead(val) OVER(PARTITION BY part ORDER BY id)
 FROM (SELECT range AS id, range % 5 AS part, range AS val FROM range(13)) t
-ORDER BY ALL;;
+ORDER BY ALL;
 SELECT part, id, list_sort(list(val) OVER(PARTITION BY part))
 FROM (SELECT range AS id, range % 5 AS part, range AS val FROM range(13)) t
-ORDER BY ALL;;
+ORDER BY ALL;
 SELECT part, min(const) AS lo, max(const) AS hi
 FROM (
 	SELECT part, sum(val) OVER(PARTITION BY part) as const
@@ -59,24 +59,7 @@ FROM (
 	) u
 ) t
 GROUP BY ALL
-ORDER BY ALL
-;;
-SELECT part, min(const) AS lo, max(const) AS hi
-FROM (
-	SELECT part, sum(val) OVER(PARTITION BY part) AS const
-	FROM (
-		SELECT part, val
-		FROM (
-			(SELECT range as part, random() AS val FROM range(10)) r
-		CROSS JOIN 
-			range(3000)
-		) p
-	) t
-) w
-GROUP BY ALL
-HAVING lo <> hi
-ORDER BY ALL
-;;
+ORDER BY ALL;
 SELECT *, max(Ct) FILTER (WHERE Depth=1) OVER (PARTITION BY Season) as value_depth1 
 from issue7353
-order by all;;
+order by all;

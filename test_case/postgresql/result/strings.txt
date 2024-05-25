@@ -1,0 +1,1650 @@
+--Query--
+SELECT 'first line' ' - next line' 	' - third line' 	AS "Three lines to one"
+--Result--
+[('first line - next line - third line',)]
++--------------------+
+--Query--
+SELECT U&'d\0061t\+000061' AS U&"d\0061t\+000061"
+--Result--
+[('data',)]
++--------------------+
+--Query--
+SELECT U&'d!0061t\+000061' UESCAPE '!' AS U&"d*0061t\+000061" UESCAPE '*'
+--Result--
+[('dat\\+000061',)]
++--------------------+
+--Query--
+SELECT U&'a\\b' AS "a\b"
+--Result--
+[('a\\b',)]
++--------------------+
+--Query--
+SELECT U&' \' UESCAPE '!' AS "tricky"
+--Result--
+[(' \\',)]
++--------------------+
+--Query--
+SELECT 'tricky' AS U&"\" UESCAPE '!'
+--Result--
+[('tricky',)]
++--------------------+
+--Query--
+SELECT E'd\u0061t\U00000061' AS "data"
+--Result--
+[('data',)]
++--------------------+
+--Query--
+SELECT E'a\\b' AS "a\b"
+--Result--
+[('a\\b',)]
++--------------------+
+--Query--
+SELECT 'tricky' AS U&"\" UESCAPE '!'
+--Result--
+[('tricky',)]
++--------------------+
+--Query--
+SELECT E'\\xDeAdBeEf'::bytea
+--Result--
+[(<memory at 0x104cedb40>,)]
++--------------------+
+--Query--
+SELECT E'\\x De Ad Be Ef '::bytea
+--Result--
+[(<memory at 0x13b577dc0>,)]
++--------------------+
+--Query--
+SELECT E'\\xDe00BeEf'::bytea
+--Result--
+[(<memory at 0x13b577ac0>,)]
++--------------------+
+--Query--
+SELECT E'DeAdBeEf'::bytea
+--Result--
+[(<memory at 0x13b5777c0>,)]
++--------------------+
+--Query--
+SELECT E'De\\000dBeEf'::bytea
+--Result--
+[(<memory at 0x13b577580>,)]
++--------------------+
+--Query--
+SELECT E'De\123dBeEf'::bytea
+--Result--
+[(<memory at 0x13b577a00>,)]
++--------------------+
+--Query--
+SELECT E'De\\123dBeEf'::bytea
+--Result--
+[(<memory at 0x13b577940>,)]
++--------------------+
+--Query--
+SELECT E'\\xDeAdBeEf'::bytea
+--Result--
+[(<memory at 0x13b577f40>,)]
++--------------------+
+--Query--
+SELECT E'\\x De Ad Be Ef '::bytea
+--Result--
+[(<memory at 0x13b577e80>,)]
++--------------------+
+--Query--
+SELECT E'\\xDe00BeEf'::bytea
+--Result--
+[(<memory at 0x13b764040>,)]
++--------------------+
+--Query--
+SELECT E'DeAdBeEf'::bytea
+--Result--
+[(<memory at 0x13b764100>,)]
++--------------------+
+--Query--
+SELECT E'De\\000dBeEf'::bytea
+--Result--
+[(<memory at 0x13b7641c0>,)]
++--------------------+
+--Query--
+SELECT E'De\\123dBeEf'::bytea
+--Result--
+[(<memory at 0x13b764280>,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid(E'\\xDeAdBeE', 'bytea')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info(E'\\xDeAdBeE', 'bytea')
+--Result--
+[('invalid hexadecimal data: odd number of digits', None, None, '22023')]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info(E'\\xDeAdBeEx', 'bytea')
+--Result--
+[('invalid hexadecimal digit: "x"', None, None, '22023')]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info(E'foo\\99bar', 'bytea')
+--Result--
+[('invalid input syntax for type bytea', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT CAST(name 'namefield' AS text) AS "text(name)"
+--Result--
+[('namefield',)]
++--------------------+
+--Query--
+SELECT CAST(name 'namefield' AS char(10)) AS "char(name)"
+--Result--
+[('namefield ',)]
++--------------------+
+--Query--
+SELECT CAST(name 'namefield' AS varchar) AS "varchar(name)"
+--Result--
+[('namefield',)]
++--------------------+
+--Query--
+SELECT TRIM(BOTH FROM '  bunch o blanks  ') = 'bunch o blanks' AS "bunch o blanks"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT TRIM(LEADING FROM '  bunch o blanks  ') = 'bunch o blanks  ' AS "bunch o blanks  "
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT TRIM(TRAILING FROM '  bunch o blanks  ') = '  bunch o blanks' AS "  bunch o blanks"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT TRIM(BOTH 'x' FROM 'xxxxxsome Xsxxxxx') = 'some Xs' AS "some Xs"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('1234567890' FROM 3) = '34567890' AS "34567890"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('1234567890' FROM 4 FOR 3) = '456' AS "456"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('string' FROM 2 FOR 2147483646) AS "tring"
+--Result--
+[('tring',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('string' FROM -10 FOR 2147483646) AS "string"
+--Result--
+[('string',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"(b_d)#"%' ESCAPE '#') AS "bcd"
+--Result--
+[('bcd',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' FROM 'a#"(b_d)#"%' FOR '#') AS "bcd"
+--Result--
+[('bcd',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR '#"(b_d)#"%' ESCAPE '#') IS NULL AS "True"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR '%' ESCAPE NULL) IS NULL AS "True"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING(NULL SIMILAR '%' ESCAPE '#') IS NULL AS "True"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR NULL ESCAPE '#') IS NULL AS "True"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%#"g' ESCAPE '#') AS "bcdef"
+--Result--
+[('bcdef',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a*#"%#"g*' ESCAPE '#') AS "abcdefg"
+--Result--
+[('abcdefg',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a|b#"%#"g' ESCAPE '#') AS "bcdef"
+--Result--
+[('bcdef',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%#"x|g' ESCAPE '#') AS "bcdef"
+--Result--
+[('bcdef',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%|ab#"g' ESCAPE '#') AS "bcdef"
+--Result--
+[('bcdef',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%g' ESCAPE '#') AS "bcdefg"
+--Result--
+[('bcdefg',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' SIMILAR 'a%g' ESCAPE '#') AS "abcdefg"
+--Result--
+[('abcdefg',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' FROM 'c.e') AS "cde"
+--Result--
+[('cde',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('abcdefg' FROM 'b(.*)f') AS "cde"
+--Result--
+[('cde',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('foo' FROM 'foo(bar)?') IS NULL AS t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abcdefg' SIMILAR TO '_bcd%' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abcdefg' SIMILAR TO 'bcd%' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'abcdefg' SIMILAR TO '_bcd#%' ESCAPE '#' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'abcd%' SIMILAR TO '_bcd#%' ESCAPE '#' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abcdefg' SIMILAR TO '_bcd\%' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'abcd\efg' SIMILAR TO '_bcd\%' ESCAPE '' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abcdefg' SIMILAR TO '_bcd%' ESCAPE NULL AS null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT regexp_replace('1112223333', E'(\\d{3})(\\d{3})(\\d{4})', E'(\\1) \\2-\\3')
+--Result--
+[('(111) 222-3333',)]
++--------------------+
+--Query--
+SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\&Y', 'g')
+--Result--
+[('fXooYbaXrrYbaXzzY',)]
++--------------------+
+--Query--
+SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\\\Y', 'g')
+--Result--
+[('fX\\YbaX\\YbaX\\Y',)]
++--------------------+
+--Query--
+SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\Y\\1Z\\')
+--Result--
+[('fX\\YoZ\\barrbazz',)]
++--------------------+
+--Query--
+SELECT regexp_replace('AAA   BBB   CCC   ', E'\\s+', ' ', 'g')
+--Result--
+[('AAA BBB CCC ',)]
++--------------------+
+--Query--
+SELECT regexp_replace('AAA', '^|$', 'Z', 'g')
+--Result--
+[('ZAAAZ',)]
++--------------------+
+--Query--
+SELECT regexp_replace('AAA aaa', 'A+', 'Z', 'gi')
+--Result--
+[('Z Z',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'A|e|i|o|u', 'X', 1)
+--Result--
+[('X PostgreSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'A|e|i|o|u', 'X', 1, 2)
+--Result--
+[('A PXstgreSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 0, 'i')
+--Result--
+[('X PXstgrXSQL fXnctXXn',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 1, 'i')
+--Result--
+[('X PostgreSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 2, 'i')
+--Result--
+[('A PXstgreSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 3, 'i')
+--Result--
+[('A PostgrXSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 9, 'i')
+--Result--
+[('A PostgreSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'A|e|i|o|u', 'X', 7, 0, 'i')
+--Result--
+[('A PostgrXSQL fXnctXXn',)]
++--------------------+
+--Query--
+SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 1, 'g')
+--Result--
+[('A PXstgreSQL function',)]
++--------------------+
+--Query--
+SELECT regexp_count('123123123123123', '(12)3')
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT regexp_count('123123123123', '123', 1)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_count('123123123123', '123', 3)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT regexp_count('123123123123', '123', 33)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_count('ABCABCABCABC', 'Abc', 1, '')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_count('ABCABCABCABC', 'Abc', 1, 'i')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_like('Steven', '^Ste(v|ph)en$')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_like('a'||CHR(10)||'d', 'a.d', 'n')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT regexp_like('a'||CHR(10)||'d', 'a.d', 's')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_like('abc', ' a . c ', 'x')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcdefghi', 'd.f')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcdefghi', 'd.q')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcabcabc', 'a.c')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcabcabc', 'a.c', 2)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcabcabc', 'a.c', 1, 3)
+--Result--
+[(7,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcabcabc', 'a.c', 1, 4)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_instr('abcabcabc', 'A.C', 1, 2, 0, 'i')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 2)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 3)
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 4)
+--Result--
+[(7,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 5)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 0)
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 1)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 2)
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 3)
+--Result--
+[(7,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 4)
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 5)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_instr('foo', 'foo(bar)?', 1, 1, 0, '', 1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcdefghi', 'd.f')
+--Result--
+[('def',)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcdefghi', 'd.q') IS NULL AS t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcabcabc', 'a.c')
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcabcabc', 'a.c', 2)
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcabcabc', 'a.c', 1, 3)
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcabcabc', 'a.c', 1, 4) IS NULL AS t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_substr('abcabcabc', 'A.C', 1, 2, 'i')
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 0)
+--Result--
+[('12345678',)]
++--------------------+
+--Query--
+SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 1)
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 2)
+--Result--
+[('45678',)]
++--------------------+
+--Query--
+SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 3)
+--Result--
+[('56',)]
++--------------------+
+--Query--
+SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 4)
+--Result--
+[('78',)]
++--------------------+
+--Query--
+SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 5) IS NULL AS t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_substr('foo', 'foo(bar)?', 1, 1, '', 1) IS NULL AS t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT regexp_matches('foobarbequebaz', $re$(bar)(beque)$re$)
+--Result--
+[(['bar', 'beque'],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foObARbEqUEbAz', $re$(bar)(beque)$re$, 'i')
+--Result--
+[(['bAR', 'bEqUE'],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foobarbequebazilbarfbonk', $re$(b[^b]+)(b[^b]+)$re$, 'g')
+--Result--
+[(['bar', 'beque'],), (['bazil', 'barf'],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foobarbequebaz', $re$(bar)(.*)(beque)$re$)
+--Result--
+[(['bar', '', 'beque'],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foobarbequebaz', $re$(bar)(.+)(beque)$re$)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT regexp_matches('foobarbequebaz', $re$(bar)(.+)?(beque)$re$)
+--Result--
+[(['bar', None, 'beque'],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foobarbequebaz', $re$barbeque$re$)
+--Result--
+[(['barbeque'],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foo' || chr(10) || 'bar' || chr(10) || 'bequq' || chr(10) || 'baz', '^', 'mg')
+--Result--
+[([''],), ([''],), ([''],), ([''],)]
++--------------------+
+--Query--
+SELECT regexp_matches('foo' || chr(10) || 'bar' || chr(10) || 'bequq' || chr(10) || 'baz', '$', 'mg')
+--Result--
+[([''],), ([''],), ([''],), ([''],)]
++--------------------+
+--Query--
+SELECT regexp_matches('1' || chr(10) || '2' || chr(10) || '3' || chr(10) || '4' || chr(10), '^.?', 'mg')
+--Result--
+[(['1'],), (['2'],), (['3'],), (['4'],), ([''],)]
++--------------------+
+--Query--
+SELECT regexp_matches(chr(10) || '1' || chr(10) || '2' || chr(10) || '3' || chr(10) || '4' || chr(10), '.?$', 'mg')
+--Result--
+[([''],), (['1'],), ([''],), (['2'],), ([''],), (['3'],), ([''],), (['4'],), ([''],), ([''],)]
++--------------------+
+--Query--
+SELECT regexp_matches(chr(10) || '1' || chr(10) || '2' || chr(10) || '3' || chr(10) || '4', '.?$', 'mg')
+--Result--
+[([''],), (['1'],), ([''],), (['2'],), ([''],), (['3'],), ([''],), (['4'],), ([''],)]
++--------------------+
+--Query--
+SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', $re$\s+$re$) AS foo
+--Result--
+[('the', 3), ('quick', 5), ('brown', 5), ('fox', 3), ('jumps', 5), ('over', 4), ('the', 3), ('lazy', 4), ('dog', 3)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', $re$\s+$re$)
+--Result--
+[(['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'the', 'lazy', 'dog'],)]
++--------------------+
+--Query--
+SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', $re$\s*$re$) AS foo
+--Result--
+[('t', 1), ('h', 1), ('e', 1), ('q', 1), ('u', 1), ('i', 1), ('c', 1), ('k', 1), ('b', 1), ('r', 1), ('o', 1), ('w', 1), ('n', 1), ('f', 1), ('o', 1), ('x', 1), ('j', 1), ('u', 1), ('m', 1), ('p', 1), ('s', 1), ('o', 1), ('v', 1), ('e', 1), ('r', 1), ('t', 1), ('h', 1), ('e', 1), ('l', 1), ('a', 1), ('z', 1), ('y', 1), ('d', 1), ('o', 1), ('g', 1)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', $re$\s*$re$)
+--Result--
+[(['t', 'h', 'e', 'q', 'u', 'i', 'c', 'k', 'b', 'r', 'o', 'w', 'n', 'f', 'o', 'x', 'j', 'u', 'm', 'p', 's', 'o', 'v', 'e', 'r', 't', 'h', 'e', 'l', 'a', 'z', 'y', 'd', 'o', 'g'],)]
++--------------------+
+--Query--
+SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', '') AS foo
+--Result--
+[('t', 1), ('h', 1), ('e', 1), (' ', 1), ('q', 1), ('u', 1), ('i', 1), ('c', 1), ('k', 1), (' ', 1), ('b', 1), ('r', 1), ('o', 1), ('w', 1), ('n', 1), (' ', 1), ('f', 1), ('o', 1), ('x', 1), (' ', 1), ('j', 1), ('u', 1), ('m', 1), ('p', 1), ('s', 1), (' ', 1), ('o', 1), ('v', 1), ('e', 1), ('r', 1), (' ', 1), ('t', 1), ('h', 1), ('e', 1), (' ', 1), ('l', 1), ('a', 1), ('z', 1), ('y', 1), (' ', 1), ('d', 1), ('o', 1), ('g', 1)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', '')
+--Result--
+[(['t', 'h', 'e', ' ', 'q', 'u', 'i', 'c', 'k', ' ', 'b', 'r', 'o', 'w', 'n', ' ', 'f', 'o', 'x', ' ', 'j', 'u', 'm', 'p', 's', ' ', 'o', 'v', 'e', 'r', ' ', 't', 'h', 'e', ' ', 'l', 'a', 'z', 'y', ' ', 'd', 'o', 'g'],)]
++--------------------+
+--Query--
+SELECT foo, length(foo) FROM regexp_split_to_table('thE QUick bROWn FOx jUMPs ovEr The lazy dOG', 'e', 'i') AS foo
+--Result--
+[('th', 2), (' QUick bROWn FOx jUMPs ov', 25), ('r Th', 4), (' lazy dOG', 9)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('thE QUick bROWn FOx jUMPs ovEr The lazy dOG', 'e', 'i')
+--Result--
+[(['th', ' QUick bROWn FOx jUMPs ov', 'r Th', ' lazy dOG'],)]
++--------------------+
+--Query--
+SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', 'nomatch') AS foo
+--Result--
+[('the quick brown fox jumps over the lazy dog', 43)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', 'nomatch')
+--Result--
+[(['the quick brown fox jumps over the lazy dog'],)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('123456','1')
+--Result--
+[(['', '23456'],)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('123456','6')
+--Result--
+[(['12345', ''],)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('123456','.')
+--Result--
+[(['', '', '', '', '', '', ''],)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('123456','')
+--Result--
+[(['1', '2', '3', '4', '5', '6'],)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('123456','(?:)')
+--Result--
+[(['1', '2', '3', '4', '5', '6'],)]
++--------------------+
+--Query--
+SELECT regexp_split_to_array('1','')
+--Result--
+[(['1'],)]
++--------------------+
+--Query--
+SELECT POSITION('4' IN '1234567890') = '4' AS "4"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT POSITION('5' IN '1234567890') = '5' AS "5"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT OVERLAY('abcdef' PLACING '45' FROM 4) AS "abc45f"
+--Result--
+[('abc45f',)]
++--------------------+
+--Query--
+SELECT OVERLAY('yabadoo' PLACING 'daba' FROM 5) AS "yabadaba"
+--Result--
+[('yabadaba',)]
++--------------------+
+--Query--
+SELECT OVERLAY('yabadoo' PLACING 'daba' FROM 5 FOR 0) AS "yabadabadoo"
+--Result--
+[('yabadabadoo',)]
++--------------------+
+--Query--
+SELECT OVERLAY('babosa' PLACING 'ubb' FROM 2 FOR 4) AS "bubba"
+--Result--
+[('bubba',)]
++--------------------+
+--Query--
+SELECT 'hawkeye' LIKE 'h%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT LIKE 'h%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' LIKE 'H%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT LIKE 'H%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' LIKE 'indio%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT LIKE 'indio%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' LIKE 'h%eye' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT LIKE 'h%eye' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'indio' LIKE '_ndio' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'indio' NOT LIKE '_ndio' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'indio' LIKE 'in__o' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'indio' NOT LIKE 'in__o' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'indio' LIKE 'in_o' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'indio' NOT LIKE 'in_o' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abc'::name LIKE '_b_' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abc'::name NOT LIKE '_b_' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'abc'::bytea LIKE '_b_'::bytea AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'abc'::bytea NOT LIKE '_b_'::bytea AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' LIKE 'h%' ESCAPE '#' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT LIKE 'h%' ESCAPE '#' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'indio' LIKE 'ind_o' ESCAPE '$' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'indio' NOT LIKE 'ind_o' ESCAPE '$' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'h%' LIKE 'h#%' ESCAPE '#' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'h%' NOT LIKE 'h#%' ESCAPE '#' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'h%wkeye' LIKE 'h#%' ESCAPE '#' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'h%wkeye' NOT LIKE 'h#%' ESCAPE '#' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'h%wkeye' LIKE 'h#%%' ESCAPE '#' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'h%wkeye' NOT LIKE 'h#%%' ESCAPE '#' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'h%awkeye' LIKE 'h#%a%k%e' ESCAPE '#' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'h%awkeye' NOT LIKE 'h#%a%k%e' ESCAPE '#' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'indio' LIKE '_ndio' ESCAPE '$' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'indio' NOT LIKE '_ndio' ESCAPE '$' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'i_dio' LIKE 'i$_d_o' ESCAPE '$' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'i_dio' NOT LIKE 'i$_d_o' ESCAPE '$' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'i_dio' LIKE 'i$_nd_o' ESCAPE '$' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'i_dio' NOT LIKE 'i$_nd_o' ESCAPE '$' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'i_dio' LIKE 'i$_d%o' ESCAPE '$' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'i_dio' NOT LIKE 'i$_d%o' ESCAPE '$' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'a_c'::bytea LIKE 'a$__'::bytea ESCAPE '$'::bytea AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'a_c'::bytea NOT LIKE 'a$__'::bytea ESCAPE '$'::bytea AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'maca' LIKE 'm%aca' ESCAPE '%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'maca' NOT LIKE 'm%aca' ESCAPE '%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'ma%a' LIKE 'm%a%%a' ESCAPE '%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'ma%a' NOT LIKE 'm%a%%a' ESCAPE '%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'bear' LIKE 'b_ear' ESCAPE '_' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'bear' NOT LIKE 'b_ear' ESCAPE '_' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'be_r' LIKE 'b_e__r' ESCAPE '_' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'be_r' NOT LIKE 'b_e__r' ESCAPE '_' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'be_r' LIKE '__e__r' ESCAPE '_' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'be_r' NOT LIKE '__e__r' ESCAPE '_' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' ILIKE 'h%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT ILIKE 'h%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' ILIKE 'H%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT ILIKE 'H%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' ILIKE 'H%Eye' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'hawkeye' NOT ILIKE 'H%Eye' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'Hawkeye' ILIKE 'h%' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'Hawkeye' NOT ILIKE 'h%' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'ABC'::name ILIKE '_b_' AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'ABC'::name NOT ILIKE '_b_' AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'foo' LIKE '_%' as t, 'f' LIKE '_%' as t, '' LIKE '_%' as f
+--Result--
+[(True, True, False)]
++--------------------+
+--Query--
+SELECT 'foo' LIKE '%_' as t, 'f' LIKE '%_' as t, '' LIKE '%_' as f
+--Result--
+[(True, True, False)]
++--------------------+
+--Query--
+SELECT 'foo' LIKE '__%' as t, 'foo' LIKE '___%' as t, 'foo' LIKE '____%' as f
+--Result--
+[(True, True, False)]
++--------------------+
+--Query--
+SELECT 'foo' LIKE '%__' as t, 'foo' LIKE '%___' as t, 'foo' LIKE '%____' as f
+--Result--
+[(True, True, False)]
++--------------------+
+--Query--
+SELECT 'jack' LIKE '%____%' AS t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT * FROM texttest WHERE a LIKE '%1%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM byteatest WHERE a LIKE '%1%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'unknown' || ' and unknown' AS "Concat unknown types"
+--Result--
+[('unknown and unknown',)]
++--------------------+
+--Query--
+SELECT text 'text' || ' and unknown' AS "Concat text to unknown type"
+--Result--
+[('text and unknown',)]
++--------------------+
+--Query--
+SELECT char(20) 'characters' || ' and text' AS "Concat char to unknown type"
+--Result--
+[('characters and text',)]
++--------------------+
+--Query--
+SELECT text 'text' || char(20) ' and characters' AS "Concat text to char"
+--Result--
+[('text and characters',)]
++--------------------+
+--Query--
+SELECT text 'text' || varchar ' and varchar' AS "Concat text to varchar"
+--Result--
+[('text and varchar',)]
++--------------------+
+--Query--
+SELECT substr(f1, -1, 5) from toasttest
+--Result--
+[('123',), ('123',), ('123',), ('123',)]
++--------------------+
+--Query--
+SELECT substr(f1, 99995) from toasttest
+--Result--
+[('567890',), ('567890',), ('567890',), ('567890',)]
++--------------------+
+--Query--
+SELECT substr(f1, 99995, 10) from toasttest
+--Result--
+[('567890',), ('567890',), ('567890',), ('567890',)]
++--------------------+
+--Query--
+TRUNCATE TABLE toasttest
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_relation_size(reltoastrelid) = 0 AS is_empty   FROM pg_class where relname = 'toasttest'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+TRUNCATE TABLE toasttest
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_relation_size(reltoastrelid) = 0 AS is_empty   FROM pg_class where relname = 'toasttest'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT substr(f1, -1, 5) from toasttest
+--Result--
+[(<memory at 0x13b577d00>,), (<memory at 0x13b577b80>,), (<memory at 0x13b577c40>,), (<memory at 0x13b764340>,)]
++--------------------+
+--Query--
+SELECT substr(f1, 99995) from toasttest
+--Result--
+[(<memory at 0x13b764400>,), (<memory at 0x13b7644c0>,), (<memory at 0x13b764580>,), (<memory at 0x13b764640>,)]
++--------------------+
+--Query--
+SELECT substr(f1, 99995, 10) from toasttest
+--Result--
+[(<memory at 0x13b764700>,), (<memory at 0x13b7647c0>,), (<memory at 0x13b764880>,), (<memory at 0x13b764940>,)]
++--------------------+
+--Query--
+SELECT length(c), c::text FROM toasttest
+--Result--
+[(1, 'x')]
++--------------------+
+--Query--
+SELECT c FROM toasttest
+--Result--
+[('x                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ',)]
++--------------------+
+--Query--
+SELECT length('abcdef') AS "length_6"
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT strpos('abcdef', 'cd') AS "pos_3"
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT strpos('abcdef', 'xy') AS "pos_0"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT strpos('abcdef', '') AS "pos_1"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT strpos('', 'xy') AS "pos_0"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT strpos('', '') AS "pos_1"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replace('abcdef', 'de', '45') AS "abc45f"
+--Result--
+[('abc45f',)]
++--------------------+
+--Query--
+SELECT replace('yabadabadoo', 'ba', '123') AS "ya123da123doo"
+--Result--
+[('ya123da123doo',)]
++--------------------+
+--Query--
+SELECT replace('yabadoo', 'bad', '') AS "yaoo"
+--Result--
+[('yaoo',)]
++--------------------+
+--Query--
+select split_part('','@',1) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('','@',-1) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','',1) AS "joeuser@mydatabase"
+--Result--
+[('joeuser@mydatabase',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','',2) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','',-1) AS "joeuser@mydatabase"
+--Result--
+[('joeuser@mydatabase',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','',-2) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@@',1) AS "joeuser@mydatabase"
+--Result--
+[('joeuser@mydatabase',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@@',2) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@',1) AS "joeuser"
+--Result--
+[('joeuser',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@',2) AS "mydatabase"
+--Result--
+[('mydatabase',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@',3) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('@joeuser@mydatabase@','@',2) AS "joeuser"
+--Result--
+[('joeuser',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@',-1) AS "mydatabase"
+--Result--
+[('mydatabase',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@',-2) AS "joeuser"
+--Result--
+[('joeuser',)]
++--------------------+
+--Query--
+select split_part('joeuser@mydatabase','@',-3) AS "empty string"
+--Result--
+[('',)]
++--------------------+
+--Query--
+select split_part('@joeuser@mydatabase@','@',-2) AS "mydatabase"
+--Result--
+[('mydatabase',)]
++--------------------+
+--Query--
+select to_hex(-1234) AS "fffffb2e"
+--Result--
+[('fffffb2e',)]
++--------------------+
+--Query--
+select to_hex(-1234::bigint) AS "fffffffffffffb2e"
+--Result--
+[('fffffffffffffb2e',)]
++--------------------+
+--Query--
+select to_hex(256*256*256 - 1) AS "ffffff"
+--Result--
+[('ffffff',)]
++--------------------+
+--Query--
+select to_hex(256::bigint*256::bigint*256::bigint*256::bigint - 1) AS "ffffffff"
+--Result--
+[('ffffffff',)]
++--------------------+
+--Query--
+SELECT sha224('')
+--Result--
+[(<memory at 0x13b764a00>,)]
++--------------------+
+--Query--
+SELECT sha224('The quick brown fox jumps over the lazy dog.')
+--Result--
+[(<memory at 0x13b764ac0>,)]
++--------------------+
+--Query--
+SELECT sha256('')
+--Result--
+[(<memory at 0x13b764b80>,)]
++--------------------+
+--Query--
+SELECT sha256('The quick brown fox jumps over the lazy dog.')
+--Result--
+[(<memory at 0x13b764c40>,)]
++--------------------+
+--Query--
+SELECT sha384('')
+--Result--
+[(<memory at 0x13b764d00>,)]
++--------------------+
+--Query--
+SELECT sha384('The quick brown fox jumps over the lazy dog.')
+--Result--
+[(<memory at 0x13b764dc0>,)]
++--------------------+
+--Query--
+SELECT sha512('')
+--Result--
+[(<memory at 0x13b764e80>,)]
++--------------------+
+--Query--
+SELECT sha512('The quick brown fox jumps over the lazy dog.')
+--Result--
+[(<memory at 0x13b764f40>,)]
++--------------------+
+--Query--
+SELECT encode('\x1234567890abcdef00', 'hex')
+--Result--
+[('1234567890abcdef00',)]
++--------------------+
+--Query--
+SELECT decode('1234567890abcdef00', 'hex')
+--Result--
+[(<memory at 0x13b765000>,)]
++--------------------+
+--Query--
+SELECT encode(('\x' || repeat('1234567890abcdef0001', 7))::bytea, 'base64')
+--Result--
+[('EjRWeJCrze8AARI0VniQq83vAAESNFZ4kKvN7wABEjRWeJCrze8AARI0VniQq83vAAESNFZ4kKvN\n7wABEjRWeJCrze8AAQ==',)]
++--------------------+
+--Query--
+SELECT decode(encode(('\x' || repeat('1234567890abcdef0001', 7))::bytea,                      'base64'), 'base64')
+--Result--
+[(<memory at 0x13b7650c0>,)]
++--------------------+
+--Query--
+SELECT encode('\x1234567890abcdef00', 'escape')
+--Result--
+[('\x124Vx\\220\\253\\315\\357\\000',)]
++--------------------+
+--Query--
+SELECT decode(encode('\x1234567890abcdef00', 'escape'), 'escape')
+--Result--
+[(<memory at 0x13b765180>,)]
++--------------------+
+--Query--
+SELECT get_bit('\x1234567890abcdef00'::bytea, 43)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT set_bit('\x1234567890abcdef00'::bytea, 43, 0)
+--Result--
+[(<memory at 0x13b765240>,)]
++--------------------+
+--Query--
+SELECT get_byte('\x1234567890abcdef00'::bytea, 3)
+--Result--
+[(120,)]
++--------------------+
+--Query--
+SELECT set_byte('\x1234567890abcdef00'::bytea, 7, 11)
+--Result--
+[(<memory at 0x13b765300>,)]
++--------------------+
+--Query--
+show escape_string_warning
+--Result--
+[('off',)]
++--------------------+
+--Query--
+show standard_conforming_strings
+--Result--
+[('off',)]
++--------------------+
+--Query--
+show escape_string_warning
+--Result--
+[('on',)]
++--------------------+
+--Query--
+show standard_conforming_strings
+--Result--
+[('on',)]
++--------------------+
+--Query--
+select 'a\bcd' as f1, 'a\b''cd' as f2, 'a\b''''cd' as f3, 'abcd\'   as f4, 'ab\''cd' as f5, '\\' as f6
+--Result--
+[('a\\bcd', "a\\b'cd", "a\\b''cd", 'abcd\\', "ab\\'cd", '\\\\')]
++--------------------+
+--Query--
+select 'a\\bcd' as f1, 'a\\b\'cd' as f2, 'a\\b\'''cd' as f3, 'abcd\\'   as f4, 'ab\\\'cd' as f5, '\\\\' as f6
+--Result--
+[('a\\bcd', "a\\b'cd", "a\\b''cd", 'abcd\\', "ab\\'cd", '\\\\')]
++--------------------+
+--Query--
+select 'a\bcd' as f1, 'a\b''cd' as f2, 'a\b''''cd' as f3, 'abcd\'   as f4, 'ab\''cd' as f5, '\\' as f6
+--Result--
+[('a\\bcd', "a\\b'cd", "a\\b''cd", 'abcd\\', "ab\\'cd", '\\\\')]
++--------------------+
+--Query--
+select 'a\\bcd' as f1, 'a\\b\'cd' as f2, 'a\\b\'''cd' as f3, 'abcd\\'   as f4, 'ab\\\'cd' as f5, '\\\\' as f6
+--Result--
+[('a\\bcd', "a\\b'cd", "a\\b''cd", 'abcd\\', "ab\\'cd", '\\\\')]
++--------------------+
+--Query--
+SELECT initcap('hi THOMAS')
+--Result--
+[('Hi Thomas',)]
++--------------------+
+--Query--
+SELECT lpad('hi', 5, 'xy')
+--Result--
+[('xyxhi',)]
++--------------------+
+--Query--
+SELECT lpad('hi', 5)
+--Result--
+[('   hi',)]
++--------------------+
+--Query--
+SELECT lpad('hi', -5, 'xy')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT lpad('hello', 2)
+--Result--
+[('he',)]
++--------------------+
+--Query--
+SELECT lpad('hi', 5, '')
+--Result--
+[('hi',)]
++--------------------+
+--Query--
+SELECT rpad('hi', 5, 'xy')
+--Result--
+[('hixyx',)]
++--------------------+
+--Query--
+SELECT rpad('hi', 5)
+--Result--
+[('hi   ',)]
++--------------------+
+--Query--
+SELECT rpad('hi', -5, 'xy')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT rpad('hello', 2)
+--Result--
+[('he',)]
++--------------------+
+--Query--
+SELECT rpad('hi', 5, '')
+--Result--
+[('hi',)]
++--------------------+
+--Query--
+SELECT ltrim('zzzytrim', 'xyz')
+--Result--
+[('trim',)]
++--------------------+
+--Query--
+SELECT translate('', '14', 'ax')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT translate('12345', '14', 'ax')
+--Result--
+[('a23x5',)]
++--------------------+
+--Query--
+SELECT translate('12345', '134', 'a')
+--Result--
+[('a25',)]
++--------------------+
+--Query--
+SELECT ascii('x')
+--Result--
+[(120,)]
++--------------------+
+--Query--
+SELECT ascii('')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT chr(65)
+--Result--
+[('A',)]
++--------------------+
+--Query--
+SELECT repeat('Pg', 4)
+--Result--
+[('PgPgPgPg',)]
++--------------------+
+--Query--
+SELECT repeat('Pg', -4)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT SUBSTRING('1234567890'::bytea FROM 3) "34567890"
+--Result--
+[(<memory at 0x13b7653c0>,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('1234567890'::bytea FROM 4 FOR 3) AS "456"
+--Result--
+[(<memory at 0x13b765480>,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('string'::bytea FROM 2 FOR 2147483646) AS "tring"
+--Result--
+[(<memory at 0x13b765540>,)]
++--------------------+
+--Query--
+SELECT SUBSTRING('string'::bytea FROM -10 FOR 2147483646) AS "string"
+--Result--
+[(<memory at 0x13b765600>,)]
++--------------------+
+--Query--
+SELECT trim(E'\\000'::bytea from E'\\000Tom\\000'::bytea)
+--Result--
+[(<memory at 0x13b7656c0>,)]
++--------------------+
+--Query--
+SELECT trim(leading E'\\000'::bytea from E'\\000Tom\\000'::bytea)
+--Result--
+[(<memory at 0x13b765780>,)]
++--------------------+
+--Query--
+SELECT trim(trailing E'\\000'::bytea from E'\\000Tom\\000'::bytea)
+--Result--
+[(<memory at 0x13b765840>,)]
++--------------------+
+--Query--
+SELECT btrim(E'\\000trim\\000'::bytea, E'\\000'::bytea)
+--Result--
+[(<memory at 0x13b765900>,)]
++--------------------+
+--Query--
+SELECT btrim(''::bytea, E'\\000'::bytea)
+--Result--
+[(<memory at 0x13b7659c0>,)]
++--------------------+
+--Query--
+SELECT btrim(E'\\000trim\\000'::bytea, ''::bytea)
+--Result--
+[(<memory at 0x13b765a80>,)]
++--------------------+
+--Query--
+SELECT encode(overlay(E'Th\\000omas'::bytea placing E'Th\\001omas'::bytea from 2),'escape')
+--Result--
+[('TTh\x01omas',)]
++--------------------+
+--Query--
+SELECT encode(overlay(E'Th\\000omas'::bytea placing E'\\002\\003'::bytea from 8),'escape')
+--Result--
+[('Th\\000omas\x02\x03',)]
++--------------------+
+--Query--
+SELECT encode(overlay(E'Th\\000omas'::bytea placing E'\\002\\003'::bytea from 5 for 3),'escape')
+--Result--
+[('Th\\000o\x02\x03',)]
++--------------------+
+--Query--
+SELECT bit_count('\x1234567890'::bytea)
+--Result--
+[(15,)]
++--------------------+
+--Query--
+SELECT unistr('\0064at\+0000610')
+--Result--
+[('data0',)]
++--------------------+
+--Query--
+SELECT unistr('d\u0061t\U000000610')
+--Result--
+[('data0',)]
++--------------------+
+--Query--
+SELECT unistr('a\\b')
+--Result--
+[('a\\b',)]
++--------------------+

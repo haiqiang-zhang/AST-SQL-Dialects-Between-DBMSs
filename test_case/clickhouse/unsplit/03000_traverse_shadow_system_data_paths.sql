@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS 03000_traverse_shadow_system_data_path_table;
-DROP TABLE IF EXISTS 03000_traverse_shadow_system_data_path_table;

@@ -89,12 +89,10 @@ PRAGMA auto_vacuum = 1;
 PRAGMA journal_mode = wal;
 PRAGMA auto_vacuum;
 PRAGMA page_size = 1024;
-/* 64 */
-    PRAGMA wal_checkpoint;
+PRAGMA wal_checkpoint;
 DELETE FROM t1 WHERE rowid<54;
 PRAGMA wal_checkpoint;
 PRAGMA cache_size=2000;
-/* 256 */;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
 PRAGMA wal_checkpoint;
@@ -181,7 +179,6 @@ PRAGMA cache_size = 10;
 PRAGMA page_size = 1024;
 PRAGMA wal_checkpoint;
 BEGIN;
--- 16;
 SELECT count(*) FROM t1;
 PRAGMA integrity_check;
 SELECT count(*) FROM t1;
@@ -189,8 +186,7 @@ PRAGMA integrity_check;
 PRAGMA wal_checkpoint;
 PRAGMA cache_size = 10;
 BEGIN;
--- 32
-      SELECT count(*) FROM t1;
+SELECT count(*) FROM t1;
 SELECT count(*) FROM t1;
 SELECT count(*) FROM t1;
 SELECT count(*) FROM t1;
@@ -321,11 +317,8 @@ PRAGMA synchronous = OFF;
 INSERT INTO t1 VALUES(0, 0);
 PRAGMA wal_checkpoint;
 INSERT INTO t1 VALUES(1, 2);
--- frames 1 and 2
-    INSERT INTO t1 VALUES(3, 4);
--- frames 3 and 4
-    INSERT INTO t1 VALUES(5, 6);
--- frames 5 and 6;
+INSERT INTO t1 VALUES(3, 4);
+INSERT INTO t1 VALUES(5, 6);
 SELECT * FROM t1;
 PRAGMA integrity_check;
 SELECT * FROM t1;

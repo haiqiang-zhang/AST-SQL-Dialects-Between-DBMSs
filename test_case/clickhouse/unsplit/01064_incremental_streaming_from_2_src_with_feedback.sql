@@ -2,8 +2,6 @@ SET joined_subquery_requires_alias = 0;
 SET max_threads = 1;
 SET max_bytes_before_external_sort = 0;
 SET max_bytes_before_external_group_by = 0;
--- that has sense only if data filling order has guarantees of chronological order
-
 DROP TABLE IF EXISTS target_table;
 DROP TABLE IF EXISTS logins;
 DROP TABLE IF EXISTS mv_logins2target;
@@ -68,8 +66,7 @@ SYSTEM STOP MERGES checkouts;
 SYSTEM STOP MERGES logins;
 INSERT INTO logins SELECT number as id,    '2000-01-01 08:00:00' from numbers(50000);
 INSERT INTO checkouts SELECT number as id, '2000-01-01 10:00:00' from numbers(50000);
--- by this time we should have 3 parts for target_table because of prev inserts
--- and we plan to make two more inserts. With index_granularity=128 and max id=1000
+
 -- we expect to read not more than:
 --      1000 rows read from numbers(1000) in the INSERT itself
 --      1000 rows in the `IN (SELECT id FROM table)` in the mat views
@@ -78,8 +75,7 @@ INSERT INTO checkouts SELECT number as id, '2000-01-01 10:00:00' from numbers(50
 set max_rows_to_read = 7120;
 INSERT INTO logins    SELECT number as id, '2000-01-01 11:00:00' from numbers(1000);
 INSERT INTO checkouts SELECT number as id, '2000-01-01 11:10:00' from numbers(1000);
--- and we plan to make two more inserts. With index_granularity=128 and max id=1
--- we expect to read not more than:
+
 --      1 mark per part * (5 + 2) parts * 128 granularity + 1 (numbers(1)) = 897 rows
 set max_rows_to_read = 897;
 INSERT INTO logins    SELECT number+2 as id, '2001-01-01 11:10:01' from numbers(1);

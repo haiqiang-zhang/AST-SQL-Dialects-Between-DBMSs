@@ -1,5 +1,4 @@
--- byteSize
---
+
 select '';
 select '# byteSize';
 set allow_experimental_bigint_types = 1;

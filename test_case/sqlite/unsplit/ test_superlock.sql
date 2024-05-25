@@ -17,7 +17,6 @@ INSERT INTO t1 VALUES(5, 6);
 PRAGMA wal_checkpoint;
 ATTACH 'test.db2' AS aux;
 PRAGMA aux.journal_mode = wal;
-INSERT INTO aux.t2 VALUES('a', 'b');
 PRAGMA schema_version = 450;
 DETACH aux;
 PRAGMA main.journal_mode = wal;

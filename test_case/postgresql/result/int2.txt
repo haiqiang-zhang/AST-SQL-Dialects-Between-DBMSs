@@ -1,0 +1,130 @@
+--Query--
+SELECT pg_input_is_valid('34', 'int2')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('asdf', 'int2')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('50000', 'int2')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('50000', 'int2')
+--Result--
+[('value "50000" is out of range for type smallint', None, None, '22003')]
++--------------------+
+--Query--
+SELECT pg_input_is_valid(' 1 3  5 ', 'int2vector')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('1 asdf', 'int2vector')
+--Result--
+[('invalid input syntax for type smallint: "asdf"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('50000', 'int2vector')
+--Result--
+[('value "50000" is out of range for type smallint', None, None, '22003')]
++--------------------+
+--Query--
+SELECT (-1::int2<<15)::text
+--Result--
+[('-32768',)]
++--------------------+
+--Query--
+SELECT ((-1::int2<<15)+1::int2)::text
+--Result--
+[('-32767',)]
++--------------------+
+--Query--
+SELECT (-32768)::int2 % (-1)::int2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT x, x::int2 AS int2_value FROM (VALUES (-2.5::float8),              (-1.5::float8),              (-0.5::float8),              (0.0::float8),              (0.5::float8),              (1.5::float8),              (2.5::float8)) t(x)
+--Result--
+[(-2.5, -2), (-1.5, -2), (-0.5, 0), (0.0, 0), (0.5, 0), (1.5, 2), (2.5, 2)]
++--------------------+
+--Query--
+SELECT x, x::int2 AS int2_value FROM (VALUES (-2.5::numeric),              (-1.5::numeric),              (-0.5::numeric),              (0.0::numeric),              (0.5::numeric),              (1.5::numeric),              (2.5::numeric)) t(x)
+--Result--
+[(-2.5, -3), (-1.5, -2), (-0.5, -1), (0.0, 0), (0.5, 1), (1.5, 2), (2.5, 3)]
++--------------------+
+--Query--
+SELECT int2 '0b100101'
+--Result--
+[(37,)]
++--------------------+
+--Query--
+SELECT int2 '0o273'
+--Result--
+[(187,)]
++--------------------+
+--Query--
+SELECT int2 '0x42F'
+--Result--
+[(1071,)]
++--------------------+
+--Query--
+SELECT int2 '0b111111111111111'
+--Result--
+[(32767,)]
++--------------------+
+--Query--
+SELECT int2 '0o77777'
+--Result--
+[(32767,)]
++--------------------+
+--Query--
+SELECT int2 '0x7FFF'
+--Result--
+[(32767,)]
++--------------------+
+--Query--
+SELECT int2 '-0b1000000000000000'
+--Result--
+[(-32768,)]
++--------------------+
+--Query--
+SELECT int2 '-0o100000'
+--Result--
+[(-32768,)]
++--------------------+
+--Query--
+SELECT int2 '-0x8000'
+--Result--
+[(-32768,)]
++--------------------+
+--Query--
+SELECT int2 '1_000'
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT int2 '1_2_3'
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT int2 '0xE_FF'
+--Result--
+[(3839,)]
++--------------------+
+--Query--
+SELECT int2 '0o2_73'
+--Result--
+[(187,)]
++--------------------+
+--Query--
+SELECT int2 '0b_10_0101'
+--Result--
+[(37,)]
++--------------------+

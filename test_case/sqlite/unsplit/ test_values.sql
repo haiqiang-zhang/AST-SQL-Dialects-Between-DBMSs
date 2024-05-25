@@ -271,15 +271,13 @@ CREATE TABLE t2(column1,column2);
 INSERT INTO t2 VALUES(11,22),(33,44);
 CREATE TABLE t3(d,e);
 INSERT INTO t3 VALUES(3,4);
--- output verify using PG 14.2
-  SELECT *
+SELECT *
     FROM t1 CROSS JOIN t2 FULL JOIN t3 ON a=d
    ORDER BY +d, +column1;
 SELECT *
     FROM t1 CROSS JOIN (VALUES(11,22),(33,44)) FULL JOIN t3 ON a=d
    ORDER BY +d, +column1;
--- output verified using PG 14.2
-  SELECT *
+SELECT *
     FROM t1 CROSS JOIN t2 FULL JOIN t3 ON a=d
    WHERE column1 IS NULL;
 SELECT *

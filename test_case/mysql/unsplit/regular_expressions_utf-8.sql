@@ -89,11 +89,11 @@ SELECT concat( regexp_like(g, g), 'x' ) FROM t2;
 DROP TABLE t2;
 DROP TABLE t1;
 SELECT regexp_instr( _latin1 x'61F662', _latin1 x'F6' );
-SELECT regexp_instr( _latin1 x'61F662', _utf8mb4'ÃÂÃÂ¶' );
+SELECT regexp_instr( _latin1 x'61F662', _utf8mb4'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶' );
 SELECT regexp_instr( concat('a', _utf8mb4 x'F09F8DA3'), _utf8mb4 x'F09F8DA3' );
-SELECT regexp_instr( _utf8mb4'aÃÂÃÂ¶b', _utf8mb4'ÃÂÃÂ¶' );
-SELECT regexp_instr( 'aÃÂÃÂ¶b', 'ÃÂÃÂ¶' );
-SELECT regexp_instr( 'ÃÂÃÂÃÂÃÂ ÃÂÃÂ¨ÃÂÃÂ§', /*k*/'^[^ÃÂÃÂ]' );
+SELECT regexp_instr( _utf8mb4'aÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶b', _utf8mb4'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶' );
+SELECT regexp_instr( 'aÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶b', 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶' );
+SELECT regexp_instr( 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ§', /*k*/'^[^ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ]' );
 PREPARE stmt1 FROM "select 'a' rlike ?";
 DEALLOCATE PREPARE stmt1;
 CREATE TABLE t1( a INT, subject CHAR(10) );
@@ -128,10 +128,10 @@ VALUES ( 'a', 'a', 'a' ), ( 'A', 'A', 'A' ), ( 'b', 'b', 'b' );
 SELECT c, c_ci REGEXP 'A', c_cs REGEXP 'A' FROM t1;
 DROP TABLE t1;
 SELECT regexp_like( _utf8mb4 'ss' COLLATE utf8mb4_german2_ci,
-                    _utf8mb4 'ÃÂÃÂ'  COLLATE utf8mb4_german2_ci );
-SELECT regexp_like( _utf8mb4 'ÃÂÃÂ'  COLLATE utf8mb4_german2_ci,
+                    _utf8mb4 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ'  COLLATE utf8mb4_german2_ci );
+SELECT regexp_like( _utf8mb4 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ'  COLLATE utf8mb4_german2_ci,
                     _utf8mb4 'ss' );
-SELECT regexp_like( _utf8mb4 'ÃÂÃÂ'  COLLATE utf8mb4_de_pb_0900_as_cs,
+SELECT regexp_like( _utf8mb4 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ'  COLLATE utf8mb4_de_pb_0900_as_cs,
                     _utf8mb4 'ss' );
 SELECT regexp_like( 'a\nb\nc', '^b$' );
 SELECT regexp_like( 'a\nb\nc', '(?m)^b$' );
@@ -238,20 +238,20 @@ CREATE TABLE t1 AS SELECT
   regexp_substr( repeat('a', 513), 'a' ) AS f;
 SELECT * FROM t1;
 DROP TABLE t1;
-SELECT regexp_instr( 'ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£a', 'ÃÂ°ÃÂÃÂÃÂ£', 2 );
-SELECT regexp_instr( 'ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£a', 'a', 3 );
-SELECT regexp_instr( 'ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£a', 'a', 4 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£b', '.', 1 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£b', '.', 2 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£b', '.', 3 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£b', '.', 4 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£b', '.', 1 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£b', '.', 2 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£b', '.', 3 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£b', '.', 4 );
-SELECT regexp_substr( 'aÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£b', '.', 5 );
-SELECT regexp_replace( 'ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£', '.', 'a', 2 );
-SELECT regexp_replace( 'ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£ÃÂ°ÃÂÃÂÃÂ£', '.', 'a', 2, 2 );
+SELECT regexp_instr( 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£a', 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£', 2 );
+SELECT regexp_instr( 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£a', 'a', 3 );
+SELECT regexp_instr( 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£a', 'a', 4 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 1 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 2 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 3 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 4 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 1 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 2 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 3 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 4 );
+SELECT regexp_substr( 'aÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£b', '.', 5 );
+SELECT regexp_replace( 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£', '.', 'a', 2 );
+SELECT regexp_replace( 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£', '.', 'a', 2, 2 );
 SELECT hex(regexp_replace( convert( 'abcd' using utf8mb4 ), 'c', ''));
 SELECT hex(regexp_replace( convert( 'abcd' using utf16 ), 'c', ''));
 SELECT hex(regexp_substr( convert( 'abcd' using utf8mb4 ), 'abc'));
@@ -308,10 +308,10 @@ DROP TABLE t1;
 CREATE TABLE t1 AS SELECT regexp_replace(x'01', x'01', x'02');
 DROP TABLE t1;
 SELECT 'a' regexp '\\N{latin small letter a}';
-select 'ÃÂÃÂ' regexp '\\N{Latin Capital Letter D with Small Letter Z with Caron}';
+select 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' regexp '\\N{Latin Capital Letter D with Small Letter Z with Caron}';
 SELECT 'a' regexp '\\p{alphabetic}';
 SELECT 'a' regexp '\\P{alphabetic}';
-SELECT 'ÃÂ°ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂ¾' regexp '\\p{Emoji}\\p{Emoji_modifier}';
+SELECT 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾' regexp '\\p{Emoji}\\p{Emoji_modifier}';
 SELECT 'a' regexp '\\p{Lowercase_letter}';
 SELECT 'a' regexp '\\p{Uppercase_letter}';
 SELECT 'A' regexp '\\p{Lowercase_letter}';

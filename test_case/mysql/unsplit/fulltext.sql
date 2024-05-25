@@ -133,21 +133,21 @@ create table t1 (a text, fulltext key (a));
 insert into t1 select "xxxx yyyy zzzz";
 drop table t1;
 CREATE TABLE t1 (t text character set utf8mb3 not null, fulltext(t));
-INSERT t1 VALUES ('Mit freundlichem GrÃÂ¼ÃÂ'), ('aus OsnabrÃÂ¼ck');
-INSERT t1 VALUES ("ÃÂ¼ÃÂÃÂ ÃÂÃÂ - ÃÂÃÂÃÂÃÂÃÂÃÂ"),("ÃÂ¯ÃÂÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂÃÂ!"),
-                ("ÃÂ®ÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂÃÂ!"),("ÃÂ ÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂ!");
-SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('ÃÂ¯ÃÂ°ÃÂ©ÃÂ¬ÃÂ«ÃÂ©');
-SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('ÃÂ°ÃÂÃÂ¡*' IN BOOLEAN MODE);
-SELECT * FROM t1 WHERE MATCH t AGAINST ('ÃÂÃÂÃÂ' IN BOOLEAN MODE);
-SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('OsnabrÃÂ¼ck');
-SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('OsnabrÃÂ¼ck');
+INSERT t1 VALUES ('Mit freundlichem GrÃÂÃÂÃÂÃÂ¼ÃÂÃÂÃÂÃÂ'), ('aus OsnabrÃÂÃÂÃÂÃÂ¼ck');
+INSERT t1 VALUES ("ÃÂÃÂÃÂÃÂ¼ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ - ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ"),("ÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ!"),
+                ("ÃÂÃÂÃÂÃÂ®ÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ!"),("ÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ!");
+SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('ÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂ©');
+SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡*' IN BOOLEAN MODE);
+SELECT * FROM t1 WHERE MATCH t AGAINST ('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' IN BOOLEAN MODE);
+SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('OsnabrÃÂÃÂÃÂÃÂ¼ck');
+SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('OsnabrÃÂÃÂÃÂÃÂ¼ck');
 SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('Osnabrueck');
 SELECT t, collation(t),FORMAT(MATCH t AGAINST ('Osnabruck'),6) FROM t1 WHERE MATCH t AGAINST ('Osnabruck');
-SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('OsnabrÃÂ¼ck');
+SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('OsnabrÃÂÃÂÃÂÃÂ¼ck');
 SELECT t, collation(t) FROM t1 WHERE MATCH t AGAINST ('Osnabrueck');
 DROP TABLE t1;
 CREATE TABLE t1 (s varchar(255), FULLTEXT (s)) DEFAULT CHARSET=utf8mb3;
-insert into t1 (s) values ('pÃÂ¤ra para para'),('para para para');
+insert into t1 (s) values ('pÃÂÃÂÃÂÃÂ¤ra para para'),('para para para');
 select * from t1 where match(s) against('para' in boolean mode);
 select * from t1 where match(s) against('par*' in boolean mode);
 DROP TABLE t1;
@@ -165,8 +165,8 @@ insert t1 values (1, "aaaa"), (2, "bbbb");
 insert t2 values (10, "aaaa"), (2, "cccc");
 drop table t1, t2;
 CREATE TABLE t1 (t VARCHAR(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci, FULLTEXT (t));
-INSERT INTO t1 VALUES('Mit freundlichem GrÃÂ¼ÃÂ aus OsnabrÃÂ¼ck');
-SELECT COUNT(*) FROM t1 WHERE MATCH(t) AGAINST ('"osnabrÃÂ¼ck"' IN BOOLEAN MODE);
+INSERT INTO t1 VALUES('Mit freundlichem GrÃÂÃÂÃÂÃÂ¼ÃÂÃÂÃÂÃÂ aus OsnabrÃÂÃÂÃÂÃÂ¼ck');
+SELECT COUNT(*) FROM t1 WHERE MATCH(t) AGAINST ('"osnabrÃÂÃÂÃÂÃÂ¼ck"' IN BOOLEAN MODE);
 DROP TABLE t1;
 CREATE TABLE t1 (a VARCHAR(30), FULLTEXT(a));
 INSERT INTO t1 VALUES('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');

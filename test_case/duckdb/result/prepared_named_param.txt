@@ -1,0 +1,15 @@
+--Query--
+prepare q123 as select $param, $other_name, $param
+--Result--
+[]
++--------------------+
+--Query--
+prepare q01 as select $1, ?, $2
+--Result--
+[]
++--------------------+
+--Query--
+execute q123(param := 5, other_name := 3)
+--Result--
+[(5, 3, 5)]
++--------------------+

@@ -1,6 +1,4 @@
--- Tag no-parallel: due to SYSTEM DROP MARK CACHE
 
---- Regression test for possible LOGICAL_ERROR with max_read_buffer_size=0
 --- (when marks was reading with max_read_buffer_size=0, hence DROP MARK CACHE is required)
 
 DROP TABLE IF EXISTS data_02411;

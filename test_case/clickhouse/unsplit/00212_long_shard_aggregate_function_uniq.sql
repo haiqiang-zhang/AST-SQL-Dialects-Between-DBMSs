@@ -1,5 +1,3 @@
--- uniqHLL12
-
 SELECT 'uniqHLL12';
 SELECT Y, uniqHLL12(X) FROM (SELECT number AS X, (3*X*X - 7*X + 11) % 37 AS Y FROM system.numbers LIMIT 15) GROUP BY Y ORDER BY Y;
 SELECT Y, uniqHLL12(X) FROM (SELECT number AS X, (3*X*X - 7*X + 11) % 37 AS Y FROM system.numbers LIMIT 3000) GROUP BY Y ORDER BY Y;

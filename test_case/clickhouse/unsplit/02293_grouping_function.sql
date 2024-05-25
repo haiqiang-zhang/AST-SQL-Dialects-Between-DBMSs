@@ -1,5 +1,4 @@
 set optimize_group_by_function_keys=0;
--- { echoOn }
 SELECT
     number,
     grouping(number, number % 2) AS gr

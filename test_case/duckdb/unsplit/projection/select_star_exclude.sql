@@ -1,11 +1,6 @@
 PRAGMA enable_verification;
 CREATE TABLE integers(i INTEGER, j INTEGER, k INTEGER);
 INSERT INTO integers VALUES (1, 2, 3);
-SELECT * EXCLUDE (i, j, k) FROM integers;
-SELECT integers.* EXCLUDE (i, j, k) FROM integers;
-SELECT * EXCLUDE (i, i) FROM integers;
-SELECT * EXCLUDE (blabla) FROM integers;
-SELECT integers.* EXCLUDE (blabla) FROM integers;
 SELECT * EXCLUDE i FROM integers;
 SELECT * EXCLUDE (i, j) FROM integers;
 SELECT * EXCLUDE (j) FROM integers;

@@ -1,0 +1,15 @@
+--Query--
+SELECT COUNT(*) FROM duckdb_views
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT database_name, schema_name, view_name, temporary FROM duckdb_views() WHERE NOT internal ORDER BY view_name
+--Result--
+[('duckdb', 'main', 'v1', False), ('duckdb', 'myschema', 'v2', False), ('temp', 'main', 'v2', True)]
++--------------------+
+--Query--
+SELECT database_name, schema_name, view_name, temporary FROM duckdb_views ORDER BY view_name
+--Result--
+[('duckdb', 'main', 'v1', False), ('duckdb', 'myschema', 'v2', False), ('temp', 'main', 'v2', True)]
++--------------------+

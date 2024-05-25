@@ -27,8 +27,7 @@ DROP table "t1";
 DROP table "t2";
 CREATE TABLE t1(a, b, c, PRIMARY KEY(b, c)) WITHOUT ROWID;
 CREATE TABLE t2(a, b, c);
--- Schema from Fossil 2018-08-16
-  CREATE TABLE forumpost(
+CREATE TABLE forumpost(
     fpid INTEGER PRIMARY KEY,
     froot INT,
     fprev INT,

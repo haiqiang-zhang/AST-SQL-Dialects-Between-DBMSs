@@ -12,8 +12,6 @@ CREATE TABLE codecs
     i String CODEC(NONE)
 ) ENGINE = MergeTree ORDER BY tuple();
 DROP TABLE codecs;
--- test that sanity check is not performed in ATTACH query
-
 DROP TABLE IF EXISTS codecs1;
 DROP TABLE IF EXISTS codecs2;
 DROP TABLE IF EXISTS codecs3;

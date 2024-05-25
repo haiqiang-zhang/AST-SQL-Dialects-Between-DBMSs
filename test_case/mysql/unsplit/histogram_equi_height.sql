@@ -3,7 +3,7 @@ INSERT INTO tbl_int VALUES (1), (2), (3), (4), (5), (6), (7), (8), (NULL), (NULL
 DROP TABLE tbl_int;
 CREATE TABLE tbl_varchar (col1 VARCHAR(255));
 INSERT INTO tbl_varchar VALUES
-  ("abcd"), ("ÃÂ°ÃÂÃÂÃÂ£"), ("ÃÂ°ÃÂÃÂÃÂº"), ("eeeeeeeeee"), ("ef"), ("AG"),
+  ("abcd"), ("ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£"), ("ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂº"), ("eeeeeeeeee"), ("ef"), ("AG"),
   ("a very long string that is longer than 42 characters"),
   ("lorem ipsum"), (NULL), (NULL);
 DROP TABLE tbl_varchar;

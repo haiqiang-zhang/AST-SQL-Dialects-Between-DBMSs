@@ -1,0 +1,495 @@
+--Query--
+select 'bbbbb' ~ '^([bc])\1*$' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'ccc' ~ '^([bc])\1*$' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'xxx' ~ '^([bc])\1*$' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'bbc' ~ '^([bc])\1*$' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'b' ~ '^([bc])\1*$' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'abc abc abc' ~ '^(\w+)( \1)+$' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'abc abd abc' ~ '^(\w+)( \1)+$' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'abc abc abd' ~ '^(\w+)( \1)+$' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'abc abc abc' ~ '^(.+)( \1)+$' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'abc abd abc' ~ '^(.+)( \1)+$' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'abc abc abd' ~ '^(.+)( \1)+$' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select substring('asd TO foo' from ' TO (([a-z0-9._]+|"([^"]+|"")+")+)')
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+select substring('a' from '((a))+')
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select substring('a' from '((a)+)')
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select regexp_match('abc', '')
+--Result--
+[([''],)]
++--------------------+
+--Query--
+select regexp_match('abc', 'bc')
+--Result--
+[(['bc'],)]
++--------------------+
+--Query--
+select regexp_match('abc', 'd') is null
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select regexp_match('abc', '(B)(c)', 'i')
+--Result--
+[(['b', 'c'],)]
++--------------------+
+--Query--
+select regexp_matches('ab', 'a(?=b)b*')
+--Result--
+[(['ab'],)]
++--------------------+
+--Query--
+select regexp_matches('a', 'a(?=b)b*')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('abc', 'a(?=b)b*(?=c)c*')
+--Result--
+[(['abc'],)]
++--------------------+
+--Query--
+select regexp_matches('ab', 'a(?=b)b*(?=c)c*')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('ab', 'a(?!b)b*')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('a', 'a(?!b)b*')
+--Result--
+[(['a'],)]
++--------------------+
+--Query--
+select regexp_matches('b', '(?=b)b')
+--Result--
+[(['b'],)]
++--------------------+
+--Query--
+select regexp_matches('a', '(?=b)b')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('abb', '(?<=a)b*')
+--Result--
+[(['bb'],)]
++--------------------+
+--Query--
+select regexp_matches('a', 'a(?<=a)b*')
+--Result--
+[(['a'],)]
++--------------------+
+--Query--
+select regexp_matches('abc', 'a(?<=a)b*(?<=b)c*')
+--Result--
+[(['abc'],)]
++--------------------+
+--Query--
+select regexp_matches('ab', 'a(?<=a)b*(?<=b)c*')
+--Result--
+[(['ab'],)]
++--------------------+
+--Query--
+select regexp_matches('ab', 'a*(?<!a)b*')
+--Result--
+[([''],)]
++--------------------+
+--Query--
+select regexp_matches('ab', 'a*(?<!a)b+')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('b', 'a*(?<!a)b+')
+--Result--
+[(['b'],)]
++--------------------+
+--Query--
+select regexp_matches('a', 'a(?<!a)b*')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('b', '(?<=b)b')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('foobar', '(?<=f)b+')
+--Result--
+[]
++--------------------+
+--Query--
+select regexp_matches('foobar', '(?<=foo)b+')
+--Result--
+[(['b'],)]
++--------------------+
+--Query--
+select regexp_matches('foobar', '(?<=oo)b+')
+--Result--
+[(['b'],)]
++--------------------+
+--Query--
+select 'xz' ~ 'x(?=[xy])'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'xy' ~ 'x(?=[xy])'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'xz' ~ 'x(?![xy])'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'xy' ~ 'x(?![xy])'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'x'  ~ 'x(?![xy])'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'xyy' ~ '(?<=[xy])yy+'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'zyy' ~ '(?<=[xy])yy+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'xyy' ~ '(?<![xy])yy+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'zyy' ~ '(?<![xy])yy+'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ 'abc'
+--Result--
+[('Seq Scan on pg_proc',), ("  Filter: (proname ~ 'abc'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^abc'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: ((proname >= 'abc'::text) AND (proname < 'abd'::text))",), ("  Filter: (proname ~ '^abc'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^abc$'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: (proname = 'abc'::text)",), ("  Filter: (proname ~ '^abc$'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^abcd*e'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: ((proname >= 'abc'::text) AND (proname < 'abd'::text))",), ("  Filter: (proname ~ '^abcd*e'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^abc+d'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: ((proname >= 'abc'::text) AND (proname < 'abd'::text))",), ("  Filter: (proname ~ '^abc+d'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^(abc)(def)'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: ((proname >= 'abcdef'::text) AND (proname < 'abcdeg'::text))",), ("  Filter: (proname ~ '^(abc)(def)'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^(abc)$'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: (proname = 'abc'::text)",), ("  Filter: (proname ~ '^(abc)$'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^(abc)?d'
+--Result--
+[('Seq Scan on pg_proc',), ("  Filter: (proname ~ '^(abc)?d'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from pg_proc where proname ~ '^abcd(x|(?=\w\w)q)'
+--Result--
+[('Index Scan using pg_proc_proname_args_nsp_index on pg_proc',), ("  Index Cond: ((proname >= 'abcd'::text) AND (proname < 'abce'::text))",), ("  Filter: (proname ~ '^abcd(x|(?=\\w\\w)q)'::text)",)]
++--------------------+
+--Query--
+select 'a' ~ '($|^)*'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'a' ~ '(^)+^'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'a' ~ '$($$)+'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'a' ~ '($^)+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'a' ~ '(^$)*'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'aa bb cc' ~ '(^(?!aa))+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'aa x' ~ '(^(?!aa)(?!bb)(?!cc))+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'bb x' ~ '(^(?!aa)(?!bb)(?!cc))+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'cc x' ~ '(^(?!aa)(?!bb)(?!cc))+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'dd x' ~ '(^(?!aa)(?!bb)(?!cc))+'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'a' ~ '((((((a)*)*)*)*)*)*'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'a' ~ '((((((a+|)+|)+|)+|)+|)+|)'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'x' ~ 'abcd(\m)+xyz'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'a' ~ '^abcd*(((((^(a c(e?d)a+|)+|)+|)+|)+|a)+|)'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'x' ~ 'a^(^)bcd*xy(((((($a+|)+|)+|)+$|)+|)+|)^$'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'x' ~ 'xyz(\Y\Y)+'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'x' ~ 'x|(?:\M)+'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'Programmer' ~ '(\w).*?\1' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select regexp_matches('Programmer', '(\w)(.*?\1)', 'g')
+--Result--
+[(['r', 'ogr'],), (['m', 'm'],)]
++--------------------+
+--Query--
+select regexp_matches('foo/bar/baz',                       '^([^/]+?)(?:/([^/]+?))(?:/([^/]+?))?$', '')
+--Result--
+[(['foo', 'bar', 'baz'],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*)(.*)(f*)$')
+--Result--
+[(['ll', 'mmmfff', ''],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*){1,1}(.*)(f*)$')
+--Result--
+[(['ll', 'mmmfff', ''],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*){1,1}?(.*)(f*)$')
+--Result--
+[(['', 'llmmmfff', ''],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*){1,1}?(.*){1,1}?(f*)$')
+--Result--
+[(['', 'llmmm', 'fff'],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*?)(.*)(f*)$')
+--Result--
+[(['', 'llmmmfff', ''],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*?){1,1}(.*)(f*)$')
+--Result--
+[(['ll', 'mmmfff', ''],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*?){1,1}?(.*)(f*)$')
+--Result--
+[(['', 'llmmmfff', ''],)]
++--------------------+
+--Query--
+select regexp_matches('llmmmfff', '^(l*?){1,1}?(.*){1,1}?(f*)$')
+--Result--
+[(['', 'llmmm', 'fff'],)]
++--------------------+
+--Query--
+select 'a' ~ '$()|^\1'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'a' ~ '.. ()|\1'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'a' ~ '()*\1'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'a' ~ '()+\1'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'xxx' ~ '(.){0}(\1)' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'xxx' ~ '((.)){0}(\2)' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'xyz' ~ '((.)){0}(\2){0}' as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'abcdef' ~ '^(.)\1|\1.' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'abadef' ~ '^((.)\2|..)\2' as f
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select regexp_match('xy', '.|...')
+--Result--
+[(['x'],)]
++--------------------+
+--Query--
+select regexp_match('xyz', '.|...')
+--Result--
+[(['xyz'],)]
++--------------------+
+--Query--
+select regexp_match('xy', '.*')
+--Result--
+[(['xy'],)]
++--------------------+
+--Query--
+select regexp_match('fooba', '(?:..)*')
+--Result--
+[(['foob'],)]
++--------------------+
+--Query--
+select regexp_match('xyz', repeat('.', 260))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select regexp_match('foo', '(?:.|){99}')
+--Result--
+[(['foo'],)]
++--------------------+

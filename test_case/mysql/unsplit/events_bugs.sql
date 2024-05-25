@@ -5,9 +5,6 @@ create database events_test;
 select * from performance_schema.global_variables where variable_name like 'event_scheduler';
 CREATE EVENT lower_case ON SCHEDULE EVERY 1 MINUTE DO SELECT 1;
 DROP EVENT Lower_case;
-CREATE EVENT ÃÂ¤ÃÂ®ÃÂ«ÃÂ¥ÃÂ­_ÃÂ°ÃÂ¥ÃÂ£ÃÂ¨ÃÂ±ÃÂ²ÃÂºÃÂ°_1251 ON SCHEDULE EVERY 1 YEAR DO SELECT 100;
-CREATE EVENT ÃÂÃÂ®ÃÂÃÂ¥ÃÂ_ÃÂ°ÃÂ¥ÃÂ£ÃÂ¨ÃÂ±ÃÂ²ÃÂºÃÂ°_1251 ON SCHEDULE EVERY 2 YEAR DO SELECT 200;
-DROP EVENT ÃÂÃÂ®ÃÂÃÂ¥ÃÂ_ÃÂ°ÃÂ¥ÃÂ£ÃÂ¨ÃÂ±ÃÂ²ÃÂºÃÂ°_1251;
 create event e_55 on schedule at 20000101000000 do drop table t;
 select get_lock('test_bug16407', 60);
 select count(*) > 0 from information_schema.processlist
@@ -234,8 +231,8 @@ CREATE EVENT e1 ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 DAY DO INSERT INTO
 SELECT SLEEP(3);
 DROP TABLE t1;
 CREATE EVENT cafe ON SCHEDULE EVERY 2 YEAR DO SELECT 1;
-CREATE EVENT cafÃÂÃÂ© ON SCHEDULE EVERY 2 YEAR DO SELECT 1;
-DROP EVENT CaFÃÂÃÂ©;
+CREATE EVENT cafÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ© ON SCHEDULE EVERY 2 YEAR DO SELECT 1;
+DROP EVENT CaFÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ©;
 CREATE EVENT my_event
     ON SCHEDULE EVERY 2 SECOND
       STARTS '2019-08-01 01:20:30'

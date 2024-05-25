@@ -1,11 +1,8 @@
 PRAGMA enable_verification;
-CREATE TABLE varchars(v VARCHAR);;
+CREATE TABLE varchars(v VARCHAR);
 INSERT INTO varchars VALUES ('Hello'), ('World');
-SELECT x.lower() FROM varchars;
-SELECT main.lower() FROM varchars AS t(main);
-SELECT v.lowe() FROM varchars;
 DELETE FROM varchars;
-INSERT INTO varchars VALUES ('Hello World');;
+INSERT INTO varchars VALUES ('Hello World');
 PREPARE v1 AS SELECT ?.split(' ')[1].lower();
 SELECT v.lower() FROM varchars;
 SELECT (v).lower() FROM varchars;

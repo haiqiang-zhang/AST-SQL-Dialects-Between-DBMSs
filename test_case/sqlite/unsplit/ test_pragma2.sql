@@ -34,8 +34,7 @@ PRAGMA aux1.cache_size=50;
 BEGIN;
 PRAGMA lock_status;
 PRAGMA cache_spill=ON;
--- Applies to all databases
-  BEGIN;
+BEGIN;
 PRAGMA lock_status;
 PRAGMA page_size=16384;
 CREATE TABLE t1(x);

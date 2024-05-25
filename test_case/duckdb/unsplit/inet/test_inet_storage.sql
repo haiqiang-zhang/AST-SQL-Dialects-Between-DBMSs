@@ -1,5 +1,5 @@
 PRAGMA enable_verification;
-CREATE TABLE tbl(id INTEGER, i INET);;
+CREATE TABLE tbl(id INTEGER, i INET);
 CREATE VIEW iview AS SELECT INET '127.0.0000.1';
 INSERT INTO tbl VALUES (1, '127.0.0.1'), (2, NULL), (3, '255.255.255.255/31'), (4, '0.0.0.0/0');
 DESCRIBE tbl;

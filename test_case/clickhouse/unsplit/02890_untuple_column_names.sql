@@ -1,5 +1,4 @@
--- generate the resulting column name.
--- Check all combinations of tuple element alias and untuple() alias. Also to avoid that we generate the same
+
 -- result column names and confuse query analysis (see #26179), test also two untuple() calls in one SElECT
 -- with the same types and aliases.
 

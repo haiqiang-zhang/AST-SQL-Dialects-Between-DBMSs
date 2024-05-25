@@ -515,7 +515,6 @@ CREATE TABLE t2 (fk1 INT, fk2 INT, fk3 INT,
                  CONSTRAINT a FOREIGN KEY (fk1) REFERENCES t1 (pk),
                  CONSTRAINT t2_ibfk_1 FOREIGN KEY (fk2) REFERENCES t1 (pk));
 ALTER TABLE t2 ADD FOREIGN KEY (fk3) REFERENCES t1 (pk);
-CREATE SCHEMA mysqltest;
 SELECT * FROM information_schema.referential_constraints WHERE constraint_schema='test';
 SELECT * FROM information_schema.referential_constraints WHERE constraint_schema='test';
 SELECT * FROM information_schema.referential_constraints WHERE constraint_schema='mysqltest';

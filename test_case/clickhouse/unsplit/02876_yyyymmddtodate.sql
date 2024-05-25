@@ -40,7 +40,6 @@ SELECT YYYYMMDDToDate(True);
 SELECT YYYYMMDDToDate(False);
 SELECT YYYYMMDDToDate(NULL);
 SELECT YYYYMMDDToDate(yyyymmdd) FROM (SELECT 19840121 AS yyyymmdd UNION ALL SELECT 20230911 AS yyyymmdd) ORDER BY yyyymmdd;
------------------------------------------------------------
 SELECT '--- YYYYMMDDToDate32';
 SELECT 'Invalid input types are rejected';
 SELECT 'Result type is Date32';

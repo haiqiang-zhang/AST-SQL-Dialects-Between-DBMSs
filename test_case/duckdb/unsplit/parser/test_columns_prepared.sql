@@ -9,8 +9,6 @@ prepare v1 as
 select
 	COLUMNS(?)
 from my_table;
-EXECUTE v1(NULL::VARCHAR);
-EXECUTE v1(42);
 EXECUTE v1('col.*1');
 EXECUTE v1('col.*2');
 EXECUTE v1('col.*3');

@@ -31,9 +31,7 @@ SELECT name FROM main.sqlite_master WHERE type='table';
 SELECT * FROM main.t2;
 SELECT * FROM t2;
 DROP TABLE t2;
--- should drop TEMP
-    SELECT * FROM t2;
--- data should be from MAIN;
+SELECT * FROM t2;
 SELECT * FROM t2;
 DROP TABLE t2;
 CREATE TEMP TABLE t2(x unique,y);
@@ -47,9 +45,7 @@ SELECT name FROM sqlite_master WHERE type='table';
 SELECT * FROM t2;
 SELECT * FROM t2;
 DROP TABLE t2;
--- drops TEMP.T2
-    SELECT * FROM t2;
--- uses MAIN.T2;
+SELECT * FROM t2;
 SELECT * FROM t2;
 SELECT * FROM t2;
 CREATE TEMP TABLE mask(a,b,c);

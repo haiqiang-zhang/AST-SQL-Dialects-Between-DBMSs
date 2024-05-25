@@ -1,0 +1,130 @@
+--Query--
+select * from inserttest
+--Result--
+[(None, 3, 'testing'), (None, 5, 'testing'), (None, 5, 'test'), (None, 7, 'testing')]
++--------------------+
+--Query--
+select * from inserttest
+--Result--
+[(None, 3, 'testing'), (None, 5, 'testing'), (None, 5, 'test'), (None, 7, 'testing')]
++--------------------+
+--Query--
+select * from inserttest
+--Result--
+[(None, 3, 'testing'), (None, 5, 'testing'), (None, 5, 'test'), (None, 7, 'testing'), (10, 20, '40'), (-1, 2, 'testing'), (2, 3, 'values are fun!')]
++--------------------+
+--Query--
+select col1, col2, char_length(col3) from inserttest
+--Result--
+[(None, 3, 7), (None, 5, 7), (None, 5, 4), (None, 7, 7), (10, 20, 2), (-1, 2, 7), (2, 3, 15), (30, 50, 10000)]
++--------------------+
+--Query--
+SELECT pg_size_pretty(pg_relation_size('large_tuple_test'::regclass, 'main'))
+--Result--
+[('8192 bytes',)]
++--------------------+
+--Query--
+select * from inserttest
+--Result--
+[(None, [1, 2], None, None), (None, [3, 4], None, None), (None, [5, 6], None, None), (None, [7, 8], None, None), (None, None, '(1,{foo})', None), (None, None, '(1,{foo})', None), (None, None, '(2,{bar})', None), (None, None, '(3,"{baz,quux}")', None), (None, None, '(,"{foo,bar}")', None), (None, None, '(,"{foo,bar}")', None), (None, None, '(,"{baz,quux}")', None), (None, None, '(,"{bear,beer}")', None), (None, None, None, '{"(,\\"{foo,bar}\\")"}'), (None, None, None, '{"(,\\"{foo,bar}\\")"}'), (None, None, None, '{"(,\\"{baz,quux}\\")"}'), (None, None, None, '{"(,\\"{bear,beer}\\")"}')]
++--------------------+
+--Query--
+select * from inserttesta
+--Result--
+[(None, [1, 2]), (None, [3, 4]), (None, [5, 6]), (None, [7, 8])]
++--------------------+
+--Query--
+select * from inserttestb
+--Result--
+[('(1,{foo})', None), ('(1,{foo})', None), ('(2,{bar})', None), ('(3,"{baz,quux}")', None), ('(,"{foo,bar}")', None), ('(,"{foo,bar}")', None), ('(,"{baz,quux}")', None), ('(,"{bear,beer}")', None), ('(1,{x})', '{"(,\\"{foo,bar}\\")"}'), ('(1,{x})', '{"(,\\"{foo,bar}\\")"}'), ('(2,{y})', '{"(,\\"{baz,quux}\\")"}'), ('(1,{x})', '{"(,\\"{bear,beer}\\")"}')]
++--------------------+
+--Query--
+select tableoid::regclass, * from list_parted
+--Result--
+[('part_cc_dd', 'cC', 1), ('part_ee_ff1', 'ff', 1), ('part_ee_ff2', 'ff', 11), ('part_xx_yy_p1', 'xx', 1), ('part_xx_yy_defpart', 'yy', 2), ('part_null', None, 0), ('part_default_p1', 'cd', 25), ('part_default_p1', 'ab', 21), ('part_default_p2', 'de', 35)]
++--------------------+
+--Query--
+select tableoid::regclass, * from range_parted
+--Result--
+[('part1', 'a', 1), ('part1', 'a', 1), ('part2', 'a', 10), ('part3', 'b', 1), ('part4', 'b', 10), ('part4', 'b', 10), ('part_def', 'c', 10), ('part_def', None, None), ('part_def', 'a', None), ('part_def', None, 19), ('part_def', 'b', 20)]
++--------------------+
+--Query--
+select tableoid::regclass, * from list_parted
+--Result--
+[('part_aa_bb', 'aA', None), ('part_cc_dd', 'cC', 1), ('part_ee_ff1', 'ff', 1), ('part_ee_ff1', 'EE', 1), ('part_ee_ff2', 'ff', 11), ('part_ee_ff2', 'EE', 10), ('part_xx_yy_p1', 'xx', 1), ('part_xx_yy_defpart', 'yy', 2), ('part_null', None, 0), ('part_null', None, 1), ('part_default_p1', 'cd', 25), ('part_default_p1', 'ab', 21), ('part_default_p2', 'de', 35)]
++--------------------+
+--Query--
+truncate list_parted
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass::text, a, min(b) as min_b, max(b) as max_b from list_parted group by 1, 2 order by 1
+--Result--
+[('part_aa_bb', 'aa', None, None), ('part_cc_dd', 'cc', None, None), ('part_ee_ff1', 'Ff', 1, 9), ('part_ee_ff2', 'Ff', 10, 19), ('part_ee_ff3_1', 'Ff', 20, 24), ('part_ee_ff3_2', 'Ff', 25, 29), ('part_gg2_1', 'gg', 1, 4), ('part_gg2_2', 'gg', 5, 9), ('part_null', None, 1, 1)]
++--------------------+
+--Query--
+select tableoid::regclass, a from list_parted
+--Result--
+[('part_default', None), ('part_default', 1), ('part_default', -1)]
++--------------------+
+--Query--
+select attrelid::regclass, attname, attnum from pg_attribute where attname = 'a'  and (attrelid = 'mlparted'::regclass    or attrelid = 'mlparted1'::regclass    or attrelid = 'mlparted11'::regclass) order by attrelid::regclass::text
+--Result--
+[('mlparted', 'a', 1), ('mlparted1', 'a', 2), ('mlparted11', 'a', 4)]
++--------------------+
+--Query--
+select tableoid::regclass, * from mlparted
+--Result--
+[('mlparted11', 1, 2)]
++--------------------+
+--Query--
+truncate mlparted
+--Result--
+[]
++--------------------+
+--Query--
+with ins (a, b, c) as   (insert into mlparted (b, a) select s.a, 1 from generate_series(2, 39) s(a) returning tableoid::regclass, *)   select a, b, min(c), max(c) from ins group by a, b order by 1
+--Result--
+[('mlparted11', 1, 2, 4), ('mlparted12', 1, 5, 9), ('mlparted2', 1, 10, 19), ('mlparted3', 1, 20, 29), ('mlparted4', 1, 30, 39)]
++--------------------+
+--Query--
+select tableoid::regclass, * from mlparted_def
+--Result--
+[('mlparted_def1', 40, 100, None), ('mlparted_def1', 42, 100, None), ('mlparted_def2', 54, 50, None), ('mlparted_defd', 70, 100, None)]
++--------------------+
+--Query--
+truncate mlparted
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass, * from mlparted order by a, b, c, d
+--Result--
+[('mlparted11', 1, 2, 'a', 1), ('mlparted5_a', 1, 40, 'a', 1), ('mlparted5_b', 1, 45, 'b', 1)]
++--------------------+
+--Query--
+truncate mlparted
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass, * from mlparted order by a, b, c, d
+--Result--
+[('mlparted11', 1, 2, 'a', 1), ('mlparted5_a', 1, 40, 'a', 1), ('mlparted5_b', 1, 45, 'b', 1)]
++--------------------+
+--Query--
+select tableoid::regclass::text, * from mcrparted order by 1
+--Result--
+[('mcrparted0', 0, 1, 1), ('mcrparted0', 0, 1, 1), ('mcrparted1', 9, 1000, 1), ('mcrparted1', 9, 1000, 1), ('mcrparted1', 10, 5, -1), ('mcrparted1', 10, 5, -1), ('mcrparted1', 2, 1, 0), ('mcrparted1', 2, 1, 0), ('mcrparted2', 10, 6, 1000), ('mcrparted2', 10, 6, 1000), ('mcrparted2', 10, 1000, 1000), ('mcrparted2', 10, 1000, 1000), ('mcrparted5', 30, 21, 20), ('mcrparted5', 30, 21, 20)]
++--------------------+
+--Query--
+with result as (insert into brtrigpartcon values (1, 'hi there') returning 1)   insert into inserttest3 (f3) select * from result
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass, * from mcrparted order by a, b
+--Result--
+[('mcrparted1_lt_b', 'aaa', 0), ('mcrparted2_b', 'b', 0), ('mcrparted2_b', 'bz', 10), ('mcrparted3_c_to_common', 'c', -10), ('mcrparted3_c_to_common', 'comm', -10), ('mcrparted4_common_lt_0', 'common', -10), ('mcrparted5_common_0_to_10', 'common', 0), ('mcrparted6_common_ge_10', 'common', 10), ('mcrparted7_gt_common_lt_d', 'commons', 0), ('mcrparted8_ge_d', 'd', -10), ('mcrparted8_ge_d', 'e', 0)]
++--------------------+

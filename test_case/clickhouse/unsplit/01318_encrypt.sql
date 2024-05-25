@@ -1,5 +1,4 @@
------------------------------------------------------------------------------------------
--- Validate against predefined ciphertext,plaintext,key and IV for MySQL compatibility mode
+
 -----------------------------------------------------------------------------------------
 CREATE TABLE encryption_test
 (

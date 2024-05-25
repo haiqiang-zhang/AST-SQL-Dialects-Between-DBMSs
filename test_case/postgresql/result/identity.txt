@@ -1,0 +1,190 @@
+--Query--
+SELECT attrelid, attname, attidentity FROM pg_attribute WHERE attidentity NOT IN ('', 'a', 'd')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name, column_name, column_default, is_nullable, is_identity, identity_generation, identity_start, identity_increment, identity_maximum, identity_minimum, identity_cycle FROM information_schema.columns WHERE table_name LIKE 'itest_' ORDER BY 1, 2
+--Result--
+[('itest1', 'a', None, 'NO', 'YES', 'BY DEFAULT', '1', '1', '2147483647', '1', 'NO'), ('itest1', 'b', None, 'YES', 'NO', None, None, None, None, None, 'NO'), ('itest2', 'a', None, 'NO', 'YES', 'ALWAYS', '1', '1', '9223372036854775807', '1', 'NO'), ('itest2', 'b', None, 'YES', 'NO', None, None, None, None, None, 'NO'), ('itest3', 'a', None, 'NO', 'YES', 'BY DEFAULT', '7', '5', '32767', '1', 'NO'), ('itest3', 'b', None, 'YES', 'NO', None, None, None, None, None, 'NO')]
++--------------------+
+--Query--
+SELECT sequence_name FROM information_schema.sequences WHERE sequence_name LIKE 'itest%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_serial_sequence('itest1', 'a')
+--Result--
+[('public.itest1_a_seq',)]
++--------------------+
+--Query--
+SELECT * FROM itest1
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM itest2
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM itest3
+--Result--
+[(7, None), (12, None)]
++--------------------+
+--Query--
+SELECT * FROM itest4
+--Result--
+[(1, ''), (2, '')]
++--------------------+
+--Query--
+SELECT * FROM itest5
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (-1, 'aa'), (-2, 'bb'), (-3, 'cc'), (4, 'dd'), (-4, 'ee'), (-5, 'ff'), (5, 'gg'), (6, 'hh'), (7, 'ii'), (8, 'aaa'), (9, 'bbb'), (10, 'ccc'), (11, 'ddd'), (12, 'eee'), (13, 'fff'), (14, 'ggg'), (15, 'hhh'), (16, 'iii')]
++--------------------+
+--Query--
+SELECT * FROM itest3
+--Result--
+[(7, None), (12, None), (17, 'a'), (22, 'b'), (27, 'c')]
++--------------------+
+--Query--
+SELECT * FROM itest1
+--Result--
+[(1, None), (2, None), (10, 'xyz'), (20, 'xyz'), (3, 'xyz')]
++--------------------+
+--Query--
+SELECT * FROM itest2
+--Result--
+[(1, None), (2, None), (20, 'xyz'), (3, 'xyz')]
++--------------------+
+--Query--
+SELECT * FROM itest1
+--Result--
+[(10, 'xyz'), (20, 'xyz'), (3, 'xyz'), (101, None), (4, None)]
++--------------------+
+--Query--
+SELECT * FROM itest2
+--Result--
+[(1, None), (20, 'xyz'), (3, 'xyz'), (4, None)]
++--------------------+
+--Query--
+SELECT * FROM itest4
+--Result--
+[(1, ''), (2, ''), (None, '')]
++--------------------+
+--Query--
+SELECT * FROM itestv10
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM itestv11
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM itestv10
+--Result--
+[(1, None), (2, None), (10, 'xyz'), (3, 'xyz')]
++--------------------+
+--Query--
+SELECT * FROM itestv11
+--Result--
+[(1, None), (2, None), (11, 'xyz')]
++--------------------+
+--Query--
+SELECT * FROM itest13
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3)]
++--------------------+
+--Query--
+SELECT seqtypid::regtype FROM pg_sequence WHERE seqrelid = 'itest3_a_seq'::regclass
+--Result--
+[('integer',)]
++--------------------+
+--Query--
+SELECT * FROM itest6
+--Result--
+[(1, None), (100, None), (102, None)]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_identity, identity_generation FROM information_schema.columns WHERE table_name = 'itest6' ORDER BY 1, 2
+--Result--
+[('itest6', 'a', 'YES', 'BY DEFAULT'), ('itest6', 'b', 'NO', None)]
++--------------------+
+--Query--
+SELECT * FROM itest7
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM itest7c
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_nullable, is_identity, identity_generation FROM information_schema.columns WHERE table_name LIKE 'itest7%' ORDER BY 1, 2
+--Result--
+[('itest7', 'a', 'NO', 'YES', 'ALWAYS'), ('itest7a', 'a', 'NO', 'NO', None), ('itest7a', 'b', 'YES', 'NO', None), ('itest7b', 'a', 'YES', 'NO', None), ('itest7c', 'a', 'NO', 'YES', 'ALWAYS'), ('itest7d', 'a', 'NO', 'YES', 'ALWAYS'), ('itest7e', 'a', 'NO', 'NO', None)]
++--------------------+
+--Query--
+SELECT * FROM itest8
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+TABLE itest8
+--Result--
+[(0, 1, 1, 1, None), (1, 2, 11, 2, None)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, f1, f2, f3 FROM pitest1
+--Result--
+[('pitest1_p1', datetime.date(2016, 7, 2), 'from pitest1', 1), ('pitest1_p2', datetime.date(2016, 8, 2), 'before attaching', 100), ('pitest1_p2', datetime.date(2016, 8, 4), 'from pitest1', 2)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, f1, f2, f3 FROM pitest3
+--Result--
+[('pitest3_p1', datetime.date(2016, 7, 2), 'from pitest3', 1), ('pitest3_p1', datetime.date(2016, 7, 3), 'from pitest3_p1', 2), ('pitest3_p1', datetime.date(2016, 7, 4), 'from pitest3', 3), ('pitest3_p1', datetime.date(2016, 7, 5), 'from pitest3_p1', 3)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, f1, f2, f3 FROM pitest3
+--Result--
+[('pitest3_p1', datetime.date(2016, 7, 2), 'from pitest3', 1), ('pitest3_p1', datetime.date(2016, 7, 3), 'from pitest3_p1', 2), ('pitest3_p1', datetime.date(2016, 7, 4), 'from pitest3', 3), ('pitest3_p1', datetime.date(2016, 7, 5), 'from pitest3_p1', 3), ('pitest3_p1', datetime.date(2016, 7, 6), 'from pitest3', 5), ('pitest3_p1', datetime.date(2016, 7, 7), 'from pitest3_p1', 6)]
++--------------------+
+--Query--
+MERGE INTO itest15 t USING (SELECT 20 AS s_a, 'inserted by merge' AS s_b) s ON t.a = s.s_a WHEN NOT MATCHED THEN 	INSERT (a, b) OVERRIDING USER VALUE VALUES (s.s_a, s.s_b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO itest15 t USING (SELECT 30 AS s_a, 'inserted by merge' AS s_b) s ON t.a = s.s_a WHEN NOT MATCHED THEN 	INSERT (a, b) OVERRIDING SYSTEM VALUE VALUES (s.s_a, s.s_b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO itest16 t USING (SELECT 10 AS s_a, 'inserted by merge' AS s_b) s ON t.a = s.s_a WHEN NOT MATCHED THEN 	INSERT (a, b) VALUES (s.s_a, s.s_b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO itest16 t USING (SELECT 20 AS s_a, 'inserted by merge' AS s_b) s ON t.a = s.s_a WHEN NOT MATCHED THEN 	INSERT (a, b) OVERRIDING USER VALUE VALUES (s.s_a, s.s_b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO itest16 t USING (SELECT 30 AS s_a, 'inserted by merge' AS s_b) s ON t.a = s.s_a WHEN NOT MATCHED THEN 	INSERT (a, b) OVERRIDING SYSTEM VALUE VALUES (s.s_a, s.s_b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM itest15
+--Result--
+[(1, 'inserted by merge'), (30, 'inserted by merge')]
++--------------------+
+--Query--
+SELECT * FROM itest16
+--Result--
+[(10, 'inserted by merge'), (1, 'inserted by merge'), (30, 'inserted by merge')]
++--------------------+

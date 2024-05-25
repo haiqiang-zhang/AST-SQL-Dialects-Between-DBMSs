@@ -1,5 +1,4 @@
--- Tests vector search in ClickHouse, i.e. Annoy and Usearch indexes. Both index types share similarities in implementation and usage,
--- therefore they are tested in a single file.
+
 
 -- This file tests various simple approximate nearest neighborhood (ANN) queries that utilize vector search indexes.
 

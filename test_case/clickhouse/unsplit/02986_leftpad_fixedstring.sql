@@ -15,10 +15,10 @@ SELECT
     hex(rightPadUTF8(s, number)) = result
 FROM numbers(20);
 SELECT
-    hex(leftPadUTF8(toFixedString('abc34324' as s, 8), number, 'ÃÂ°ÃÂÃÂÃÂªÃÂ°ÃÂÃÂÃÂ¸')) as result,
-    hex(leftPadUTF8(s, number, 'ÃÂ°ÃÂÃÂÃÂªÃÂ°ÃÂÃÂÃÂ¸')) = result
+    hex(leftPadUTF8(toFixedString('abc34324' as s, 8), number, 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸')) as result,
+    hex(leftPadUTF8(s, number, 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸')) = result
 FROM numbers(20);
 SELECT
-    hex(rightPadUTF8(toFixedString('abc34324' as s, 8), number, 'ÃÂ°ÃÂÃÂÃÂªÃÂ°ÃÂÃÂÃÂ¸')) as result,
-    hex(rightPadUTF8(s, number, 'ÃÂ°ÃÂÃÂÃÂªÃÂ°ÃÂÃÂÃÂ¸')) = result
+    hex(rightPadUTF8(toFixedString('abc34324' as s, 8), number, 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸')) as result,
+    hex(rightPadUTF8(s, number, 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸')) = result
 FROM numbers(20);

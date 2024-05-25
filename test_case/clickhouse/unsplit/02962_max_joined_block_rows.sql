@@ -4,8 +4,6 @@ CREATE table t1 (a UInt64, b UInt64) ENGINE = Memory;
 INSERT INTO t1 SELECT number % 2, number FROM numbers(10);
 CREATE table t2 (a UInt64) ENGINE = Memory;
 INSERT INTO t2 SELECT number % 2 FROM numbers(10);
--- we do not split rows corresponding to the same key
-
 SELECT max(bs) <= 5, b FROM (
     SELECT blockSize() as bs, * FROM t1 JOIN t2 ON t1.a = t2.a
 ) GROUP BY b

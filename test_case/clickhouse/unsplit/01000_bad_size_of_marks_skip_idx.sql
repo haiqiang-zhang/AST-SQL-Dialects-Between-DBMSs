@@ -5,7 +5,6 @@ CREATE TABLE bad_skip_idx
   value String
 ) ENGINE MergeTree()
 ORDER BY id SETTINGS index_granularity_bytes = 64, min_index_granularity_bytes = 10, vertical_merge_algorithm_min_rows_to_activate = 0, vertical_merge_algorithm_min_columns_to_activate = 0;
--- 7 rows per granule
 INSERT INTO bad_skip_idx SELECT number, concat('x', toString(number)) FROM numbers(1000);
 INSERT INTO bad_skip_idx SELECT number, concat('xxxxxxxxxx', toString(number)) FROM numbers(1000,1000);
 SELECT COUNT(*) from bad_skip_idx WHERE value = 'xxxxxxxxxx1015';

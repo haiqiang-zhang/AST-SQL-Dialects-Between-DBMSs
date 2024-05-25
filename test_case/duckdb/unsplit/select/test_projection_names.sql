@@ -5,7 +5,7 @@ CREATE TABLE tbl AS SELECT COL1, COL2 FROM integers;
 DROP TABLE tbl;
 CREATE TABLE tbl AS SELECT integers.COL1, integers.COL2 FROM integers;
 DROP TABLE tbl;
-CREATE SCHEMA s1;;
+CREATE SCHEMA s1;
 CREATE TABLE s1.integers("COL1" INTEGER, "COL2" INTEGER);
 CREATE TABLE tbl AS SELECT s1.integers.COL1, s1.integers.COL2 FROM s1.integers;
 SELECT name FROM pragma_table_info('tbl') ORDER BY name;

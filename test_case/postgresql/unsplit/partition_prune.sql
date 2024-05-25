@@ -11,7 +11,7 @@ explain (costs off) select * from lp where a > 'a' and a < 'd';
 explain (costs off) select * from lp where a > 'a' and a <= 'd';
 explain (costs off) select * from lp where a = 'a';
 explain (costs off) select * from lp where 'a' = a;
-/* commuted */
+
 explain (costs off) select * from lp where a is not null;
 explain (costs off) select * from lp where a is null;
 explain (costs off) select * from lp where a = 'a' or a = 'c';
@@ -48,13 +48,13 @@ create table rlp5_default partition of rlp5 default;
 create table rlp5_1 partition of rlp5 for values from (31) to (40);
 explain (costs off) select * from rlp where a < 1;
 explain (costs off) select * from rlp where 1 > a;
-/* commuted */
+
 explain (costs off) select * from rlp where a <= 1;
 explain (costs off) select * from rlp where a = 1;
 explain (costs off) select * from rlp where a = 1::bigint;
-/* same as above */
+
 explain (costs off) select * from rlp where a = 1::numeric;
-/* no pruning */
+
 explain (costs off) select * from rlp where a <= 10;
 explain (costs off) select * from rlp where a > 10;
 explain (costs off) select * from rlp where a < 15;
@@ -70,7 +70,7 @@ explain (costs off) select * from rlp where a is null;
 explain (costs off) select * from rlp where a is not null;
 explain (costs off) select * from rlp where a > 30;
 explain (costs off) select * from rlp where a = 30;
-/* only default is scanned */
+
 explain (costs off) select * from rlp where a <= 31;
 explain (costs off) select * from rlp where a = 1 or a = 7;
 explain (costs off) select * from rlp where a = 1 or b = 'ab';
@@ -80,14 +80,14 @@ explain (costs off) select * from rlp where a >= 29;
 explain (costs off) select * from rlp where a < 1 or (a > 20 and a < 25);
 explain (costs off) select * from rlp where a = 20 or a = 40;
 explain (costs off) select * from rlp3 where a = 20;
-/* empty */
+
 
 explain (costs off) select * from rlp where a > 1 and a = 10;
-/* only default */
+
 explain (costs off) select * from rlp where a > 1 and a >=15;
-/* rlp3 onwards, including default */
+
 explain (costs off) select * from rlp where a = 1 and a = 3;
-/* empty */
+
 explain (costs off) select * from rlp where (a = 1 and a = 3) or (a > 1 and a = 15);
 create table mc3p (a int, b int, c int) partition by range (a, abs(b), c);
 create table mc3p_default partition of mc3p default;

@@ -1,4 +1,3 @@
--- Settings allow_deprecated_syntax_for_merge_tree prevent to enable the is_deleted column
 set allow_deprecated_syntax_for_merge_tree=0;
 DROP TABLE IF EXISTS test;
 CREATE TABLE test (uid String, version UInt32, is_deleted UInt8) ENGINE = ReplacingMergeTree(version) Order by (uid) settings allow_experimental_replacing_merge_with_cleanup=1;
@@ -55,7 +54,6 @@ DROP TABLE IF EXISTS testCleanupR1;
 SELECT '== (Replicas) Test optimize ==';
 DROP TABLE IF EXISTS testSettingsR1;
 SELECT '== (Replicas) Test settings ==';
--- Check errors
 DROP TABLE IF EXISTS test;
 CREATE TABLE test (uid String, version UInt32, is_deleted UInt8) ENGINE = ReplacingMergeTree(version, is_deleted) Order by (uid) settings allow_experimental_replacing_merge_with_cleanup=1;
 DROP TABLE IF EXISTS test;
@@ -64,7 +62,6 @@ INSERT INTO test (*) VALUES ('d1', 1, 0), ('d2', 1, 0), ('d6', 1, 0), ('d4', 1, 
 select 'no cleanup 1', * from test FINAL order by uid;
 select 'no cleanup 2', * from test order by uid;
 DROP TABLE test;
--- Check clean_deleted_rows='Always' for other MergeTrees
 SELECT '== Check cleanup & settings for other merge trees ==';
 CREATE TABLE testMT (uid String, version UInt32, is_deleted UInt8) ENGINE = MergeTree() Order by (uid) SETTINGS clean_deleted_rows='Always', allow_experimental_replacing_merge_with_cleanup=1;
 INSERT INTO testMT (*) VALUES ('d1', 1, 1);

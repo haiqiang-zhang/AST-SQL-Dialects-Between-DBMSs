@@ -1,0 +1,25 @@
+--Query--
+GRANT ALL ON SCHEMA alt_nsp1, alt_nsp2 TO public
+--Result--
+[]
++--------------------+
+--Query--
+SELECT fdwname FROM pg_foreign_data_wrapper WHERE fdwname like 'alt_fdw%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT srvname FROM pg_foreign_server WHERE srvname like 'alt_fserv%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT nspname, tmplname   FROM pg_ts_template t, pg_namespace n   WHERE t.tmplnamespace = n.oid AND nspname like 'alt_nsp%'   ORDER BY nspname, tmplname
+--Result--
+[]
++--------------------+
+--Query--
+SELECT nspname, prsname   FROM pg_ts_parser t, pg_namespace n   WHERE t.prsnamespace = n.oid AND nspname like 'alt_nsp%'   ORDER BY nspname, prsname
+--Result--
+[]
++--------------------+

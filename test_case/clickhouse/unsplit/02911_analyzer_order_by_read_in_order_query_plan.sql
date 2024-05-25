@@ -7,7 +7,6 @@ drop table if exists tab5;
 create table tab (a UInt32, b UInt32, c UInt32, d UInt32) engine = MergeTree order by ((a + b) * c, sin(a / b));
 insert into tab select number, number, number, number from numbers(5);
 insert into tab select number, number, number, number from numbers(5);
--- Exact match, single key
 select * from tab order by (a + b) * c;
 select * from (explain plan actions = 1 select * from tab order by (a + b) * c) where explain like '%sort description%';
 select * from tab order by (a + b) * c desc;
@@ -64,7 +63,6 @@ insert into tab4 select number, number, number, number from numbers(5);
 create table tab5 (a UInt32, b UInt32, c UInt32, d UInt32) engine = MergeTree order by (a + b) * c;
 insert into tab5 select number, number, number, number from numbers(5);
 insert into tab5 select number, number, number, number from numbers(5);
--- Union (not fully supported)
 select * from (select * from tab union all select * from tab3) order by (a + b) * c, sin(a / b);
 select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab3) order by (a + b) * c, sin(a / b)) where explain like '%sort description%' or explain like '%ReadType%';
 select * from (select * from tab where (a + b) * c = 8 union all select * from tab3 where (a + b) * c = 18) order by sin(a / b);
@@ -77,8 +75,7 @@ select * from (select * from tab union all select * from tab5) order by (a + b) 
 select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5) order by (a + b) * c, sin(a / b)) where explain like '%sort description%' or explain like '%ReadType%';
 select * from (select * from tab union all select * from tab5) order by (a + b) * c, sin(a / b) limit 3;
 select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5) order by (a + b) * c, sin(a / b) limit 3) where explain ilike '%sort description%' or explain like '%ReadType%' or explain like '%Limit%';
--- In case of tab5, there would be two finish sorting transforms: ((a + b) * c) -> ((a + b) * c, sin(a / b)) -> ((a + b) * c, sin(a / b), d).
--- It's important that ((a + b) * c) -> ((a + b) * c does not have LIMIT. We can add LIMIT WITH TIES later, when sorting alog support it.
+
 -- In case of tab4, we do full sorting by ((a + b) * c, sin(a / b), d) with LIMIT. We can replace it to sorting by ((a + b) * c, sin(a / b)) and LIMIT WITH TIES, when sorting alog support it.
 select * from (select * from tab union all select * from tab5 union all select * from tab4) order by (a + b) * c, sin(a / b), d limit 3;
 select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5 union all select * from tab4) order by (a + b) * c, sin(a / b), d limit 3) where explain ilike '%sort description%' or explain like '%ReadType%' or explain like '%Limit%';

@@ -20,8 +20,7 @@ SELECT * FROM sqlite_master;
 PRAGMA writable_schema=ON;
 INSERT INTO t1(b,c) VALUES(5,6);
 PRAGMA writable_schema=ON;
--- bypass improved sqlite_master consistency checking
-  SELECT * FROM t1 WHERE a<='2019-05-09' ORDER BY a DESC;
+SELECT * FROM t1 WHERE a<='2019-05-09' ORDER BY a DESC;
 PRAGMA writable_schema=ON;
 SELECT CAST((SELECT b FROM t1 WHERE 16=c) AS int) FROM t1 WHERE 16=c;
 PRAGMA integrity_check;

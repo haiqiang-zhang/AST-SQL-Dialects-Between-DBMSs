@@ -3,8 +3,6 @@ SET max_rows_to_read = 20;
 SET read_overflow_mode = 'throw';
 SELECT count() FROM numbers(19);
 SELECT count() FROM numbers(20);
--- check early exception if the estimated number of rows is high
-SELECT * FROM numbers(30);
 SET read_overflow_mode = 'break';
 SELECT count() FROM numbers(19);
 SELECT count() FROM numbers(20);

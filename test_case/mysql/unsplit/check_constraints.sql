@@ -33,7 +33,7 @@ DROP DATABASE db1;
 DROP TABLE t1;
 create table t1 (f1 int,
                  CONSTRAINT cafe CHECK (f1 < 10),
-                 CONSTRAINT cafÃÂÃÂ© CHECK (f1 < 10));
+                 CONSTRAINT cafÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ© CHECK (f1 < 10));
 DROP TABLE t1;
 CREATE TABLE t1(CHECK((f1 + f2) > 10), f1 int CHECK (f1 < 10), f2 int);
 SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS;

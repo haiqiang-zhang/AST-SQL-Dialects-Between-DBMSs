@@ -1,12 +1,7 @@
 PRAGMA enable_verification;
-CREATE TABLE test (a INTEGER PRIMARY KEY, b INTEGER, c VARCHAR);;
-INSERT INTO test VALUES (11, 22, 'hello'), (13, 22, 'world'), (12, 21, 'test'), (10, NULL, NULL);;
+CREATE TABLE test (a INTEGER PRIMARY KEY, b INTEGER, c VARCHAR);
+INSERT INTO test VALUES (11, 22, 'hello'), (13, 22, 'world'), (12, 21, 'test'), (10, NULL, NULL);
 BEGIN TRANSACTION;
-BEGIN TRANSACTION;
-INSERT INTO test VALUES (14, 10, 'con');
-INSERT INTO test VALUES (15, 10, 'con2');
-INSERT INTO test VALUES (14, 10, 'con2');
-COMMIT;
 COMMIT;
 INSERT INTO test VALUES (15, NULL, NULL);
 PRAGMA enable_verification;

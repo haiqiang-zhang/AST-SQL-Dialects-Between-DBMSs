@@ -1,0 +1,145 @@
+--Query--
+SELECT * FROM DEFAULT_TBL
+--Result--
+[(1, 'thomas', 57.0613), (1, 'bruce', 123.456), (2, 'vadim', 987.654), (100, 'marc', 123.456), (3, None, 1.0)]
++--------------------+
+--Query--
+SELECT * FROM DEFAULTEXPR_TBL
+--Result--
+[(-1, -2), (-3, 1), (102, -4), (102, None)]
++--------------------+
+--Query--
+SELECT * FROM CHECK_TBL
+--Result--
+[(5,), (4,), (6,)]
++--------------------+
+--Query--
+SELECT * from CHECK2_TBL
+--Result--
+[(4, 'check ok', -2), (7, 'check ok', 7)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'one' AS one, nextval('insert_seq')
+--Result--
+[('one', 1)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[(7, '-NULL-', -7), (7, '!check failed', -7)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[(7, '-NULL-', -7), (7, '!check failed', -7)]
++--------------------+
+--Query--
+SELECT 'seven' AS one, nextval('insert_seq')
+--Result--
+[('seven', 2)]
++--------------------+
+--Query--
+SELECT 'eight' AS one, currval('insert_seq')
+--Result--
+[('eight', 2)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[(7, '-NULL-', -7), (7, '!check failed', -7), (None, None, None)]
++--------------------+
+--Query--
+SELECT *, tableoid::regclass::text FROM SYS_COL_CHECK_TBL
+--Result--
+[('Seattle', 'Washington', False, 100, 'sys_col_check_tbl')]
++--------------------+
+--Query--
+SELECT * FROM INSERT_CHILD
+--Result--
+[(7, '-NULL-', -7, 42, 11)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[(4, 'Y', -4), (5, '!check failed', -5), (6, 'try again', -6)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[(4, 'Y', -4), (5, '!check failed', -5), (6, 'try again', -6), (None, 'try again', None), (7, 'try again', -7)]
++--------------------+
+--Query--
+SELECT * FROM INSERT_TBL
+--Result--
+[(4, 'Y', -4), (None, 'try again', None), (7, 'try again', -7), (5, '!check failed', None), (6, 'try again', -6)]
++--------------------+
+--Query--
+SELECT * FROM COPY_TBL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM COPY_TBL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM PRIMARY_TBL
+--Result--
+[(1, 'one'), (2, 'two'), (4, 'three'), (5, 'one')]
++--------------------+
+--Query--
+SELECT * FROM PRIMARY_TBL
+--Result--
+[(1, 'one'), (2, 'two'), (1, 'three'), (4, 'three'), (5, 'one')]
++--------------------+
+--Query--
+SELECT * FROM UNIQUE_TBL
+--Result--
+[(1, 'one'), (2, 'two'), (4, 'four'), (None, 'six'), (None, 'seven'), (5, 'five-upsert-update'), (6, 'six-upsert-insert')]
++--------------------+
+--Query--
+SELECT * FROM UNIQUE_TBL
+--Result--
+[(1, 'one'), (2, 'two'), (4, 'four'), (5, 'one'), (None, 'six')]
++--------------------+
+--Query--
+SELECT * FROM UNIQUE_TBL
+--Result--
+[(1, 'one'), (2, 'two'), (1, 'three'), (5, 'one'), (None, 'six')]
++--------------------+
+--Query--
+SELECT * FROM unique_tbl
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'tree'), (4, 'four'), (5, 'five')]
++--------------------+
+--Query--
+SELECT * FROM unique_tbl
+--Result--
+[(1, 'one'), (2, 'two'), (4, 'four'), (5, 'five'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM unique_tbl
+--Result--
+[(3, 'three'), (1, 'five'), (5, 'one'), (4, 'two'), (2, 'four')]
++--------------------+
+--Query--
+SELECT conname, conrelid::regclass FROM pg_constraint   WHERE conname LIKE 'parted_uniq%' ORDER BY conname
+--Result--
+[('parted_uniq_tbl_1_i_key', 'parted_uniq_tbl_1'), ('parted_uniq_tbl_2_i_key', 'parted_uniq_tbl_2'), ('parted_uniq_tbl_i_key', 'parted_uniq_tbl')]
++--------------------+
+--Query--
+SAVEPOINT f
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM unique_tbl
+--Result--
+[(3, 'three'), (1, 'five'), (5, 'one'), (4, 'two'), (2, 'four'), (3, 'Three'), (3, 'Three')]
++--------------------+

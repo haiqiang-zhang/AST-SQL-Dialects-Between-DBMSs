@@ -1,5 +1,3 @@
--- with mixed columns (sparse and full) in table.
-
 DROP TABLE IF EXISTS t_sparse_full;
 CREATE TABLE t_sparse_full (id UInt64, u UInt64, s String)
 ENGINE = MergeTree ORDER BY id

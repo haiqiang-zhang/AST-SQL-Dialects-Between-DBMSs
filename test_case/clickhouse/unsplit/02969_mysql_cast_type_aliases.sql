@@ -1,5 +1,3 @@
--- Tests are in order of the type appearance in the docs
-
 SET allow_experimental_object_type = 1;
 SELECT '-- Uppercase tests';
 SELECT 'Binary(N)' AS mysql_type, CAST('foo' AS BINARY(3)) AS result, toTypeName(result) AS native_type;

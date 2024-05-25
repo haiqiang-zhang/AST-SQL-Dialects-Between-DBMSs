@@ -1,0 +1,90 @@
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '10', 1), ('(0,2)', '11', 2)]
++--------------------+
+--Query--
+SAVEPOINT s1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,3)', '12', 11), ('(0,4)', '12', 12)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '0', 1), ('(0,2)', '1', 2)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '0', 1), ('(0,2)', '1', 2)]
++--------------------+
+--Query--
+DECLARE c CURSOR FOR SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[]
++--------------------+
+--Query--
+FETCH ALL FROM c
+--Result--
+[('(0,1)', '1', 1), ('(0,2)', '1', 2), ('(0,5)', '0', 333)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '1', 1), ('(0,2)', '1', 2)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '1', 1), ('(0,2)', '1', 2), ('(0,6)', '10', 444)]
++--------------------+
+--Query--
+SAVEPOINT s1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest FOR UPDATE
+--Result--
+[('(0,1)', '1', 1), ('(0,2)', '1', 2), ('(0,6)', '10', 444)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '1', 1), ('(0,2)', '1', 2), ('(0,6)', '10', 444)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,7)', '12', 11), ('(0,8)', '12', 12), ('(0,9)', '12', 454)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '12', 1), ('(0,2)', '12', 2), ('(0,6)', '0', 444)]
++--------------------+
+--Query--
+SELECT ctid,cmin,* FROM combocidtest
+--Result--
+[('(0,1)', '12', 1), ('(0,2)', '12', 2), ('(0,6)', '0', 444)]
++--------------------+
+--Query--
+SELECT * FROM testcase WHERE testcase.id = 1 FOR UPDATE
+--Result--
+[(1, 0.0)]
++--------------------+
+--Query--
+SAVEPOINT subxact
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM testcase WHERE id = 1 FOR UPDATE
+--Result--
+[(1, 400.0)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+PREPARE s3 AS SELECT * FROM a WHERE i=$1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s3(10000)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s3(42)
+--Result--
+[(42,)]
++--------------------+
+--Query--
+EXECUTE s3(84)
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE s3
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 AS SELECT to_years($1), CAST(list_value($1) AS BIGINT[])
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s1(1)
+--Result--
+[(datetime.timedelta(days=360), [1])]
++--------------------+

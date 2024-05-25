@@ -4,7 +4,6 @@ INSERT INTO TABLE or_bug VALUES (0), (1);
 SELECT * FROM or_bug WHERE (key = 1) OR false OR false;
 SELECT * FROM or_bug WHERE (key = 1) OR false;
 SELECT * FROM or_bug WHERE (key = 1);
--- https://github.com/ClickHouse/ClickHouse/issues/55288
 DROP TABLE IF EXISTS forms;
 CREATE TABLE forms
 (

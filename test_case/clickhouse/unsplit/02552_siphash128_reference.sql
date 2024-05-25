@@ -1,5 +1,4 @@
--- Written by
--- Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>
+
 -- Daniel J. Bernstein <djb@cr.yp.to>
 -- Released under CC0
 -- https://github.com/veorq/SipHash/blob/eee7d0d84dc7731df2359b243aa5e75d85f6eaef/vectors.h#L645

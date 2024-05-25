@@ -1,0 +1,20 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PIVOT Cities ON Year IN (SELECT Year FROM Cities ORDER BY Year DESC) USING SUM(Population)
+--Result--
+[('US', 'New York City', 8772, 8175, 8015), ('US', 'Seattle', 738, 608, 564), ('NL', 'Amsterdam', 1158, 1065, 1005)]
++--------------------+
+--Query--
+PIVOT Cities ON Year IN (SELECT YEAR FROM (SELECT Year, SUM(POPULATION) AS popsum FROM Cities GROUP BY Year ORDER BY popsum DESC)) USING SUM(Population)
+--Result--
+[('US', 'New York City', 8772, 8175, 8015), ('US', 'Seattle', 738, 608, 564), ('NL', 'Amsterdam', 1158, 1065, 1005)]
++--------------------+
+--Query--
+PIVOT Cities ON Year IN (SELECT '2010' UNION ALL SELECT '2000' UNION ALL SELECT '2020') USING SUM(Population)
+--Result--
+[('US', 'Seattle', 608, 564, 738), ('US', 'New York City', 8175, 8015, 8772), ('NL', 'Amsterdam', 1065, 1005, 1158)]
++--------------------+

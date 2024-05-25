@@ -1,5 +1,5 @@
-SET default_null_order='nulls_first';;
-CREATE TABLE test (a INTEGER);;
+SET default_null_order='nulls_first';
+CREATE TABLE test (a INTEGER);
 INSERT INTO test VALUES (1), (2), (3), (NULL);
 BEGIN TRANSACTION;
 UPDATE test SET a=NULL WHERE a=2;

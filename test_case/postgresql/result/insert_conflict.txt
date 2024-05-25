@@ -1,0 +1,200 @@
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (key, fruit) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: op_index_key, collation_index_key, both_index_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (fruit, key, fruit, key) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: op_index_key, collation_index_key, both_index_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (lower(fruit), key, lower(fruit), key) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: both_index_expr_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (key, fruit) do update set fruit = excluded.fruit   where exists (select 1 from insertconflicttest ii where ii.key = excluded.key)
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: op_index_key, collation_index_key, both_index_key',), ('  Conflict Filter: (SubPlan 1)',), ('  ->  Result',), ('  SubPlan 1',), ('    ->  Index Only Scan using both_index_expr_key on insertconflicttest ii',), ('          Index Cond: (key = excluded.key)',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (key, fruit text_pattern_ops) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: op_index_key, both_index_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (key, fruit collate "C") do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: collation_index_key, both_index_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (fruit collate "C" text_pattern_ops, key) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: both_index_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (lower(fruit) collate "C", key, key) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: both_index_expr_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (fruit, key, fruit text_pattern_ops, key) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: op_index_key, both_index_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (lower(fruit) collate "C" text_pattern_ops, key, key) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: both_index_expr_key',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (lower(fruit) collate "C", upper(fruit) text_pattern_ops) do nothing
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: NOTHING',), ('  Conflict Arbiter Indexes: cross_match',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values (0, 'Bilberry') on conflict (key) do update set fruit = excluded.fruit
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: key_index',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values (0, 'Bilberry') on conflict (key) do update set fruit = excluded.fruit where insertconflicttest.fruit != 'Cawesh'
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: key_index',), ("  Conflict Filter: (insertconflicttest.fruit <> 'Cawesh'::text)",), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (key) do update set fruit = excluded.fruit where excluded.fruit != 'Elderberry'
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: key_index',), ("  Conflict Filter: (excluded.fruit <> 'Elderberry'::text)",), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off, format json) insert into insertconflicttest values (0, 'Bilberry') on conflict (key) do update set fruit = excluded.fruit where insertconflicttest.fruit != 'Lime' returning *
+--Result--
+[([{'Plan': {'Node Type': 'ModifyTable', 'Operation': 'Insert', 'Parallel Aware': False, 'Async Capable': False, 'Relation Name': 'insertconflicttest', 'Alias': 'insertconflicttest', 'Conflict Resolution': 'UPDATE', 'Conflict Arbiter Indexes': ['key_index'], 'Conflict Filter': "(insertconflicttest.fruit <> 'Lime'::text)", 'Plans': [{'Node Type': 'Result', 'Parent Relationship': 'Outer', 'Parallel Aware': False, 'Async Capable': False}]}}],)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest values (26, 'Fig') on conflict (lower(fruit), key, lower(fruit), key) do update set fruit = excluded.fruit
+--Result--
+[('Insert on insertconflicttest',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: expr_comp_key_index',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest as i values (23, 'Avocado') on conflict (key) do update set fruit = excluded.fruit where excluded.* is null
+--Result--
+[('Insert on insertconflicttest i',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: plain',), ('  Conflict Filter: (excluded.* IS NULL)',), ('  ->  Result',)]
++--------------------+
+--Query--
+explain (costs off) insert into insertconflicttest as i values (23, 'Avocado') on conflict (key) do update set fruit = excluded.*::text
+--Result--
+[('Insert on insertconflicttest i',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: plain',), ('  ->  Result',)]
++--------------------+
+--Query--
+select * from insertconflict
+--Result--
+[(1, 'foo')]
++--------------------+
+--Query--
+select * from insertconflict
+--Result--
+[(1, 'bar')]
++--------------------+
+--Query--
+select * from capitals
+--Result--
+[('Sacramento', 369400.0, 30, 'CA'), ('Madison', 191300.0, 845, 'WI')]
++--------------------+
+--Query--
+select * from capitals
+--Result--
+[('Madison', 191300.0, 845, 'WI'), ('Sacramento', 466400000.0, 30, 'CA')]
++--------------------+
+--Query--
+select tableoid::regclass, * from cities
+--Result--
+[('cities', 'San Francisco', 724000.0, 63), ('cities', 'Mariposa', 1200.0, 1953), ('cities', 'Las Vegas', 583000.0, 2001), ('capitals', 'Madison', 191300.0, 845), ('capitals', 'Sacramento', 466400000.0, 30)]
++--------------------+
+--Query--
+select * from capitals
+--Result--
+[('Madison', 191300.0, 845, 'WI'), ('Sacramento', 466400000.0, 30, 'CA'), ('Las Vegas', 583000.0, 2222, 'NV')]
++--------------------+
+--Query--
+select tableoid::regclass, * from cities
+--Result--
+[('cities', 'San Francisco', 724000.0, 63), ('cities', 'Mariposa', 1200.0, 1953), ('cities', 'Las Vegas', 583000.0, 2001), ('capitals', 'Madison', 191300.0, 845), ('capitals', 'Sacramento', 466400000.0, 30), ('capitals', 'Las Vegas', 583000.0, 2222)]
++--------------------+
+--Query--
+select tableoid::regclass, * from cities
+--Result--
+[('cities', 'San Francisco', 724000.0, 63), ('cities', 'Mariposa', 1200.0, 1953), ('cities', 'Las Vegas', 586000.0, 2223), ('capitals', 'Madison', 191300.0, 845), ('capitals', 'Sacramento', 466400000.0, 30), ('capitals', 'Las Vegas', 583000.0, 2222)]
++--------------------+
+--Query--
+select * from twoconstraints
+--Result--
+[(1, '(1,1),(0,0)')]
++--------------------+
+--Query--
+select * from selfconflict
+--Result--
+[(1, 1), (2, 1), (3, 1)]
++--------------------+
+--Query--
+select * from parted_conflict_test order by a
+--Result--
+[(2, 'b')]
++--------------------+
+--Query--
+truncate parted_conflict_test
+--Result--
+[]
++--------------------+
+--Query--
+select * from parted_conflict_test order by a
+--Result--
+[(3, 'b')]
++--------------------+
+--Query--
+truncate parted_conflict_test
+--Result--
+[]
++--------------------+
+--Query--
+select * from parted_conflict_test order by a
+--Result--
+[(4, 'b')]
++--------------------+
+--Query--
+truncate parted_conflict_test
+--Result--
+[]
++--------------------+
+--Query--
+select * from parted_conflict_test order by a
+--Result--
+[(5, 'b')]
++--------------------+
+--Query--
+truncate parted_conflict_test
+--Result--
+[]
++--------------------+
+--Query--
+select * from parted_conflict_test order by a
+--Result--
+[(1, 'b'), (2, 'a'), (4, 'b')]
++--------------------+
+--Query--
+truncate parted_conflict
+--Result--
+[]
++--------------------+
+--Query--
+select * from parted_conflict order by a
+--Result--
+[(50, 'cincuenta', 2)]
++--------------------+
+--Query--
+truncate parted_conflict
+--Result--
+[]
++--------------------+

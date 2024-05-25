@@ -20,7 +20,6 @@ SELECT x FROM (SELECT * FROM (SELECT 99 AS x) AS t);
 SELECT '---';
 SELECT t.x FROM (SELECT 1 AS x) AS t;
 SELECT '---';
--- this will work, but keep in mind that there are two different `x`.
 SELECT x IN (SELECT 1 AS x) FROM (SELECT 1 AS x);
 SELECT '---';
 SELECT x + 1 AS x, x FROM (SELECT 1 AS x);

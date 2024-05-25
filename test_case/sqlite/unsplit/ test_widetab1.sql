@@ -7,10 +7,8 @@ CREATE TABLE a(
    a50, a51, a52, a53, a54, a55, a56, a57, a58, a59,
    pd, bn, vb, bc, cn, ie, qm);
 CREATE INDEX a1 on a(pd, bn, vb, bc, cn);
--- preferred index
-  CREATE INDEX a2 on a(pd, bc, ie, qm);
--- suboptimal index
-  CREATE TABLE b(bg, bc, bn, iv, ln, mg);
+CREATE INDEX a2 on a(pd, bc, ie, qm);
+CREATE TABLE b(bg, bc, bn, iv, ln, mg);
 CREATE INDEX b1 on b(bn, iv, bg);
 CREATE TABLE t1(
     c00,c01,c02,c03,c04,c05,c06,c07,c08,c09,

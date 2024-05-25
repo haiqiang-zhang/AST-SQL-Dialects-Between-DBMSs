@@ -3,7 +3,6 @@ drop table if exists t;
 create table t (x UInt64) engine = MergeTree order by x;
 insert into t select number from numbers_mt(10000000) settings max_insert_threads=8;
 set allow_prefetched_read_pool_for_local_filesystem = 0;
--- The number of output streams is limited by max_streams_for_merge_tree_reading
 select sum(x) from t settings max_threads=32, max_streams_for_merge_tree_reading=16, allow_asynchronous_read_from_io_pool_for_merge_tree=0;
 select * from (explain pipeline select sum(x) from t settings max_threads=32, max_streams_for_merge_tree_reading=16, allow_asynchronous_read_from_io_pool_for_merge_tree=0) where explain like '%Resize%' or explain like '%MergeTreeSelect%';
 select sum(x) from t settings max_threads=4, max_streams_for_merge_tree_reading=16, allow_asynchronous_read_from_io_pool_for_merge_tree=0, max_streams_to_max_threads_ratio=8;

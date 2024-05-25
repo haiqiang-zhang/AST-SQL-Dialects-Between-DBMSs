@@ -40,7 +40,6 @@ SELECT d FROM t1;
 SELECT d FROM t1;
 PRAGMA auto_vacuum = "incremental";
 CREATE TABLE t2(a INTEGER PRIMARY KEY, b);
--- root@page4;
 SELECT rootpage FROM sqlite_master;
 DELETE FROM t1 WHERE a = 123;
 PRAGMA INCREMENTAL_VACUUM(0);

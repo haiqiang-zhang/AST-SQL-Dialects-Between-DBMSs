@@ -1,0 +1,100 @@
+--Query--
+SELECT char 'c' = char 'c' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT * FROM CHAR_TBL
+--Result--
+[('a',), ('A',), ('1',), ('2',), ('3',), (' ',), ('c',)]
++--------------------+
+--Query--
+SELECT c.*    FROM CHAR_TBL c    WHERE c.f1 <> 'a'
+--Result--
+[('A',), ('1',), ('2',), ('3',), (' ',), ('c',)]
++--------------------+
+--Query--
+SELECT c.*    FROM CHAR_TBL c    WHERE c.f1 = 'a'
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT c.*    FROM CHAR_TBL c    WHERE c.f1 < 'a'
+--Result--
+[('A',), ('1',), ('2',), ('3',), (' ',)]
++--------------------+
+--Query--
+SELECT c.*    FROM CHAR_TBL c    WHERE c.f1 <= 'a'
+--Result--
+[('a',), ('A',), ('1',), ('2',), ('3',), (' ',)]
++--------------------+
+--Query--
+SELECT c.*    FROM CHAR_TBL c    WHERE c.f1 > 'a'
+--Result--
+[('c',)]
++--------------------+
+--Query--
+SELECT c.*    FROM CHAR_TBL c    WHERE c.f1 >= 'a'
+--Result--
+[('a',), ('c',)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('abcd  ', 'char(4)')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('abcde', 'char(4)')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('abcde', 'char(4)')
+--Result--
+[('value too long for type character(4)', None, None, '22001')]
++--------------------+
+--Query--
+SELECT 'a'::"char"
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT '\101'::"char"
+--Result--
+[('A',)]
++--------------------+
+--Query--
+SELECT '\377'::"char"
+--Result--
+[('\\377',)]
++--------------------+
+--Query--
+SELECT 'a'::"char"::text
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT '\377'::"char"::text
+--Result--
+[('\\377',)]
++--------------------+
+--Query--
+SELECT '\000'::"char"::text
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT 'a'::text::"char"
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT '\377'::text::"char"
+--Result--
+[('\\377',)]
++--------------------+
+--Query--
+SELECT ''::text::"char"
+--Result--
+[('',)]
++--------------------+

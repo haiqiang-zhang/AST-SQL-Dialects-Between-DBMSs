@@ -10,6 +10,5 @@ select * from information_schema.table_privileges;
 DROP DATABASE d1;
 CREATE PROCEDURE p1() BEGIN END;
 DROP PROCEDURE p1;
-DROP DATABASE db1;
 ALTER TABLE T1 RENAME t1;
 DROP TABLE t1;

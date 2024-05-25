@@ -19,7 +19,7 @@ u(x) AS
 SELECT *
 FROM   u
 ORDER BY x
-LIMIT 5;;
+LIMIT 5;
 WITH RECURSIVE collatz(x, t, steps) AS
 (
   SELECT x, x, 0
@@ -30,4 +30,4 @@ WITH RECURSIVE collatz(x, t, steps) AS
    WHERE  t <> 1)
 )
 SELECT * FROM collatz WHERE t = 1
-ORDER BY x;;
+ORDER BY x;

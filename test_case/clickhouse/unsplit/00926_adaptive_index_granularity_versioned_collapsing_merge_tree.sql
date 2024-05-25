@@ -1,4 +1,3 @@
------ Group of very similar simple tests ------
 DROP TABLE IF EXISTS zero_rows_per_granule;
 CREATE TABLE zero_rows_per_granule (
   p Date,
@@ -48,8 +47,7 @@ SELECT distinct(marks) from system.parts WHERE table = 'four_rows_per_granule' a
 INSERT INTO four_rows_per_granule (p, k, v1, v2, Sign, Version) VALUES ('2018-05-15', 1, 1000, 2000, -1, 1), ('2018-05-16', 2, 3000, 4000, -1, 1), ('2018-05-17', 3, 5000, 6000, -1, 1), ('2018-05-18', 4, 7000, 8000, -1, 1);
 OPTIMIZE TABLE four_rows_per_granule FINAL;
 SELECT COUNT(*) FROM four_rows_per_granule;
--- deleted already. This can happen in parallel runs where there may be a long delay
--- between queries. So we must write the query in such a way that it always returns
+
 -- zero rows if OK.
 SELECT distinct(marks) d from system.parts WHERE table = 'four_rows_per_granule' and database=currentDatabase() and active=1 having d > 0;
 INSERT INTO four_rows_per_granule (p, k, v1, v2, Sign, Version) VALUES ('2018-05-15', 1, 1000, 2000, 1, 1), ('2018-05-16', 2, 3000, 4000, 1, 1), ('2018-05-17', 3, 5000, 6000, 1, 1), ('2018-05-18', 4, 7000, 8000, 1, 1);
@@ -88,8 +86,7 @@ INSERT INTO six_rows_per_granule (p, k, v1, v2, Sign, Version) VALUES ('2018-05-
 INSERT INTO six_rows_per_granule (p, k, v1, v2, Sign, Version) VALUES ('2018-05-15', 3, 1000, 2000, -1, 1), ('2018-05-16', 3, 1000, 2000, 1, 2);
 OPTIMIZE TABLE six_rows_per_granule FINAL;
 SELECT COUNT(*) FROM six_rows_per_granule;
--- deleted already. This can happen in parallel runs where there may be a long delay
--- between queries. So we must write the query in such a way that it always returns
+
 -- zero rows if OK.
 SELECT distinct(marks) d from system.parts WHERE table = 'six_rows_per_granule' and database=currentDatabase() and active=1 having d > 0;
 DROP TABLE IF EXISTS six_rows_per_granule;

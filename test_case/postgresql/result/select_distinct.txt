@@ -1,0 +1,80 @@
+--Query--
+EXPLAIN (costs off) SELECT DISTINCT g%1000 FROM generate_series(0,9999) g
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: ((g % 1000))',), ('        ->  Function Scan on generate_series g',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) SELECT DISTINCT g%1000 FROM generate_series(0,9999) g
+--Result--
+[('HashAggregate',), ('  Group Key: (g % 1000)',), ('  ->  Function Scan on generate_series g',)]
++--------------------+
+--Query--
+(SELECT * FROM distinct_hash_1 EXCEPT SELECT * FROM distinct_group_1)   UNION ALL (SELECT * FROM distinct_group_1 EXCEPT SELECT * FROM distinct_hash_1)
+--Result--
+[]
++--------------------+
+--Query--
+(SELECT * FROM distinct_hash_1 EXCEPT SELECT * FROM distinct_group_1)   UNION ALL (SELECT * FROM distinct_group_1 EXCEPT SELECT * FROM distinct_hash_1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1, f1 IS DISTINCT FROM 2 as "not 2" FROM disttable
+--Result--
+[(1, True), (2, False), (3, True), (None, True)]
++--------------------+
+--Query--
+SELECT f1, f1 IS DISTINCT FROM NULL as "not null" FROM disttable
+--Result--
+[(1, True), (2, True), (3, True), (None, False)]
++--------------------+
+--Query--
+SELECT f1, f1 IS DISTINCT FROM f1 as "false" FROM disttable
+--Result--
+[(1, False), (2, False), (3, False), (None, False)]
++--------------------+
+--Query--
+SELECT f1, f1 IS DISTINCT FROM f1+1 as "not null" FROM disttable
+--Result--
+[(1, True), (2, True), (3, True), (None, False)]
++--------------------+
+--Query--
+SELECT 1 IS DISTINCT FROM 2 as "yes"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 2 IS DISTINCT FROM 2 as "no"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 2 IS DISTINCT FROM null as "yes"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT null IS DISTINCT FROM null as "no"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 1 IS NOT DISTINCT FROM 2 as "no"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 2 IS NOT DISTINCT FROM 2 as "yes"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 2 IS NOT DISTINCT FROM null as "no"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT null IS NOT DISTINCT FROM null as "yes"
+--Result--
+[(True,)]
++--------------------+

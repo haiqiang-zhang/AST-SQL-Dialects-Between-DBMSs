@@ -1,0 +1,95 @@
+--Query--
+SELECT spcoptions FROM pg_tablespace WHERE spcname = 'regress_tblspacewith'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT regexp_replace(pg_tablespace_location(oid), '(pg_tblspc)/(\d+)', '\1/NNN')   FROM pg_tablespace  WHERE spcname = 'regress_tblspace'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c.relname FROM pg_class c, pg_tablespace s   WHERE c.reltablespace = s.oid AND s.spcname = 'regress_tblspace'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c.relname FROM pg_class c, pg_tablespace s   WHERE c.reltablespace = s.oid AND s.spcname = 'regress_tblspace'   ORDER BY c.relname
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c.relname FROM pg_class c, pg_tablespace s   WHERE c.reltablespace = s.oid AND s.spcname = 'regress_tblspace'   ORDER BY c.relname
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c.relname FROM pg_class c, pg_tablespace s   WHERE c.reltablespace = s.oid AND s.spcname = 'regress_tblspace'   ORDER BY c.relname
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c.relname FROM pg_class c, pg_tablespace s   WHERE c.reltablespace = s.oid AND s.spcname = 'regress_tblspace'   ORDER BY c.relname
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level FROM pg_partition_tree('tbspace_reindex_part_index')   ORDER BY relid, level
+--Result--
+[('tbspace_reindex_part_index', None, 0), ('tbspace_reindex_part_index_0', 'tbspace_reindex_part_index', 1), ('tbspace_reindex_part_index_10', 'tbspace_reindex_part_index', 1), ('tbspace_reindex_part_index_0_1', 'tbspace_reindex_part_index_0', 2), ('tbspace_reindex_part_index_0_2', 'tbspace_reindex_part_index_0', 2)]
++--------------------+
+--Query--
+SELECT b.relname,        CASE WHEN a.relfilenode = b.relfilenode THEN 'relfilenode is unchanged'        ELSE 'relfilenode has changed' END AS filenode,        CASE WHEN a.reltablespace = b.reltablespace THEN 'reltablespace is unchanged'        ELSE 'reltablespace has changed' END AS tbspace   FROM reindex_temp_before b JOIN pg_class a ON b.relname = a.relname   ORDER BY 1
+--Result--
+[('tbspace_reindex_part_index', 'relfilenode is unchanged', 'reltablespace is unchanged'), ('tbspace_reindex_part_index_0', 'relfilenode is unchanged', 'reltablespace is unchanged'), ('tbspace_reindex_part_index_0_1', 'relfilenode is unchanged', 'reltablespace is unchanged'), ('tbspace_reindex_part_index_0_2', 'relfilenode is unchanged', 'reltablespace is unchanged'), ('tbspace_reindex_part_index_10', 'relfilenode is unchanged', 'reltablespace is unchanged')]
++--------------------+
+--Query--
+SELECT relname, spcname FROM pg_catalog.pg_tablespace t, pg_catalog.pg_class c     where c.reltablespace = t.oid AND c.relname = 'foo'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, spcname FROM pg_catalog.pg_tablespace t, pg_catalog.pg_class c     where c.reltablespace = t.oid AND c.relname = 'asselect'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE selectsource(int) AS SELECT $1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, spcname FROM pg_catalog.pg_tablespace t, pg_catalog.pg_class c     where c.reltablespace = t.oid AND c.relname = 'asexecute'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, spcname FROM pg_catalog.pg_tablespace t, pg_catalog.pg_class c     where c.reltablespace = t.oid AND c.relname = 'foo_idx'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, spcname FROM pg_catalog.pg_class c     JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid)     LEFT JOIN pg_catalog.pg_tablespace t ON c.reltablespace = t.oid     where c.relname LIKE 'part%' AND n.nspname = 'testschema' order by relname
+--Result--
+[('part', None), ('part_1', None), ('part_2', None), ('part_4', None), ('part_78', None)]
++--------------------+
+--Query--
+SELECT relname, spcname FROM pg_catalog.pg_tablespace t, pg_catalog.pg_class c     where c.reltablespace = t.oid AND c.relname LIKE 'part%_idx' ORDER BY relname
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM testschema.atable
+--Result--
+[(3,)]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW testschema.amv
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM testschema.amv
+--Result--
+[(3,)]
++--------------------+

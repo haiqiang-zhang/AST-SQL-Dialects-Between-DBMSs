@@ -1,0 +1,30 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH ':memory:' AS db1
+--Result--
+[]
++--------------------+
+--Query--
+USE db1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT db1.two_x_plus_y(x, y) FROM db1.tbl
+--Result--
+[(87,)]
++--------------------+
+--Query--
+SELECT db1.main.two_x_plus_y(x, y) FROM db1.tbl
+--Result--
+[(87,)]
++--------------------+
+--Query--
+SELECT two_x_plus_y(x, y) FROM db1.tbl
+--Result--
+[(87,)]
++--------------------+

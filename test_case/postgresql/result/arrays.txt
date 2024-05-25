@@ -1,0 +1,1315 @@
+--Query--
+ANALYZE array_op_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM arrtest
+--Result--
+[([1, 2, 3, 4, 5], [[[0, 0], [1, 2]]], [], [], [1.1, 2.2], [], []), ([11, 12, 23], [[3, 4], [4, 5]], ['foobar'], [['elt1', 'elt2']], [3.4, 6.7], ['abc  ', 'abcde'], ['abc', 'abcde']), ([], [3, 4], ['foo', 'bar'], ['bar', 'foo'], None, None, None)]
++--------------------+
+--Query--
+SELECT arrtest.a[1],           arrtest.b[1][1][1],           arrtest.c[1],           arrtest.d[1][1],           arrtest.e[0]    FROM arrtest
+--Result--
+[(1, 0, None, None, 1.1), (11, None, 'foobar', 'elt1', None), (None, None, 'foo', None, None)]
++--------------------+
+--Query--
+SELECT a[1], b[1][1][1], c[1], d[1][1], e[0]    FROM arrtest
+--Result--
+[(1, 0, None, None, 1.1), (11, None, 'foobar', 'elt1', None), (None, None, 'foo', None, None)]
++--------------------+
+--Query--
+SELECT a[1:3],           b[1:1][1:2][1:2],           c[1:2],           d[1:1][1:2]    FROM arrtest
+--Result--
+[([1, 2, 3], [[[0, 0], [1, 2]]], [], []), ([11, 12, 23], [], ['foobar'], [['elt1', 'elt2']]), ([], [], ['foo', 'bar'], [])]
++--------------------+
+--Query--
+SELECT array_ndims(a) AS a,array_ndims(b) AS b,array_ndims(c) AS c    FROM arrtest
+--Result--
+[(1, 3, None), (1, 2, 1), (None, 1, 1)]
++--------------------+
+--Query--
+SELECT array_dims(a) AS a,array_dims(b) AS b,array_dims(c) AS c    FROM arrtest
+--Result--
+[('[1:5]', '[1:1][1:2][1:2]', None), ('[1:3]', '[1:2][1:2]', '[1:1]'), (None, '[1:2]', '[1:2]')]
++--------------------+
+--Query--
+SELECT *    FROM arrtest    WHERE a[1] < 5 and          c = '{"foobar"}'::_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c FROM arrtest
+--Result--
+[([16, 25, 3, 4, 5], [[[113, 142], [1, 147]]], []), ([], [3, 4], ['foo', 'new_word']), ([16, 25, 23], [[3, 4], [4, 5]], ['foobar', 'new_word'])]
++--------------------+
+--Query--
+SELECT a[1:3],           b[1:1][1:2][1:2],           c[1:2],           d[1:1][2:2]    FROM arrtest
+--Result--
+[([16, 25, 3], [[[113, 142], [1, 147]]], [], []), ([], [], ['foo', 'new_word'], []), ([16, 25, 23], [], ['foobar', 'new_word'], [['elt2']])]
++--------------------+
+--Query--
+SELECT b[1:1][2][2],        d[1:1][2]    FROM arrtest
+--Result--
+[([[[113, 142], [1, 147]]], []), ([], []), ([], [['elt1', 'elt2']])]
++--------------------+
+--Query--
+SELECT a FROM arrtest
+--Result--
+[([16, 25, 3, 4, 5],), ([],), ([16, 25, 23],), ([1, None, 3],)]
++--------------------+
+--Query--
+SELECT a FROM arrtest WHERE a[2] IS NULL
+--Result--
+[([None],), ([1, None, 3, None],)]
++--------------------+
+--Query--
+SELECT a,b,c FROM arrtest
+--Result--
+[([16, 25, 3, 4, 5], [[[113, 142], [1, 147]]], []), ([16, 25, 23], [[3, 4], [4, 5]], ['foobar', 'new_word']), ([None], [3, 4], ['foo', 'new_word'])]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('{1,2,3}', 'integer[]')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('{1,2', 'integer[]')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('{1,zed}', 'integer[]')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('{1,zed}', 'integer[]')
+--Result--
+[('invalid input syntax for type integer: "zed"', None, None, '22P02')]
++--------------------+
+--Query--
+select '{{1,2,3},{4,5,6},{7,8,9}}'::int[]
+--Result--
+[([[1, 2, 3], [4, 5, 6], [7, 8, 9]],)]
++--------------------+
+--Query--
+select ('{{1,2,3},{4,5,6},{7,8,9}}'::int[])[1:2][2]
+--Result--
+[([[1, 2], [4, 5]],)]
++--------------------+
+--Query--
+select ('[0:2][0:2]={{1,2,3},{4,5,6},{7,8,9}}'::int[])[1:2][2]
+--Result--
+[([[5, 6], [8, 9]],)]
++--------------------+
+--Query--
+SELECT ('{{{1},{2},{3}},{{4},{5},{6}}}'::int[])[1][NULL][1]
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ('{{{1},{2},{3}},{{4},{5},{6}}}'::int[])[1][NULL:1][1]
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ('{{{1},{2},{3}},{{4},{5},{6}}}'::int[])[1][1:NULL][1]
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT a[:3], b[:2][:2] FROM arrtest_s
+--Result--
+[([1, 2, 3], [[1, 2], [4, 5]]), ([1, 2, 3, 4], [[1, 2, 3], [4, 5, 6], [7, 8, 9]])]
++--------------------+
+--Query--
+SELECT a[2:], b[2:][2:] FROM arrtest_s
+--Result--
+[([2, 3, 4, 5], [[5, 6], [8, 9]]), ([3, 4, 5], [[9]])]
++--------------------+
+--Query--
+SELECT a[:], b[:] FROM arrtest_s
+--Result--
+[([1, 2, 3, 4, 5], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]), ([1, 2, 3, 4, 5], [[1, 2, 3], [4, 5, 6], [7, 8, 9]])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([1, 2, None, 4], ['one', 'two', None, 'four'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([1, 22, None, 4], ['one', 'twenty-two', None, 'four'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([1, 22, None, 4, 5], ['one', 'twenty-two', None, 'four', 'five'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([1, 22, None, 4, 5, None, None, 8], ['one', 'twenty-two', None, 'four', 'five', None, None, 'eight'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([0, 1, 22, None, 4, 5, None, None, 8], ['zero', 'one', 'twenty-two', None, 'four', 'five', None, None, 'eight'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-3, None, None, 0, 1, 22, None, 4, 5, None, None, 8], ['minus-three', None, None, 'zero', 'one', 'twenty-two', None, 'four', 'five', None, None, 'eight'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-3, None, None, 10, 11, 12, None, 4, 5, None, None, 8], ['minus-three', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'eight'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-3, None, None, 10, 11, 12, None, 4, 5, None, None, 18, None, 20], ['minus-three', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'p18', None, 'p20'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-3, None, None, 10, 11, 12, None, 4, 5, None, None, 18, None, 20, None, 22], ['minus-three', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'p18', None, 'p20', None, 'p22'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-3, None, None, 10, 11, 12, None, 4, 5, None, None, 18, None, 20, None, 22, None, None, None, 26], ['minus-three', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'p18', None, 'p20', None, 'p22', None, None, None, 'p26'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-15, -14, -13, None, None, 10, 11, 12, None, 4, 5, None, None, 18, None, 20, None, 22, None, None, None, 26], ['m15', 'm14', 'm13', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'p18', None, 'p20', None, 'p22', None, None, None, 'p26'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-17, None, -15, -14, -13, None, None, 10, 11, 12, None, 4, 5, None, None, 18, None, 20, None, 22, None, None, None, 26], ['m17', None, 'm15', 'm14', 'm13', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'p18', None, 'p20', None, 'p22', None, None, None, 'p26'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([-22, None, -20, None, None, -17, None, -15, -14, -13, None, None, 10, 11, 12, None, 4, 5, None, None, 18, None, 20, None, 22, None, None, None, 26], ['m22', None, 'm20', None, None, 'm17', None, 'm15', 'm14', 'm13', None, None, 'ten', 'eleven', 'twelve', None, 'four', 'five', None, None, 'p18', None, 'p20', None, 'p22', None, None, None, 'p26'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([1, 2, None, 4], ['one', 'two', None, 'four'])]
++--------------------+
+--Query--
+select * from arrtest1
+--Result--
+[([0, 1, 2, None, 4, 5], ['z', 'p1', 'p2', None, 'p4', 'p5'])]
++--------------------+
+--Query--
+SELECT t.f[1][3][1] AS "131", t.f[2][2][1] AS "221" FROM (   SELECT ARRAY[[[111,112],[121,122],[131,132]],[[211,212],[221,122],[231,232]]] AS f ) AS t
+--Result--
+[(131, 221)]
++--------------------+
+--Query--
+SELECT ARRAY[[[[[['hello'],['world']]]]]]
+--Result--
+[([[[[[['hello'], ['world']]]]]],)]
++--------------------+
+--Query--
+SELECT ARRAY[ARRAY['hello'],ARRAY['world']]
+--Result--
+[([['hello'], ['world']],)]
++--------------------+
+--Query--
+SELECT ARRAY(select f2 from arrtest_f order by f2) AS "ARRAY"
+--Result--
+[([1.15, 1.15, 1.18, 1.21, 1.24, 1.26, 1.26, 1.3, 1.32],)]
++--------------------+
+--Query--
+SELECT '{1,null,3}'::int[]
+--Result--
+[([1, None, 3],)]
++--------------------+
+--Query--
+SELECT ARRAY[1,NULL,3]
+--Result--
+[([1, None, 3],)]
++--------------------+
+--Query--
+SELECT array_append(array[42], 6) AS "{42,6}"
+--Result--
+[([42, 6],)]
++--------------------+
+--Query--
+SELECT array_prepend(6, array[42]) AS "{6,42}"
+--Result--
+[([6, 42],)]
++--------------------+
+--Query--
+SELECT array_cat(ARRAY[1,2], ARRAY[3,4]) AS "{1,2,3,4}"
+--Result--
+[([1, 2, 3, 4],)]
++--------------------+
+--Query--
+SELECT array_cat(ARRAY[1,2], ARRAY[[3,4],[5,6]]) AS "{{1,2},{3,4},{5,6}}"
+--Result--
+[([[1, 2], [3, 4], [5, 6]],)]
++--------------------+
+--Query--
+SELECT array_cat(ARRAY[[3,4],[5,6]], ARRAY[1,2]) AS "{{3,4},{5,6},{1,2}}"
+--Result--
+[([[3, 4], [5, 6], [1, 2]],)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY[1,2,3,4,5], 4)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY[5,3,4,2,1], 4)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], 'mon')
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], 'sat')
+--Result--
+[(7,)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY['sun','mon','tue','wed','thu',NULL,'fri','sat'], NULL)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT array_position(ARRAY['sun','mon','tue','wed','thu',NULL,'fri','sat'], 'sat')
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT array_positions(NULL, 10)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT array_positions(NULL, NULL::int)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT array_positions(ARRAY[1,2,3,4,5,6,1,2,3,4,5,6], 4)
+--Result--
+[([4, 10],)]
++--------------------+
+--Query--
+SELECT array_positions(ARRAY[1,2,3,4,5,6,1,2,3,4,5,6], NULL)
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT array_positions(ARRAY[1,2,3,NULL,5,6,1,2,3,NULL,5,6], NULL)
+--Result--
+[([4, 10],)]
++--------------------+
+--Query--
+SELECT array_length(array_positions(ARRAY(SELECT 'AAAAAAAAAAAAAAAAAAAAAAAAA'::text || i % 10                                           FROM generate_series(1,100) g(i)),                                   'AAAAAAAAAAAAAAAAAAAAAAAAA5'), 1)
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT array_position('[2:4]={1,2,3}'::int[], 1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT array_positions('[2:4]={1,2,3}'::int[], 1)
+--Result--
+[([2],)]
++--------------------+
+--Query--
+SELECT     array_position(ids, (1, 1)),     array_positions(ids, (1, 1))         FROM (VALUES     (ARRAY[(0, 0), (1, 1)]),     (ARRAY[(1, 1)]) ) AS f (ids)
+--Result--
+[(2, [2]), (1, [1])]
++--------------------+
+--Query--
+SELECT a FROM arrtest WHERE b = ARRAY[[[113,142],[1,147]]]
+--Result--
+[([16, 25, 3, 4, 5],)]
++--------------------+
+--Query--
+SELECT NOT ARRAY[1.1,1.2,1.3] = ARRAY[1.1,1.2,1.3] AS "FALSE"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT ARRAY[1,2] || 3 AS "{1,2,3}"
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+SELECT 0 || ARRAY[1,2] AS "{0,1,2}"
+--Result--
+[([0, 1, 2],)]
++--------------------+
+--Query--
+SELECT ARRAY[1,2] || ARRAY[3,4] AS "{1,2,3,4}"
+--Result--
+[([1, 2, 3, 4],)]
++--------------------+
+--Query--
+SELECT ARRAY[[['hello','world']]] || ARRAY[[['happy','birthday']]] AS "ARRAY"
+--Result--
+[([[['hello', 'world']], [['happy', 'birthday']]],)]
++--------------------+
+--Query--
+SELECT ARRAY[[1,2],[3,4]] || ARRAY[5,6] AS "{{1,2},{3,4},{5,6}}"
+--Result--
+[([[1, 2], [3, 4], [5, 6]],)]
++--------------------+
+--Query--
+SELECT ARRAY[0,0] || ARRAY[1,1] || ARRAY[2,2] AS "{0,0,1,1,2,2}"
+--Result--
+[([0, 0, 1, 1, 2, 2],)]
++--------------------+
+--Query--
+SELECT 0 || ARRAY[1,2] || 3 AS "{0,1,2,3}"
+--Result--
+[([0, 1, 2, 3],)]
++--------------------+
+--Query--
+SELECT ARRAY[1.1] || ARRAY[2,3,4]
+--Result--
+[([1.1, 2.0, 3.0, 4.0],)]
++--------------------+
+--Query--
+SELECT array_agg(x) || array_agg(x) FROM (VALUES (ROW(1,2)), (ROW(3,4))) v(x)
+--Result--
+[('{"(1,2)","(3,4)","(1,2)","(3,4)"}',)]
++--------------------+
+--Query--
+SELECT ROW(1,2) || array_agg(x) FROM (VALUES (ROW(3,4)), (ROW(5,6))) v(x)
+--Result--
+[('{"(1,2)","(3,4)","(5,6)"}',)]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i @> '{32}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i && '{32}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i @> '{17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i && '{17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i @> '{32,17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i && '{32,17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i <@ '{38,34,32,89}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i = '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i @> '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i && '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i <@ '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i = '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i @> '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i && '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE i <@ '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t @> '{AAAAAAAA72908}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t && '{AAAAAAAA72908}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t @> '{AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t && '{AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t @> '{AAAAAAAA72908,AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t && '{AAAAAAAA72908,AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t <@ '{AAAAAAAA72908,AAAAAAAAAAAAAAAAAAA17075,AA88409,AAAAAAAAAAAAAAAAAA36842,AAAAAAA48038,AAAAAAAAAAAAAA10611}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t = '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t @> '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t && '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_op_test WHERE t <@ '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ARRAY[1,2,3]::text[]::int[]::float8[] AS "{1,2,3}"
+--Result--
+[([1.0, 2.0, 3.0],)]
++--------------------+
+--Query--
+SELECT pg_typeof(ARRAY[1,2,3]::text[]::int[]::float8[]) AS "double precision[]"
+--Result--
+[('double precision[]',)]
++--------------------+
+--Query--
+SELECT ARRAY[['a','bc'],['def','hijk']]::text[]::varchar[] AS "{{a,bc},{def,hijk}}"
+--Result--
+[([['a', 'bc'], ['def', 'hijk']],)]
++--------------------+
+--Query--
+SELECT pg_typeof(ARRAY[['a','bc'],['def','hijk']]::text[]::varchar[]) AS "character varying[]"
+--Result--
+[('character varying[]',)]
++--------------------+
+--Query--
+SELECT CAST(ARRAY[[[[[['a','bb','ccc']]]]]] as text[]) as "{{{{{{a,bb,ccc}}}}}}"
+--Result--
+[([[[[[['a', 'bb', 'ccc']]]]]],)]
++--------------------+
+--Query--
+SELECT NULL::text[]::int[] AS "NULL"
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 33 = any ('{1,2,3}')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 33 = any ('{1,2,33}')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 33 = all ('{1,2,33}')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 33 >= all ('{1,2,33}')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select null::int >= all ('{1,2,33}')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select null::int >= all ('{}')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select null::int >= any ('{}')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 33.4 = any (array[1,2,3])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 33.4 > all (array[1,2,3])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 33 = any (null::int[])
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select null::int = any ('{1,2,3}')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 33 = any ('{1,null,3}')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 33 = any ('{1,null,33}')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 33 = all (null::int[])
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select null::int = all ('{1,2,3}')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 33 = all ('{1,null,3}')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 33 = all ('{33,null,33}')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT -1 != ALL(ARRAY(SELECT NULLIF(g.i, 900) FROM generate_series(1,1000) g(i)))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from arr_tbl where f1 > '{1,2,3}' and f1 <= '{1,5,3}'
+--Result--
+[([1, 2, 10],), ([1, 5, 3],)]
++--------------------+
+--Query--
+select * from arr_tbl where f1 >= '{1,2,3}' and f1 < '{1,5,3}'
+--Result--
+[([1, 2, 3],), ([1, 2, 10],)]
++--------------------+
+--Query--
+select 'foo' like any (array['%a', '%o'])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'foo' like any (array['%a', '%b'])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'foo' like all (array['f%', '%o'])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'foo' like all (array['f%', '%b'])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'foo' not like any (array['%a', '%b'])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'foo' not like all (array['%a', '%o'])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'foo' ilike any (array['%A', '%O'])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'foo' ilike all (array['F%', '%O'])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select '{{1},{{2}}}'::text[]
+--Result--
+[([[['1']], [['2']]],)]
++--------------------+
+--Query--
+select '{{{1}},{2}}'::text[]
+--Result--
+[([],)]
++--------------------+
+--Query--
+select '[21474836488:21474836489]={1,2}'::int[]
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+select '{}'::text[]
+--Result--
+[([],)]
++--------------------+
+--Query--
+select '{{{1,2,3,4},{2,3,4,5}},{{3,4,5,6},{4,5,6,7}}}'::text[]
+--Result--
+[([[['1', '2', '3', '4'], ['2', '3', '4', '5']], [['3', '4', '5', '6'], ['4', '5', '6', '7']]],)]
++--------------------+
+--Query--
+select '{null,n\ull,"null"}'::text[]
+--Result--
+[([None, 'null', 'null'],)]
++--------------------+
+--Query--
+select '{ ab\c , "ab\"c" }'::text[]
+--Result--
+[(['abc', 'ab"c'],)]
++--------------------+
+--Query--
+select '{0 second  ,0 second}'::interval[]
+--Result--
+[([datetime.timedelta(0), datetime.timedelta(0)],)]
++--------------------+
+--Query--
+select '{ { "," } , { 3 } }'::text[]
+--Result--
+[([[','], ['3']],)]
++--------------------+
+--Query--
+select '  {   {  "  0 second  "   ,  0 second  }   }'::text[]
+--Result--
+[([['  0 second  ', '0 second']],)]
++--------------------+
+--Query--
+select '{            0 second,            @ 1 hour @ 42 minutes @ 20 seconds          }'::interval[]
+--Result--
+[([datetime.timedelta(0), datetime.timedelta(seconds=6140)],)]
++--------------------+
+--Query--
+select array[]::text[]
+--Result--
+[([],)]
++--------------------+
+--Query--
+select '[2]={1,7}'::int[]
+--Result--
+[([1, 7],)]
++--------------------+
+--Query--
+select '[0:1]={1.1,2.2}'::float8[]
+--Result--
+[([1.1, 2.2],)]
++--------------------+
+--Query--
+select '[2147483646:2147483646]={1}'::int[]
+--Result--
+[([1],)]
++--------------------+
+--Query--
+select '[-2147483648:-2147483647]={1,2}'::int[]
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest
+--Result--
+[([1, 2, 3, 4], [1, 2, 3], [['grey', 'red'], ['grey', 'blue']], [['grey', 'red'], ['blue', 'blue']], [1.6, 0.0], [1.6])]
++--------------------+
+--Query--
+SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest
+--Result--
+[([3, 3, 2, 4, 5, 6], [1, 2, 3], [['white', 'yellow'], ['pink', 'orange']], [['grey', 'red'], ['blue', 'blue']], [2.1, 3.3, 1.8, 1.7, 1.6], [1.6])]
++--------------------+
+--Query--
+SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest
+--Result--
+[([3, 3, 2, 4, 5, 6], [1, 2, 3], [['white', 'yellow'], ['pink', 'orange']], [['black', 'red'], ['green', 'orange']], [2.1, 3.3, 1.8, 1.7, 1.6], [1.6])]
++--------------------+
+--Query--
+SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest
+--Result--
+[([4, 2, 6, 7, 8, 1], [1, 2, 3], [['white', 'yellow'], ['pink', 'orange']], [['black', 'red'], ['green', 'orange']], [2.1, 3.3, 1.8, 1.7, 1.6], [1.6])]
++--------------------+
+--Query--
+SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest
+--Result--
+[([4, 2, 6, 7, 8, 1], [], [['white', 'yellow'], ['pink', 'orange']], [['black', 'red'], ['green', 'orange']], [2.1, 3.3, 1.8, 1.7, 1.6], [1.6])]
++--------------------+
+--Query--
+select * from comptable
+--Result--
+[('(1,foo)', '{"(2,bar)","(3,baz)"}')]
++--------------------+
+--Query--
+select c2[2].f2 from comptable
+--Result--
+[('baz',)]
++--------------------+
+--Query--
+select * from unnest1(array[1,2,3])
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select * from unnest2(array[[1,2,3],[4,5,6]])
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+select array_fill(null::integer, array[3,3])
+--Result--
+[([[None, None, None], [None, None, None], [None, None, None]],)]
++--------------------+
+--Query--
+select array_fill(null::text, array[3,3])
+--Result--
+[([[None, None, None], [None, None, None], [None, None, None]],)]
++--------------------+
+--Query--
+select array_fill(7, array[3,3])
+--Result--
+[([[7, 7, 7], [7, 7, 7], [7, 7, 7]],)]
++--------------------+
+--Query--
+select array_fill('juhu'::text, array[3,3])
+--Result--
+[([['juhu', 'juhu', 'juhu'], ['juhu', 'juhu', 'juhu'], ['juhu', 'juhu', 'juhu']],)]
++--------------------+
+--Query--
+select a, a = '{}' as is_eq, array_dims(a)   from (select array_fill(42, array[0]) as a) ss
+--Result--
+[([], True, None)]
++--------------------+
+--Query--
+select a, a = '{}' as is_eq, array_dims(a)   from (select array_fill(42, '{}') as a) ss
+--Result--
+[([], True, None)]
++--------------------+
+--Query--
+select a, a = '{}' as is_eq, array_dims(a)   from (select array_fill(42, '{}', '{}') as a) ss
+--Result--
+[([], True, None)]
++--------------------+
+--Query--
+select string_to_array('1|2|3', '|')
+--Result--
+[(['1', '2', '3'],)]
++--------------------+
+--Query--
+select string_to_array('1|2|3|', '|')
+--Result--
+[(['1', '2', '3', ''],)]
++--------------------+
+--Query--
+select string_to_array('1||2|3||', '||')
+--Result--
+[(['1', '2|3', ''],)]
++--------------------+
+--Query--
+select string_to_array('1|2|3', '')
+--Result--
+[(['1|2|3'],)]
++--------------------+
+--Query--
+select string_to_array('', '|')
+--Result--
+[([],)]
++--------------------+
+--Query--
+select string_to_array('1|2|3', NULL)
+--Result--
+[(['1', '|', '2', '|', '3'],)]
++--------------------+
+--Query--
+select string_to_array(NULL, '|') IS NULL
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select string_to_array('abc', '')
+--Result--
+[(['abc'],)]
++--------------------+
+--Query--
+select string_to_array('abc', '', 'abc')
+--Result--
+[([None],)]
++--------------------+
+--Query--
+select string_to_array('abc', ',')
+--Result--
+[(['abc'],)]
++--------------------+
+--Query--
+select string_to_array('abc', ',', 'abc')
+--Result--
+[([None],)]
++--------------------+
+--Query--
+select string_to_array('1,2,3,4,,6', ',')
+--Result--
+[(['1', '2', '3', '4', '', '6'],)]
++--------------------+
+--Query--
+select string_to_array('1,2,3,4,,6', ',', '')
+--Result--
+[(['1', '2', '3', '4', None, '6'],)]
++--------------------+
+--Query--
+select string_to_array('1,2,3,4,*,6', ',', '*')
+--Result--
+[(['1', '2', '3', '4', None, '6'],)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1|2|3', '|') g(v)
+--Result--
+[('1', False), ('2', False), ('3', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1|2|3|', '|') g(v)
+--Result--
+[('1', False), ('2', False), ('3', False), ('', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1||2|3||', '||') g(v)
+--Result--
+[('1', False), ('2|3', False), ('', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1|2|3', '') g(v)
+--Result--
+[('1|2|3', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('', '|') g(v)
+--Result--
+[]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1|2|3', NULL) g(v)
+--Result--
+[('1', False), ('|', False), ('2', False), ('|', False), ('3', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table(NULL, '|') g(v)
+--Result--
+[]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('abc', '') g(v)
+--Result--
+[('abc', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('abc', '', 'abc') g(v)
+--Result--
+[(None, True)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('abc', ',') g(v)
+--Result--
+[('abc', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('abc', ',', 'abc') g(v)
+--Result--
+[(None, True)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1,2,3,4,,6', ',') g(v)
+--Result--
+[('1', False), ('2', False), ('3', False), ('4', False), ('', False), ('6', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1,2,3,4,,6', ',', '') g(v)
+--Result--
+[('1', False), ('2', False), ('3', False), ('4', False), (None, True), ('6', False)]
++--------------------+
+--Query--
+select v, v is null as "is null" from string_to_table('1,2,3,4,*,6', ',', '*') g(v)
+--Result--
+[('1', False), ('2', False), ('3', False), ('4', False), (None, True), ('6', False)]
++--------------------+
+--Query--
+select array_to_string(NULL::int4[], ',') IS NULL
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select array_to_string('{}'::int4[], ',')
+--Result--
+[('',)]
++--------------------+
+--Query--
+select array_to_string(array[1,2,3,4,NULL,6], ',')
+--Result--
+[('1,2,3,4,6',)]
++--------------------+
+--Query--
+select array_to_string(array[1,2,3,4,NULL,6], ',', '*')
+--Result--
+[('1,2,3,4,*,6',)]
++--------------------+
+--Query--
+select array_to_string(array[1,2,3,4,NULL,6], NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select array_to_string(array[1,2,3,4,NULL,6], ',', NULL)
+--Result--
+[('1,2,3,4,6',)]
++--------------------+
+--Query--
+select array_to_string(string_to_array('1|2|3', '|'), '|')
+--Result--
+[('1|2|3',)]
++--------------------+
+--Query--
+select array_length(array[1,2,3], 1)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select array_length(array[[1,2,3], [4,5,6]], 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select array_length(array[[1,2,3], [4,5,6]], 1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select array_length(array[[1,2,3], [4,5,6]], 2)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select array_length(array[[1,2,3], [4,5,6]], 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select cardinality(NULL::int[])
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select cardinality('{}'::int[])
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select cardinality(array[1,2,3])
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select cardinality('[2:4]={5,6,7}'::int[])
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select cardinality('{{1,2}}'::int[])
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select cardinality('{{1,2},{3,4},{5,6}}'::int[])
+--Result--
+[(6,)]
++--------------------+
+--Query--
+select cardinality('{{{1,9},{5,6}},{{2,3},{3,4}}}'::int[])
+--Result--
+[(8,)]
++--------------------+
+--Query--
+select array_agg(ar)   from (values ('{1,2}'::int[]), ('{3,4}'::int[])) v(ar)
+--Result--
+[([[1, 2], [3, 4]],)]
++--------------------+
+--Query--
+select array_agg(distinct ar order by ar desc)   from (select array[i / 2] from generate_series(1,10) a(i)) b(ar)
+--Result--
+[([[5], [4], [3], [2], [1], [0]],)]
++--------------------+
+--Query--
+select array_agg(ar)   from (select array_agg(array[i, i+1, i-1])         from generate_series(1,2) a(i)) b(ar)
+--Result--
+[([[[1, 2, 0], [2, 3, 1]]],)]
++--------------------+
+--Query--
+select array_agg(array[i+1.2, i+1.3, i+1.4]) from generate_series(1,3) g(i)
+--Result--
+[([[2.2, 2.3, 2.4], [3.2, 3.3, 3.4], [4.2, 4.3, 4.4]],)]
++--------------------+
+--Query--
+select array_agg(array['Hello', i::text]) from generate_series(9,11) g(i)
+--Result--
+[([['Hello', '9'], ['Hello', '10'], ['Hello', '11']],)]
++--------------------+
+--Query--
+select array_agg(array[i, nullif(i, 3), i+1]) from generate_series(1,4) g(i)
+--Result--
+[([[1, 1, 2], [2, 2, 3], [3, None, 4], [4, 4, 5]],)]
++--------------------+
+--Query--
+select unnest(array[1,2,3])
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select * from unnest(array[1,2,3])
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select unnest(array[1,2,3,4.5]::float8[])
+--Result--
+[(1.0,), (2.0,), (3.0,), (4.5,)]
++--------------------+
+--Query--
+select unnest(array[1,2,3,4.5]::numeric[])
+--Result--
+[(1.0,), (2.0,), (3.0,), (4.5,)]
++--------------------+
+--Query--
+select unnest(array[1,2,3,null,4,null,null,5,6])
+--Result--
+[(1,), (2,), (3,), (None,), (4,), (None,), (None,), (5,), (6,)]
++--------------------+
+--Query--
+select unnest(array[1,2,3,null,4,null,null,5,6]::text[])
+--Result--
+[('1',), ('2',), ('3',), (None,), ('4',), (None,), (None,), ('5',), ('6',)]
++--------------------+
+--Query--
+select abs(unnest(array[1,2,null,-3]))
+--Result--
+[(1,), (2,), (None,), (3,)]
++--------------------+
+--Query--
+select array_remove(array[1,2,2,3], 2)
+--Result--
+[([1, 3],)]
++--------------------+
+--Query--
+select array_remove(array[1,2,2,3], 5)
+--Result--
+[([1, 2, 2, 3],)]
++--------------------+
+--Query--
+select array_remove(array[1,NULL,NULL,3], NULL)
+--Result--
+[([1, 3],)]
++--------------------+
+--Query--
+select array_remove(array['A','CC','D','C','RR'], 'RR')
+--Result--
+[(['A', 'CC', 'D', 'C'],)]
++--------------------+
+--Query--
+select array_remove(array[1.0, 2.1, 3.3], 1)
+--Result--
+[([2.1, 3.3],)]
++--------------------+
+--Query--
+select array_remove(array['X','X','X'], 'X') = '{}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select array_replace(array[1,2,5,4],5,3)
+--Result--
+[([1, 2, 3, 4],)]
++--------------------+
+--Query--
+select array_replace(array[1,2,5,4],5,NULL)
+--Result--
+[([1, 2, None, 4],)]
++--------------------+
+--Query--
+select array_replace(array[1,2,NULL,4,NULL],NULL,5)
+--Result--
+[([1, 2, 5, 4, 5],)]
++--------------------+
+--Query--
+select array_replace(array['A','B','DD','B'],'B','CC')
+--Result--
+[(['A', 'CC', 'DD', 'CC'],)]
++--------------------+
+--Query--
+select array_replace(array[1,NULL,3],NULL,NULL)
+--Result--
+[([1, None, 3],)]
++--------------------+
+--Query--
+select array_replace(array['AB',NULL,'CDE'],NULL,'12')
+--Result--
+[(['AB', '12', 'CDE'],)]
++--------------------+
+--Query--
+select array(select array[i,i/2] from generate_series(1,5) i)
+--Result--
+[([[1, 0], [2, 1], [3, 1], [4, 2], [5, 2]],)]
++--------------------+
+--Query--
+select array(select array['Hello', i::text] from generate_series(9,11) i)
+--Result--
+[([['Hello', '9'], ['Hello', '10'], ['Hello', '11']],)]
++--------------------+
+--Query--
+truncate table src
+--Result--
+[]
++--------------------+
+--Query--
+SELECT     op,     width_bucket(op::numeric, ARRAY[1, 3, 5, 10.0]::numeric[]) AS wb_n1,     width_bucket(op::numeric, ARRAY[0, 5.5, 9.99]::numeric[]) AS wb_n2,     width_bucket(op::numeric, ARRAY[-6, -5, 2.0]::numeric[]) AS wb_n3,     width_bucket(op::float8, ARRAY[1, 3, 5, 10.0]::float8[]) AS wb_f1,     width_bucket(op::float8, ARRAY[0, 5.5, 9.99]::float8[]) AS wb_f2,     width_bucket(op::float8, ARRAY[-6, -5, 2.0]::float8[]) AS wb_f3 FROM (VALUES   (-5.2),   (-0.0000000001),   (0.000000000001),   (1),   (1.99999999999999),   (2),   (2.00000000000001),   (3),   (4),   (4.5),   (5),   (5.5),   (6),   (7),   (8),   (9),   (9.99999999999999),   (10),   (10.0000000000001) ) v(op)
+--Result--
+[(-5.2, 0, 0, 1, 0, 0, 1), (-1e-10, 0, 0, 2, 0, 0, 2), (1e-12, 0, 1, 2, 0, 1, 2), (1.0, 1, 1, 2, 1, 1, 2), (1.99999999999999, 1, 1, 2, 1, 1, 2), (2.0, 1, 1, 3, 1, 1, 3), (2.00000000000001, 1, 1, 3, 1, 1, 3), (3.0, 2, 1, 3, 2, 1, 3), (4.0, 2, 1, 3, 2, 1, 3), (4.5, 2, 1, 3, 2, 1, 3), (5.0, 3, 1, 3, 3, 1, 3), (5.5, 3, 2, 3, 3, 2, 3), (6.0, 3, 2, 3, 3, 2, 3), (7.0, 3, 2, 3, 3, 2, 3), (8.0, 3, 2, 3, 3, 2, 3), (9.0, 3, 2, 3, 3, 2, 3), (9.99999999999999, 3, 3, 3, 3, 3, 3), (10.0, 4, 3, 3, 4, 3, 3), (10.0000000000001, 4, 3, 3, 4, 3, 3)]
++--------------------+
+--Query--
+SELECT     op,     width_bucket(op, ARRAY[1, 3, 9, 'NaN', 'NaN']::float8[]) AS wb FROM (VALUES   (-5.2::float8),   (4::float8),   (77::float8),   ('NaN'::float8) ) v(op)
+--Result--
+[(-5.2, 0), (4.0, 2), (77.0, 3), (nan, 5)]
++--------------------+
+--Query--
+SELECT     op,     width_bucket(op, ARRAY[1, 3, 5, 10]) AS wb_1 FROM generate_series(0,11) as op
+--Result--
+[(0, 0), (1, 1), (2, 1), (3, 2), (4, 2), (5, 3), (6, 3), (7, 3), (8, 3), (9, 3), (10, 4), (11, 4)]
++--------------------+
+--Query--
+SELECT width_bucket(now(),                     array['yesterday', 'today', 'tomorrow']::timestamptz[])
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT width_bucket(5, ARRAY[3])
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT width_bucket(5, '{}')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT arr, trim_array(arr, 2) FROM (VALUES ('{1,2,3,4,5,6}'::bigint[]),         ('{1,2}'),         ('[10:16]={1,2,3,4,5,6,7}'),         ('[-15:-10]={1,2,3,4,5,6}'),         ('{{1,10},{2,20},{3,30},{4,40}}')) v(arr)
+--Result--
+[([1, 2, 3, 4, 5, 6], [1, 2, 3, 4]), ([1, 2], []), ([1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5]), ([1, 2, 3, 4, 5, 6], [1, 2, 3, 4]), ([[1, 10], [2, 20], [3, 30], [4, 40]], [[1, 10], [2, 20]])]
++--------------------+
+--Query--
+SELECT array_shuffle('{1,2,3,4,5,6}'::int[]) <@ '{1,2,3,4,5,6}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT array_shuffle('{1,2,3,4,5,6}'::int[]) @> '{1,2,3,4,5,6}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT array_dims(array_shuffle('[-1:2][2:3]={{1,2},{3,NULL},{5,6},{7,8}}'::int[]))
+--Result--
+[('[-1:2][2:3]',)]
++--------------------+
+--Query--
+SELECT array_dims(array_shuffle('{{{1,2},{3,NULL}},{{5,6},{7,8}},{{9,10},{11,12}}}'::int[]))
+--Result--
+[('[1:3][1:2][1:2]',)]
++--------------------+
+--Query--
+SELECT array_sample('{1,2,3,4,5,6}'::int[], 3) <@ '{1,2,3,4,5,6}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT array_length(array_sample('{1,2,3,4,5,6}'::int[], 3), 1)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT array_dims(array_sample('[-1:2][2:3]={{1,2},{3,NULL},{5,6},{7,8}}'::int[], 3))
+--Result--
+[('[1:3][2:3]',)]
++--------------------+
+--Query--
+SELECT array_dims(array_sample('{{{1,2},{3,NULL}},{{5,6},{7,8}},{{9,10},{11,12}}}'::int[], 2))
+--Result--
+[('[1:2][1:2][1:2]',)]
++--------------------+

@@ -1,0 +1,55 @@
+--Query--
+select * from copytest except select * from copytest2
+--Result--
+[('esc\\ape', 'a\\r\\\r\\\n\\nb', 4), ('DOS', 'abc\r\ndef', 1), ('Unix', 'abc\ndef', 2), ('Mac', 'abc\rdef', 3)]
++--------------------+
+--Query--
+truncate copytest2
+--Result--
+[]
++--------------------+
+--Query--
+select * from copytest except select * from copytest2
+--Result--
+[('esc\\ape', 'a\\r\\\r\\\n\\nb', 4), ('DOS', 'abc\r\ndef', 1), ('Unix', 'abc\ndef', 2), ('Mac', 'abc\rdef', 3)]
++--------------------+
+--Query--
+truncate parted_copytest
+--Result--
+[]
++--------------------+
+--Query--
+truncate parted_copytest
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass,count(*),sum(a) from parted_copytest group by tableoid order by tableoid::regclass::name
+--Result--
+[]
++--------------------+
+--Query--
+truncate parted_copytest
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass,count(*),sum(a) from parted_copytest group by tableoid order by tableoid::regclass::name
+--Result--
+[]
++--------------------+
+--Query--
+truncate table parted_copytest
+--Result--
+[]
++--------------------+
+--Query--
+select * from parted_copytest where b = 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tableoid::regclass, id % 2 = 0 is_even, count(*) from parted_si GROUP BY 1, 2 ORDER BY 1
+--Result--
+[]
++--------------------+

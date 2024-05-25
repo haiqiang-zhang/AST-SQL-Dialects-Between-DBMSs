@@ -1,0 +1,175 @@
+--Query--
+SELECT date(now())::text = current_date::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT now()::timetz::text = current_time::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT now()::timetz(4)::text = current_time(4)::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT now()::time::text = localtime::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT now()::time(3)::text = localtime(3)::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT current_timestamp = NOW()
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT length(current_timestamp::text) >= length(current_timestamp(0)::text)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT now()::timestamp::text = localtimestamp::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT current_time = current_time(7)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT current_timestamp = current_timestamp(7)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT localtime = localtime(7)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT localtimestamp = localtimestamp(7)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT current_catalog = current_database()
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT current_schema
+--Result--
+[('public',)]
++--------------------+
+--Query--
+SELECT current_schema
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT current_schema
+--Result--
+[('pg_catalog',)]
++--------------------+
+--Query--
+explain (verbose, costs off) select * from numeric_view
+--Result--
+[('Seq Scan on public.numeric_tbl',), ('  Output: numeric_tbl.f1, (numeric_tbl.f1)::numeric(16,4), (numeric_tbl.f1)::numeric, numeric_tbl.f2, (numeric_tbl.f2)::numeric(16,4), numeric_tbl.f2',)]
++--------------------+
+--Query--
+explain (verbose, costs off) select * from bpchar_view   where f1::bpchar = 'foo'
+--Result--
+[('Index Scan using bpchar_tbl_f1_key on public.bpchar_tbl',), ('  Output: bpchar_tbl.f1, (bpchar_tbl.f1)::character(14), (bpchar_tbl.f1)::bpchar, bpchar_tbl.f2, (bpchar_tbl.f2)::character(14), bpchar_tbl.f2',), ("  Index Cond: ((bpchar_tbl.f1)::bpchar = 'foo'::bpchar)",)]
++--------------------+
+--Query--
+explain (verbose, costs off) select random() IN (1, 4, 8.0)
+--Result--
+[('Result',), ("  Output: (random() = ANY ('{1,4,8}'::double precision[]))",)]
++--------------------+
+--Query--
+explain (verbose, costs off) select random()::int IN (1, 4, 8.0)
+--Result--
+[('Result',), ("  Output: (((random())::integer)::numeric = ANY ('{1,4,8.0}'::numeric[]))",)]
++--------------------+
+--Query--
+select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_int_input(1) in (null, null, null, null, null, null, null, null, null, null, null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1, null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select return_int_input(null::int) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_int_input(null::int) in (10, 9, 2, 8, 3, 7, 4, 6, 5, null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_text_input('a') in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 0)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 2, null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1, null)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select return_int_input(1) not in (null, null, null, null, null, null, null, null, null, null, null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_int_input(null::int) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_int_input(null::int) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select return_text_input('a') not in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+--Result--
+[(False,)]
++--------------------+

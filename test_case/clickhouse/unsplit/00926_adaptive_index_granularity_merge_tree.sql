@@ -1,4 +1,3 @@
------ Group of very similar simple tests ------
 select '----HORIZONTAL MERGE TESTS----';
 DROP TABLE IF EXISTS zero_rows_per_granule;
 CREATE TABLE zero_rows_per_granule (
@@ -97,8 +96,7 @@ OPTIMIZE TABLE adaptive_granularity_alter FINAL;
 SELECT k, v2 FROM adaptive_granularity_alter WHERE k >= 100 OR k = 42 ORDER BY k;
 SELECT sum(marks) from system.parts WHERE table = 'adaptive_granularity_alter' and database=currentDatabase() and active=1;
 DROP TABLE IF EXISTS adaptive_granularity_alter;
--------------VERTICAL MERGE TESTS--------------
------------------------------------------------
+
 select '----VERTICAL MERGE TESTS----';
 DROP TABLE IF EXISTS zero_rows_per_granule;
 CREATE TABLE zero_rows_per_granule (

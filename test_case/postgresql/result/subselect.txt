@@ -1,0 +1,425 @@
+--Query--
+SELECT 1 AS one WHERE 1 IN (SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 AS zero WHERE 1 NOT IN (SELECT 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 AS zero WHERE 1 IN (SELECT 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 AS x) ss
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM ((SELECT 1 AS x)) ss
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM ((SELECT 1 AS x)), ((SELECT * FROM ((SELECT 2 AS y))))
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+(SELECT 2) UNION SELECT 2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+((SELECT 2)) UNION SELECT 2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT ((SELECT 2) UNION SELECT 2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT (((SELECT 2)) UNION SELECT 2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT (SELECT ARRAY[1,2,3])[1]
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ((SELECT ARRAY[1,2,3]))[2]
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT (((SELECT ARRAY[1,2,3])))[3]
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT * FROM SUBSELECT_TBL
+--Result--
+[(1, 2, 3.0), (2, 3, 4.0), (3, 4, 5.0), (1, 1, 1.0), (2, 2, 2.0), (3, 3, 3.0), (6, 7, 8.0), (8, 9, None)]
++--------------------+
+--Query--
+SELECT f1 AS "Constant Select" FROM SUBSELECT_TBL   WHERE f1 IN (SELECT 1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT f1 AS "Uncorrelated Field" FROM SUBSELECT_TBL   WHERE f1 IN (SELECT f2 FROM SUBSELECT_TBL)
+--Result--
+[(1,), (2,), (3,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT f1 AS "Uncorrelated Field" FROM SUBSELECT_TBL   WHERE f1 IN (SELECT f2 FROM SUBSELECT_TBL WHERE     f2 IN (SELECT f1 FROM SUBSELECT_TBL))
+--Result--
+[(1,), (2,), (3,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT f1, f2   FROM SUBSELECT_TBL   WHERE (f1, f2) NOT IN (SELECT f2, CAST(f3 AS int4) FROM SUBSELECT_TBL                          WHERE f3 IS NOT NULL)
+--Result--
+[(1, 2), (6, 7), (8, 9)]
++--------------------+
+--Query--
+SELECT f1 AS "Correlated Field", f2 AS "Second Field"   FROM SUBSELECT_TBL upper   WHERE f1 IN (SELECT f2 FROM SUBSELECT_TBL WHERE f1 = upper.f1)
+--Result--
+[(1, 2), (2, 3), (3, 4), (1, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT f1 AS "Correlated Field", f3 AS "Second Field"   FROM SUBSELECT_TBL upper   WHERE f1 IN     (SELECT f2 FROM SUBSELECT_TBL WHERE CAST(upper.f2 AS float) = f3)
+--Result--
+[(2, 4.0), (3, 5.0), (1, 1.0), (2, 2.0), (3, 3.0)]
++--------------------+
+--Query--
+SELECT f1 AS "Correlated Field", f3 AS "Second Field"   FROM SUBSELECT_TBL upper   WHERE f3 IN (SELECT upper.f1 + f2 FROM SUBSELECT_TBL                WHERE f2 = CAST(f3 AS integer))
+--Result--
+[(1, 3.0), (2, 4.0), (3, 5.0), (6, 8.0)]
++--------------------+
+--Query--
+SELECT f1 AS "Correlated Field"   FROM SUBSELECT_TBL   WHERE (f1, f2) IN (SELECT f2, CAST(f3 AS int4) FROM SUBSELECT_TBL                      WHERE f3 IS NOT NULL)
+--Result--
+[(2,), (3,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+EXPLAIN (VERBOSE, COSTS OFF) SELECT ROW(1, 2) = (SELECT f1, f2) AS eq FROM SUBSELECT_TBL
+--Result--
+[('Seq Scan on public.subselect_tbl',), ('  Output: (SubPlan 1)',), ('  SubPlan 1',), ('    ->  Result',), ('          Output: subselect_tbl.f1, subselect_tbl.f2',)]
++--------------------+
+--Query--
+SELECT ROW(1, 2) = (SELECT f1, f2) AS eq FROM SUBSELECT_TBL
+--Result--
+[(True,), (False,), (False,), (False,), (False,), (False,), (False,), (False,)]
++--------------------+
+--Query--
+EXPLAIN (VERBOSE, COSTS OFF) SELECT ROW(1, 2) = (SELECT 3, 4) AS eq FROM SUBSELECT_TBL
+--Result--
+[('Seq Scan on public.subselect_tbl',), ('  Output: ((1 = $0) AND (2 = $1))',), ('  InitPlan 1 (returns $0,$1)',), ('    ->  Result',), ('          Output: 3, 4',)]
++--------------------+
+--Query--
+SELECT ROW(1, 2) = (SELECT 3, 4) AS eq FROM SUBSELECT_TBL
+--Result--
+[(False,), (False,), (False,), (False,), (False,), (False,), (False,), (False,)]
++--------------------+
+--Query--
+SELECT *, pg_typeof(f1) FROM   (SELECT 'foo' AS f1 FROM generate_series(1,3)) ss ORDER BY 1
+--Result--
+[('foo', 'text'), ('foo', 'text'), ('foo', 'text')]
++--------------------+
+--Query--
+explain (verbose, costs off) select '42' union all select '43'
+--Result--
+[('Append',), ('  ->  Result',), ("        Output: '42'::text",), ('  ->  Result',), ("        Output: '43'::text",)]
++--------------------+
+--Query--
+explain (verbose, costs off) select '42' union all select 43
+--Result--
+[('Append',), ('  ->  Result',), ('        Output: 42',), ('  ->  Result',), ('        Output: 43',)]
++--------------------+
+--Query--
+explain (verbose, costs off) select 1 = all (select (select 1))
+--Result--
+[('Result',), ('  Output: (SubPlan 2)',), ('  SubPlan 2',), ('    ->  Materialize',), ('          Output: ($0)',), ('          InitPlan 1 (returns $0)',), ('            ->  Result',), ('                  Output: 1',), ('          ->  Result',), ('                Output: $0',)]
++--------------------+
+--Query--
+select 1 = all (select (select 1))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT * FROM foo WHERE id IN     (SELECT id2 FROM (SELECT DISTINCT id1, id2 FROM bar) AS s)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM foo WHERE id IN     (SELECT id2 FROM (SELECT id1,id2 FROM bar GROUP BY id1,id2) AS s)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM foo WHERE id IN     (SELECT id2 FROM (SELECT id1, id2 FROM bar UNION                       SELECT id1, id2 FROM bar) AS s)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM foo WHERE id IN     (SELECT id2 FROM (SELECT DISTINCT ON (id2) id1, id2 FROM bar) AS s)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM foo WHERE id IN     (SELECT id2 FROM (SELECT id2 FROM bar GROUP BY id2) AS s)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM foo WHERE id IN     (SELECT id2 FROM (SELECT id2 FROM bar UNION                       SELECT id2 FROM bar) AS s)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from shipped_view
+--Result--
+[('wt', 0, '1', 1234.56)]
++--------------------+
+--Query--
+select * from shipped_view
+--Result--
+[('wt', 0, '1', 1234.56)]
++--------------------+
+--Query--
+select * from float_table   where float_col in (select num_col from numeric_table)
+--Result--
+[(1.0,), (2.0,), (3.0,)]
++--------------------+
+--Query--
+select * from numeric_table   where num_col in (select float_col from float_table)
+--Result--
+[(1.0,), (1.0,), (2.0,), (3.0,)]
++--------------------+
+--Query--
+select   ( select min(tb.id) from tb     where tb.aval = (select ta.val from ta where ta.id = tc.aid) ) as min_tb_id from tc
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+select * from   (select distinct f1, f2, (select f2 from t1 x where x.f1 = up.f1) as fs    from t1 up) ss group by f1,f2,fs
+--Result--
+[]
++--------------------+
+--Query--
+select view_a from view_a
+--Result--
+[('(42)',)]
++--------------------+
+--Query--
+select (select view_a) from view_a
+--Result--
+[('(42)',)]
++--------------------+
+--Query--
+select (select (select view_a)) from view_a
+--Result--
+[('(42)',)]
++--------------------+
+--Query--
+select (select (a.*)::text) from view_a a
+--Result--
+[('(42)',)]
++--------------------+
+--Query--
+select * from upsert
+--Result--
+[(1, 'val')]
++--------------------+
+--Query--
+select * from outer_7597 where (f1, f2) not in (select * from inner_7597)
+--Result--
+[(1, 0), (1, None)]
++--------------------+
+--Query--
+select * from outer_text where (f1, f2) not in (select * from inner_text)
+--Result--
+[('b', 'a'), ('b', None)]
++--------------------+
+--Query--
+explain (verbose, costs off) select 'foo'::text in (select 'bar'::name union all select 'bar'::name)
+--Result--
+[('Result',), ('  Output: (hashed SubPlan 1)',), ('  SubPlan 1',), ('    ->  Append',), ('          ->  Result',), ("                Output: 'bar'::name",), ('          ->  Result',), ("                Output: 'bar'::name",)]
++--------------------+
+--Query--
+select 'foo'::text in (select 'bar'::name union all select 'bar'::name)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+explain (verbose, costs off) select row(row(row(1))) = any (select row(row(1)))
+--Result--
+[('Result',), ('  Output: (SubPlan 1)',), ('  SubPlan 1',), ('    ->  Materialize',), ('          Output: \'("(1)")\'::record',), ('          ->  Result',), ('                Output: \'("(1)")\'::record',)]
++--------------------+
+--Query--
+select row(row(row(1))) = any (select row(row(1)))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select '1'::text in (select '1'::name union all select '1'::name)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+analyze exists_tbl
+--Result--
+[]
++--------------------+
+--Query--
+explain (costs off) select * from exists_tbl t1   where (exists(select 1 from exists_tbl t2 where t1.c1 = t2.c2) or c3 < 0)
+--Result--
+[('Append',), ('  ->  Seq Scan on exists_tbl_null t1_1',), ('        Filter: ((SubPlan 1) OR (c3 < 0))',), ('        SubPlan 1',), ('          ->  Append',), ('                ->  Seq Scan on exists_tbl_null t2_1',), ('                      Filter: (t1_1.c1 = c2)',), ('                ->  Seq Scan on exists_tbl_def t2_2',), ('                      Filter: (t1_1.c1 = c2)',), ('  ->  Seq Scan on exists_tbl_def t1_2',), ('        Filter: ((hashed SubPlan 2) OR (c3 < 0))',), ('        SubPlan 2',), ('          ->  Append',), ('                ->  Seq Scan on exists_tbl_null t2_4',), ('                ->  Seq Scan on exists_tbl_def t2_5',)]
++--------------------+
+--Query--
+select * from exists_tbl t1   where (exists(select 1 from exists_tbl t2 where t1.c1 = t2.c2) or c3 < 0)
+--Result--
+[(0, 0, 1), (1, 0, 2), (2, 1, 3), (3, 1, 4), (4, 2, 5), (5, 2, 6)]
++--------------------+
+--Query--
+explain (verbose, costs off)   select x, x from     (select (select now()) as x from (values(1),(2)) v(y)) ss
+--Result--
+[('Values Scan on "*VALUES*"',), ('  Output: $0, $1',), ('  InitPlan 1 (returns $0)',), ('    ->  Result',), ('          Output: now()',), ('  InitPlan 2 (returns $1)',), ('    ->  Result',), ('          Output: now()',)]
++--------------------+
+--Query--
+explain (verbose, costs off)   select x, x from     (select (select random()) as x from (values(1),(2)) v(y)) ss
+--Result--
+[('Subquery Scan on ss',), ('  Output: ss.x, ss.x',), ('  ->  Values Scan on "*VALUES*"',), ('        Output: $0',), ('        InitPlan 1 (returns $0)',), ('          ->  Result',), ('                Output: random()',)]
++--------------------+
+--Query--
+explain (verbose, costs off)   select x, x from     (select (select now() where y=y) as x from (values(1),(2)) v(y)) ss
+--Result--
+[('Values Scan on "*VALUES*"',), ('  Output: (SubPlan 1), (SubPlan 2)',), ('  SubPlan 1',), ('    ->  Result',), ('          Output: now()',), ('          One-Time Filter: ("*VALUES*".column1 = "*VALUES*".column1)',), ('  SubPlan 2',), ('    ->  Result',), ('          Output: now()',), ('          One-Time Filter: ("*VALUES*".column1 = "*VALUES*".column1)',)]
++--------------------+
+--Query--
+explain (verbose, costs off)   select x, x from     (select (select random() where y=y) as x from (values(1),(2)) v(y)) ss
+--Result--
+[('Subquery Scan on ss',), ('  Output: ss.x, ss.x',), ('  ->  Values Scan on "*VALUES*"',), ('        Output: (SubPlan 1)',), ('        SubPlan 1',), ('          ->  Result',), ('                Output: random()',), ('                One-Time Filter: ("*VALUES*".column1 = "*VALUES*".column1)',)]
++--------------------+
+--Query--
+select * from notinouter where a not in (select b from notininner)
+--Result--
+[(None,), (1,)]
++--------------------+
+--Query--
+select exists(select * from nocolumns)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select val.x   from generate_series(1,10) as s(i),   lateral (     values ((select s.i + 1)), (s.i + 101)   ) as val(x) where s.i < 10 and (select val.x) < 110
+--Result--
+[(2,), (102,), (3,), (103,), (4,), (104,), (5,), (105,), (6,), (106,), (7,), (107,), (8,), (108,), (9,), (109,), (10,)]
++--------------------+
+--Query--
+explain (verbose, costs off) select * from (values   (3 not in (select * from (values (1), (2)) ss1)),   (false) ) ss
+--Result--
+[('Values Scan on "*VALUES*"',), ('  Output: "*VALUES*".column1',), ('  SubPlan 1',), ('    ->  Values Scan on "*VALUES*_1"',), ('          Output: "*VALUES*_1".column1',)]
++--------------------+
+--Query--
+select * from (values   (3 not in (select * from (values (1), (2)) ss1)),   (false) ) ss
+--Result--
+[(True,), (False,)]
++--------------------+
+--Query--
+select nextval('ts1')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from (select pk,c2 from sq_limit order by c1,pk) as x limit 3
+--Result--
+[(1, 1), (5, 1), (2, 2)]
++--------------------+
+--Query--
+declare c1 scroll cursor for  select * from generate_series(1,4) i   where i <> all (values (2),(3))
+--Result--
+[]
++--------------------+
+--Query--
+move forward all in c1
+--Result--
+[]
++--------------------+
+--Query--
+fetch backward all in c1
+--Result--
+[(4,), (1,)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select * from (select f1 from subselect_tbl) ss) select * from x where f1 = 1
+--Result--
+[('Seq Scan on public.subselect_tbl',), ('  Output: subselect_tbl.f1',), ('  Filter: (subselect_tbl.f1 = 1)',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as materialized (select * from (select f1 from subselect_tbl) ss) select * from x where f1 = 1
+--Result--
+[('CTE Scan on x',), ('  Output: x.f1',), ('  Filter: (x.f1 = 1)',), ('  CTE x',), ('    ->  Seq Scan on public.subselect_tbl',), ('          Output: subselect_tbl.f1',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select * from (select f1, now() from subselect_tbl) ss) select * from x where f1 = 1
+--Result--
+[('Seq Scan on public.subselect_tbl',), ('  Output: subselect_tbl.f1, now()',), ('  Filter: (subselect_tbl.f1 = 1)',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select * from (select f1, random() from subselect_tbl) ss) select * from x where f1 = 1
+--Result--
+[('CTE Scan on x',), ('  Output: x.f1, x.random',), ('  Filter: (x.f1 = 1)',), ('  CTE x',), ('    ->  Seq Scan on public.subselect_tbl',), ('          Output: subselect_tbl.f1, random()',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select * from (select f1 from subselect_tbl for update) ss) select * from x where f1 = 1
+--Result--
+[('CTE Scan on x',), ('  Output: x.f1',), ('  Filter: (x.f1 = 1)',), ('  CTE x',), ('    ->  Subquery Scan on ss',), ('          Output: ss.f1',), ('          ->  LockRows',), ('                Output: subselect_tbl.f1, subselect_tbl.ctid',), ('                ->  Seq Scan on public.subselect_tbl',), ('                      Output: subselect_tbl.f1, subselect_tbl.ctid',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select * from (select f1, now() as n from subselect_tbl) ss) select * from x, x x2 where x.n = x2.n
+--Result--
+[('Merge Join',), ('  Output: x.f1, x.n, x2.f1, x2.n',), ('  Merge Cond: (x.n = x2.n)',), ('  CTE x',), ('    ->  Seq Scan on public.subselect_tbl',), ('          Output: subselect_tbl.f1, now()',), ('  ->  Sort',), ('        Output: x.f1, x.n',), ('        Sort Key: x.n',), ('        ->  CTE Scan on x',), ('              Output: x.f1, x.n',), ('  ->  Sort',), ('        Output: x2.f1, x2.n',), ('        Sort Key: x2.n',), ('        ->  CTE Scan on x x2',), ('              Output: x2.f1, x2.n',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as not materialized (select * from (select f1, now() as n from subselect_tbl) ss) select * from x, x x2 where x.n = x2.n
+--Result--
+[('Result',), ('  Output: subselect_tbl.f1, now(), subselect_tbl_1.f1, now()',), ('  One-Time Filter: (now() = now())',), ('  ->  Nested Loop',), ('        Output: subselect_tbl.f1, subselect_tbl_1.f1',), ('        ->  Seq Scan on public.subselect_tbl',), ('              Output: subselect_tbl.f1, subselect_tbl.f2, subselect_tbl.f3',), ('        ->  Materialize',), ('              Output: subselect_tbl_1.f1',), ('              ->  Seq Scan on public.subselect_tbl subselect_tbl_1',), ('                    Output: subselect_tbl_1.f1',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with recursive x(a) as   ((values ('a'), ('b'))    union all    (with z as not materialized (select * from x)     select z.a || z1.a as a from z cross join z as z1     where length(z.a || z1.a) < 5)) select * from x
+--Result--
+[('CTE Scan on x',), ('  Output: x.a',), ('  CTE x',), ('    ->  Recursive Union',), ('          ->  Values Scan on "*VALUES*"',), ('                Output: "*VALUES*".column1',), ('          ->  Nested Loop',), ('                Output: (z.a || z1.a)',), ('                Join Filter: (length((z.a || z1.a)) < 5)',), ('                CTE z',), ('                  ->  WorkTable Scan on x x_1',), ('                        Output: x_1.a',), ('                ->  CTE Scan on z',), ('                      Output: z.a',), ('                ->  CTE Scan on z z1',), ('                      Output: z1.a',)]
++--------------------+
+--Query--
+with recursive x(a) as   ((values ('a'), ('b'))    union all    (with z as not materialized (select * from x)     select z.a || z1.a as a from z cross join z as z1     where length(z.a || z1.a) < 5)) select * from x
+--Result--
+[('a',), ('b',), ('aa',), ('ab',), ('ba',), ('bb',), ('aaaa',), ('aaab',), ('aaba',), ('aabb',), ('abaa',), ('abab',), ('abba',), ('abbb',), ('baaa',), ('baab',), ('baba',), ('babb',), ('bbaa',), ('bbab',), ('bbba',), ('bbbb',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with recursive x(a) as   ((values ('a'), ('b'))    union all    (with z as not materialized (select * from x)     select z.a || z.a as a from z     where length(z.a || z.a) < 5)) select * from x
+--Result--
+[('CTE Scan on x',), ('  Output: x.a',), ('  CTE x',), ('    ->  Recursive Union',), ('          ->  Values Scan on "*VALUES*"',), ('                Output: "*VALUES*".column1',), ('          ->  WorkTable Scan on x x_1',), ('                Output: (x_1.a || x_1.a)',), ('                Filter: (length((x_1.a || x_1.a)) < 5)',)]
++--------------------+
+--Query--
+with recursive x(a) as   ((values ('a'), ('b'))    union all    (with z as not materialized (select * from x)     select z.a || z.a as a from z     where length(z.a || z.a) < 5)) select * from x
+--Result--
+[('a',), ('b',), ('aa',), ('bb',), ('aaaa',), ('bbbb',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select 1 as y) select * from (with x as (select 2 as y) select * from x) ss
+--Result--
+[('Result',), ('  Output: 2',)]
++--------------------+
+--Query--
+explain (verbose, costs off) with x as (select * from subselect_tbl) select * from x for update
+--Result--
+[('Seq Scan on public.subselect_tbl',), ('  Output: subselect_tbl.f1, subselect_tbl.f2, subselect_tbl.f3',)]
++--------------------+

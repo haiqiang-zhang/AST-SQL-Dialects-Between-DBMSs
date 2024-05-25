@@ -394,11 +394,11 @@ insert into t1 (foo) values ("foo");
 select foo from t1 union select 'bar' as foo from dual;
 drop table t1;
 CREATE TABLE t1 (
-  a ENUM('ÃÂ¤','ÃÂ¶','ÃÂ¼') character set utf8mb3 not null default 'ÃÂ¼',
+  a ENUM('ÃÂÃÂÃÂÃÂ¤','ÃÂÃÂÃÂÃÂ¶','ÃÂÃÂÃÂÃÂ¼') character set utf8mb3 not null default 'ÃÂÃÂÃÂÃÂ¼',
   b ENUM("one", "two") character set utf8mb3,
   c ENUM("one", "two")
 );
-insert into t1 values ('ÃÂ¤', 'one', 'one'), ('ÃÂ¶', 'two', 'one'), ('ÃÂ¼', NULL, NULL);
+insert into t1 values ('ÃÂÃÂÃÂÃÂ¤', 'one', 'one'), ('ÃÂÃÂÃÂÃÂ¶', 'two', 'one'), ('ÃÂÃÂÃÂÃÂ¼', NULL, NULL);
 create table t2 select NULL union select a from t1;
 drop table t2;
 create table t2 select a from t1 union select NULL;

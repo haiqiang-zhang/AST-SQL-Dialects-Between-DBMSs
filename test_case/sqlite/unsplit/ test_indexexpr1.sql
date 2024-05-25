@@ -90,8 +90,7 @@ WITH RECURSIVE
   INSERT INTO cnt(x) SELECT x FROM c;
 INSERT INTO t5(a) SELECT printf('abc%03dxyz',x) FROM cnt;
 CREATE INDEX t5ax ON t5( substr(a,4,3) );
--- The use of the "k" alias in the WHERE clause is technically
-  -- illegal, but SQLite allows it for historical reasons.  In this
+
   -- test and the next, verify that "k" can be used by the t5ax index
   SELECT substr(a,4,3) AS k FROM cnt, t5 WHERE k=printf('%03d',x);
 EXPLAIN QUERY PLAN
@@ -171,8 +170,7 @@ CREATE INDEX t1300bexpr ON t1300( substr(b,4) );
 SELECT a FROM t1300 WHERE substr(b,4)='ess' COLLATE nocase ORDER BY +a;
 CREATE TABLE t1400(x TEXT);
 CREATE INDEX t1400x ON t1400(1);
--- Index on a constant
-  SELECT 1 IN (SELECT 2) FROM t1400;
+SELECT 1 IN (SELECT 2) FROM t1400;
 INSERT INTO t1400 VALUES('a'),('b');
 SELECT 1 IN (SELECT 2) FROM t1400;
 SELECT 1 IN (SELECT 2 UNION ALL SELECT 1) FROM t1400;
@@ -183,8 +181,7 @@ CREATE TABLE t1500(a INT PRIMARY KEY, b INT UNIQUE);
 CREATE INDEX t1500ab ON t1500(a*b);
 INSERT INTO t1500(a,b) VALUES(1,2);
 REPLACE INTO t1500(a,b) VALUES(1,3);
--- formerly caused assertion fault
-  SELECT * FROM t1500;
+SELECT * FROM t1500;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t1 (a INTEGER, b);
 CREATE INDEX idx1 ON t1 (lower(a));
@@ -211,8 +208,6 @@ INSERT INTO t1(x) VALUES(2);
 SELECT +x FROM t1 WHERE x=2;
 SELECT * FROM t1;
 SELECT * FROM t1;
-/* Query AA */;
-/* Query BB */;
 DROP TABLE t1;
 CREATE TABLE t1(a INT, b TEXT, c INT, d INT);
 INSERT INTO t1(a,b,c,d) VALUES

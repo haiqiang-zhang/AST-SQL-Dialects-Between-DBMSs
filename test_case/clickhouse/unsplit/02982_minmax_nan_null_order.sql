@@ -1,4 +1,3 @@
--- Tuples with NaN
 SELECT min((c1, c2)), max((c1, c2)) FROM values((nan, 0.), (0., 0.), (5., 5.));
 SELECT minIf((c1, c2), c2 >= 0.0), maxIf((c1, c2), c2 >= 0.0) FROM values((nan, 0.), (0., 0.), (5., 5.));
 SELECT (c1, c2) as t FROM values((nan, 0.), (0., 0.), (5., 5.)) ORDER BY t ASC LIMIT 1;

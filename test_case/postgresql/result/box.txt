@@ -1,0 +1,315 @@
+--Query--
+SELECT * FROM BOX_TBL
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(-2,2),(-8,-10)',), ('(2.5,3.5),(2.5,2.5)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.*, area(b.f1) as barea    FROM BOX_TBL b
+--Result--
+[('(2,2),(0,0)', 4.0), ('(3,3),(1,1)', 4.0), ('(-2,2),(-8,-10)', 72.0), ('(2.5,3.5),(2.5,2.5)', 0.0), ('(3,3),(3,3)', 0.0)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE b.f1 && box '(2.5,2.5,1.0,1.0)'
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(2.5,3.5),(2.5,2.5)',)]
++--------------------+
+--Query--
+SELECT b1.*    FROM BOX_TBL b1    WHERE b1.f1 &< box '(2.0,2.0,2.5,2.5)'
+--Result--
+[('(2,2),(0,0)',), ('(-2,2),(-8,-10)',), ('(2.5,3.5),(2.5,2.5)',)]
++--------------------+
+--Query--
+SELECT b1.*    FROM BOX_TBL b1    WHERE b1.f1 &> box '(2.0,2.0,2.5,2.5)'
+--Result--
+[('(2.5,3.5),(2.5,2.5)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE b.f1 << box '(3.0,3.0,5.0,5.0)'
+--Result--
+[('(2,2),(0,0)',), ('(-2,2),(-8,-10)',), ('(2.5,3.5),(2.5,2.5)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE b.f1 <= box '(3.0,3.0,5.0,5.0)'
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(2.5,3.5),(2.5,2.5)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE b.f1 < box '(3.0,3.0,5.0,5.0)'
+--Result--
+[('(2.5,3.5),(2.5,2.5)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE b.f1 = box '(3.0,3.0,5.0,5.0)'
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b				    WHERE b.f1 > box '(3.5,3.0,4.5,3.0)'
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(-2,2),(-8,-10)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b				    WHERE b.f1 >= box '(3.5,3.0,4.5,3.0)'
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(-2,2),(-8,-10)',), ('(2.5,3.5),(2.5,2.5)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE box '(3.0,3.0,5.0,5.0)' >> b.f1
+--Result--
+[('(2,2),(0,0)',), ('(-2,2),(-8,-10)',), ('(2.5,3.5),(2.5,2.5)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE b.f1 <@ box '(0,0,3,3)'
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE box '(0,0,3,3)' @> b.f1
+--Result--
+[('(2,2),(0,0)',), ('(3,3),(1,1)',), ('(3,3),(3,3)',)]
++--------------------+
+--Query--
+SELECT b.f1    FROM BOX_TBL b    WHERE box '(1,1,3,3)' ~= b.f1
+--Result--
+[('(3,3),(1,1)',)]
++--------------------+
+--Query--
+SELECT @@(b1.f1) AS p    FROM BOX_TBL b1
+--Result--
+[('(1,1)',), ('(2,2)',), ('(-5,-4)',), ('(2.5,3)',), ('(3,3)',)]
++--------------------+
+--Query--
+SELECT b1.*, b2.*    FROM BOX_TBL b1, BOX_TBL b2    WHERE b1.f1 @> b2.f1 and not b1.f1 ~= b2.f1
+--Result--
+[('(3,3),(1,1)', '(3,3),(3,3)')]
++--------------------+
+--Query--
+SELECT height(f1), width(f1) FROM BOX_TBL
+--Result--
+[(2.0, 2.0), (2.0, 2.0), (12.0, 6.0), (1.0, 0.0), (0.0, 0.0)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 << '(10,20),(30,40)'
+--Result--
+[('(2,2),(1,1)',), ('(4,4),(2,2)',), ('(6,6),(3,3)',), ('(8,8),(4,4)',), ('(0,100),(0,0)',), ('(0,Infinity),(0,100)',), ('(0,Infinity),(-Infinity,0)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 << '(10,20),(30,40)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 << '(30,40),(10,20)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 &< '(10,4.333334),(5,100)'
+--Result--
+[('(2,2),(1,1)',), ('(4,4),(2,2)',), ('(6,6),(3,3)',), ('(8,8),(4,4)',), ('(10,10),(5,5)',), ('(0,100),(0,0)',), ('(0,Infinity),(0,100)',), ('(0,Infinity),(-Infinity,0)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 &< '(10,4.333334),(5,100)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 &< '(10,100),(5,4.333334)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 && '(15,20),(25,30)'
+--Result--
+[('(20,20),(10,10)',), ('(22,22),(11,11)',), ('(24,24),(12,12)',), ('(26,26),(13,13)',), ('(28,28),(14,14)',), ('(30,30),(15,15)',), ('(32,32),(16,16)',), ('(34,34),(17,17)',), ('(36,36),(18,18)',), ('(38,38),(19,19)',), ('(40,40),(20,20)',), ('(42,42),(21,21)',), ('(44,44),(22,22)',), ('(46,46),(23,23)',), ('(48,48),(24,24)',), ('(50,50),(25,25)',), ('(Infinity,Infinity),(-Infinity,-Infinity)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 && '(15,20),(25,30)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 && '(25,30),(15,20)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 &> '(40,30),(45,50)'
+--Result--
+[('(80,80),(40,40)',), ('(82,82),(41,41)',), ('(84,84),(42,42)',), ('(86,86),(43,43)',), ('(88,88),(44,44)',), ('(90,90),(45,45)',), ('(92,92),(46,46)',), ('(94,94),(47,47)',), ('(96,96),(48,48)',), ('(98,98),(49,49)',), ('(100,100),(50,50)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 &> '(40,30),(45,50)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 &> '(45,50),(40,30)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 >> '(30,40),(40,30)'
+--Result--
+[('(82,82),(41,41)',), ('(84,84),(42,42)',), ('(86,86),(43,43)',), ('(88,88),(44,44)',), ('(90,90),(45,45)',), ('(92,92),(46,46)',), ('(94,94),(47,47)',), ('(96,96),(48,48)',), ('(98,98),(49,49)',), ('(100,100),(50,50)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 >> '(30,40),(40,30)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 >> '(40,40),(30,30)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 <<| '(10,4.33334),(5,100)'
+--Result--
+[('(2,2),(1,1)',), ('(4,4),(2,2)',), ('(40,4.3333333333),(-3,1)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 <<| '(10,4.33334),(5,100)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 <<| '(10,100),(5,4.33334)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 &<| '(10,4.3333334),(5,1)'
+--Result--
+[('(2,2),(1,1)',), ('(4,4),(2,2)',), ('(40,4.3333333333),(-3,1)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 &<| '(10,4.3333334),(5,1)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 &<| '(10,4.3333334),(5,1)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 |&> '(49.99,49.99),(49.99,49.99)'
+--Result--
+[('(100,100),(50,50)',), ('(0,Infinity),(0,100)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 |&> '(49.99,49.99),(49.99,49.99)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 |&> '(49.99,49.99),(49.99,49.99)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 |>> '(37,38),(39,40)'
+--Result--
+[('(82,82),(41,41)',), ('(84,84),(42,42)',), ('(86,86),(43,43)',), ('(88,88),(44,44)',), ('(90,90),(45,45)',), ('(92,92),(46,46)',), ('(94,94),(47,47)',), ('(96,96),(48,48)',), ('(98,98),(49,49)',), ('(100,100),(50,50)',), ('(0,Infinity),(0,100)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 |>> '(37,38),(39,40)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 |>> '(39,40),(37,38)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 @> '(10,11),(15,16)'
+--Result--
+[('(16,16),(8,8)',), ('(18,18),(9,9)',), ('(20,20),(10,10)',), ('(Infinity,Infinity),(-Infinity,-Infinity)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 @> '(10,11),(15,15)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 @> '(15,15),(10,11)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 <@ '(10,15),(30,35)'
+--Result--
+[('(30,30),(15,15)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 <@ '(10,15),(30,35)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 <@ '(30,35),(10,15)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM box_temp WHERE f1 ~= '(20,20),(40,40)'
+--Result--
+[('(40,40),(20,20)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM box_temp WHERE f1 ~= '(20,20),(40,40)'
+--Result--
+[('Index Only Scan using box_spgist on box_temp',), ("  Index Cond: (f1 ~= '(40,40),(20,20)'::box)",)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b <<  box '((100,200),(300,500))'
+--Result--
+[(901,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b &<  box '((100,200),(300,500))'
+--Result--
+[(3901,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b &&  box '((100,200),(300,500))'
+--Result--
+[(1653,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b &>  box '((100,200),(300,500))'
+--Result--
+[(10100,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b >>  box '((100,200),(300,500))'
+--Result--
+[(7000,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b >>  box '((100,200),(300,500))'
+--Result--
+[(7000,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b <<| box '((100,200),(300,500))'
+--Result--
+[(1900,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b &<| box '((100,200),(300,500))'
+--Result--
+[(5901,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b |&> box '((100,200),(300,500))'
+--Result--
+[(9100,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b |>> box '((100,200),(300,500))'
+--Result--
+[(5000,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b @>  box '((201,301),(202,303))'
+--Result--
+[(1003,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b <@  box '((100,200),(300,500))'
+--Result--
+[(1600,)]
++--------------------+
+--Query--
+SELECT count(*) FROM quad_box_tbl WHERE b ~=  box '((200,300),(205,305))'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT rank() OVER (ORDER BY b <-> point '123,456') n, b <-> point '123,456' dist, id FROM quad_box_tbl
+--Result--
+[('WindowAgg',), ('  ->  Index Scan using quad_box_tbl_idx on quad_box_tbl',), ("        Order By: (b <-> '(123,456)'::point)",)]
++--------------------+
+--Query--
+SELECT * FROM quad_box_tbl_ord_seq1 seq FULL JOIN quad_box_tbl_ord_idx1 idx 	ON seq.n = idx.n AND seq.id = idx.id AND 		(seq.dist = idx.dist OR seq.dist IS NULL AND idx.dist IS NULL) WHERE seq.id IS NULL OR idx.id IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT rank() OVER (ORDER BY b <-> point '123,456') n, b <-> point '123,456' dist, id FROM quad_box_tbl WHERE b <@ box '((200,300),(500,600))'
+--Result--
+[('WindowAgg',), ('  ->  Index Scan using quad_box_tbl_idx on quad_box_tbl',), ("        Index Cond: (b <@ '(500,600),(200,300)'::box)",), ("        Order By: (b <-> '(123,456)'::point)",)]
++--------------------+
+--Query--
+SELECT * FROM quad_box_tbl_ord_seq2 seq FULL JOIN quad_box_tbl_ord_idx2 idx 	ON seq.n = idx.n AND seq.id = idx.id AND 		(seq.dist = idx.dist OR seq.dist IS NULL AND idx.dist IS NULL) WHERE seq.id IS NULL OR idx.id IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('200', 'box')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('200', 'box')
+--Result--
+[('invalid input syntax for type box: "200"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('((200,300),(500, xyz))', 'box')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('((200,300),(500, xyz))', 'box')
+--Result--
+[('invalid input syntax for type box: "((200,300),(500, xyz))"', None, None, '22P02')]
++--------------------+

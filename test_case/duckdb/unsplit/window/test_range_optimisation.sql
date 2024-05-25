@@ -3,7 +3,7 @@ CREATE TABLE rides (
 	requested_date DATE,
 	city VARCHAR,
 	wait_time INTEGER
-);;
+);
 INSERT INTO rides VALUES
 	(0, '2023-01-05', 'San Francisco', 2925),
 	(1, '2023-01-03', 'San Francisco', 755),

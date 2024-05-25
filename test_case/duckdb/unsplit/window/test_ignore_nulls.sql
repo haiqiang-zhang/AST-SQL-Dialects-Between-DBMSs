@@ -5,8 +5,8 @@ CREATE TABLE issue2549 AS SELECT * FROM (VALUES
 	(2, 1, null),
 	(3, 1, 639),
 	(4, 1, 2027)
-) tbl(id, user_id, order_id);;
-CREATE TABLE IF NOT EXISTS issue6635(index INTEGER, data INTEGER);;
+) tbl(id, user_id, order_id);
+CREATE TABLE IF NOT EXISTS issue6635(index INTEGER, data INTEGER);
 insert into issue6635 values 
 	(1,1),
 	(2,2),
@@ -14,13 +14,7 @@ insert into issue6635 values
 	(4,NULL),
 	(5,5),
 	(6,NULL),
-	(7,NULL)
-;;
-SELECT ABS(x ${modifier} NULLS) FROM range(10) tbl(x);
-SELECT SUM(x ${modifier} NULLS)
-FROM range(10) tbl(x);
-SELECT SUM(x ${modifier} NULLS) OVER (PARTITION BY (x / 3) ORDER BY x % 3)
-FROM range(10) tbl(x);
+	(7,NULL);
 SELECT
   id,
   user_id,
@@ -156,8 +150,7 @@ WINDOW w AS (
 	ORDER BY index 
 	ROWS BETWEEN 1 FOLLOWING 
 	 AND UNBOUNDED FOLLOWING
-)
-;;
+);
 WITH gen AS (
     SELECT *,
         ((id * 1327) % 9973) / 10000.0 AS rnd

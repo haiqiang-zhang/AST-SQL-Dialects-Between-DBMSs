@@ -19,10 +19,8 @@ select 123/***abc;
 select 123/*/*2;
 select 123/**/*2;
 select 123--5;
-;
 create table T1(X REAL);
-/* C-style comments allowed */
-    insert into T1 values(0.5);
+insert into T1 values(0.5);
 insert into T1 values(0.5e2);
 insert into T1 values(0.5e-002);
 insert into T1 values(5e-002);

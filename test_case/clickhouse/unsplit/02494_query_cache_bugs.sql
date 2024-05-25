@@ -1,6 +1,4 @@
--- Tag no-parallel: Messes with internal cache
 
--- Test for Bug 56258
 
 SYSTEM DROP QUERY CACHE;
 SELECT '-- Bug 56258: Check literals (ASTLiteral)';

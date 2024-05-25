@@ -331,14 +331,12 @@ INSERT INTO org VALUES('Lanny','Fred');
 INSERT INTO org VALUES('Mary','Fred');
 INSERT INTO org VALUES('Noland','Gail');
 INSERT INTO org VALUES('Olivia','Gail');
--- The above are all under Alice.  Add a few more records for people
-  -- not in Alice's group, just to prove that they won't be selected.
+
   INSERT INTO org VALUES('Xaviar',NULL);
 INSERT INTO org VALUES('Xia','Xaviar');
 INSERT INTO org VALUES('Xerxes','Xaviar');
 INSERT INTO org VALUES('Xena','Xia');
--- Find all members of Alice's group, breath-first order  
-  WITH RECURSIVE
+WITH RECURSIVE
     under_alice(name,level) AS (
        VALUES('Alice','0')
        UNION ALL
@@ -451,8 +449,7 @@ WITH RECURSIVE t21(a,b) AS (
     SELECT x, x FROM t21 ORDER BY 1
   )
   SELECT * FROM t21 AS tA, t21 AS tB;
-/* This variant from chromium bug 922312 on 2019-01-16 */
-   WITH RECURSIVE t21(a,b) AS (
+WITH RECURSIVE t21(a,b) AS (
     WITH t21(x) AS (VALUES(1))
     SELECT x, x FROM t21 ORDER BY 1 LIMIT 5
   )

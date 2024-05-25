@@ -149,7 +149,6 @@ INSERT INTO t2 VALUES(1,2),(1,3),(2,5);
 INSERT INTO t4 VALUES(1,2),(1,3),(2,5);
 SELECT * FROM v3;
 ALTER TABLE t1 RENAME a TO a2;
--- fails in v3;
 ALTER TABLE t2 RENAME TO t5;
 SELECT sql FROM sqlite_schema WHERE name='v3';
 CREATE TABLE t2(a,b,c);

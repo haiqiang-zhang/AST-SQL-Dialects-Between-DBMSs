@@ -179,7 +179,7 @@ col_blob_key blob,
 col_datetime datetime,
 pk integer auto_increment,
 col_int int,
-/*Indices*/
+
 key (col_time_key ),
 key (col_int_key ),
 key (col_varchar_key ),
@@ -227,7 +227,7 @@ col_datetime datetime,
 col_blob_key blob,
 col_datetime_key datetime,
 col_time_key time,
-/*Indices*/
+
 key (col_date_key ),
 key (col_varchar_key ),
 primary key (pk),
@@ -277,7 +277,7 @@ col_varchar varchar (1),
 col_int int,
 col_time time,
 col_time_key time,
-/*Indices*/
+
 key (col_int_key ),
 key (col_date_key ),
 key (col_varchar_key ),
@@ -639,7 +639,7 @@ col_blob blob,
 col_date date,
 col_blob_key blob,
 pk integer auto_increment,
-/*Indices*/
+
 key (col_varchar_key ),
 key (col_datetime_key ),
 key (col_int_key ),

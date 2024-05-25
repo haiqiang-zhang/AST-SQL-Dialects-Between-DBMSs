@@ -1,4 +1,3 @@
--- This test add query-templates for fuzzer
 SET allow_experimental_analyzer = 1;
 CREATE TABLE table (
     column UInt64,

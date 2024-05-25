@@ -1,16 +1,5 @@
 PRAGMA enable_verification;
 CREATE TABLE integers AS SELECT 42 i, 84 j UNION ALL SELECT 13, 14;
-SELECT COLUMNS([x for x in COLUMNS(*)]) FROM integers;
-SELECT * + 42 FROM integers;
-SELECT COLUMNS([x for x in (*) if x = 'k']) FROM integers;
-SELECT COLUMNS(['k']) FROM integers;
-SELECT COLUMNS([43]) FROM integers;
-SELECT COLUMNS([NULL]) FROM integers;
-SELECT COLUMNS([]::VARCHAR[]) FROM integers;
-SELECT COLUMNS(NULL::VARCHAR[]) FROM integers;
-SELECT COLUMNS(NULL::VARCHAR) FROM integers;
-SELECT COLUMNS(['i']) + COLUMNS(['j']) FROM integers;
-SELECT COLUMNS([x for x in (* REPLACE (i AS i))]) FROM integers;
 SELECT COLUMNS([x for x in *]) FROM integers;
 SELECT COLUMNS([x for x in (*) if x <> 'i']) FROM integers;
 SELECT COLUMNS(x -> x <> 'i') FROM integers;

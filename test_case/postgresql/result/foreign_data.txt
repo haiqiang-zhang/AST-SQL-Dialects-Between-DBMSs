@@ -1,0 +1,135 @@
+--Query--
+SELECT fdwname, fdwhandler::regproc, fdwvalidator::regproc, fdwoptions FROM pg_foreign_data_wrapper ORDER BY 1, 2, 3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT srvname, srvoptions FROM pg_foreign_server
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.foreign_data_wrappers ORDER BY 1, 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.foreign_data_wrapper_options ORDER BY 1, 2, 3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.foreign_servers ORDER BY 1, 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.foreign_server_options ORDER BY 1, 2, 3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.user_mappings ORDER BY lower(authorization_identifier), 2, 3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.user_mapping_options ORDER BY lower(authorization_identifier), 2, 3, 4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.usage_privileges WHERE object_type LIKE 'FOREIGN%' AND object_name IN ('s6', 'foo') ORDER BY 1, 2, 3, 4, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.role_usage_grants WHERE object_type LIKE 'FOREIGN%' AND object_name IN ('s6', 'foo') ORDER BY 1, 2, 3, 4, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.foreign_tables ORDER BY 1, 2, 3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.foreign_table_options ORDER BY 1, 2, 3, 4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.user_mapping_options ORDER BY 1, 2, 3, 4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.usage_privileges WHERE object_type LIKE 'FOREIGN%' AND object_name IN ('s6', 'foo') ORDER BY 1, 2, 3, 4, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.role_usage_grants WHERE object_type LIKE 'FOREIGN%' AND object_name IN ('s6', 'foo') ORDER BY 1, 2, 3, 4, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.user_mapping_options ORDER BY 1, 2, 3, 4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT has_foreign_data_wrapper_privilege('regress_test_role',     (SELECT oid FROM pg_foreign_data_wrapper WHERE fdwname='foo'), 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_foreign_data_wrapper_privilege(     (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'),     (SELECT oid FROM pg_foreign_data_wrapper WHERE fdwname='foo'), 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_foreign_data_wrapper_privilege(     (SELECT oid FROM pg_foreign_data_wrapper WHERE fdwname='foo'), 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_foreign_data_wrapper_privilege(     (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'), 'foo', 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_server_privilege('regress_test_role',     (SELECT oid FROM pg_foreign_server WHERE srvname='s8'), 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_server_privilege(     (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'),     (SELECT oid FROM pg_foreign_server WHERE srvname='s8'), 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_server_privilege(     (SELECT oid FROM pg_foreign_server WHERE srvname='s8'), 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT has_server_privilege(     (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'), 's8', 'USAGE')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT relname, conname, contype, conislocal, coninhcount, connoinherit   FROM pg_class AS pc JOIN pg_constraint AS pgc ON (conrelid = pc.oid)   WHERE pc.relname = 'fd_pt1'   ORDER BY 1,2
+--Result--
+[('fd_pt1', 'fd_pt1chk1', 'c', True, 0, True), ('fd_pt1', 'fd_pt1chk2', 'c', True, 0, False)]
++--------------------+
+--Query--
+SELECT fdwname, fdwhandler, fdwvalidator, fdwoptions FROM pg_foreign_data_wrapper
+--Result--
+[]
++--------------------+
+--Query--
+SELECT srvname, srvoptions FROM pg_foreign_server
+--Result--
+[]
++--------------------+

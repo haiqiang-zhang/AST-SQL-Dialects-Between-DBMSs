@@ -1,5 +1,3 @@
--- Tag no-parallel: Messes with internal cache
-
 SYSTEM DROP QUERY CACHE;
 DROP TABLE IF EXISTS eligible_test;
 DROP TABLE IF EXISTS eligible_test2;
@@ -8,7 +6,6 @@ SET query_cache_system_table_handling = 'save';
 SELECT 1 SETTINGS use_query_cache = true;
 SELECT COUNT(*) FROM system.query_cache;
 SYSTEM DROP QUERY CACHE;
--- CREATE
 CREATE TABLE eligible_test (a String) ENGINE=MergeTree ORDER BY a;
 SELECT COUNT(*) FROM system.query_cache;
 ALTER TABLE eligible_test ADD COLUMN b String SETTINGS use_query_cache = true;

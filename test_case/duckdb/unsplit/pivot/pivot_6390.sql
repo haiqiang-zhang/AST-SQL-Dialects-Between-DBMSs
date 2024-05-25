@@ -12,7 +12,7 @@ UNION ALL
 SELECT 'C2',2010,30
 UNION ALL
 SELECT 'C3',2010,80
-) FROM CPB;;
+) FROM CPB;
 pivot cpb_tbl on nf using sum(jg)group by cpdh;
 WITH CPB(CPDH,NF,JG) AS (
 SELECT 'C1',2022,10

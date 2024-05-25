@@ -200,7 +200,6 @@ drop database if exists mysqltest_db1;
 drop table if exists test.t1;
 create database mysqltest_db1;
 drop database mysqltest_db1;
-create table test.t1 (id int);
 drop procedure if exists proc_25411_a;
 drop procedure if exists proc_25411_b;
 drop procedure if exists proc_25411_c;
@@ -250,11 +249,6 @@ CREATE TABLE t1 (
 );
 INSERT INTO t1 (id, barcode) VALUES (1, 12345678);
 INSERT INTO t1 (id, barcode) VALUES (2, 12345679);
-CREATE TABLE test.t2 (
-   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-   barcode BIGINT(11) UNSIGNED ZEROFILL NOT NULL,
-   PRIMARY KEY  (id)
-);
 DROP TABLE t1;
 DROP TABLE IF EXISTS t1;
 DROP FUNCTION IF EXISTS f1;
@@ -480,7 +474,6 @@ CREATE TABLE t2 ( a INT );
 DROP TABLE t1, t2;
 CREATE TABLE t1 ( a INT );
 PREPARE stmt FROM 'CREATE TABLE t2 AS SELECT ? FROM t1';
-CREATE DATABASE db1;
 DROP DATABASE db1;
 CREATE PROCEDURE p1(IN a INT, INOUT b INT, OUT c INT) select 1;
 SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 'f1';

@@ -1,0 +1,305 @@
+--Query--
+PREPARE v1 AS SELECT typeof(?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v2 AS SELECT ?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v3 AS SELECT ?=?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v4 AS SELECT extract(year from ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v5 AS SELECT printf('%s', ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v6 AS SELECT printf('%d', ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v7 AS SELECT [?]
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v8 AS SELECT [?, ?, ?]
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v9 AS SELECT {'a': ?}
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v10 AS SELECT {'a': ?, 'b': 42, 'c': ?}
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v11 AS SELECT ROW(?, ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v12 AS SELECT ? IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v13 AS SELECT (SELECT ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v14 AS SELECT SUM(?) FROM RANGE(100)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v15 AS SELECT ?+?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v17 AS SELECT ARRAY_CONTAINS(?, ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v18 AS SELECT ARRAY_CONTAINS([1, 2, 3], ?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v19 AS SELECT ARRAY_CONTAINS(?, 1)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v1(3::int)
+--Result--
+[('INTEGER',)]
++--------------------+
+--Query--
+EXECUTE v1('hello')
+--Result--
+[('VARCHAR',)]
++--------------------+
+--Query--
+EXECUTE v1([1, 2, 3])
+--Result--
+[('INTEGER[]',)]
++--------------------+
+--Query--
+EXECUTE v2(3::int)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+EXECUTE v2('hello')
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+EXECUTE v2([1, 2, 3])
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+EXECUTE v3(3::int, 4::bigint)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+EXECUTE v3('hello', 'hello')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE v3([1, 2, 3], [1, 2, 3])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE v4(DATE '1992-01-01')
+--Result--
+[(1992,)]
++--------------------+
+--Query--
+EXECUTE v4(TIMESTAMP '1992-01-01 23:00:20')
+--Result--
+[(1992,)]
++--------------------+
+--Query--
+EXECUTE v5('hello')
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+EXECUTE v6(4)
+--Result--
+[('4',)]
++--------------------+
+--Query--
+EXECUTE v7(1)
+--Result--
+[([1],)]
++--------------------+
+--Query--
+EXECUTE v7('hello')
+--Result--
+[(['hello'],)]
++--------------------+
+--Query--
+EXECUTE v7([1,2,3])
+--Result--
+[([[1, 2, 3]],)]
++--------------------+
+--Query--
+EXECUTE v7(NULL)
+--Result--
+[([None],)]
++--------------------+
+--Query--
+EXECUTE v8(1, 2, 3)
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+EXECUTE v8(NULL, NULL, NULL)
+--Result--
+[([None, None, None],)]
++--------------------+
+--Query--
+EXECUTE v8('hello', 'world', NULL)
+--Result--
+[(['hello', 'world', None],)]
++--------------------+
+--Query--
+EXECUTE v9(42)
+--Result--
+[({'a': 42},)]
++--------------------+
+--Query--
+EXECUTE v9([1,2,3])
+--Result--
+[({'a': [1, 2, 3]},)]
++--------------------+
+--Query--
+EXECUTE v9(NULL)
+--Result--
+[({'a': None},)]
++--------------------+
+--Query--
+EXECUTE v10(33, [1, 2, 3])
+--Result--
+[({'a': 33, 'b': 42, 'c': [1, 2, 3]},)]
++--------------------+
+--Query--
+EXECUTE v10(NULL, {'a': 88})
+--Result--
+[({'a': None, 'b': 42, 'c': {'a': 88}},)]
++--------------------+
+--Query--
+EXECUTE v11(11, 'hello')
+--Result--
+[((11, 'hello'),)]
++--------------------+
+--Query--
+EXECUTE v12('hello')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+EXECUTE v12([1, 2, 3])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+EXECUTE v12(NULL)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE v13(3::int)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+EXECUTE v13('hello')
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+EXECUTE v13([1, 2, 3])
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+EXECUTE v14(2)
+--Result--
+[(200,)]
++--------------------+
+--Query--
+EXECUTE v14(2::HUGEINT)
+--Result--
+[(200,)]
++--------------------+
+--Query--
+EXECUTE v14(0.005)
+--Result--
+[(0.5,)]
++--------------------+
+--Query--
+EXECUTE v15(0.25, 0.25)
+--Result--
+[(0.5,)]
++--------------------+
+--Query--
+EXECUTE v15(1000000000000000000000000000000000000::hugeint, 1000000000000000000000000000000000000::hugeint)
+--Result--
+[(2000000000000000000000000000000000000,)]
++--------------------+
+--Query--
+EXECUTE v17([1, 2, 3], 1)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE v17([], 1)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+EXECUTE v17(['hello', NULL, 'world'], 'world')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE v18(1)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE v18(0)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+EXECUTE v19([1, 2, 3])
+--Result--
+[(True,)]
++--------------------+

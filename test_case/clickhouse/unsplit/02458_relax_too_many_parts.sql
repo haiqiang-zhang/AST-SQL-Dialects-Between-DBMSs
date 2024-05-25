@@ -5,14 +5,12 @@ SYSTEM STOP MERGES test;
 INSERT INTO test VALUES (1, 'a');
 INSERT INTO test VALUES (2, 'a');
 INSERT INTO test VALUES (3, 'a');
--- But it can be relaxed with a setting:
 ALTER TABLE test MODIFY SETTING max_avg_part_size_for_too_many_parts = '1M';
 SYSTEM START MERGES test;
 OPTIMIZE TABLE test FINAL SETTINGS optimize_throw_if_noop=1;
 SYSTEM STOP MERGES test;
 INSERT INTO test VALUES (5, 'a');
 INSERT INTO test VALUES (6, 'a');
--- But it allows having more parts if their average size is large:
 SYSTEM START MERGES test;
 OPTIMIZE TABLE test FINAL SETTINGS optimize_throw_if_noop=1;
 SYSTEM STOP MERGES test;

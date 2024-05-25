@@ -1,10 +1,7 @@
 PRAGMA enable_verification;
 ATTACH '__TEST_DIR__/persistent_attach.db';
-ATTACH '__TEST_DIR__/persistent_attach.db';
-CREATE TABLE persistent_attach.integers(i INTEGER);
 INSERT INTO persistent_attach.integers VALUES (42);
 DETACH persistent_attach;
-SELECT SUM(i) FROM persistent_attach.integers;
 ATTACH '__TEST_DIR__/persistent_attach.db';
 SELECT SUM(i) FROM persistent_attach.integers;
 SELECT SUM(i) FROM persistent_attach.integers;

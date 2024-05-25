@@ -1,0 +1,20 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+select j, i, bool_and(i) over (), bool_or(i) over () from a order by 1,2
+--Result--
+[(0, False, False, True), (0, False, False, True), (1, False, False, True), (1, True, False, True)]
++--------------------+
+--Query--
+select j, i, bool_and(i) over (partition by j), bool_or(i) over (partition by j) from a order by 1,2
+--Result--
+[(0, False, False, False), (0, False, False, False), (1, False, False, True), (1, True, False, True)]
++--------------------+
+--Query--
+select j, i, bool_and(not i) over (partition by j order by i), bool_and(i) over (partition by j order by i), bool_or(i) over (partition by j order by i) from a order by 1,2
+--Result--
+[(0, False, True, False, False), (0, False, True, False, False), (1, False, True, False, False), (1, True, False, False, True)]
++--------------------+

@@ -1,0 +1,50 @@
+--Query--
+SELECT normalize('')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT normalize(U&'\0061\0308\24D1c') = U&'\00E4\24D1c' COLLATE "C" AS test_default
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT normalize(U&'\0061\0308\24D1c', NFC) = U&'\00E4\24D1c' COLLATE "C" AS test_nfc
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT normalize(U&'\00E4bc', NFC) = U&'\00E4bc' COLLATE "C" AS test_nfc_idem
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT normalize(U&'\00E4\24D1c', NFD) = U&'\0061\0308\24D1c' COLLATE "C" AS test_nfd
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT normalize(U&'\0061\0308\24D1c', NFKC) = U&'\00E4bc' COLLATE "C" AS test_nfkc
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT normalize(U&'\00E4\24D1c', NFKD) = U&'\0061\0308bc' COLLATE "C" AS test_nfkd
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT U&'\00E4\24D1c' IS NORMALIZED AS test_default
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT U&'\00E4\24D1c' IS NFC NORMALIZED AS test_nfc
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT num, val,     val IS NFC NORMALIZED AS NFC,     val IS NFD NORMALIZED AS NFD,     val IS NFKC NORMALIZED AS NFKC,     val IS NFKD NORMALIZED AS NFKD FROM   (VALUES (1, U&'\00E4bc'),           (2, U&'\0061\0308bc'),           (3, U&'\00E4\24D1c'),           (4, U&'\0061\0308\24D1c'),           (5, '')) vals (num, val) ORDER BY num
+--Result--
+[(1, 'äbc', True, False, True, False), (2, 'äbc', False, True, False, True), (3, 'äⓑc', True, False, False, False), (4, 'äⓑc', False, True, False, False), (5, '', True, True, True, True)]
++--------------------+

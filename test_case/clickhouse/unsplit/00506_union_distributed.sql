@@ -1,5 +1,3 @@
--- https://github.com/ClickHouse/ClickHouse/issues/1059
-
 SET distributed_foreground_insert = 1;
 DROP TABLE IF EXISTS union1;
 DROP TABLE IF EXISTS union2;

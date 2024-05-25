@@ -62,7 +62,6 @@ SELECT name, column, type, rows
 FROM system.parts_columns
 WHERE (database = currentDatabase()) AND (table = 'lwd_test') AND active
 ORDER BY name, column;
--- physically delete the rows
 OPTIMIZE TABLE lwd_test FINAL SETTINGS mutations_sync = 2;
 SELECT * FROM lwd_test ORDER BY id, value;
 SELECT name, part_type
@@ -93,7 +92,6 @@ SELECT name, column, type, rows
 FROM system.parts_columns
 WHERE (database = currentDatabase()) AND (table = 'lwd_test') AND active
 ORDER BY name, column;
--- physically delete the rows
 OPTIMIZE TABLE lwd_test FINAL SETTINGS mutations_sync = 2;
 SELECT * FROM lwd_test ORDER BY id, value;
 SELECT name, part_type

@@ -1,0 +1,1090 @@
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE E'r_\\_view%'  ORDER BY table_name
+--Result--
+[('ro_view1', 'NO'), ('ro_view10', 'NO'), ('ro_view11', 'NO'), ('ro_view12', 'NO'), ('ro_view13', 'NO'), ('ro_view17', 'NO'), ('ro_view18', 'NO'), ('ro_view19', 'NO'), ('ro_view2', 'NO'), ('ro_view20', 'NO'), ('ro_view3', 'NO'), ('ro_view4', 'NO'), ('ro_view5', 'NO'), ('ro_view6', 'NO'), ('ro_view7', 'NO'), ('ro_view8', 'NO'), ('ro_view9', 'NO'), ('rw_view14', 'YES'), ('rw_view15', 'YES'), ('rw_view16', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name LIKE E'r_\\_view%'  ORDER BY table_name
+--Result--
+[('ro_view1', 'NO', 'NO'), ('ro_view10', 'NO', 'NO'), ('ro_view11', 'NO', 'NO'), ('ro_view12', 'NO', 'NO'), ('ro_view13', 'NO', 'NO'), ('ro_view17', 'NO', 'NO'), ('ro_view18', 'NO', 'NO'), ('ro_view19', 'NO', 'NO'), ('ro_view2', 'NO', 'NO'), ('ro_view20', 'NO', 'NO'), ('ro_view3', 'NO', 'NO'), ('ro_view4', 'NO', 'NO'), ('ro_view5', 'NO', 'NO'), ('ro_view6', 'NO', 'NO'), ('ro_view7', 'NO', 'NO'), ('ro_view8', 'NO', 'NO'), ('ro_view9', 'NO', 'NO'), ('rw_view14', 'YES', 'YES'), ('rw_view15', 'YES', 'YES'), ('rw_view16', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE E'r_\\_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('ro_view1', 'a', 'NO'), ('ro_view1', 'b', 'NO'), ('ro_view10', 'a', 'NO'), ('ro_view11', 'a', 'NO'), ('ro_view11', 'b', 'NO'), ('ro_view12', 'a', 'NO'), ('ro_view13', 'a', 'NO'), ('ro_view13', 'b', 'NO'), ('ro_view17', 'a', 'NO'), ('ro_view17', 'b', 'NO'), ('ro_view18', 'a', 'NO'), ('ro_view19', 'last_value', 'NO'), ('ro_view19', 'log_cnt', 'NO'), ('ro_view19', 'is_called', 'NO'), ('ro_view2', 'a', 'NO'), ('ro_view2', 'b', 'NO'), ('ro_view20', 'a', 'NO'), ('ro_view20', 'b', 'NO'), ('ro_view20', 'g', 'NO'), ('ro_view3', '?column?', 'NO'), ('ro_view4', 'count', 'NO'), ('ro_view5', 'a', 'NO'), ('ro_view5', 'rank', 'NO'), ('ro_view6', 'a', 'NO'), ('ro_view6', 'b', 'NO'), ('ro_view7', 'a', 'NO'), ('ro_view7', 'b', 'NO'), ('ro_view8', 'a', 'NO'), ('ro_view8', 'b', 'NO'), ('ro_view9', 'a', 'NO'), ('ro_view9', 'b', 'NO'), ('rw_view14', 'ctid', 'NO'), ('rw_view14', 'a', 'YES'), ('rw_view14', 'b', 'YES'), ('rw_view15', 'a', 'YES'), ('rw_view15', 'upper', 'NO'), ('rw_view16', 'a', 'YES'), ('rw_view16', 'b', 'YES'), ('rw_view16', 'aa', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2'), (3, 'ROW 3')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+SELECT * FROM rw_view15
+--Result--
+[(-2, 'ROW -2'), (-1, 'ROW -1'), (0, 'ROW 0'), (1, 'ROW 1'), (2, 'ROW 2'), (3, 'UNSPECIFIED')]
++--------------------+
+--Query--
+SELECT * FROM rw_view15
+--Result--
+[(-2, 'ROW -2'), (-1, 'ROW -1'), (0, 'ROW 0'), (1, 'ROW 1'), (2, 'ROW 2'), (3, 'UNSPECIFIED')]
++--------------------+
+--Query--
+SELECT * FROM rw_view15
+--Result--
+[(-2, 'ROW -2'), (-1, 'ROW -1'), (0, 'ROW 0'), (1, 'ROW 1'), (2, 'ROW 2'), (3, 'UNSPECIFIED')]
++--------------------+
+--Query--
+SELECT * FROM rw_view15
+--Result--
+[(-2, 'ROW -2'), (-1, 'ROW -1'), (0, 'ROW 0'), (1, 'ROW 1'), (2, 'ROW 2'), (3, 'UNSPECIFIED')]
++--------------------+
+--Query--
+SELECT * FROM rw_view15
+--Result--
+[(-2, 'ROW -2'), (-1, 'ROW -1'), (0, 'ROW 0'), (1, 'ROW 1'), (2, 'ROW 2'), (3, 'UNSPECIFIED')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2'), (4, 'Unspecified')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2'), (-3, 'Row 3')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name = 'rw_view1'
+--Result--
+[('rw_view1', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name = 'rw_view1'
+--Result--
+[('rw_view1', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name = 'rw_view1'  ORDER BY ordinal_position
+--Result--
+[('rw_view1', 'a', 'YES'), ('rw_view1', 'b', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (3, 'Row 3'), (5, 'Unspecified')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (3, 'Row 3'), (5, 'Unspecified')]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view1 SET a=6 WHERE a=5
+--Result--
+[('Update on base_tbl',), ('  ->  Index Scan using base_tbl_pkey on base_tbl',), ('        Index Cond: ((a > 0) AND (a = 5))',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) DELETE FROM rw_view1 WHERE a=5
+--Result--
+[('Delete on base_tbl',), ('  ->  Index Scan using base_tbl_pkey on base_tbl',), ('        Index Cond: ((a > 0) AND (a = 5))',)]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name = 'rw_view1'
+--Result--
+[('rw_view1', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT a, b FROM base_tbl_hist
+--Result--
+[(9, None), (10, None)]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name = 'rw_view2'
+--Result--
+[('rw_view2', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name = 'rw_view2'
+--Result--
+[('rw_view2', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name = 'rw_view2'  ORDER BY ordinal_position
+--Result--
+[('rw_view2', 'aaa', 'YES'), ('rw_view2', 'bbb', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'Row 1'), (2, 'Row 2'), (3, 'Row 3'), (4, 'Unspecified')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'Row 1'), (3, 'Row 3'), (4, 'Row 4')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 ORDER BY aaa
+--Result--
+[(1, 'Row 1'), (3, 'Row 3'), (4, 'Row 4')]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view2 SET aaa=5 WHERE aaa=4
+--Result--
+[('Update on base_tbl',), ('  ->  Index Scan using base_tbl_pkey on base_tbl',), ('        Index Cond: ((a < 10) AND (a > 0) AND (a = 4))',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) DELETE FROM rw_view2 WHERE aaa=4
+--Result--
+[('Delete on base_tbl',), ('  ->  Index Scan using base_tbl_pkey on base_tbl',), ('        Index Cond: ((a < 10) AND (a > 0) AND (a = 4))',)]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO'), ('rw_view2', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'NO'), ('rw_view2', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'YES'), ('rw_view2', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'YES'), ('rw_view2', 'NO', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'YES'), ('rw_view2', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'YES'), ('rw_view2', 'NO', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'YES'), ('rw_view2', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'YES', 'YES'), ('rw_view2', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'YES'), ('rw_view1', 'b', 'YES'), ('rw_view2', 'a', 'YES'), ('rw_view2', 'b', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'Row 1'), (2, 'Row 2'), (3, 'Row three')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view2 SET a=3 WHERE a=2
+--Result--
+[('Update on base_tbl',), ('  ->  Nested Loop',), ('        ->  Index Scan using base_tbl_pkey on base_tbl',), ('              Index Cond: (a = 2)',), ('        ->  Subquery Scan on rw_view1',), ('              Filter: ((rw_view1.a < 10) AND (rw_view1.a = 2))',), ('              ->  Bitmap Heap Scan on base_tbl base_tbl_1',), ('                    Recheck Cond: (a > 0)',), ('                    ->  Bitmap Index Scan on base_tbl_pkey',), ('                          Index Cond: (a > 0)',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) DELETE FROM rw_view2 WHERE a=2
+--Result--
+[('Delete on base_tbl',), ('  ->  Nested Loop',), ('        ->  Index Scan using base_tbl_pkey on base_tbl',), ('              Index Cond: (a = 2)',), ('        ->  Subquery Scan on rw_view1',), ('              Filter: ((rw_view1.a < 10) AND (rw_view1.a = 2))',), ('              ->  Bitmap Heap Scan on base_tbl base_tbl_1',), ('                    Recheck Cond: (a > 0)',), ('                    ->  Bitmap Index Scan on base_tbl_pkey',), ('                          Index Cond: (a > 0)',)]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO'), ('rw_view2', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into,        is_trigger_updatable, is_trigger_deletable,        is_trigger_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'NO', 'NO', 'NO', 'NO'), ('rw_view2', 'NO', 'NO', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO'), ('rw_view2', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into,        is_trigger_updatable, is_trigger_deletable,        is_trigger_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'NO', 'NO', 'NO', 'NO'), ('rw_view2', 'NO', 'NO', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO'), ('rw_view2', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into,        is_trigger_updatable, is_trigger_deletable,        is_trigger_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'NO', 'NO', 'NO', 'NO'), ('rw_view2', 'NO', 'NO', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO'), ('rw_view2', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into,        is_trigger_updatable, is_trigger_deletable,        is_trigger_insertable_into   FROM information_schema.views  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'NO', 'NO', 'NO', 'NO', 'NO'), ('rw_view2', 'NO', 'NO', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE 'rw_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'a', 'NO'), ('rw_view1', 'b', 'NO'), ('rw_view2', 'a', 'NO'), ('rw_view2', 'b', 'NO')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Row 2')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(-2, 'Row -2'), (-1, 'Row -1'), (0, 'Row 0'), (1, 'Row 1'), (2, 'Updated row 2')]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view1 v SET bb='Updated row 2' WHERE rw_view1_aa(v)=2   RETURNING rw_view1_aa(v), v.bb
+--Result--
+[('Update on base_tbl',), ('  ->  Index Scan using base_tbl_pkey on base_tbl',), ('        Index Cond: (a = 2)',)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(1, 'Row 1', 1.0), (2, 'Row 2', 2.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[('Row 1', 1.0, 1), ('Row 2', 2.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[('Row 1', 1.0, 1), ('Row 2', 2.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(3, 'Row 3', 3.0), (4, 'Row 4', 4.0), (4, 'Row 4', 4.0)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(5, 'Row 5', 5.0), (5, 'Row 5', 5.0), (6, 'Row 6', 6.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(1, 'Row 1', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 FOR UPDATE
+--Result--
+[(1, 'Row 1', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 FOR UPDATE
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 FOR UPDATE
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 FOR UPDATE
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 FOR UPDATE
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 FOR UPDATE
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 FOR UPDATE
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 FOR UPDATE
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 FOR UPDATE
+--Result--
+[(1, 'bar', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 FOR UPDATE
+--Result--
+[(1, 'foo', 1.0)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(1, 'Row 1', 1.0), (2, 'Row 2', 2.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[('Row 1', 1.0, 1), ('Row 2', 2.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(3, 'Row 3', 3.0), (4, 'Row 4', 4.0), (4, 'Row 4', 4.0), (4, 'Row 4', 4.0)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[('Row 1', 1.0, 1)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[('Row 1', 1.0, 1)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[('Row 1', 1.0, 1)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2
+--Result--
+[(1.0, 1, 'Row 1')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(1, 'Row 1', 1), (2, 'Row 2', 2), (3, 'Unspecified', 3), (4, 'Row 4', 4), (5, 'View default', 5)]
++--------------------+
+--Query--
+select * from base_tbl
+--Result--
+[(1, 'Row 1'), (2, 'Row 2'), (3, 'Row 3')]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(3, -3), (1, 2), (4, 5)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(7, -8), (3, -3), (1, 2), (4, 5)]
++--------------------+
+--Query--
+EXPLAIN (verbose, costs off) UPDATE rw_view1 SET b = b + 1 RETURNING *
+--Result--
+[('Update on public.base_tbl',), ('  Output: base_tbl.a, base_tbl.b',), ('  ->  Seq Scan on public.base_tbl',), ('        Output: (base_tbl.b + 1), base_tbl.ctid',)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(7, -7), (3, -2), (1, 3), (4, 6)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(1, [2]), (3, [42, 77])]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a
+--Result--
+[(0.2,), (0.3,), (0.4,), (0.5,), (0.6,), (0.7,), (0.8,), (0.9,), (1.0,)]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name LIKE E'r_\\_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'YES'), ('rw_view2', 'YES'), ('rw_view3', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name LIKE E'r_\\_view%'  ORDER BY table_name
+--Result--
+[('rw_view1', 'YES', 'YES'), ('rw_view2', 'YES', 'YES'), ('rw_view3', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name LIKE E'r_\\_view%'  ORDER BY table_name, ordinal_position
+--Result--
+[('rw_view1', 'ctid', 'NO'), ('rw_view1', 's', 'NO'), ('rw_view1', 'a', 'YES'), ('rw_view1', 'c', 'NO'), ('rw_view2', 's', 'NO'), ('rw_view2', 'c', 'NO'), ('rw_view2', 't', 'NO'), ('rw_view2', 'base_a', 'YES'), ('rw_view2', 'ctid', 'NO'), ('rw_view3', 's', 'NO'), ('rw_view3', 'c', 'NO'), ('rw_view3', 't', 'NO'), ('rw_view3', 'ctid', 'NO')]
++--------------------+
+--Query--
+SELECT events & 4 != 0 AS upd,        events & 8 != 0 AS ins,        events & 16 != 0 AS del   FROM pg_catalog.pg_relation_is_updatable('rw_view3'::regclass, false) t(events)
+--Result--
+[(False, False, True)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(1, 2), (2, 3), (3, 4), (4, 5)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(1, 2), (4, 5), (2000, 2001), (3000, 3001)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 ORDER BY a
+--Result--
+[(-8,), (-7,), (-6,), (-5,), (-4,), (-3,), (-2,), (-1,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM ONLY rw_view1 ORDER BY a
+--Result--
+[(-8,), (-7,), (-6,), (-5,), (-4,), (-3,), (-2,), (-1,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 ORDER BY a
+--Result--
+[(-8,), (-7,), (-6,), (-5,), (-4,), (-3,), (-2,), (-1,)]
++--------------------+
+--Query--
+SELECT * FROM ONLY base_tbl_parent ORDER BY a
+--Result--
+[(-200,), (-100,), (-40,), (-30,), (-20,), (-10,), (100,), (200,)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl_child ORDER BY a
+--Result--
+[(3,), (4,), (7,), (8,), (10,), (20,)]
++--------------------+
+--Query--
+SELECT * FROM ONLY base_tbl_parent ORDER BY a
+--Result--
+[(-200,), (-100,), (-40,), (-30,), (-20,), (-10,), (100,), (200,)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl_child ORDER BY a
+--Result--
+[(3,), (4,), (7,), (8,), (10,), (20,)]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view1 SET a = a + 1000 FROM other_tbl_parent WHERE a = id
+--Result--
+[('Update on base_tbl_parent',), ('  Update on base_tbl_parent base_tbl_parent_1',), ('  Update on base_tbl_child base_tbl_parent_2',), ('  ->  Merge Join',), ('        Merge Cond: (base_tbl_parent.a = other_tbl_parent.id)',), ('        ->  Sort',), ('              Sort Key: base_tbl_parent.a',), ('              ->  Append',), ('                    ->  Seq Scan on base_tbl_parent base_tbl_parent_1',), ('                    ->  Seq Scan on base_tbl_child base_tbl_parent_2',), ('        ->  Sort',), ('              Sort Key: other_tbl_parent.id',), ('              ->  Append',), ('                    ->  Seq Scan on other_tbl_parent other_tbl_parent_1',), ('                    ->  Seq Scan on other_tbl_child other_tbl_parent_2',)]
++--------------------+
+--Query--
+SELECT * FROM ONLY base_tbl_parent ORDER BY a
+--Result--
+[(-200,), (-100,), (-40,), (-30,), (-20,), (-10,), (1100,), (1200,)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl_child ORDER BY a
+--Result--
+[(3,), (4,), (10,), (20,), (1007,), (1008,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.views WHERE table_name = 'rw_view1'
+--Result--
+[('test_db', 'public', 'rw_view1', ' SELECT a,\n    b\n   FROM base_tbl\n  WHERE (a < b);', 'LOCAL', 'YES', 'YES', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a, b
+--Result--
+[(1, -1), (1, 2), (2, 3), (3, 5), (9, 10)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl ORDER BY a, b
+--Result--
+[(1, -1), (1, 2), (2, 3), (3, 5), (9, 10)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.views WHERE table_name = 'rw_view2'
+--Result--
+[('test_db', 'public', 'rw_view2', ' SELECT a\n   FROM rw_view1\n  WHERE (a < 10);', 'CASCADED', 'YES', 'YES', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.views WHERE table_name = 'rw_view2'
+--Result--
+[('test_db', 'public', 'rw_view2', ' SELECT a\n   FROM rw_view1\n  WHERE (a < 10);', 'LOCAL', 'YES', 'YES', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(5,), (-10,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.views WHERE table_name = 'rw_view2'
+--Result--
+[('test_db', 'public', 'rw_view2', ' SELECT a\n   FROM rw_view1\n  WHERE (a < 10);', 'NONE', 'YES', 'YES', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(5,), (-10,), (30,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.views WHERE table_name LIKE E'rw\\_view_' ORDER BY table_name
+--Result--
+[('test_db', 'public', 'rw_view1', ' SELECT a\n   FROM base_tbl;', 'CASCADED', 'YES', 'YES', 'NO', 'NO', 'NO'), ('test_db', 'public', 'rw_view2', ' SELECT a\n   FROM rw_view1\n  WHERE (a > 0);', 'NONE', 'YES', 'YES', 'NO', 'NO', 'NO'), ('test_db', 'public', 'rw_view3', ' SELECT a\n   FROM rw_view2;', 'CASCADED', 'YES', 'YES', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+PREPARE ins(int, int[]) AS INSERT INTO rw_view1 VALUES($1, $2)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE ins(2, ARRAY[1,2,3])
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ins
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (costs off) INSERT INTO rw_view1 VALUES (5)
+--Result--
+[('Insert on base_tbl b',), ('  ->  Result',), ('  SubPlan 1',), ('    ->  Index Only Scan using ref_tbl_pkey on ref_tbl r',), ('          Index Cond: (a = b.a)',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view1 SET a = a + 5
+--Result--
+[('Update on base_tbl b',), ('  ->  Hash Join',), ('        Hash Cond: (b.a = r.a)',), ('        ->  Seq Scan on base_tbl b',), ('        ->  Hash',), ('              ->  Seq Scan on ref_tbl r',), ('  SubPlan 1',), ('    ->  Index Only Scan using ref_tbl_pkey on ref_tbl r_1',), ('          Index Cond: (a = b.a)',)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(5, None), (50, None)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(5, None), (50, None)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(50, None), (-10, 10), (20, 10), (30, None), (30, 10), (-5, 10)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 WHERE snoop(person)
+--Result--
+[('Tom',), ('Harry',)]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name = 'rw_view1'
+--Result--
+[('rw_view1', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name = 'rw_view1'
+--Result--
+[('rw_view1', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name = 'rw_view1'  ORDER BY ordinal_position
+--Result--
+[('rw_view1', 'person', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM rw_view1 WHERE snoop(person)
+--Result--
+[('Tom',), ('Harry',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) SELECT * FROM rw_view1 WHERE snoop(person)
+--Result--
+[('Subquery Scan on rw_view1',), ('  Filter: snoop(rw_view1.person)',), ('  ->  Seq Scan on base_tbl',), ("        Filter: (visibility = 'public'::text)",)]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view1 SET person=person WHERE snoop(person)
+--Result--
+[('Update on base_tbl',), ('  ->  Seq Scan on base_tbl',), ("        Filter: ((visibility = 'public'::text) AND snoop(person))",)]
++--------------------+
+--Query--
+EXPLAIN (costs off) DELETE FROM rw_view1 WHERE NOT snoop(person)
+--Result--
+[('Delete on base_tbl',), ('  ->  Seq Scan on base_tbl',), ("        Filter: ((visibility = 'public'::text) AND (NOT snoop(person)))",)]
++--------------------+
+--Query--
+SELECT table_name, is_insertable_into   FROM information_schema.tables  WHERE table_name = 'rw_view2'
+--Result--
+[('rw_view2', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, is_updatable, is_insertable_into   FROM information_schema.views  WHERE table_name = 'rw_view2'
+--Result--
+[('rw_view2', 'YES', 'YES')]
++--------------------+
+--Query--
+SELECT table_name, column_name, is_updatable   FROM information_schema.columns  WHERE table_name = 'rw_view2'  ORDER BY ordinal_position
+--Result--
+[('rw_view2', 'person', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM rw_view2 WHERE snoop(person)
+--Result--
+[('Tom',), ('Harry',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) SELECT * FROM rw_view2 WHERE snoop(person)
+--Result--
+[('Subquery Scan on rw_view2',), ('  Filter: snoop(rw_view2.person)',), ('  ->  Subquery Scan on rw_view1',), ('        Filter: snoop(rw_view1.person)',), ('        ->  Seq Scan on base_tbl',), ("              Filter: (visibility = 'public'::text)",)]
++--------------------+
+--Query--
+EXPLAIN (costs off) UPDATE rw_view2 SET person=person WHERE snoop(person)
+--Result--
+[('Update on base_tbl',), ('  ->  Seq Scan on base_tbl',), ("        Filter: ((visibility = 'public'::text) AND snoop(person) AND snoop(person))",)]
++--------------------+
+--Query--
+EXPLAIN (costs off) DELETE FROM rw_view2 WHERE NOT snoop(person)
+--Result--
+[('Delete on base_tbl',), ('  ->  Seq Scan on base_tbl',), ("        Filter: ((visibility = 'public'::text) AND snoop(person) AND (NOT snoop(person)))",)]
++--------------------+
+--Query--
+SELECT * FROM rw_view1
+--Result--
+[(1, 'Row 1')]
++--------------------+
+--Query--
+EXPLAIN (costs off) DELETE FROM rw_view1 WHERE id = 1 AND snoop(data)
+--Result--
+[('Update on base_tbl base_tbl_1',), ('  ->  Nested Loop',), ('        ->  Index Scan using base_tbl_pkey on base_tbl base_tbl_1',), ('              Index Cond: (id = 1)',), ('        ->  Index Scan using base_tbl_pkey on base_tbl',), ('              Index Cond: (id = 1)',), ('              Filter: ((NOT deleted) AND snoop(data))',)]
++--------------------+
+--Query--
+EXPLAIN (costs off) INSERT INTO rw_view1 VALUES (2, 'New row 2')
+--Result--
+[('Insert on base_tbl',), ('  InitPlan 1 (returns $0)',), ('    ->  Index Only Scan using base_tbl_pkey on base_tbl t',), ('          Index Cond: (id = 2)',), ('  ->  Result',), ('        One-Time Filter: ($0 IS NOT TRUE)',), ('',), ('Update on base_tbl',), ('  InitPlan 1 (returns $0)',), ('    ->  Index Only Scan using base_tbl_pkey on base_tbl t',), ('          Index Cond: (id = 2)',), ('  ->  Result',), ('        One-Time Filter: $0',), ('        ->  Index Scan using base_tbl_pkey on base_tbl',), ('              Index Cond: (id = 2)',)]
++--------------------+
+--Query--
+SELECT * FROM base_tbl
+--Result--
+[(1, 'Row 1', True), (2, 'New row 2', False)]
++--------------------+
+--Query--
+ANALYZE t1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE t11
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE t12
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE t111
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE a=3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE a=8
+--Result--
+[(8, 8.0, 't1', 't11d'), (8, 8.0, 't11', 't11d'), (8, 8.0, 't12', 't11d'), (8, 8.0, 't111', 't11d')]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE a=100
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=100
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE b=8
+--Result--
+[(8, 8.0, 't1', 't11d'), (8, 8.0, 't11', 't11d'), (8, 8.0, 't12', 't11d'), (8, 8.0, 't111', 't11d')]
++--------------------+
+--Query--
+TABLE t1
+--Result--
+[(1, 1.0, 't1'), (2, 2.0, 't1'), (3, 3.0, 't1'), (4, 4.0, 't1'), (5, 5.0, 't1'), (6, 6.0, 't1'), (7, 7.0, 't1'), (8, 8.0, 't1'), (9, 9.0, 't1'), (10, 10.0, 't1'), (1, 1.0, 't11'), (2, 2.0, 't11'), (3, 3.0, 't11'), (4, 4.0, 't11'), (5, 5.0, 't11'), (6, 6.0, 't11'), (7, 7.0, 't11'), (8, 8.0, 't11'), (9, 9.0, 't11'), (10, 10.0, 't11'), (1, 1.0, 't12'), (2, 2.0, 't12'), (3, 3.0, 't12'), (4, 4.0, 't12'), (5, 5.0, 't12'), (6, 6.0, 't12'), (7, 7.0, 't12'), (8, 8.0, 't12'), (9, 9.0, 't12'), (10, 10.0, 't12'), (1, 1.0, 't111'), (2, 2.0, 't111'), (3, 3.0, 't111'), (4, 4.0, 't111'), (5, 5.0, 't111'), (6, 6.0, 't111'), (7, 7.0, 't111'), (8, 8.0, 't111'), (9, 9.0, 't111'), (10, 10.0, 't111')]
++--------------------+
+--Query--
+SELECT * FROM tx1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM vx1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tx1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM vx1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tx1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM vx1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1, 'ONE', 10)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) UPDATE v2 SET a = 1
+--Result--
+[('Update on t1',), ('  InitPlan 1 (returns $0)',), ('    ->  Result',), ('  ->  Merge Join',), ('        Merge Cond: (t1.a = v1.a)',), ('        ->  Sort',), ('              Sort Key: t1.a',), ('              ->  Seq Scan on t1',), ('        ->  Sort',), ('              Sort Key: v1.a',), ('              ->  Subquery Scan on v1',), ('                    ->  Result',), ('                          One-Time Filter: $0',), ('                          ->  Seq Scan on t1 t1_1',)]
++--------------------+
+--Query--
+select events & 4 != 0 AS upd,        events & 8 != 0 AS ins,        events & 16 != 0 AS del   from pg_catalog.pg_relation_is_updatable('uv_pt'::regclass, false) t(events)
+--Result--
+[(True, True, True)]
++--------------------+
+--Query--
+select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 1::smallint, false)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 2::smallint, false)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select table_name, is_updatable, is_insertable_into   from information_schema.views where table_name = 'uv_ptv'
+--Result--
+[('uv_ptv', 'YES', 'YES')]
++--------------------+
+--Query--
+select table_name, column_name, is_updatable   from information_schema.columns where table_name = 'uv_ptv' order by column_name
+--Result--
+[('uv_ptv', 'a', 'YES'), ('uv_ptv', 'b', 'YES'), ('uv_ptv', 'v', 'YES')]
++--------------------+
+--Query--
+select tableoid::regclass, * from uv_pt
+--Result--
+[('uv_pt11', 1, 2, None)]
++--------------------+
+--Query--
+select tableoid::regclass, * from uv_pt order by a, b
+--Result--
+[('uv_pt11', 1, 2, None)]
++--------------------+
+--Query--
+select * from uv_iocu_tab
+--Result--
+[('xyxyxy', 0.0)]
++--------------------+
+--Query--
+select * from uv_iocu_tab
+--Result--
+[('xyxyxy', 1.0)]
++--------------------+
+--Query--
+select * from uv_iocu_tab
+--Result--
+[('xyxyxy', 2.0)]
++--------------------+
+--Query--
+explain (costs off) insert into uv_iocu_view (a, b) values ('xyxyxy', 3)    on conflict (a) do update set b = excluded.b where excluded.c > 0
+--Result--
+[('Insert on uv_iocu_tab',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: uv_iocu_tab_a_key',), ("  Conflict Filter: ((excluded.b + '1'::double precision) > '0'::double precision)",), ('  ->  Result',)]
++--------------------+
+--Query--
+select * from uv_iocu_tab
+--Result--
+[('xyxyxy', 3.0)]
++--------------------+
+--Query--
+explain (costs off) insert into uv_iocu_view (aa,bb) values (1,'y')    on conflict (aa) do update set bb = 'Rejected: '||excluded.*    where excluded.aa > 0    and excluded.bb != ''    and excluded.cc is not null
+--Result--
+[('Insert on uv_iocu_tab',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: uv_iocu_tab_a_key',), ("  Conflict Filter: ((excluded.a > 0) AND (excluded.b <> ''::text) AND ((excluded.*)::text IS NOT NULL))",), ('  ->  Result',)]
++--------------------+
+--Query--
+select * from uv_iocu_view
+--Result--
+[('Rejected: (y,1,"(1,y)")', 1, '(1,"Rejected: (y,1,""(1,y)"")")')]
++--------------------+
+--Query--
+select * from uv_iocu_view
+--Result--
+[('Rejected: (,1,"(1,)")', 1, '(1,"Rejected: (,1,""(1,)"")")')]
++--------------------+
+--Query--
+select * from uv_iocu_view
+--Result--
+[('Rejected: ("table default",1,"(1,""table default"")")', 1, '(1,"Rejected: (""table default"",1,""(1,""""table default"""")"")")')]
++--------------------+
+--Query--
+select * from uv_iocu_view
+--Result--
+[('Rejected: ("view default",1,"(1,""view default"")")', 1, '(1,"Rejected: (""view default"",1,""(1,""""view default"""")"")")')]
++--------------------+
+--Query--
+select * from base_tbl
+--Result--
+[(1, 'yyyxxx', 3.0)]
++--------------------+
+--Query--
+select * from base_tbl
+--Result--
+[(1, 'xxx', 3.0)]
++--------------------+
+--Query--
+select * from base_tbl
+--Result--
+[(1, 'yyy', 3.0)]
++--------------------+
+--Query--
+select * from base_tab_def order by a
+--Result--
+[(1, 'Table default', 'Table default', None, None), (2, 'Table default', 'Table default', None, None), (3, 'Table default', 'Table default', None, None), (4, 'Table default', 'Table default', None, None), (5, 'Table default', 'Table default', None, None), (6, 'Table default', 'Table default', None, None), (11, 'View default', 'Table default', 'View default', None), (12, 'View default', 'Table default', 'View default', None), (13, 'View default', 'Table default', 'View default', None), (14, 'View default', 'Table default', 'View default', None), (15, 'View default', 'Table default', 'View default', None), (16, 'View default', 'Table default', 'View default', None), (17, 'View default', 'Table default', 'View default', None), (None, 'View default', 'Table default', 'View default', None)]
++--------------------+
+--Query--
+truncate base_tab_def
+--Result--
+[]
++--------------------+
+--Query--
+select * from base_tab_def order by a
+--Result--
+[(1, 'Table default', 'Table default', None, None), (2, 'Table default', 'Table default', None, None), (3, 'Table default', 'Table default', None, None), (4, 'Table default', 'Table default', None, None), (5, 'Table default', 'Table default', None, None), (6, 'Table default', 'Table default', None, None), (11, 'View default', None, 'View default', None), (12, 'View default', None, 'View default', None), (13, 'View default', None, 'View default', None), (14, 'View default', None, 'View default', None), (15, 'View default', None, 'View default', None), (16, 'View default', None, 'View default', None), (17, 'View default', None, 'View default', None), (None, 'View default', None, 'View default', None)]
++--------------------+
+--Query--
+truncate base_tab_def
+--Result--
+[]
++--------------------+
+--Query--
+select * from base_tab_def order by a
+--Result--
+[(1, 'Table default', 'Table default', None, None), (2, 'Table default', 'Table default', None, None), (3, 'Table default', 'Table default', None, None), (4, 'Table default', 'Table default', None, None), (5, 'Table default', 'Table default', None, None), (6, 'Table default', 'Table default', None, None), (11, 'View default', None, 'View default', None), (12, 'View default', None, 'View default', None), (13, 'View default', None, 'View default', None), (14, 'View default', None, 'View default', None), (15, 'View default', None, 'View default', None), (16, 'View default', None, 'View default', None), (17, 'View default', None, 'View default', None), (None, 'View default', None, 'View default', None)]
++--------------------+
+--Query--
+truncate base_tab_def
+--Result--
+[]
++--------------------+
+--Query--
+select * from base_tab_def order by a, c NULLS LAST
+--Result--
+[(1, 'Table default', 'Table default', None, None), (2, 'Table default', 'Table default', None, None), (3, 'Table default', 'Table default', None, None), (4, 'Table default', 'Table default', None, None), (5, 'Table default', 'Table default', None, None), (6, 'Table default', 'Table default', None, None), (11, 'View default', 'Table default', 'View default', None), (11, 'View default', None, 'View default', None), (12, 'View default', 'Table default', 'View default', None), (12, 'View default', None, 'View default', None), (13, 'View default', 'Table default', 'View default', None), (13, 'View default', None, 'View default', None), (14, 'View default', 'Table default', 'View default', None), (14, 'View default', None, 'View default', None), (15, 'View default', 'Table default', 'View default', None), (15, 'View default', None, 'View default', None), (16, 'View default', 'Table default', 'View default', None), (16, 'View default', None, 'View default', None), (17, 'View default', 'Table default', 'View default', None), (17, 'View default', None, 'View default', None), (None, 'View default', 'Table default', 'View default', None), (None, 'View default', None, 'View default', None)]
++--------------------+
+--Query--
+truncate base_tab_def
+--Result--
+[]
++--------------------+
+--Query--
+select * from base_tab_def order by a, e nulls first
+--Result--
+[(1, 'View default', 'Table default', 'View default', None), (1, 'View default', 'Table default', None, 'xxx'), (2, 'View default', 'Table default', 'View default', None), (2, 'View default', 'Table default', None, 'xxx'), (3, 'View default', 'Table default', 'View default', None), (3, 'View default', 'Table default', None, 'xxx')]
++--------------------+
+--Query--
+select * from base_tab order by a
+--Result--
+[(1, [1, 2, 3, 4, 5], 'View default', 'Table default'), (100, [10, 11, 12, 13, 14], 'C value', 'Table default')]
++--------------------+

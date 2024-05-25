@@ -6,7 +6,7 @@ select "abc" like "a%", "abc" not like "%d%", "a%" like "a\%","abc%" like "a%\%"
 select "a" like "%%b","a" like "%%ab","ab" like "a\%", "ab" like "_", "ab" like "ab_", "abc" like "%_d", "abc" like "abc%d";
 select '?' like '|%', '?' like '|%' ESCAPE '|', '%' like '|%', '%' like '|%' ESCAPE '|', '%' like '%';
 select 'abc' like '%c','abcabc' like '%c',  "ab" like "", "ab" like "a", "ab" like "ab";
-select "Det hÃÂÃÂ¤r ÃÂÃÂ¤r svenska" regexp "h[[:alpha:]]+r", "aba" regexp "^(a|b)*$";
+select "Det hÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤r ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤r svenska" regexp "h[[:alpha:]]+r", "aba" regexp "^(a|b)*$";
 select "aba" regexp concat("^","a");
 select !0,NOT 0=1,!(0=0),1 AND 1,1 && 0,0 OR 1,1 || NULL, 1=1 or 1=1 and 1=0;
 select 2 between 1 and 3, "monty" between "max" and "my",2=2 and "monty" between "max" and "my" and 3=3;

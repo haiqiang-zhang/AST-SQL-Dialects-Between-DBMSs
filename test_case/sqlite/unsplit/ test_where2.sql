@@ -154,8 +154,7 @@ CREATE TABLE t2249a(a TEXT UNIQUE, x CHAR(100));
 CREATE TABLE t2249b(b INTEGER);
 INSERT INTO t2249a(a) VALUES('0123');
 INSERT INTO t2249b VALUES(123);
--- Because a is type TEXT and b is type INTEGER, both a and b
-    -- will attempt to convert to NUMERIC before the comparison.
+
     -- They will thus compare equal.
     --
     SELECT b,a FROM t2249b CROSS JOIN t2249a WHERE a=b;
@@ -165,8 +164,7 @@ EXPLAIN QUERY PLAN
     -- They will thus compare equal.
     --
     SELECT b,a FROM t2249b CROSS JOIN t2249a WHERE a=b;
--- The + operator removes affinity from the rhs.  No conversions
-    -- occur and the comparison is false.  The result is an empty set.
+
     --
     SELECT b,a FROM t2249b CROSS JOIN t2249a WHERE a=+b;
 EXPLAIN QUERY PLAN 
@@ -177,8 +175,7 @@ EXPLAIN QUERY PLAN
 SELECT b,a FROM t2249b CROSS JOIN t2249a WHERE +b=a;
 EXPLAIN QUERY PLAN 
     SELECT b,a FROM t2249b CROSS JOIN t2249a WHERE +b=a;
--- Use + on both sides of the comparison to disable indices
-    -- completely.  Make sure we get the same result.
+
     --
     SELECT b,a FROM t2249b CROSS JOIN t2249a WHERE +a=+b;
 EXPLAIN QUERY PLAN 
@@ -323,15 +320,13 @@ SELECT count(*) FROM t10;
 SELECT * FROM t10 WHERE a=1 AND (b=2 OR b=3);
 CREATE TABLE t11(a,b,c,d);
 CREATE INDEX i11aba ON t11(a,b,a,c);
--- column A occurs twice.
-    INSERT INTO t11 VALUES(1,2,3,4);
+INSERT INTO t11 VALUES(1,2,3,4);
 INSERT INTO t11 VALUES(5,6,7,8);
 INSERT INTO t11 VALUES(1,2,9,10);
 INSERT INTO t11 VALUES(5,11,12,13);
 SELECT c FROM t11 WHERE a=1 AND b=2 ORDER BY c;
 CREATE INDEX i11cccccccc ON t11(c,c,c,c,c,c,c,c);
--- repeated column
-    SELECT d FROM t11 WHERE c=9;
+SELECT d FROM t11 WHERE c=9;
 SELECT d FROM t11 WHERE c IN (1,2,3,4,5);
 SELECT d FROM t11 WHERE c=7 OR (a=1 AND b=2) ORDER BY d;
 CREATE TABLE t12(x INTEGER PRIMARY KEY, y INT, z CHAR(100));

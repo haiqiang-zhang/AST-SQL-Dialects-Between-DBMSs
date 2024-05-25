@@ -2,7 +2,6 @@ PRAGMA enable_verification;
 CREATE TABLE integers(i INTEGER PRIMARY KEY, j INTEGER);
 INSERT INTO integers VALUES (1, 3);
 BEGIN TRANSACTION;
-INSERT INTO integers VALUES (1, 2);
 ROLLBACK;
 DELETE FROM integers;
 INSERT INTO integers VALUES (1, 2);

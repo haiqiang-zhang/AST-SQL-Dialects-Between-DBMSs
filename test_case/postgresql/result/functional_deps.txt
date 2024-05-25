@@ -1,0 +1,50 @@
+--Query--
+SELECT id, keywords, title, body, created FROM articles GROUP BY id
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a.id, a.keywords, a.title, a.body, a.created FROM articles AS a, articles_in_category AS aic WHERE a.id = aic.article_id AND aic.category_id in (14,62,70,53,138) GROUP BY a.id
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a.id, a.keywords, a.title, a.body, a.created FROM articles AS a JOIN articles_in_category AS aic ON a.id = aic.article_id WHERE aic.category_id in (14,62,70,53,138) GROUP BY a.id
+--Result--
+[]
++--------------------+
+--Query--
+SELECT aic.changed FROM articles AS a JOIN articles_in_category AS aic ON a.id = aic.article_id WHERE aic.category_id in (14,62,70,53,138) GROUP BY aic.category_id, aic.article_id
+--Result--
+[]
++--------------------+
+--Query--
+SELECT product_id, p.name, (sum(s.units) * p.price) AS sales     FROM products p LEFT JOIN sales s USING (product_id)     GROUP BY product_id, p.name, p.price
+--Result--
+[]
++--------------------+
+--Query--
+SELECT product_id, p.name, (sum(s.units) * p.price) AS sales     FROM products p LEFT JOIN sales s USING (product_id)     GROUP BY product_id
+--Result--
+[]
++--------------------+
+--Query--
+SELECT u.uid, u.name FROM node n INNER JOIN users u ON u.uid = n.uid WHERE n.type = 'blog' AND n.status = 1 GROUP BY u.uid, u.name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT u.uid, u.name FROM node n INNER JOIN users u ON u.uid = n.uid WHERE n.type = 'blog' AND n.status = 1 GROUP BY u.uid
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE foo AS   SELECT id, keywords, title, body, created   FROM articles   GROUP BY id
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE foo
+--Result--
+[]
++--------------------+

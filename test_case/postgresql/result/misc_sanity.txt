@@ -1,0 +1,25 @@
+--Query--
+SELECT * FROM pg_depend as d1 WHERE refclassid = 0 OR refobjid = 0 OR       classid = 0 OR objid = 0 OR       deptype NOT IN ('a', 'e', 'i', 'n', 'x', 'P', 'S')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_shdepend as d1 WHERE refclassid = 0 OR refobjid = 0 OR       classid = 0 OR objid = 0 OR       deptype NOT IN ('a', 'o', 'r', 't')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, attname, atttypid::regtype FROM pg_class c JOIN pg_attribute a ON c.oid = attrelid WHERE c.oid < 16384 AND       reltoastrelid = 0 AND       relkind = 'r' AND       attstorage != 'p' ORDER BY 1, 2
+--Result--
+[('pg_attribute', 'attacl', 'aclitem[]'), ('pg_attribute', 'attfdwoptions', 'text[]'), ('pg_attribute', 'attmissingval', 'anyarray'), ('pg_attribute', 'attoptions', 'text[]'), ('pg_class', 'relacl', 'aclitem[]'), ('pg_class', 'reloptions', 'text[]'), ('pg_class', 'relpartbound', 'pg_node_tree'), ('pg_index', 'indexprs', 'pg_node_tree'), ('pg_index', 'indpred', 'pg_node_tree'), ('pg_largeobject', 'data', 'bytea'), ('pg_largeobject_metadata', 'lomacl', 'aclitem[]')]
++--------------------+
+--Query--
+SELECT relname FROM pg_class WHERE relnamespace = 'pg_catalog'::regnamespace AND relkind = 'r'       AND pg_class.oid NOT IN (SELECT indrelid FROM pg_index WHERE indisprimary) ORDER BY 1
+--Result--
+[('pg_depend',), ('pg_shdepend',)]
++--------------------+
+--Query--
+SELECT relname FROM pg_class c JOIN pg_index i ON c.oid = i.indexrelid WHERE relnamespace = 'pg_catalog'::regnamespace AND relkind = 'i'       AND i.indisunique       AND c.oid NOT IN (SELECT conindid FROM pg_constraint) ORDER BY 1
+--Result--
+[]
++--------------------+

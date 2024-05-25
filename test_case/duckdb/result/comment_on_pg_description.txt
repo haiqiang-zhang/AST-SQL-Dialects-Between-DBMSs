@@ -1,0 +1,90 @@
+--Query--
+COMMENT ON TABLE test IS 'comment-1'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN test.a IS 'comment-2'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN test_view.a IS 'comment-2.5'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON VIEW test_view IS 'comment-3'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON INDEX test_index IS 'comment-4'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON SEQUENCE seq IS 'comment-5'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON TYPE test_type IS 'comment-6'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON MACRO TABLE test_table_macro IS 'comment-7'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON MACRO test_function IS 'comment-8'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_tables AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.table_oid WHERE pg.objsubid=0 AND ddb.table_name='test'
+--Result--
+[('comment-1', 'comment-1')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_columns AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.table_oid WHERE pg.objsubid=1 AND ddb.table_name='test'
+--Result--
+[('comment-2', 'comment-2')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_columns AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.table_oid WHERE pg.objsubid=1 AND ddb.table_name='test_view'
+--Result--
+[('comment-2.5', 'comment-2.5')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_views AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.view_oid WHERE pg.objsubid=0 AND ddb.view_name='test_view'
+--Result--
+[('comment-3', 'comment-3')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_indexes AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.index_oid WHERE ddb.index_name='test_index'
+--Result--
+[('comment-4', 'comment-4')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_sequences() AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.sequence_oid WHERE ddb.sequence_name='seq'
+--Result--
+[('comment-5', 'comment-5')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_types() AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.type_oid WHERE ddb.type_name='test_type'
+--Result--
+[('comment-6', 'comment-6')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_functions() AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.function_oid WHERE ddb.function_name='test_table_macro'
+--Result--
+[('comment-7', 'comment-7')]
++--------------------+
+--Query--
+SELECT ddb.comment, pg.description FROM duckdb_functions() AS ddb LEFT JOIN pg_description AS pg     ON pg.classoid=ddb.database_oid AND pg.objoid=ddb.function_oid WHERE ddb.function_name='test_function'
+--Result--
+[('comment-8', 'comment-8')]
++--------------------+

@@ -3,14 +3,11 @@
 import os
 
 
-log_path = "/Users/larryzhang/Project/sqlite/testrunner.log"
+log_path = "/test_case/sqlite/test_raw.log"
 test_case_path = "./test_case/sqlite/test"
 
 
-except_query = [
-    "savepoint",
-    "random",
-]
+
 
 
 except_files = [
@@ -24,7 +21,7 @@ def is_except_file(file_name:str):
     return False
 
 
-def extract_sqlite():
+def extract_sqlite(except_query):
 
     # Delete all files in test_case_path
     for dirpath, dirnames, filenames in os.walk(test_case_path):

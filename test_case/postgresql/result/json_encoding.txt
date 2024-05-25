@@ -1,0 +1,120 @@
+--Query--
+SELECT '"\u0000"'::json
+--Result--
+[('\x00',)]
++--------------------+
+--Query--
+SELECT '"\uaBcD"'::json
+--Result--
+[('ꯍ',)]
++--------------------+
+--Query--
+select json '{ "a":  "\ud83d\ude04\ud83d\udc36" }' -> 'a' as correct_in_utf8
+--Result--
+[('😄🐶',)]
++--------------------+
+--Query--
+select json '{ "a":  "the Copyright \u00a9 sign" }' as correct_in_utf8
+--Result--
+[({'a': 'the Copyright © sign'},)]
++--------------------+
+--Query--
+select json '{ "a":  "dollar \u0024 character" }' as correct_everywhere
+--Result--
+[({'a': 'dollar $ character'},)]
++--------------------+
+--Query--
+select json '{ "a":  "dollar \\u0024 character" }' as not_an_escape
+--Result--
+[({'a': 'dollar \\u0024 character'},)]
++--------------------+
+--Query--
+select json '{ "a":  "null \u0000 escape" }' as not_unescaped
+--Result--
+[({'a': 'null \x00 escape'},)]
++--------------------+
+--Query--
+select json '{ "a":  "null \\u0000 escape" }' as not_an_escape
+--Result--
+[({'a': 'null \\u0000 escape'},)]
++--------------------+
+--Query--
+select json '{ "a":  "the Copyright \u00a9 sign" }' ->> 'a' as correct_in_utf8
+--Result--
+[('the Copyright © sign',)]
++--------------------+
+--Query--
+select json '{ "a":  "dollar \u0024 character" }' ->> 'a' as correct_everywhere
+--Result--
+[('dollar $ character',)]
++--------------------+
+--Query--
+select json '{ "a":  "dollar \\u0024 character" }' ->> 'a' as not_an_escape
+--Result--
+[('dollar \\u0024 character',)]
++--------------------+
+--Query--
+select json '{ "a":  "null \\u0000 escape" }' ->> 'a' as not_an_escape
+--Result--
+[('null \\u0000 escape',)]
++--------------------+
+--Query--
+SELECT '"\u0045"'::jsonb
+--Result--
+[('E',)]
++--------------------+
+--Query--
+SELECT octet_length('"\uaBcD"'::jsonb::text)
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT octet_length((jsonb '{ "a":  "\ud83d\ude04\ud83d\udc36" }' -> 'a')::text) AS correct_in_utf8
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "the Copyright \u00a9 sign" }' as correct_in_utf8
+--Result--
+[({'a': 'the Copyright © sign'},)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "dollar \u0024 character" }' as correct_everywhere
+--Result--
+[({'a': 'dollar $ character'},)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "dollar \\u0024 character" }' as not_an_escape
+--Result--
+[({'a': 'dollar \\u0024 character'},)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "null \\u0000 escape" }' as not_an_escape
+--Result--
+[({'a': 'null \\u0000 escape'},)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "the Copyright \u00a9 sign" }' ->> 'a' as correct_in_utf8
+--Result--
+[('the Copyright © sign',)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "dollar \u0024 character" }' ->> 'a' as correct_everywhere
+--Result--
+[('dollar $ character',)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "dollar \\u0024 character" }' ->> 'a' as not_an_escape
+--Result--
+[('dollar \\u0024 character',)]
++--------------------+
+--Query--
+SELECT jsonb '{ "a":  "null \\u0000 escape" }' ->> 'a' as not_an_escape
+--Result--
+[('null \\u0000 escape',)]
++--------------------+
+--Query--
+select * from pg_input_error_info('{ "a":  "\ud83d\ude04\ud83d\udc36" }', 'jsonb')
+--Result--
+[(None, None, None, None)]
++--------------------+

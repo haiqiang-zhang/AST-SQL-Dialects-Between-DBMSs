@@ -1,0 +1,275 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE TRUE ORDER BY 1
+--Result--
+[(None, None), (1, 10), (2, 12), (3, 14), (4, 16), (5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE FALSE ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE NULL ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a=2
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a>0
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>0 AND a=2
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a<4
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<4 AND a=2
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a<=2
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a>=2
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>2 AND a>4
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>4 AND a>2
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>4 AND a>=4
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>=4 AND a>4
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<2 AND a<4
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<4 AND a<2
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<2 AND a<=2
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<=2 AND a<2
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<2 AND a<>3
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<=1 AND a<>3
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>4 AND a<>2
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>=5 AND a<>2
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>=4 AND a<>4 AND a<>4
+--Result--
+[(5, None)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<3 AND a<4 AND a<5 AND a<10 AND a<2 AND a<20
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a=4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a>4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>4 AND a=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a>2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a>=4 AND a=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=4 AND a<2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<2 AND a=4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a<2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<=2 AND a=4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<2 AND a>4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a=2 AND a<>2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<>2 AND a=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers WHERE a<2 AND 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s='hello'
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s='world'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s<>'hello'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s<>'world'
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s>'a'
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s>='hello'
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s<='hello'
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s<'z'
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s<='a'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s<'hello'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s>'hello'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s='hello' AND s>='z'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s<>'hello' AND s<='a'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s<>'hello' AND s<'hello'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s<>'hello' AND s>'hello'
+--Result--
+[('world',)]
++--------------------+
+--Query--
+SELECT * FROM strings WHERE s<>'world' AND s>='hello'
+--Result--
+[('hello',)]
++--------------------+

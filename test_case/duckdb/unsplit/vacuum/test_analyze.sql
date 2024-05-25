@@ -1,11 +1,8 @@
 analyze;
-vacuum;;
-vacuum test;
-analyze test;
+vacuum;
 create table test (i int, j int);
 analyze test;
 create view testview as select * from test;
-analyze testview;
 insert into test select range % 5000, range % 5000 from range(10000);
 pragma verify_parallelism;
 analyze test(i);

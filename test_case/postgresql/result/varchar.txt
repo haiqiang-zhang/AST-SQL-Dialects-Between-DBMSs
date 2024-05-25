@@ -1,0 +1,50 @@
+--Query--
+SELECT * FROM VARCHAR_TBL
+--Result--
+[('a',), ('A',), ('1',), ('2',), ('3',), ('',), ('c',)]
++--------------------+
+--Query--
+SELECT c.*    FROM VARCHAR_TBL c    WHERE c.f1 <> 'a'
+--Result--
+[('A',), ('1',), ('2',), ('3',), ('',), ('c',)]
++--------------------+
+--Query--
+SELECT c.*    FROM VARCHAR_TBL c    WHERE c.f1 = 'a'
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT c.*    FROM VARCHAR_TBL c    WHERE c.f1 < 'a'
+--Result--
+[('A',), ('1',), ('2',), ('3',), ('',)]
++--------------------+
+--Query--
+SELECT c.*    FROM VARCHAR_TBL c    WHERE c.f1 <= 'a'
+--Result--
+[('a',), ('A',), ('1',), ('2',), ('3',), ('',)]
++--------------------+
+--Query--
+SELECT c.*    FROM VARCHAR_TBL c    WHERE c.f1 > 'a'
+--Result--
+[('c',)]
++--------------------+
+--Query--
+SELECT c.*    FROM VARCHAR_TBL c    WHERE c.f1 >= 'a'
+--Result--
+[('a',), ('c',)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('abcd  ', 'varchar(4)')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('abcde', 'varchar(4)')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('abcde', 'varchar(4)')
+--Result--
+[('value too long for type character varying(4)', None, None, '22001')]
++--------------------+

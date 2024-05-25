@@ -1,0 +1,485 @@
+--Query--
+SELECT trigger_name, event_manipulation, event_object_schema, event_object_table,        action_order, action_condition, action_orientation, action_timing,        action_reference_old_table, action_reference_new_table   FROM information_schema.triggers   WHERE event_object_table in ('pkeys', 'fkeys', 'fkeys2')   ORDER BY trigger_name COLLATE "C", 2
+--Result--
+[]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foo')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foobar')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foo')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foobar')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foo')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foobar')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foo')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, 'foobar')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, True, 'xyzzy')]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(1, True, 'xyzzy', 42)]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(2, True, 'xyzzy', 42)]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(2, 'xyzzy', 42)]
++--------------------+
+--Query--
+select * from trigtest
+--Result--
+[(2, 'xyzzy', 42)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, None, 999999), (2, 2, None, 999999), (3, 3, 0, 999999)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, None, 999999), (3, 3, 0, 999999)]
++--------------------+
+--Query--
+select * from tttest where price_off = 999999
+--Result--
+[(1, 1, None, 999999), (3, 3, 0, 999999)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, None, 999999), (3, 30, 0, 999999)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, None, 999999), (5, 30, 0, 999999)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, None, 999999)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, None, 999999)]
++--------------------+
+--Query--
+select * from tttest
+--Result--
+[(1, 1, -1, 999999)]
++--------------------+
+--Query--
+select * from tttest where price_on <= 35 and price_off > 35 and price_id = 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT trigger_name, event_manipulation, event_object_schema, event_object_table,        action_order, action_condition, action_orientation, action_timing,        action_reference_old_table, action_reference_new_table   FROM information_schema.triggers   WHERE event_object_table IN ('main_table')   ORDER BY trigger_name COLLATE "C", 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main_table ORDER BY a, b
+--Result--
+[(50, 60), (50, 60), (50, 60), (50, 60)]
++--------------------+
+--Query--
+SELECT pg_get_triggerdef(oid, true) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_triggerdef(oid, false) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_triggerdef(oid, true) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_any'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_modified_a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'after_upd_a_b_row_trig'
+--Result--
+[]
++--------------------+
+--Query--
+select * from trigtest2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from trigtest2
+--Result--
+[]
++--------------------+
+--Query--
+select *  from trigtest
+--Result--
+[(3,), (4,), (5,), (6,), (7,)]
++--------------------+
+--Query--
+SELECT description FROM serializable_update_tab WHERE id = 1
+--Result--
+[('no no',)]
++--------------------+
+--Query--
+SELECT * FROM min_updates_test
+--Result--
+[('a', 2, 2), ('b', 3, 2)]
++--------------------+
+--Query--
+SELECT count(*) FROM european_city_view
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM city_view
+--Result--
+[]
++--------------------+
+--Query--
+select pg_trigger_depth()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select pg_trigger_depth()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select pg_trigger_depth()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from parent
+--Result--
+[(1, 'a', 'a', 'a', 'a', 0)]
++--------------------+
+--Query--
+select * from child
+--Result--
+[(10, 1, 'b')]
++--------------------+
+--Query--
+merge into parent p using (values (1)) as v(id) on p.aid = v.id   when matched then update set val1 = 'b'
+--Result--
+[]
++--------------------+
+--Query--
+select * from parent
+--Result--
+[(1, 'b', 'a', 'a', 'a', 0)]
++--------------------+
+--Query--
+select * from child
+--Result--
+[(10, 1, 'b')]
++--------------------+
+--Query--
+merge into parent p using (values (1)) as v(id) on p.aid = v.id   when matched then delete
+--Result--
+[]
++--------------------+
+--Query--
+select * from parent
+--Result--
+[]
++--------------------+
+--Query--
+select * from child
+--Result--
+[(10, 1, 'b')]
++--------------------+
+--Query--
+select * from parent
+--Result--
+[]
++--------------------+
+--Query--
+select * from child
+--Result--
+[(10, 1, 'b')]
++--------------------+
+--Query--
+select * from self_ref_trigger
+--Result--
+[(2, 1, 'root child A', 0), (3, 1, 'root child B', 0), (4, 2, 'grandchild 1', 0), (5, 3, 'grandchild 2', 0), (1, None, 'root!', 0)]
++--------------------+
+--Query--
+select * from self_ref_trigger
+--Result--
+[]
++--------------------+
+--Query--
+select * from upsert
+--Result--
+[(1, 'black'), (2, 'red'), (3, 'orange'), (4, 'green'), (5, 'purple'), (6, 'white'), (7, 'pink'), (8, 'yellow')]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgfoid::regproc from pg_trigger   where tgrelid::regclass::text like 'trigpart%' order by tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgfoid::regproc from pg_trigger   where tgrelid::regclass::text like 'trigpart%' order by tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgfoid::regproc from pg_trigger   where tgrelid::regclass::text like 'trigpart%' order by tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass::text, tgname, tgfoid::regproc, tgenabled, tgisinternal from pg_trigger   where tgname ~ '^trg1' order by 1
+--Result--
+[]
++--------------------+
+--Query--
+with ins (a) as (   insert into parted2_stmt_trig values (1), (2) returning a ) insert into parted_stmt_trig select a from ins returning tableoid::regclass, a
+--Result--
+[('parted_stmt_trig1', 1), ('parted_stmt_trig2', 2)]
++--------------------+
+--Query--
+with upd as (   update parted2_stmt_trig set a = a ) update parted_stmt_trig  set a = a
+--Result--
+[]
++--------------------+
+--Query--
+merge into parted_trig using (select 1) as ss on true   when matched and a = 2 then update set a = 1
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass, * from parted
+--Result--
+[('parted_1_1', 1, 1, 'uno uno v1v3v5 v6'), ('parted_1_1', 1, 1, 'uno uno v2v3v5 v6'), ('parted_1_1', 1, 1, 'uno uno v4v5 v6'), ('parted_1_1', 1, 1, 'uno uno v6')]
++--------------------+
+--Query--
+truncate table parted
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass, * from parted
+--Result--
+[('parted_2', 2, 1, 'uno uno v5')]
++--------------------+
+--Query--
+truncate table parted
+--Result--
+[]
++--------------------+
+--Query--
+select tableoid::regclass, * from parted
+--Result--
+[('parted_2', 2, 1, 'uno uno v6')]
++--------------------+
+--Query--
+select tableoid::regclass, * from parted
+--Result--
+[('parted_2', 2, 1, 'uno uno v6')]
++--------------------+
+--Query--
+select * from parted
+--Result--
+[(0, 1, 'zero win'), (1, 1, 'one fail'), (1, 2, 'two fail')]
++--------------------+
+--Query--
+select tgname, conname, t.tgrelid::regclass, t.tgconstrrelid::regclass,   c.conrelid::regclass, c.confrelid::regclass   from pg_trigger t join pg_constraint c on (t.tgconstraint = c.oid)   where tgname = 'parted_trigger'   order by t.tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, count(*) from pg_trigger   where tgrelid::regclass in ('trg_clone', 'trg_clone1', 'trg_clone2', 	'trg_clone3', 'trg_clone_3_3')   group by tgrelid::regclass order by tgrelid::regclass
+--Result--
+[('trg_clone', 1), ('trg_clone1', 1), ('trg_clone2', 1), ('trg_clone3', 1), ('trg_clone_3_3', 1)]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text, tgname
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text, tgname
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text, tgname
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text, tgname
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, rtrim(tgname, '0123456789') as tgname,   tgfoid::regproc, tgenabled   from pg_trigger where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text, tgfoid
+--Result--
+[('child1', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_ins"', 'O'), ('child1', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_upd"', 'O'), ('parent', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_ins"', 'O'), ('parent', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_upd"', 'O'), ('parent', 'RI_ConstraintTrigger_a_', '"RI_FKey_noaction_del"', 'O'), ('parent', 'RI_ConstraintTrigger_a_', '"RI_FKey_noaction_upd"', 'O')]
++--------------------+
+--Query--
+select tgrelid::regclass, rtrim(tgname, '0123456789') as tgname,   tgfoid::regproc, tgenabled   from pg_trigger where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text, tgfoid
+--Result--
+[('child1', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_ins"', 'O'), ('child1', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_upd"', 'O'), ('parent', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_ins"', 'O'), ('parent', 'RI_ConstraintTrigger_c_', '"RI_FKey_check_upd"', 'O'), ('parent', 'RI_ConstraintTrigger_a_', '"RI_FKey_noaction_del"', 'O'), ('parent', 'RI_ConstraintTrigger_a_', '"RI_FKey_noaction_upd"', 'O')]
++--------------------+
+--Query--
+SELECT tgrelid::regclass, tgenabled FROM pg_trigger   WHERE tgrelid::regclass IN (SELECT oid from pg_class where relname LIKE 'trgfire%')   ORDER BY tgrelid::regclass::text
+--Result--
+[]
++--------------------+
+--Query--
+SELECT trigger_name, event_manipulation, event_object_schema, event_object_table,        action_order, action_condition, action_orientation, action_timing,        action_reference_old_table, action_reference_new_table   FROM information_schema.triggers   WHERE event_object_table IN ('parent', 'child1', 'child2', 'child3')   ORDER BY trigger_name COLLATE "C", 2
+--Result--
+[]
++--------------------+
+--Query--
+with wcte as (insert into table1 values (42))   insert into table2 values ('hello world')
+--Result--
+[]
++--------------------+
+--Query--
+with wcte as (insert into table1 values (43))   insert into table1 values (44)
+--Result--
+[]
++--------------------+
+--Query--
+select * from table1
+--Result--
+[(42,), (44,), (43,)]
++--------------------+
+--Query--
+select * from table2
+--Result--
+[('hello world',)]
++--------------------+
+--Query--
+select * from trig_table
+--Result--
+[(2, 'two a'), (2, 'two b'), (3, 'three a'), (3, 'three b'), (11, 'one a'), (11, 'one b')]
++--------------------+
+--Query--
+select * from trig_table
+--Result--
+[(3, 'three a'), (3, 'three b')]
++--------------------+
+--Query--
+merge into merge_target_table t using merge_source_table s on t.a = s.a when not matched then   insert values (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+merge into merge_target_table t using merge_source_table s on t.a = s.a when matched and s.a <= 2 then 	update set b = t.b || ' updated by merge' when matched and s.a > 2 then 	delete when not matched then   insert values (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+merge into merge_target_table t using merge_source_table s on t.a = s.a when matched and s.a <= 2 then 	update set b = t.b || ' updated again by merge' when matched and s.a > 2 then 	delete when not matched then   insert values (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+table my_table
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+savepoint svp
+--Result--
+[]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, (select tgname from pg_trigger tr where tr.oid = pg_trigger.tgparentid) parent_tgname from pg_trigger where tgrelid in (select relid from pg_partition_tree('grandparent')) order by tgname, tgrelid::regclass::text COLLATE "C"
+--Result--
+[('chi', 'b', 'b'), ('cho', 'b', 'b'), ('grandparent', 'b', None), ('middle', 'b', 'b')]
++--------------------+
+--Query--
+select tgrelid::regclass, tgname, (select tgname from pg_trigger tr where tr.oid = pg_trigger.tgparentid) parent_tgname from pg_trigger where tgrelid in (select relid from pg_partition_tree('grandparent')) order by tgname, tgrelid::regclass::text COLLATE "C"
+--Result--
+[('chi', 'b', 'b'), ('cho', 'b', 'b'), ('grandparent', 'b', None), ('middle', 'b', 'b'), ('chi', 'c', 'c'), ('cho', 'c', 'c'), ('middle', 'c', None), ('middle', 'p', None), ('grandparent', 'q', None)]
++--------------------+

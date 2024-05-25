@@ -1,0 +1,185 @@
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid < '(1, 0)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid < '(1,0)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid < '(1, 0)'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid > '(9, 0)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid > '(9,0)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid > '(9, 0)'
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM tidrangescan
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid < '(1,0)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid < '(1,0)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid < '(1,0)'
+--Result--
+[('(0,1)',), ('(0,2)',), ('(0,3)',), ('(0,4)',), ('(0,5)',), ('(0,6)',), ('(0,7)',), ('(0,8)',), ('(0,9)',), ('(0,10)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid <= '(1,5)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid <= '(1,5)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid <= '(1,5)'
+--Result--
+[('(0,1)',), ('(0,2)',), ('(0,3)',), ('(0,4)',), ('(0,5)',), ('(0,6)',), ('(0,7)',), ('(0,8)',), ('(0,9)',), ('(0,10)',), ('(1,1)',), ('(1,2)',), ('(1,3)',), ('(1,4)',), ('(1,5)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid < '(0,0)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid < '(0,0)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid < '(0,0)'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid > '(2,8)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid > '(2,8)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid > '(2,8)'
+--Result--
+[('(2,9)',), ('(2,10)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE '(2,8)' < ctid
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: ('(2,8)'::tid < ctid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE '(2,8)' < ctid
+--Result--
+[('(2,9)',), ('(2,10)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid >= '(2,8)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid >= '(2,8)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid >= '(2,8)'
+--Result--
+[('(2,8)',), ('(2,9)',), ('(2,10)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid >= '(100,0)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid >= '(100,0)'::tid)",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid >= '(100,0)'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE ctid > '(1,4)' AND '(1,7)' >= ctid
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: ((ctid > '(1,4)'::tid) AND ('(1,7)'::tid >= ctid))",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid > '(1,4)' AND '(1,7)' >= ctid
+--Result--
+[('(1,5)',), ('(1,6)',), ('(1,7)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT ctid FROM tidrangescan WHERE '(1,7)' >= ctid AND ctid > '(1,4)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (('(1,7)'::tid >= ctid) AND (ctid > '(1,4)'::tid))",)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE '(1,7)' >= ctid AND ctid > '(1,4)'
+--Result--
+[('(1,5)',), ('(1,6)',), ('(1,7)',)]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid > '(0,65535)' AND ctid < '(1,0)' LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid < '(0,0)' LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid > '(4294967295,65535)'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid < '(0,0)'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ctid FROM tidrangescan WHERE ctid >= (SELECT NULL::tid)
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT t.ctid,t2.c FROM tidrangescan t, LATERAL (SELECT count(*) c FROM tidrangescan t2 WHERE t2.ctid <= t.ctid) t2 WHERE t.ctid < '(1,0)'
+--Result--
+[('Nested Loop',), ('  ->  Tid Range Scan on tidrangescan t',), ("        TID Cond: (ctid < '(1,0)'::tid)",), ('  ->  Aggregate',), ('        ->  Tid Range Scan on tidrangescan t2',), ('              TID Cond: (ctid <= t.ctid)',)]
++--------------------+
+--Query--
+SELECT t.ctid,t2.c FROM tidrangescan t, LATERAL (SELECT count(*) c FROM tidrangescan t2 WHERE t2.ctid <= t.ctid) t2 WHERE t.ctid < '(1,0)'
+--Result--
+[('(0,1)', 1), ('(0,2)', 2), ('(0,3)', 3), ('(0,4)', 4), ('(0,5)', 5), ('(0,6)', 6), ('(0,7)', 7), ('(0,8)', 8), ('(0,9)', 9), ('(0,10)', 10)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) DECLARE c SCROLL CURSOR FOR SELECT ctid FROM tidrangescan WHERE ctid < '(1,0)'
+--Result--
+[('Tid Range Scan on tidrangescan',), ("  TID Cond: (ctid < '(1,0)'::tid)",)]
++--------------------+
+--Query--
+DECLARE c SCROLL CURSOR FOR SELECT ctid FROM tidrangescan WHERE ctid < '(1,0)'
+--Result--
+[]
++--------------------+
+--Query--
+FETCH NEXT c
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+FETCH NEXT c
+--Result--
+[('(0,2)',)]
++--------------------+
+--Query--
+FETCH PRIOR c
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+FETCH FIRST c
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+FETCH LAST c
+--Result--
+[('(0,10)',)]
++--------------------+

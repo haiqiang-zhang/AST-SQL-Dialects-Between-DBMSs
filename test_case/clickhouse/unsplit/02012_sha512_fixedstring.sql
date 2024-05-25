@@ -1,5 +1,3 @@
--- Tag no-fasttest: Depends on OpenSSL
-
 SELECT hex(SHA512(''));
 SELECT hex(SHA512('abc'));
 SELECT hex(SHA512_256(''));

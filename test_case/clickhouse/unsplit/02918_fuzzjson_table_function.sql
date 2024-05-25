@@ -62,7 +62,6 @@ INSERT INTO 02918_table_str SELECT * FROM fuzzJSON(
     max_string_value_length=65536) LIMIT 100;
 SELECT count() FROM 02918_table_str;
 DROP TABLE IF EXISTS 02918_table_str;
---
 DROP TABLE IF EXISTS 02918_table_obj1;
 DROP TABLE IF EXISTS 02918_table_obj1;
 DROP TABLE IF EXISTS 02918_table_obj2;

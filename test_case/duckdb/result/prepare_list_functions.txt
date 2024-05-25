@@ -1,0 +1,55 @@
+--Query--
+PREPARE v1 AS SELECT list_aggregate(?, 'min')
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v2 AS SELECT array_slice(?, 1, 2)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v3 AS SELECT flatten(?)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v4 AS SELECT list_extract(?, 2)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v1([1, 2, 3])
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXECUTE v1(['hello', 'world'])
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+EXECUTE v1(NULL::INT[])
+--Result--
+[(None,)]
++--------------------+
+--Query--
+EXECUTE v2([1, 2, 3])
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+EXECUTE v2('123')
+--Result--
+[('12',)]
++--------------------+
+--Query--
+EXECUTE v3([[1,2,3],[4,5]])
+--Result--
+[([1, 2, 3, 4, 5],)]
++--------------------+
+--Query--
+EXECUTE v4([1, 2, 3])
+--Result--
+[(2,)]
++--------------------+

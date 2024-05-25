@@ -1,0 +1,430 @@
+--Query--
+COMMENT ON STATISTICS ab1_a_b_stats IS 'new comment'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON STATISTICS ab1_a_b_stats IS 'changed comment'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_statisticsobjdef(oid) FROM pg_statistic_ext WHERE stxname = 'ab1_a_b_stats'
+--Result--
+[('CREATE STATISTICS regress_schema_2.ab1_a_b_stats ON a, b FROM ab1',)]
++--------------------+
+--Query--
+SELECT stxname FROM pg_statistic_ext WHERE stxname LIKE 'ab1%'
+--Result--
+[('ab1_b_c_stats',)]
++--------------------+
+--Query--
+SELECT stxname FROM pg_statistic_ext WHERE stxname LIKE 'ab1%'
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ab1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ab1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ab1 (a)
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ab1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ab1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM ANALYZE stxdinh, stxdinh1, stxdinh2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM ANALYZE stxdinh, stxdinh1, stxdinh2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM ANALYZE stxdinp
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM pg_statistic_ext WHERE stxrelid = 'stxdinp'::regclass
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT stxkind FROM pg_statistic_ext WHERE stxname = 'ab1_exprstat_2'
+--Result--
+[(['e'],)]
++--------------------+
+--Query--
+SELECT stxkind FROM pg_statistic_ext WHERE stxname = 'ab1_exprstat_3'
+--Result--
+[(['d', 'f', 'm', 'e'],)]
++--------------------+
+--Query--
+ANALYZE ab1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE ndistinct
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+SELECT dependencies FROM pg_stats_ext WHERE statistics_name = 'func_deps_stat'
+--Result--
+[('{"3 => 4": 1.000000, "3 => 6": 1.000000, "4 => 6": 1.000000, "3, 4 => 6": 1.000000, "3, 6 => 4": 1.000000}',)]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies
+--Result--
+[]
++--------------------+
+--Query--
+SELECT dependencies FROM pg_stats_ext WHERE statistics_name = 'func_deps_stat'
+--Result--
+[('{"-1 => -2": 1.000000, "-1 => -3": 1.000000, "-2 => -3": 1.000000, "-1, -2 => -3": 1.000000, "-1, -3 => -2": 1.000000}',)]
++--------------------+
+--Query--
+ANALYZE functional_dependencies_multi
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE functional_dependencies_multi
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_uuid
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_uuid
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_arrays
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_bool
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_bool
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_partial
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_partial
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_multi
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE mcv_lists_multi
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE expr_stats_incompatible_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c0 FROM ONLY expr_stats_incompatible_test WHERE (   upper('x') LIKE ('x'||('[0,1]'::int4range))   AND   (c0 IN (0, 1) OR c1) )
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE tststats.priv_test_tbl
+--Result--
+[]
++--------------------+
+--Query--
+analyze stts_t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tststats.priv_test_tbl
+--Result--
+[(1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9), (0, 0)]
++--------------------+
+--Query--
+SELECT * FROM tststats.priv_test_tbl   WHERE a = 1 and tststats.priv_test_tbl.* > (1, 1) is not null
+--Result--
+[(1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6), (1, 1), (1, 6)]
++--------------------+

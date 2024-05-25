@@ -1,5 +1,4 @@
---  geohash.bboxes(minlat, minlon, maxlat, maxlon, precision)
--- as
+
 -- geohashesInBox(minlon, minlat, maxlon, maxlat, precision)
 -- except for the cases when JS-version produces result outside of given region,
 -- typically at wrap points: poles, 0-latitude and 0-longitude.

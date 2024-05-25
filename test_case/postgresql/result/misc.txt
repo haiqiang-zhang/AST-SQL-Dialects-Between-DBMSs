@@ -1,0 +1,75 @@
+--Query--
+SELECT DISTINCT hobbies_r.name, name(hobbies_r.equipment) FROM hobbies_r   ORDER BY 1,2
+--Result--
+[('skywalking', 'guts')]
++--------------------+
+--Query--
+SELECT hobbies_r.name, (hobbies_r.equipment).name FROM hobbies_r
+--Result--
+[('skywalking', 'guts')]
++--------------------+
+--Query--
+SELECT name(equipment(hobby_construct(text 'skywalking', text 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment(hobby_construct_named(text 'skywalking', text 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment_named(hobby_construct_named(text 'skywalking', text 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment_named_ambiguous_1a(hobby_construct_named(text 'skywalking', text 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment_named_ambiguous_1b(hobby_construct_named(text 'skywalking', text 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment_named_ambiguous_1c(hobby_construct_named(text 'skywalking', text 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment_named_ambiguous_2a(text 'skywalking'))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT name(equipment_named_ambiguous_2b(text 'skywalking'))
+--Result--
+[('advil',), ("peet's coffee",), ('hightops',), ('guts',)]
++--------------------+
+--Query--
+SELECT hobbies_by_name('basketball')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM equipment(ROW('skywalking', 'mer'))
+--Result--
+[('guts', 'skywalking')]
++--------------------+
+--Query--
+SELECT name(equipment(ROW('skywalking', 'mer')))
+--Result--
+[('guts',)]
++--------------------+
+--Query--
+SELECT *, name(equipment(h.*)) FROM hobbies_r h
+--Result--
+[('skywalking', None, 'guts')]
++--------------------+
+--Query--
+SELECT *, (equipment(CAST((h.*) AS hobbies_r))).name FROM hobbies_r h
+--Result--
+[('skywalking', None, 'guts')]
++--------------------+

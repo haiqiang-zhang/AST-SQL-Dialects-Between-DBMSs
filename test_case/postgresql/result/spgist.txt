@@ -1,0 +1,30 @@
+--Query--
+vacuum spgist_point_tbl
+--Result--
+[]
++--------------------+
+--Query--
+vacuum spgist_point_tbl
+--Result--
+[]
++--------------------+
+--Query--
+select count(*)   from (values (point(5,5)),(point(8,8)),(point(12,12))) v(p)  where exists(select * from spgist_box_tbl b where b.b && box(v.p,v.p))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+reindex index spgist_point_idx
+--Result--
+[]
++--------------------+
+--Query--
+explain (costs off) select * from spgist_domain_tbl where f1 = 'fo'
+--Result--
+[('Bitmap Heap Scan on spgist_domain_tbl',), ("  Recheck Cond: ((f1)::text = 'fo'::text)",), ('  ->  Bitmap Index Scan on spgist_domain_idx',), ("        Index Cond: ((f1)::text = 'fo'::text)",)]
++--------------------+
+--Query--
+select * from spgist_domain_tbl where f1 = 'fo'
+--Result--
+[('fo',)]
++--------------------+

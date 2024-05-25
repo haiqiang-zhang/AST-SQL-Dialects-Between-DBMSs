@@ -1,0 +1,250 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl EXCEPT SELECT q2 FROM int8_tbl ORDER BY q2 LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 AS two UNION SELECT 2 ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 AS one UNION SELECT 1 ORDER BY 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION ALL SELECT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION ALL SELECT 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 AS three UNION SELECT 2 UNION SELECT 3 ORDER BY 1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION SELECT 2 UNION SELECT 2 ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 AS three UNION SELECT 2 UNION ALL SELECT 2 ORDER BY 1
+--Result--
+[(1,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION SELECT 2.2 ORDER BY 1
+--Result--
+[(1.1,), (2.2,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION SELECT 2 ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION SELECT 2.2 ORDER BY 1
+--Result--
+[(1.0,), (2.2,)]
++--------------------+
+--Query--
+SELECT 1 AS one UNION SELECT 1.0::float8 ORDER BY 1
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION ALL SELECT 2 ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1.0::float8 AS two UNION ALL SELECT 1 ORDER BY 1
+--Result--
+[(1.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS three UNION SELECT 2 UNION SELECT 3 ORDER BY 1
+--Result--
+[(1.1,), (2.0,), (3.0,)]
++--------------------+
+--Query--
+SELECT 1.1::float8 AS two UNION SELECT 2 UNION SELECT 2.0::float8 ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS three UNION SELECT 2 UNION ALL SELECT 2 ORDER BY 1
+--Result--
+[(1.1,), (2.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION (SELECT 2 UNION ALL SELECT 2) ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT f1 AS five FROM FLOAT8_TBL UNION SELECT f1 FROM FLOAT8_TBL ORDER BY 1
+--Result--
+[(-1.2345678901234e+200,), (-1004.3,), (-34.84,), (-1.2345678901234e-200,), (0.0,)]
++--------------------+
+--Query--
+SELECT f1 AS ten FROM FLOAT8_TBL UNION ALL SELECT f1 FROM FLOAT8_TBL
+--Result--
+[(0.0,), (-34.84,), (-1004.3,), (-1.2345678901234e+200,), (-1.2345678901234e-200,), (0.0,), (-34.84,), (-1004.3,), (-1.2345678901234e+200,), (-1.2345678901234e-200,)]
++--------------------+
+--Query--
+SELECT f1 AS nine FROM FLOAT8_TBL UNION SELECT f1 FROM INT4_TBL ORDER BY 1
+--Result--
+[(-1.2345678901234e+200,), (-2147483647.0,), (-123456.0,), (-1004.3,), (-34.84,), (-1.2345678901234e-200,), (0.0,), (123456.0,), (2147483647.0,)]
++--------------------+
+--Query--
+SELECT f1 AS ten FROM FLOAT8_TBL UNION ALL SELECT f1 FROM INT4_TBL
+--Result--
+[(0.0,), (-34.84,), (-1004.3,), (-1.2345678901234e+200,), (-1.2345678901234e-200,), (0.0,), (123456.0,), (-123456.0,), (2147483647.0,), (-2147483647.0,)]
++--------------------+
+--Query--
+SELECT f1 AS five FROM FLOAT8_TBL   WHERE f1 BETWEEN -1e6 AND 1e6 UNION SELECT f1 FROM INT4_TBL   WHERE f1 BETWEEN 0 AND 1000000 ORDER BY 1
+--Result--
+[(-1004.3,), (-34.84,), (-1.2345678901234e-200,), (0.0,), (123456.0,)]
++--------------------+
+--Query--
+SELECT CAST(f1 AS char(4)) AS three FROM VARCHAR_TBL UNION SELECT f1 FROM CHAR_TBL ORDER BY 1
+--Result--
+[('a',), ('ab',), ('abcd',), ('abcd    ',)]
++--------------------+
+--Query--
+SELECT f1 AS three FROM VARCHAR_TBL UNION SELECT CAST(f1 AS varchar) FROM CHAR_TBL ORDER BY 1
+--Result--
+[('a',), ('ab',), ('abcd',), ('abcd    ',)]
++--------------------+
+--Query--
+SELECT f1 AS eight FROM VARCHAR_TBL UNION ALL SELECT f1 FROM CHAR_TBL
+--Result--
+[('a',), ('ab',), ('abcd',), ('abcd    ',), ('a',), ('ab',), ('abcd',), ('abcd    ',)]
++--------------------+
+--Query--
+SELECT q2 FROM int8_tbl INTERSECT SELECT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(123,), (4567890123456789,)]
++--------------------+
+--Query--
+SELECT q2 FROM int8_tbl INTERSECT ALL SELECT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(123,), (4567890123456789,), (4567890123456789,)]
++--------------------+
+--Query--
+SELECT q2 FROM int8_tbl EXCEPT SELECT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(-4567890123456789,), (456,)]
++--------------------+
+--Query--
+SELECT q2 FROM int8_tbl EXCEPT ALL SELECT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(-4567890123456789,), (456,)]
++--------------------+
+--Query--
+SELECT q2 FROM int8_tbl EXCEPT ALL SELECT DISTINCT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(-4567890123456789,), (456,), (4567890123456789,)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl EXCEPT SELECT q2 FROM int8_tbl ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl EXCEPT ALL SELECT q2 FROM int8_tbl ORDER BY 1
+--Result--
+[(123,), (4567890123456789,)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl EXCEPT ALL SELECT DISTINCT q2 FROM int8_tbl ORDER BY 1
+--Result--
+[(123,), (4567890123456789,), (4567890123456789,)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6) INTERSECT SELECT 4,5,6
+--Result--
+[(4, 5, 6)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6 ORDER BY 1,2) INTERSECT SELECT 4,5,6
+--Result--
+[(4, 5, 6)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6) EXCEPT SELECT 4,5,6
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6 ORDER BY 1,2) EXCEPT SELECT 4,5,6
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT f1 FROM float8_tbl INTERSECT SELECT f1 FROM int4_tbl ORDER BY 1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT f1 FROM float8_tbl EXCEPT SELECT f1 FROM int4_tbl ORDER BY 1
+--Result--
+[(-1.2345678901234e+200,), (-1004.3,), (-34.84,), (-1.2345678901234e-200,)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl INTERSECT SELECT q2 FROM int8_tbl UNION ALL SELECT q2 FROM int8_tbl  ORDER BY 1
+--Result--
+[(-4567890123456789,), (123,), (123,), (456,), (4567890123456789,), (4567890123456789,), (4567890123456789,)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl INTERSECT (((SELECT q2 FROM int8_tbl UNION ALL SELECT q2 FROM int8_tbl))) ORDER BY 1
+--Result--
+[(123,), (4567890123456789,)]
++--------------------+
+--Query--
+(((SELECT q1 FROM int8_tbl INTERSECT SELECT q2 FROM int8_tbl ORDER BY 1))) UNION ALL SELECT q2 FROM int8_tbl
+--Result--
+[(123,), (4567890123456789,), (456,), (4567890123456789,), (123,), (4567890123456789,), (-4567890123456789,)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl UNION ALL SELECT q2 FROM int8_tbl EXCEPT SELECT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(-4567890123456789,), (456,)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl UNION ALL (((SELECT q2 FROM int8_tbl EXCEPT SELECT q1 FROM int8_tbl ORDER BY 1)))
+--Result--
+[(123,), (123,), (4567890123456789,), (4567890123456789,), (4567890123456789,), (-4567890123456789,), (456,)]
++--------------------+
+--Query--
+(((SELECT q1 FROM int8_tbl UNION ALL SELECT q2 FROM int8_tbl))) EXCEPT SELECT q1 FROM int8_tbl ORDER BY 1
+--Result--
+[(-4567890123456789,), (456,)]
++--------------------+
+--Query--
+SELECT q1,q2 FROM int8_tbl EXCEPT SELECT q2,q1 FROM int8_tbl ORDER BY q2,q1
+--Result--
+[(4567890123456789, -4567890123456789), (123, 456)]
++--------------------+
+--Query--
+SELECT q1 FROM int8_tbl EXCEPT (((SELECT q2 FROM int8_tbl ORDER BY q2 LIMIT 1))) ORDER BY 1
+--Result--
+[(123,), (4567890123456789,)]
++--------------------+
+--Query--
+(((((select * from int8_tbl)))))
+--Result--
+[(123, 456), (123, 4567890123456789), (4567890123456789, 123), (4567890123456789, 4567890123456789), (4567890123456789, -4567890123456789)]
++--------------------+

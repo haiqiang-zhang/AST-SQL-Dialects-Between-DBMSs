@@ -74,7 +74,7 @@ prepare stmt1 from "create table t1 select 1 as i";
 prepare stmt1 from 'select 1';
 prepare STMT1 from 'select 2';
 deallocate prepare StMt1;
-prepare `ÃÂÃÂ¼` from 'select 1234';
+prepare `ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼` from 'select 1234';
 create table t1 (a varchar(10)) charset=utf8mb3;
 insert into t1 (a) values ('yahoo');
 prepare stmt from 'select a from t1 where a like ?';

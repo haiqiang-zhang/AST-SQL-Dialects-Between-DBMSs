@@ -51,7 +51,6 @@ CREATE TABLE test_tab
 SELECT replaceOne(haystack, needle, 'x') FROM test_tab;
 SELECT replaceRegexpAll(haystack, needle, 'x') FROM test_tab;
 SELECT replaceRegexpOne(haystack, needle, 'x') FROM test_tab;
--- needle: non-const, replacement: non-const
 SELECT replaceAll(haystack, needle, replacement) FROM test_tab;
 SELECT replaceOne(haystack, needle, replacement) FROM test_tab;
 SELECT replaceRegexpAll(haystack, needle, replacement) FROM test_tab;

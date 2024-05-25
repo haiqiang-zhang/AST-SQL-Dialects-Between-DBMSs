@@ -1,19 +1,3 @@
-/* Condition could be:
- * - constant, true
- * - constant, false
- * - constant, NULL
- * - non constant, non nullable_00431
- * - non constant, nullable_00431
- *
- * Then and else could be:
- * - constant, not NULL
- * - constant, NULL
- * - non constant, non nullable_00431
- * - non constant, nullable_00431
- *
- * Thus we have 5 * 4 * 4 = 80 combinations.
- */
-
 DROP TABLE IF EXISTS nullable_00431;
 CREATE VIEW nullable_00431
 AS SELECT

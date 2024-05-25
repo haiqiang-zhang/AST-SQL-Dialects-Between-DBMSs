@@ -32,8 +32,7 @@ CREATE TABLE p1(one PRIMARY KEY, two);
 INSERT INTO p1 VALUES('a', 'A'), ('b', 'B'), ('c', 'C');
 UPDATE p1 SET two = two||two;
 DELETE FROM p1 WHERE one IN ('a', 'c');
--- None of the inserts on table log were counted.
-  SELECT count(*) FROM log;
+SELECT count(*) FROM log;
 DELETE FROM p1;
 INSERT INTO p1 VALUES('a', 'A'), ('b', 'B'), ('c', 'C');
 CREATE TABLE c1(a, b, FOREIGN KEY(a) REFERENCES p1 ON DELETE SET NULL);
@@ -110,8 +109,7 @@ SELECT * FROM log;
 CREATE TABLE q1(t);
 CREATE TABLE q2(u, v);
 CREATE TABLE q3(w);
-/* changes() returns value of previous I/U/D in this context */
-    INSERT INTO q3 VALUES(changes()), (2), (3);
+INSERT INTO q3 VALUES(changes()), (2), (3);
 INSERT INTO q1 VALUES('2:' || changes());
 INSERT INTO q3 VALUES(changes() + 3), (changes()+4);
 SELECT 'this does not affect things!';

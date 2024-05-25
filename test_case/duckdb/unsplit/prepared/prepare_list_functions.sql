@@ -1,11 +1,11 @@
 PREPARE v1 AS SELECT list_aggregate(?, 'min');
-PREPARE v2 AS SELECT array_slice(?, 1, 2);;
+PREPARE v2 AS SELECT array_slice(?, 1, 2);
 PREPARE v3 AS SELECT flatten(?);
 PREPARE v4 AS SELECT list_extract(?, 2);
 EXECUTE v1([1, 2, 3]);
 EXECUTE v1(['hello', 'world']);
 EXECUTE v1(NULL::INT[]);
-EXECUTE v2([1, 2, 3]);;
-EXECUTE v2('123');;
-EXECUTE v3([[1,2,3],[4,5]]);;
-EXECUTE v4([1, 2, 3]);;
+EXECUTE v2([1, 2, 3]);
+EXECUTE v2('123');
+EXECUTE v3([[1,2,3],[4,5]]);
+EXECUTE v4([1, 2, 3]);

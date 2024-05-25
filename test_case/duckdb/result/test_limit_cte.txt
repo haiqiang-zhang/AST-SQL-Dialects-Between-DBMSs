@@ -1,0 +1,15 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+WITH cte AS (SELECT 3) SELECT * FROM range(10000000) LIMIT (SELECT * FROM cte)
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+WITH cte AS (SELECT 3) SELECT * FROM range(10000000) LIMIT (SELECT * FROM cte) OFFSET (SELECT * FROM cte)
+--Result--
+[(3,), (4,), (5,)]
++--------------------+

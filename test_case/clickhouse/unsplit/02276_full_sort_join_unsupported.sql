@@ -5,8 +5,6 @@ INSERT INTO t1 VALUES (1, 1);
 CREATE TABLE t2 (key UInt32, val UInt32) ENGINE = Memory;
 INSERT INTO t2 VALUES (1, 2);
 SET join_algorithm = 'full_sorting_merge';
-SELECT * FROM t1 JOIN t2 ON t1.key = t2.key OR t1.val = t2.key;
-SELECT * FROM t1 ANTI JOIN t2 ON t1.key = t2.key;
 SELECT * FROM t1 SEMI JOIN t2 ON t1.key = t2.key;
 SELECT * FROM t1 ASOF JOIN t2 ON t1.key = t2.key AND t1.val > t2.val;
 SELECT * FROM t1 ANY JOIN t2 ON t1.key = t2.key SETTINGS any_join_distinct_right_table_keys = 1;

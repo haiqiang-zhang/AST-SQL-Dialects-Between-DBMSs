@@ -78,8 +78,7 @@ INSERT INTO t4 VALUES(5, 'a');
 CREATE TABLE t5(x, y, m);
 INSERT INTO t4 VALUES(6, 'm');
 SELECT * FROM t5 ORDER BY 1;
--- 2021-04-17 dbsqlfuzz d9cf66100064952b66951845dfab41de1c124611
-  DROP TABLE IF EXISTS t1;
+DROP TABLE IF EXISTS t1;
 CREATE TABLE t1(a,b,c,d);
 DROP TABLE IF EXISTS t2;
 CREATE TABLE t2(x,y);
@@ -408,17 +407,11 @@ INSERT INTO t2 VALUES('b', 6);
 SELECT a, sum(b), sum( sum(b) ) OVER (ORDER BY a) FROM t2 GROUP BY a;
 SELECT sum(b), sum( sum(b) ) OVER (ORDER BY a) FROM t2;
 INSERT INTO t1(a, b) VALUES(1,  10);
--- 10
-  INSERT INTO t1(a, b) VALUES(2,  15);
--- 25
-  INSERT INTO t1(a, b) VALUES(3,  -5);
--- 20
-  INSERT INTO t1(a, b) VALUES(4,  -5);
--- 15
-  INSERT INTO t1(a, b) VALUES(5,  20);
--- 35
-  INSERT INTO t1(a, b) VALUES(6, -11);
--- 24;
+INSERT INTO t1(a, b) VALUES(2,  15);
+INSERT INTO t1(a, b) VALUES(3,  -5);
+INSERT INTO t1(a, b) VALUES(4,  -5);
+INSERT INTO t1(a, b) VALUES(5,  20);
+INSERT INTO t1(a, b) VALUES(6, -11);
 SELECT a, sum(b) OVER (ORDER BY a) AS abc FROM t1 ORDER BY 2;
 SELECT a, sum(b) OVER (ORDER BY a) AS abc FROM t1 ORDER BY abc;
 SELECT a, sum(b) OVER (ORDER BY a) AS abc FROM t1 ORDER BY abc+5;

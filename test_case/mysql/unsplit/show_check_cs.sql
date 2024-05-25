@@ -224,7 +224,6 @@ DROP VIEW v1;
 DROP PROCEDURE p1;
 DROP DATABASE IF EXISTS mysqltest1;
 CREATE DATABASE mysqltest1;
-CREATE TABLE t1(ÃÂÃÂÃÂÃÂÃÂÃÂÃÂ1 INT);
 DROP DATABASE mysqltest1;
 create database mysqltest;
 create table mysqltest.t1(a int);
@@ -233,12 +232,9 @@ create database `mysqlttest\1`;
 create table `mysqlttest\1`.`a\b` (a int);
 drop table `mysqlttest\1`.`a\b`;
 drop database `mysqlttest\1`;
-drop table if exists `ÃÂÃÂ©tÃÂÃÂ©`;
-create table `ÃÂÃÂ©tÃÂÃÂ©` (field1 int);
-drop table `ÃÂÃÂ©tÃÂÃÂ©`;
-CREATE DATABASE `ÃÂ¤`;
-CREATE TABLE `ÃÂ¤`.`ÃÂ¤` (a int) ENGINE=Memory;
-DROP DATABASE `ÃÂ¤`;
+CREATE DATABASE `ÃÂÃÂÃÂÃÂ¤`;
+CREATE TABLE `ÃÂÃÂÃÂÃÂ¤`.`ÃÂÃÂÃÂÃÂ¤` (a int) ENGINE=Memory;
+DROP DATABASE `ÃÂÃÂÃÂÃÂ¤`;
 DROP TABLE IF EXISTS t1;
 DROP PROCEDURE IF EXISTS p1;
 CREATE TABLE t1(c1 INT);
@@ -252,10 +248,10 @@ DROP PROCEDURE IF EXISTS p1;
 DROP FUNCTION IF EXISTS f1;
 DROP TABLE IF EXISTS t1;
 DROP EVENT IF EXISTS ev1;
-CREATE VIEW v1 AS SELECT 'ÃÂÃÂÃÂÃÂ' AS test;
-CREATE PROCEDURE p1() SELECT 'ÃÂÃÂÃÂÃÂ' AS test;
+CREATE VIEW v1 AS SELECT 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' AS test;
+CREATE PROCEDURE p1() SELECT 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' AS test;
 CREATE TABLE t1(c1 CHAR(10));
-CREATE EVENT ev1 ON SCHEDULE AT '2030-01-01 00:00:00' DO SELECT 'ÃÂÃÂÃÂÃÂ' AS test;
+CREATE EVENT ev1 ON SCHEDULE AT '2030-01-01 00:00:00' DO SELECT 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' AS test;
 DROP VIEW v1;
 DROP PROCEDURE p1;
 DROP TABLE t1;

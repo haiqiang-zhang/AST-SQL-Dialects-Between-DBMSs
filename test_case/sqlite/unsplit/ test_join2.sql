@@ -32,8 +32,7 @@ INSERT INTO aa VALUES('one');
 INSERT INTO bb VALUES('one');
 INSERT INTO cc VALUES('one');
 SELECT * FROM aa JOIN cc ON (a=b) JOIN bb ON (b=c);
--- Prior to this problem being fixed, table t3_2 would be omitted from
-  -- the join queries below, but if t3_1 were used in its place it would
+
   -- not.
   CREATE TABLE t3_1(k3 PRIMARY KEY, v3) WITHOUT ROWID;
 CREATE TABLE t3_2(v3, k3 PRIMARY KEY) WITHOUT ROWID;

@@ -1,0 +1,45 @@
+--Query--
+COMMENT ON COLUMN test_table.test_table_column IS 'very gezellige column'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN test_view.test_view_column IS 'very gezellige view column'
+--Result--
+[]
++--------------------+
+--Query--
+select comment from duckdb_columns() where column_name='test_table_column'
+--Result--
+[('very gezellige column',)]
++--------------------+
+--Query--
+select comment from duckdb_columns() where column_name='test_table_column'
+--Result--
+[('very gezellige column',)]
++--------------------+
+--Query--
+select comment from duckdb_columns() where column_name='test_table_column'
+--Result--
+[('very gezellige column',)]
++--------------------+
+--Query--
+select comment from duckdb_columns() where column_name='test_view_column'
+--Result--
+[('very gezellige view column',)]
++--------------------+
+--Query--
+select comment from duckdb_columns() where column_name='test_view_column'
+--Result--
+[('very gezellige view column',)]
++--------------------+
+--Query--
+select comment from duckdb_columns() where column_name='test_view_column'
+--Result--
+[('very gezellige view column',)]
++--------------------+
+--Query--
+SELECT database_name, table_name, column_name, comment FROM duckdb_columns() where internal is false
+--Result--
+[('duckdb', 'test_table', 'test_table_column', 'very gezellige column'), ('duckdb', 'test_view', 'test_view_column', 'very gezellige view column')]
++--------------------+

@@ -9,26 +9,38 @@ import pandas as pd
 from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv
 import decimal
 
-result_generate_mode = False
 
 test_case_path = './test_case'
-dbms_test_case_used = ['postgresql']
+dbms_test_case_used = ['sqlite']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
     # "mysql": MySQLAdapter,
-    # "sqlite": SQLiteAdapter,
-    "postgresql": PostgresqlAdapter,
+    "sqlite": SQLiteAdapter,
+    # "postgresql": PostgresqlAdapter,
     # "duckdb": DuckDBAdapter,
     # "clickhouse": ClickHouseAdapter
 
 }
 
 setup_query_keyword = [
-    "create table",
-    "insert into",
-    "drop table",
-    "create database"
+    # DDL
+    "create",
+    "alter",
+    "drop",
+    # DML
+    "insert",
+    "update",
+    "delete",
+    # SET
+    "set",
+    "reset",
+    # TRANSACTION
+    "begin",
+    "commit",
+    "rollback",
+    "end",
 ]
+
 
 
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
@@ -44,17 +56,6 @@ def convert_decimals(obj):
         return float(obj)
     else:
         return obj
-    
-def save_result_to_txt(result_list:list, filename:str, dbms:str):
-    result_list = convert_decimals(result_list)
-    with open(f"./test_case/{dbms}/result/{filename}.txt", 'w') as file:
-        for result in result_list:
-            if result == "QUERY ERROR":
-                file.write("QUERY ERROR\n")
-            else:
-                file.write(str(result) + '\n')
-            file.write('----------++++++++++\n')
-    print(f"Save the result to {filename}.txt")
 
 def run_setup_in_all_dbms(setup_paths:str):
     # check setup_paths exists
@@ -103,13 +104,9 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
             if not any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
                 query = query.replace('\n', ' ')
                 if result[0]:
-                    if result_generate_mode:
-                        result_list.append(result[1])
                     success_counter += 1
                     df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'Message': result[1]}, ignore_index=True)
                 else:
-                    if result_generate_mode:
-                        result_list.append("QUERY ERROR")
                     failure_counter += 1
                     error_message = result[1][1]
                     error_message = error_message.replace('\n', ' ')
@@ -120,8 +117,6 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
         db_adaptor.close_connection()
         
 
-    if result_generate_mode:
-        save_result_to_txt(result_list, filename, dbms)
     
     return success_counter, failure_counter, df, df_verbose_all_result_one_file
 
@@ -138,7 +133,7 @@ def run_all(test_paths:str, filename:str, setup_paths:str=""):
 # Define a pd.DataFrame to store the test results
 df = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number', 'Total_Number_of_SQL_files'])
 
-df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'ERROR_Message'])
+df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
 save_result_to_csv(df_verbose_all_result, "init_result")
 
 
@@ -156,7 +151,7 @@ for dbms in os.listdir(test_case_path):
         
     first_init_dbmss(DBMS_ADAPTERS)
     print(f"Running test cases of {dbms}")
-    test_folder=os.path.join(test_case_path, dbms, 'test')
+    test_folder=os.path.join(test_case_path, dbms, 'unsplit')
     file_counter = 0
 
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)

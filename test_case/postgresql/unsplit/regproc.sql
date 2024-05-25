@@ -31,7 +31,7 @@ SELECT to_regrole('regress_regrole_test');
 SELECT to_regrole('"regress_regrole_test"');
 SELECT to_regnamespace('pg_catalog');
 SELECT to_regnamespace('"pg_catalog"');
-/* If objects don't exist, return NULL with no error. */
+
 
 
 SELECT to_regoper('||//');

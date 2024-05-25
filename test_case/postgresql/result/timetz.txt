@@ -1,0 +1,135 @@
+--Query--
+SELECT f1 AS "Time TZ" FROM TIMETZ_TBL
+--Result--
+[(datetime.time(0, 1, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(1, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(2, 3, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(7, 7, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=57600))),), (datetime.time(8, 8, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000))),), (datetime.time(11, 59, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(12, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(12, 1, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(23, 59, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(23, 59, 59, 990000, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(15, 36, 39, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),), (datetime.time(15, 36, 39, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000))),)]
++--------------------+
+--Query--
+SELECT f1 AS "Three" FROM TIMETZ_TBL WHERE f1 < '05:06:07-07'
+--Result--
+[(datetime.time(0, 1, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(1, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(2, 3, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),)]
++--------------------+
+--Query--
+SELECT f1 AS "Seven" FROM TIMETZ_TBL WHERE f1 > '05:06:07-07'
+--Result--
+[(datetime.time(7, 7, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=57600))),), (datetime.time(8, 8, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000))),), (datetime.time(11, 59, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(12, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(12, 1, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(23, 59, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(23, 59, 59, 990000, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(15, 36, 39, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),), (datetime.time(15, 36, 39, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000))),)]
++--------------------+
+--Query--
+SELECT f1 AS "None" FROM TIMETZ_TBL WHERE f1 < '00:00-07'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 AS "Ten" FROM TIMETZ_TBL WHERE f1 >= '00:00-07'
+--Result--
+[(datetime.time(0, 1, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(1, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(2, 3, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(7, 7, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=57600))),), (datetime.time(8, 8, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000))),), (datetime.time(11, 59, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(12, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(12, 1, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(23, 59, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(23, 59, 59, 990000, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),), (datetime.time(15, 36, 39, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),), (datetime.time(15, 36, 39, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000))),)]
++--------------------+
+--Query--
+SELECT '23:59:59.999999 PDT'::timetz
+--Result--
+[(datetime.time(23, 59, 59, 999999, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),)]
++--------------------+
+--Query--
+SELECT '23:59:59.9999999 PDT'::timetz
+--Result--
+[(datetime.time(0, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),)]
++--------------------+
+--Query--
+SELECT '23:59:60 PDT'::timetz
+--Result--
+[(datetime.time(0, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),)]
++--------------------+
+--Query--
+SELECT '24:00:00 PDT'::timetz
+--Result--
+[(datetime.time(0, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=61200))),)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('12:00:00 PDT', 'timetz')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('25:00:00 PDT', 'timetz')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('15:36:39 America/New_York', 'timetz')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('25:00:00 PDT', 'timetz')
+--Result--
+[('date/time field value out of range: "25:00:00 PDT"', None, None, '22008')]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('15:36:39 America/New_York', 'timetz')
+--Result--
+[('invalid input syntax for type time with time zone: "15:36:39 America/New_York"', None, None, '22007')]
++--------------------+
+--Query--
+SELECT EXTRACT(MICROSECOND FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(25575401.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(MILLISECOND FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(25575.401,)]
++--------------------+
+--Query--
+SELECT EXTRACT(SECOND      FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(25.575401,)]
++--------------------+
+--Query--
+SELECT EXTRACT(MINUTE      FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(30.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(HOUR        FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(13.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(TIMEZONE    FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04:30')
+--Result--
+[(-16200.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(TIMEZONE_HOUR   FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04:30')
+--Result--
+[(-4.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(TIMEZONE_MINUTE FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04:30')
+--Result--
+[(-30.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(EPOCH       FROM TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(63025.575401,)]
++--------------------+
+--Query--
+SELECT date_part('microsecond', TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(25575401.0,)]
++--------------------+
+--Query--
+SELECT date_part('millisecond', TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(25575.401,)]
++--------------------+
+--Query--
+SELECT date_part('second',      TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(25.575401,)]
++--------------------+
+--Query--
+SELECT date_part('epoch',       TIME WITH TIME ZONE '2020-05-26 13:30:25.575401-04')
+--Result--
+[(63025.575401,)]
++--------------------+

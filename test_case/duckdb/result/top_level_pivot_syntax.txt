@@ -1,0 +1,70 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PIVOT monthly_sales ON MONTH USING SUM(AMOUNT)
+--Result--
+[(1, 'important', 10000, None, None, 10000), (1, 'regular', 400, 8000, 11000, 8000), (2, 'regular', 4500, 200, 12000, 5300), (2, 'important', 35000, 90500, None, None)]
++--------------------+
+--Query--
+FROM (PIVOT monthly_sales ON MONTH USING SUM(AMOUNT))
+--Result--
+[(1, 'important', 10000, None, None, 10000), (1, 'regular', 400, 8000, 11000, 8000), (2, 'regular', 4500, 200, 12000, 5300), (2, 'important', 35000, 90500, None, None)]
++--------------------+
+--Query--
+PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY empid
+--Result--
+[(1, 10400, 8000, 11000, 18000), (2, 39500, 90700, 12000, 5300)]
++--------------------+
+--Query--
+PIVOT monthly_sales ON MONTH IN ('1-JAN', '2-FEB', '3-MAR', '4-APR') USING SUM(AMOUNT) GROUP BY empid
+--Result--
+[(1, 10400, 8000, 11000, 18000), (2, 39500, 90700, 12000, 5300)]
++--------------------+
+--Query--
+PIVOT monthly_sales ON MONTH IN ('1-JAN', '2-FEB', '3-MAR') USING SUM(AMOUNT) GROUP BY empid
+--Result--
+[(1, 10400, 8000, 11000), (2, 39500, 90700, 12000)]
++--------------------+
+--Query--
+PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY empid
+--Result--
+[(1, 10400, 8000, 11000, 18000), (2, 39500, 90700, 12000, 5300)]
++--------------------+
+--Query--
+FROM (PIVOT monthly_sales ON MONTH USING SUM(AMOUNT)) ORDER BY ALL
+--Result--
+[(1, 'important', 10000, None, None, 10000), (1, 'regular', 400, 8000, 11000, 8000), (2, 'important', 35000, 90500, None, None), (2, 'regular', 4500, 200, 12000, 5300)]
++--------------------+
+--Query--
+PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY empid ORDER BY ALL
+--Result--
+[(1, 10400, 8000, 11000, 18000), (2, 39500, 90700, 12000, 5300)]
++--------------------+
+--Query--
+FROM (PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY status) ORDER BY ALL
+--Result--
+[('important', 45000, 90500, None, 10000), ('regular', 4900, 8200, 23000, 13300)]
++--------------------+
+--Query--
+SELECT *   FROM monthly_sales     PIVOT(SUM(amount) FOR MONTH IN ('1-JAN', '2-FEB', '3-MAR', '4-APR') GROUP BY status)       AS p   ORDER BY 1
+--Result--
+[('important', 45000, 90500, None, 10000), ('regular', 4900, 8200, 23000, 13300)]
++--------------------+
+--Query--
+WITH pivoted_sales AS (PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY empid) SELECT * FROM pivoted_sales ORDER BY empid DESC
+--Result--
+[(2, 39500, 90700, 12000, 5300), (1, 10400, 8000, 11000, 18000)]
++--------------------+
+--Query--
+WITH pivoted_sales AS MATERIALIZED (PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY empid) SELECT * FROM pivoted_sales ORDER BY empid DESC
+--Result--
+[(2, 39500, 90700, 12000, 5300), (1, 10400, 8000, 11000, 18000)]
++--------------------+
+--Query--
+FROM v1
+--Result--
+[(1, 10400, 8000, 11000, 18000), (2, 39500, 90700, 12000, 5300)]
++--------------------+

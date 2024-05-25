@@ -1,5 +1,3 @@
--- { echo }
-
 SYSTEM DROP FILESYSTEM CACHE;
 SET enable_filesystem_cache_on_write_operations=0;
 DROP TABLE IF EXISTS test;

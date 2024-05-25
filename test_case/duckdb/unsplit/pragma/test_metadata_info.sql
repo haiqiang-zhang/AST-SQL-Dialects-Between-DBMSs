@@ -1,10 +1,8 @@
 PRAGMA enable_verification;
 CREATE TABLE integers(i INTEGER, j INTEGER);
 CHECKPOINT;
-PRAGMA metadata_info;;
-FROM pragma_metadata_info();;
+PRAGMA metadata_info;
+FROM pragma_metadata_info();
 ATTACH '__TEST_DIR__/test_metadata_info_attach.db' AS db1;
-CREATE TABLE db1.integers(i INTEGER, j INTEGER);
 CHECKPOINT db1;
-FROM pragma_metadata_info('db1');;
-FROM pragma_metadata_info(NULL);
+FROM pragma_metadata_info('db1');

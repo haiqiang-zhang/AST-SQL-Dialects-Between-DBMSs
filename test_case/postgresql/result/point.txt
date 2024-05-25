@@ -1,0 +1,40 @@
+--Query--
+SELECT COUNT(*) FROM point_gist_tbl WHERE f1 ~= '(0.0000009,0.0000009)'::point
+--Result--
+[(1002,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM point_gist_tbl WHERE f1 <@ '(0.0000009,0.0000009),(0.0000009,0.0000009)'::box
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM point_gist_tbl WHERE f1 ~= '(0.0000018,0.0000018)'::point
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM point_gist_tbl WHERE f1 ~= '(0.0000009,0.0000009)'::point
+--Result--
+[(1002,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM point_gist_tbl WHERE f1 <@ '(0.0000009,0.0000009),(0.0000009,0.0000009)'::box
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM point_gist_tbl WHERE f1 ~= '(0.0000018,0.0000018)'::point
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('1,y', 'point')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('1,y', 'point')
+--Result--
+[('invalid input syntax for type point: "1,y"', None, None, '22P02')]
++--------------------+

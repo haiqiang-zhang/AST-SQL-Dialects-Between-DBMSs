@@ -1,0 +1,340 @@
+--Query--
+SELECT attrelid, attname, attgenerated FROM pg_attribute WHERE attgenerated NOT IN ('', 's')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name, column_name, column_default, is_nullable, is_generated, generation_expression FROM information_schema.columns WHERE table_name LIKE 'gtest_' ORDER BY 1, 2
+--Result--
+[('gtest0', 'a', None, 'NO', 'NEVER', None), ('gtest0', 'b', None, 'YES', 'ALWAYS', '55'), ('gtest1', 'a', None, 'NO', 'NEVER', None), ('gtest1', 'b', None, 'YES', 'ALWAYS', '(a * 2)')]
++--------------------+
+--Query--
+SELECT table_name, column_name, dependent_column FROM information_schema.column_column_usage ORDER BY 1, 2, 3
+--Result--
+[('gtest1', 'a', 'b')]
++--------------------+
+--Query--
+SELECT * FROM gtest1 ORDER BY a
+--Result--
+[(1, 2), (2, 4), (3, 6), (4, 8)]
++--------------------+
+--Query--
+SELECT * FROM gtest1 ORDER BY a
+--Result--
+[(1, 2), (2, 4)]
++--------------------+
+--Query--
+SELECT a, b, b * 2 AS b2 FROM gtest1 ORDER BY a
+--Result--
+[(1, 2, 4), (2, 4, 8)]
++--------------------+
+--Query--
+SELECT a, b FROM gtest1 WHERE b = 4 ORDER BY a
+--Result--
+[(2, 4)]
++--------------------+
+--Query--
+SELECT * FROM gtest1
+--Result--
+[(2, 4), (1, 2)]
++--------------------+
+--Query--
+SELECT * FROM gtestx, gtest1 WHERE gtestx.y = gtest1.a
+--Result--
+[(11, 1, 1, 2), (22, 2, 2, 4)]
++--------------------+
+--Query--
+SELECT * FROM gtest1 ORDER BY a
+--Result--
+[(1, 2), (2, 4)]
++--------------------+
+--Query--
+SELECT * FROM gtest1 ORDER BY a
+--Result--
+[(1, 2), (3, 6)]
++--------------------+
+--Query--
+SELECT * FROM gtest1 ORDER BY a
+--Result--
+[(3, 6)]
++--------------------+
+--Query--
+MERGE INTO gtestm t USING (VALUES (1, 10), (2, 20)) v(id, f1) ON t.id = v.id   WHEN MATCHED THEN UPDATE SET f1 = v.f1   WHEN NOT MATCHED THEN INSERT VALUES (v.id, v.f1, 200)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM gtestm ORDER BY id
+--Result--
+[(1, 10, 100, 20, 200), (2, 20, 200, 40, 400)]
++--------------------+
+--Query--
+SELECT * FROM gtest1v
+--Result--
+[(3, 6)]
++--------------------+
+--Query--
+SELECT * FROM gtest1v
+--Result--
+[(3, 6), (5, 10), (6, 12), (7, 14)]
++--------------------+
+--Query--
+WITH foo AS (SELECT * FROM gtest1) SELECT * FROM foo
+--Result--
+[(3, 6)]
++--------------------+
+--Query--
+SELECT * FROM gtest1_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM gtest1_1
+--Result--
+[(4, 8)]
++--------------------+
+--Query--
+SELECT * FROM gtest1
+--Result--
+[(3, 6), (4, 8)]
++--------------------+
+--Query--
+TABLE gtestc
+--Result--
+[(42, 43)]
++--------------------+
+--Query--
+TABLE gtestc
+--Result--
+[(420, 421)]
++--------------------+
+--Query--
+SELECT * FROM gtest3 ORDER BY a
+--Result--
+[(1, 3), (2, 6), (3, 9), (None, None)]
++--------------------+
+--Query--
+SELECT * FROM gtest3 ORDER BY a
+--Result--
+[(1, 3), (3, 9), (22, 66), (None, None)]
++--------------------+
+--Query--
+SELECT * FROM gtest3a ORDER BY a
+--Result--
+[('a', 'a+a'), ('b', 'b+b'), ('c', 'c+c'), (None, None)]
++--------------------+
+--Query--
+SELECT * FROM gtest3a ORDER BY a
+--Result--
+[('a', 'a+a'), ('bb', 'bb+bb'), ('c', 'c+c'), (None, None)]
++--------------------+
+--Query--
+TRUNCATE gtest1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM gtest1 ORDER BY a
+--Result--
+[(1, 2), (2, 4)]
++--------------------+
+--Query--
+TRUNCATE gtest3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM gtest3 ORDER BY a
+--Result--
+[(1, 3), (2, 6)]
++--------------------+
+--Query--
+SELECT * FROM gtest2
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+SELECT * FROM gtest_varlena ORDER BY a
+--Result--
+[('01234567890123456789', '01234567890123456789'), (None, None)]
++--------------------+
+--Query--
+SELECT * FROM gtest4
+--Result--
+[(1, '(2,3)'), (6, '(12,18)')]
++--------------------+
+--Query--
+SELECT * FROM gtest_tableoid
+--Result--
+[(1, True, 'gtest_tableoid'), (2, True, 'gtest_tableoid')]
++--------------------+
+--Query--
+REVOKE ALL ON FUNCTION gf1(int) FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, b FROM gtest11s
+--Result--
+[(1, 10), (2, 20)]
++--------------------+
+--Query--
+SELECT a, c FROM gtest11s
+--Result--
+[(1, 20), (2, 40)]
++--------------------+
+--Query--
+SELECT gf1(10)
+--Result--
+[(30,)]
++--------------------+
+--Query--
+SELECT a, c FROM gtest12s
+--Result--
+[(1, 30), (2, 60)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gtest22c WHERE b = 4
+--Result--
+[('Index Scan using gtest22c_b_idx on gtest22c',), ('  Index Cond: (b = 4)',)]
++--------------------+
+--Query--
+SELECT * FROM gtest22c WHERE b = 4
+--Result--
+[(2, 4)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gtest22c WHERE b * 3 = 6
+--Result--
+[('Index Scan using gtest22c_expr_idx on gtest22c',), ('  Index Cond: ((b * 3) = 6)',)]
++--------------------+
+--Query--
+SELECT * FROM gtest22c WHERE b * 3 = 6
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gtest22c WHERE a = 1 AND b > 0
+--Result--
+[('Index Scan using gtest22c_pred_idx on gtest22c',), ('  Index Cond: (a = 1)',)]
++--------------------+
+--Query--
+SELECT * FROM gtest22c WHERE a = 1 AND b > 0
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+ANALYZE gtest22c
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gtest22c WHERE b = 8
+--Result--
+[('Index Scan using gtest22c_b_idx on gtest22c',), ('  Index Cond: (b = 8)',)]
++--------------------+
+--Query--
+SELECT * FROM gtest22c WHERE b = 8
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gtest22c WHERE b * 3 = 12
+--Result--
+[('Index Scan using gtest22c_expr_idx on gtest22c',), ('  Index Cond: ((b * 3) = 12)',)]
++--------------------+
+--Query--
+SELECT * FROM gtest22c WHERE b * 3 = 12
+--Result--
+[(2, 4)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gtest22c WHERE a = 1 AND b > 0
+--Result--
+[('Index Scan using gtest22c_pred_idx on gtest22c',), ('  Index Cond: (a = 1)',)]
++--------------------+
+--Query--
+SELECT * FROM gtest22c WHERE a = 1 AND b > 0
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM gtest_parent ORDER BY 1, 2, 3
+--Result--
+[('gtest_child', datetime.date(2016, 7, 15), 1, 2), ('gtest_child', datetime.date(2016, 7, 15), 2, 4), ('gtest_child2', datetime.date(2016, 8, 15), 3, 66)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM gtest_parent ORDER BY 1, 2, 3
+--Result--
+[('gtest_child', datetime.date(2016, 7, 15), 2, 4), ('gtest_child2', datetime.date(2016, 8, 15), 3, 66), ('gtest_child3', datetime.date(2016, 9, 13), 1, 33)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM gtest_parent ORDER BY 1, 2, 3
+--Result--
+[('gtest_child', datetime.date(2016, 7, 15), 2, 4), ('gtest_child2', datetime.date(2016, 8, 15), 3, 66), ('gtest_child3', datetime.date(2016, 9, 13), 1, 33)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM gtest_parent ORDER BY 1, 2, 3
+--Result--
+[('gtest_child', datetime.date(2016, 7, 15), 2, 4), ('gtest_child2', datetime.date(2016, 8, 15), 3, 66), ('gtest_child3', datetime.date(2016, 9, 13), 1, 33)]
++--------------------+
+--Query--
+SELECT * FROM gtest25 ORDER BY a
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM gtest25 ORDER BY a
+--Result--
+[(3, 42, 168, 101.0, 404.0), (4, 42, 168, 101.0, 404.0)]
++--------------------+
+--Query--
+SELECT * FROM gtest27
+--Result--
+[(3, 7, 20.0), (4, 11, 30.0)]
++--------------------+
+--Query--
+SELECT * FROM gtest27
+--Result--
+[(3, 7, 20), (4, 11, 30)]
++--------------------+
+--Query--
+SELECT * FROM gtest29
+--Result--
+[(3, 6), (4, 8)]
++--------------------+
+--Query--
+SELECT * FROM gtest29
+--Result--
+[(3, 6), (4, 8)]
++--------------------+
+--Query--
+SELECT * FROM gtest29
+--Result--
+[(3, 6), (4, 8), (5, None), (6, 66)]
++--------------------+
+--Query--
+SELECT * FROM gtest26 ORDER BY a
+--Result--
+[(-2, -4), (0, 0), (3, 6)]
++--------------------+
+--Query--
+SELECT * FROM gtest26 ORDER BY a
+--Result--
+[(-6, -12), (0, 0), (4, 8)]
++--------------------+
+--Query--
+SELECT * FROM gtest26 ORDER BY a
+--Result--
+[(0, 0), (4, 8)]
++--------------------+
+--Query--
+TRUNCATE gtest26
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM gtest26 ORDER BY a
+--Result--
+[(10, 20)]
++--------------------+

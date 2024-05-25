@@ -8,8 +8,8 @@ select min(name),min(concat("*",name,"*")),max(name),max(concat("*",name,"*")) f
 select * from t2 order by name;
 select concat("*",name,"*") from t2 order by 1;
 select min(name),min(concat("*",name,"*")),max(name),max(concat("*",name,"*")) from t2;
-select name from t2 where name between 'ÃÂÃÂ¤' and 'ÃÂÃÂ¶';
-select name from t2 where name between 'ÃÂÃÂ' and 'ÃÂÃÂ';
+select name from t2 where name between 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤' and 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶';
+select name from t2 where name between 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' and 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ';
 drop table t1,t2;
 create table t1 (a char(10) not null, b char(10) collate latin1_bin not null,key (a), key(b)) charset latin1;
 insert into t1 values ("hello ","hello "),("hello2 ","hello2 ");

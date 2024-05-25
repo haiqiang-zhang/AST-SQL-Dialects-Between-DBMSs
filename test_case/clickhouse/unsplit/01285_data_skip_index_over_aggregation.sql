@@ -20,7 +20,6 @@ SELECT * FROM data_01285 WHERE assumeNotNull(value) = 3;
 SELECT 'OPTIMIZE';
 OPTIMIZE TABLE data_01285 FINAL;
 SELECT * FROM data_01285;
--- and hence cannot find these record.
 SELECT * FROM data_01285 WHERE assumeNotNull(value) = 3;
 SELECT 'OPTIMIZE';
 OPTIMIZE TABLE data_01285 FINAL;

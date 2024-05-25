@@ -1,0 +1,160 @@
+--Query--
+ANALYZE hash_i4_heap
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE hash_name_heap
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE hash_txt_heap
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE hash_f8_heap
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_i4_heap    WHERE hash_i4_heap.random = 843938989
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_i4_heap    WHERE hash_i4_heap.random = 66766766
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_name_heap    WHERE hash_name_heap.random = '1505703298'::name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_name_heap    WHERE hash_name_heap.random = '7777777'::name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_txt_heap    WHERE hash_txt_heap.random = '1351610853'::text
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_txt_heap    WHERE hash_txt_heap.random = '111111112222222233333333'::text
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_f8_heap    WHERE hash_f8_heap.random = '444705537'::float8
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM hash_f8_heap    WHERE hash_f8_heap.random = '88888888'::float8
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS i1492, h.random AS i1    FROM hash_i4_heap h    WHERE h.random = 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS i20000    FROM hash_i4_heap h    WHERE h.random = 1492795354
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS i6543, h.random AS c0_to_f    FROM hash_name_heap h    WHERE h.random = '0123456789abcdef'::name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS emptyset    FROM hash_name_heap h    WHERE h.random = '76652222'::name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS i4002, h.random AS c0_to_p    FROM hash_txt_heap h    WHERE h.random = '0123456789abcdefghijklmnop'::text
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS t20000    FROM hash_txt_heap h    WHERE h.random = '959363399'::text
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS i8096, h.random AS f1234_1234    FROM hash_f8_heap h    WHERE h.random = '-1234.1234'::float8
+--Result--
+[]
++--------------------+
+--Query--
+SELECT h.seqno AS f20000    FROM hash_f8_heap h    WHERE h.random = '488912369'::float8
+--Result--
+[]
++--------------------+
+--Query--
+DECLARE c CURSOR FOR SELECT * from hash_split_heap WHERE keycol = 1
+--Result--
+[]
++--------------------+
+--Query--
+MOVE FORWARD ALL FROM c
+--Result--
+[]
++--------------------+
+--Query--
+MOVE BACKWARD 10000 FROM c
+--Result--
+[]
++--------------------+
+--Query--
+MOVE BACKWARD ALL FROM c
+--Result--
+[]
++--------------------+
+--Query--
+CLOSE c
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM hash_split_heap
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX hash_split_index
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM hash_cleanup_heap
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE hash_cleanup_heap
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM hash_cleanup_heap
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE hash_cleanup_heap
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM hash_cleanup_heap
+--Result--
+[]
++--------------------+

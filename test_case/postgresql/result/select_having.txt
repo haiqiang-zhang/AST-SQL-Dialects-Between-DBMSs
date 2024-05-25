@@ -1,0 +1,45 @@
+--Query--
+SELECT b, c FROM test_having 	GROUP BY b, c HAVING count(*) = 1 ORDER BY b, c
+--Result--
+[(1, 'XXXX    '), (3, 'bbbb    ')]
++--------------------+
+--Query--
+SELECT b, c FROM test_having 	GROUP BY b, c HAVING b = 3 ORDER BY b, c
+--Result--
+[(3, 'BBBB    '), (3, 'bbbb    ')]
++--------------------+
+--Query--
+SELECT lower(c), count(c) FROM test_having 	GROUP BY lower(c) HAVING count(*) > 2 OR min(a) = max(a) 	ORDER BY lower(c)
+--Result--
+[('bbbb', 3), ('cccc', 4), ('xxxx', 1)]
++--------------------+
+--Query--
+SELECT c, max(a) FROM test_having 	GROUP BY c HAVING count(*) > 2 OR min(a) = max(a) 	ORDER BY c
+--Result--
+[('XXXX    ', 0), ('bbbb    ', 5)]
++--------------------+
+--Query--
+SELECT min(a), max(a) FROM test_having HAVING min(a) = max(a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT min(a), max(a) FROM test_having HAVING min(a) < max(a)
+--Result--
+[(0, 9)]
++--------------------+
+--Query--
+SELECT 1 AS one FROM test_having HAVING 1 > 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 AS one FROM test_having HAVING 1 < 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 AS one FROM test_having WHERE 1/a = 1 HAVING 1 < 2
+--Result--
+[(1,)]
++--------------------+

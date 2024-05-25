@@ -1,0 +1,180 @@
+--Query--
+GRANT ALL ON SCHEMA temp_func_test TO public
+--Result--
+[]
++--------------------+
+--Query--
+SELECT proname, prorettype::regtype, proargtypes::regtype[] FROM pg_proc        WHERE oid in ('functest_A_1'::regproc,                      'functest_A_2'::regproc,                      'functest_A_3'::regproc) ORDER BY proname
+--Result--
+[('functest_a_1', 'boolean', '[0:1]={text,date}'), ('functest_a_2', 'integer', '[0:0]={text[]}'), ('functest_a_3', 'boolean', '{}')]
++--------------------+
+--Query--
+SELECT functest_A_1('abcd', '2020-01-01')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT functest_A_2(ARRAY['1', '2', '3'])
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT functest_A_3()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT proname, provolatile FROM pg_proc        WHERE oid in ('functest_B_1'::regproc,                      'functest_B_2'::regproc,                      'functest_B_3'::regproc, 		     'functest_B_4'::regproc) ORDER BY proname
+--Result--
+[('functest_b_1', 'v'), ('functest_b_2', 'i'), ('functest_b_3', 's'), ('functest_b_4', 'v')]
++--------------------+
+--Query--
+SELECT proname, provolatile FROM pg_proc        WHERE oid in ('functest_B_1'::regproc,                      'functest_B_2'::regproc,                      'functest_B_3'::regproc, 		     'functest_B_4'::regproc) ORDER BY proname
+--Result--
+[('functest_b_1', 'v'), ('functest_b_2', 'v'), ('functest_b_3', 's'), ('functest_b_4', 'v')]
++--------------------+
+--Query--
+SELECT proname, prosecdef FROM pg_proc        WHERE oid in ('functest_C_1'::regproc,                      'functest_C_2'::regproc,                      'functest_C_3'::regproc) ORDER BY proname
+--Result--
+[('functest_c_1', False), ('functest_c_2', True), ('functest_c_3', False)]
++--------------------+
+--Query--
+SELECT proname, prosecdef FROM pg_proc        WHERE oid in ('functest_C_1'::regproc,                      'functest_C_2'::regproc,                      'functest_C_3'::regproc) ORDER BY proname
+--Result--
+[('functest_c_1', False), ('functest_c_2', False), ('functest_c_3', True)]
++--------------------+
+--Query--
+SELECT proname, proisstrict FROM pg_proc        WHERE oid in ('functest_F_1'::regproc,                      'functest_F_2'::regproc,                      'functest_F_3'::regproc,                      'functest_F_4'::regproc) ORDER BY proname
+--Result--
+[('functest_f_1', False), ('functest_f_2', False), ('functest_f_3', True), ('functest_f_4', True)]
++--------------------+
+--Query--
+SELECT proname, proisstrict FROM pg_proc        WHERE oid in ('functest_F_1'::regproc,                      'functest_F_2'::regproc,                      'functest_F_3'::regproc,                      'functest_F_4'::regproc) ORDER BY proname
+--Result--
+[('functest_f_1', False), ('functest_f_2', True), ('functest_f_3', False), ('functest_f_4', True)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_A_1'::regproc)
+--Result--
+[("CREATE OR REPLACE FUNCTION temp_func_test.functest_a_1(text, date)\n RETURNS boolean\n LANGUAGE sql\nAS $function$SELECT $1 = 'abcd' AND $2 > '2001-01-01'$function$\n",)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_B_3'::regproc)
+--Result--
+[('CREATE OR REPLACE FUNCTION temp_func_test.functest_b_3(integer)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$SELECT $1 = 0$function$\n',)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_C_3'::regproc)
+--Result--
+[('CREATE OR REPLACE FUNCTION temp_func_test.functest_c_3(integer)\n RETURNS boolean\n LANGUAGE sql\n SECURITY DEFINER\nAS $function$SELECT $1 < 0$function$\n',)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_F_2'::regproc)
+--Result--
+[('CREATE OR REPLACE FUNCTION temp_func_test.functest_f_2(integer)\n RETURNS boolean\n LANGUAGE sql\n STRICT\nAS $function$SELECT $1 = 50$function$\n',)]
++--------------------+
+--Query--
+SELECT false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT functest_S_1('abcd', '2020-01-01')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT functest_S_2(ARRAY['1', '2', '3'])
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT functest_S_3()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_S_1'::regproc)
+--Result--
+[("CREATE OR REPLACE FUNCTION temp_func_test.functest_s_1(a text, b date)\n RETURNS boolean\n LANGUAGE sql\nRETURN ((a = 'abcd'::text) AND (b > '2001-01-01'::date))\n",)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_S_2'::regproc)
+--Result--
+[('CREATE OR REPLACE FUNCTION temp_func_test.functest_s_2(a text[])\n RETURNS integer\n LANGUAGE sql\nRETURN ((a)[1])::integer\n',)]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('functest_S_3'::regproc)
+--Result--
+[('CREATE OR REPLACE FUNCTION temp_func_test.functest_s_3()\n RETURNS boolean\n LANGUAGE sql\nRETURN false\n',)]
++--------------------+
+--Query--
+SELECT functest_S_14()
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT routine_name, ordinal_position, parameter_name, parameter_default     FROM information_schema.parameters JOIN information_schema.routines USING (specific_schema, specific_name)     WHERE routine_schema = 'temp_func_test' AND routine_name ~ '^functest_is_'     ORDER BY 1, 2
+--Result--
+[('functest_is_1', 1, 'a', None), ('functest_is_1', 2, 'b', '1'), ('functest_is_1', 3, 'c', "'foo'::text"), ('functest_is_2', 1, 'a', None), ('functest_is_2', 2, 'b', '1'), ('functest_is_3', 1, 'a', '1'), ('functest_is_3', 2, 'b', None)]
++--------------------+
+--Query--
+SELECT r0.routine_name, r1.routine_name   FROM information_schema.routine_routine_usage rru        JOIN information_schema.routines r0 ON r0.specific_name = rru.specific_name        JOIN information_schema.routines r1 ON r1.specific_name = rru.routine_name   WHERE r0.routine_schema = 'temp_func_test' AND         r1.routine_schema = 'temp_func_test'   ORDER BY 1, 2
+--Result--
+[('functest_is_4b', 'functest_is_4a')]
++--------------------+
+--Query--
+SELECT routine_name, sequence_name FROM information_schema.routine_sequence_usage   WHERE routine_schema = 'temp_func_test'   ORDER BY 1, 2
+--Result--
+[('functest_is_5', 'functest1'), ('functest_is_6', 'functest1')]
++--------------------+
+--Query--
+SELECT routine_name, table_name, column_name FROM information_schema.routine_column_usage   WHERE routine_schema = 'temp_func_test'   ORDER BY 1, 2
+--Result--
+[('functest_is_7', 'functest2', 'a')]
++--------------------+
+--Query--
+SELECT routine_name, table_name FROM information_schema.routine_table_usage   WHERE routine_schema = 'temp_func_test'   ORDER BY 1, 2
+--Result--
+[('functest_is_7', 'functest2')]
++--------------------+
+--Query--
+SELECT voidtest1(42)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT voidtest2(11,22)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+EXPLAIN (verbose, costs off) SELECT voidtest2(11,22)
+--Result--
+[('Result',), ('  Output: voidtest1(33)',)]
++--------------------+
+--Query--
+SELECT voidtest3(17)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT voidtest4(39)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+TABLE sometable
+--Result--
+[(18,), (38,)]
++--------------------+
+--Query--
+SELECT * FROM voidtest5(3)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT double_append(array_append(ARRAY[q1], q2), q3)   FROM (VALUES(1,2,3), (4,5,6)) v(q1,q2,q3)
+--Result--
+[([1, 2, 3, 1, 2, 3],), ([4, 5, 6, 4, 5, 6],)]
++--------------------+

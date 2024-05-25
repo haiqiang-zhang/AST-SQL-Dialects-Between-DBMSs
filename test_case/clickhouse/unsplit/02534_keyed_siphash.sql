@@ -1,5 +1,4 @@
--- Written in 2012 by
--- Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>
+
 -- Daniel J. Bernstein <djb@cr.yp.to>
 -- Released under CC0
 

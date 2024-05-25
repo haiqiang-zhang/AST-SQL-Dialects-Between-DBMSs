@@ -16,7 +16,7 @@ CREATE TABLE integral_values (
     u timestamp,
 	v date[],
 	w greeting
-);;
+);
 CREATE SEQUENCE seq;
 SELECT EXISTS (
 	SELECT * FROM pg_catalog.pg_type t, pg_catalog.pg_namespace n
@@ -37,7 +37,7 @@ SELECT c.relname FROM pg_class c
 JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'main' AND c.relkind = 'f';
 CREATE SCHEMA myschema;
-CREATE VIEW myschema.v1 AS SELECT 42;;
+CREATE VIEW myschema.v1 AS SELECT 42;
 SELECT a.attname
 FROM
 	pg_class t
@@ -104,48 +104,12 @@ ORDER BY
 	t.relname,
 	i.relname;
 SELECT
-	i.relname as relname,
-	ix.indisunique, ix.indexprs,
-	a.attname, a.attnum, c.conrelid, ix.indkey::varchar,
-	ix.indoption::varchar, i.reloptions, am.amname,
-	pg_get_expr(ix.indpred, ix.indrelid)
-FROM
-	pg_class t
-		join pg_index ix on t.oid = ix.indrelid
-		join pg_class i on i.oid = ix.indexrelid
-		left outer join
-			pg_attribute a
-			on t.oid = a.attrelid and a.attnum = ANY(ix.indkey)
-		left outer join
-			pg_constraint c
-			on (ix.indrelid = c.conrelid and
-				ix.indexrelid = c.conindid and
-				c.contype in ('p', 'u', 'x'))
-		left outer join
-			pg_am am
-			on i.relam = am.oid
-WHERE
-	t.relkind IN ('r', 'v', 'f', 'm', 'p')
-	and t.oid = (SELECT MIN(table_oid) FROM duckdb_tables)
-	and ix.indisprimary = 'f'
-ORDER BY
-	t.relname,
-	i.relname;
-SELECT
 	pgd.description as table_comment
 FROM
 	pg_catalog.pg_description pgd
 WHERE
 	pgd.objsubid = 0 AND
 	pgd.objoid = (SELECT MIN(table_oid) FROM duckdb_tables);
-SELECT
-	cons.conname as name,
-	pg_get_constraintdef(cons.oid) as src
-FROM
-	pg_catalog.pg_constraint cons
-WHERE
-	cons.conrelid = (SELECT MIN(table_oid) FROM duckdb_tables) AND
-	cons.contype = 'c';
 SELECT t.typname as "name",
 	pg_catalog.format_type(t.typbasetype, t.typtypmod) as "attype",
 	not t.typnotnull as "nullable",
@@ -195,21 +159,6 @@ SELECT string_split_regex(pg_get_viewdef(c.oid), '\n')[1] view_def FROM pg_class
 JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'myschema' AND c.relname = 'v1'
 AND c.relkind IN ('v', 'm');
-SELECT a.attname,
-	pg_catalog.format_type(a.atttypid, a.atttypmod),
-	(
-	SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
-	FROM pg_catalog.pg_attrdef d
-	WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum
-	AND a.atthasdef
-	) AS DEFAULT,
-	a.attnotnull
-FROM pg_catalog.pg_attribute a
-LEFT JOIN pg_catalog.pg_description pgd ON (
-	pgd.objoid = a.attrelid AND pgd.objsubid = a.attnum)
-WHERE a.attrelid = (SELECT MIN(oid) FROM pg_class WHERE relname='integral_values')
-AND a.attnum > 0 AND NOT a.attisdropped
-ORDER BY a.attnum;;
 SELECT t.typname as "name",
 	-- no enum defaults in 8.4 at least
 	-- t.typdefault as "default",

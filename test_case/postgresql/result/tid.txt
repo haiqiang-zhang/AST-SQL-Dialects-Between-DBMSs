@@ -1,0 +1,70 @@
+--Query--
+SELECT   '(0,0)'::tid as tid00,   '(0,1)'::tid as tid01,   '(-1,0)'::tid as tidm10,   '(4294967295,65535)'::tid as tidmax
+--Result--
+[('(0,0)', '(0,1)', '(4294967295,0)', '(4294967295,65535)')]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('(0)', 'tid')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('(0)', 'tid')
+--Result--
+[('invalid input syntax for type tid: "(0)"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('(0,-1)', 'tid')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('(0,-1)', 'tid')
+--Result--
+[('invalid input syntax for type tid: "(0,-1)"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT min(ctid) FROM tid_tab
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+SELECT max(ctid) FROM tid_tab
+--Result--
+[('(0,2)',)]
++--------------------+
+--Query--
+TRUNCATE tid_tab
+--Result--
+[]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW tid_matview
+--Result--
+[]
++--------------------+
+--Query--
+SELECT currtid2('tid_matview'::text, '(0,1)'::tid)
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+TRUNCATE tid_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT currtid2('tid_seq'::text, '(0,1)'::tid)
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+SELECT currtid2('tid_view_with_ctid'::text, '(0,1)'::tid)
+--Result--
+[('(0,1)',)]
++--------------------+
+--Query--
+TRUNCATE tid_tab
+--Result--
+[]
++--------------------+

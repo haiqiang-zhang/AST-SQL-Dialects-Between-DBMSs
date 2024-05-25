@@ -1,4 +1,3 @@
-SELECT * FROM repeat(INTERVAL '30 days', NULL);
 SELECT * FROM repeat(0, 3);
 SELECT * FROM repeat(NULL, 2);
 SELECT * FROM repeat('hello', 2);

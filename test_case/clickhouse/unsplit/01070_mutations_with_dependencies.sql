@@ -1,5 +1,3 @@
--- With s3 policy TTL TO DISK 'default' doesn't work (because we have no default, only 's3')
-
 drop table if exists ttl;
 set mutations_sync = 2;
 create table ttl (i Int, a Int, s String) engine = MergeTree order by i;

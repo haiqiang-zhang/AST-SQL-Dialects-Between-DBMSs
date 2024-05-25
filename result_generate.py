@@ -12,22 +12,34 @@ import decimal
 
 test_case_path = './test_case'
 result_folder_name = "result"
-dbms_test_case_used = ['postgresql']
+dbms_test_case_used = ['sqlite']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
     # "mysql": MySQLAdapter,
-    # "sqlite": SQLiteAdapter,
-    "postgresql": PostgresqlAdapter,
+    "sqlite": SQLiteAdapter,
+    # "postgresql": PostgresqlAdapter,
     # "duckdb": DuckDBAdapter,
     # "clickhouse": ClickHouseAdapter
 
 }
 
 setup_query_keyword = [
-    "create table",
-    "insert into",
-    "drop table",
-    "create database"
+    # DDL
+    "create",
+    "alter",
+    "drop",
+    # DML
+    "insert",
+    "update",
+    "delete",
+    # SET
+    "set",
+    "reset",
+    # TRANSACTION
+    "begin",
+    "commit",
+    "rollback",
+    "end",
 ]
 
 
@@ -45,15 +57,21 @@ def convert_decimals(obj):
     else:
         return obj
     
-def save_result_to_txt(result_list:list, filename:str, dbms:str):
+def save_result_to_txt(query_list:list, result_list:list, filename:str, dbms:str):
     result_list = convert_decimals(result_list)
+    filename = os.path.splitext(filename)[0]
     with open(f"./test_case/{dbms}/{result_folder_name}/{filename}.txt", 'w') as file:
-        for result in result_list:
+        for index, result in enumerate(result_list):
+            file.write("--Query--\n")
+            file.write(query_list[index] + "\n")
+            file.write("--Result--\n")
             if result == "QUERY ERROR":
                 file.write("QUERY ERROR\n")
             else:
                 file.write(str(result) + '\n')
-            file.write('--result--')
+
+            file.write("+"+"-"*20+"+\n")
+            
     print(f"Save the result to {filename}.txt")
 
 def run_setup_in_all_dbms(setup_paths:str):
@@ -70,24 +88,25 @@ def run_setup_in_all_dbms(setup_paths:str):
 
 def run_test_in_all_dbms(test_paths:str, filename:str, dbms:str):
     result_list = []
+    result_query_list = []
     # Read the contents of the test case file
-    sql_query = None
+    sql_queries = None
     for encoding in encodings:
         try:
             with open(test_paths, 'r', encoding=encoding) as file:
-                sql_query = file.read()
+                sql_queries = file.read()
         except UnicodeDecodeError as e:
             continue
     
-    if not sql_query:
+    if not sql_queries:
         raise UnicodeError(f"Error decode sql file '{filename}'")
 
     # clean the query
     print("Start parsing SQL file: ", filename)
     if 'postgresql' in test_paths:
-        sql_query = clean_query_postgresql(sql_query)
+        sql_queries = clean_query_postgresql(sql_queries)
     else:
-        sql_query = clean_query(sql_query)
+        sql_queries = clean_query(sql_queries)
 
 
     df = pd.DataFrame(columns=['DBMS', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number'])
@@ -98,10 +117,12 @@ def run_test_in_all_dbms(test_paths:str, filename:str, dbms:str):
     db_adaptor = DBMS_ADAPTERS[dbms]()
     success_counter = 0
     failure_counter = 0
-    for query in sql_query:
+    for query in sql_queries:
+        query = query.strip()
         result = db_adaptor.query(query, filename)
-        if not any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
+        if not any(query.lower().startswith(keyword) for keyword in setup_query_keyword):
             query = query.replace('\n', ' ')
+            result_query_list.append(query)
             if result[0]:
                 result_list.append(result[1])
                 success_counter += 1
@@ -120,7 +141,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str, dbms:str):
     
 
 
-    save_result_to_txt(result_list, filename, dbms)
+    save_result_to_txt(result_query_list, result_list, filename, dbms)
     
     return success_counter, failure_counter, df, df_verbose_all_result_one_file
 
@@ -153,9 +174,10 @@ for dbms in os.listdir(test_case_path):
     # else:
     #     continue
         
+    
     first_init_dbmss(DBMS_ADAPTERS)
     print(f"Running test cases of {dbms}")
-    test_folder=os.path.join(test_case_path, dbms, 'test')
+    test_folder=os.path.join(test_case_path, dbms, 'unsplit')
     file_counter = 0
 
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)

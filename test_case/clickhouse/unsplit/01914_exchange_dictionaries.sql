@@ -1,5 +1,3 @@
--- Tag no-ordinary-database: Requires Atomic database
-
 DROP DATABASE IF EXISTS 01914_db;
 CREATE DATABASE 01914_db ENGINE=Atomic;
 DROP TABLE IF EXISTS 01914_db.table_1;

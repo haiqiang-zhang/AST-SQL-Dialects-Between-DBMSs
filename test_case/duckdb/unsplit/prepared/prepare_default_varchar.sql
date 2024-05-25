@@ -1,13 +1,11 @@
 PRAGMA enable_verification;
 PREPARE v1 AS SELECT ?;
 PREPARE v2 AS SELECT ?=?;
-EXECUTE v2([[1, 2, 3]], [1, 2, 3]);
 PREPARE v3 AS SELECT (SELECT ?);
 PREPARE v4 AS SELECT ? IS NULL;
 PREPARE v5 AS SELECT ? IN (?, ?);
 PREPARE v6 AS SELECT COUNT(?);
 PREPARE v7 AS SELECT printf('%s: %d', ?, ?);
-EXECUTE v7('hello world', [1, 2, 3]);
 PREPARE v8 AS SELECT [?];
 PREPARE v9 AS SELECT [?, NULL];
 PREPARE v10 AS SELECT {'x': ?};

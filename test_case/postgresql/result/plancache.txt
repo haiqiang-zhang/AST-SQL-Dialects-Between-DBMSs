@@ -1,0 +1,145 @@
+--Query--
+prepare p1 as select f1 from abc
+--Result--
+[]
++--------------------+
+--Query--
+execute p1
+--Result--
+[(123,)]
++--------------------+
+--Query--
+select f1 from abc
+--Result--
+[(456,)]
++--------------------+
+--Query--
+execute p1
+--Result--
+[(456,)]
++--------------------+
+--Query--
+execute p1
+--Result--
+[(456,)]
++--------------------+
+--Query--
+prepare p2 as select nextval('seq')
+--Result--
+[]
++--------------------+
+--Query--
+execute p2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+execute p2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+prepare pstmt_def_insert (int) as insert into pc_list_part_def values($1)
+--Result--
+[]
++--------------------+
+--Query--
+execute pstmt_def_insert(null)
+--Result--
+[]
++--------------------+
+--Query--
+execute pstmt_def_insert(1)
+--Result--
+[]
++--------------------+
+--Query--
+deallocate pstmt_def_insert
+--Result--
+[]
++--------------------+
+--Query--
+analyze test_mode
+--Result--
+[]
++--------------------+
+--Query--
+prepare test_mode_pp (int) as select count(*) from test_mode where a = $1
+--Result--
+[]
++--------------------+
+--Query--
+select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
+--Result--
+[('test_mode_pp', 0, 0)]
++--------------------+
+--Query--
+explain (costs off) execute test_mode_pp(2)
+--Result--
+[('Aggregate',), ('  ->  Index Only Scan using test_mode_a_idx on test_mode',), ('        Index Cond: (a = 2)',)]
++--------------------+
+--Query--
+select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
+--Result--
+[('test_mode_pp', 0, 1)]
++--------------------+
+--Query--
+explain (costs off) execute test_mode_pp(2)
+--Result--
+[('Aggregate',), ('  ->  Seq Scan on test_mode',), ('        Filter: (a = $1)',)]
++--------------------+
+--Query--
+select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
+--Result--
+[('test_mode_pp', 1, 1)]
++--------------------+
+--Query--
+execute test_mode_pp(1)
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+execute test_mode_pp(1)
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+execute test_mode_pp(1)
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+execute test_mode_pp(1)
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
+--Result--
+[('test_mode_pp', 1, 5)]
++--------------------+
+--Query--
+execute test_mode_pp(1)
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
+--Result--
+[('test_mode_pp', 2, 5)]
++--------------------+
+--Query--
+explain (costs off) execute test_mode_pp(2)
+--Result--
+[('Aggregate',), ('  ->  Seq Scan on test_mode',), ('        Filter: (a = $1)',)]
++--------------------+
+--Query--
+explain (costs off) execute test_mode_pp(2)
+--Result--
+[('Aggregate',), ('  ->  Index Only Scan using test_mode_a_idx on test_mode',), ('        Index Cond: (a = 2)',)]
++--------------------+
+--Query--
+select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
+--Result--
+[('test_mode_pp', 3, 6)]
++--------------------+

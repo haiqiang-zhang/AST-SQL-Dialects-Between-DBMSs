@@ -545,7 +545,7 @@ SELECT
 FROM
   t1, t1 AS t2
 GROUP BY t1.a WITH ROLLUP
-HAVING COUNT(*) = 0 AND t1.a = 'ÃÂ¥ÃÂÃÂ';
+HAVING COUNT(*) = 0 AND t1.a = 'ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ';
 DROP TABLE t1;
 CREATE TABLE t1 (f1 INTEGER PRIMARY KEY);
 INSERT INTO t1 values (1);

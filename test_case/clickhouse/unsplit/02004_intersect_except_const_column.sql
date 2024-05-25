@@ -1,4 +1,3 @@
--- Test: crash the server
 SELECT 'fooooo' INTERSECT DISTINCT SELECT 'fooooo';
 SELECT 'fooooo' EXCEPT ALL SELECT 'fooooo';
 SELECT 1 FROM numbers(10) INTERSECT SELECT 1 FROM numbers(10);

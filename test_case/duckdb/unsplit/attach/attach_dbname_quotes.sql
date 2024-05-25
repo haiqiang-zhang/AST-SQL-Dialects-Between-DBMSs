@@ -1,10 +1,9 @@
-ATTACH ':memory:' as "my""db";;
-CREATE TABLE "my""db".tbl(i int);;
+ATTACH ':memory:' as "my""db";
+CREATE TABLE "my""db".tbl(i int);
 INSERT INTO "my""db".tbl VALUES (42);
-USE "my""db";;
-USE memory;
+USE "my""db";
 CREATE SCHEMA "my""db"."my""schema";
-CREATE TABLE "my""db"."my""schema".tbl(i int);;
+CREATE TABLE "my""db"."my""schema".tbl(i int);
 INSERT INTO "my""db"."my""schema".tbl VALUES (84);
 USE "my""db"."my""schema";
 CREATE SCHEMA """";

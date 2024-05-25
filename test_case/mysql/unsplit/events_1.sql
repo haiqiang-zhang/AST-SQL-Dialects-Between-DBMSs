@@ -58,7 +58,7 @@ CREATE EVENT root6 ON SCHEDULE EVERY '10:20' MINUTE_SECOND ON COMPLETION PRESERV
 create event root7 on schedule every 2 year do select 1;
 create event root8 on schedule every '2:5' year_month do select 1;
 create event root8_1 on schedule every '2:15' year_month do select 1;
-create event root9 on schedule every 2 week ON COMPLETION PRESERVE DISABLE COMMENT 'ÃÂÃÂºÃÂÃÂ¾ÃÂÃÂ¼ÃÂÃÂµÃÂÃÂ½ÃÂÃÂÃÂÃÂ°ÃÂÃÂ ÃÂÃÂ½ÃÂÃÂ° ÃÂÃÂºÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ»ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ°' do select 1;
+create event root9 on schedule every 2 week ON COMPLETION PRESERVE DISABLE COMMENT 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ° ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°' do select 1;
 create event root10 on schedule every '20:5' day_hour do select 1;
 create event root11 on schedule every '20:25' day_hour do select 1;
 create event root12 on schedule every '20:25' hour_minute do select 1;
@@ -72,7 +72,6 @@ create event root17_1 on schedule every '35:25:65' day_minute do select 1;
 create event root18 on schedule every '35:12:45' hour_second do select 1;
 create event root19 on schedule every '15:59:85' hour_second do select 1;
 create event root20 on schedule every '50:20:12:45' day_second do select 1;
-create event ÃÂ°ÃÂ³ÃÂ³ÃÂ²21 on schedule every '50:23:59:95' day_second COMMENT 'ÃÂ²ÃÂ®ÃÂ¢ÃÂ  ÃÂ¥ 1251 ÃÂªÃÂ®ÃÂ¬ÃÂ¥ÃÂ­ÃÂ²ÃÂ ÃÂ°' do select 1;
 SELECT DEFINER FROM information_schema.EVENTS WHERE EVENT_NAME='event_test';
 select count(*) = 0 from information_schema.processlist
   where db='events_test' and command = 'Connect' and user=current_user();

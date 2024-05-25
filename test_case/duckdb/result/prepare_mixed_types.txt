@@ -1,0 +1,95 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v1 AS SELECT $1::INT, $1::BIGINT
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v2 AS SELECT $1::BIGINT, $1::INT
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v3 AS SELECT $1::BIGINT, $1::UBIGINT
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v4 AS SELECT $1::VARCHAR, $1::DATE
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v5 AS SELECT $1::INT, $1::BIGINT, $1::TINYINT, $1::HUGEINT, $1::SMALLINT
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v6 AS SELECT $1::INT, $1::BIGINT, $1::TINYINT, $1::UBIGINT, $1::SMALLINT, $1::UHUGEINT
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v7 AS SELECT CONCAT($1::TINYINT, $1)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v8 AS SELECT * FROM (values ('body')) t(field) WHERE CASE WHEN $1 IS NULL THEN 1 ELSE field IN (SELECT * FROM (SELECT UNNEST(string_split($1, ','))) AS fsq) END
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v8('body')
+--Result--
+[('body',)]
++--------------------+
+--Query--
+PREPARE v9 AS SELECT UNNEST($1) UNION ALL SELECT * FROM range(1) WHERE $1::INT[]=[1]
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v9([1])
+--Result--
+[(1,), (0,)]
++--------------------+
+--Query--
+EXECUTE v1(42)
+--Result--
+[(42, 42)]
++--------------------+
+--Query--
+EXECUTE v2(42)
+--Result--
+[(42, 42)]
++--------------------+
+--Query--
+EXECUTE v3(42)
+--Result--
+[(42, 42)]
++--------------------+
+--Query--
+EXECUTE v4('1992-01-01')
+--Result--
+[('1992-01-01', datetime.date(1992, 1, 1))]
++--------------------+
+--Query--
+EXECUTE v5(42)
+--Result--
+[(42, 42, 42, 42, 42)]
++--------------------+
+--Query--
+EXECUTE v6(42)
+--Result--
+[(42, 42, 42, 42, 42, 42)]
++--------------------+
+--Query--
+EXECUTE v7(42)
+--Result--
+[('4242',)]
++--------------------+

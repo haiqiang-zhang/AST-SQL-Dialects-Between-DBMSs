@@ -1,4 +1,3 @@
--- no clash name
 SELECT
   c + 1,
   Z.c + 1

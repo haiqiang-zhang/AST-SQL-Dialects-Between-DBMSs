@@ -1,5 +1,3 @@
--- It appeared to trigger assertion.
-
 SET cross_to_inner_join_rewrite = 1;
 DROP TABLE IF EXISTS codecTest;
 CREATE TABLE codecTest (

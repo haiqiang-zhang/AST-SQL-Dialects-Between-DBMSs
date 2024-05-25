@@ -1,43 +1,38 @@
-/* Test inheritance of structure (LIKE) */
+
 CREATE TABLE inhx (xx text DEFAULT 'text');
-/*
- * Test double inheritance
- *
- * Ensure that defaults are NOT included unless
- * INCLUDING DEFAULTS is specified
- */
+
 CREATE TABLE ctla (aa TEXT);
 CREATE TABLE ctlb (bb TEXT) INHERITS (ctla);
 CREATE TABLE inhe (ee text, LIKE inhx) inherits (ctlb);
 INSERT INTO inhe VALUES ('ee-col1', 'ee-col2', DEFAULT, 'ee-col4');
 SELECT * FROM inhe;
-/* Columns aa, bb, xx value NULL, ee */
+
 SELECT * FROM inhx;
-/* Empty set since LIKE inherits structure only */
+
 SELECT * FROM ctlb;
-/* Has ee entry */
+
 SELECT * FROM ctla;
-/* Throw error */
+
 
 CREATE TABLE inhf (LIKE inhx INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
 INSERT INTO inhf DEFAULT VALUES;
 SELECT * FROM inhf;
-/* Single entry with value 'text' */
+
 
 ALTER TABLE inhx add constraint foo CHECK (xx = 'text');
 ALTER TABLE inhx ADD PRIMARY KEY (xx);
 CREATE TABLE inhg (LIKE inhx);
-/* Doesn't copy constraint */
+
 INSERT INTO inhg VALUES ('foo');
 DROP TABLE inhg;
 CREATE TABLE inhg (x text, LIKE inhx INCLUDING CONSTRAINTS, y text);
-/* Copies constraints */
+
 INSERT INTO inhg VALUES ('x', 'text', 'y');
-/* Succeeds */
+
 INSERT INTO inhg VALUES ('x', 'text', 'y');
-/* fails due to constraint */
+
 SELECT * FROM inhg;
-/* Two records with three columns in order x=x, xx=text, y=y */
+
 DROP TABLE inhg;
 CREATE TABLE test_like_id_1 (a bigint GENERATED ALWAYS AS IDENTITY, b text);
 INSERT INTO test_like_id_1 (b) VALUES ('b1');
@@ -81,19 +76,19 @@ CREATE TABLE test_like_5c (LIKE test_like_4 INCLUDING ALL)
 DROP TABLE test_like_4, test_like_4a, test_like_4b, test_like_4c, test_like_4d;
 DROP TABLE test_like_5, test_like_5x, test_like_5c;
 CREATE TABLE inhg (x text, LIKE inhx INCLUDING INDEXES, y text);
-/* copies indexes */
+
 INSERT INTO inhg VALUES (5, 10);
 DROP TABLE inhg;
-/* fails */
+
 CREATE TABLE inhz (xx text DEFAULT 'text', yy int UNIQUE);
 CREATE UNIQUE INDEX inhz_xx_idx on inhz (xx) WHERE xx <> 'test';
-/* Ok to create multiple unique indexes */
+
 CREATE TABLE inhg (x text UNIQUE, LIKE inhz INCLUDING INDEXES);
 INSERT INTO inhg (xx, yy, x) VALUES ('test', 5, 10);
 INSERT INTO inhg (xx, yy, x) VALUES ('test', 10, 15);
 DROP TABLE inhg;
 DROP TABLE inhz;
-/* Use primary key imported by LIKE for self-referential FK constraint */
+
 CREATE TABLE inhz (x text REFERENCES inhz, LIKE inhx INCLUDING INDEXES);
 DROP TABLE inhz;
 CREATE TABLE ctlt1 (a text CHECK (length(a) > 2) PRIMARY KEY, b text);
@@ -142,7 +137,7 @@ DROP TABLE ctlt1, ctlt2, ctlt3, ctlt4, ctlt12_storage, ctlt12_comments, ctlt1_in
 CREATE TABLE noinh_con_copy (a int CHECK (a > 0) NO INHERIT);
 CREATE TABLE noinh_con_copy1 (LIKE noinh_con_copy INCLUDING CONSTRAINTS);
 DROP TABLE noinh_con_copy, noinh_con_copy1;
-/* LIKE with other relation kinds */
+
 
 CREATE TABLE ctlt4 (a int, b text);
 CREATE SEQUENCE ctlseq1;

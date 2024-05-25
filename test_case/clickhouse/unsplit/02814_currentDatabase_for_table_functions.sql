@@ -1,5 +1,4 @@
--- Test that inserts performed via Buffer table engine land into destination table.
--- { echoOn }
+
 
 DROP TABLE IF EXISTS null_table;
 DROP TABLE IF EXISTS null_table_buffer;

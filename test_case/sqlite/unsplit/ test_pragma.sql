@@ -72,7 +72,6 @@ PRAGMA default_cache_size;
 PRAGMA parser_trace=ON;
 PRAGMA parser_trace=OFF;
 PRAGMA bogus = -1234;
--- Parsing of negative values;
 ATTACH 'test2.db' AS aux;
 pragma aux.synchronous;
 pragma aux.synchronous = OFF;

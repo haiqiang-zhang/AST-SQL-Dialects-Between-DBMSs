@@ -310,7 +310,7 @@ col_varchar_10_latin1 varchar(10)  CHARACTER SET latin1,
 col_int_key int,
 col_varchar_10_latin1_key varchar(10)  CHARACTER SET latin1,
 pk integer auto_increment,
-/*Indices*/
+
 key (col_varchar_10_utf8_key ),
 key (col_datetime_key ),
 key (col_varchar_1024_latin1_key ),

@@ -1,10 +1,5 @@
 CREATE TABLE strings(i STRING);
-INSERT INTO strings VALUES ('�(');
-SELECT * FROM strings WHERE i = '�(';
+INSERT INTO strings VALUES ('ÃÂÃÂ¢ÃÂÃÂ(');
+SELECT * FROM strings WHERE i = 'ÃÂÃÂ¢ÃÂÃÂ(';
 CREATE TABLE a(i integer, j integer);
 INSERT INTO a VALUES (1, 2);
-INSERT INTO a VALUES (1);
-INSERT INTO a VALUES (1,2,3);
-INSERT INTO a VALUES (1,2),(3);
-INSERT INTO a VALUES (1,2),(3,4,5);
-INSERT INTO a SELECT 42;

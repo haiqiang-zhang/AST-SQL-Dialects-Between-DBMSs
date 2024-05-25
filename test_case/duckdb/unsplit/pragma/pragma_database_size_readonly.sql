@@ -1,2 +1,2 @@
-CREATE TABLE integers(i INTEGER);;
+CREATE TABLE integers(i INTEGER);
 PRAGMA database_size;

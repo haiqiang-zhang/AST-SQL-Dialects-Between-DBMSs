@@ -1,0 +1,60 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM duckdb_databases()
+--Result--
+[('duckdb', 1080, '/Users/larryzhang/Project/AST-SQL-Dialects-Testing-Between-DBMSs/duckdb.db', None, False, 'duckdb', False), ('system', 0, None, None, True, 'duckdb', False), ('temp', 1488, None, None, True, 'duckdb', False)]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/duckdb_databases.db' AS new_duckdb_database
+--Result--
+[]
++--------------------+
+--Query--
+DETACH new_duckdb_database
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/duckdb_databases.db' AS readonly_duckdb_database (READONLY 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT database_name, internal, readonly, path, type FROM duckdb_databases() ORDER BY database_name
+--Result--
+[('duckdb', False, False, '/Users/larryzhang/Project/AST-SQL-Dialects-Testing-Between-DBMSs/duckdb.db', 'duckdb'), ('readonly_duckdb_database', False, True, '__TEST_DIR__/duckdb_databases.db', 'duckdb'), ('system', True, False, None, 'duckdb'), ('temp', True, False, None, 'duckdb')]
++--------------------+
+--Query--
+SELECT database_name, internal, split(replace(path, '\', '/'), '/')[-1], type FROM duckdb_databases() WHERE path IS NOT NULL
+--Result--
+[('duckdb', False, 'duckdb.db', 'duckdb'), ('readonly_duckdb_database', False, 'duckdb_databases.db', 'duckdb')]
++--------------------+
+--Query--
+SELECT readonly FROM duckdb_databases WHERE database_name='new_duckdb_database'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT database_name FROM duckdb_databases ORDER BY database_name
+--Result--
+[('duckdb',), ('readonly_duckdb_database',)]
++--------------------+
+--Query--
+SHOW databases
+--Result--
+[('duckdb',), ('readonly_duckdb_database',)]
++--------------------+
+--Query--
+SELECT datname FROM pg_catalog.pg_database ORDER BY 1
+--Result--
+[('duckdb',), ('readonly_duckdb_database',), ('system',), ('temp',)]
++--------------------+
+--Query--
+SELECT readonly FROM duckdb_databases WHERE database_name='readonly_duckdb_database'
+--Result--
+[(True,)]
++--------------------+

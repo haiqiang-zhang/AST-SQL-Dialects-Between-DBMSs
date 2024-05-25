@@ -1,0 +1,410 @@
+--Query--
+SELECT 1 AS two UNION SELECT 2 ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 AS one UNION SELECT 1 ORDER BY 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION ALL SELECT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION ALL SELECT 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 AS three UNION SELECT 2 UNION SELECT 3 ORDER BY 1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION SELECT 2 UNION SELECT 2 ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 AS three UNION SELECT 2 UNION ALL SELECT 2 ORDER BY 1
+--Result--
+[(1,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION SELECT 2.2 ORDER BY 1
+--Result--
+[(1.1,), (2.2,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION SELECT 2 ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1 AS two UNION SELECT 2.2 ORDER BY 1
+--Result--
+[(1.0,), (2.2,)]
++--------------------+
+--Query--
+SELECT 1 AS one UNION SELECT 1.0::float8 ORDER BY 1
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION ALL SELECT 2 ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1.0::float8 AS two UNION ALL SELECT 1 ORDER BY 1
+--Result--
+[(1.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS three UNION SELECT 2 UNION SELECT 3 ORDER BY 1
+--Result--
+[(1.1,), (2.0,), (3.0,)]
++--------------------+
+--Query--
+SELECT 1.1::float8 AS two UNION SELECT 2 UNION SELECT 2.0::float8 ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS three UNION SELECT 2 UNION ALL SELECT 2 ORDER BY 1
+--Result--
+[(1.1,), (2.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT 1.1 AS two UNION (SELECT 2 UNION ALL SELECT 2) ORDER BY 1
+--Result--
+[(1.1,), (2.0,)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6) INTERSECT SELECT 4,5,6
+--Result--
+[(4, 5, 6)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6 ORDER BY 1,2) INTERSECT SELECT 4,5,6
+--Result--
+[(4, 5, 6)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6) EXCEPT SELECT 4,5,6
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+(SELECT 1,2,3 UNION SELECT 4,5,6 ORDER BY 1,2) EXCEPT SELECT 4,5,6
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+explain (costs off) select x from (values ('11'::varbit), ('10'::varbit)) _(x) union select x from (values ('11'::varbit), ('10'::varbit)) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values ('11'::varbit), ('10'::varbit)) _(x) union select x from (values ('11'::varbit), ('10'::varbit)) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[('HashAggregate',), ('  Group Key: "*VALUES*".column1',), ('  ->  Append',), ('        ->  Values Scan on "*VALUES*"',), ('        ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[([1, 4],), ([1, 2],), ([1, 3],)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[('HashSetOp Intersect',), ('  ->  Append',), ('        ->  Subquery Scan on "*SELECT* 1"',), ('              ->  Values Scan on "*VALUES*"',), ('        ->  Subquery Scan on "*SELECT* 2"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[('HashSetOp Except',), ('  ->  Append',), ('        ->  Subquery Scan on "*SELECT* 1"',), ('              ->  Values Scan on "*VALUES*"',), ('        ->  Subquery Scan on "*SELECT* 2"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[([1, 3],)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array['10'::varbit]), (array['11'::varbit])) _(x) union select x from (values (array['10'::varbit]), (array['01'::varbit])) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array['10'::varbit]), (array['11'::varbit])) _(x) union select x from (values (array['10'::varbit]), (array['01'::varbit])) _(x)
+--Result--
+[('{01}',), ('{10}',), ('{11}',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[([1, 2],), ([1, 3],), ([1, 4],)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[('SetOp Intersect',), ('  ->  Sort',), ('        Sort Key: "*SELECT* 1".x',), ('        ->  Append',), ('              ->  Subquery Scan on "*SELECT* 1"',), ('                    ->  Values Scan on "*VALUES*"',), ('              ->  Subquery Scan on "*SELECT* 2"',), ('                    ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[('SetOp Except',), ('  ->  Sort',), ('        Sort Key: "*SELECT* 1".x',), ('        ->  Append',), ('              ->  Subquery Scan on "*SELECT* 1"',), ('                    ->  Values Scan on "*VALUES*"',), ('              ->  Subquery Scan on "*SELECT* 2"',), ('                    ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x)
+--Result--
+[([1, 3],)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('(1,2)',), ('(1,3)',), ('(1,4)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('SetOp Intersect',), ('  ->  Sort',), ('        Sort Key: "*SELECT* 1".x',), ('        ->  Append',), ('              ->  Subquery Scan on "*SELECT* 1"',), ('                    ->  Values Scan on "*VALUES*"',), ('              ->  Subquery Scan on "*SELECT* 2"',), ('                    ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('(1,2)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('SetOp Except',), ('  ->  Sort',), ('        Sort Key: "*SELECT* 1".x',), ('        ->  Append',), ('              ->  Subquery Scan on "*SELECT* 1"',), ('                    ->  Values Scan on "*VALUES*"',), ('              ->  Subquery Scan on "*SELECT* 2"',), ('                    ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('(1,3)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row('10'::varbit)), (row('11'::varbit))) _(x) union select x from (values (row('10'::varbit)), (row('01'::varbit))) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row('10'::varbit)), (row('11'::varbit))) _(x) union select x from (values (row('10'::varbit)), (row('01'::varbit))) _(x)
+--Result--
+[('(01)',), ('(10)',), ('(11)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row('10'::varbit)::ct1), (row('11'::varbit)::ct1)) _(x) union select x from (values (row('10'::varbit)::ct1), (row('01'::varbit)::ct1)) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row('10'::varbit)::ct1), (row('11'::varbit)::ct1)) _(x) union select x from (values (row('10'::varbit)::ct1), (row('01'::varbit)::ct1)) _(x)
+--Result--
+[('(01)',), ('(10)',), ('(11)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('Unique',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column1',), ('        ->  Append',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('(1,2)',), ('(1,3)',), ('(1,4)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('SetOp Intersect',), ('  ->  Sort',), ('        Sort Key: "*SELECT* 1".x',), ('        ->  Append',), ('              ->  Subquery Scan on "*SELECT* 1"',), ('                    ->  Values Scan on "*VALUES*"',), ('              ->  Subquery Scan on "*SELECT* 2"',), ('                    ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('(1,2)',)]
++--------------------+
+--Query--
+explain (costs off) select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('SetOp Except',), ('  ->  Sort',), ('        Sort Key: "*SELECT* 1".x',), ('        ->  Append',), ('              ->  Subquery Scan on "*SELECT* 1"',), ('                    ->  Values Scan on "*VALUES*"',), ('              ->  Subquery Scan on "*SELECT* 2"',), ('                    ->  Values Scan on "*VALUES*_1"',)]
++--------------------+
+--Query--
+select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x)
+--Result--
+[('(1,3)',)]
++--------------------+
+--Query--
+select union select
+--Result--
+[()]
++--------------------+
+--Query--
+select intersect select
+--Result--
+[()]
++--------------------+
+--Query--
+select except select
+--Result--
+[]
++--------------------+
+--Query--
+explain (costs off) select from generate_series(1,5) intersect select from generate_series(1,3)
+--Result--
+[('HashSetOp Intersect',), ('  ->  Append',), ('        ->  Subquery Scan on "*SELECT* 1"',), ('              ->  Function Scan on generate_series',), ('        ->  Subquery Scan on "*SELECT* 2"',), ('              ->  Function Scan on generate_series generate_series_1',)]
++--------------------+
+--Query--
+select from generate_series(1,5) union all select from generate_series(1,3)
+--Result--
+[(), (), (), (), (), (), (), ()]
++--------------------+
+--Query--
+select from generate_series(1,5) intersect select from generate_series(1,3)
+--Result--
+[()]
++--------------------+
+--Query--
+select from generate_series(1,5) intersect all select from generate_series(1,3)
+--Result--
+[(), (), ()]
++--------------------+
+--Query--
+select from generate_series(1,5) except select from generate_series(1,3)
+--Result--
+[]
++--------------------+
+--Query--
+select from generate_series(1,5) except all select from generate_series(1,3)
+--Result--
+[(), ()]
++--------------------+
+--Query--
+explain (costs off) select from generate_series(1,5) union select from generate_series(1,3)
+--Result--
+[('Unique',), ('  ->  Append',), ('        ->  Function Scan on generate_series',), ('        ->  Function Scan on generate_series generate_series_1',)]
++--------------------+
+--Query--
+explain (costs off) select from generate_series(1,5) intersect select from generate_series(1,3)
+--Result--
+[('SetOp Intersect',), ('  ->  Append',), ('        ->  Subquery Scan on "*SELECT* 1"',), ('              ->  Function Scan on generate_series',), ('        ->  Subquery Scan on "*SELECT* 2"',), ('              ->  Function Scan on generate_series generate_series_1',)]
++--------------------+
+--Query--
+select from generate_series(1,5) union select from generate_series(1,3)
+--Result--
+[()]
++--------------------+
+--Query--
+select from generate_series(1,5) union all select from generate_series(1,3)
+--Result--
+[(), (), (), (), (), (), (), ()]
++--------------------+
+--Query--
+select from generate_series(1,5) intersect select from generate_series(1,3)
+--Result--
+[()]
++--------------------+
+--Query--
+select from generate_series(1,5) intersect all select from generate_series(1,3)
+--Result--
+[(), (), ()]
++--------------------+
+--Query--
+select from generate_series(1,5) except select from generate_series(1,3)
+--Result--
+[]
++--------------------+
+--Query--
+select from generate_series(1,5) except all select from generate_series(1,3)
+--Result--
+[(), ()]
++--------------------+
+--Query--
+explain (costs off)  SELECT * FROM  (SELECT a || b AS ab FROM t1   UNION ALL   SELECT * FROM t2) t  WHERE ab = 'ab'
+--Result--
+[('Append',), ('  ->  Index Scan using t1_ab_idx on t1',), ("        Index Cond: ((a || b) = 'ab'::text)",), ('  ->  Index Only Scan using t2_pkey on t2',), ("        Index Cond: (ab = 'ab'::text)",)]
++--------------------+
+--Query--
+explain (costs off)  SELECT * FROM  (SELECT a || b AS ab FROM t1   UNION   SELECT * FROM t2) t  WHERE ab = 'ab'
+--Result--
+[('HashAggregate',), ('  Group Key: ((t1.a || t1.b))',), ('  ->  Append',), ('        ->  Index Scan using t1_ab_idx on t1',), ("              Index Cond: ((a || b) = 'ab'::text)",), ('        ->  Index Only Scan using t2_pkey on t2',), ("              Index Cond: (ab = 'ab'::text)",)]
++--------------------+
+--Query--
+explain (costs off)   SELECT * FROM   (SELECT a || b AS ab FROM t1    UNION ALL    SELECT ab FROM t2) t   ORDER BY 1 LIMIT 8
+--Result--
+[('Limit',), ('  ->  Merge Append',), ('        Sort Key: ((t1.a || t1.b))',), ('        ->  Index Scan using t1_ab_idx on t1',), ('        ->  Index Scan using t1c_ab_idx on t1c t1_1',), ('        ->  Index Scan using t2_pkey on t2',), ('        ->  Index Scan using t2c_pkey on t2c t2_1',)]
++--------------------+
+--Query--
+SELECT * FROM   (SELECT a || b AS ab FROM t1    UNION ALL    SELECT ab FROM t2) t   ORDER BY 1 LIMIT 8
+--Result--
+[('ab',), ('ab',), ('cd',), ('dc',), ('ef',), ('fe',), ('mn',), ('nm',)]
++--------------------+
+--Query--
+explain (costs off) select event_id  from (select event_id from events        union all        select event_id from other_events) ss  order by event_id
+--Result--
+[('Merge Append',), ('  Sort Key: events.event_id',), ('  ->  Index Scan using events_pkey on events',), ('  ->  Sort',), ('        Sort Key: events_1.event_id',), ('        ->  Seq Scan on events_child events_1',), ('  ->  Index Scan using other_events_pkey on other_events',)]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM   (SELECT 1 AS t, 2 AS x    UNION    SELECT 2 AS t, 4 AS x) ss WHERE x < 4 ORDER BY x
+--Result--
+[('Sort',), ('  Sort Key: (2)',), ('  ->  Unique',), ('        ->  Sort',), ('              Sort Key: (1), (2)',), ('              ->  Append',), ('                    ->  Result',), ('                    ->  Result',), ('                          One-Time Filter: false',)]
++--------------------+
+--Query--
+SELECT * FROM   (SELECT 1 AS t, 2 AS x    UNION    SELECT 2 AS t, 4 AS x) ss WHERE x < 4 ORDER BY x
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM   (SELECT 1 AS t, generate_series(1,10) AS x    UNION    SELECT 2 AS t, 4 AS x) ss WHERE x < 4 ORDER BY x
+--Result--
+[('Sort',), ('  Sort Key: ss.x',), ('  ->  Subquery Scan on ss',), ('        Filter: (ss.x < 4)',), ('        ->  HashAggregate',), ('              Group Key: (1), (generate_series(1, 10))',), ('              ->  Append',), ('                    ->  ProjectSet',), ('                          ->  Result',), ('                    ->  Result',)]
++--------------------+
+--Query--
+SELECT * FROM   (SELECT 1 AS t, generate_series(1,10) AS x    UNION    SELECT 2 AS t, 4 AS x) ss WHERE x < 4 ORDER BY x
+--Result--
+[(1, 1), (1, 2), (1, 3)]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM   (SELECT 1 AS t, (random()*3)::int AS x    UNION    SELECT 2 AS t, 4 AS x) ss WHERE x > 3 ORDER BY x
+--Result--
+[('Sort',), ('  Sort Key: ss.x',), ('  ->  Subquery Scan on ss',), ('        Filter: (ss.x > 3)',), ('        ->  Unique',), ('              ->  Sort',), ("                    Sort Key: (1), (((random() * '3'::double precision))::integer)",), ('                    ->  Append',), ('                          ->  Result',), ('                          ->  Result',)]
++--------------------+
+--Query--
+SELECT * FROM   (SELECT 1 AS t, (random()*3)::int AS x    UNION    SELECT 2 AS t, 4 AS x) ss WHERE x > 3 ORDER BY x
+--Result--
+[(2, 4)]
++--------------------+
+--Query--
+analyze t3
+--Result--
+[]
++--------------------+

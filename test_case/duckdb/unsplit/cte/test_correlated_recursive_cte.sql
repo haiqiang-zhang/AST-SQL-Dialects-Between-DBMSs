@@ -1,5 +1,5 @@
 PRAGMA enable_verification;
-CREATE TABLE a AS SELECT * FROM range(100) t1(i);;
+CREATE TABLE a AS SELECT * FROM range(100) t1(i);
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -10,7 +10,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -21,7 +21,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -32,7 +32,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -43,7 +43,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE t1.y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y, (WITH RECURSIVE t(z) AS (
   SELECT x + y
     UNION ALL
@@ -51,7 +51,7 @@ SELECT x, y, (WITH RECURSIVE t(z) AS (
   FROM   t
   WHERE z < 3
 ) SELECT sum(z) FROM t) AS z
-FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);;
+FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);
 SELECT x, y, (WITH RECURSIVE t(z) AS (
   SELECT x + y
     UNION ALL
@@ -66,7 +66,7 @@ SELECT x, y, (WITH RECURSIVE t(z) AS (
           SELECT * FROM g) AS t(z)
   WHERE z < 5
 ) SELECT sum(z) FROM t) AS z
-FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);;
+FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);
 SELECT t2.*
 FROM (VALUES (1000000)) t(_corr), LATERAL (
 WITH RECURSIVE t AS
@@ -78,7 +78,7 @@ UNION
 	WHERE x < _corr
 )
 SELECT * FROM t) t2
-ORDER BY 1 NULLS LAST;;
+ORDER BY 1 NULLS LAST;
 SELECT t2.*
 FROM (VALUES (10)) t(_corr), LATERAL (
 WITH RECURSIVE t AS
@@ -90,7 +90,7 @@ UNION
 	WHERE x < _corr
 )
 SELECT * FROM t) t2
-ORDER BY 1 NULLS LAST;;
+ORDER BY 1 NULLS LAST;
 SELECT t2.*
 FROM (VALUES (1)) t(_corr), LATERAL (
 WITH RECURSIVE collatz(x, t, steps) AS
@@ -104,7 +104,7 @@ WITH RECURSIVE collatz(x, t, steps) AS
 )
 SELECT * FROM collatz WHERE t = _corr
 ORDER BY x
-) t2;;
+) t2;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -115,7 +115,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -126,7 +126,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -137,7 +137,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y
 FROM   generate_series(1,4) AS _(x), LATERAL
 (WITH RECURSIVE t(y) AS (
@@ -148,7 +148,7 @@ FROM   generate_series(1,4) AS _(x), LATERAL
   WHERE t1.y < 3
 )
 SELECT * FROM t) AS t
-ORDER BY x, y;;
+ORDER BY x, y;
 SELECT x, y, (WITH RECURSIVE t(z) AS (
   SELECT x + y
     UNION
@@ -156,7 +156,7 @@ SELECT x, y, (WITH RECURSIVE t(z) AS (
   FROM   t
   WHERE z < 3
 ) SELECT sum(z) FROM t) AS z
-FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);;
+FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);
 SELECT x, y, (WITH RECURSIVE t(z) AS (
   SELECT x + y
     UNION
@@ -171,4 +171,4 @@ SELECT x, y, (WITH RECURSIVE t(z) AS (
           SELECT * FROM g) AS t(z)
   WHERE z < 5
 ) SELECT sum(z) FROM t) AS z
-FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);;
+FROM   generate_series(1,2) AS _(x), generate_series(1,2) AS __(y);

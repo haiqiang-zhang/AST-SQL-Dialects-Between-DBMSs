@@ -139,7 +139,6 @@ SELECT splitByNonAlpha('128.0.0.1', 2) SETTINGS splitby_max_substrings_includes_
 SELECT splitByNonAlpha('128.0.0.1', 3) SETTINGS splitby_max_substrings_includes_remaining_string = 1;
 SELECT splitByNonAlpha('128.0.0.1', 4) SETTINGS splitby_max_substrings_includes_remaining_string = 1;
 SELECT splitByNonAlpha('128.0.0.1', 5) SETTINGS splitby_max_substrings_includes_remaining_string = 1;
---
 SELECT '-- splitByWhitespace';
 SELECT '-- (default)';
 SELECT splitByWhitespace('Nein, nein, nein! Doch!');

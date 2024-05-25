@@ -1,0 +1,700 @@
+--Query--
+COMMENT ON TABLE attmp IS 'table comment'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON TABLE attmp IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM attmp
+--Result--
+[(None, 4, 'name', 'text', 4.1, 4.1, 2, '((4.1,4.1),(3.1,3.1))', 'c', 314159, '(1,1)', '512', '1 2 3 4 5 6 7 8', True, '(1.1,1.1)', '[(4.1,4.1),(3.1,3.1)]', '((0,2),(4.1,4.1),(3.1,3.1))', '(4.1,4.1),(3.1,3.1)', datetime.datetime(1970, 1, 1, 0, 0), datetime.timedelta(seconds=3610), [1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0], [1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT * FROM attmp
+--Result--
+[(None, 4, 'name', 'text', 4.1, 4.1, 2, '((4.1,4.1),(3.1,3.1))', 'c', 314159, '(1,1)', '512', '1 2 3 4 5 6 7 8', True, '(1.1,1.1)', '[(4.1,4.1),(3.1,3.1)]', '((0,2),(4.1,4.1),(3.1,3.1))', '(4.1,4.1),(3.1,3.1)', datetime.datetime(1970, 1, 1, 0, 0), datetime.timedelta(seconds=3610), [1.0, 2.0, 3.0, 4.0], [1.0, 2.0, 3.0, 4.0], [1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT * FROM attmp
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM attmp_new
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM attmp_new
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM attmp_new2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT typname FROM pg_type WHERE oid = 'attmp_array[]'::regtype
+--Result--
+[('_attmp_array',)]
++--------------------+
+--Query--
+SELECT typname FROM pg_type WHERE oid = 'attmp_array2[]'::regtype
+--Result--
+[('_attmp_array2',)]
++--------------------+
+--Query--
+SELECT typname FROM pg_type WHERE oid = 'attmp_array[]'::regtype
+--Result--
+[('__attmp_array',)]
++--------------------+
+--Query--
+SELECT typname FROM pg_type WHERE oid = '_attmp_array[]'::regtype
+--Result--
+[('__attmp_array_1',)]
++--------------------+
+--Query--
+SELECT typname FROM pg_type WHERE oid = 'attmp_array[]'::regtype
+--Result--
+[('_attmp_array',)]
++--------------------+
+--Query--
+SELECT typname FROM pg_type WHERE oid = '_attmp_array[]'::regtype
+--Result--
+[('__attmp_array',)]
++--------------------+
+--Query--
+SELECT relation::regclass, mode FROM pg_locks WHERE pid = pg_backend_pid() AND locktype = 'relation'   AND relation::regclass::text LIKE 'alter\_idx%' ORDER BY relation::regclass::text COLLATE "C"
+--Result--
+[('alter_idx_rename_test_2', 'AccessExclusiveLock'), ('alter_idx_rename_test_parted_2', 'AccessExclusiveLock')]
++--------------------+
+--Query--
+SELECT relation::regclass, mode FROM pg_locks WHERE pid = pg_backend_pid() AND locktype = 'relation'   AND relation::regclass::text LIKE 'alter\_idx%' ORDER BY relation::regclass::text COLLATE "C"
+--Result--
+[('alter_idx_rename_test_idx_2', 'ShareUpdateExclusiveLock'), ('alter_idx_rename_test_parted_idx_2', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+SELECT relation::regclass, mode FROM pg_locks WHERE pid = pg_backend_pid() AND locktype = 'relation'   AND relation::regclass::text LIKE 'alter\_idx%' ORDER BY relation::regclass::text COLLATE "C"
+--Result--
+[('alter_idx_rename_test_idx_3', 'AccessExclusiveLock'), ('alter_idx_rename_test_parted_idx_3', 'AccessExclusiveLock')]
++--------------------+
+--Query--
+select * from attmp3
+--Result--
+[(1, 20)]
++--------------------+
+--Query--
+select convalidated from pg_constraint where conrelid = 'parent_noinh_convalid'::regclass and conname = 'check_a_is_2'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+explain (costs off) select * from nv_parent where d between '2011-08-01' and '2011-08-31'
+--Result--
+[('Append',), ('  ->  Seq Scan on nv_parent nv_parent_1',), ("        Filter: ((d >= '2011-08-01'::date) AND (d <= '2011-08-31'::date))",), ('  ->  Seq Scan on nv_child_2010 nv_parent_2',), ("        Filter: ((d >= '2011-08-01'::date) AND (d <= '2011-08-31'::date))",), ('  ->  Seq Scan on nv_child_2011 nv_parent_3',), ("        Filter: ((d >= '2011-08-01'::date) AND (d <= '2011-08-31'::date))",)]
++--------------------+
+--Query--
+explain (costs off) select * from nv_parent where d between '2011-08-01'::date and '2011-08-31'::date
+--Result--
+[('Append',), ('  ->  Seq Scan on nv_parent nv_parent_1',), ("        Filter: ((d >= '2011-08-01'::date) AND (d <= '2011-08-31'::date))",), ('  ->  Seq Scan on nv_child_2010 nv_parent_2',), ("        Filter: ((d >= '2011-08-01'::date) AND (d <= '2011-08-31'::date))",), ('  ->  Seq Scan on nv_child_2011 nv_parent_3',), ("        Filter: ((d >= '2011-08-01'::date) AND (d <= '2011-08-31'::date))",)]
++--------------------+
+--Query--
+explain (costs off) select * from nv_parent where d between '2009-08-01'::date and '2009-08-31'::date
+--Result--
+[('Append',), ('  ->  Seq Scan on nv_parent nv_parent_1',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",), ('  ->  Seq Scan on nv_child_2010 nv_parent_2',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",), ('  ->  Seq Scan on nv_child_2011 nv_parent_3',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",), ('  ->  Seq Scan on nv_child_2009 nv_parent_4',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",)]
++--------------------+
+--Query--
+explain (costs off) select * from nv_parent where d between '2009-08-01'::date and '2009-08-31'::date
+--Result--
+[('Append',), ('  ->  Seq Scan on nv_parent nv_parent_1',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",), ('  ->  Seq Scan on nv_child_2010 nv_parent_2',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",), ('  ->  Seq Scan on nv_child_2009 nv_parent_3',), ("        Filter: ((d >= '2009-08-01'::date) AND (d <= '2009-08-31'::date))",)]
++--------------------+
+--Query--
+SELECT conname, tgfoid::regproc, tgtype, tgdeferrable, tginitdeferred FROM pg_trigger JOIN pg_constraint con ON con.oid = tgconstraint WHERE tgrelid = 'pktable'::regclass ORDER BY 1,2,3
+--Result--
+[('fkdd', '"RI_FKey_cascade_del"', 9, False, False), ('fkdd', '"RI_FKey_noaction_upd"', 17, True, True), ('fkdd2', '"RI_FKey_cascade_del"', 9, False, False), ('fkdd2', '"RI_FKey_noaction_upd"', 17, True, True), ('fkdi', '"RI_FKey_cascade_del"', 9, False, False), ('fkdi', '"RI_FKey_noaction_upd"', 17, True, False), ('fkdi2', '"RI_FKey_cascade_del"', 9, False, False), ('fkdi2', '"RI_FKey_noaction_upd"', 17, True, False), ('fknd', '"RI_FKey_cascade_del"', 9, False, False), ('fknd', '"RI_FKey_noaction_upd"', 17, False, False), ('fknd2', '"RI_FKey_cascade_del"', 9, False, False), ('fknd2', '"RI_FKey_noaction_upd"', 17, False, False)]
++--------------------+
+--Query--
+SELECT conname, tgfoid::regproc, tgtype, tgdeferrable, tginitdeferred FROM pg_trigger JOIN pg_constraint con ON con.oid = tgconstraint WHERE tgrelid = 'fktable'::regclass ORDER BY 1,2,3
+--Result--
+[('fkdd', '"RI_FKey_check_ins"', 5, True, True), ('fkdd', '"RI_FKey_check_upd"', 17, True, True), ('fkdd2', '"RI_FKey_check_ins"', 5, True, True), ('fkdd2', '"RI_FKey_check_upd"', 17, True, True), ('fkdi', '"RI_FKey_check_ins"', 5, True, False), ('fkdi', '"RI_FKey_check_upd"', 17, True, False), ('fkdi2', '"RI_FKey_check_ins"', 5, True, False), ('fkdi2', '"RI_FKey_check_upd"', 17, True, False), ('fknd', '"RI_FKey_check_ins"', 5, False, False), ('fknd', '"RI_FKey_check_upd"', 17, False, False), ('fknd2', '"RI_FKey_check_ins"', 5, False, False), ('fknd2', '"RI_FKey_check_upd"', 17, False, False)]
++--------------------+
+--Query--
+select test2 from atacc2
+--Result--
+[]
++--------------------+
+--Query--
+select test2 from atacc2
+--Result--
+[(4,)]
++--------------------+
+--Query--
+select * from def_test
+--Result--
+[(5, 'initial_default'), (None, 'initial_default'), (None, None), (10, 'new_default')]
++--------------------+
+--Query--
+select * from def_view_test
+--Result--
+[(5, 'initial_default'), (None, 'initial_default'), (None, None), (10, 'new_default'), (None, None), (45, None), (45, 'view_default')]
++--------------------+
+--Query--
+select * from atacc1
+--Result--
+[(2, 3, 4)]
++--------------------+
+--Query--
+select atacc1.* from atacc1
+--Result--
+[(2, 3, 4)]
++--------------------+
+--Query--
+select b,c,d from atacc1
+--Result--
+[(2, 3, 4)]
++--------------------+
+--Query--
+select * from myview
+--Result--
+[]
++--------------------+
+--Query--
+select * from attest1
+--Result--
+[(21, 22, 23)]
++--------------------+
+--Query--
+select * into attest2 from atacc1
+--Result--
+[]
++--------------------+
+--Query--
+select * from attest2
+--Result--
+[(21, 22, 23)]
++--------------------+
+--Query--
+select * from atacc1
+--Result--
+[()]
++--------------------+
+--Query--
+select * from parent
+--Result--
+[(2, 3), (12, 13)]
++--------------------+
+--Query--
+select * from child
+--Result--
+[(12, 13, 'testing')]
++--------------------+
+--Query--
+select * from parent
+--Result--
+[(2,), (12,)]
++--------------------+
+--Query--
+select * from child
+--Result--
+[(12, 'testing')]
++--------------------+
+--Query--
+select f1 from c1
+--Result--
+[]
++--------------------+
+--Query--
+select relname, attname, attinhcount, attislocal from pg_class join pg_attribute on (pg_class.oid = pg_attribute.attrelid) where relname in ('p1','p2','c1','gc1') and attnum > 0 and not attisdropped order by relname, attnum
+--Result--
+[('c1', 'id', 1, False), ('c1', 'name', 2, False), ('c1', 'id2', 1, False), ('c1', 'height', 1, False), ('c1', 'age', 0, True), ('gc1', 'id', 1, False), ('gc1', 'name', 1, False), ('gc1', 'id2', 1, False), ('gc1', 'height', 1, False), ('gc1', 'age', 1, False), ('p1', 'id', 0, True), ('p1', 'name', 0, True), ('p2', 'id2', 0, True), ('p2', 'name', 0, True), ('p2', 'height', 0, True)]
++--------------------+
+--Query--
+select relname, attname, attinhcount, attislocal from pg_class join pg_attribute on (pg_class.oid = pg_attribute.attrelid) where relname in ('p1','p2','c1','gc1') and attnum > 0 and not attisdropped order by relname, attnum
+--Result--
+[('c1', 'id', 1, False), ('c1', 'id2', 1, False), ('c1', 'age', 0, True), ('gc1', 'id', 1, False), ('gc1', 'id2', 1, False), ('gc1', 'age', 1, False), ('p1', 'id', 0, True), ('p2', 'id2', 0, True)]
++--------------------+
+--Query--
+select attrelid::regclass, attname, attinhcount, attislocal from pg_attribute where attnum > 0 and attrelid::regclass in ('depth0', 'depth1', 'depth2') order by attrelid::regclass::text, attnum
+--Result--
+[('depth0', 'c', 0, True), ('depth1', 'c', 1, True), ('depth2', 'c', 1, False)]
++--------------------+
+--Query--
+select * from p1
+--Result--
+[(1, 2, 'abc'), (11, 22, 'xyz')]
++--------------------+
+--Query--
+select * from p1
+--Result--
+[(1, 3, 'ABC'), (11, 23, 'XYZ')]
++--------------------+
+--Query--
+select * from foo
+--Result--
+[('bb', 'cc', 'dd')]
++--------------------+
+--Query--
+select * from foo
+--Result--
+[('bb', 'dd')]
++--------------------+
+--Query--
+select * from foo
+--Result--
+[('bb', 'dd'), ('qq', 'rr')]
++--------------------+
+--Query--
+select * from foo
+--Result--
+[('bb', 'zz'), ('qq', 'zz')]
++--------------------+
+--Query--
+select f3,max(f1) from foo group by f3
+--Result--
+[('zz', 'qq')]
++--------------------+
+--Query--
+select * from anothertab
+--Result--
+[(1, True), (2, False)]
++--------------------+
+--Query--
+select * from anothertab
+--Result--
+[(1, True), (2, False)]
++--------------------+
+--Query--
+select * from anothertab
+--Result--
+[(1, True), (2, False), (3, None)]
++--------------------+
+--Query--
+select * from anothertab
+--Result--
+[(1, 'IT WAS TRUE'), (2, 'IT WAS FALSE'), (3, 'IT WAS NULL!')]
++--------------------+
+--Query--
+select * from anothertab
+--Result--
+[(False, 'IT WAS TRUE'), (True, 'IT WAS FALSE'), (False, 'IT WAS NULL!')]
++--------------------+
+--Query--
+select * from another
+--Result--
+[(1, 'one', 'uno'), (2, 'two', 'due'), (3, 'three', 'tre')]
++--------------------+
+--Query--
+select * from another
+--Result--
+[('one and uno more', 10), ('two and due more', 20), ('three and tre more', 30)]
++--------------------+
+--Query--
+comment on constraint at_partitioned_id_name_key on at_partitioned is 'parent constraint'
+--Result--
+[]
++--------------------+
+--Query--
+comment on index at_partitioned_id_name_key is 'parent index'
+--Result--
+[]
++--------------------+
+--Query--
+comment on constraint at_partitioned_0_id_name_key on at_partitioned_0 is 'child 0 constraint'
+--Result--
+[]
++--------------------+
+--Query--
+comment on index at_partitioned_0_id_name_key is 'child 0 index'
+--Result--
+[]
++--------------------+
+--Query--
+comment on constraint at_partitioned_1_id_name_key on at_partitioned_1 is 'child 1 constraint'
+--Result--
+[]
++--------------------+
+--Query--
+comment on index at_partitioned_1_id_name_key is 'child 1 index'
+--Result--
+[]
++--------------------+
+--Query--
+select relname,   c.oid = oldoid as orig_oid,   case relfilenode     when 0 then 'none'     when c.oid then 'own'     when oldfilenode then 'orig'     else 'OTHER'     end as storage,   obj_description(c.oid, 'pg_class') as desc   from pg_class c left join old_oids using (relname)   where relname like 'at_partitioned%'   order by relname
+--Result--
+[('at_partitioned', True, 'none', None), ('at_partitioned_0', True, 'own', None), ('at_partitioned_0_id_name_key', True, 'own', 'child 0 index'), ('at_partitioned_1', True, 'own', None), ('at_partitioned_1_id_name_key', True, 'own', 'child 1 index'), ('at_partitioned_id_name_key', True, 'none', 'parent index')]
++--------------------+
+--Query--
+select conname, obj_description(oid, 'pg_constraint') as desc   from pg_constraint where conname like 'at_partitioned%'   order by conname
+--Result--
+[('at_partitioned_0_id_name_key', 'child 0 constraint'), ('at_partitioned_1_id_name_key', 'child 1 constraint'), ('at_partitioned_id_name_key', 'parent constraint')]
++--------------------+
+--Query--
+select relname,   c.oid = oldoid as orig_oid,   case relfilenode     when 0 then 'none'     when c.oid then 'own'     when oldfilenode then 'orig'     else 'OTHER'     end as storage,   obj_description(c.oid, 'pg_class') as desc   from pg_class c left join old_oids using (relname)   where relname like 'at_partitioned%'   order by relname
+--Result--
+[('at_partitioned', True, 'none', None), ('at_partitioned_0', True, 'own', None), ('at_partitioned_0_id_name_key', False, 'own', 'parent index'), ('at_partitioned_1', True, 'own', None), ('at_partitioned_1_id_name_key', False, 'own', 'parent index'), ('at_partitioned_id_name_key', False, 'none', 'parent index')]
++--------------------+
+--Query--
+select conname, obj_description(oid, 'pg_constraint') as desc   from pg_constraint where conname like 'at_partitioned%'   order by conname
+--Result--
+[('at_partitioned_0_id_name_key', None), ('at_partitioned_1_id_name_key', None), ('at_partitioned_id_name_key', 'parent constraint')]
++--------------------+
+--Query--
+select reltoastrelid <> 0 as has_toast_table   from pg_class where oid = 'test_storage'::regclass
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select reltoastrelid <> 0 as has_toast_table   from pg_class where oid = 'test_storage'::regclass
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select reltoastrelid <> 0 as has_toast_table   from pg_class where oid = 'test_storage'::regclass
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select relname, conname, coninhcount, conislocal, connoinherit   from pg_constraint c, pg_class r   where relname like 'test_inh_check%' and c.conrelid = r.oid   order by 1, 2
+--Result--
+[('test_inh_check', 'test_inh_check_a_check', 0, True, False), ('test_inh_check_child', 'test_inh_check_a_check', 1, False, False)]
++--------------------+
+--Query--
+select relname, conname, coninhcount, conislocal, connoinherit   from pg_constraint c, pg_class r   where relname like 'test_inh_check%' and c.conrelid = r.oid   order by 1, 2
+--Result--
+[('test_inh_check', 'test_inh_check_a_check', 0, True, False), ('test_inh_check_child', 'test_inh_check_a_check', 1, False, False)]
++--------------------+
+--Query--
+select relname, conname, coninhcount, conislocal, connoinherit   from pg_constraint c, pg_class r   where relname like 'test_inh_check%' and c.conrelid = r.oid   order by 1, 2
+--Result--
+[('test_inh_check', 'bmerged', 0, True, False), ('test_inh_check', 'bnoinherit', 0, True, True), ('test_inh_check', 'test_inh_check_a_check', 0, True, False), ('test_inh_check_child', 'blocal', 0, True, False), ('test_inh_check_child', 'bmerged', 1, True, False), ('test_inh_check_child', 'test_inh_check_a_check', 1, False, False)]
++--------------------+
+--Query--
+select relname, conname, coninhcount, conislocal, connoinherit   from pg_constraint c, pg_class r   where relname like 'test_inh_check%' and c.conrelid = r.oid   order by 1, 2
+--Result--
+[('test_inh_check', 'bmerged', 0, True, False), ('test_inh_check', 'bnoinherit', 0, True, True), ('test_inh_check', 'test_inh_check_a_check', 0, True, False), ('test_inh_check_child', 'blocal', 0, True, False), ('test_inh_check_child', 'bmerged', 1, True, False), ('test_inh_check_child', 'test_inh_check_a_check', 1, False, False)]
++--------------------+
+--Query--
+ANALYZE check_fk_presence_2
+--Result--
+[]
++--------------------+
+--Query--
+explain (verbose, costs off) select * from at_view_2
+--Result--
+[('Seq Scan on public.at_base_table bt',), ('  Output: bt.id, bt.stuff, to_json(ROW(bt.id, bt.stuff))',)]
++--------------------+
+--Query--
+select * from at_view_2
+--Result--
+[(23, 'skidoo', {'id': 23, 'stuff': 'skidoo'})]
++--------------------+
+--Query--
+explain (verbose, costs off) select * from at_view_2
+--Result--
+[('Seq Scan on public.at_base_table bt',), ('  Output: bt.id, bt.stuff, to_json(ROW(bt.id, bt.stuff, 4))',)]
++--------------------+
+--Query--
+select * from at_view_2
+--Result--
+[(23, 'skidoo', {'id': 23, 'stuff': 'skidoo', 'more': 4})]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock'), ('alterlock_pkey', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock'), ('pg_toast', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock'), ('pg_toast', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock'), ('pg_toast', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock'), ('pg_toast', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareUpdateExclusiveLock'), ('pg_toast', 'ShareUpdateExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'AccessExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'AccessExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareRowExclusiveLock'), ('alterlock2', 'ShareRowExclusiveLock'), ('alterlock2_pkey', 'AccessShareLock'), ('alterlock_pkey', 'AccessShareLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'ShareRowExclusiveLock'), ('alterlock2', 'ShareRowExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('alterlock', 'RowShareLock'), ('alterlock2', 'ShareUpdateExclusiveLock'), ('alterlock2_pkey', 'AccessShareLock'), ('alterlock_pkey', 'AccessShareLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('my_locks', 'AccessExclusiveLock')]
++--------------------+
+--Query--
+select * from my_locks order by 1
+--Result--
+[('my_locks', 'AccessExclusiveLock')]
++--------------------+
+--Query--
+select * from alter2.t1
+--Result--
+[(1, 11), (2, 12), (3, 13), (4, 14)]
++--------------------+
+--Query--
+select * from alter2.v1
+--Result--
+[(1, 11), (2, 12), (3, 13), (4, 14)]
++--------------------+
+--Query--
+select alter2.plus1(41)
+--Result--
+[(42,)]
++--------------------+
+--Query--
+COMMENT ON COLUMN comment_test.id IS 'Column ''id'' on comment_test'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON INDEX comment_test_index IS 'Simple index on comment_test'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON CONSTRAINT comment_test_positive_col_check ON comment_test IS 'CHECK constraint on comment_test.positive_col'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON CONSTRAINT comment_test_pk ON comment_test IS 'PRIMARY KEY constraint of comment_test'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON INDEX comment_test_pk IS 'Index backing the PRIMARY KEY of comment_test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_description('comment_test'::regclass, 1) as comment
+--Result--
+[("Column 'id' on comment_test",)]
++--------------------+
+--Query--
+SELECT indexrelid::regclass::text as index, obj_description(indexrelid, 'pg_class') as comment FROM pg_index where indrelid = 'comment_test'::regclass ORDER BY 1, 2
+--Result--
+[('comment_test_index', 'Simple index on comment_test'), ('comment_test_pk', 'Index backing the PRIMARY KEY of comment_test')]
++--------------------+
+--Query--
+SELECT conname as constraint, obj_description(oid, 'pg_constraint') as comment FROM pg_constraint where conrelid = 'comment_test'::regclass ORDER BY 1, 2
+--Result--
+[('comment_test_pk', 'PRIMARY KEY constraint of comment_test'), ('comment_test_positive_col_check', 'CHECK constraint on comment_test.positive_col')]
++--------------------+
+--Query--
+SELECT col_description('comment_test'::regclass, 1) as comment
+--Result--
+[("Column 'id' on comment_test",)]
++--------------------+
+--Query--
+SELECT indexrelid::regclass::text as index, obj_description(indexrelid, 'pg_class') as comment FROM pg_index where indrelid = 'comment_test'::regclass ORDER BY 1, 2
+--Result--
+[('comment_test_index', 'Simple index on comment_test'), ('comment_test_pk', 'Index backing the PRIMARY KEY of comment_test')]
++--------------------+
+--Query--
+SELECT conname as constraint, obj_description(oid, 'pg_constraint') as comment FROM pg_constraint where conrelid = 'comment_test'::regclass ORDER BY 1, 2
+--Result--
+[('comment_test_pk', 'PRIMARY KEY constraint of comment_test'), ('comment_test_positive_col_check', 'CHECK constraint on comment_test.positive_col')]
++--------------------+
+--Query--
+COMMENT ON COLUMN comment_test_child.id IS 'Column ''id'' on comment_test_child'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON INDEX comment_test_child_fk IS 'Index backing the FOREIGN KEY of comment_test_child'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON CONSTRAINT comment_test_child_fk ON comment_test_child IS 'FOREIGN KEY constraint of comment_test_child'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_description('comment_test_child'::regclass, 1) as comment
+--Result--
+[("Column 'id' on comment_test_child",)]
++--------------------+
+--Query--
+SELECT indexrelid::regclass::text as index, obj_description(indexrelid, 'pg_class') as comment FROM pg_index where indrelid = 'comment_test_child'::regclass ORDER BY 1, 2
+--Result--
+[('comment_test_child_fk', 'Index backing the FOREIGN KEY of comment_test_child')]
++--------------------+
+--Query--
+SELECT conname as constraint, obj_description(oid, 'pg_constraint') as comment FROM pg_constraint where conrelid = 'comment_test_child'::regclass ORDER BY 1, 2
+--Result--
+[('comment_test_child_fk', 'FOREIGN KEY constraint of comment_test_child')]
++--------------------+
+--Query--
+SELECT m.* FROM filenode_mapping m LEFT JOIN pg_class c ON c.oid = m.oid WHERE c.oid IS NOT NULL OR m.mapped_oid IS NOT NULL
+--Result--
+[]
++--------------------+
+--Query--
+SHOW allow_system_table_mods
+--Result--
+[('off',)]
++--------------------+
+--Query--
+TRUNCATE old_system_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, relkind, relpersistence FROM pg_class WHERE relname ~ '^unlogged1' UNION ALL SELECT r.relname || ' toast table', t.relkind, t.relpersistence FROM pg_class r JOIN pg_class t ON t.oid = r.reltoastrelid WHERE r.relname ~ '^unlogged1' UNION ALL SELECT r.relname || ' toast index', ri.relkind, ri.relpersistence FROM pg_class r join pg_class t ON t.oid = r.reltoastrelid JOIN pg_index i ON i.indrelid = t.oid JOIN pg_class ri ON ri.oid = i.indexrelid WHERE r.relname ~ '^unlogged1' ORDER BY relname
+--Result--
+[('unlogged1', 'r', 'u'), ('unlogged1 toast index', 'i', 'u'), ('unlogged1 toast table', 't', 'u'), ('unlogged1_f1_seq', 'S', 'u'), ('unlogged1_pkey', 'i', 'u')]
++--------------------+
+--Query--
+SELECT relname, relkind, relpersistence FROM pg_class WHERE relname ~ '^unlogged1' UNION ALL SELECT r.relname || ' toast table', t.relkind, t.relpersistence FROM pg_class r JOIN pg_class t ON t.oid = r.reltoastrelid WHERE r.relname ~ '^unlogged1' UNION ALL SELECT r.relname || ' toast index', ri.relkind, ri.relpersistence FROM pg_class r join pg_class t ON t.oid = r.reltoastrelid JOIN pg_index i ON i.indrelid = t.oid JOIN pg_class ri ON ri.oid = i.indexrelid WHERE r.relname ~ '^unlogged1' ORDER BY relname
+--Result--
+[('unlogged1', 'r', 'p'), ('unlogged1 toast index', 'i', 'p'), ('unlogged1 toast table', 't', 'p'), ('unlogged1_f1_seq', 'S', 'p'), ('unlogged1_pkey', 'i', 'p')]
++--------------------+
+--Query--
+SELECT relname, relkind, relpersistence FROM pg_class WHERE relname ~ '^logged1' UNION ALL SELECT r.relname || ' toast table', t.relkind, t.relpersistence FROM pg_class r JOIN pg_class t ON t.oid = r.reltoastrelid WHERE r.relname ~ '^logged1' UNION ALL SELECT r.relname ||' toast index', ri.relkind, ri.relpersistence FROM pg_class r join pg_class t ON t.oid = r.reltoastrelid JOIN pg_index i ON i.indrelid = t.oid JOIN pg_class ri ON ri.oid = i.indexrelid WHERE r.relname ~ '^logged1' ORDER BY relname
+--Result--
+[('logged1', 'r', 'p'), ('logged1 toast index', 'i', 'p'), ('logged1 toast table', 't', 'p'), ('logged1_f1_seq', 'S', 'p'), ('logged1_pkey', 'i', 'p')]
++--------------------+
+--Query--
+SELECT relname, relkind, relpersistence FROM pg_class WHERE relname ~ '^logged1' UNION ALL SELECT r.relname || ' toast table', t.relkind, t.relpersistence FROM pg_class r JOIN pg_class t ON t.oid = r.reltoastrelid WHERE r.relname ~ '^logged1' UNION ALL SELECT r.relname || ' toast index', ri.relkind, ri.relpersistence FROM pg_class r join pg_class t ON t.oid = r.reltoastrelid JOIN pg_index i ON i.indrelid = t.oid JOIN pg_class ri ON ri.oid = i.indexrelid WHERE r.relname ~ '^logged1' ORDER BY relname
+--Result--
+[('logged1', 'r', 'u'), ('logged1 toast index', 'i', 'u'), ('logged1 toast table', 't', 'u'), ('logged1_f1_seq', 'S', 'u'), ('logged1_pkey', 'i', 'u')]
++--------------------+
+--Query--
+SELECT attislocal, attinhcount FROM pg_attribute WHERE attrelid = 'part_1'::regclass AND attnum > 0
+--Result--
+[(False, 1), (False, 1)]
++--------------------+
+--Query--
+SELECT conislocal, coninhcount FROM pg_constraint WHERE conrelid = 'part_1'::regclass AND conname = 'check_a'
+--Result--
+[(False, 1)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, a, b FROM part_7 order by a
+--Result--
+[('part_7_a_null', 8, None), ('part_7_a_null', 9, 'a')]
++--------------------+
+--Query--
+SELECT attinhcount, attislocal FROM pg_attribute WHERE attrelid = 'part_3_4'::regclass AND attnum > 0
+--Result--
+[(0, True), (0, True)]
++--------------------+
+--Query--
+SELECT coninhcount, conislocal FROM pg_constraint WHERE conrelid = 'part_3_4'::regclass AND conname = 'check_a'
+--Result--
+[(0, True)]
++--------------------+
+--Query--
+SELECT * from part_rp
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM list_parted
+--Result--
+[]
++--------------------+
+--Query--
+select attrelid::regclass, attname, attnum from pg_attribute where attname = 'a'  and (attrelid = 'p'::regclass    or attrelid = 'p1'::regclass    or attrelid = 'p11'::regclass) order by attrelid::regclass::text
+--Result--
+[('p', 'a', 1), ('p1', 'a', 2), ('p11', 'a', 4)]
++--------------------+
+--Query--
+ANALYZE attmp
+--Result--
+[]
++--------------------+
+--Query--
+select * from bar1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+cluster attbl using pk_attbl
+--Result--
+[]
++--------------------+
+--Query--
+select indexrelid::regclass, indisclustered from pg_index   where indrelid = 'alttype_cluster'::regclass   order by indexrelid::regclass::text
+--Result--
+[('alttype_cluster_ind', True), ('alttype_cluster_pkey', False)]
++--------------------+
+--Query--
+select indexrelid::regclass, indisclustered from pg_index   where indrelid = 'alttype_cluster'::regclass   order by indexrelid::regclass::text
+--Result--
+[('alttype_cluster_ind', True), ('alttype_cluster_pkey', False)]
++--------------------+
+--Query--
+select indexrelid::regclass, indisclustered from pg_index   where indrelid = 'alttype_cluster'::regclass   order by indexrelid::regclass::text
+--Result--
+[('alttype_cluster_ind', False), ('alttype_cluster_pkey', True)]
++--------------------+
+--Query--
+select indexrelid::regclass, indisclustered from pg_index   where indrelid = 'alttype_cluster'::regclass   order by indexrelid::regclass::text
+--Result--
+[('alttype_cluster_ind', False), ('alttype_cluster_pkey', True)]
++--------------------+

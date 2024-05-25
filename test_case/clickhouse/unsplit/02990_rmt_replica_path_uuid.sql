@@ -1,5 +1,4 @@
--- Tag no-parallel: static UUID
--- Tag no-ordinary-database: requires UUID
+
 -- Tag no-replicated-database: executes with ON CLUSTER anyway
 
 -- Ignore "ATTACH TABLE query with full table definition is not recommended"

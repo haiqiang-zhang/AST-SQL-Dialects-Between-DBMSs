@@ -1,10 +1,8 @@
--- check cases when one of operands is zero
 SELECT divideDecimal(toDecimal32(0, 2), toDecimal128(11.123456, 6));
 SELECT multiplyDecimal(toDecimal32(0, 2), toDecimal128(11.123456, 6));
 SELECT multiplyDecimal(toDecimal32(123.123, 3), toDecimal128(0, 1));
 SELECT multiplyDecimal(toDecimal256(1e38, 0), toDecimal256(1e38, 0));
 SELECT divideDecimal(toDecimal256(1e66, 0), toDecimal256(1e-10, 10), 0);
--- test different signs
 SELECT divideDecimal(toDecimal128(123.76, 2), toDecimal128(11.123456, 6));
 SELECT divideDecimal(toDecimal32(123.123, 3), toDecimal128(11.4, 1), 2);
 SELECT divideDecimal(toDecimal128(-123.76, 2), toDecimal128(11.123456, 6));

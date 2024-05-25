@@ -1,0 +1,30 @@
+--Query--
+SELECT UNNEST(s1), s1.a AS id FROM tbl_structs ORDER BY id
+--Result--
+[(1.0, 'yay', [10, 20], 1.0), (2.0, 'hello', [1, 2], 2.0)]
++--------------------+
+--Query--
+SELECT s1, s1.a FROM tbl_structs ORDER BY 1
+--Result--
+[({'a': 1.0, 'b': 'yay', 'c': [10, 20]}, 1.0), ({'a': 2.0, 'b': 'hello', 'c': [1, 2]}, 2.0)]
++--------------------+
+--Query--
+SELECT UNNEST(s1), s1.a AS id FROM tbl_structs ORDER BY 1
+--Result--
+[(1.0, 'yay', [10, 20], 1.0), (2.0, 'hello', [1, 2], 2.0)]
++--------------------+
+--Query--
+SELECT UNNEST(s1), UNNEST(s2), i FROM tbl_structs ORDER BY i
+--Result--
+[(2.0, 'hello', [1, 2], 1, False, 1), (1.0, 'yay', [10, 20], 2, True, 42)]
++--------------------+
+--Query--
+SELECT UNNEST(s1), UNNEST(s2), i FROM tbl_structs ORDER BY 2 DESC
+--Result--
+[(1.0, 'yay', [10, 20], 2, True, 42), (2.0, 'hello', [1, 2], 1, False, 1)]
++--------------------+
+--Query--
+SELECT i, UNNEST(s1), UNNEST(s2) FROM tbl_structs ORDER BY 5 DESC
+--Result--
+[(42, 1.0, 'yay', [10, 20], 2, True), (1, 2.0, 'hello', [1, 2], 1, False)]
++--------------------+

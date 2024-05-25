@@ -1,11 +1,6 @@
 PRAGMA enable_verification;
-RESET disabled_filesystems;;
-RESET disabled_filesystems;;
-SET disabled_filesystems='';;
-SELECT * FROM read_csv_auto('test/sql/copy/csv/data/auto/skip_row.csv');
-SET disabled_filesystems='LocalFileSystem';;
-RESET disabled_filesystems;;
-SELECT * FROM read_csv_auto('test/sql/copy/csv/data/auto/skip_row.csv');
-SET disabled_filesystems='LocalFileSystem,LocalFileSystem';;
-SET disabled_filesystems='';;
+RESET disabled_filesystems;
+RESET disabled_filesystems;
+SET disabled_filesystems='';
+SET disabled_filesystems='LocalFileSystem';
 SELECT current_setting('disabled_filesystems');

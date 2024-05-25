@@ -1,0 +1,40 @@
+--Query--
+PREPARE v1 AS SELECT * FROM (SELECT $1::INTEGER) sq1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v1(42)
+--Result--
+[(42,)]
++--------------------+
+--Query--
+PREPARE v2 AS SELECT * FROM (SELECT $1::INTEGER WHERE 1=0) sq1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v2(42)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v3 AS SELECT (SELECT $1::INT+sq1.i) FROM (SELECT 42 AS i) sq1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v3(42)
+--Result--
+[(84,)]
++--------------------+
+--Query--
+PREPARE v4 AS SELECT (SELECT (SELECT $1::INT+sq1.i)+$2::INT+sq1.i) FROM (SELECT 42 AS i) sq1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v4(20, 20)
+--Result--
+[(124,)]
++--------------------+

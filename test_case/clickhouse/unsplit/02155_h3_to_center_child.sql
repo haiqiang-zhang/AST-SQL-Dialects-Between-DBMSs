@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS h3_indexes;
--- Order is not guaranteed with h3_index or res columns as we test the same h3_index at various resolutions.
 CREATE TABLE h3_indexes (id UInt8, h3_index UInt64, res UInt8) ENGINE = Memory;
 INSERT INTO h3_indexes VALUES (1,577023702256844799,1);
 INSERT INTO h3_indexes VALUES (2,577023702256844799,2);

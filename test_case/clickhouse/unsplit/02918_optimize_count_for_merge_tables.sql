@@ -1,5 +1,3 @@
--- optimization if all underlying tables support it
-
 DROP TABLE IF EXISTS mt1;
 DROP TABLE IF EXISTS mt2;
 DROP TABLE IF EXISTS merge;

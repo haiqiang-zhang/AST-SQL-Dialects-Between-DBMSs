@@ -146,15 +146,12 @@ SELECT * FROM t1, t2, t3;
 CREATE TABLE x1(a, b);
 CREATE TABLE x2(c, d, e);
 CREATE TABLE x3(f, g, h, i);
--- x1: 3 rows, 2 columns
-  INSERT INTO x1 VALUES(24, 'converging');
+INSERT INTO x1 VALUES(24, 'converging');
 INSERT INTO x1 VALUES(NULL, X'CB71');
 INSERT INTO x1 VALUES('blonds', 'proprietary');
--- x2: 2 rows, 3 columns
-  INSERT INTO x2 VALUES(-60.06, NULL, NULL);
+INSERT INTO x2 VALUES(-60.06, NULL, NULL);
 INSERT INTO x2 VALUES(-58, NULL, 1.21);
--- x3: 5 rows, 4 columns
-  INSERT INTO x3 VALUES(-39.24, NULL, 'encompass', -1);
+INSERT INTO x3 VALUES(-39.24, NULL, 'encompass', -1);
 INSERT INTO x3 VALUES('presenting', 51, 'reformation', 'dignified');
 INSERT INTO x3 VALUES('conducting', -87.24, 37.56, NULL);
 INSERT INTO x3 VALUES('coldest', -96, 'dramatists', 82.3);

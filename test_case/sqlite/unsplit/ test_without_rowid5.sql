@@ -25,10 +25,8 @@ CREATE TABLE IF NOT EXISTS wordcount_d(
 INSERT INTO wordcount_d VALUES('one',1);
 CREATE TABLE ipk(key INTEGER PRIMARY KEY, val TEXT) WITHOUT ROWID;
 INSERT INTO ipk VALUES('rival','bonus');
--- ok to insert non-integer key
-  SELECT * FROM ipk;
+SELECT * FROM ipk;
 BEGIN;
--- no automatic generation of keys;
 CREATE TABLE nn(a, b, c, d, e, PRIMARY KEY(c,a,e));
 CREATE TABLE nnw(a, b, c, d, e, PRIMARY KEY(c,a,e)) WITHOUT ROWID;
 INSERT INTO nn VALUES(1,2,3,4,5);

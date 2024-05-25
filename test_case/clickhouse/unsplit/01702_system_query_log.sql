@@ -1,4 +1,3 @@
--- fire all kinds of queries and then check if those are present in the system.query_log
 SET log_comment='system.query_log logging test';
 SELECT 'DROP queries and also a cleanup before the test';
 DROP DATABASE IF EXISTS sqllt SYNC;
@@ -29,8 +28,7 @@ ALTER TABLE sqllt.table RENAME COLUMN new_col TO the_new_col;
 ALTER TABLE sqllt.table DROP COLUMN the_new_col;
 ALTER TABLE sqllt.table UPDATE i = i + 1 WHERE 1;
 ALTER TABLE sqllt.table DELETE WHERE i > 65535;
--- PARTITION
--- ORDER BY
+
 -- SAMPLE BY
 -- INDEX
 -- CONSTRAINT
@@ -63,8 +61,7 @@ RENAME TABLE sqllt.table_new TO sqllt.table;
 TRUNCATE TABLE sqllt.table;
 DROP TABLE sqllt.table SYNC;
 SET log_comment='';
--- Now get all logs related to this test
----------------------------------------------------------------------------------------------------
+
 
 SYSTEM FLUSH LOGS;
 SELECT 'ACTUAL LOG CONTENT:';

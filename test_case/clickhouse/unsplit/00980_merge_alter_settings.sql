@@ -1,5 +1,3 @@
--- Tag no-replicated-database: Unsupported type of ALTER query
-
 DROP TABLE IF EXISTS log_for_alter;
 CREATE TABLE log_for_alter (
   id UInt64,

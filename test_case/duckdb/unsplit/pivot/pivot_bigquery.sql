@@ -13,25 +13,6 @@ CREATE OR REPLACE TABLE Produce AS
   SELECT 'Kale' as product, 51 as Q1, 23 as Q2, 45 as Q3, 3 as Q4 UNION ALL
   SELECT 'Apple', 77, 0, 25, 2;
 SELECT * FROM Produce
-PIVOT(SUM(sales) FOR quarter IN ('Q1', 'Q2', 'Q3', 'Q4'))
-ORDER BY ALL;
-SELECT * FROM
-  (SELECT product, sales, quarter FROM Produce)
-  PIVOT(SUM(sales) FOR quarter IN ('Q1', 'Q2', 'Q3', 'Q4'))
-ORDER BY ALL;
-SELECT * FROM
-  (SELECT product, sales, quarter FROM Produce)
-  PIVOT(SUM(sales) FOR quarter IN ('Q1', 'Q2', 'Q3'))
-  ORDER BY ALL;
-SELECT * FROM
-  (SELECT sales, quarter FROM Produce)
-  PIVOT(SUM(sales) FOR quarter IN ('Q1', 'Q2', 'Q3'))
-  ORDER BY ALL;
-SELECT * FROM
-  (SELECT product, sales, quarter FROM Produce)
-  PIVOT(SUM(sales) total_sales, COUNT(*) num_records FOR quarter IN ('Q1', 'Q2'))
-ORDER BY ALL;
-SELECT * FROM Produce
 UNPIVOT(sales FOR quarter IN (Q1, Q2, Q3, Q4))
 ORDER BY ALL;
 SELECT product, first_half_sales, second_half_sales, semesters FROM Produce

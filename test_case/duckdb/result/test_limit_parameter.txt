@@ -1,0 +1,130 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v1 AS SELECT 'Test' LIMIT ?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v2 AS SELECT * FROM RANGE(1000000000) LIMIT ? OFFSET ?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v3 AS SELECT * FROM RANGE(1000000000) LIMIT 2 OFFSET ?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v4 AS SELECT * FROM RANGE(1000000000) LIMIT ? OFFSET 17
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v5 AS SELECT * FROM RANGE(1000000000) LIMIT (SELECT ?::INT) OFFSET (SELECT ?::INT)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v6 AS SELECT * FROM RANGE(1000000000) LIMIT 3+? OFFSET ?+2*?
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v7 AS SELECT * FROM GENERATE_SERIES(0,4,1) LIMIT ? OFFSET ?
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v1(1)
+--Result--
+[('Test',)]
++--------------------+
+--Query--
+EXECUTE v1(0)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v2(3, 0)
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+EXECUTE v2(3, 17)
+--Result--
+[(17,), (18,), (19,)]
++--------------------+
+--Query--
+EXECUTE v3(0)
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+EXECUTE v3(17)
+--Result--
+[(17,), (18,)]
++--------------------+
+--Query--
+EXECUTE v4(3)
+--Result--
+[(17,), (18,), (19,)]
++--------------------+
+--Query--
+EXECUTE v4(6)
+--Result--
+[(17,), (18,), (19,), (20,), (21,), (22,)]
++--------------------+
+--Query--
+EXECUTE v5(3, 0)
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+EXECUTE v5(3, 17)
+--Result--
+[(17,), (18,), (19,)]
++--------------------+
+--Query--
+EXECUTE v6(1, 0, 0)
+--Result--
+[(0,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+EXECUTE v6(3, 1, 2)
+--Result--
+[(5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+EXECUTE v7(NULL, 2)
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+EXECUTE v7(2, NULL)
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+EXECUTE v7(NULL, 9223372036854775807)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v7(9223372036854775807, NULL)
+--Result--
+[(0,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+EXECUTE v7(NULL, 4611686018427387904)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE v7(4611686018427387904, NULL)
+--Result--
+[(0,), (1,), (2,), (3,), (4,)]
++--------------------+

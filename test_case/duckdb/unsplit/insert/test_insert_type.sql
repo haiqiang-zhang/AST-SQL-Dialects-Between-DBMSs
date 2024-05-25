@@ -1,4 +1,4 @@
-SET default_null_order='nulls_first';;
+SET default_null_order='nulls_first';
 CREATE TABLE strings(a VARCHAR);
 CREATE TABLE integers(i INTEGER);
 INSERT INTO integers VALUES (3), (4), (NULL);

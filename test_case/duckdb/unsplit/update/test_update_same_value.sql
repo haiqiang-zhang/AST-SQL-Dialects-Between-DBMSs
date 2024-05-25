@@ -1,5 +1,5 @@
 PRAGMA enable_verification;
-CREATE TABLE test (a INTEGER);;
+CREATE TABLE test (a INTEGER);
 INSERT INTO test VALUES (1), (2), (3);
 BEGIN TRANSACTION;
 UPDATE test SET a=a+1;

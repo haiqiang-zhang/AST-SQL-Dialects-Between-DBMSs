@@ -1,0 +1,55 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/concurrent.db'
+--Result--
+[]
++--------------------+
+--Query--
+DETACH concurrent
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/db1.db'
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/db1.db'
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/con2_rollback_detach.db'
+--Result--
+[]
++--------------------+
+--Query--
+START TRANSACTION
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/con1.db'
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/con1_commit.db'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT database_name FROM duckdb_databases() ORDER BY 1
+--Result--
+[('con1',), ('con1_commit',), ('con2_rollback_detach',), ('db1',), ('duckdb',), ('system',), ('temp',)]
++--------------------+

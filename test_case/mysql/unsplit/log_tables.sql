@@ -4,7 +4,7 @@ insert into join_test values ("User performed a usual SQL query", "Query");
 insert into join_test values ("New DB connection was registered", "Connect");
 insert into join_test values ("Get the table info", "Field List");
 drop table join_test;
-select _koi8r'ÃÂÃÂÃÂÃÂ' as test;
+select _koi8r'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' as test;
 select sleep(2);
 unlock tables;
 unlock tables;

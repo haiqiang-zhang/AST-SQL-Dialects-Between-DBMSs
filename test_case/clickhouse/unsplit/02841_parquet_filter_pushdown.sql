@@ -2,7 +2,6 @@ set engine_file_truncate_on_insert = 1;
 set optimize_or_like_chain = 0;
 set max_block_size = 100000;
 set max_insert_threads = 1;
--- TODO: Figure out why.
 set allow_experimental_analyzer=0;
 insert into function file('02841.parquet')
     -- Use negative numbers to test sign extension for signed types and lack of sign extension for

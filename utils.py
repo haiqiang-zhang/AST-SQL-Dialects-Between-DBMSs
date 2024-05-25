@@ -55,6 +55,11 @@ def clean_query(query:str)->List[str]:
     i = 0
     while i < len(sql_query):
         sql_query[i] = sql_query[i].strip()     
+
+        # remove comments
+        sql_query[i] = re.sub(r'^--.*', '', sql_query[i])
+        sql_query[i] = re.sub(r'^/\*.*?\*/', '', sql_query[i], flags=re.DOTALL|re.MULTILINE)
+
         # remove empty strings
         if not sql_query[i]:
             sql_query.pop(i)
@@ -78,6 +83,11 @@ def clean_query_postgresql(query:str)->List[str]:
     i = 0
     while i < len(sql_query):
         sql_query[i] = sql_query[i].strip()     
+
+        sql_query[i] = re.sub(r'^--.*', '', sql_query[i])
+        sql_query[i] = re.sub(r'^/\*.*?\*/', '', sql_query[i], flags=re.DOTALL|re.MULTILINE)
+
+        
         # remove empty strings
         if not sql_query[i]:
             sql_query.pop(i)
@@ -97,11 +107,4 @@ def clean_query_char(query:str) -> str:
 
 
 
-# with open("/Users/larryzhang/Project/AST-SQL-Dialects-Testing-Between-DBMSs/test_case/postgresql/test/strings.sql", "r") as f:
-#     sql = f.read()
 
-# sql_list = clean_query_postgresql(sql)
-
-# for s in sql_list:
-#     print(s)
-#     print("-"*50)

@@ -12,4 +12,4 @@ SELECT CASE a WHEN 42 THEN 100 WHEN 43 THEN 200 ELSE 300 END FROM exprtest;
 PRAGMA profiling_output='__TEST_DIR__/test_2.json';
 SELECT COUNT(*) > 0
 FROM read_csv('__TEST_DIR__/test.json', columns={'c': 'VARCHAR'}, delim=NULL, header=0, quote=NULL, escape=NULL, auto_detect = false)
-WHERE contains(c, 'Optimizer');;
+WHERE contains(c, 'Optimizer');

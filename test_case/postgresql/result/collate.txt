@@ -1,0 +1,300 @@
+--Query--
+SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'abc'
+--Result--
+[(1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT * FROM collate_test1 WHERE b >= 'abc' COLLATE "C"
+--Result--
+[(1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT * FROM collate_test1 WHERE b COLLATE "C" >= 'abc' COLLATE "C"
+--Result--
+[(1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test4 ORDER BY b
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test5 ORDER BY b
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test1 ORDER BY b
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test2 ORDER BY b
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test1 ORDER BY b COLLATE "C"
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT * FROM collate_test1 ORDER BY b
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT * FROM collate_test2 ORDER BY b
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT 'bbc' COLLATE "C" > 'Abc' COLLATE "C" AS "true"
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'bbc' COLLATE "POSIX" < 'Abc' COLLATE "POSIX" AS "false"
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT a, lower(x), lower(y), upper(x), upper(y), initcap(x), initcap(y) FROM collate_test10
+--Result--
+[(1, 'hij', 'hij', 'HIJ', 'HIJ', 'Hij', 'Hij'), (2, 'hij', 'hij', 'HIJ', 'HIJ', 'Hij', 'Hij')]
++--------------------+
+--Query--
+SELECT a, lower(x COLLATE "C"), lower(y COLLATE "C") FROM collate_test10
+--Result--
+[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
++--------------------+
+--Query--
+SELECT a, x, y FROM collate_test10 ORDER BY lower(y), a
+--Result--
+[(1, 'hij', 'hij'), (2, 'HIJ', 'HIJ')]
++--------------------+
+--Query--
+SELECT table_name, view_definition FROM information_schema.views   WHERE table_name LIKE 'collview%' ORDER BY 1
+--Result--
+[('collview1', ' SELECT a,\n    b\n   FROM collate_test1\n  WHERE ((b COLLATE "C") >= \'bbc\'::text);'), ('collview2', ' SELECT a,\n    b\n   FROM collate_test1\n  ORDER BY (b COLLATE "C");'), ('collview3', ' SELECT a,\n    lower(((x || x) COLLATE "POSIX")) AS lower\n   FROM collate_test10;')]
++--------------------+
+--Query--
+SELECT a, coalesce(b, 'foo') FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, coalesce(b, 'foo') FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, lower(coalesce(x, 'foo')), lower(coalesce(y, 'foo')) FROM collate_test10
+--Result--
+[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
++--------------------+
+--Query--
+SELECT a, b, greatest(b, 'CCC') FROM collate_test1 ORDER BY 3
+--Result--
+[(2, 'Abc', 'CCC'), (4, 'ABD', 'CCC'), (1, 'abc', 'abc'), (3, 'bbc', 'bbc')]
++--------------------+
+--Query--
+SELECT a, b, greatest(b, 'CCC') FROM collate_test2 ORDER BY 3
+--Result--
+[(2, 'Abc', 'CCC'), (4, 'ABD', 'CCC'), (1, 'abc', 'abc'), (3, 'bbc', 'bbc')]
++--------------------+
+--Query--
+SELECT a, x, y, lower(greatest(x, 'foo')), lower(greatest(y, 'foo')) FROM collate_test10
+--Result--
+[(1, 'hij', 'hij', 'hij', 'hij'), (2, 'HIJ', 'HIJ', 'foo', 'foo')]
++--------------------+
+--Query--
+SELECT a, nullif(b, 'abc') FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (3, 'bbc'), (1, None)]
++--------------------+
+--Query--
+SELECT a, nullif(b, 'abc') FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (3, 'bbc'), (1, None)]
++--------------------+
+--Query--
+SELECT a, lower(nullif(x, 'foo')), lower(nullif(y, 'foo')) FROM collate_test10
+--Result--
+[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
++--------------------+
+--Query--
+SELECT a, CASE b WHEN 'abc' THEN 'abcd' ELSE b END FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abcd'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, CASE b WHEN 'abc' THEN 'abcd' ELSE b END FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abcd'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b::testdomain FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b::testdomain FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b::testdomain_p FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, lower(x::testdomain), lower(y::testdomain) FROM collate_test10
+--Result--
+[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
++--------------------+
+--Query--
+SELECT min(b), max(b) FROM collate_test1
+--Result--
+[('ABD', 'bbc')]
++--------------------+
+--Query--
+SELECT min(b), max(b) FROM collate_test2
+--Result--
+[('ABD', 'bbc')]
++--------------------+
+--Query--
+SELECT array_agg(b ORDER BY b) FROM collate_test1
+--Result--
+[(['ABD', 'Abc', 'abc', 'bbc'],)]
++--------------------+
+--Query--
+SELECT array_agg(b ORDER BY b) FROM collate_test2
+--Result--
+[(['ABD', 'Abc', 'abc', 'bbc'],)]
++--------------------+
+--Query--
+SELECT array_agg(x COLLATE "C" ORDER BY y COLLATE "POSIX") FROM collate_test10
+--Result--
+[(['HIJ', 'hij'],)]
++--------------------+
+--Query--
+SELECT array_agg(a ORDER BY x COLLATE "C", y COLLATE "POSIX") FROM collate_test10
+--Result--
+[([2, 1],)]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (4, 'ABD'), (2, 'Abc'), (2, 'Abc'), (1, 'abc'), (1, 'abc'), (3, 'bbc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test2 UNION SELECT a, b FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test2 WHERE a < 4 INTERSECT SELECT a, b FROM collate_test2 WHERE a > 1 ORDER BY 2
+--Result--
+[(2, 'Abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test2 EXCEPT SELECT a, b FROM collate_test2 WHERE a < 2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test2
+--Result--
+[(1, 'abc'), (2, 'Abc'), (3, 'bbc'), (4, 'ABD'), (1, 'abc'), (2, 'Abc'), (3, 'bbc'), (4, 'ABD')]
++--------------------+
+--Query--
+SELECT a, b COLLATE "C" FROM collate_test1 UNION SELECT a, b FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+select x || y from collate_test10
+--Result--
+[('hijhij',), ('HIJHIJ',)]
++--------------------+
+--Query--
+SELECT a, b, a < b as lt FROM   (VALUES ('a', 'B'), ('A', 'b' COLLATE "C")) v(a,b)
+--Result--
+[('a', 'B', False), ('A', 'b', True)]
++--------------------+
+--Query--
+SELECT * FROM collate_test10 WHERE (x COLLATE "POSIX", y COLLATE "C") NOT IN (SELECT y, x FROM collate_test10)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM collate_test10 WHERE (x, y) NOT IN (SELECT y COLLATE "C", x COLLATE "POSIX" FROM collate_test10)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, CAST(b AS varchar) FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, CAST(b AS varchar) FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, b FROM collate_test1 ORDER BY a, vc(b)
+--Result--
+[(1, 'abc'), (2, 'Abc'), (3, 'bbc'), (4, 'ABD')]
++--------------------+
+--Query--
+SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test1)) ORDER BY 1
+--Result--
+[('ABD',), ('Abc',), ('abc',), ('bbc',)]
++--------------------+
+--Query--
+SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test2)) ORDER BY 1
+--Result--
+[('ABD',), ('Abc',), ('abc',), ('bbc',)]
++--------------------+
+--Query--
+SELECT a, dup(b) FROM collate_test1 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT a, dup(b) FROM collate_test2 ORDER BY 2
+--Result--
+[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
++--------------------+
+--Query--
+SELECT relname, pg_get_indexdef(oid) FROM pg_class WHERE relname LIKE 'collate_test%_idx%' ORDER BY 1
+--Result--
+[('collate_test1_idx1', 'CREATE INDEX collate_test1_idx1 ON collate_tests.collate_test1 USING btree (b)'), ('collate_test1_idx2', 'CREATE INDEX collate_test1_idx2 ON collate_tests.collate_test1 USING btree (b COLLATE "POSIX")'), ('collate_test1_idx3', 'CREATE INDEX collate_test1_idx3 ON collate_tests.collate_test1 USING btree (b COLLATE "POSIX")'), ('collate_test1_idx4', 'CREATE INDEX collate_test1_idx4 ON collate_tests.collate_test1 USING btree (((b || \'foo\'::text)) COLLATE "POSIX")')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF)   SELECT * FROM collate_test10 ORDER BY x, y
+--Result--
+[('Sort',), ('  Sort Key: x COLLATE "C", y COLLATE "POSIX"',), ('  ->  Seq Scan on collate_test10',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF)   SELECT * FROM collate_test10 ORDER BY x DESC, y COLLATE "C" ASC NULLS FIRST
+--Result--
+[('Sort',), ('  Sort Key: x COLLATE "C" DESC, y COLLATE "C" NULLS FIRST',), ('  ->  Seq Scan on collate_test10',)]
++--------------------+
+--Query--
+SELECT collation for ('foo')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT collation for ('foo'::text)
+--Result--
+[('"default"',)]
++--------------------+
+--Query--
+SELECT collation for ((SELECT b FROM collate_test1 LIMIT 1))
+--Result--
+[('"C"',)]
++--------------------+

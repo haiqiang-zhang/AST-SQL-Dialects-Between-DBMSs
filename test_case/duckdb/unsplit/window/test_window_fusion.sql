@@ -3,7 +3,7 @@ create table lineitem (
     l_extendedprice decimal(15,2),
     l_partkey integer,
     l_orderkey integer
-);;
+);
 insert into lineitem (values 
 	(29733.00, 1, 2883),
 	(1802.00, 1, 5121),
@@ -58,7 +58,7 @@ insert into lineitem (values
 	(4510.00, 2, 54436),
 	(3608.00, 2, 54630),
 	(41492.00, 2, 55136),
-);;
+);
 select 
 	l_extendedprice, 
 	l_partkey, 

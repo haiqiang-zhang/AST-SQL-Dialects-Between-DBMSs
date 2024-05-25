@@ -1,6 +1,6 @@
 PRAGMA enable_verification;
-CREATE TABLE test (a INTEGER PRIMARY KEY, b INTEGER, c VARCHAR);;
-INSERT INTO test VALUES (11, 22, 'hello'), (13, 22, 'world'), (12, 21, 'test'), (10, NULL, NULL);;
+CREATE TABLE test (a INTEGER PRIMARY KEY, b INTEGER, c VARCHAR);
+INSERT INTO test VALUES (11, 22, 'hello'), (13, 22, 'world'), (12, 21, 'test'), (10, NULL, NULL);
 INSERT INTO test VALUES (14, 10, 'con');
 DELETE FROM test WHERE a=14;
 INSERT INTO test VALUES (14, 11, 'bla');

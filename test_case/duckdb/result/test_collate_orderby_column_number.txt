@@ -1,0 +1,65 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'a' AS c1 ORDER BY 1 COLLATE NOCASE
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT 'a' ORDER BY 1 COLLATE NOCASE
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT 'A', 'B' ORDER BY 2 COLLATE NOCASE
+--Result--
+[('A', 'B')]
++--------------------+
+--Query--
+SELECT 999::VARCHAR ORDER BY 1 COLLATE NOCASE
+--Result--
+[('999',)]
++--------------------+
+--Query--
+SELECT s FROM collate_test ORDER BY 1 COLLATE NOCASE
+--Result--
+[('a',), ('A',), ('B',), ('Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£',)]
++--------------------+
+--Query--
+SELECT s FROM collate_test ORDER BY s COLLATE NOCASE
+--Result--
+[('a',), ('A',), ('B',), ('Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£',)]
++--------------------+
+--Query--
+SELECT CONCAT(s, s) FROM collate_test ORDER BY 1 COLLATE NOCASE
+--Result--
+[('aa',), ('AA',), ('BB',), ('Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£',)]
++--------------------+
+--Query--
+SELECT CONCAT(s, s) AS concat, concat FROM collate_test ORDER BY 2 COLLATE NOCASE
+--Result--
+[('aa', 'aa'), ('AA', 'AA'), ('BB', 'BB'), ('Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£', 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£')]
++--------------------+
+--Query--
+SELECT collate_test.s FROM collate_test ORDER BY 1 COLLATE NOCASE
+--Result--
+[('a',), ('A',), ('B',), ('Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£',)]
++--------------------+
+--Query--
+SELECT CASE WHEN s[1]='a' THEN s ELSE NULL END FROM collate_test ORDER BY 1 COLLATE NOCASE
+--Result--
+[('a',), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT (SELECT s) FROM collate_test ORDER BY 1 COLLATE NOCASE
+--Result--
+[('a',), ('A',), ('B',), ('Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£',)]
++--------------------+
+--Query--
+SELECT concat('a', (SELECT s)) FROM collate_test ORDER BY 1 COLLATE NOCASE
+--Result--
+[('aa',), ('aA',), ('aB',), ('aÃ\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â\x83Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â£',)]
++--------------------+

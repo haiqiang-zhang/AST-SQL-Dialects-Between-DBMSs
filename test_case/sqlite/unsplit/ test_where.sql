@@ -102,10 +102,8 @@ INSERT INTO t1 VALUES(99,6,10000);
 INSERT INTO t1 VALUES(100,6,10201);
 INSERT INTO t2 SELECT 101-w, x, (SELECT max(y) FROM t1)+1-y, y FROM t1;
 CREATE INDEX i1w ON t1("w");
--- Verify quoted identifier names
-    CREATE INDEX i1xy ON t1(`x`,'y' ASC);
--- Old MySQL compatibility
-    CREATE INDEX i2p ON t2(p);
+CREATE INDEX i1xy ON t1(`x`,'y' ASC);
+CREATE INDEX i2p ON t2(p);
 CREATE INDEX i2r ON t2(r);
 CREATE INDEX i2qs ON t2(q, s);
 SELECT x, y, w FROM t1 WHERE w=10;

@@ -1,0 +1,140 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid + 1, rowid - 1, rowid + rowid, i + rowid FROM a
+--Result--
+[(1, -1, 0, 0), (2, 0, 2, 2)]
++--------------------+
+--Query--
+SELECT -rowid, +rowid, abs(rowid) FROM a
+--Result--
+[(0, 0, 0), (-1, 1, 1)]
++--------------------+
+--Query--
+SELECT rowid BETWEEN -1 AND 1, 0 BETWEEN rowid AND 1, 1 BETWEEN -3 AND rowid FROM a
+--Result--
+[(True, True, False), (True, False, True)]
++--------------------+
+--Query--
+SELECT rowid < i, rowid = NULL, rowid = i, rowid <> 0 FROM a
+--Result--
+[(False, None, True, False), (False, None, True, True)]
++--------------------+
+--Query--
+SELECT SUM(rowid), MIN(rowid), MAX(rowid), COUNT(rowid), FIRST(rowid) FROM a
+--Result--
+[(1, 0, 1, 2, 0)]
++--------------------+
+--Query--
+SELECT SUM(rowid), MIN(rowid), MAX(rowid), COUNT(rowid), LAST(rowid) FROM a
+--Result--
+[(1, 0, 1, 2, 1)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM a
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT SUM(rowid), MIN(rowid), MAX(rowid), COUNT(rowid), FIRST(rowid), LAST(rowid) FROM a GROUP BY i
+--Result--
+[(0, 0, 0, 1, 0, 0), (1, 1, 1, 1, 1, 1)]
++--------------------+
+--Query--
+SELECT SUM(i) FROM a GROUP BY rowid
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM a, a a2 WHERE a.rowid=a2.rowid
+--Result--
+[(0, 0), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM a, a a2 WHERE a.rowid<>a2.rowid
+--Result--
+[(0, 1), (1, 0)]
++--------------------+
+--Query--
+SELECT * FROM a, a a2 WHERE a.rowid>=a2.rowid
+--Result--
+[(0, 0), (1, 0), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM a ORDER BY rowid
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM a ORDER BY 1
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM a ORDER BY 1
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM a WHERE rowid=0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM a WHERE rowid BETWEEN -100 AND 100 ORDER BY 1
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM a WHERE rowid=0 OR rowid=1
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT row_number() OVER (PARTITION BY rowid) FROM a ORDER BY rowid
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT row_number() OVER (ORDER BY rowid) FROM a ORDER BY rowid
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT row_number() OVER (ORDER BY rowid DESC) FROM a ORDER BY rowid
+--Result--
+[(2,), (1,)]
++--------------------+
+--Query--
+SELECT (SELECT rowid FROM a LIMIT 1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 0 IN (SELECT rowid FROM a)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT EXISTS(SELECT rowid FROM a)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT (SELECT a2.rowid FROM a a2 WHERE a.rowid=a2.rowid) FROM a
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT a.rowid IN (SELECT a2.rowid FROM a a2 WHERE a.rowid>=a2.rowid) FROM a
+--Result--
+[(True,), (True,)]
++--------------------+
+--Query--
+SELECT EXISTS(SELECT a2.rowid FROM a a2 WHERE a.rowid>=a2.rowid) FROM a
+--Result--
+[(True,), (True,)]
++--------------------+

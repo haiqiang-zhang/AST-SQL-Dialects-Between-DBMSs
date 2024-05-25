@@ -1,8 +1,7 @@
-SET default_null_order='nulls_first';;
+SET default_null_order='nulls_first';
 PRAGMA enable_verification;
 PRAGMA verify_external;
-create table modes as select range r from range(10) union all values (NULL), (NULL), (NULL);;
-PRAGMA debug_window_mode=${windowmode};
+create table modes as select range r from range(10) union all values (NULL), (NULL), (NULL);
 SELECT r % 2, r, r//3, mode(r//3) over (partition by r % 2 order by r) FROM modes ORDER BY 1, 2;
 SELECT r, r//3, mode(r//3) over (order by r rows between 1 preceding and 1 following) 
 FROM modes 

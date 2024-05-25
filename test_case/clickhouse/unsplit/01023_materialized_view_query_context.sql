@@ -1,5 +1,4 @@
--- FIXME: old analyzer does not check db exist, new one checks it and test fails. test is suppressed for replicated.
---    without analyzer:
+
 --    2024.02.22 18:55:00.320120 [ 116105 ] {61f04f21-6d66-4064-926f-20657de2e66c} <Debug> executeQuery: (from 0.0.0.0:0, user: ) (comment: 01023_materialized_view_query_context.sql) /* ddl_entry=query-0000000009 */ CREATE MATERIALIZED VIEW test_143n70zj.mv UUID '0572ef25-139a-4705-a213-601675435648' TO test_143n70zj.output (`key` UInt64, `val` UInt64) AS SELECT key, dictGetUInt64('dict_in_01023.dict', 'val', key) AS val FROM test_143n70zj.dist_out (stage: Complete)
 --    2024.02.22 18:55:00.321303 [ 116105 ] {61f04f21-6d66-4064-926f-20657de2e66c} <Debug> DDLWorker(test_143n70zj): Executed query: /* ddl_entry=query-0000000009 */ CREATE MATERIALIZED VIEW test_143n70zj.mv UUID '0572ef25-139a-4705-a213-601675435648' TO test_143n70zj.output (`key` UInt64, `val` UInt64) AS SELECT key, dictGetUInt64('dict_in_01023.dict', 'val', key) AS val FROM test_143n70zj.dist_out
 --

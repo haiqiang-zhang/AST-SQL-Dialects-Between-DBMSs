@@ -1,4 +1,3 @@
--- make the order static
 SET max_threads = 1;
 SET distributed_foreground_insert = 1;
 DROP TABLE IF EXISTS mem1;

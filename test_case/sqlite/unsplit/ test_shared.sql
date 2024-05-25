@@ -155,7 +155,6 @@ DETACH aux4;
 ATTACH 'test2.db' AS aux2;
 ATTACH 'test3.db' AS aux3;
 ATTACH 'test4.db' AS aux4;
-CREATE TABLE aux2.t2(a, b, c);
 CREATE TABLE aux4.t4(a, b, c);
 CREATE TABLE aux5.t5(a, b, c);
 SELECT count(*) FROM 
@@ -212,7 +211,6 @@ SELECT 'test2.db:'||name FROM sqlite_master
       UNION ALL
       SELECT 'test.db:'||name FROM test.sqlite_master;
 BEGIN;
-CREATE TABLE test1.t1(a, b);
 CREATE INDEX test1.i1 ON t1(a, b);
 CREATE VIEW test1.v1 AS SELECT * FROM t1;
 DROP INDEX i1;

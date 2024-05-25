@@ -33,8 +33,7 @@ select 9 as p, geohashEncode(longitude, latitude, p) as actual, if(actual = enco
 select 10 as p, geohashEncode(longitude, latitude, p) as actual, if(actual = encoded, 'Ok', concat('expected: ', encoded)) from geohash_test_data WHERE length(encoded) = p;
 select 11 as p, geohashEncode(longitude, latitude, p) as actual, if(actual = encoded, 'Ok', concat('expected: ', encoded)) from geohash_test_data WHERE length(encoded) = p;
 select 12 as p, geohashEncode(longitude, latitude, p) as actual, if(actual = encoded, 'Ok', concat('expected: ', encoded)) from geohash_test_data WHERE length(encoded) = p;
--- We select all values that are off by some reasonable value:
--- each byte of encoded string provides 5 bits of precision, (roughly 2.5 for lon and lat)
+
 -- each bit of precision divides value range by 2.
 -- hence max error is roughly value range 2.5 times divided by 2 for each precision bit.
 -- initial value range is [-90..90] for latitude and [-180..180] for longitude.

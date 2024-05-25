@@ -4,34 +4,7 @@ CREATE TABLE testing AS
 		 x
 		,round(x * 0.333,0) % 3 AS y
 		,round(x * 0.333,0) % 3 AS z
-	FROM generate_series(0,10) tbl(x);;
-SELECT
-	 x
-	,y
-	,z
-	, ${nullary}() OVER (PARTITION BY y) AS plain_window
-	, ${nullary}() FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
-	, ${nullary}() FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
-FROM testing
-ORDER BY y, x;;
-SELECT
-	 x
-	,y
-	,z
-	, ${unary}(x) OVER (PARTITION BY y) AS plain_window
-	, ${unary}(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
-	, ${unary}(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
-FROM testing
-ORDER BY y, x;;
-SELECT
-	 x
-	,y
-	,z
-	, ${binary}(x, 1) OVER (PARTITION BY y) AS plain_window
-	, ${binary}(x, 1) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
-	, ${binary}(x, 1) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
-FROM testing
-ORDER BY y, x;;
+	FROM generate_series(0,10) tbl(x);
 SELECT
 	 x
 	,y
@@ -40,7 +13,7 @@ SELECT
 	,avg(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
 	,avg(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
 FROM testing
-ORDER BY y, x;;
+ORDER BY y, x;
 SELECT
 	 x
 	,y
@@ -49,7 +22,7 @@ SELECT
 	,count(*) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
 	,count(*) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
 FROM testing
-ORDER BY y, x;;
+ORDER BY y, x;
 SELECT
 	 x
 	,y
@@ -58,6 +31,6 @@ SELECT
 	,median(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
 	,median(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
 FROM testing
-ORDER BY y, x;;
+ORDER BY y, x;
 SELECT x, count(x) FILTER (WHERE x % 2 = 0) OVER (ORDER BY x ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING)
-FROM generate_series(0,10) tbl(x);;
+FROM generate_series(0,10) tbl(x);

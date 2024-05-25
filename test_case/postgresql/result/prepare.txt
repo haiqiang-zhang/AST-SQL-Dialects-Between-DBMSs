@@ -1,0 +1,90 @@
+--Query--
+SELECT name, statement, parameter_types, result_types FROM pg_prepared_statements
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE q1 AS SELECT 1 AS a
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE q1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT name, statement, parameter_types, result_types FROM pg_prepared_statements
+--Result--
+[('q1', 'PREPARE q1 AS SELECT 1 AS a', '{}', '{integer}')]
++--------------------+
+--Query--
+DEALLOCATE q1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE q1 AS SELECT 2
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE q1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+PREPARE q2 AS SELECT 2 AS b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, statement, parameter_types, result_types FROM pg_prepared_statements
+--Result--
+[('q1', 'PREPARE q1 AS SELECT 2', '{}', '{integer}'), ('q2', 'PREPARE q2 AS SELECT 2 AS b', '{}', '{integer}')]
++--------------------+
+--Query--
+DEALLOCATE PREPARE q1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, statement, parameter_types, result_types FROM pg_prepared_statements
+--Result--
+[('q2', 'PREPARE q2 AS SELECT 2 AS b', '{}', '{integer}')]
++--------------------+
+--Query--
+DEALLOCATE PREPARE q2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, statement, parameter_types, result_types FROM pg_prepared_statements
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE q2(text) AS 	SELECT datname, datistemplate, datallowconn 	FROM pg_database WHERE datname = $1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE q2('postgres')
+--Result--
+[('postgres', False, True)]
++--------------------+
+--Query--
+SELECT name, statement, parameter_types, result_types FROM pg_prepared_statements     ORDER BY name
+--Result--
+[('q2', 'PREPARE q2(text) AS\n\tSELECT datname, datistemplate, datallowconn\n\tFROM pg_database WHERE datname = $1', '{text}', '{name,boolean,boolean}')]
++--------------------+
+--Query--
+DEALLOCATE ALL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, statement, parameter_types FROM pg_prepared_statements     ORDER BY name
+--Result--
+[]
++--------------------+

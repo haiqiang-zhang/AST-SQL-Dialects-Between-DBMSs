@@ -1,0 +1,45 @@
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'integers', 'integers', 0, 'CREATE TABLE integers(i INTEGER);'), ('table', 'tconstraint1', 'tconstraint1', 0, 'CREATE TABLE tconstraint1(i INTEGER PRIMARY KEY DEFAULT(3), j BLOB NOT NULL);'), ('table', 'tconstraint2', 'tconstraint2', 0, 'CREATE TABLE tconstraint2(i INTEGER, j INTEGER, k INTEGER, l INTEGER UNIQUE, PRIMARY KEY(i, j, k));'), ('view', 'v1', 'v1', 0, 'CREATE VIEW v1 AS SELECT 42;\n'), ('index', 'i_index', 'integers', 0, 'CREATE INDEX i_index ON integers(i);\n')]
++--------------------+
+--Query--
+SELECT EXISTS(SELECT * FROM sqlite_master)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT EXISTS(SELECT * FROM sqlite_master OFFSET 1)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM sqlite_master WHERE name='test'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM sqlite_master WHERE name='integers'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE name='tconstraint1'
+--Result--
+[('table', 'tconstraint1', 'tconstraint1', 0, 'CREATE TABLE tconstraint1(i INTEGER PRIMARY KEY DEFAULT(3), j BLOB NOT NULL);')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE name='tconstraint2'
+--Result--
+[('table', 'tconstraint2', 'tconstraint2', 0, 'CREATE TABLE tconstraint2(i INTEGER, j INTEGER, k INTEGER, l INTEGER UNIQUE, PRIMARY KEY(i, j, k));')]
++--------------------+
+--Query--
+SELECT * REPLACE (trim(sql, chr(10)) as sql) FROM sqlite_master WHERE name='i_index'
+--Result--
+[('index', 'i_index', 'integers', 0, 'CREATE INDEX i_index ON integers(i);')]
++--------------------+
+--Query--
+SELECT "type", "name", "tbl_name", rootpage FROM sqlite_master WHERE name='v1'
+--Result--
+[('view', 'v1', 'v1', 0)]
++--------------------+

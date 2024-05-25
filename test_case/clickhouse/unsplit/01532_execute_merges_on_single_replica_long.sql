@@ -1,5 +1,4 @@
--- Tag no-replicated-database: Fails due to additional replicas or shards
--- Tag no-parallel: static zk path
+
 
 DROP TABLE IF EXISTS execute_on_single_replica_r1 SYNC;
 DROP TABLE IF EXISTS execute_on_single_replica_r2 SYNC;
@@ -9,7 +8,6 @@ SELECT '*** emulate normal feature operation - merges are distributed between re
 SELECT '****************************';
 SELECT '*** emulate execute_merges_on_single_replica_time_threshold timeout';
 SYSTEM STOP REPLICATION QUEUES execute_on_single_replica_r2;
-/* if we will check immediately we can find the log entry unchecked */
 SET function_sleep_max_microseconds_per_block = 10000000;
 SELECT '****************************';
 SELECT '*** timeout not exceeded, r1 waits for r2';

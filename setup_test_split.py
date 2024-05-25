@@ -40,7 +40,7 @@ def extract_and_save_sql_statements(input_sql_file, setup_directory, test_direct
             q = q + ';\n'
             remaining_statements.append(q)
     
-    output_setup_file = os.path.join(setup_directory, os.path.basename(input_sql_file).replace('.sql', '.txt').strip())
+    output_setup_file = os.path.join(setup_directory, os.path.basename(input_sql_file).strip())
     output_test_file = os.path.join(test_directory, os.path.basename(input_sql_file).strip())
     # print(output_test_file)
     

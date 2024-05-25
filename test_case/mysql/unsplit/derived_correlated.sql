@@ -101,7 +101,7 @@ select vq1.b,dt.b from v1 vq1, lateral (select vq1.b) dt;
 select b from v1 vq1, lateral (select count(*) from v1 vq2 having vq1.b = 3) dt;
 drop view v1;
 SELECT
-/*+ SET_VAR(optimizer_switch = 'materialization=off,semijoin=off') */
+
 * FROM t1 AS ta, lateral (select 1 WHERE ta.a IN (SELECT b FROM t2 AS tb                WHERE tb.b >= SOME(SELECT SUM(tc.a) as sg FROM t1 as tc                                   GROUP BY tc.b                                   HAVING ta.a=tc.b))) dt;
 select (select dt.a from   (select 1 as a, t2.a as b from t2 having
 t1.a) dt where dt.b=t1.a) as subq from t1;

@@ -1,0 +1,260 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+COPY (SELECT '{a: 8, b: "hello, DuckDB"}') TO '__TEST_DIR__/assorted_structs.csv'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+COPY assorted_structs FROM '__TEST_DIR__/assorted_structs.csv'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '{key_A:0}'::STRUCT(key_A INT)
+--Result--
+[({'key_A': 0},)]
++--------------------+
+--Query--
+SELECT '{key_A: 2, key_B: 46, key_C: -3000}'::STRUCT(key_A INT, key_B INT, key_C INT)
+--Result--
+[({'key_A': 2, 'key_B': 46, 'key_C': -3000},)]
++--------------------+
+--Query--
+SELECT '{key_A: 2, key_B: 3, key_C: 8}'::STRUCT(key_A INT, key_B DOUBLE, key_C FLOAT)
+--Result--
+[({'key_A': 2, 'key_B': 3.0, 'key_C': 8.0},)]
++--------------------+
+--Query--
+SELECT '{"key_A": 2, "key_B": hello world}'::STRUCT(key_A INT, key_B VARCHAR)
+--Result--
+[({'key_A': 2, 'key_B': 'hello world'},)]
++--------------------+
+--Query--
+select (struct_pack(key_A=>'42'::double, key_B=>'DuckDB'::string)::VARCHAR)::STRUCT(key_A INT, key_B VARCHAR)
+--Result--
+[({'key_A': 42, 'key_B': 'DuckDB'},)]
++--------------------+
+--Query--
+SELECT '{ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ: Quack, ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¤: ....}'::STRUCT(ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ VARCHAR, ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¤ VARCHAR)
+--Result--
+[({'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86': 'Quack', 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¤': '....'},)]
++--------------------+
+--Query--
+SELECT '{a:{c:1}, b:900}'::STRUCT(a STRUCT(c INT), b INT)
+--Result--
+[({'a': {'c': 1}, 'b': 900},)]
++--------------------+
+--Query--
+SELECT '{a:{b:DuckDB, c:12}, b:900, c:{a:"DuckParty"}}'::STRUCT(a STRUCT(b VARCHAR, c INT), b INT, c STRUCT(a VARCHAR))
+--Result--
+[({'a': {'b': 'DuckDB', 'c': 12}, 'b': 900, 'c': {'a': 'DuckParty'}},)]
++--------------------+
+--Query--
+SELECT '{a:{b:DuckDB, c:{a:{a:0.9, b:{a:"DuckieDuck"}, c:{a:9000}, d:{a:5881580-07-10}}, b:"ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ"}}, b:900, c:{a:"DuckParty"}}'::STRUCT(a STRUCT(b VARCHAR, c STRUCT(a STRUCT(a FLOAT, b STRUCT(a VARCHAR), c STRUCT(a INT), d STRUCT(a DATE)), b VARCHAR)), b INT, c STRUCT(a VARCHAR))
+--Result--
+[({'a': {'b': 'DuckDB', 'c': {'a': {'a': 0.8999999761581421, 'b': {'a': 'DuckieDuck'}, 'c': {'a': 9000}, 'd': {'a': '5881580-07-10'}}, 'b': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'}}, 'b': 900, 'c': {'a': 'DuckParty'}},)]
++--------------------+
+--Query--
+SELECT CAST('{a:{b:{c:{d:{e:{f:"Hello World"}}}}}}' AS STRUCT(a STRUCT(b STRUCT(c STRUCT(d STRUCT(e STRUCT(f VARCHAR)))))))
+--Result--
+[({'a': {'b': {'c': {'d': {'e': {'f': 'Hello World'}}}}}},)]
++--------------------+
+--Query--
+SELECT col::STRUCT(a INT, b INT) FROM tbl1
+--Result--
+[({'a': 1, 'b': 3},)]
++--------------------+
+--Query--
+SELECT col::STRUCT(a INT, b VARCHAR) FROM tbl2
+--Result--
+[({'a': 1, 'b': 'hello, world'},)]
++--------------------+
+--Query--
+SELECT col::STRUCT(a VARCHAR, b FLOAT, c INT) FROM tbl3
+--Result--
+[({'a': 'DUCK', 'b': 9.99899959564209, 'c': 12},), ({'a': 'DB', 'b': 1.1109999418258667, 'c': 21},)]
++--------------------+
+--Query--
+SELECT col::STRUCT(a STRUCT(b INT)) FROM tbl4
+--Result--
+[({'a': {'b': 1}},)]
++--------------------+
+--Query--
+SELECT '{key_A: [2, 3, 4], key_B: [Hello, World]}'::STRUCT(key_A INT[], key_B VARCHAR[])
+--Result--
+[({'key_A': [2, 3, 4], 'key_B': ['Hello', 'World']},)]
++--------------------+
+--Query--
+SELECT '{key_A: [[2, 3], [4]], key_B: [Hello, World]}'::STRUCT(key_A INT[][], key_B VARCHAR[])
+--Result--
+[({'key_A': [[2, 3], [4]], 'key_B': ['Hello', 'World']},)]
++--------------------+
+--Query--
+SELECT '{key_A: [[{a: 5, b: 900}, {a:3, b:34}], [{a:2, b: 0}]], key_B: [Hello, World]}'::STRUCT(key_A STRUCT(a INT, b INT)[][], key_B VARCHAR[])
+--Result--
+[({'key_A': [[{'a': 5, 'b': 900}, {'a': 3, 'b': 34}], [{'a': 2, 'b': 0}]], 'key_B': ['Hello', 'World']},)]
++--------------------+
+--Query--
+SELECT '{key_B: 2, key_A: 46}'::STRUCT(key_A INT, key_B INT)
+--Result--
+[({'key_A': 46, 'key_B': 2},)]
++--------------------+
+--Query--
+SELECT '{c:{a:"DuckParty"}, b:900, a:{b:DuckDB, c:{a:{a:0.9, b:{a:"DuckieDuck"}, c:{a:9000}, d:{a:5881580-07-10}}, b:"ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ"}}}'::STRUCT(a STRUCT(b VARCHAR, c STRUCT(a STRUCT(a FLOAT, b STRUCT(a VARCHAR), c STRUCT(a INT), d STRUCT(a DATE)), b VARCHAR)), b INT, c STRUCT(a VARCHAR))
+--Result--
+[({'a': {'b': 'DuckDB', 'c': {'a': {'a': 0.8999999761581421, 'b': {'a': 'DuckieDuck'}, 'c': {'a': 9000}, 'd': {'a': '5881580-07-10'}}, 'b': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'}}, 'b': 900, 'c': {'a': 'DuckParty'}},)]
++--------------------+
+--Query--
+SELECT '{key_D: "World Hello", key_B: [Hello, World], key_C : 5000, key_A: [[{a: 5, b: 900}, {a:3, b:34}], [{a:2, b: 0}]]}'::STRUCT(key_A STRUCT(a INT, b INT)[][], key_B VARCHAR[], key_C INT, key_D VARCHAR)
+--Result--
+[({'key_A': [[{'a': 5, 'b': 900}, {'a': 3, 'b': 34}], [{'a': 2, 'b': 0}]], 'key_B': ['Hello', 'World'], 'key_C': 5000, 'key_D': 'World Hello'},)]
++--------------------+
+--Query--
+SELECT ('{a: "can''t", b: "you''re", c: "i''m"}'::STRUCT(a VARCHAR, b VARCHAR, c VARCHAR))
+--Result--
+[({'a': "can't", 'b': "you're", 'c': "i'm"},)]
++--------------------+
+--Query--
+SELECT ('{a:"}", b: hello universe}'::STRUCT(a VARCHAR, b VARCHAR))
+--Result--
+[({'a': '}', 'b': 'hello universe'},)]
++--------------------+
+--Query--
+SELECT ('{a:''}'', b: "hello world"}'::STRUCT(a VARCHAR, b VARCHAR))
+--Result--
+[({'a': '}', 'b': 'hello world'},)]
++--------------------+
+--Query--
+SELECT '{  key_A:     2, key_B: hello world    }'::STRUCT(key_A INT, key_B VARCHAR)
+--Result--
+[({'key_A': 2, 'key_B': 'hello world'},)]
++--------------------+
+--Query--
+SELECT '    {a:        {b:         DuckDB,    c:12  }, b:  900, c          :{a                     :   "DuckParty  "}       }    '::STRUCT(a STRUCT(b VARCHAR, c INT), b INT, c STRUCT(a VARCHAR))
+--Result--
+[({'a': {'b': 'DuckDB', 'c': 12}, 'b': 900, 'c': {'a': 'DuckParty  '}},)]
++--------------------+
+--Query--
+SELECT '{key_A     : [      [{      a: 5    , b  : 900          }, { a: 3, b:    34}],      [   {a:                 2, b: 0    }    ] ],     key_B: [Hello       , World]   }'::STRUCT(key_A STRUCT(a INT, b INT)[][], key_B VARCHAR[])
+--Result--
+[({'key_A': [[{'a': 5, 'b': 900}, {'a': 3, 'b': 34}], [{'a': 2, 'b': 0}]], 'key_B': ['Hello', 'World']},)]
++--------------------+
+--Query--
+SELECT '{a  :  {c   : 9000}, b    : NULL                                             , c:{ d: "Ducky", e:        NULL     }       }     '::STRUCT(a STRUCT(c INT), b VARCHAR, c STRUCT(d VARCHAR, e DOUBLE))
+--Result--
+[({'a': {'c': 9000}, 'b': None, 'c': {'d': 'Ducky', 'e': None}},)]
++--------------------+
+--Query--
+SELECT ' {      }   '::STRUCT(a INT, b DATE)
+--Result--
+[({'a': None, 'b': None},)]
++--------------------+
+--Query--
+SELECT CAST(NULL AS STRUCT(a INT))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT '{a: NULL}'::STRUCT(a VARCHAR)
+--Result--
+[({'a': None},)]
++--------------------+
+--Query--
+SELECT '{a:12, b:NULL}'::STRUCT(a INT, b INT)
+--Result--
+[({'a': 12, 'b': None},)]
++--------------------+
+--Query--
+SELECT '{a:{c: NULL}, b: NULL, c:{d: "Ducky", e: NULL}}'::STRUCT(a STRUCT(c INT), b VARCHAR, c STRUCT(d VARCHAR, e DOUBLE))
+--Result--
+[({'a': {'c': None}, 'b': None, 'c': {'d': 'Ducky', 'e': None}},)]
++--------------------+
+--Query--
+SELECT '{key_A: 2, key_C: 8}'::STRUCT(key_A INT, key_B INT, key_C FLOAT)
+--Result--
+[({'key_A': 2, 'key_B': None, 'key_C': 8.0},)]
++--------------------+
+--Query--
+SELECT '{key_C: 8, key_A: 2}'::STRUCT(key_A INT, key_B DOUBLE, key_C FLOAT)
+--Result--
+[({'key_A': 2, 'key_B': None, 'key_C': 8.0},)]
++--------------------+
+--Query--
+SELECT '{key_C: Quack}'::STRUCT(key_A INT, key_B VARCHAR, key_C VARCHAR)
+--Result--
+[({'key_A': None, 'key_B': None, 'key_C': 'Quack'},)]
++--------------------+
+--Query--
+SELECT {'key_C': 2, 'key_A': 4}::VARCHAR::STRUCT(key_A INT, key_B VARCHAR, key_C VARCHAR)
+--Result--
+[({'key_A': 4, 'key_B': None, 'key_C': '2'},)]
++--------------------+
+--Query--
+SELECT '{key_A:0}'::STRUCT(key_A INT, key_B VARCHAR)
+--Result--
+[({'key_A': 0, 'key_B': None},)]
++--------------------+
+--Query--
+SELECT '{key_C: {key_B: 3, key_E: ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ}, key_A: 2}'::STRUCT(key_A INT, key_C STRUCT(key_B INT, key_D INT, key_E VARCHAR))
+--Result--
+[({'key_A': 2, 'key_C': {'key_B': 3, 'key_D': None, 'key_E': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'}},)]
++--------------------+
+--Query--
+SELECT '{a:{b:{b:300}, c:12}, c:{a:"DuckParty"}}'::STRUCT(a STRUCT(b STRUCT(a INT, b VARCHAR), c INT), b INT, c STRUCT(a VARCHAR, b STRUCT(a INT)))
+--Result--
+[({'a': {'b': {'a': None, 'b': '300'}, 'c': 12}, 'b': None, 'c': {'a': 'DuckParty', 'b': None}},)]
++--------------------+
+--Query--
+SELECT '{}'::STRUCT(a INT, b VARCHAR)
+--Result--
+[({'a': None, 'b': None},)]
++--------------------+
+--Query--
+SELECT TRY_CAST('{key_B: "hello", key_Z: 2, key_A: 46}' AS STRUCT(key_A INT, key_B VARCHAR))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT TRY_CAST('{key_B: "hello", key_Z: 2, key_A: 46}' AS STRUCT(key_A INT, key_B VARCHAR, key_C INT))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT TRY_CAST('{key_B: "hello", key_A: 46}' AS STRUCT(key_A INT, key_B INT))
+--Result--
+[({'key_A': 46, 'key_B': None},)]
++--------------------+
+--Query--
+SELECT TRY_CAST('{a:4, b:''Ducky'', c:''ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ''}' AS STRUCT(a INT, b DOUBLE, c VARCHAR))
+--Result--
+[({'a': 4, 'b': None, 'c': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'},)]
++--------------------+
+--Query--
+SELECT TRY_CAST(col AS STRUCT(a STRUCT(d INT), b DOUBLE, c VARCHAR)) FROM try_cast_tbl
+--Result--
+[({'a': {'d': 1}, 'b': 100.0, 'c': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'},), ({'a': None, 'b': 100.0, 'c': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'},), (None,), ({'a': None, 'b': 100.0, 'c': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'},), ({'a': {'d': None}, 'b': 100.0, 'c': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86'},), (None,)]
++--------------------+
+--Query--
+SELECT cast(col as STRUCT(a VARCHAR, b INT)).a FROM tbl WHERE cast(col as STRUCT(a VARCHAR, b INT)).b=12
+--Result--
+[('DUCK',)]
++--------------------+
+--Query--
+SELECT * FROM assorted_structs
+--Result--
+[({'a': 8, 'b': 'hello, DuckDB'},)]
++--------------------+
+--Query--
+SELECT col1::STRUCT(id VARCHAR, type VARCHAR, name VARCHAR, ppu FLOAT,      batters STRUCT(batter STRUCT(id VARCHAR, type VARCHAR)[]), topping STRUCT(id VARCHAR, type VARCHAR)[]) FROM json_tbl
+--Result--
+[({'id': '0001', 'type': 'donut', 'name': 'Cake', 'ppu': 0.550000011920929, 'batters': {'batter': [{'id': '1001', 'type': 'Regular'}, {'id': '1002', 'type': 'Chocolate'}, {'id': '1003', 'type': 'Blueberry'}, {'id': '1004', 'type': "Devil's Food"}]}, 'topping': [{'id': '5001', 'type': 'None'}, {'id': '5002', 'type': 'Glazed'}, {'id': '5005', 'type': 'Sugar'}, {'id': '5007', 'type': 'Powdered Sugar'}, {'id': '5006', 'type': 'Chocolate with Sprinkles'}, {'id': '5003', 'type': 'Chocolate'}, {'id': '5004', 'type': 'Maple'}]},)]
++--------------------+
+--Query--
+SELECT col1::VARCHAR::STRUCT(A VARCHAR, B INT[], C STRUCT(A VARCHAR, B FLOAT, C DOUBLE[])) FROM json_tbl2
+--Result--
+[({'A': 'Ducky', 'B': [3, 50, 8, 43], 'C': {'A': 'TEST', 'B': 0.8999999761581421, 'C': [0.0, 9.0, 30.2]}},), ({'A': 'TESTY', 'B': [4], 'C': {'A': 'Ã\x83Â\x83Ã\x82Â\x83Ã\x83Â\x82Ã\x82Â°Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x9fÃ\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â¦Ã\x83Â\x83Ã\x82Â\x82Ã\x83Â\x82Ã\x82Â\x86', 'B': 6.119999885559082, 'C': [0.099, 1.6]}},), ({'A': 'Hello World', 'B': [0, 0, 2, 500, 0, 8], 'C': {'A': 'DuckieDuck !', 'B': 3000.0, 'C': [0.0]}},), ({'A': '', 'B': [], 'C': {'A': '', 'B': 0.0, 'C': []}},)]
++--------------------+

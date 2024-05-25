@@ -1,0 +1,435 @@
+--Query--
+select polyf(42) as int, polyf(4.5) as num
+--Result--
+[(43, 5.5)]
++--------------------+
+--Query--
+select polyf(42) as int, polyf(4.5) as num
+--Result--
+[([43, 44], [5.5, 6.5])]
++--------------------+
+--Query--
+select polyf(array[2,4]) as int, polyf(array[4.5, 7.7]) as num
+--Result--
+[(2, 4.5)]
++--------------------+
+--Query--
+select polyf(array[2,4]) as int, polyf(array[4.5, 7.7]) as num
+--Result--
+[([2, 4], [4.5, 7.7])]
++--------------------+
+--Query--
+select polyf(2, 4) as int, polyf(2, 4.5) as num
+--Result--
+[([2, 4], [2.0, 4.5])]
++--------------------+
+--Query--
+select x, pg_typeof(x), y, pg_typeof(y)   from polyf(11, array[1, 2], 42, 34.5)
+--Result--
+[([11, 1, 2], 'integer[]', [42.0, 34.5], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x), y, pg_typeof(y)   from polyf(11, array[1, 2], point(1,2), point(3,4))
+--Result--
+[([11, 1, 2], 'integer[]', '{"(1,2)","(3,4)"}', 'point[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x), y, pg_typeof(y)   from polyf(11, '{1,2}', point(1,2), '(3,4)')
+--Result--
+[([11, 1, 2], 'integer[]', '{"(1,2)","(3,4)"}', 'point[]')]
++--------------------+
+--Query--
+select f3, myaggp01a(*) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp03a(*) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp03b(*) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp05a(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggp06a(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp08a(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp09a(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp09b(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggp10a(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggp10b(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggp20a(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggp20b(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggn01a(*) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn01b(*) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn03a(*) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn05a(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggn05b(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select f3, myaggn06a(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn06b(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn08a(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn08b(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn09a(f1) from t group by f3 order by f3
+--Result--
+[('a', []), ('b', []), ('c', [])]
++--------------------+
+--Query--
+select f3, myaggn10a(f1) from t group by f3 order by f3
+--Result--
+[('a', [1, 2, 3]), ('b', [1, 2, 3]), ('c', [1, 2])]
++--------------------+
+--Query--
+select mysum2(f1, f1 + 1) from t
+--Result--
+[(38,)]
++--------------------+
+--Query--
+SELECT array_larger_accum(i) FROM (VALUES (ARRAY[1,2]), (ARRAY[3,4])) as t(i)
+--Result--
+[([3, 4],)]
++--------------------+
+--Query--
+SELECT array_larger_accum(i) FROM (VALUES (ARRAY[row(1,2),row(3,4)]), (ARRAY[row(5,6),row(7,8)])) as t(i)
+--Result--
+[('{"(5,6)","(7,8)"}',)]
++--------------------+
+--Query--
+select first_el_agg_f8(x::float8) from generate_series(1,10) x
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+select first_el_agg_any(x) from generate_series(1,10) x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select first_el_agg_f8(x::float8) over(order by x) from generate_series(1,10) x
+--Result--
+[(1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,)]
++--------------------+
+--Query--
+select first_el_agg_any(x) over(order by x) from generate_series(1,10) x
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select distinct array_ndims(histogram_bounds) from pg_stats where histogram_bounds is not null
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select array_in('{1,2,3}','int4'::regtype,-1)
+--Result--
+[('{1,2,3}',)]
++--------------------+
+--Query--
+select myleast(10, 1, 20, 33)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select myleast(1.1, 0.22, 0.55)
+--Result--
+[(0.22,)]
++--------------------+
+--Query--
+select myleast('z'::text)
+--Result--
+[('z',)]
++--------------------+
+--Query--
+select myleast(variadic array[1,2,3,4,-1])
+--Result--
+[(-1,)]
++--------------------+
+--Query--
+select myleast(variadic array[1.1, -5.5])
+--Result--
+[(-5.5,)]
++--------------------+
+--Query--
+select myleast(variadic array[]::int[])
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select concat('%', 1, 2, 3, 4, 5)
+--Result--
+[('%12345',)]
++--------------------+
+--Query--
+select concat('|', 'a'::text, 'b', 'c')
+--Result--
+[('|abc',)]
++--------------------+
+--Query--
+select pg_typeof(null)
+--Result--
+[('unknown',)]
++--------------------+
+--Query--
+select pg_typeof(0)
+--Result--
+[('integer',)]
++--------------------+
+--Query--
+select pg_typeof(0.0)
+--Result--
+[('numeric',)]
++--------------------+
+--Query--
+select pg_typeof(1+1 = 2)
+--Result--
+[('boolean',)]
++--------------------+
+--Query--
+select pg_typeof('x')
+--Result--
+[('unknown',)]
++--------------------+
+--Query--
+select pg_typeof('' || '')
+--Result--
+[('text',)]
++--------------------+
+--Query--
+select pg_typeof(pg_typeof(0))
+--Result--
+[('regtype',)]
++--------------------+
+--Query--
+select pg_typeof(array[1.2,55.5])
+--Result--
+[('numeric[]',)]
++--------------------+
+--Query--
+select pg_typeof(myleast(10, 1, 20, 33))
+--Result--
+[('integer',)]
++--------------------+
+--Query--
+select dfunc(10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select dfunc(10,20)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select dfunc()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select dfunc(10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select dfunc(10,20)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12) x
+--Result--
+[(12, 'integer')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12.3) x
+--Result--
+[(12.3, 'numeric')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest('11', '12.3') x
+--Result--
+[('12.3', 'text')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12) x
+--Result--
+[([11, 12], 'integer[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12.3) x
+--Result--
+[([11.0, 12.3], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, array[12]) x
+--Result--
+[([11, 12], 'integer[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, array[12.3]) x
+--Result--
+[([11.0, 12.3], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(12.3, array[13]) x
+--Result--
+[([12.3, 13.0], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(12.3, '{13,14.4}') x
+--Result--
+[([12.3, 13.0, 14.4], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, int4range(4,7)) x
+--Result--
+[(NumericRange(4, 7, '[)'), 'int4range')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, numrange(4,7)) x
+--Result--
+[(NumericRange(Decimal('4'), Decimal('7'), '[)'), 'numrange')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(int4range(11,12), int4range(4,7)) x
+--Result--
+[(18, 'integer')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, multirange(int4range(4,7))) x
+--Result--
+[('{[4,7)}', 'int4multirange')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, multirange(numrange(4,7))) x
+--Result--
+[('{[4,7)}', 'nummultirange')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(multirange(int4range(11,12)), multirange(int4range(4,7))) x
+--Result--
+[(18, 'integer')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12) x
+--Result--
+[([11, 12], 'integer[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12.3) x
+--Result--
+[([11.0, 12.3], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, array[1, 2], 42, 34.5) x
+--Result--
+[([42.0, 34.5], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, array[1, 2], point(1,2), point(3,4)) x
+--Result--
+[('{"(1,2)","(3,4)"}', 'point[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, '{1,2}', point(1,2), '(3,4)') x
+--Result--
+[('{"(1,2)","(3,4)"}', 'point[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12) x
+--Result--
+[([11, 12], 'integer[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, 12.2) x
+--Result--
+[([11.0, 12.2], 'numeric[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(11, '12') x
+--Result--
+[([11, 12], 'integer[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(variadic array[11, 12]) x
+--Result--
+[([11, 12], 'integer[]')]
++--------------------+
+--Query--
+select x, pg_typeof(x) from anyctest(variadic array[11, 12.2]) x
+--Result--
+[([11.0, 12.2], 'numeric[]')]
++--------------------+

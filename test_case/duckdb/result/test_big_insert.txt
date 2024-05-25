@@ -1,0 +1,35 @@
+--Query--
+pragma enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM integers
+--Result--
+[(5000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FILTER (WHERE j = 10) FROM integers
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select j from integers limit 5
+--Result--
+[(0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+select j from integers limit 5
+--Result--
+[(0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+select j from integers limit 5 offset 4995
+--Result--
+[(0,), (6,), (0,), (2,), (0,)]
++--------------------+
+--Query--
+select COUNT(j) filter (where j != 0) from integers
+--Result--
+[(1250,)]
++--------------------+

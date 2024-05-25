@@ -1,5 +1,3 @@
--- Because of this it does not create empty file, while expect it.
-
 SET max_threads = 1;
 SET join_algorithm = 'auto';
 SET max_rows_in_join = 1000;

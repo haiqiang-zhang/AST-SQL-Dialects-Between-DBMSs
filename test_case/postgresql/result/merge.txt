@@ -1,0 +1,780 @@
+--Query--
+SELECT t.ctid is not null as matched, t.*, s.* FROM source s FULL OUTER JOIN target t ON s.sid = t.tid ORDER BY t.tid, s.sid
+--Result--
+[(True, 1, 10, None, None), (True, 2, 20, None, None), (True, 3, 30, None, None)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	DELETE
+--Result--
+[('Merge on target t',), ('  ->  Merge Join',), ('        Merge Cond: (t.tid = s.sid)',), ('        ->  Sort',), ('              Sort Key: t.tid',), ('              ->  Seq Scan on target t',), ('        ->  Sort',), ('              Sort Key: s.sid',), ('              ->  Seq Scan on source s',)]
++--------------------+
+--Query--
+MERGE INTO target USING (SELECT 1) ON true WHEN MATCHED THEN 	DO NOTHING
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target USING source2 ON target.tid = source2.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target USING source2 ON target.tid = source2.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target2 USING source ON target2.tid = source.sid WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target2 USING source ON target2.tid = source.sid WHEN NOT MATCHED THEN 	INSERT DEFAULT VALUES
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target USING source ON target.tid = source.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT DEFAULT VALUES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM source ORDER BY sid
+--Result--
+[(4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	DO NOTHING
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT DEFAULT VALUES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (None, None)]
++--------------------+
+--Query--
+ANALYZE target
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[('Merge on target t',), ('  ->  Hash Join',), ('        Hash Cond: (s.sid = t.tid)',), ('        ->  Seq Scan on source s',), ('        ->  Hash',), ('              ->  Seq Scan on target t',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	DELETE
+--Result--
+[('Merge on target t',), ('  ->  Hash Join',), ('        Hash Cond: (s.sid = t.tid)',), ('        ->  Seq Scan on source s',), ('        ->  Hash',), ('              ->  Seq Scan on target t',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT VALUES (4, NULL)
+--Result--
+[('Merge on target t',), ('  ->  Hash Left Join',), ('        Hash Cond: (s.sid = t.tid)',), ('        ->  Seq Scan on source s',), ('        ->  Hash',), ('              ->  Seq Scan on target t',)]
++--------------------+
+--Query--
+ANALYZE target
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM source ORDER BY sid
+--Result--
+[(2, 5), (3, 20), (4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 0), (3, 0)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	DO NOTHING
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT VALUES (4, NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, None)]
++--------------------+
+--Query--
+SELECT * FROM source ORDER BY sid
+--Result--
+[(2, 5), (2, 5), (3, 20), (4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+SELECT * FROM source ORDER BY sid
+--Result--
+[(2, 5), (3, 20), (4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+SELECT * FROM source ORDER BY sid
+--Result--
+[(2, 5), (3, 20), (4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT VALUES (4, 4) WHEN MATCHED THEN 	UPDATE SET balance = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 0), (3, 0), (4, 4)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = 0 WHEN NOT MATCHED THEN 	INSERT VALUES (4, 4)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 0), (3, 0), (4, 4)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = t.balance + s.delta
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 25), (3, 50)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, 40)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN   INSERT VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, 40), (5, 50), (5, 50)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid, balance) VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, 40)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED THEN 	UPDATE SET balance = t.balance + s.delta WHEN NOT MATCHED THEN 	INSERT VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 25), (3, 50), (4, 40)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid) VALUES (s.sid)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, -1)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN NOT MATCHED AND FALSE THEN 	INSERT (tid) VALUES (s.sid)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN NOT MATCHED AND s.balance <> 100 THEN 	INSERT (tid) VALUES (s.sid)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN NOT MATCHED AND s.balance = 100 THEN 	INSERT (tid) VALUES (s.sid)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, -1)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN NOT MATCHED AND s.balance = 100 THEN 	INSERT (tid) VALUES (s.sid)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, -1)]
++--------------------+
+--Query--
+SELECT * FROM wq_source
+--Result--
+[(100, 1)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND s.balance = 100 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 99)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.balance = 100 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 99)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.balance = 99 AND s.balance > 100 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 99)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.balance = 99 AND s.balance = 100 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 199)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.balance = 99 OR s.balance > 100 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 199)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.balance = 199 OR s.balance > 100 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 299)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON (t.tid = s.sid) WHEN matched and t = s or t.tid = s.sid THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 399)]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.balance > (SELECT max(balance) FROM target) THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO wq_target t USING wq_source s ON t.tid = s.sid WHEN MATCHED AND t.tableoid >= 0 THEN 	UPDATE SET balance = t.balance + s.balance
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM wq_target
+--Result--
+[(1, 499)]
++--------------------+
+--Query--
+MERGE INTO target t USING source AS s ON t.tid = s.sid WHEN MATCHED AND t.balance > s.delta THEN 	UPDATE SET balance = t.balance - s.delta WHEN MATCHED THEN 	DELETE WHEN NOT MATCHED THEN 	INSERT VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 15), (4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target full outer join source on (sid = tid)
+--Result--
+[(3, 30, 3, 20), (2, 20, 2, 5), (None, None, 4, 40), (1, 10, None, None)]
++--------------------+
+--Query--
+SELECT * FROM target FULL OUTER JOIN source ON (sid = tid)
+--Result--
+[(3, 30, 3, 20), (2, 20, 2, 5), (None, None, 4, 40), (1, 10, None, None)]
++--------------------+
+--Query--
+MERGE INTO target t USING (SELECT 9 AS sid, 57 AS delta) AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid, balance) VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (9, 57)]
++--------------------+
+--Query--
+MERGE INTO target t USING (SELECT sid, delta FROM source WHERE delta > 0) AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid, balance) VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, 40)]
++--------------------+
+--Query--
+MERGE INTO target t USING (SELECT sid, delta as newname FROM source WHERE delta > 0) AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid, balance) VALUES (s.sid, s.newname)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, 40)]
++--------------------+
+--Query--
+MERGE INTO target t1 USING target t2 ON t1.tid = t2.tid WHEN MATCHED THEN 	UPDATE SET balance = t1.balance + t2.balance WHEN NOT MATCHED THEN 	INSERT VALUES (t2.tid, t2.balance)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 20), (2, 40), (3, 60)]
++--------------------+
+--Query--
+MERGE INTO target t USING (SELECT tid as sid, balance as delta FROM target WHERE balance > 0) AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid, balance) VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+MERGE INTO target t USING (SELECT sid, max(delta) AS delta  FROM source  GROUP BY sid  HAVING count(*) = 1  ORDER BY sid ASC) AS s ON t.tid = s.sid WHEN NOT MATCHED THEN 	INSERT (tid, balance) VALUES (s.sid, s.delta)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30), (4, 40)]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 10), (2, 20), (3, 30)]
++--------------------+
+--Query--
+prepare foom as merge into target t using (select 1 as sid) s on (t.tid = s.sid) when matched then update set balance = 1
+--Result--
+[]
++--------------------+
+--Query--
+execute foom
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 1), (2, 20), (3, 30)]
++--------------------+
+--Query--
+PREPARE foom2 (integer, integer) AS MERGE INTO target t USING (SELECT 1) s ON t.tid = $1 WHEN MATCHED THEN UPDATE SET balance = $2
+--Result--
+[]
++--------------------+
+--Query--
+execute foom2 (1, 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM target ORDER BY tid
+--Result--
+[(1, 1), (2, 20), (3, 30)]
++--------------------+
+--Query--
+MERGE INTO sq_target t USING (SELECT * FROM sq_source) s ON tid = sid WHEN MATCHED AND t.balance > delta THEN 	UPDATE SET balance = t.balance + delta
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_target
+--Result--
+[(3, 300), (1, 110), (2, 220)]
++--------------------+
+--Query--
+MERGE INTO sq_target USING v ON tid = sid WHEN MATCHED THEN     UPDATE SET balance = v.balance + delta
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_target
+--Result--
+[(2, 200), (3, 300), (1, 10)]
++--------------------+
+--Query--
+MERGE INTO sq_target t USING v ON tid = sid WHEN MATCHED AND tid >= 2 THEN     UPDATE SET balance = t.balance + delta WHEN NOT MATCHED THEN 	INSERT (balance, tid) VALUES (balance + delta, sid) WHEN MATCHED AND tid < 2 THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_target
+--Result--
+[(2, 200), (3, 300), (-1, -11)]
++--------------------+
+--Query--
+WITH targq AS ( 	SELECT * FROM v ) MERGE INTO sq_target t USING v ON tid = sid WHEN MATCHED AND tid >= 2 THEN     UPDATE SET balance = t.balance + delta WHEN NOT MATCHED THEN 	INSERT (balance, tid) VALUES (balance + delta, sid) WHEN MATCHED AND tid < 2 THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_source ORDER BY sid
+--Result--
+[(10, 1, 0), (20, 2, 0), (40, 4, 0)]
++--------------------+
+--Query--
+SELECT * FROM sq_target ORDER BY tid
+--Result--
+[(1, 100), (2, 200), (3, 300)]
++--------------------+
+--Query--
+EXPLAIN (verbose, costs off) MERGE INTO tgt t USING (SELECT *, (SELECT count(*) FROM ref r                    WHERE r.ab = s.a + s.b                      AND r.cd = s.c - s.d) cnt          FROM src s) s ON t.a = s.a AND t.b < s.cnt WHEN MATCHED AND t.c > s.cnt THEN   UPDATE SET (b, c) = (SELECT s.b, s.cnt)
+--Result--
+[('Merge on public.tgt t',), ('  ->  Hash Join',), ('        Output: t.ctid, s.a, s.b, s.c, s.d, s.ctid',), ('        Hash Cond: (t.a = s.a)',), ('        Join Filter: (t.b < (SubPlan 1))',), ('        ->  Seq Scan on public.tgt t',), ('              Output: t.ctid, t.a, t.b',), ('        ->  Hash',), ('              Output: s.a, s.b, s.c, s.d, s.ctid',), ('              ->  Seq Scan on public.src s',), ('                    Output: s.a, s.b, s.c, s.d, s.ctid',), ('        SubPlan 1',), ('          ->  Aggregate',), ('                Output: count(*)',), ('                ->  Seq Scan on public.ref r',), ('                      Output: r.ab, r.cd',), ('                      Filter: ((r.ab = (s.a + s.b)) AND (r.cd = (s.c - s.d)))',), ('  SubPlan 4',), ('    ->  Aggregate',), ('          Output: count(*)',), ('          ->  Seq Scan on public.ref r_2',), ('                Output: r_2.ab, r_2.cd',), ('                Filter: ((r_2.ab = (s.a + s.b)) AND (r_2.cd = (s.c - s.d)))',), ('  SubPlan 3 (returns $9,$10)',), ('    ->  Result',), ('          Output: s.b, $8',), ('          InitPlan 2 (returns $8)',), ('            ->  Aggregate',), ('                  Output: count(*)',), ('                  ->  Seq Scan on public.ref r_1',), ('                        Output: r_1.ab, r_1.cd',), ('                        Filter: ((r_1.ab = (s.a + s.b)) AND (r_1.cd = (s.c - s.d)))',)]
++--------------------+
+--Query--
+MERGE INTO sq_target t USING v ON tid = sid WHEN MATCHED THEN     UPDATE SET balance = (SELECT count(*) FROM sq_target)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_target WHERE tid = 1
+--Result--
+[(1, 3)]
++--------------------+
+--Query--
+MERGE INTO sq_target t USING v ON tid = sid WHEN MATCHED AND (SELECT count(*) > 0 FROM sq_target) THEN     UPDATE SET balance = 42
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_target WHERE tid = 1
+--Result--
+[(1, 42)]
++--------------------+
+--Query--
+MERGE INTO sq_target t USING v ON tid = sid AND (SELECT count(*) > 0 FROM sq_target) WHEN MATCHED THEN     UPDATE SET balance = 42
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sq_target WHERE tid = 1
+--Result--
+[(1, 42)]
++--------------------+
+--Query--
+MERGE INTO pa_target t   USING pa_source s   ON t.tid = s.sid   WHEN MATCHED THEN     UPDATE SET balance = balance + delta, val = val || ' updated by merge'   WHEN NOT MATCHED THEN     INSERT VALUES (sid, delta, 'inserted by merge')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 110.0, 'initial updated by merge'), (2, 20.0, 'inserted by merge'), (3, 330.0, 'initial updated by merge'), (4, 40.0, 'inserted by merge'), (5, 550.0, 'initial updated by merge'), (6, 60.0, 'inserted by merge'), (7, 770.0, 'initial updated by merge'), (8, 80.0, 'inserted by merge'), (9, 990.0, 'initial updated by merge'), (10, 100.0, 'inserted by merge'), (11, 1210.0, 'initial updated by merge'), (12, 120.0, 'inserted by merge'), (13, 1430.0, 'initial updated by merge'), (14, 140.0, 'inserted by merge')]
++--------------------+
+--Query--
+MERGE INTO pa_target t   USING pa_source s   ON t.tid = s.sid AND tid = 1   WHEN MATCHED THEN     UPDATE SET balance = balance + delta, val = val || ' updated by merge'   WHEN NOT MATCHED THEN     INSERT VALUES (sid, delta, 'inserted by merge')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 110.0, 'initial updated by merge'), (2, 20.0, 'inserted by merge'), (3, 30.0, 'inserted by merge'), (3, 300.0, 'initial'), (4, 40.0, 'inserted by merge'), (5, 500.0, 'initial'), (5, 50.0, 'inserted by merge'), (6, 60.0, 'inserted by merge'), (7, 700.0, 'initial'), (7, 70.0, 'inserted by merge'), (8, 80.0, 'inserted by merge'), (9, 90.0, 'inserted by merge'), (9, 900.0, 'initial'), (10, 100.0, 'inserted by merge'), (11, 1100.0, 'initial'), (11, 110.0, 'inserted by merge'), (12, 120.0, 'inserted by merge'), (13, 1300.0, 'initial'), (13, 130.0, 'inserted by merge'), (14, 140.0, 'inserted by merge')]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 100.0, 'initial'), (3, 300.0, 'initial'), (5, 500.0, 'initial'), (7, 700.0, 'initial'), (9, 900.0, 'initial'), (11, 1100.0, 'initial'), (13, 1300.0, 'initial')]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 100.0, 'initial'), (3, 300.0, 'initial'), (5, 500.0, 'initial'), (7, 700.0, 'initial'), (9, 900.0, 'initial'), (11, 1100.0, 'initial'), (13, 1300.0, 'initial')]
++--------------------+
+--Query--
+MERGE INTO pa_target t   USING pa_source s   ON t.tid = s.sid AND tid IN (1, 5)   WHEN MATCHED AND tid % 5 = 0 THEN DELETE   WHEN MATCHED THEN     UPDATE SET balance = balance + delta, val = val || ' updated by merge'   WHEN NOT MATCHED THEN     INSERT VALUES (sid, delta, 'inserted by merge')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 110.0, 'initial updated by merge'), (2, 20.0, 'inserted by merge'), (3, 30.0, 'inserted by merge'), (3, 300.0, 'initial'), (4, 40.0, 'inserted by merge'), (6, 60.0, 'inserted by merge'), (7, 700.0, 'initial'), (7, 70.0, 'inserted by merge'), (8, 80.0, 'inserted by merge'), (9, 900.0, 'initial'), (9, 90.0, 'inserted by merge'), (10, 100.0, 'inserted by merge'), (11, 110.0, 'inserted by merge'), (11, 1100.0, 'initial'), (12, 120.0, 'inserted by merge'), (13, 1300.0, 'initial'), (13, 130.0, 'inserted by merge'), (14, 140.0, 'inserted by merge')]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 100.0, 'initial'), (3, 300.0, 'initial'), (5, 500.0, 'initial'), (7, 700.0, 'initial'), (9, 900.0, 'initial'), (11, 1100.0, 'initial'), (13, 1300.0, 'initial')]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 100.0, 'initial'), (3, 300.0, 'initial'), (5, 500.0, 'initial'), (7, 700.0, 'initial'), (9, 900.0, 'initial'), (11, 1100.0, 'initial'), (13, 1300.0, 'initial')]
++--------------------+
+--Query--
+SELECT * FROM pa_target ORDER BY tid
+--Result--
+[(1, 100.0, 'initial'), (3, 300.0, 'initial'), (5, 500.0, 'initial'), (7, 700.0, 'initial'), (9, 900.0, 'initial'), (11, 1100.0, 'initial'), (13, 1300.0, 'initial')]
++--------------------+
+--Query--
+EXPLAIN (VERBOSE, COSTS OFF) MERGE INTO pa_target t USING pa_source s ON t.tid = s.sid   WHEN NOT MATCHED THEN INSERT VALUES (s.sid)
+--Result--
+[('Merge on public.pa_target t',), ('  Merge on public.pa_targetp t_1',), ('  ->  Hash Left Join',), ('        Output: s.sid, s.ctid, t_1.tableoid, t_1.ctid',), ('        Inner Unique: true',), ('        Hash Cond: (s.sid = t_1.tid)',), ('        ->  Seq Scan on public.pa_source s',), ('              Output: s.sid, s.ctid',), ('        ->  Hash',), ('              Output: t_1.tid, t_1.tableoid, t_1.ctid',), ('              ->  Seq Scan on public.pa_targetp t_1',), ('                    Output: t_1.tid, t_1.tableoid, t_1.ctid',)]
++--------------------+
+--Query--
+MERGE INTO pa_target t USING pa_source s ON t.tid = s.sid   WHEN NOT MATCHED THEN INSERT VALUES (s.sid)
+--Result--
+[]
++--------------------+
+--Query--
+TABLE pa_target
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+EXPLAIN (VERBOSE, COSTS OFF) MERGE INTO pa_target t USING pa_source s ON t.tid = s.sid   WHEN NOT MATCHED THEN INSERT VALUES (s.sid)
+--Result--
+[('Merge on public.pa_target t',), ('  ->  Hash Left Join',), ('        Output: s.sid, s.ctid, t.ctid',), ('        Inner Unique: true',), ('        Hash Cond: (s.sid = t.tid)',), ('        ->  Seq Scan on public.pa_source s',), ('              Output: s.sid, s.ctid',), ('        ->  Hash',), ('              Output: t.tid, t.ctid',), ('              ->  Result',), ('                    Output: t.tid, t.ctid',), ('                    One-Time Filter: false',)]
++--------------------+
+--Query--
+MERGE INTO cj_target t USING cj_source1 s1 	INNER JOIN cj_source2 s2 ON sid1 = sid2 ON t.tid = sid1 WHEN NOT MATCHED THEN 	INSERT VALUES (sid1, delta, sval)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO cj_target t USING cj_source2 s2 	INNER JOIN cj_source1 s1 ON sid1 = sid2 AND scat = 20 ON t.tid = sid1 WHEN NOT MATCHED THEN 	INSERT VALUES (sid2, delta, sval) WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO cj_target t USING cj_source2 s2 	INNER JOIN cj_source1 s1 ON sid1 = sid2 ON t.tid = sid1 WHEN NOT MATCHED THEN 	INSERT VALUES (sid2, delta + scat, sval) WHEN MATCHED THEN 	UPDATE SET val = val || ' updated by merge'
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO cj_target t USING cj_source2 s2 	INNER JOIN cj_source1 s1 ON sid1 = sid2 AND scat = 20 ON t.tid = sid1 WHEN MATCHED THEN 	UPDATE SET val = val || ' ' || delta::text
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM cj_target
+--Result--
+[(3, 400.0, 'initial source2 updated by merge'), (1, 220.0, 'initial source2 200'), (1, 110.0, 'initial source2 200'), (2, 320.0, 'initial source2 300')]
++--------------------+
+--Query--
+MERGE INTO cj_target t USING (SELECT *, 'join input'::text AS phv FROM cj_source1) fj 	FULL JOIN cj_source2 fj2 ON fj.scat = fj2.sid2 * 10 ON t.tid = fj.scat WHEN NOT MATCHED THEN 	INSERT (tid, balance, val) VALUES (fj.scat, fj.delta, fj.phv)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM cj_target
+--Result--
+[(3, 400.0, 'initial source2 updated by merge'), (1, 220.0, 'initial source2 200'), (1, 110.0, 'initial source2 200'), (2, 320.0, 'initial source2 300'), (10, 100.0, 'join input'), (10, 400.0, 'join input'), (20, 200.0, 'join input'), (20, 300.0, 'join input'), (None, None, None)]
++--------------------+
+--Query--
+TRUNCATE cj_target
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO cj_target t USING cj_source1 s1 	INNER JOIN cj_source2 s2 ON s1.sid = s2.sid ON t.tid = s1.sid WHEN NOT MATCHED THEN 	INSERT VALUES (s2.sid, delta, sval)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO fs_target t USING generate_series(1,100,1) AS id ON t.a = id WHEN MATCHED THEN 	UPDATE SET b = b + id WHEN NOT MATCHED THEN 	INSERT VALUES (id, -1)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO fs_target t USING generate_series(1,100,2) AS id ON t.a = id WHEN MATCHED THEN 	UPDATE SET b = b + id, c = 'updated '|| id.*::text WHEN NOT MATCHED THEN 	INSERT VALUES (id, -1, 'inserted ' || id.*::text)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM fs_target
+--Result--
+[(100,)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM measurement ORDER BY city_id, logdate
+--Result--
+[('measurement', 0, datetime.date(2005, 7, 21), 5, 15), ('measurement', 1, datetime.date(2006, 2, 10), 35, 10), ('measurement', 1, datetime.date(2006, 2, 16), 45, 20), ('measurement', 1, datetime.date(2006, 3, 17), 25, 10), ('measurement', 1, datetime.date(2006, 3, 27), 15, 40), ('measurement', 1, datetime.date(2007, 1, 15), 10, 10), ('measurement', 1, datetime.date(2007, 1, 17), 10, 10)]
++--------------------+
+--Query--
+MERGE INTO ONLY measurement m  USING new_measurement nm ON       (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE      SET peaktemp = greatest(m.peaktemp, nm.peaktemp),         unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT      (city_id, logdate, peaktemp, unitsales)    VALUES (city_id, logdate, peaktemp, unitsales)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM measurement ORDER BY city_id, logdate, peaktemp
+--Result--
+[('measurement', 0, datetime.date(2005, 7, 21), 25, 35), ('measurement', 1, datetime.date(2006, 2, 10), 35, 10), ('measurement', 1, datetime.date(2006, 2, 16), 50, 30), ('measurement', 1, datetime.date(2006, 3, 1), 20, 10), ('measurement', 1, datetime.date(2006, 3, 17), 25, 10), ('measurement', 1, datetime.date(2007, 1, 15), 10, 10), ('measurement', 1, datetime.date(2007, 1, 16), 10, 10), ('measurement', 2, datetime.date(2006, 2, 10), 20, 20)]
++--------------------+
+--Query--
+MERGE into measurement m  USING new_measurement nm ON       (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE      SET peaktemp = greatest(m.peaktemp, nm.peaktemp),         unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT      (city_id, logdate, peaktemp, unitsales)    VALUES (city_id, logdate, peaktemp, unitsales)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM measurement ORDER BY city_id, logdate
+--Result--
+[('measurement', 0, datetime.date(2005, 7, 21), 25, 35), ('measurement', 1, datetime.date(2006, 2, 10), 35, 10), ('measurement', 1, datetime.date(2006, 2, 16), 50, 30), ('measurement', 1, datetime.date(2006, 3, 1), 20, 10), ('measurement', 1, datetime.date(2006, 3, 17), 25, 10), ('measurement', 1, datetime.date(2007, 1, 15), 10, 10), ('measurement', 1, datetime.date(2007, 1, 16), 10, 10), ('measurement', 2, datetime.date(2006, 2, 10), 20, 20)]
++--------------------+
+--Query--
+MERGE INTO new_measurement nm  USING ONLY measurement m ON       (nm.city_id = m.city_id and nm.logdate=m.logdate) WHEN MATCHED THEN DELETE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM new_measurement ORDER BY city_id, logdate
+--Result--
+[(1, datetime.date(2006, 3, 27), None, None), (1, datetime.date(2007, 1, 17), None, None)]
++--------------------+
+--Query--
+MERGE INTO new_measurement nm  USING measurement m ON       (nm.city_id = m.city_id and nm.logdate=m.logdate) WHEN MATCHED THEN DELETE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM new_measurement ORDER BY city_id, logdate
+--Result--
+[(1, datetime.date(2006, 3, 27), None, None), (1, datetime.date(2007, 1, 17), None, None)]
++--------------------+

@@ -1,8 +1,8 @@
-SET default_null_order='nulls_first';;
+SET default_null_order='nulls_first';
 PRAGMA enable_verification;
-CREATE TABLE test (a INTEGER, b INTEGER);;
+CREATE TABLE test (a INTEGER, b INTEGER);
 INSERT INTO test VALUES (4, 1), (2, 2);
-CREATE TABLE test2 (b INTEGER, c INTEGER);;
+CREATE TABLE test2 (b INTEGER, c INTEGER);
 INSERT INTO test2 VALUES (1, 2), (3, 0);
 SELECT * FROM test JOIN test2 ON test.a+test2.c=test.b+test2.b;
 SELECT * FROM test LEFT JOIN test2 ON test.a+test2.c=test.b+test2.b ORDER BY 1;

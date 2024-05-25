@@ -1,8 +1,0 @@
-drop table if exists t1,t1aa,t2aa;
-DROP DATABASE IF EXISTS testdb;
-CREATE DATABASE testdb;
-CREATE TABLE testdb.t1 (
-  c1 INT,
-  c3 INT NOT NULL AUTO_INCREMENT PRIMARY KEY);
-DROP TABLE testdb.t1;
-DROP DATABASE testdb;

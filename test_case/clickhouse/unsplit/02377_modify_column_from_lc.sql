@@ -20,7 +20,6 @@ INSERT INTO t_modify_from_lc_2 SELECT number, number FROM numbers(100000);
 OPTIMIZE TABLE t_modify_from_lc_1 FINAL;
 OPTIMIZE TABLE t_modify_from_lc_2 FINAL;
 ALTER TABLE t_modify_from_lc_1 MODIFY COLUMN a UInt32;
--- dropped and total size on disk is reduced.
 WITH groupArray((table, bytes))::Map(String, UInt64) AS stats
 SELECT
     length(stats), stats['t_modify_from_lc_1'] < stats['t_modify_from_lc_2']

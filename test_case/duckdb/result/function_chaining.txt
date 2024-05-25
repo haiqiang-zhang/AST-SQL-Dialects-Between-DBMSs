@@ -1,0 +1,75 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v1 AS SELECT ?.split(' ')[1].lower()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT v.lower() FROM varchars
+--Result--
+[('hello world',)]
++--------------------+
+--Query--
+SELECT (v).lower() FROM varchars
+--Result--
+[('hello world',)]
++--------------------+
+--Query--
+SELECT varchars.v.lower() FROM varchars
+--Result--
+[('hello world',)]
++--------------------+
+--Query--
+SELECT v.lower().upper() FROM varchars
+--Result--
+[('HELLO WORLD',)]
++--------------------+
+--Query--
+SELECT v.lower()[:3] FROM varchars
+--Result--
+[('hel',)]
++--------------------+
+--Query--
+SELECT v.lower()[:3] FROM varchars
+--Result--
+[('hel',)]
++--------------------+
+--Query--
+SELECT v.split(' ') FROM varchars
+--Result--
+[(['Hello', 'World'],)]
++--------------------+
+--Query--
+SELECT v.split(' ').apply(x -> x.lower()) FROM varchars
+--Result--
+[(['hello', 'world'],)]
++--------------------+
+--Query--
+SELECT v.split(' ').apply(x -> x.lower()).filter(x -> x[1] == 'h') FROM varchars
+--Result--
+[(['hello'],)]
++--------------------+
+--Query--
+SELECT v.split(' ').length() FROM varchars
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT v.split(' ').aggregate('count') FROM varchars
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT v.split(' ').aggregate('min') FROM varchars
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+EXECUTE v1('Hello World')
+--Result--
+[('hello',)]
++--------------------+

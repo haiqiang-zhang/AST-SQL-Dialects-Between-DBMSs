@@ -1,0 +1,25 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 	 x 	,y 	,z 	,avg(x) OVER (PARTITION BY y) AS plain_window 	,avg(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window 	,avg(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window FROM testing ORDER BY y, x
+--Result--
+[(0, 0.0, 0.0, 5.6, 1.0, 5.6), (1, 0.0, 0.0, 5.6, 1.0, 5.6), (8, 0.0, 0.0, 5.6, 1.0, 5.6), (9, 0.0, 0.0, 5.6, 1.0, 5.6), (10, 0.0, 0.0, 5.6, 1.0, 5.6), (2, 1.0, 1.0, 3.0, None, None), (3, 1.0, 1.0, 3.0, None, None), (4, 1.0, 1.0, 3.0, None, None), (5, 2.0, 2.0, 6.0, None, None), (6, 2.0, 2.0, 6.0, None, None), (7, 2.0, 2.0, 6.0, None, None)]
++--------------------+
+--Query--
+SELECT 	 x 	,y 	,z 	,count(*) OVER (PARTITION BY y) AS plain_window 	,count(*) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window 	,count(*) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window FROM testing ORDER BY y, x
+--Result--
+[(0, 0.0, 0.0, 5, 1, 5), (1, 0.0, 0.0, 5, 1, 5), (8, 0.0, 0.0, 5, 1, 5), (9, 0.0, 0.0, 5, 1, 5), (10, 0.0, 0.0, 5, 1, 5), (2, 1.0, 1.0, 3, 0, 0), (3, 1.0, 1.0, 3, 0, 0), (4, 1.0, 1.0, 3, 0, 0), (5, 2.0, 2.0, 3, 0, 0), (6, 2.0, 2.0, 3, 0, 0), (7, 2.0, 2.0, 3, 0, 0)]
++--------------------+
+--Query--
+SELECT 	 x 	,y 	,z 	,median(x) OVER (PARTITION BY y) AS plain_window 	,median(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window 	,median(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window FROM testing ORDER BY y, x
+--Result--
+[(0, 0.0, 0.0, 8.0, 1.0, 8.0), (1, 0.0, 0.0, 8.0, 1.0, 8.0), (8, 0.0, 0.0, 8.0, 1.0, 8.0), (9, 0.0, 0.0, 8.0, 1.0, 8.0), (10, 0.0, 0.0, 8.0, 1.0, 8.0), (2, 1.0, 1.0, 3.0, None, None), (3, 1.0, 1.0, 3.0, None, None), (4, 1.0, 1.0, 3.0, None, None), (5, 2.0, 2.0, 6.0, None, None), (6, 2.0, 2.0, 6.0, None, None), (7, 2.0, 2.0, 6.0, None, None)]
++--------------------+
+--Query--
+SELECT x, count(x) FILTER (WHERE x % 2 = 0) OVER (ORDER BY x ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING) FROM generate_series(0,10) tbl(x)
+--Result--
+[(0, 2), (1, 2), (2, 3), (3, 2), (4, 3), (5, 2), (6, 3), (7, 2), (8, 3), (9, 2), (10, 2)]
++--------------------+

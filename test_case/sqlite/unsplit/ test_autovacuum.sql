@@ -1627,15 +1627,10 @@ SELECT sum(a) FROM av1;
 SELECT sum(a) FROM av1;
 PRAGMA auto_vacuum=1;
 CREATE TABLE t1(a, b, PRIMARY KEY(a, b));
--- 32;
 CREATE TABLE t2(a, b, PRIMARY KEY(a, b));
--- 2
-    CREATE TABLE t3(a, b, PRIMARY KEY(a, b));
--- 2
-    CREATE TABLE t4(a, b, PRIMARY KEY(a, b));
--- 2
-    CREATE TABLE t5(a, b, PRIMARY KEY(a, b));
--- 2;
+CREATE TABLE t3(a, b, PRIMARY KEY(a, b));
+CREATE TABLE t4(a, b, PRIMARY KEY(a, b));
+CREATE TABLE t5(a, b, PRIMARY KEY(a, b));
 BEGIN;
 DELETE FROM t4;
 SELECT count(*) FROM t1;

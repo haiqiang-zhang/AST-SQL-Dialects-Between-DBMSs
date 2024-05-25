@@ -1,5 +1,4 @@
--- Check that `DICTIONARY` can be created with a `COMMENT` clause
--- and comment is visible both in `comment` column of `system.dictionaries`
+
 -- and `SHOW CREATE DICTIONARY`.
 -----------------------------------------------------------------------------------
 

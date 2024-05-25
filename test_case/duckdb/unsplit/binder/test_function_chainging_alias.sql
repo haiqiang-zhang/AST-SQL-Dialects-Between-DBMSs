@@ -1,12 +1,8 @@
 PRAGMA enable_verification;
-CREATE TABLE varchars(v VARCHAR);;
+CREATE TABLE varchars(v VARCHAR);
 INSERT INTO varchars VALUES ('>>%Test<<'), ('%FUNCTION%'), ('Chaining');
-SELECT  v.trim('><') as trim_inequality,
-        only_alphabet.lower() as lower
-        trim_inequality.replace('%', '') as only_alphabet,
-FROM varchars;
 DELETE FROM varchars;
-INSERT INTO varchars VALUES ('Test Function Chainging Alias');;
+INSERT INTO varchars VALUES ('Test Function Chainging Alias');
 PREPARE v1 AS 
 SELECT (?.split(' ')::VARCHAR).lower() lstrings,
        (?.split(' ')::VARCHAR).upper() ustrings,

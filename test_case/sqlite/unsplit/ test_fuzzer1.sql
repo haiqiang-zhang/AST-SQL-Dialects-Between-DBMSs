@@ -12,8 +12,7 @@ INSERT INTO f1_rules(cfrom, cto, cost) VALUES('e','o',100);
 INSERT INTO f1_rules(ruleset, cfrom, cto, cost) VALUES(1,'b','x',1);
 INSERT INTO f1_rules(ruleset, cfrom, cto, cost) VALUES(1,'d','y',10);
 INSERT INTO f1_rules(ruleset, cfrom, cto, cost) VALUES(1,'y','z',100);
--- costs based on English letter frequencies
-    CREATE TEMP TABLE f2_rules(ruleset DEFAULT 0, cFrom, cTo, cost);
+CREATE TEMP TABLE f2_rules(ruleset DEFAULT 0, cFrom, cTo, cost);
 INSERT INTO f2_rules(cFrom,cTo,cost) VALUES('a','e',24);
 INSERT INTO f2_rules(cFrom,cTo,cost) VALUES('a','o',47);
 INSERT INTO f2_rules(cFrom,cTo,cost) VALUES('a','u',50);
@@ -91,8 +90,7 @@ INSERT INTO f2_rules(ruleset,cFrom,cTo,cost)
             (3, 'duck', 'mallard', 50),
             (3, 'rock', 'stone', 50),
             (3, 'stone', 'rock', 50);
--- Street names for the 28269 ZIPCODE.
-    --
+
     CREATE TEMP TABLE streetname(n TEXT UNIQUE);
 INSERT INTO streetname VALUES('abbotsinch');
 INSERT INTO streetname VALUES('abbottsgate');

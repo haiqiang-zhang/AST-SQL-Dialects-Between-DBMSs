@@ -1,0 +1,75 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1e1000
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT 1e1000::REAL
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT '1e1000'::DOUBLE
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT '1e100'::REAL
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT SUM(i) FROM (VALUES (1e308), (1e308)) tbl(i)
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT AVG(i) FROM (VALUES (1e308), (1e308)) tbl(i)
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT 1e308+1e308
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT 1e308*2
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT -1e308-1e308
+--Result--
+[(-inf,)]
++--------------------+
+--Query--
+SELECT 1e308/0.1
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT 2e38::REAL+2e38::REAL
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT 2e38::REAL*2
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT -2e38::REAL-2e38::REAL
+--Result--
+[(-inf,)]
++--------------------+
+--Query--
+SELECT 2e38::REAL/0.1::REAL
+--Result--
+[(inf,)]
++--------------------+

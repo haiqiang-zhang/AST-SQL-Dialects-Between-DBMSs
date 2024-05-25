@@ -1,4 +1,3 @@
------ Group of very similar simple tests ------
 select '----HORIZONTAL MERGE TESTS----';
 DROP TABLE IF EXISTS zero_rows_per_granule1;
 DROP TABLE IF EXISTS zero_rows_per_granule2;

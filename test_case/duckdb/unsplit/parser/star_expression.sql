@@ -1,14 +1,4 @@
 PRAGMA enable_verification;
 CREATE TABLE integers AS SELECT 42 i, 84 j UNION ALL SELECT 13, 14;
-SELECT * FROM integers WHERE *;
-SELECT * FROM integers WHERE * IS NOT NULL;
-SELECT * FROM integers GROUP BY COLUMNS(*);
-SELECT * FROM integers GROUP BY * + 42;
-SELECT * FROM integers GROUP BY i HAVING * > 42;
-SELECT * FROM integers GROUP BY i HAVING COLUMNS(*)>42;
-SELECT * FROM integers ORDER BY * + 42;
-INSERT INTO integers VALUES (*, *);
-VALUES (*);
-FROM range(*, *);;
 SELECT * FROM integers WHERE COLUMNS(*) IS NULL ORDER BY ALL;
 SELECT * FROM integers ORDER BY *, *;

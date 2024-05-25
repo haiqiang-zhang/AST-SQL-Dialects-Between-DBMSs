@@ -1,0 +1,155 @@
+--Query--
+SELECT * FROM inhe
+--Result--
+[('ee-col1', 'ee-col2', None, 'ee-col4')]
++--------------------+
+--Query--
+SELECT * FROM inhx
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM ctlb
+--Result--
+[('ee-col1', 'ee-col2')]
++--------------------+
+--Query--
+SELECT * FROM ctla
+--Result--
+[('ee-col1',)]
++--------------------+
+--Query--
+SELECT * FROM inhf
+--Result--
+[('text',)]
++--------------------+
+--Query--
+SELECT * FROM inhg
+--Result--
+[('x', 'text', 'y'), ('x', 'text', 'y')]
++--------------------+
+--Query--
+SELECT * FROM test_like_id_1
+--Result--
+[(1, 'b1')]
++--------------------+
+--Query--
+SELECT * FROM test_like_id_2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test_like_id_3
+--Result--
+[(1, 'b3')]
++--------------------+
+--Query--
+SELECT * FROM test_like_gen_1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM test_like_gen_2
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+SELECT * FROM test_like_gen_3
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT a, b, c FROM test_like_4a
+--Result--
+[(11, None, None)]
++--------------------+
+--Query--
+SELECT a, b, c FROM test_like_4b
+--Result--
+[(11, 42, None)]
++--------------------+
+--Query--
+SELECT a, b, c FROM test_like_4c
+--Result--
+[(11, None, 22)]
++--------------------+
+--Query--
+SELECT a, b, c FROM test_like_4d
+--Result--
+[(11, 42, 22)]
++--------------------+
+--Query--
+COMMENT ON STATISTICS ctlt1_a_b_stat IS 'ab stats'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON STATISTICS ctlt1_expr_stat IS 'ab expr stats'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN ctlt1.a IS 'A'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN ctlt1.b IS 'B'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON CONSTRAINT ctlt1_a_check ON ctlt1 IS 't1_a_check'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON INDEX ctlt1_pkey IS 'index pkey'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON INDEX ctlt1_b_key IS 'index b_key'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN ctlt2.c IS 'C'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN ctlt3.a IS 'A3'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON COLUMN ctlt3.c IS 'C'
+--Result--
+[]
++--------------------+
+--Query--
+COMMENT ON CONSTRAINT ctlt3_a_check ON ctlt3 IS 't3_a_check'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT description FROM pg_description, pg_constraint c WHERE classoid = 'pg_constraint'::regclass AND objoid = c.oid AND c.conrelid = 'ctlt1_inh'::regclass
+--Result--
+[('t1_a_check',)]
++--------------------+
+--Query--
+SELECT description FROM pg_description, pg_constraint c WHERE classoid = 'pg_constraint'::regclass AND objoid = c.oid AND c.conrelid = 'ctlt13_like'::regclass
+--Result--
+[('t3_a_check',)]
++--------------------+
+--Query--
+SELECT c.relname, objsubid, description FROM pg_description, pg_index i, pg_class c WHERE classoid = 'pg_class'::regclass AND objoid = i.indexrelid AND c.oid = i.indexrelid AND i.indrelid = 'ctlt_all'::regclass ORDER BY c.relname, objsubid
+--Result--
+[('ctlt_all_b_idx', 0, 'index b_key'), ('ctlt_all_pkey', 0, 'index pkey')]
++--------------------+
+--Query--
+SELECT s.stxname, objsubid, description FROM pg_description, pg_statistic_ext s WHERE classoid = 'pg_statistic_ext'::regclass AND objoid = s.oid AND s.stxrelid = 'ctlt_all'::regclass ORDER BY s.stxname, objsubid
+--Result--
+[('ctlt_all_a_b_stat', 0, 'ab stats'), ('ctlt_all_expr_stat', 0, 'ab expr stats')]
++--------------------+

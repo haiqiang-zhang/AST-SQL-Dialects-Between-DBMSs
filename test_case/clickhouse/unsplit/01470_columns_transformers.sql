@@ -14,7 +14,6 @@ SELECT * EXCEPT STRICT (i, j) from columns_transformers;
 SELECT * REPLACE STRICT i + 1 AS i from columns_transformers;
 SELECT * REPLACE(i + 1 AS i) APPLY(sum) from columns_transformers;
 SELECT columns_transformers.* REPLACE(j + 2 AS j, i + 1 AS i) APPLY(avg) from columns_transformers;
--- REPLACE after APPLY will not match anything
 SELECT a.* APPLY(toDate) REPLACE(i + 1 AS i) APPLY(any) from columns_transformers a;
 EXPLAIN SYNTAX SELECT * APPLY(sum) from columns_transformers;
 EXPLAIN SYNTAX SELECT columns_transformers.* APPLY(avg) from columns_transformers;

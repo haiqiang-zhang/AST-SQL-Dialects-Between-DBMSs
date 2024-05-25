@@ -1,3 +1,0 @@
-CREATE DATABASE mydb;;
-CREATE DATABASE mydb FROM './path';;
-DROP DATABASE mydb;

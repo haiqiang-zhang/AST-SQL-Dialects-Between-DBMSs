@@ -57,6 +57,4 @@ SELECT toDecimal128(1, 38) / toDecimal128(1, 0) SETTINGS decimal_check_overflow=
 SELECT toDecimal128(1, 38) / toDecimal128(1, 1) SETTINGS decimal_check_overflow=0;
 SELECT toDecimal128(1, 37) / toDecimal128(1, 1) SETTINGS decimal_check_overflow=1;
 SELECT toDecimal128(1, 19) / toDecimal128(1, 19) SETTINGS decimal_check_overflow=1;
--- { echoOff }
-
 DROP TABLE IF EXISTS decimal;

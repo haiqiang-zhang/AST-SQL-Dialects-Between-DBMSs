@@ -15,5 +15,4 @@ INSERT INTO shard_1.l VALUES (1);
 INSERT INTO t VALUES (0), (1), (2);
 USE test_01487;
 DROP DATABASE test_01487;
--- That query is invalid on the initiator node.
 set allow_experimental_analyzer = 0;

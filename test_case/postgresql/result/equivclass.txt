@@ -1,0 +1,10 @@
+--Query--
+explain (costs off)   select * from ec0 where ff = f1 and f1 = '42'::int8
+--Result--
+[('Index Scan using ec0_pkey on ec0',), ("  Index Cond: (ff = '42'::bigint)",), ("  Filter: (f1 = '42'::bigint)",)]
++--------------------+
+--Query--
+explain (costs off)     select * from overview where sqli = 'foo' order by sqli
+--Result--
+[('Seq Scan on undername',), ("  Filter: (f1 = 'foo'::name)",)]
++--------------------+

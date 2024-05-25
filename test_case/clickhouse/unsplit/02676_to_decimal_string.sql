@@ -6,7 +6,6 @@ SELECT toDecimalString(2.9876, 60);
 SELECT toDecimalString(2.1456, 2);
 SELECT toDecimalString(-2.9876, 60);
 SELECT toDecimalString(-2.1456, 2);
--- Float32 and Float64 tests. No sense to test big float precision -- the result will be a mess anyway.
 SELECT toDecimalString(64.123::Float32, 10);
 SELECT toDecimalString(64.234::Float64, 10);
 SELECT toDecimalString(-64.123::Float32, 10);

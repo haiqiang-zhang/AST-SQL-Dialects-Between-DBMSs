@@ -1,0 +1,130 @@
+--Query--
+SELECT * FROM a JOIN b USING (hello)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM a JOIN b USING (hello, "HELLO")
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM a JOIN b USING (hello) JOIN c USING (hello)
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM a JOIN b USING (hello) JOIN c USING ("HELLO")
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM a JOIN b USING (hello) JOIN c USING (hello) JOIN d USING (hello)
+--Result--
+[(1, 2, 3, 4, 5)]
++--------------------+
+--Query--
+SELECT * FROM a JOIN b USING ("HELLO") JOIN c USING ("HeLLo") JOIN d USING (hello)
+--Result--
+[(1, 2, 3, 4, 5)]
++--------------------+
+--Query--
+SELECT * FROM a JOIN b USING (hello) JOIN c USING (hello) JOIN d USING (hello) JOIN e USING (hello)
+--Result--
+[(1, 2, 3, 4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM a FULL OUTER JOIN b USING (hello)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM a FULL OUTER JOIN b USING (hello) FULL OUTER JOIN c USING (hello)
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM a FULL OUTER JOIN b USING (hello) FULL OUTER JOIN c USING (hello) FULL OUTER JOIN d USING (hello)
+--Result--
+[(1, 2, 3, 4, 5)]
++--------------------+
+--Query--
+SELECT * FROM a FULL OUTER JOIN b USING (hello) FULL OUTER JOIN c USING (hello) FULL OUTER JOIN d USING (hello) FULL OUTER JOIN e USING (hello)
+--Result--
+[(1, 2, 3, 4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL JOIN b
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL JOIN b NATURAL JOIN c
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL JOIN b NATURAL JOIN c NATURAL JOIN d
+--Result--
+[(1, 2, 3, 4, 5)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL JOIN b NATURAL JOIN c NATURAL JOIN d NATURAL JOIN e
+--Result--
+[(1, 2, 3, 4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM (a NATURAL JOIN b NATURAL JOIN c) NATURAL JOIN (d NATURAL JOIN e)
+--Result--
+[(1, 2, 3, 4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL FULL OUTER JOIN b
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL FULL OUTER JOIN b NATURAL FULL OUTER JOIN c
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL FULL OUTER JOIN b NATURAL FULL OUTER JOIN c NATURAL FULL OUTER JOIN d
+--Result--
+[(1, 2, 3, 4, 5)]
++--------------------+
+--Query--
+SELECT * FROM a NATURAL FULL OUTER JOIN b NATURAL FULL OUTER JOIN c NATURAL FULL OUTER JOIN d NATURAL FULL OUTER JOIN e
+--Result--
+[(1, 2, 3, 4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM (a NATURAL FULL OUTER JOIN b NATURAL FULL OUTER JOIN c) NATURAL FULL OUTER JOIN (d NATURAL FULL OUTER JOIN e)
+--Result--
+[(1, 2, 3, 4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 "hello", 2 "hello") NATURAL JOIN (SELECT 1 "hello", 2 "hello")
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 "hello", 2 "HeLlO") NATURAL JOIN (SELECT 1 "hello", 2 "HeLlO")
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 "hello", 2 "hello") t1, (SELECT 1 "hello", 2 "hello") t2
+--Result--
+[(1, 2, 1, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 "hello", 2 "hello") t1 JOIN (SELECT 1 "hello", 2 "hello") t2 USING (hello)
+--Result--
+[(1, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 "hello", 2 "HeLlO") t1 JOIN (SELECT 1 "hello", 2 "HeLlO") t2 USING (hello)
+--Result--
+[(1, 2, 2)]
++--------------------+

@@ -1,0 +1,135 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA verify_parallelism
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA threads=4
+--Result--
+[]
++--------------------+
+--Query--
+COPY test3 TO '__TEST_DIR__/part' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE, FILENAME_PATTERN "leading_{uuid}_trailing")
+--Result--
+[(0,)]
++--------------------+
+--Query--
+COPY test4 TO '__TEST_DIR__/part' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+COPY test5 TO '__TEST_DIR__/part' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE, FILENAME_PATTERN "basename")
+--Result--
+[(0,)]
++--------------------+
+--Query--
+COPY testpto TO '__TEST_DIR__/pto' (FORMAT PARQUET, PER_THREAD_OUTPUT TRUE, OVERWRITE_OR_IGNORE TRUE, FILENAME_PATTERN "basename_{uuid}")
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+PRAGMA threads=1
+--Result--
+[]
++--------------------+
+--Query--
+COPY test5 TO '__TEST_DIR__/to_be_overwritten2' (FORMAT PARQUET, PARTITION_BY (a), OVERWRITE_OR_IGNORE)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+COPY test5 TO '__TEST_DIR__/directory0' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE, FILENAME_PATTERN "my_filename")
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM test2
+--Result--
+[(0, 0, 0.0), (1, 2, 1.0), (2, 4, 4.0), (3, 6, 9.0), (4, 8, 16.0), (5, 10, 25.0), (6, 12, 36.0), (7, 14, 49.0), (8, 16, 64.0), (9, 18, 81.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/leading_????????-????-4???-????-????????????.parquet'
+--Result--
+[(9, 18, 81.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/leading_????????-????-4???-????-????????????_trailing.parquet'
+--Result--
+[(9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/leading_????????-????-4???-????-????????????*.parquet'
+--Result--
+[(9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 18, 81.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/data_[0-9]*.parquet'
+--Result--
+[(9, 36, 6561.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/*.parquet'
+--Result--
+[(9, 45, 59049.0), (9, 36, 6561.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 18, 81.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/basename[0-9]*.parquet'
+--Result--
+[(9, 45, 59049.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/part/a=9/*.parquet'
+--Result--
+[(9, 45, 59049.0), (9, 36, 6561.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 27, 729.0), (9, 18, 81.0)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/to_be_overwritten/a=9/a_file_name*')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/to_be_overwritten/a=9/a_file_name*.parquet'
+--Result--
+[(9, 36, 6561.0)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/incorrect_pos/a=5/a_name_with_????????-????-4???-????-????????????_numbers.parquet'
+--Result--
+[(5, 25, 3125.0)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM '__TEST_DIR__/pto/basename_????????-????-4???-????-????????????.parquet'
+--Result--
+[(80000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/pto/basename_????????-????-4???-????-????????????.parquet')
+--Result--
+[(32,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/to_be_overwritten2/a=9/*')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/to_be_overwritten2/a=9/data_0*.parquet'
+--Result--
+[(9, 45, 59049.0)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/directory0/a=7/*')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM '__TEST_DIR__/directory0/a=7/my_filename0.parquet'
+--Result--
+[(7, 35, 16807.0)]
++--------------------+

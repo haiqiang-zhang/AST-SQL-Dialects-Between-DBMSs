@@ -1,4 +1,3 @@
--- These values are within the extended range of DateTime64 [1925-01-01, 2284-01-01)
 SELECT toTimeZone(toDateTime(-2, 2), 'Asia/Istanbul');
 SELECT toDateTime64(-2, 2, 'Asia/Istanbul');
 SELECT CAST(-1 AS DateTime64(0, 'Asia/Istanbul'));

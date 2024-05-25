@@ -90,7 +90,7 @@ d INT DEFAULT (-a + 1),
 c INT DEFAULT (-d)
 );
 DROP TABLE t3;
-CREATE TABLE `t1` (i varchar(200) DEFAULT (_utf8mb4"\U+1F9DBÃÂ¢ÃÂÃÂ"));
+CREATE TABLE `t1` (i varchar(200) DEFAULT (_utf8mb4"\U+1F9DBÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ"));
 SELECT COLUMN_NAME, COLUMN_DEFAULT, DATA_TYPE, EXTRA, GENERATION_EXPRESSION
 FROM information_schema.columns WHERE table_name= "t1";
 INSERT INTO t1 values (),();

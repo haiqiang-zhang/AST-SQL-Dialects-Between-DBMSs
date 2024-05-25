@@ -1,0 +1,255 @@
+--Query--
+select relhassubclass from pg_class where relname = 'idxpart_idx'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select indexdef from pg_indexes where indexname like 'idxpart_idx%'
+--Result--
+[('CREATE INDEX idxpart_idx ON ONLY public.idxpart USING btree (a)',)]
++--------------------+
+--Query--
+select relhassubclass from pg_class where relname = 'idxpart_idx'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select relname, relkind, relhassubclass, inhparent::regclass     from pg_class left join pg_index ix on (indexrelid = oid) 	left join pg_inherits on (ix.indexrelid = inhrelid) 	where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p', True, None), ('idxpart1', 'r', False, None), ('idxpart1_a_idx', 'i', False, 'idxpart_a_idx'), ('idxpart2', 'p', True, None), ('idxpart21', 'r', False, None), ('idxpart21_a_idx', 'i', False, 'idxpart2_a_idx'), ('idxpart2_a_idx', 'I', True, 'idxpart_a_idx'), ('idxpart_a_idx', 'I', True, None)]
++--------------------+
+--Query--
+SELECT col2 FROM idxpart_two fk LEFT OUTER JOIN idxpart pk ON (col1 = col2)
+--Result--
+[]
++--------------------+
+--Query--
+select relname, relpartbound from pg_class   where relname in ('idxpart_c', 'idxpart1_c')   order by relname
+--Result--
+[('idxpart1_c', None), ('idxpart_c', None)]
++--------------------+
+--Query--
+select relname, relkind, relhassubclass, inhparent::regclass     from pg_class left join pg_index ix on (indexrelid = oid) 	left join pg_inherits on (ix.indexrelid = inhrelid) 	where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p', True, None), ('idxpart1', 'r', False, None), ('idxpart1_a_b_idx', 'i', False, 'idxpart_a_b_idx'), ('idxpart_a_b_idx', 'I', True, None)]
++--------------------+
+--Query--
+select relname, relkind from pg_class   where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p'), ('idxpart1', 'r')]
++--------------------+
+--Query--
+select relname, relkind from pg_class   where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p'), ('idxpart_a_idx', 'I')]
++--------------------+
+--Query--
+select relname, relkind from pg_class   where relname like 'idxpart_temp%' order by relname
+--Result--
+[('idxpart_temp', 'p')]
++--------------------+
+--Query--
+select indexrelid::regclass, indrelid::regclass   from pg_index where indexrelid::regclass::text like 'idxpart%'
+--Result--
+[]
++--------------------+
+--Query--
+select indexrelid::regclass, indrelid::regclass, inhparent::regclass   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid) where indexrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart1_a_idx', 'idxpart1', 'idxpart_a_idx'), ('idxpart22_a_idx', 'idxpart22', None), ('idxpart2_a_idx', 'idxpart2', 'idxpart_a_idx'), ('idxpart_a_idx', 'idxpart', None)]
++--------------------+
+--Query--
+select indexrelid::regclass, indrelid::regclass, inhparent::regclass   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid) where indexrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart1_a_idx', 'idxpart1', 'idxpart_a_idx'), ('idxpart22_a_idx', 'idxpart22', 'idxpart2_a_idx'), ('idxpart2_a_idx', 'idxpart2', 'idxpart_a_idx'), ('idxpart_a_idx', 'idxpart', None)]
++--------------------+
+--Query--
+select relname, relkind, inhparent::regclass     from pg_class left join pg_index ix on (indexrelid = oid) 	left join pg_inherits on (ix.indexrelid = inhrelid) 	where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p', None), ('idxpart1', 'r', None), ('idxpart1_a_idx', 'i', None), ('idxpart1_b_c_idx', 'i', None), ('idxparti', 'I', None), ('idxparti2', 'I', None)]
++--------------------+
+--Query--
+select relname, relkind, inhparent::regclass     from pg_class left join pg_index ix on (indexrelid = oid) 	left join pg_inherits on (ix.indexrelid = inhrelid) 	where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p', None), ('idxpart1', 'r', None), ('idxpart1_a_idx', 'i', 'idxparti'), ('idxpart1_b_c_idx', 'i', 'idxparti2'), ('idxparti', 'I', None), ('idxparti2', 'I', None)]
++--------------------+
+--Query--
+select relname, relkind, inhparent::regclass     from pg_class left join pg_index ix on (indexrelid = oid) 	left join pg_inherits on (ix.indexrelid = inhrelid) 	where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p', None), ('idxpart1', 'r', None), ('idxpart1_a_idx', 'i', 'idxparti'), ('idxpart1_b_c_idx', 'i', 'idxparti2'), ('idxpart1_expr_idx', 'i', None), ('idxparti', 'I', None), ('idxparti2', 'I', None)]
++--------------------+
+--Query--
+select relname, relkind, inhparent::regclass     from pg_class left join pg_index ix on (indexrelid = oid) 	left join pg_inherits on (ix.indexrelid = inhrelid) 	where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p', None), ('idxpart1', 'r', None), ('idxpart1_a_idx', 'i', 'idxparti'), ('idxpart1_b_c_idx', 'i', 'idxparti2'), ('idxpart1_expr_idx', 'i', 'idxparti3'), ('idxparti', 'I', None), ('idxparti2', 'I', None), ('idxparti3', 'I', None)]
++--------------------+
+--Query--
+select relname, indisvalid from pg_class join pg_index on indexrelid = oid    where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart1_a_idx', False), ('idxpart_a_idx', False)]
++--------------------+
+--Query--
+select relname, indisvalid from pg_class join pg_index on indexrelid = oid    where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart1_a_idx', False), ('idxpart_a_idx', False)]
++--------------------+
+--Query--
+select relname, indisvalid from pg_class join pg_index on indexrelid = oid    where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart11_a_idx', True), ('idxpart1_a_idx', True), ('idxpart_a_idx', True)]
++--------------------+
+--Query--
+select relname, relkind from pg_class where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p'), ('idxpart1', 'r'), ('idxpart1_a_idx', 'i'), ('idxpart2', 'r'), ('idxpart2_a_idx', 'i'), ('idxpart3', 'r'), ('idxpart3_a_idx', 'i'), ('idxpart_a_idx', 'I')]
++--------------------+
+--Query--
+select relname, relkind from pg_class where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p'), ('idxpart1', 'r'), ('idxpart2', 'r'), ('idxpart3', 'r'), ('idxpart_a_idx', 'I')]
++--------------------+
+--Query--
+select relname, relkind from pg_class where relname like 'idxpart%' order by relname
+--Result--
+[]
++--------------------+
+--Query--
+select relname, relkind from pg_class where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p'), ('idxpart1', 'r'), ('idxpart1_a_idx', 'i'), ('idxpart2', 'r'), ('idxpart2_a_idx', 'i'), ('idxpart3', 'r'), ('idxpart3_a_idx', 'i'), ('idxpart_a_idx', 'I')]
++--------------------+
+--Query--
+select relname, relkind from pg_class where relname like 'idxpart%' order by relname
+--Result--
+[('idxpart', 'p'), ('idxpart1', 'r'), ('idxpart1_a_idx', 'i'), ('idxpart2', 'r'), ('idxpart2_a_idx', 'i'), ('idxpart3', 'r'), ('idxpart3_a_idx', 'i')]
++--------------------+
+--Query--
+select relname, relkind from pg_class where relname like 'idxpart%' order by relname
+--Result--
+[]
++--------------------+
+--Query--
+select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
+--Result--
+[('idxpart1_expr_idx', 'idxpart_expr_idx', 'CREATE INDEX idxpart1_expr_idx ON public.idxpart1 USING btree (((a + b)))'), ('idxpart2_expr_idx', 'idxpart_expr_idx', 'CREATE INDEX idxpart2_expr_idx ON public.idxpart2 USING btree (((a + b)))'), ('idxpart3_expr_idx', 'idxpart_expr_idx', 'CREATE INDEX idxpart3_expr_idx ON public.idxpart3 USING btree (((a + b)))')]
++--------------------+
+--Query--
+select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class left join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
+--Result--
+[('idxpart1_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a COLLATE "C")'), ('idxpart2_a_idx', None, 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a COLLATE "POSIX")'), ('idxpart2_a_idx1', None, 'CREATE INDEX idxpart2_a_idx1 ON public.idxpart2 USING btree (a)'), ('idxpart2_a_idx2', 'idxpart_a_idx', 'CREATE INDEX idxpart2_a_idx2 ON public.idxpart2 USING btree (a COLLATE "C")'), ('idxpart3_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart3_a_idx ON public.idxpart3 USING btree (a COLLATE "C")'), ('idxpart4_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart4_a_idx ON public.idxpart4 USING btree (a COLLATE "C")'), ('idxpart_a_idx', None, 'CREATE INDEX idxpart_a_idx ON ONLY public.idxpart USING btree (a COLLATE "C")')]
++--------------------+
+--Query--
+select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class left join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
+--Result--
+[('idxpart1_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a text_pattern_ops)'), ('idxpart2_a_idx', None, 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a)'), ('idxpart2_a_idx1', 'idxpart_a_idx', 'CREATE INDEX idxpart2_a_idx1 ON public.idxpart2 USING btree (a text_pattern_ops)'), ('idxpart3_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart3_a_idx ON public.idxpart3 USING btree (a text_pattern_ops)'), ('idxpart4_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart4_a_idx ON public.idxpart4 USING btree (a text_pattern_ops)'), ('idxpart_a_idx', None, 'CREATE INDEX idxpart_a_idx ON ONLY public.idxpart USING btree (a text_pattern_ops)')]
++--------------------+
+--Query--
+select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class left join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
+--Result--
+[('idxpart1_1_idx', 'idxpart_1_idx', 'CREATE INDEX idxpart1_1_idx ON public.idxpart1 USING btree (b, a)'), ('idxpart1_1b_idx', None, 'CREATE INDEX idxpart1_1b_idx ON public.idxpart1 USING btree (b)'), ('idxpart1_2_idx', 'idxpart_2_idx', 'CREATE INDEX idxpart1_2_idx ON public.idxpart1 USING btree (((b + a))) WHERE (a > 1)'), ('idxpart1_2b_idx', None, 'CREATE INDEX idxpart1_2b_idx ON public.idxpart1 USING btree (((a + b))) WHERE (a > 1)'), ('idxpart1_2c_idx', None, 'CREATE INDEX idxpart1_2c_idx ON public.idxpart1 USING btree (((b + a))) WHERE (b > 1)'), ('idxpart_1_idx', None, 'CREATE INDEX idxpart_1_idx ON ONLY public.idxpart USING btree (b, a)'), ('idxpart_2_idx', None, 'CREATE INDEX idxpart_2_idx ON ONLY public.idxpart USING btree (((b + a))) WHERE (a > 1)')]
++--------------------+
+--Query--
+select c.relname, pg_get_indexdef(indexrelid)   from pg_class c join pg_index i on c.oid = i.indexrelid   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart1_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a)'), ('idxpart1_c_b_idx', 'CREATE INDEX idxpart1_c_b_idx ON public.idxpart1 USING btree (c, b)'), ('idxpart2_a_idx', 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a)'), ('idxpart2_c_b_idx', 'CREATE INDEX idxpart2_c_b_idx ON public.idxpart2 USING btree (c, b)'), ('idxparti', 'CREATE INDEX idxparti ON ONLY public.idxpart USING btree (a)'), ('idxparti2', 'CREATE INDEX idxparti2 ON ONLY public.idxpart USING btree (c, b)')]
++--------------------+
+--Query--
+select c.relname, pg_get_indexdef(indexrelid)   from pg_class c join pg_index i on c.oid = i.indexrelid   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart1_abs_idx', 'CREATE INDEX idxpart1_abs_idx ON public.idxpart1 USING btree (abs(b))'), ('idxpart1_expr_idx', 'CREATE INDEX idxpart1_expr_idx ON public.idxpart1 USING btree (((b + 1)))'), ('idxpart2_abs_idx', 'CREATE INDEX idxpart2_abs_idx ON public.idxpart2 USING btree (abs(b))'), ('idxpart2_expr_idx', 'CREATE INDEX idxpart2_expr_idx ON public.idxpart2 USING btree (((b + 1)))'), ('idxpart_abs_idx', 'CREATE INDEX idxpart_abs_idx ON ONLY public.idxpart USING btree (abs(b))'), ('idxpart_expr_idx', 'CREATE INDEX idxpart_expr_idx ON ONLY public.idxpart USING btree (((b + 1)))')]
++--------------------+
+--Query--
+select c.relname, pg_get_indexdef(indexrelid)   from pg_class c join pg_index i on c.oid = i.indexrelid   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart1_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a) WHERE (b > 1000)'), ('idxpart2_a_idx', 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a) WHERE (b > 1000)'), ('idxpart_a_idx', 'CREATE INDEX idxpart_a_idx ON ONLY public.idxpart USING btree (a) WHERE (b > 1000)')]
++--------------------+
+--Query--
+select attrelid::regclass, attname, attnum from pg_attribute   where attrelid::regclass::text like 'idxpart%' and attnum > 0   order by attrelid::regclass, attnum
+--Result--
+[('idxpart1', '........pg.dropped.1........', 1), ('idxpart1', '........pg.dropped.2........', 2), ('idxpart1', 'col_keep', 3), ('idxpart1', '........pg.dropped.4........', 4), ('idxpart1_col_keep_idx', 'col_keep', 1), ('idxpart', 'col_keep', 1), ('idxpart_col_keep_idx', 'col_keep', 1)]
++--------------------+
+--Query--
+select attrelid::regclass, attname, attnum from pg_attribute   where attrelid::regclass::text like 'idxpart%' and attnum > 0   order by attrelid::regclass, attnum
+--Result--
+[('idxpart', '........pg.dropped.1........', 1), ('idxpart', '........pg.dropped.2........', 2), ('idxpart', 'col_keep', 3), ('idxpart', '........pg.dropped.4........', 4), ('idxpart1', 'col_keep', 1), ('idxpart1_col_keep_idx', 'col_keep', 1), ('idxpart_col_keep_idx', 'col_keep', 1)]
++--------------------+
+--Query--
+select conname, contype, conrelid::regclass, conindid::regclass, conkey   from pg_constraint where conrelid::regclass::text like 'idxpart%'   order by conrelid::regclass::text, conname
+--Result--
+[('idxpart_pkey', 'p', 'idxpart', 'idxpart_pkey', [1, 2]), ('idxpart1_pkey', 'p', 'idxpart1', 'idxpart1_pkey', [1, 2]), ('idxpart2_pkey', 'p', 'idxpart2', 'idxpart2_pkey', [1, 2]), ('idxpart21_pkey', 'p', 'idxpart21', 'idxpart21_pkey', [1, 2]), ('idxpart22_pkey', 'p', 'idxpart22', 'idxpart22_pkey', [1, 2]), ('idxpart3_pkey', 'p', 'idxpart3', 'idxpart3_pkey', [2, 1])]
++--------------------+
+--Query--
+select conname, contype, conrelid::regclass, conindid::regclass, conkey   from pg_constraint where conrelid::regclass::text like 'idxpart%'   order by conname
+--Result--
+[('idxpart21_pkey', 'p', 'idxpart21', 'idxpart21_pkey', [1, 2]), ('idxpart2_pkey', 'p', 'idxpart2', 'idxpart2_pkey', [1, 2]), ('idxpart_pkey', 'p', 'idxpart', 'idxpart_pkey', [1, 2])]
++--------------------+
+--Query--
+select indrelid::regclass, indexrelid::regclass, inhparent::regclass, indisvalid,   conname, conislocal, coninhcount, connoinherit, convalidated   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid)   left join pg_constraint con on (idx.indexrelid = con.conindid)   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart0', 'idxpart0_pkey', 'idxpart_pkey', True, 'idxpart0_pkey', False, 1, True, True), ('idxpart1', 'idxpart1_pkey', 'idxpart_pkey', True, 'idxpart1_pkey', False, 1, False, True), ('idxpart', 'idxpart_pkey', None, True, 'idxpart_pkey', True, 0, True, True)]
++--------------------+
+--Query--
+select indrelid::regclass, indexrelid::regclass, inhparent::regclass, indisvalid,   conname, conislocal, coninhcount, connoinherit, convalidated   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid)   left join pg_constraint con on (idx.indexrelid = con.conindid)   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[]
++--------------------+
+--Query--
+select indrelid::regclass, indexrelid::regclass, inhparent::regclass, indisvalid,   conname, conislocal, coninhcount, connoinherit, convalidated   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid)   left join pg_constraint con on (idx.indexrelid = con.conindid)   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart0', 'idxpart0_pkey', None, True, 'idxpart0_pkey', True, 0, True, True), ('idxpart', 'idxpart_pkey', None, False, 'idxpart_pkey', True, 0, True, True)]
++--------------------+
+--Query--
+select indrelid::regclass, indexrelid::regclass, inhparent::regclass, indisvalid,   conname, conislocal, coninhcount, connoinherit, convalidated   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid)   left join pg_constraint con on (idx.indexrelid = con.conindid)   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart0', 'idxpart0_pkey', 'idxpart_pkey', True, 'idxpart0_pkey', False, 1, True, True), ('idxpart', 'idxpart_pkey', None, True, 'idxpart_pkey', True, 0, True, True)]
++--------------------+
+--Query--
+select indrelid::regclass, indexrelid::regclass, inhparent::regclass, indisvalid,   conname, conislocal, coninhcount, connoinherit, convalidated   from pg_index idx left join pg_inherits inh on (idx.indexrelid = inh.inhrelid)   left join pg_constraint con on (idx.indexrelid = con.conindid)   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('idxpart1', 'idxpart1_a_idx', None, True, None, None, None, None, None), ('idxpart1', 'idxpart1_pkey', 'idxpart_pkey', True, 'idxpart1_pkey', False, 1, False, True), ('idxpart', 'idxpart_pkey', None, True, 'idxpart_pkey', True, 0, True, True)]
++--------------------+
+--Query--
+select tableoid::regclass, * from idxpart order by a
+--Result--
+[('idxpart1', 0, 'zero'), ('idxpart1', 16, 'sixteen'), ('idxpart1', 42, 'life'), ('idxpart1', 65536, 'sixteen'), ('idxpart2', 142857, 'one'), ('idxpart2', 285714, 'two'), ('idxpart2', 572814, 'inserted first'), ('idxpart2', 857142, 'six')]
++--------------------+
+--Query--
+explain (costs off) select * from idxpart where b = 'abcd'
+--Result--
+[('Bitmap Heap Scan on idxpart1 idxpart',), ("  Recheck Cond: (b = 'abcd'::text)",), ('  ->  Bitmap Index Scan on idxpart1_b_idx',), ("        Index Cond: (b = 'abcd'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from idxpart where b = 'abcd'
+--Result--
+[('Bitmap Heap Scan on idxpart1 idxpart',), ("  Recheck Cond: (b = 'abcd'::text)",), ('  ->  Bitmap Index Scan on idxpart1_b_idx',), ("        Index Cond: (b = 'abcd'::text)",)]
++--------------------+
+--Query--
+explain (costs off) select * from idxpart where c @> array[42]
+--Result--
+[('Bitmap Heap Scan on idxpart1 idxpart',), ("  Recheck Cond: (c @> '{42}'::integer[])",), ('  ->  Bitmap Index Scan on idxpart1_c_idx',), ("        Index Cond: (c @> '{42}'::integer[])",)]
++--------------------+
+--Query--
+select indexrelid::regclass, indisvalid,        indrelid::regclass, inhparent::regclass   from pg_index idx left join        pg_inherits inh on (idx.indexrelid = inh.inhrelid)   where indexrelid::regclass::text like 'parted_inval%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('parted_inval_idx', True, 'parted_inval_tab', None), ('parted_inval_ixd_1', False, 'parted_inval_tab_1', None), ('parted_inval_tab_1_1_a_idx', True, 'parted_inval_tab_1_1', 'parted_inval_tab_1_a_idx'), ('parted_inval_tab_1_2_a_idx', True, 'parted_inval_tab_1_2', 'parted_inval_tab_1_a_idx'), ('parted_inval_tab_1_a_idx', True, 'parted_inval_tab_1', 'parted_inval_idx')]
++--------------------+
+--Query--
+select indexrelid::regclass, indisvalid,        indrelid::regclass, inhparent::regclass   from pg_index idx left join        pg_inherits inh on (idx.indexrelid = inh.inhrelid)   where indexrelid::regclass::text like 'parted_isvalid%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[]
++--------------------+
+--Query--
+select indexrelid::regclass, indisvalid, indisreplident,        indrelid::regclass, inhparent::regclass   from pg_index idx left join        pg_inherits inh on (idx.indexrelid = inh.inhrelid)   where indexrelid::regclass::text like 'parted_replica%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('parted_replica_idx', False, False, 'parted_replica_tab', None), ('parted_replica_idx_1', False, True, 'parted_replica_tab_1', None), ('parted_replica_idx_11', True, False, 'parted_replica_tab_11', None)]
++--------------------+
+--Query--
+select indexrelid::regclass, indisvalid, indisreplident,        indrelid::regclass, inhparent::regclass   from pg_index idx left join        pg_inherits inh on (idx.indexrelid = inh.inhrelid)   where indexrelid::regclass::text like 'parted_replica%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('parted_replica_idx', False, False, 'parted_replica_tab', None), ('parted_replica_idx_1', False, True, 'parted_replica_tab_1', 'parted_replica_idx'), ('parted_replica_idx_11', True, False, 'parted_replica_tab_11', None)]
++--------------------+
+--Query--
+select indexrelid::regclass, indisvalid, indisreplident,        indrelid::regclass, inhparent::regclass   from pg_index idx left join        pg_inherits inh on (idx.indexrelid = inh.inhrelid)   where indexrelid::regclass::text like 'parted_replica%'   order by indexrelid::regclass::text collate "C"
+--Result--
+[('parted_replica_idx', True, False, 'parted_replica_tab', None), ('parted_replica_idx_1', True, True, 'parted_replica_tab_1', 'parted_replica_idx'), ('parted_replica_idx_11', True, False, 'parted_replica_tab_11', 'parted_replica_idx_1')]
++--------------------+

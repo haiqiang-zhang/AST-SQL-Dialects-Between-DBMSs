@@ -43,10 +43,8 @@ INSERT INTO tbl1 SELECT * FROM tbl1;
 DELETE FROM tbl1 WHERE oid%2;
 BEGIN;
 PRAGMA incremental_vacuum;
--- Vacuum up the two pages.
-    CREATE TABLE tbl2(b);
--- Use one free page as a table root.
-    INSERT INTO tbl2 VALUES('a nice string');
+CREATE TABLE tbl2(b);
+INSERT INTO tbl2 VALUES('a nice string');
 SELECT * FROM tbl2;
 DROP TABLE tbl1;
 DROP TABLE tbl2;

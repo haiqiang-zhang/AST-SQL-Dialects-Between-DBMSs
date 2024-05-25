@@ -10,7 +10,6 @@ PRAGMA journal_mode = truncate;
 INSERT INTO t1 VALUES(5, 6);
 SELECT * FROM t1;
 CREATE TABLE t2(a UNIQUE, b UNIQUE);
--- 64;
 SELECT count(*) FROM t2;
 PRAGMA integrity_check;
 PRAGMA integrity_check;

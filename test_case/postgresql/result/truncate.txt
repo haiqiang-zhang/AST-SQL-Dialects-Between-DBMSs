@@ -1,0 +1,370 @@
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+TRUNCATE truncate_a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+TRUNCATE truncate_a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE truncate_a,trunc_b,trunc_e
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE trunc_c,trunc_d,trunc_e
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE trunc_c,trunc_d,trunc_e,truncate_a,trunc_b
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE truncate_a CASCADE
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE trunc_c,truncate_a,trunc_d,trunc_e,trunc_b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a    UNION ALL  SELECT * FROM trunc_c    UNION ALL  SELECT * FROM trunc_b    UNION ALL  SELECT * FROM trunc_d
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_e
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE trunc_c CASCADE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a    UNION ALL  SELECT * FROM trunc_c    UNION ALL  SELECT * FROM trunc_b    UNION ALL  SELECT * FROM trunc_d
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_e
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+TRUNCATE trunc_f
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+TRUNCATE ONLY trunc_f
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_fa
+--Result--
+[(3, 'three'), (5, 'five')]
++--------------------+
+--Query--
+SELECT * FROM trunc_faa
+--Result--
+[(5, 'five', 'FIVE')]
++--------------------+
+--Query--
+TRUNCATE ONLY trunc_fb, ONLY trunc_fa
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_fa
+--Result--
+[(5, 'five')]
++--------------------+
+--Query--
+SELECT * FROM trunc_faa
+--Result--
+[(5, 'five', 'FIVE')]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_fa
+--Result--
+[(3, 'three'), (5, 'five')]
++--------------------+
+--Query--
+SELECT * FROM trunc_faa
+--Result--
+[(5, 'five', 'FIVE')]
++--------------------+
+--Query--
+TRUNCATE ONLY trunc_fb, trunc_fa
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_f
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_fa
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM trunc_faa
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) as "Row count in test table" FROM trunc_trigger_test
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_trigger_log
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE trunc_trigger_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) as "Row count in test table" FROM trunc_trigger_test
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_trigger_log
+--Result--
+[]
++--------------------+
+--Query--
+truncate trunc_trigger_log
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) as "Row count in test table" FROM trunc_trigger_test
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_trigger_log
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE trunc_trigger_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) as "Row count in test table" FROM trunc_trigger_test
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM trunc_trigger_log
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(1, 33), (2, 34)]
++--------------------+
+--Query--
+TRUNCATE truncate_a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(3, 35), (4, 36)]
++--------------------+
+--Query--
+TRUNCATE truncate_a RESTART IDENTITY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(1, 33), (2, 34)]
++--------------------+
+--Query--
+SELECT * FROM truncate_b
+--Result--
+[(44,), (45,)]
++--------------------+
+--Query--
+TRUNCATE truncate_b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_b
+--Result--
+[(46,), (47,)]
++--------------------+
+--Query--
+TRUNCATE truncate_b RESTART IDENTITY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_b
+--Result--
+[(44,), (45,)]
++--------------------+
+--Query--
+TRUNCATE truncate_a RESTART IDENTITY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(1, 33)]
++--------------------+
+--Query--
+SELECT * FROM truncate_a
+--Result--
+[(1, 33), (2, 34), (3, 35), (4, 36)]
++--------------------+
+--Query--
+TRUNCATE truncparted
+--Result--
+[]
++--------------------+
+--Query--
+select tp_ins_data()
+--Result--
+[('',)]
++--------------------+
+--Query--
+TRUNCATE TABLE truncprim, truncpart
+--Result--
+[]
++--------------------+
+--Query--
+select * from tp_chk_data()
+--Result--
+[]
++--------------------+
+--Query--
+select tp_ins_data()
+--Result--
+[('',)]
++--------------------+
+--Query--
+TRUNCATE TABLE truncprim CASCADE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tp_chk_data()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tp_ins_data()
+--Result--
+[('',)]
++--------------------+
+--Query--
+TRUNCATE TABLE truncpart
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tp_chk_data()
+--Result--
+[('truncprim', 1, None, None), ('truncprim', 100, None, None), ('truncprim', 150, None, None)]
++--------------------+
+--Query--
+TRUNCATE TABLE trunc_a1 CASCADE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM ref_b
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE trunc_a21 CASCADE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a as "from table ref_c" FROM ref_c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a as "from table trunc_a" FROM trunc_a ORDER BY a
+--Result--
+[(15,), (20,), (25,)]
++--------------------+

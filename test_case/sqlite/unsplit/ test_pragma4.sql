@@ -1,6 +1,5 @@
 CREATE TABLE t1(a, b, c);
 ATTACH 'test.db2' AS aux;
-CREATE TABLE aux.t2(d, e, f);
 PRAGMA table_info = t1;
 PRAGMA table_info = t2;
 DROP TABLE t1;
@@ -38,7 +37,6 @@ SELECT * FROM main.sqlite_master, aux.sqlite_master;
 CREATE UNIQUE INDEX main.i1 ON t1(a);
 CREATE UNIQUE INDEX aux.i2 ON t2(d);
 CREATE TABLE main.c1 (a, b, c REFERENCES t1(a));
-CREATE TABLE aux.c2 (d, e, r REFERENCES t2(d));
 SELECT * FROM pragma_foreign_key_list('c1');
 SELECT * FROM pragma_foreign_key_list('c2');
 DROP TABLE c1;

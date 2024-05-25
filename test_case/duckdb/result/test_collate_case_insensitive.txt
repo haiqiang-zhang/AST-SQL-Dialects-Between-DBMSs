@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM collate_test WHERE s='HeLlo'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM collate_test WHERE s='MÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂhleisen'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM collate_test WHERE s='world'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT collate_test.s, collate_join_table.s, i FROM collate_test JOIN collate_join_table ON (collate_test.s=collate_join_table.s) ORDER BY i
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM collate_test ORDER BY s
+--Result--
+[('Hallo',), ('hallo',)]
++--------------------+
+--Query--
+SELECT DISTINCT s FROM collate_test
+--Result--
+[('Hallo',)]
++--------------------+

@@ -1,0 +1,60 @@
+--Query--
+PREPARE s1 AS SELECT CAST($1 AS INTEGER), CAST($2 AS STRING)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s1(42, 'dpfkg')
+--Result--
+[(42, 'dpfkg')]
++--------------------+
+--Query--
+EXECUTE s1(43, 'asdf')
+--Result--
+[(43, 'asdf')]
++--------------------+
+--Query--
+DEALLOCATE s1
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE s2
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 AS SELECT $1+$2
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 AS SELECT NOT($1), 10+$2, $3+20, 4 IN (2, 3, $4), $5 IN (2, 3, 4)
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s1(1, 2, 3, 4, 2)
+--Result--
+[(False, 12, 23, True, True)]
++--------------------+
+--Query--
+PREPARE s1 AS SELECT $1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 AS SELECT (SELECT $1)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s3 AS SELECT $1=$2
+--Result--
+[]
++--------------------+

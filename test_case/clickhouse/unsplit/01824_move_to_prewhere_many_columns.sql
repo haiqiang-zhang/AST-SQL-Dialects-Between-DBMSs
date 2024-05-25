@@ -13,8 +13,7 @@ ORDER BY partition;
 SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string);
 SELECT replaceRegexpAll(explain, '__table1\.', '') FROM (EXPLAIN actions=1 SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string)) WHERE explain LIKE '%Prewhere%' OR explain LIKE '%Filter%';
 DROP TABLE IF EXISTS t_move_to_prewhere;
--- because we don't know sizes and we can use only number of columns in conditions.
--- Sometimes moving a lot of columns to prewhere may be harmful.
+
 
 CREATE TABLE t_move_to_prewhere (id UInt32, a UInt8, b UInt8, c UInt8, fat_string String)
 ENGINE = MergeTree ORDER BY id PARTITION BY id

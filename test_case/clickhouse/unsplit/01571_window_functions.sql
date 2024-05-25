@@ -1,6 +1,4 @@
--- Another test for window functions because the other one is too long.
 
--- some craziness with a mix of materialized and unmaterialized const columns
 -- after merging sorted transform, that used to break the peer group detection in
 -- the window transform.
 CREATE TABLE order_by_const
@@ -21,7 +19,6 @@ INSERT INTO order_by_const(a, b, c, d) VALUES (2, 2, 107, 2), (2, 3, 108, 2), (2
 SELECT row_number() OVER (order by 1, a) FROM order_by_const SETTINGS query_plan_enable_multithreading_after_window_functions=0;
 drop table order_by_const;
 select count() over (rows between 1 + 1 preceding and 1 + 1 following) from numbers(10);
--- default arguments of lagInFrame can be a subtype of the argument
 select number,
     lagInFrame(toNullable(number), 2, null) over w,
     lagInFrame(number, 2, 1) over w

@@ -1,11 +1,7 @@
 PRAGMA enable_verification;
-CREATE TABLE test (a INTEGER, b INTEGER);;
-INSERT INTO test VALUES (11, 22), (12, 21), (13, 22);;
+CREATE TABLE test (a INTEGER, b INTEGER);
+INSERT INTO test VALUES (11, 22), (12, 21), (13, 22);
 PRAGMA default_order='DESCENDING';
 PRAGMA default_order='ASC';
-PRAGMA default_order());
-PRAGMA default_order='UNKNOWN';
-PRAGMA default_order=UNKNOWN);
-PRAGMA default_order=3);
 SELECT a FROM test ORDER BY a;
 SELECT a FROM test ORDER BY a;

@@ -10,7 +10,7 @@ col_int_key int,
 col_varchar_255_utf8 varchar(255)  CHARACTER SET utf8mb3,
 pk integer auto_increment,
 col_varchar_255_latin1 varchar(255)  CHARACTER SET latin1,
-/*Indices*/
+
 key (col_varchar_255_latin1_key ),
 key (col_varchar_10_latin1_key ),
 key (col_varchar_10_utf8_key ),
@@ -33,7 +33,7 @@ col_varchar_10_utf8 varchar(10)  CHARACTER SET utf8mb3,
 col_int int,
 col_varchar_10_latin1 varchar(10)  CHARACTER SET latin1,
 col_varchar_10_utf8_key varchar(10)  CHARACTER SET utf8mb3,
-/*Indices*/
+
 key (col_varchar_255_latin1_key ),
 key (col_varchar_255_utf8_key ),
 key (col_varchar_10_latin1_key ),

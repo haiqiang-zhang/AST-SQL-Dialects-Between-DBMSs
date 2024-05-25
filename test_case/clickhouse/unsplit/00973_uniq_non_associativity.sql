@@ -1,11 +1,6 @@
 DROP TABLE IF EXISTS part_b;
 DROP TABLE IF EXISTS part_c;
 DROP TABLE IF EXISTS part_d;
-/* Create values that will resize hash table to the maximum (131072 cells) and fill it with less than max_fill (65536 cells)
- * and occupy cells near the end except last 10 cells:
- * [               -----------  ]
- * Pick values that will vanish if table will be rehashed.
- */
 CREATE TABLE part_a ENGINE = TinyLog AS SELECT * FROM
 (
 WITH
@@ -20,11 +15,6 @@ WITH
     hash % 2 = 0 AS will_remain
 SELECT hash, number, place FROM system.numbers WHERE place >= 90000 AND place < 131062 AND NOT will_remain LIMIT 1 BY place LIMIT 41062
 ) ORDER BY place;
-/* Create values that will resize hash table to the maximum (131072 cells) and fill it with less than max_fill (65536 cells),
- * but if we use both "a" and "b", it will force rehash.
- * [      -----------           ]
- * Pick values that will remain after rehash.
- */
 CREATE TABLE part_b ENGINE = TinyLog AS SELECT * FROM
 (
 WITH
@@ -39,12 +29,6 @@ WITH
     hash % 2 = 0 AS will_remain
 SELECT hash, number, place FROM system.numbers WHERE place >= 50000 AND place < 90000 AND will_remain LIMIT 1 BY place LIMIT 40000
 ) ORDER BY place;
-/* Occupy 10 cells near the end of "a":
- * a:     [               -----------  ]
- * c:     [                        --  ]
- * If we insert "a" then "c", these values will be placed at the end of hash table due to collision resolution:
- * a + c: [               aaaaaaaaaaacc]
- */
 CREATE TABLE part_c ENGINE = TinyLog AS SELECT * FROM
 (
 WITH
@@ -59,13 +43,6 @@ WITH
     hash % 2 = 0 AS will_remain
 SELECT hash, number, place FROM system.numbers WHERE place >= 131052 AND place < 131062 AND will_remain AND hash NOT IN (SELECT hash FROM part_a) LIMIT 1 BY place LIMIT 10
 ) ORDER BY place;
-/* Occupy 10 cells at the end of hash table, after "a":
- * a:     [               -----------  ]
- * d:     [                          --]
- * a + d: [               aaaaaaaaaaadd]
- * But if we insert "a" then "c" then "d", these values will be placed at the beginning of the hash table due to collision resolution:
- * a+c+d: [dd             aaaaaaaaaaacc]
-  */
 CREATE TABLE part_d ENGINE = TinyLog AS SELECT * FROM
 (
 WITH
@@ -80,27 +57,7 @@ WITH
     hash % 2 = 0 AS will_remain
 SELECT hash, number, place FROM system.numbers WHERE place >= 131062 AND will_remain LIMIT 1 BY place LIMIT 10
 ) ORDER BY place;
-/** What happens if we insert a then c then d then b?
-  * Insertion of b forces rehash.
-  * a will be removed, but c, d, b remain:
-  * [dd         bbbbbbbbbb     cc]
-  * Then we go through hash table and move elements to better places in collision resolution chain.
-  * c will be moved left to their right place:
-  * [dd         bbbbbbbbbb   cc  ]
-  *
-  * And d must be moved also:
-  * [           bbbbbbbbbb   ccdd]
-  * But our algorithm was incorrect and it doesn't happen.
-  *
-  * If we insert d again, it will be placed twice because original d will not found:
-  * [dd         bbbbbbbbbb   ccdd]
-  * This will lead to slightly higher return value of "uniq" aggregate function and it is dependent on insertion order.
-  */
-
-
 SET max_threads = 1;
-/** Results of these two queries must match: */
-
 SELECT uniq(number) FROM (
           SELECT * FROM part_a
 UNION ALL SELECT * FROM part_c

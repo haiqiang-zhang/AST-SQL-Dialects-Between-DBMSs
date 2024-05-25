@@ -1,8 +1,7 @@
-SET default_null_order='nulls_first';;
+SET default_null_order='nulls_first';
 PRAGMA enable_verification;
 PRAGMA verify_external;
-create table quantiles as select range r from range(10) union all values (NULL), (NULL), (NULL);;
-PRAGMA debug_window_mode=${windowmode};
+create table quantiles as select range r from range(10) union all values (NULL), (NULL), (NULL);
 SELECT r % 2, r, median(r) over (partition by r % 2 order by r) FROM quantiles ORDER BY 1, 2;
 SELECT r, median(r) over (order by r rows between 1 preceding and 1 following) FROM quantiles ORDER BY 1, 2;
 SELECT r, median(r) over (order by r rows between 1 preceding and 3 following) FROM quantiles ORDER BY 1, 2;

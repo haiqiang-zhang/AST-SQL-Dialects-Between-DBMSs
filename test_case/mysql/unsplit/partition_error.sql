@@ -240,7 +240,6 @@ CREATE TABLE t1 (a INTEGER NOT NULL, PRIMARY KEY (a))
 PARTITION BY KEY (a) PARTITIONS 2;
 DROP TABLE t1;
 CREATE TABLESPACE ts1 ADD DATAFILE 'ts1.ibd';
-CREATE TABLESPACE ts2 ADD DATAFILE 'ts2.ibd';
 CREATE TABLESPACE ts3 ADD DATAFILE 'ts3.ibd';
 select load_file('$MYSQLD_DATADIR/test/t1.par');
 select load_file('$MYSQLD_DATADIR/test/t1.par');
@@ -257,7 +256,6 @@ select load_file('$MYSQLD_DATADIR/test/t1.par');
 select load_file('$MYSQLD_DATADIR/test/t1.par');
 select load_file('$MYSQLD_DATADIR/test/t1.par');
 DROP TABLESPACE ts1;
-DROP TABLESPACE ts2;
 DROP TABLESPACE ts3;
 CREATE TABLE t1(a int)
   PARTITION BY RANGE (a) (PARTITION p1 VALUES LESS THAN(5));

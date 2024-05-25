@@ -8,5 +8,4 @@ CREATE TABLE df2 AS
   SELECT
     UNNEST(['K0', 'K2', 'K5']) AS key,
     UNNEST([2, 3, 5]) AS C;
-select sin(columns(dfxx.* exclude (key))) from df1 join df2 using(key);
 select sin(columns(df1.* exclude (key))) from df1 join df2 using(key);

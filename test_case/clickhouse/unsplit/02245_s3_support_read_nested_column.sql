@@ -1,6 +1,4 @@
--- Tag no-fasttest: Depends on AWS
 
--- { echo }
 drop table if exists test_02245_s3_nested_parquet1;
 drop table if exists test_02245_s3_nested_parquet2;
 drop table if exists test_02245_s3_nested_arrow1;

@@ -1,11 +1,11 @@
 pragma enable_verification;
-CREATE TABLE j1(x varchar);;
+CREATE TABLE j1(x varchar);
 INSERT INTO j1(x)
 VALUES('true'),('false'),('null'),('123'),('-234'),('34.5e+6'),
      ('""'),('"\""'),('"\\"'),('"abcdefghijlmnopqrstuvwxyz"'),
      ('[]'),('{}'),('[true,false,null,123,-234,34.5e+6,{},[]]'),
-     ('{"a":true,"b":{"c":false}}');;
-CREATE TABLE j2(id INTEGER PRIMARY KEY, json VARCHAR, src VARCHAR);;
+     ('{"a":true,"b":{"c":false}}');
+CREATE TABLE j2(id INTEGER PRIMARY KEY, json VARCHAR, src VARCHAR);
 INSERT INTO j2(id,json,src)
     VALUES(1,'{
     "firstName": "John",
@@ -30,7 +30,7 @@ INSERT INTO j2(id,json,src)
     ],
     "children": [],
     "spouse": null
-    }','https://en.wikipedia.org/wiki/JSON');;
+    }','https://en.wikipedia.org/wiki/JSON');
 INSERT INTO j2(id,json,src)
     VALUES(2, '{
     "id": "0001",
@@ -57,7 +57,7 @@ INSERT INTO j2(id,json,src)
             { "id": "5003", "type": "Chocolate" },
             { "id": "5004", "type": "Maple" }
         ]
-    }','https://adobe.github.io/Spry/samples/data_region/JSONDataSetSample.html');;
+    }','https://adobe.github.io/Spry/samples/data_region/JSONDataSetSample.html');
 INSERT INTO j2(id,json,src)
     VALUES(3,'[
     {
@@ -128,10 +128,10 @@ INSERT INTO j2(id,json,src)
                 { "id": "5004", "type": "Maple" }
             ]
     }
-    ]','https://adobe.github.io/Spry/samples/data_region/JSONDataSetSample.html');;
-SELECT count(*) FROM j1 WHERE json_type(x) IN ('OBJECT','ARRAY');;
+    ]','https://adobe.github.io/Spry/samples/data_region/JSONDataSetSample.html');
+SELECT count(*) FROM j1 WHERE json_type(x) IN ('OBJECT','ARRAY');
 SELECT x FROM j1
    WHERE json_extract(x,'$')<>x
-     AND json_type(x) IN ('OBJECT','ARRAY');;
-SELECT count(*) FROM j2;;
-SELECT id, json_valid(json), json_type(json) FROM j2 ORDER BY id;;
+     AND json_type(x) IN ('OBJECT','ARRAY');
+SELECT count(*) FROM j2;
+SELECT id, json_valid(json), json_type(json) FROM j2 ORDER BY id;

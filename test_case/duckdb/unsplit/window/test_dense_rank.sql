@@ -1,5 +1,5 @@
 PRAGMA enable_verification;
-CREATE TABLE issue9416(idx VARCHAR, source VARCHAR, project VARCHAR, specimen VARCHAR, sample_id VARCHAR);;
+CREATE TABLE issue9416(idx VARCHAR, source VARCHAR, project VARCHAR, specimen VARCHAR, sample_id VARCHAR);
 INSERT INTO issue9416 VALUES
 	('197bc9528efbc76a523d796b749a69f6','json','0bf0b46fb9c01829c55e','e4de2878',NULL),
 	('0f62e5fa923495012f3863e7ea05f566','json','d98171d6fe06b3','440ce2bf','9fc93ee404d6bccb69'),
@@ -120,8 +120,7 @@ INSERT INTO issue9416 VALUES
 	('39a39a7e3c48c1b3b262e8653b1a3ec4','rprt','14b5b262c52400','7b34590a85','eec88226d871'),
 	('fdd9d71a087b9048b8ac7dd29186cedf','rprt','315316c7af745a97','8a7c0917d4','743680a0303171bbd'),
 	('f37e684c9ec0d0690a3c6feeaf6b1301','json','14b5b262c52400','0059c84703','8426f8984729'),
-	('3787d0c9ead3866324d7586044747d65','rprt','b9cbf09f3366297','3822b4212e','611f4b0f498e')
-;;
+	('3787d0c9ead3866324d7586044747d65','rprt','b9cbf09f3366297','3822b4212e','611f4b0f498e');
 WITH t AS (
 	SELECT i, DENSE_RANK() OVER (ORDER BY i % 50) AS d
 	FROM range(3000) tbl(i)
@@ -167,4 +166,4 @@ WITH dups AS (
 SELECT *
 FROM dups
 WHERE n_spcmn > 1
-ORDER BY idx, dup;;
+ORDER BY idx, dup;

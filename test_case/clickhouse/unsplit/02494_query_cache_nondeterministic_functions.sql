@@ -1,5 +1,3 @@
--- Tag no-parallel: Messes with internal cache
-
 SYSTEM DROP QUERY CACHE;
 SELECT '-- query_cache_nondeterministic_function_handling = throw';
 SELECT count(*) FROM system.query_cache;

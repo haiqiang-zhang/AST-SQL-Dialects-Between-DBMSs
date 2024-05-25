@@ -1,0 +1,580 @@
+--Query--
+SELECT count(*) FROM vactst
+--Result--
+[(2049,)]
++--------------------+
+--Query--
+SELECT * FROM vactst
+--Result--
+[(0,)]
++--------------------+
+--Query--
+VACUUM FULL vactst
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM vactst
+--Result--
+[(2049,)]
++--------------------+
+--Query--
+VACUUM (FULL) vactst
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FULL, FREEZE) vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE, FULL) vactst
+--Result--
+[]
++--------------------+
+--Query--
+CLUSTER vaccluster
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL pg_am
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL pg_class
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL pg_database
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (DISABLE_PAGE_SKIPPING) vaccluster
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PARALLEL 2) pvactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PARALLEL 2) pvactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PARALLEL 0) pvactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PARALLEL 2, INDEX_CLEANUP FALSE) pvactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PARALLEL 1, FULL FALSE) tmp
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PARALLEL 0, FULL TRUE) tmp
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (INDEX_CLEANUP TRUE, FULL TRUE) no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FULL TRUE) no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM no_index_cleanup
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (INDEX_CLEANUP FALSE) vaccluster
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (INDEX_CLEANUP AUTO) vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (INDEX_CLEANUP FALSE, FREEZE TRUE) vaccluster
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (TRUNCATE FALSE, DISABLE_PAGE_SKIPPING) vac_truncate_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_relation_size('vac_truncate_test') > 0
+--Result--
+[(False,)]
++--------------------+
+--Query--
+VACUUM (DISABLE_PAGE_SKIPPING) vac_truncate_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_relation_size('vac_truncate_test') = 0
+--Result--
+[(True,)]
++--------------------+
+--Query--
+VACUUM (TRUNCATE FALSE, FULL TRUE) vac_truncate_test
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacparted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FULL) vacparted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FREEZE) vacparted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacparted_i
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FULL) vacparted_i
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FREEZE) vacparted_i
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relname, relhasindex FROM pg_class   WHERE relname LIKE 'vacparted_i%' AND relkind IN ('p','r')   ORDER BY relname
+--Result--
+[('vacparted_i', True), ('vacparted_i1', True), ('vacparted_i2', True)]
++--------------------+
+--Query--
+VACUUM vaccluster, vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (FREEZE) vacparted, vaccluster, vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM ANALYZE vactst, vacparted (a)
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL vacparted, vactst
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vactst, vacparted
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacparted (b), vactst
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vactst, vactst
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vactst, vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (SKIP_LOCKED) vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (SKIP_LOCKED, FULL) vactst
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE (SKIP_LOCKED) vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vactst
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vactst
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (PROCESS_TOAST TRUE) vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM vac_option_tab_counts
+--Result--
+[('main', 1), ('toast', 1)]
++--------------------+
+--Query--
+VACUUM (PROCESS_TOAST FALSE) vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM vac_option_tab_counts
+--Result--
+[('main', 2), ('toast', 1)]
++--------------------+
+--Query--
+VACUUM (PROCESS_MAIN FALSE) vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM vac_option_tab_counts
+--Result--
+[('main', 2), ('toast', 2)]
++--------------------+
+--Query--
+VACUUM (PROCESS_MAIN FALSE, PROCESS_TOAST FALSE) vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM vac_option_tab_counts
+--Result--
+[('main', 2), ('toast', 2)]
++--------------------+
+--Query--
+VACUUM (BUFFER_USAGE_LIMIT '512 kB') vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE (BUFFER_USAGE_LIMIT '512 kB') vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (BUFFER_USAGE_LIMIT 0) vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE (BUFFER_USAGE_LIMIT 0) vac_option_tab
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (SKIP_DATABASE_STATS) vactst
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ONLY_DATABASE_STATS)
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM pg_catalog.pg_class
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE pg_catalog.pg_class
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) pg_catalog.pg_class
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM pg_catalog.pg_authid
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE pg_catalog.pg_authid
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) pg_catalog.pg_authid
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE vacowned_part2
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_parted
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) vacowned_part2
+--Result--
+[]
++--------------------+

@@ -1,7 +1,5 @@
 DROP TABLE IF EXISTS h3_indexes;
 CREATE TABLE h3_indexes (h3_index UInt64) ENGINE = Memory;
--- Corresponding H3 index values were in turn generated with those geo coordinates using `geoToH3(lon, lat, res)` ClickHouse function for the following test.
-
 INSERT INTO h3_indexes VALUES (579205133326352383);
 INSERT INTO h3_indexes VALUES (581263419093549055);
 INSERT INTO h3_indexes VALUES (589753847883235327);

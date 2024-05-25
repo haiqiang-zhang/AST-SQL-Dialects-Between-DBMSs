@@ -28,4 +28,3 @@ SET
     use_hedged_requests=0,
     cluster_for_parallel_replicas='test_cluster_one_shard_three_replicas_localhost',
     parallel_replicas_for_non_replicated_merge_tree=1;
-SELECT quantile(0.5)(NULL), quantile(0.9)(NULL), quantiles(0.1, 0.2)(NULL :: Nullable(UInt32)) FROM t1 WITH TOTALS;

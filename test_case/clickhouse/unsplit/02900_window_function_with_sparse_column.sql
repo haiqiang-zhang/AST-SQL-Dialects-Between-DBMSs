@@ -1,5 +1,4 @@
--- These tests pass without the fix when either of
---   - optimize_read_in_window_order = 0 and optimize_read_in_order = 0
+
 --   - ratio_of_defaults_for_sparse_serialization = 1
 -- However it is better to leave the settings as randomized because we run
 -- stateless tests quite a few times during a PR, so if a bug is introduced

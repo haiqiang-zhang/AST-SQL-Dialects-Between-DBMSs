@@ -1,0 +1,130 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT RANDOM() %
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 30% OFFSET RANDOM() / 10.0
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT b FROM test LIMIT 0%
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE v1 AS SELECT * FROM test2 LIMIT 40%
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 20 %
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 40 PERCENT
+--Result--
+[(11,), (12,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 35%
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 79.9%
+--Result--
+[(11,), (12,), (13,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 80.1%
+--Result--
+[(11,), (12,), (13,), (14,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 100 PERCENT
+--Result--
+[(11,), (12,), (13,), (14,), (15,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT (30-10) %
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 50% OFFSET 2
+--Result--
+[(13,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM range(10) LIMIT 50% OFFSET 2
+--Result--
+[(2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT * FROM range(10000) LIMIT 0.1% OFFSET 8000
+--Result--
+[(8000,), (8001,), (8002,), (8003,), (8004,), (8005,), (8006,), (8007,), (8008,), (8009,)]
++--------------------+
+--Query--
+SELECT * FROM range(10000) LIMIT 0.1% OFFSET 9999
+--Result--
+[(9999,)]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT (SELECT COUNT(*) FROM test) % OFFSET 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM test LIMIT 50% OFFSET (((SELECT MIN(b) FROM test)-1)/10)
+--Result--
+[(13,), (14,)]
++--------------------+
+--Query--
+SELECT b FROM test LIMIT 70% OFFSET (((SELECT MIN(test.a) FROM test)-1)/10)
+--Result--
+[(21,), (22,), (32,)]
++--------------------+
+--Query--
+EXECUTE v1
+--Result--
+[('first',), ('second',)]
++--------------------+
+--Query--
+SELECT g, 5=ANY(l) FROM v3 ORDER BY g LIMIT 80%
+--Result--
+[(0, True), (1, None), (2, False), (3, None)]
++--------------------+
+--Query--
+SELECT g, 3>ANY(l) FROM v3 ORDER BY g LIMIT 50%
+--Result--
+[(0, True), (1, True)]
++--------------------+
+--Query--
+SELECT STRUCT_PACK(a := 42, b := 43)
+--Result--
+[({'a': 42, 'b': 43},)]
++--------------------+
+--Query--
+SELECT e, STRUCT_PACK(e) FROM struct_data ORDER BY e LIMIT 60%
+--Result--
+[(None, {'e': None}), (1, {'e': 1}), (2, {'e': 2}), (3, {'e': 3})]
++--------------------+
+--Query--
+SELECT * FROM integers as int LIMIT (SELECT max(integers.i) FROM integers where i > 5) %
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+select 1 union all select 2 union all select 3 union all select 4 limit 50%
+--Result--
+[(1,), (2,)]
++--------------------+

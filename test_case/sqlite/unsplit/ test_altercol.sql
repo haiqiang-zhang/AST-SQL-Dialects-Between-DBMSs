@@ -240,8 +240,7 @@ SELECT sql FROM sqlite_schema;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
 SELECT sql FROM sqlite_schema WHERE name='t1';
--- unknown column "xyz"
-  CREATE TABLE schema_copy(name TEXT, sql TEXT);
+CREATE TABLE schema_copy(name TEXT, sql TEXT);
 INSERT INTO schema_copy(name,sql) SELECT name, sql FROM sqlite_schema WHERE sql IS NOT NULL;
 SELECT name, sql FROM sqlite_master
     EXCEPT SELECT name, sql FROM schema_copy;

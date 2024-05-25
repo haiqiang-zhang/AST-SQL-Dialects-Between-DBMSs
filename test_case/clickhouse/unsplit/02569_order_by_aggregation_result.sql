@@ -1,5 +1,4 @@
--- - https://github.com/ClickHouse/ClickHouse/issues/46268
--- - https://github.com/ClickHouse/ClickHouse/issues/46273
+
 
 -- Queries that the original PR (https://github.com/ClickHouse/ClickHouse/pull/42827) tried to fix
 SELECT (number = 1) AND (number = 2) AS value, sum(value) OVER () FROM numbers(1) WHERE 1;

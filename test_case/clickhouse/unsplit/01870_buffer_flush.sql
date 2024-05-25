@@ -1,10 +1,8 @@
--- Check that Buffer will be flushed before shutdown
--- (via DETACH DATABASE)
+
 
 drop database if exists db_01870;
 create database db_01870;
--- (prefixes are important, to define the order)
--- - a_data_01870
+
 -- - z_buffer_01870
 -- so on DETACH DATABASE the following error will be printed:
 --

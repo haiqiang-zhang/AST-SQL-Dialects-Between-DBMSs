@@ -305,8 +305,6 @@ SELECT LENGTH( GROUP_CONCAT( a ) ) FROM t3 WHERE b = 2;
 SELECT LENGTH( GROUP_CONCAT( a ) ) FROM t3 WHERE b = 3;
 DROP TABLE t1, t2, t3;
 create table t1 (id int, name varchar(20)) DEFAULT CHARSET=utf8mb3;
-insert into t1 (id, name) values (1, "ÃÂÃÂ³ra");
-insert into t1 (id, name) values (2, "ÃÂÃÂ³ra");
 select b.id, group_concat(b.name) from t1 a, t1 b group by b.id;
 drop table t1;
 create table t1(a bit not null);

@@ -1,6 +1,4 @@
--- no-parallel: creates a custom database schema and expects to use it exclusively
 
--- Create a test table and verify that the output of SHOW INDEXES is sane.
 -- The matching of actual/expected results relies on the fact that the output of SHOW INDEX is sorted.
 DROP TABLE IF EXISTS tbl;
 CREATE TABLE tbl
@@ -42,7 +40,6 @@ SHOW INDEX FROM `'` FROM `'`;
 SHOW INDEX FROM `'`.`'`;
 DROP TABLE `'`.`'`;
 DROP DATABASE `'`;
--- we notice if something is buggy in the implementation of SHOW INDEX.
 DROP DATABASE IF EXISTS database_123456789abcde;
 CREATE DATABASE database_123456789abcde;
 DROP TABLE IF EXISTS database_123456789abcde.tbl;

@@ -6,15 +6,13 @@ SELECT x FROM t1 WHERE x LIKE 'ABC' ORDER BY 1;
 SELECT x FROM t1 WHERE x LIKE 'aBc' ORDER BY 1;
 SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1;
 PRAGMA case_sensitive_like;
--- no argument;
 SELECT x FROM t1 WHERE x GLOB 'abc' ORDER BY 1;
 SELECT x FROM t1 WHERE x LIKE 'ABC' ORDER BY 1;
 SELECT x FROM t1 WHERE x LIKE 'aBc' ORDER BY 1;
 PRAGMA case_sensitive_like=off;
 SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1;
 PRAGMA case_sensitive_like;
--- No argument, does not change setting.
-    SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1;
+SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1;
 SELECT x FROM t1 WHERE x MATCH '*abc*' ORDER BY 1;
 SELECT x FROM t1 WHERE x MATCH 'abc*' ORDER BY 1;
 SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1;

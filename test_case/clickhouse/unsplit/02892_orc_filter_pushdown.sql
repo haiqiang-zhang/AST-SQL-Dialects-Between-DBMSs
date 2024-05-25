@@ -34,7 +34,6 @@ select
     n::Decimal128(20)/123456789012345 as d128
     from numbers(10000);
 desc file('02892.orc');
--- { echoOn }
 select count(), sum(number) from file('02892.orc') where indexHint(u8 in (10, 15, 250));
 select count(1), min(u8), max(u8) from file('02892.orc') where u8 in (10, 15, 250);
 select count(), sum(number) from file('02892.orc') where indexHint(i8 between -3 and 2);
@@ -87,7 +86,6 @@ select count(), sum(number) from file('02892.orc') where indexHint(u8 == 10 or 1
 select count(), min(u8), max(u8) from file('02892.orc') where (u8 == 10 or 1 == 1);
 select count(), sum(number) from file('02892.orc') where indexHint(u8 < 0);
 select count(), min(u8), max(u8) from file('02892.orc') where (u8 < 0);
--- Nullable and LowCardinality.
 insert into function file('02892.orc') select
     number,
     if(number%234 == 0, NULL, number) as sometimes_null,
@@ -121,7 +119,6 @@ select count(), sum(number) from file('02892.orc') where indexHint(sometimes_nul
 select count(), min(sometimes_null), max(sometimes_null) from file('02892.orc') where (sometimes_null < 150);
 select count(), sum(number) from file('02892.orc') where indexHint(sometimes_null_lc < 150);
 select count(), min(sometimes_null_lc), max(sometimes_null_lc) from file('02892.orc') where (sometimes_null_lc < 150);
--- Settings that affect the table schema or contents.
 insert into function file('02892.orc') select
     number,
     if(number%234 == 0, NULL, number + 100) as positive_or_null,

@@ -10,8 +10,7 @@ SETTINGS
     old_parts_lifetime=0,
     index_granularity=8192;
 INSERT INTO adaptive_table SELECT number, randomPrintableASCII(if(number BETWEEN 8192-30 AND 8192, 102400, 1)) FROM system.numbers LIMIT 16384;
---
---     $ check-marks /path/to/db/adaptive_table/all_*/key.{mrk2,bin}
+
 --     Mark 0, points to 0, 0, has rows after 8192, decompressed size 72808. <!-- wrong number of rows, should be 5461
 --     Mark 1, points to 0, 43688, has rows after 1820, decompressed size 29120.
 --     Mark 2, points to 0, 58248, has rows after 1820, decompressed size 14560.

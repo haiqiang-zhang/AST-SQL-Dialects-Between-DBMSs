@@ -326,7 +326,7 @@ create table t1 (
   a varchar(255),
   key a(a)
 ) character set utf8mb3 COLLATE utf8mb3_danish_ci;
-insert into t1 values ('ÃÂÃÂ¥aaaa'),('ÃÂÃÂ¥ÃÂÃÂ¥aaa'),('aaaaa');
+insert into t1 values ('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥aaaa'),('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥aaa'),('aaaaa');
 select a as like_a from t1 where a like 'a%';
 select a as like_aa from t1 where a like 'aa%';
 select a as like_aaa from t1 where a like 'aaa%';

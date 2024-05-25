@@ -10,12 +10,11 @@ CREATE TABLE figure1 AS
 			(6, 'b'),
 			(7, 'c'),
 			(8, 'a')
-		v(i, s);;
+		v(i, s);
 INSERT INTO figure1 VALUES 
 	(9, NULL),
 	(NULL, 'b'),
-	(NULL, NULL),
-;;
+	(NULL, NULL),;
 CREATE TABLE nested AS
 	SELECT 
 		i, 

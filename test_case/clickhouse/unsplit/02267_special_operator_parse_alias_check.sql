@@ -1,5 +1,3 @@
--- cast(expr [[AS] alias_1] AS Type)
-
 SELECT cast('1234' AS UInt32);
 SELECT cast('1234' AS lhs AS UInt32), lhs;
 SELECT cast('1234' lhs AS UInt32), lhs;
@@ -13,8 +11,6 @@ SELECT cast('1234', 'UInt32' AS rhs), rhs;
 SELECT cast('1234', 'UInt32' rhs), rhs;
 SELECT cast('1234' AS lhs, 'UInt32' AS rhs), lhs, rhs;
 SELECT cast('1234' lhs, 'UInt32' rhs), lhs, rhs;
--- SUBSTRING(expr FROM start)
-
 SELECT substring('1234' FROM 2);
 SELECT substring('1234' AS lhs FROM 2), lhs;
 SELECT substring('1234' lhs FROM 2), lhs;
@@ -39,19 +35,13 @@ SELECT trim(TRAILING 'a' AS arg_1 FROM 'abca' AS arg_2), arg_1, arg_2;
 SELECT trim(TRAILING 'a' arg_1 FROM 'abca' arg_2), arg_1, arg_2;
 SELECT trim(BOTH 'a' AS arg_1 FROM 'abca' AS arg_2), arg_1, arg_2;
 SELECT trim(BOTH 'a' arg_1 FROM 'abca' arg_2), arg_1, arg_2;
--- EXTRACT(part FROM date)
-
 SELECT EXTRACT(DAY FROM toDate('2019-05-05') as arg_1), arg_1;
 SELECT EXTRACT(DAY FROM toDate('2019-05-05') arg_1), arg_1;
 SELECT extract('1234' AS arg_1, '123' AS arg_2), arg_1, arg_2;
 SELECT extract('1234' arg_1, '123' arg_2), arg_1, arg_2;
--- position(needle IN haystack)
-
 SELECT position(('123' AS arg_1) IN ('1234' AS arg_2)), arg_1, arg_2;
 SELECT position('123' AS arg_1, '1234' AS arg_2), arg_1, arg_2;
 SELECT position('123' arg_1, '1234' arg_2), arg_1, arg_2;
--- function(unit, offset, timestamp)
-
 SELECT dateAdd(DAY, 1 AS arg_1, toDate('2019-05-05') AS arg_2), arg_1, arg_2;
 SELECT dateAdd(DAY, 1 arg_1, toDate('2019-05-05') arg_2), arg_1, arg_2;
 SELECT dateAdd(DAY, 1 AS arg_1, toDate('2019-05-05') AS arg_2), arg_1, arg_2;
@@ -60,8 +50,6 @@ SELECT dateSub(DAY, 1 AS arg_1, toDate('2019-05-05') AS arg_2), arg_1, arg_2;
 SELECT dateSub(DAY, 1 arg_1, toDate('2019-05-05') arg_2), arg_1, arg_2;
 SELECT dateSub(DAY, 1 AS arg_1, toDate('2019-05-05') AS arg_2), arg_1, arg_2;
 SELECT dateSub(DAY, 1 arg_1, toDate('2019-05-05') arg_2), arg_1, arg_2;
--- dateDiff(unit, startdate, enddate, [timezone])
-
 SELECT dateDiff(DAY, toDate('2019-05-05') AS arg_1, toDate('2019-05-06') AS arg_2), arg_1, arg_2;
 SELECT dateDiff(DAY, toDate('2019-05-05') arg_1, toDate('2019-05-06') arg_2), arg_1, arg_2;
 SELECT dateDiff(DAY, toDate('2019-05-05') AS arg_1, toDate('2019-05-06') AS arg_2, 'UTC'), arg_1, arg_2;

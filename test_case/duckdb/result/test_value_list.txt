@@ -1,0 +1,70 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+(VALUES (1, 3), (2, 4))
+--Result--
+[(1, 3), (2, 4)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (NULL, NULL), (3, 4), (3, 7)) v1
+--Result--
+[(None, None), (3, 4), (3, 7)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (1, 2, 3), (1, 2, 3)) v1
+--Result--
+[(1, 2, 3), (1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (1 + 1, 2, 3), (1 + 3, 2, 3)) v1
+--Result--
+[(2, 2, 3), (4, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES ((SELECT 42), 2, 3), (1 + 3,2,3)) v1
+--Result--
+[(42, 2, 3), (4, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES ((SELECT MIN(a) FROM test), 2, 3), ((SELECT MAX(b) FROM test), 2, 3)) v1
+--Result--
+[(1, 2, 3), (4, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (DATE '1992-09-20', 3), (NULL, NULL)) v1
+--Result--
+[(datetime.date(1992, 9, 20), 3), (None, None)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (NULL, NULL)) v1
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (NULL, NULL), (3, 4)) v1
+--Result--
+[(None, None), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (3), ('42')) v1
+--Result--
+[(3,), (42,)]
++--------------------+
+--Query--
+SELECT typeof(x) FROM (VALUES (DATE '1992-01-01'), ('1992-01-01')) v1(x) LIMIT 1
+--Result--
+[('DATE',)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES (NULL), ('hello')) v1
+--Result--
+[(None,), ('hello',)]
++--------------------+
+--Query--
+SELECT * FROM varchars ORDER BY 1
+--Result--
+[(None,), ('1',), ('hello',)]
++--------------------+

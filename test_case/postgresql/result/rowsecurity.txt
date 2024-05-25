@@ -1,0 +1,740 @@
+--Query--
+GRANT ALL ON SCHEMA regress_rls_schema to public
+--Result--
+[]
++--------------------+
+--Query--
+GRANT SELECT ON uaccount TO public
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON category TO public
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON document TO public
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_policies WHERE schemaname = 'regress_rls_schema' AND tablename = 'document' ORDER BY policyname
+--Result--
+[('regress_rls_schema', 'document', 'p1', 'PERMISSIVE', ['public'], 'ALL', '(dlevel <= ( SELECT uaccount.seclv\n   FROM uaccount\n  WHERE (uaccount.pguser = CURRENT_USER)))', None)]
++--------------------+
+--Query--
+SELECT * FROM document d FULL OUTER JOIN category c on d.cid = c.cid ORDER BY d.did, c.cid
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel', 11, 'novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel', 11, 'novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction', 22, 'science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga', 44, 'manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga', 44, 'manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction', 22, 'science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book', 33, 'technology'), (8, 44, 1, 'regress_rls_carol', 'great manga', 44, 'manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction', 22, 'science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book', 33, 'technology'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies', 44, 'manga')]
++--------------------+
+--Query--
+SELECT * FROM document d FULL OUTER JOIN category c on d.cid = c.cid ORDER BY d.did, c.cid
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel', 11, 'novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel', 11, 'novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction', 22, 'science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga', 44, 'manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga', 44, 'manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction', 22, 'science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book', 33, 'technology'), (8, 44, 1, 'regress_rls_carol', 'great manga', 44, 'manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction', 22, 'science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book', 33, 'technology'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies', 44, 'manga')]
++--------------------+
+--Query--
+SELECT * FROM document WHERE did = 8
+--Result--
+[(8, 44, 1, 'regress_rls_carol', 'great manga')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book'), (8, 44, 1, 'regress_rls_carol', 'great manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies'), (11, 33, 1, 'tester', 'hoge')]
++--------------------+
+--Query--
+SELECT * FROM category
+--Result--
+[(11, 'novel'), (22, 'science fiction'), (33, 'technology'), (44, 'manga')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book'), (8, 44, 1, 'regress_rls_carol', 'great manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies'), (11, 33, 1, 'tester', 'hoge')]
++--------------------+
+--Query--
+SELECT * FROM category
+--Result--
+[(11, 'novel'), (22, 'science fiction'), (33, 'technology'), (44, 'manga')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book'), (8, 44, 1, 'regress_rls_carol', 'great manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies'), (11, 33, 1, 'tester', 'hoge')]
++--------------------+
+--Query--
+SELECT * FROM category
+--Result--
+[(11, 'novel'), (22, 'science fiction'), (33, 'technology'), (44, 'manga')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book'), (8, 44, 1, 'regress_rls_carol', 'great manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies'), (11, 33, 1, 'tester', 'hoge')]
++--------------------+
+--Query--
+SELECT * FROM category
+--Result--
+[(11, 'novel'), (22, 'science fiction'), (33, 'technology'), (44, 'manga')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 22, 2, 'regress_rls_bob', 'my science fiction'), (4, 44, 1, 'regress_rls_bob', 'my first manga'), (5, 44, 2, 'regress_rls_bob', 'my second manga'), (6, 22, 1, 'regress_rls_carol', 'great science fiction'), (7, 33, 2, 'regress_rls_carol', 'great technology book'), (8, 44, 1, 'regress_rls_carol', 'great manga'), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 33, 2, 'regress_rls_dave', 'awesome technology book'), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies'), (11, 33, 1, 'tester', 'hoge')]
++--------------------+
+--Query--
+SELECT * FROM category
+--Result--
+[(11, 'novel'), (22, 'science fiction'), (33, 'technology'), (44, 'manga')]
++--------------------+
+--Query--
+GRANT ALL ON t1 TO public
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT tableoid::regclass, * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT *, t1 FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT *, t1 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT *, t1 FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t1 FOR SHARE
+--Result--
+[('LockRows',), ('  ->  Seq Scan on t1',)]
++--------------------+
+--Query--
+GRANT ALL ON part_document TO public
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON part_document_fiction TO public
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON part_document_satire TO public
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON part_document_nonfiction TO public
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_policies WHERE schemaname = 'regress_rls_schema' AND tablename like '%part_document%' ORDER BY policyname
+--Result--
+[('regress_rls_schema', 'part_document', 'pp1', 'PERMISSIVE', ['public'], 'ALL', '(dlevel <= ( SELECT uaccount.seclv\n   FROM uaccount\n  WHERE (uaccount.pguser = CURRENT_USER)))', None)]
++--------------------+
+--Query--
+SELECT * FROM part_document ORDER BY did
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 99, 2, 'regress_rls_bob', 'my science textbook'), (4, 55, 1, 'regress_rls_bob', 'my first satire'), (5, 99, 2, 'regress_rls_bob', 'my history book'), (6, 11, 1, 'regress_rls_carol', 'great science fiction'), (7, 99, 2, 'regress_rls_carol', 'great technology book'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (9, 11, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 99, 2, 'regress_rls_dave', 'awesome technology book'), (100, 99, 1, 'regress_rls_dave', 'testing pp1r'), (100, 11, 5, 'regress_rls_dave', 'testing pp1'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document_satire ORDER by did
+--Result--
+[(4, 55, 1, 'regress_rls_bob', 'my first satire'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document ORDER BY did
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 99, 2, 'regress_rls_bob', 'my science textbook'), (4, 55, 1, 'regress_rls_bob', 'my first satire'), (5, 99, 2, 'regress_rls_bob', 'my history book'), (6, 11, 1, 'regress_rls_carol', 'great science fiction'), (7, 99, 2, 'regress_rls_carol', 'great technology book'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (9, 11, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 99, 2, 'regress_rls_dave', 'awesome technology book'), (100, 99, 1, 'regress_rls_dave', 'testing pp1r'), (100, 11, 5, 'regress_rls_dave', 'testing pp1'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document_satire ORDER by did
+--Result--
+[(4, 55, 1, 'regress_rls_bob', 'my first satire'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document ORDER by did
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 99, 2, 'regress_rls_bob', 'my science textbook'), (4, 55, 1, 'regress_rls_bob', 'my first satire'), (5, 99, 2, 'regress_rls_bob', 'my history book'), (6, 11, 1, 'regress_rls_carol', 'great science fiction'), (7, 99, 2, 'regress_rls_carol', 'great technology book'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (9, 11, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 99, 2, 'regress_rls_dave', 'awesome technology book'), (100, 99, 1, 'regress_rls_dave', 'testing pp1r'), (100, 11, 5, 'regress_rls_dave', 'testing pp1'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document_satire ORDER by did
+--Result--
+[(4, 55, 1, 'regress_rls_bob', 'my first satire'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document ORDER by did
+--Result--
+[(1, 11, 1, 'regress_rls_bob', 'my first novel'), (2, 11, 2, 'regress_rls_bob', 'my second novel'), (3, 99, 2, 'regress_rls_bob', 'my science textbook'), (4, 55, 1, 'regress_rls_bob', 'my first satire'), (5, 99, 2, 'regress_rls_bob', 'my history book'), (6, 11, 1, 'regress_rls_carol', 'great science fiction'), (7, 99, 2, 'regress_rls_carol', 'great technology book'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (9, 11, 1, 'regress_rls_dave', 'awesome science fiction'), (10, 99, 2, 'regress_rls_dave', 'awesome technology book'), (100, 99, 1, 'regress_rls_dave', 'testing pp1r'), (100, 11, 5, 'regress_rls_dave', 'testing pp1'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+SELECT * FROM part_document_satire ORDER by did
+--Result--
+[(4, 55, 1, 'regress_rls_bob', 'my first satire'), (8, 55, 2, 'regress_rls_carol', 'great satire'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (100, 55, 1, 'regress_rls_dave', 'testing RLS with partitions'), (101, 55, 1, 'regress_rls_dave', 'testing RLS with partitions')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM dependent
+--Result--
+[('Seq Scan on dependent',)]
++--------------------+
+--Query--
+SELECT * FROM rec1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM rec1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM rec1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM rec1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (SELECT x FROM s1 LIMIT 1) xx, * FROM s2 WHERE y like '%28%'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT (SELECT x FROM s1 LIMIT 1) xx, * FROM s2 WHERE y like '%28%'
+--Result--
+[('Seq Scan on s2',), ("  Filter: (y ~~ '%28%'::text)",), ('  SubPlan 1',), ('    ->  Limit',), ('          ->  Seq Scan on s1',)]
++--------------------+
+--Query--
+PREPARE p1(int) AS SELECT * FROM t1 WHERE a <= $1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE p1(2)
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE p1(2)
+--Result--
+[('Seq Scan on t1',), ('  Filter: (a <= 2)',)]
++--------------------+
+--Query--
+EXECUTE p1(2)
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE p1(2)
+--Result--
+[('Seq Scan on t1',), ('  Filter: (a <= 2)',)]
++--------------------+
+--Query--
+PREPARE p2(int) AS SELECT * FROM t1 WHERE a = $1
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE p2(2)
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE p2(2)
+--Result--
+[('Seq Scan on t1',), ('  Filter: (a = 2)',)]
++--------------------+
+--Query--
+EXECUTE p2(2)
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE p2(2)
+--Result--
+[('Seq Scan on t1',), ('  Filter: (a = 2)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a,b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM b1
+--Result--
+[(11, 'xxx'), (12, 'xxx')]
++--------------------+
+--Query--
+SELECT * FROM document WHERE did = 2
+--Result--
+[(2, 11, 2, 'regress_rls_bob', 'my second novel')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(3, 22, 2, 'regress_rls_bob', 'my science fiction', ''), (5, 44, 2, 'regress_rls_bob', 'my second manga', ''), (6, 22, 1, 'regress_rls_carol', 'great science fiction', ''), (7, 33, 2, 'regress_rls_carol', 'great technology book', ''), (8, 44, 1, 'regress_rls_carol', 'great manga', ''), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction', ''), (10, 33, 2, 'regress_rls_dave', 'awesome technology book', ''), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies', ''), (11, 33, 1, 'tester', 'hoge', ''), (33, 22, 1, 'regress_rls_bob', 'Some novel, replaces sci-fi', ''), (78, 33, 1, 'regress_rls_bob', 'some technology novel', ''), (79, 33, 1, 'regress_rls_bob', 'technology book, can only insert', ''), (2, 33, 2, 'regress_rls_carol', 'my first novel', ''), (80, 11, 1, 'regress_rls_carol', 'my first novel', ''), (4, 44, 1, 'regress_rls_bob', 'my first novel', ''), (1, 11, 1, 'regress_rls_carol', 'my first novel', '')]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 1 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge1 ', dlevel = 0
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 1 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge2 '
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 1 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge3 ', dlevel = 1
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 3 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge '
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 3 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 4 as sdid) s ON did = s.sdid WHEN MATCHED AND dnotes = '' THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge ' WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 4 as sdid) s ON did = s.sdid WHEN MATCHED AND dnotes <> '' THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge ' WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 4 as sdid) s ON did = s.sdid WHEN MATCHED AND dnotes <> '' THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge ' WHEN MATCHED THEN 	DO NOTHING
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM document WHERE did = 4
+--Result--
+[(4, 44, 1, 'regress_rls_bob', 'my first novel', ' notes added by merge  notes added by merge  notes added by merge ')]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 4 as sdid) s ON did = s.sdid WHEN MATCHED AND dnotes <> '' THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge ' WHEN MATCHED THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 12 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	DELETE WHEN NOT MATCHED THEN 	INSERT VALUES (12, 11, 1, 'regress_rls_dave', 'another novel')
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 12 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	DELETE WHEN NOT MATCHED THEN 	INSERT VALUES (12, 11, 1, 'regress_rls_bob', 'another novel')
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 1 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge4 ' WHEN NOT MATCHED THEN 	INSERT VALUES (12, 11, 1, 'regress_rls_bob', 'another novel')
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 7 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge5 ' WHEN NOT MATCHED THEN 	INSERT VALUES (12, 11, 1, 'regress_rls_bob', 'another novel')
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 1 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge6 ', 			   cid = (SELECT cid from category WHERE cname = 'technology')
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 1 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge7 ', 			   cid = (SELECT cid from category WHERE cname = 'novel')
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO document d USING (SELECT 13 as sdid) s ON did = s.sdid WHEN MATCHED THEN 	UPDATE SET dnotes = dnotes || ' notes added by merge8 ' WHEN NOT MATCHED THEN 	INSERT VALUES (13, 44, 1, 'regress_rls_bob', 'new manga')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM document WHERE did = 13
+--Result--
+[(13, 44, 1, 'regress_rls_bob', 'new manga', '')]
++--------------------+
+--Query--
+SELECT * FROM document
+--Result--
+[(5, 44, 2, 'regress_rls_bob', 'my second manga', ''), (6, 22, 1, 'regress_rls_carol', 'great science fiction', ''), (8, 44, 1, 'regress_rls_carol', 'great manga', ''), (9, 22, 1, 'regress_rls_dave', 'awesome science fiction', ''), (10, 33, 2, 'regress_rls_dave', 'awesome technology book', ''), (100, 44, 1, 'regress_rls_dave', 'testing sorting of policies', ''), (11, 33, 1, 'tester', 'hoge', ''), (33, 22, 1, 'regress_rls_bob', 'Some novel, replaces sci-fi', ''), (78, 33, 1, 'regress_rls_bob', 'some technology novel', ''), (79, 33, 1, 'regress_rls_bob', 'technology book, can only insert', ''), (2, 33, 2, 'regress_rls_carol', 'my first novel', ''), (80, 11, 1, 'regress_rls_carol', 'my first novel', ''), (4, 44, 1, 'regress_rls_bob', 'my first novel', ' notes added by merge  notes added by merge  notes added by merge  notes added by merge '), (7, 33, 2, 'regress_rls_carol', 'great technology book', ' notes added by merge5 '), (1, 11, 1, 'regress_rls_carol', 'my first novel', ' notes added by merge1  notes added by merge2  notes added by merge3  notes added by merge4  notes added by merge6  notes added by merge7 '), (13, 44, 1, 'regress_rls_bob', 'new manga', '')]
++--------------------+
+--Query--
+GRANT ALL ON x1 TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE role_inval AS SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE role_inval
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE role_inval
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) EXECUTE role_inval
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+WITH cte1 AS (UPDATE t1 SET a = a + 1 RETURNING *) SELECT * FROM cte1
+--Result--
+[]
++--------------------+
+--Query--
+WITH cte1 AS (UPDATE t1 SET a = a RETURNING *) SELECT * FROM cte1
+--Result--
+[]
++--------------------+
+--Query--
+WITH cte1 AS (INSERT INTO t1 VALUES (21, 'Fail') RETURNING *) SELECT * FROM cte1
+--Result--
+[(21, 'Fail')]
++--------------------+
+--Query--
+WITH cte1 AS (INSERT INTO t1 VALUES (20, 'Success') RETURNING *) SELECT * FROM cte1
+--Result--
+[(20, 'Success')]
++--------------------+
+--Query--
+SELECT polname, relname     FROM pg_policy pol     JOIN pg_class pc ON (pc.oid = pol.polrelid)     WHERE relname = 't1'
+--Result--
+[('p1', 't1')]
++--------------------+
+--Query--
+SELECT polname, relname     FROM pg_policy pol     JOIN pg_class pc ON (pc.oid = pol.polrelid)     WHERE relname = 't1'
+--Result--
+[('p2', 't1')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) INSERT INTO t2 (SELECT * FROM t1)
+--Result--
+[('Insert on t2',), ('  ->  Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t2
+--Result--
+[('Seq Scan on t2',)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+SELECT * INTO t4 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+SELECT id, author, message FROM blog JOIN comment ON id = blog_id
+--Result--
+[(1, 'alice', 'cool blog'), (1, 'alice', 'fun blog'), (2, 'bob', 'who did it?'), (3, 'alice', 'crazy blog'), (4, 'alice', 'insane!'), (5, 'john', 'what?')]
++--------------------+
+--Query--
+SELECT id, author, message FROM comment JOIN blog ON id = blog_id
+--Result--
+[(1, 'alice', 'cool blog'), (1, 'alice', 'fun blog'), (2, 'bob', 'who did it?'), (3, 'alice', 'crazy blog'), (4, 'alice', 'insane!'), (5, 'john', 'what?')]
++--------------------+
+--Query--
+SELECT id, author, message FROM blog JOIN comment ON id = blog_id
+--Result--
+[(1, 'alice', 'cool blog'), (1, 'alice', 'fun blog'), (2, 'bob', 'who did it?'), (3, 'alice', 'crazy blog'), (4, 'alice', 'insane!'), (5, 'john', 'what?')]
++--------------------+
+--Query--
+SELECT id, author, message FROM comment JOIN blog ON id = blog_id
+--Result--
+[(1, 'alice', 'cool blog'), (1, 'alice', 'fun blog'), (2, 'bob', 'who did it?'), (3, 'alice', 'crazy blog'), (4, 'alice', 'insane!'), (5, 'john', 'what?')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(21, 'Fail'), (20, 'Success')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM t1
+--Result--
+[('Seq Scan on t1',)]
++--------------------+
+--Query--
+GRANT ALL ON current_check TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM current_check
+--Result--
+[(1, 'abc', 'regress_rls_bob'), (2, 'bcd', 'regress_rls_bob'), (3, 'cde', 'regress_rls_bob'), (4, 'def', 'regress_rls_bob')]
++--------------------+
+--Query--
+DECLARE current_check_cursor SCROLL CURSOR FOR SELECT * FROM current_check
+--Result--
+[]
++--------------------+
+--Query--
+FETCH ABSOLUTE 1 FROM current_check_cursor
+--Result--
+[(1, 'abc', 'regress_rls_bob')]
++--------------------+
+--Query--
+FETCH RELATIVE 1 FROM current_check_cursor
+--Result--
+[(3, 'cde', 'regress_rls_bob')]
++--------------------+
+--Query--
+SELECT * FROM current_check
+--Result--
+[(4, 'def', 'regress_rls_bob'), (2, 'bcd_new', 'regress_rls_bob'), (1, 'abc_new', 'regress_rls_bob'), (3, 'cde_new', 'regress_rls_bob')]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) UPDATE current_check SET payload = payload WHERE CURRENT OF current_check_cursor
+--Result--
+[('Update on current_check',), ('  ->  Tid Scan on current_check',), ('        TID Cond: CURRENT OF current_check_cursor',)]
++--------------------+
+--Query--
+FETCH ABSOLUTE 1 FROM current_check_cursor
+--Result--
+[(1, 'abc', 'regress_rls_bob')]
++--------------------+
+--Query--
+FETCH RELATIVE 1 FROM current_check_cursor
+--Result--
+[(3, 'cde', 'regress_rls_bob')]
++--------------------+
+--Query--
+SELECT * FROM current_check
+--Result--
+[(4, 'def', 'regress_rls_bob'), (2, 'bcd_new', 'regress_rls_bob')]
++--------------------+
+--Query--
+ANALYZE current_check
+--Result--
+[]
++--------------------+
+--Query--
+SELECT row_security_active('current_check')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT attname, most_common_vals FROM pg_stats   WHERE tablename = 'current_check'   ORDER BY 1
+--Result--
+[('currentid', None), ('payload', None), ('rlsuser', '{regress_rls_bob}')]
++--------------------+
+--Query--
+SELECT row_security_active('current_check')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT attname, most_common_vals FROM pg_stats   WHERE tablename = 'current_check'   ORDER BY 1
+--Result--
+[('currentid', None), ('payload', None), ('rlsuser', '{regress_rls_bob}')]
++--------------------+
+--Query--
+SELECT * FROM r1
+--Result--
+[(10,), (20,)]
++--------------------+
+--Query--
+SELECT * FROM r2
+--Result--
+[(10,), (20,)]
++--------------------+
+--Query--
+SELECT * FROM r1
+--Result--
+[(10,), (20,)]
++--------------------+
+--Query--
+SELECT * FROM r2
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r2
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r2
+--Result--
+[(15,), (25,)]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[(30,)]
++--------------------+
+--Query--
+TABLE r1
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM pg_depend 				   WHERE objid = (SELECT oid FROM pg_policy WHERE polname = 'dep_p1') 					 AND refobjid = (SELECT oid FROM pg_class WHERE relname = 'dep2')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT count(*) = 0 FROM pg_depend 				   WHERE objid = (SELECT oid FROM pg_policy WHERE polname = 'dep_p1') 					 AND refobjid = (SELECT oid FROM pg_class WHERE relname = 'dep2')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT * FROM ref_tbl
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM rls_tbl
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT * FROM rls_view
+--Result--
+[(10,)]
++--------------------+
+--Query--
+ANALYZE rls_tbl
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (VERBOSE, COSTS OFF) INSERT INTO rls_tbl   SELECT * FROM (SELECT b, c FROM rls_tbl ORDER BY a) ss
+--Result--
+[('Insert on regress_rls_schema.rls_tbl',), ('  ->  Subquery Scan on ss',), ('        Output: ss.b, ss.c, NULL::integer',), ('        ->  Sort',), ('              Output: rls_tbl_1.b, rls_tbl_1.c, rls_tbl_1.a',), ('              Sort Key: rls_tbl_1.a',), ('              ->  Seq Scan on regress_rls_schema.rls_tbl rls_tbl_1',), ('                    Output: rls_tbl_1.b, rls_tbl_1.c, rls_tbl_1.a',), ("                    Filter: (rls_tbl_1.* >= '(1,1,1)'::record)",)]
++--------------------+
+--Query--
+SELECT * FROM rls_tbl
+--Result--
+[(10, 20, 30), (20, 30, None)]
++--------------------+
+--Query--
+prepare q as select current_user, * from rls_f()
+--Result--
+[]
++--------------------+
+--Query--
+execute q
+--Result--
+[('tester', 'invisible to bob')]
++--------------------+
+--Query--
+execute q
+--Result--
+[('tester', 'invisible to bob')]
++--------------------+

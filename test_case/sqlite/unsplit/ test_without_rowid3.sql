@@ -560,8 +560,7 @@ PRAGMA foreign_keys = OFF;
 DROP table "i";
 DROP table "j";
 CREATE TABLE i(i TEXT PRIMARY KEY) WITHOUT rowid;
--- Colseq is "BINARY"
-    CREATE TABLE j(j TEXT COLLATE nocase REFERENCES i(i));
+CREATE TABLE j(j TEXT COLLATE nocase REFERENCES i(i));
 INSERT INTO i VALUES('SQLite');
 INSERT INTO j VALUES('sqlite');
 INSERT INTO i VALUES('sqlite');
@@ -1063,7 +1062,6 @@ INSERT INTO cc VALUES('song', 2);
 INSERT INTO pp VALUES(3, 'three');
 BEGIN;
 INSERT INTO cc VALUES('see', 4);
--- Violates deferred constraint;
 INSERT INTO pp VALUES(5, 'five');
 DELETE FROM cc WHERE x = 'see';
 INSERT INTO pp VALUES(6, 'six');

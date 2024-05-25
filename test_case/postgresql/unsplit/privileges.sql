@@ -85,10 +85,10 @@ BEGIN;
 RESET SESSION AUTHORIZATION;
 ROLLBACK;
 CREATE VIEW atestv1 AS SELECT * FROM atest1;
-/* The next *should* fail, but it's not implemented that way yet. */
+
 CREATE VIEW atestv2 AS SELECT * FROM atest2;
 CREATE VIEW atestv3 AS SELECT * FROM atest3;
-/* Empty view is a corner case that failed in 9.2. */
+
 CREATE VIEW atestv0 AS SELECT 0 as x WHERE false;
 SELECT * FROM atestv1;
 SELECT * FROM atestv2;

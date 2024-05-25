@@ -1,0 +1,45 @@
+--Query--
+SELECT oprrest, oprjoin FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'boolean'::regtype
+--Result--
+[]
++--------------------+
+--Query--
+SELECT oprrest, oprjoin FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'boolean'::regtype
+--Result--
+[]
++--------------------+
+--Query--
+SELECT oprrest, oprjoin FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'boolean'::regtype
+--Result--
+[]
++--------------------+
+--Query--
+SELECT oprrest, oprjoin FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'boolean'::regtype
+--Result--
+[]
++--------------------+
+--Query--
+SELECT oprcanmerge, oprcanhash FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'real'::regtype
+--Result--
+[(False, False)]
++--------------------+
+--Query--
+SELECT op.oprname AS operator_name, com.oprname AS commutator_name,   com.oprcode AS commutator_func   FROM pg_operator op   INNER JOIN pg_operator com ON (op.oid = com.oprcom AND op.oprcom = com.oid)   WHERE op.oprname = '==='   AND op.oprleft = 'boolean'::regtype AND op.oprright = 'real'::regtype
+--Result--
+[]
++--------------------+
+--Query--
+SELECT op.oprname AS operator_name, neg.oprname AS negator_name,   neg.oprcode AS negator_func   FROM pg_operator op   INNER JOIN pg_operator neg ON (op.oid = neg.oprnegate AND op.oprnegate = neg.oid)   WHERE op.oprname = '==='   AND op.oprleft = 'boolean'::regtype AND op.oprright = 'real'::regtype
+--Result--
+[]
++--------------------+
+--Query--
+SELECT oprcanmerge, oprcanhash,        pg_describe_object('pg_operator'::regclass, oprcom, 0) AS commutator,        pg_describe_object('pg_operator'::regclass, oprnegate, 0) AS negator   FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'real'::regtype
+--Result--
+[(False, False, None, None)]
++--------------------+
+--Query--
+SELECT oprcanmerge, oprcanhash,        pg_describe_object('pg_operator'::regclass, oprcom, 0) AS commutator,        pg_describe_object('pg_operator'::regclass, oprnegate, 0) AS negator   FROM pg_operator WHERE oprname = '==='   AND oprleft = 'boolean'::regtype AND oprright = 'real'::regtype
+--Result--
+[(False, False, None, None)]
++--------------------+

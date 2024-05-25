@@ -1,5 +1,4 @@
--- Tag no-tsan: Fine thresholds on memory usage
--- Tag no-asan: Fine thresholds on memory usage
+
 -- Tag no-msan: Fine thresholds on memory usage
 
 -- each uniqCombined state should not use > sizeof(HLL) in memory,

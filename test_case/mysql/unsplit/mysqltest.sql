@@ -135,12 +135,12 @@ INSERT INTO t1 VALUES
 SELECT i, j, k FROM t1 ORDER by i;
 SELECT i, j, k FROM t1 ORDER by i, j;
 DROP TABLE t1;
-SELECT "500g BLÃÂÃÂBÃÂÃÂRSYLTETÃÂÃÂY" AS "WILL BE lower cased";
+SELECT "500g BLÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂBÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂRSYLTETÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂY" AS "WILL BE lower cased";
 SELECT "UPPER" AS "WILL NOT BE lower cased";
 SELECT 0 as "UP AGAIN";
 SELECT "Xyz" AS Name UNION SELECT "Abc" as Name ORDER BY Name DESC;
 SELECT 1 as "SOME OLD TEXT";
-SELECT 0 as "WILL Lower CASE ÃÂ";
+SELECT 0 as "WILL Lower CASE ÃÂÃÂÃÂÃÂ";
 CREATE TABLE t1(
  a int, b varchar(255), c datetime
 );
@@ -154,16 +154,10 @@ select "a" as a;
 SELECT 100 + /* Shouldn't fail */ 1 AS result;
 SELECT 100 /* Shouldn't fail */ + 1 AS result;
 SELECT 100 +
-/*
-Shouldn't
-fail
-*/
+
 1 AS result;
 SELECT 100
-/*
-Shouldn't
-fail
-*/
+
 + 1 AS result;
 SELECT 100 /* shouldn't / fail */ + 1 AS result;
 SELECT 100 /* shouldn't * fail */ + 1 AS result;

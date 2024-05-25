@@ -1,0 +1,90 @@
+--Query--
+SELECT brin_desummarize_range('brinidx', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+VACUUM brintest
+--Result--
+[]
++--------------------+
+--Query--
+SELECT brin_summarize_new_values('brinidx')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx', 100000000)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_idx', 0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_idx', 1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_idx', 2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_idx', 4294967295)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brinidx', 0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+VACUUM ANALYZE brin_test
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM brin_test WHERE a = 1
+--Result--
+[('Bitmap Heap Scan on brin_test',), ('  Recheck Cond: (a = 1)',), ('  ->  Bitmap Index Scan on brin_test_a_idx',), ('        Index Cond: (a = 1)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM brin_test WHERE b = 1
+--Result--
+[('Seq Scan on brin_test',), ('  Filter: (b = 1)',)]
++--------------------+
+--Query--
+VACUUM brintest_3
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM brintest_3 WHERE b < '0'
+--Result--
+[('Bitmap Heap Scan on brintest_3',), ("  Recheck Cond: (b < '0'::text)",), ('  ->  Bitmap Index Scan on brin_test_toast_idx',), ("        Index Cond: (b < '0'::text)",)]
++--------------------+
+--Query--
+SELECT * FROM brintest_3 WHERE b < '0'
+--Result--
+[]
++--------------------+

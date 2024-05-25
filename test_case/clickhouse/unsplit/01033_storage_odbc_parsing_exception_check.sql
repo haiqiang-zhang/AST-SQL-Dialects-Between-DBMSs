@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS BannerDict;
-DROP TABLE IF EXISTS BannerDict;

@@ -1,0 +1,60 @@
+--Query--
+SELECT json_serialize_sql('SELECT 1 + 2 FROM tbl1')
+--Result--
+[('{"error":false,"statements":[{"node":{"type":"SELECT_NODE","modifiers":[],"cte_map":{"map":[]},"select_list":[{"class":"FUNCTION","type":"FUNCTION","alias":"","query_location":9,"function_name":"+","schema":"","children":[{"class":"CONSTANT","type":"VALUE_CONSTANT","alias":"","query_location":7,"value":{"type":{"id":"INTEGER","type_info":null},"is_null":false,"value":1}},{"class":"CONSTANT","type":"VALUE_CONSTANT","alias":"","query_location":11,"value":{"type":{"id":"INTEGER","type_info":null},"is_null":false,"value":2}}],"filter":null,"order_bys":{"type":"ORDER_MODIFIER","orders":[]},"distinct":false,"is_operator":true,"export_state":false,"catalog":""}],"from_table":{"type":"BASE_TABLE","alias":"","sample":null,"query_location":18,"schema_name":"","table_name":"tbl1","column_name_alias":[],"catalog_name":""},"where_clause":null,"group_expressions":[],"group_sets":[],"aggregate_handling":"STANDARD_HANDLING","having":null,"sample":null,"qualify":null}}]}',)]
++--------------------+
+--Query--
+SELECT json_serialize_sql('SELECT *, 1 + 2 FROM tbl1', skip_null := true, skip_empty := true)
+--Result--
+[('{"error":false,"statements":[{"node":{"type":"SELECT_NODE","select_list":[{"class":"STAR","type":"STAR","query_location":7,"columns":false},{"class":"FUNCTION","type":"FUNCTION","query_location":12,"function_name":"+","children":[{"class":"CONSTANT","type":"VALUE_CONSTANT","query_location":10,"value":{"type":{"id":"INTEGER"},"is_null":false,"value":1}},{"class":"CONSTANT","type":"VALUE_CONSTANT","query_location":14,"value":{"type":{"id":"INTEGER"},"is_null":false,"value":2}}],"order_bys":{"type":"ORDER_MODIFIER"},"distinct":false,"is_operator":true,"export_state":false}],"from_table":{"type":"BASE_TABLE","query_location":21,"table_name":"tbl1"},"aggregate_handling":"STANDARD_HANDLING"}}]}',)]
++--------------------+
+--Query--
+SELECT json_serialize_sql('SELECT * FROM (SELECT 1 + 2)', skip_null := true, skip_empty := true)
+--Result--
+[('{"error":false,"statements":[{"node":{"type":"SELECT_NODE","select_list":[{"class":"STAR","type":"STAR","query_location":7,"columns":false}],"from_table":{"type":"SUBQUERY","query_location":18446744073709551615,"subquery":{"node":{"type":"SELECT_NODE","select_list":[{"class":"FUNCTION","type":"FUNCTION","query_location":24,"function_name":"+","children":[{"class":"CONSTANT","type":"VALUE_CONSTANT","query_location":22,"value":{"type":{"id":"INTEGER"},"is_null":false,"value":1}},{"class":"CONSTANT","type":"VALUE_CONSTANT","query_location":26,"value":{"type":{"id":"INTEGER"},"is_null":false,"value":2}}],"order_bys":{"type":"ORDER_MODIFIER"},"distinct":false,"is_operator":true,"export_state":false}],"from_table":{"type":"EMPTY","query_location":18446744073709551615},"aggregate_handling":"STANDARD_HANDLING"}}},"aggregate_handling":"STANDARD_HANDLING"}}]}',)]
++--------------------+
+--Query--
+SELECT json_serialize_sql('SELECT AND LAUNCH ROCKETS WHERE 1 = 1')
+--Result--
+[('{"error":true,"error_type":"parser","error_message":"syntax error at or near \\"AND\\"","position":"7","error_subtype":"SYNTAX_ERROR"}',)]
++--------------------+
+--Query--
+SELECT json_deserialize_sql(json_serialize_sql('SELECT 1 + 2 FROM tbl1'))
+--Result--
+[('SELECT (1 + 2) FROM tbl1',)]
++--------------------+
+--Query--
+SELECT json_deserialize_sql(json_serialize_sql('SELECT *, 1 + 2 FROM tbl1'))
+--Result--
+[('SELECT *, (1 + 2) FROM tbl1',)]
++--------------------+
+--Query--
+SELECT json_deserialize_sql(json_serialize_sql('SELECT * FROM (SELECT 1 + 2)'))
+--Result--
+[('SELECT * FROM (SELECT (1 + 2))',)]
++--------------------+
+--Query--
+SELECT * FROM json_execute_serialized_sql(json_serialize_sql('SELECT 1 + 2'))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT * FROM json_execute_serialized_sql(json_serialize_sql('SELECT * FROM tbl2'))
+--Result--
+[(1, 2, 3), (4, 5, 6), (7, 8, 9)]
++--------------------+
+--Query--
+SELECT * FROM json_execute_serialized_sql(json_serialize_sql('SELECT a + b + c FROM tbl2'))
+--Result--
+[(6,), (15,), (24,)]
++--------------------+
+--Query--
+PRAGMA json_execute_serialized_sql( 	'{"error":false,"statements":[{"node":{"type":"SELECT_NODE","modifiers":[],"cte_map":{"map":[]},"select_list":[{"class":"FUNCTION","type":"FUNCTION","alias":"","function_name":"+","schema":"","children":[{"class":"FUNCTION","type":"FUNCTION","alias":"","function_name":"+","schema":"","children":[{"class":"COLUMN_REF","type":"COLUMN_REF","alias":"","column_names":["a"]},{"class":"COLUMN_REF","type":"COLUMN_REF","alias":"","column_names":["b"]}],"filter":null,"order_bys":{"type":"ORDER_MODIFIER","orders":[]},"distinct":false,"is_operator":true,"export_state":false,"catalog":""},{"class":"COLUMN_REF","type":"COLUMN_REF","alias":"","column_names":["c"]}],"filter":null,"order_bys":{"type":"ORDER_MODIFIER","orders":[]},"distinct":false,"is_operator":true,"export_state":false,"catalog":""}],"from_table":{"type":"BASE_TABLE","alias":"","sample":null,"schema_name":"","table_name":"tbl2","column_name_alias":[],"catalog_name":""},"where_clause":null,"group_expressions":[],"group_sets":[],"aggregate_handling":"STANDARD_HANDLING","having":null,"sample":null,"qualify":null}}]}' )
+--Result--
+[(6,), (15,), (24,)]
++--------------------+
+--Query--
+SELECT * FROM json_execute_serialized_sql(json_serialize_sql('WITH a(i) as (SELECT 1) SELECT a1.i as i1, a2.i as i2 FROM a as a1, a as a2'))
+--Result--
+[(1, 1)]
++--------------------+

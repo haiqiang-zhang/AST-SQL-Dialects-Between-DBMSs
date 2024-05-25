@@ -1,0 +1,380 @@
+--Query--
+SELECT brin_desummarize_range('brinidx_multi', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+VACUUM brintest_multi
+--Result--
+[]
++--------------------+
+--Query--
+SELECT brin_summarize_new_values('brinidx_multi')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx_multi', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx_multi', 0)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_desummarize_range('brinidx_multi', 100000000)
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_multi_idx', 0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_multi_idx', 1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_multi_idx', 2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT brin_summarize_range('brin_summarize_multi_idx', 4294967295)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+VACUUM ANALYZE brin_test_multi
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM brin_test_multi WHERE a = 1
+--Result--
+[('Bitmap Heap Scan on brin_test_multi',), ('  Recheck Cond: (a = 1)',), ('  ->  Bitmap Index Scan on brin_test_multi_a_idx',), ('        Index Cond: (a = 1)',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM brin_test_multi WHERE b = 1
+--Result--
+[('Seq Scan on brin_test_multi',), ('  Filter: (b = 1)',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 37
+--Result--
+[(124,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 113
+--Result--
+[(504,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 177
+--Result--
+[(829,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 25
+--Result--
+[(69,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 120
+--Result--
+[(456,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 180
+--Result--
+[(161,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 71
+--Result--
+[(701,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 63
+--Result--
+[(746,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 207
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 177
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 73
+--Result--
+[(529,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 47
+--Result--
+[(279,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 199
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 150
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 93
+--Result--
+[(261,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 37
+--Result--
+[(821,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b >= 215
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 201
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 88
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 103
+--Result--
+[(9,)]
++--------------------+
+--Query--
+TRUNCATE brin_test_multi_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 37
+--Result--
+[(124,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 113
+--Result--
+[(504,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 177
+--Result--
+[(829,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 25
+--Result--
+[(69,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 120
+--Result--
+[(456,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 180
+--Result--
+[(161,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 71
+--Result--
+[(701,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 63
+--Result--
+[(746,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 207
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 177
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 73
+--Result--
+[(529,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 47
+--Result--
+[(279,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 199
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 150
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 93
+--Result--
+[(261,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 37
+--Result--
+[(821,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b >= 215
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 201
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 88
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 103
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a < '3d914f93-48c9-cc0f-f8a7-9716700b9fcd'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a > '3d914f93-48c9-cc0f-f8a7-9716700b9fcd'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a <= 'f369cb89-fc62-7e66-8987-007d121ed1ea'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a >= 'aea92132-c4cb-eb26-3e6a-c2bf6c183b5d'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '5feceb66-ffc8-6f38-d952-786c6d696c79'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '86e50149-6586-6131-2a9e-0b35558d84f6'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+TRUNCATE brin_test_multi_2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a < '3d914f93-48c9-cc0f-f8a7-9716700b9fcd'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a > '3d914f93-48c9-cc0f-f8a7-9716700b9fcd'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a <= 'f369cb89-fc62-7e66-8987-007d121ed1ea'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a >= 'aea92132-c4cb-eb26-3e6a-c2bf6c183b5d'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '5feceb66-ffc8-6f38-d952-786c6d696c79'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '86e50149-6586-6131-2a9e-0b35558d84f6'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_date_test WHERE a = '2023-01-01'::date
+--Result--
+[('Bitmap Heap Scan on brin_date_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '2023-01-01'::date)",), ('  ->  Bitmap Index Scan on brin_date_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '2023-01-01'::date)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_timestamp_test WHERE a = '2023-01-01'::timestamp
+--Result--
+[('Bitmap Heap Scan on brin_timestamp_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '2023-01-01 00:00:00'::timestamp without time zone)",), ('  ->  Bitmap Index Scan on brin_timestamp_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '2023-01-01 00:00:00'::timestamp without time zone)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_timestamp_test WHERE a = '1900-01-01'::timestamp
+--Result--
+[('Bitmap Heap Scan on brin_timestamp_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '1900-01-01 00:00:00'::timestamp without time zone)",), ('  ->  Bitmap Index Scan on brin_timestamp_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '1900-01-01 00:00:00'::timestamp without time zone)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_date_test WHERE a = '2023-01-01'::date
+--Result--
+[('Bitmap Heap Scan on brin_date_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '2023-01-01'::date)",), ('  ->  Bitmap Index Scan on brin_date_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '2023-01-01'::date)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_date_test WHERE a = '1900-01-01'::date
+--Result--
+[('Bitmap Heap Scan on brin_date_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '1900-01-01'::date)",), ('  ->  Bitmap Index Scan on brin_date_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '1900-01-01'::date)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_interval_test WHERE a = '-30 years'::interval
+--Result--
+[('Bitmap Heap Scan on brin_interval_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '-30 years'::interval)",), ('  ->  Bitmap Index Scan on brin_interval_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '-30 years'::interval)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_interval_test WHERE a = '30 years'::interval
+--Result--
+[('Bitmap Heap Scan on brin_interval_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '30 years'::interval)",), ('  ->  Bitmap Index Scan on brin_interval_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '30 years'::interval)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_interval_test WHERE a = '-30 years'::interval
+--Result--
+[('Bitmap Heap Scan on brin_interval_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '-30 years'::interval)",), ('  ->  Bitmap Index Scan on brin_interval_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '-30 years'::interval)",)]
++--------------------+
+--Query--
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF) SELECT * FROM brin_interval_test WHERE a = '30 years'::interval
+--Result--
+[('Bitmap Heap Scan on brin_interval_test (actual rows=0 loops=1)',), ("  Recheck Cond: (a = '30 years'::interval)",), ('  ->  Bitmap Index Scan on brin_interval_test_a_idx (actual rows=0 loops=1)',), ("        Index Cond: (a = '30 years'::interval)",)]
++--------------------+

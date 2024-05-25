@@ -1,0 +1,90 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1, 'a' UNION ALL SELECT 2, 'b'
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+SELECT 1, 'a' UNION ALL SELECT 2, 'b' UNION ALL SELECT 3, 'c' order by 1
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+SELECT 1, 'a' UNION ALL SELECT 2, 'b' UNION ALL SELECT 3, 'c' UNION ALL SELECT 4, 'd' order by 1
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')]
++--------------------+
+--Query--
+SELECT NULL UNION SELECT NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT NULL EXCEPT SELECT NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT NULL INTERSECT SELECT NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT a FROM test WHERE a < 13 UNION ALL SELECT a FROM test WHERE a = 13
+--Result--
+[(11,), (12,), (13,)]
++--------------------+
+--Query--
+SELECT b FROM test WHERE a < 13 UNION ALL SELECT b FROM test WHERE a > 11
+--Result--
+[(1,), (1,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 'asdf'
+--Result--
+[('1',), ('asdf',)]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT 'asdf'
+--Result--
+[(None,), ('asdf',)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1, 'a' UNION SELECT 2, 'b' UNION SELECT 3, 'c' UNION SELECT 1, 'a' order by 1
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+SELECT b FROM test WHERE a < 13 UNION  SELECT b FROM test WHERE a > 11 ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1, 'a' UNION ALL SELECT 1, 'a' UNION SELECT 2, 'b' UNION SELECT 1, 'a' ORDER BY 1
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+SELECT 1, 'a' UNION ALL SELECT 1, 'a' UNION SELECT 2, 'b' UNION SELECT 1, 'a' ORDER BY 1 DESC
+--Result--
+[(2, 'b'), (1, 'a')]
++--------------------+
+--Query--
+select x, count(*) as c from ((select * from (values(1),(2),(2),(3),(3),(3),(4),(4),(4),(4)) s(x) except all select * from (values(1),(3),(3)) t(x)) intersect all select * from (values(2),(2),(2),(4),(3),(3)) u(x)) s group by x order by x
+--Result--
+[(2, 2), (3, 1), (4, 1)]
++--------------------+

@@ -1,0 +1,1375 @@
+--Query--
+SELECT lo_unlink(oid) FROM pg_largeobject_metadata WHERE oid >= 1000 AND oid < 3000 ORDER BY oid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT session_user, current_user
+--Result--
+[('tester', 'tester')]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE atest1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK atest1 IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE ALL ON atest1 FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT session_user, current_user
+--Result--
+[('tester', 'tester')]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1 FOR UPDATE
+--Result--
+[(1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atest2 FOR UPDATE
+--Result--
+[('foo', False)]
++--------------------+
+--Query--
+TRUNCATE atest2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK atest2 IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON atest1 TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1 WHERE ( b IN ( SELECT col1 FROM atest2 ) )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest2 WHERE ( col1 IN ( SELECT b FROM atest1 ) )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[(1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atest2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[(1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atest2
+--Result--
+[('foo', True)]
++--------------------+
+--Query--
+SELECT session_user, current_user
+--Result--
+[('tester', 'tester')]
++--------------------+
+--Query--
+SELECT * FROM atest1
+--Result--
+[(1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atest2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1 FOR UPDATE
+--Result--
+[(1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atest2 FOR UPDATE
+--Result--
+[('foo', None)]
++--------------------+
+--Query--
+TRUNCATE atest2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK atest2 IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest1 WHERE ( b IN ( SELECT col1 FROM atest2 ) )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest2 WHERE ( col1 IN ( SELECT b FROM atest1 ) )
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM ANALYZE atest12
+--Result--
+[]
++--------------------+
+--Query--
+GRANT SELECT (a, b) ON atest12 TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv1
+--Result--
+[(1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atestv2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv1
+--Result--
+[(1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT * FROM atestv2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atestv2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest5
+--Result--
+[(1, 2, 3, None)]
++--------------------+
+--Query--
+SELECT one FROM atest5
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT two FROM atest5
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT atest5 FROM atest5
+--Result--
+[('(1,2,3,)',)]
++--------------------+
+--Query--
+SELECT 1 FROM atest5
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM atest5 a JOIN atest5 b USING (one)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM atest5 a JOIN atest5 b USING (two)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM atest5 a NATURAL JOIN atest5 b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (atest5 a JOIN atest5 b USING (one)) j
+--Result--
+[(1, 2, 3, None, 2, 3, None)]
++--------------------+
+--Query--
+SELECT j.* FROM (atest5 a JOIN atest5 b USING (one)) j
+--Result--
+[(1, 2, 3, None, 2, 3, None)]
++--------------------+
+--Query--
+SELECT (j.*) IS NULL FROM (atest5 a JOIN atest5 b USING (one)) j
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT one FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one)) j
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT j.one FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one)) j
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT two FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one)) j
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT j.two FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one)) j
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT y FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one)) j
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT j.y FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one)) j
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT * FROM (atest5 a JOIN atest5 b USING (one))
+--Result--
+[(1, 2, 3, None, 2, 3, None)]
++--------------------+
+--Query--
+SELECT a.* FROM (atest5 a JOIN atest5 b USING (one))
+--Result--
+[(1, 2, 3, None)]
++--------------------+
+--Query--
+SELECT (a.*) IS NULL FROM (atest5 a JOIN atest5 b USING (one))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT two FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT a.two FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT y FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT b.y FROM (atest5 a JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT y FROM (atest5 a LEFT JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT b.y FROM (atest5 a LEFT JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT y FROM (atest5 a FULL JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT b.y FROM (atest5 a FULL JOIN atest5 b(one,x,y,z) USING (one))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT 1 FROM atest5 WHERE two = 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM atest1, atest5
+--Result--
+[(1, 'two', 1, 2, 3, None), (1, 'two', 1, 2, 3, None), (1, 'two', 1, 2, 3, None), (1, 'two', 1, 2, 3, None), (1, 'two', 1, 2, 3, None), (1, 'two', 1, 2, 3, None)]
++--------------------+
+--Query--
+SELECT atest1.* FROM atest1, atest5
+--Result--
+[(1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two'), (1, 'two')]
++--------------------+
+--Query--
+SELECT atest1.*,atest5.one FROM atest1, atest5
+--Result--
+[(1, 'two', 1), (1, 'two', 1), (1, 'two', 1), (1, 'two', 1), (1, 'two', 1), (1, 'two', 1)]
++--------------------+
+--Query--
+SELECT atest1.*,atest5.one FROM atest1 JOIN atest5 ON (atest1.a = atest5.two)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT atest1.*,atest5.one FROM atest1 JOIN atest5 ON (atest1.a = atest5.one)
+--Result--
+[(1, 'two', 1), (1, 'two', 1), (1, 'two', 1), (1, 'two', 1), (1, 'two', 1), (1, 'two', 1)]
++--------------------+
+--Query--
+SELECT one, two FROM atest5
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT one, two FROM atest5 NATURAL JOIN atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT one, two FROM atest5 NATURAL JOIN atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT one FROM atest5
+--Result--
+[(2,), (2,), (2,), (8,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT atest6 FROM atest6
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = s.b WHEN NOT MATCHED THEN 	INSERT VALUES (a, NULL)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = 'x' WHEN NOT MATCHED THEN 	INSERT VALUES (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED AND s.b = 'x' THEN 	UPDATE SET b = 'x' WHEN NOT MATCHED THEN 	INSERT VALUES (a, NULL)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = 'ok' WHEN NOT MATCHED THEN 	INSERT VALUES (a, NULL)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = s.b WHEN NOT MATCHED THEN 	INSERT VALUES (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = t.b WHEN NOT MATCHED THEN 	INSERT VALUES (a, NULL)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = s.b, a = t.a + 1 WHEN NOT MATCHED THEN 	INSERT VALUES (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED AND t.b IS NOT NULL THEN 	UPDATE SET b = s.b WHEN NOT MATCHED THEN 	INSERT VALUES (a, b)
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED THEN 	UPDATE SET b = s.b
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED AND t.b IS NOT NULL THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+MERGE INTO mtarget t USING msource s ON t.a = s.a WHEN MATCHED AND t.b IS NOT NULL THEN 	DELETE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT atest6 FROM atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT one FROM atest5 NATURAL JOIN atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT atest6 FROM atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT one FROM atest5 NATURAL JOIN atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM atest6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT fx FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT fy FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT atestp2 FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tableoid FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT fy FROM atestc
+--Result--
+[]
++--------------------+
+--Query--
+SELECT fx FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT fy FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT atestp2 FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tableoid FROM atestp2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f2 FROM atestp1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f2 FROM atestc
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE atestp1
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE atestc
+--Result--
+[]
++--------------------+
+--Query--
+LOCK atestp1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK atestc
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE ALL PRIVILEGES ON LANGUAGE sql FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT priv_testagg1(x) FROM (VALUES (1), (2), (3)) _(x)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT priv_testagg1(x) FROM (VALUES (1), (2), (3)) _(x)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT col1 FROM atest2 WHERE col2 = true
+--Result--
+[]
++--------------------+
+--Query--
+SELECT priv_testagg1(x) FROM (VALUES (1), (2), (3)) _(x)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+GRANT ALL PRIVILEGES ON LANGUAGE sql TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '{1}'::int4[]::int8[]
+--Result--
+[([1],)]
++--------------------+
+--Query--
+REVOKE ALL ON FUNCTION int8(integer) FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '{1}'::int4[]::int8[]
+--Result--
+[([1],)]
++--------------------+
+--Query--
+REVOKE USAGE ON TYPE priv_testtype1 FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE USAGE on DOMAIN priv_testdomain1 FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE ALL ON TYPE priv_testtype1 FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE ALL ON TYPE priv_testtype1 FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE atest2
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE atest3
+--Result--
+[]
++--------------------+
+--Query--
+select has_table_privilege(NULL,'pg_authid','select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_table_privilege(-999999,'pg_authid','update')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(1,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,'pg_authid','select')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,'pg_authid','insert')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,'pg_authid','update') from (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,'pg_authid','delete') from (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,t1.oid,'rule') from (select oid from pg_class where relname = 'pg_authid') as t1
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,t1.oid,'references') from (select oid from pg_class where relname = 'pg_authid') as t1
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,t1.oid,'select') from (select oid from pg_class where relname = 'pg_authid') as t1,   (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,t1.oid,'insert') from (select oid from pg_class where relname = 'pg_authid') as t1,   (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege('pg_authid','update')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege('pg_authid','delete')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege('pg_authid','truncate')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t1.oid,'select') from (select oid from pg_class where relname = 'pg_authid') as t1
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t1.oid,'trigger') from (select oid from pg_class where relname = 'pg_authid') as t1
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,'pg_class','select')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,'pg_class','insert')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,'pg_class','update') from (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,'pg_class','delete') from (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,t1.oid,'references') from (select oid from pg_class where relname = 'pg_class') as t1
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,t1.oid,'select') from (select oid from pg_class where relname = 'pg_class') as t1,   (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,t1.oid,'insert') from (select oid from pg_class where relname = 'pg_class') as t1,   (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege('pg_class','update')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege('pg_class','delete')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege('pg_class','truncate')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(t1.oid,'select') from (select oid from pg_class where relname = 'pg_class') as t1
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t1.oid,'trigger') from (select oid from pg_class where relname = 'pg_class') as t1
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,'atest1','select')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,'atest1','insert')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,'atest1','update') from (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,'atest1','delete') from (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(current_user,t1.oid,'references') from (select oid from pg_class where relname = 'atest1') as t1
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,t1.oid,'select') from (select oid from pg_class where relname = 'atest1') as t1,   (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t2.oid,t1.oid,'insert') from (select oid from pg_class where relname = 'atest1') as t1,   (select oid from pg_roles where rolname = current_user) as t2
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege('atest1','update')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege('atest1','delete')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege('atest1','truncate')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t1.oid,'select') from (select oid from pg_class where relname = 'atest1') as t1
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_table_privilege(t1.oid,'trigger') from (select oid from pg_class where relname = 'atest1') as t1
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select has_column_privilege('pg_authid',NULL,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege(9999,'nosuchcol','select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege(9999,99::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege('pg_authid',99::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege(9999,99::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege('mytable','........pg.dropped.2........','select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege('mytable',2::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege('mytable',99::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege('mytable',2::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select has_column_privilege('mytable',99::int2,'select')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+REINDEX TABLE sro_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY sro_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE sro_ptab
+--Result--
+[]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW sro_index_mv
+--Result--
+[]
++--------------------+
+--Query--
+SELECT has_sequence_privilege('x_seq', 'USAGE')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT lo_create(1001)
+--Result--
+[(1001,)]
++--------------------+
+--Query--
+SELECT lo_create(1002)
+--Result--
+[(1002,)]
++--------------------+
+--Query--
+SELECT lo_create(1003)
+--Result--
+[(1003,)]
++--------------------+
+--Query--
+SELECT lo_create(1004)
+--Result--
+[(1004,)]
++--------------------+
+--Query--
+SELECT lo_create(1005)
+--Result--
+[(1005,)]
++--------------------+
+--Query--
+GRANT ALL ON LARGE OBJECT 1001 TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lo_create(2001)
+--Result--
+[(2001,)]
++--------------------+
+--Query--
+SELECT lo_create(2002)
+--Result--
+[(2002,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1001, x'20000'::int), 32)
+--Result--
+[(<memory at 0x13b577b80>,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1001, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b577d00>,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1002, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b577a00>,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1003, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b577580>,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1004, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b6d0040>,)]
++--------------------+
+--Query--
+SELECT lowrite(lo_open(1001, x'20000'::int), 'abcd')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT lowrite(lo_open(1002, x'20000'::int), 'abcd')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT lowrite(lo_open(1003, x'20000'::int), 'abcd')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT lowrite(lo_open(1004, x'20000'::int), 'abcd')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+REVOKE ALL ON LARGE OBJECT 2001, 2002 FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lo_unlink(1001)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT lo_unlink(2002)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT oid, pg_get_userbyid(lomowner) ownername, lomacl FROM pg_largeobject_metadata WHERE oid >= 1000 AND oid < 3000 ORDER BY oid
+--Result--
+[(1002, 'tester', None), (1003, 'tester', None), (1004, 'tester', None), (1005, 'tester', None), (2001, 'tester', '{tester=rw/tester}')]
++--------------------+
+--Query--
+SELECT loread(lo_open(1003, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b6d0100>,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1005, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b6d01c0>,)]
++--------------------+
+--Query--
+SELECT lo_truncate(lo_open(1005, x'20000'::int), 10)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT lo_truncate(lo_open(2001, x'20000'::int), 10)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT loread(lo_open(1002, x'40000'::int), 32)
+--Result--
+[(<memory at 0x13b6d0280>,)]
++--------------------+
+--Query--
+SELECT lowrite(lo_open(1002, x'20000'::int), 'abcd')
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT lo_truncate(lo_open(1002, x'20000'::int), 10)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT lo_put(1002, 1, 'abcd')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT lo_unlink(1002)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+REVOKE DELETE ON datdba_only FROM pg_database_owner
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('regress_priv_user1=r/regress_priv_user2', 'aclitem')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('regress_priv_user1=r/', 'aclitem')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('regress_priv_user1=r/', 'aclitem')
+--Result--
+[('role "regress_priv_user1" does not exist', None, None, '42704')]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('regress_priv_user1=r/regress_no_such_user', 'aclitem')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('regress_priv_user1=r/regress_no_such_user', 'aclitem')
+--Result--
+[('role "regress_priv_user1" does not exist', None, None, '42704')]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('regress_priv_user1=rY', 'aclitem')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('regress_priv_user1=rY', 'aclitem')
+--Result--
+[('invalid mode character: must be one of "arwdDxtXUCTcsA"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT count(*)   FROM pg_default_acl d LEFT JOIN pg_namespace n ON defaclnamespace = n.oid   WHERE nspname = 'testns'
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT d.*        FROM pg_default_acl d LEFT JOIN pg_namespace n ON defaclnamespace = n.oid   WHERE nspname IS NULL AND defaclnamespace != 0
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA testns FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+REVOKE ALL ON ALL PROCEDURES IN SCHEMA testns FROM PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+GRANT ALL ON ALL ROUTINES IN SCHEMA testns TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT nspname, rolname FROM pg_namespace, pg_roles WHERE pg_namespace.nspname = 'testns' AND pg_namespace.nspowner = pg_roles.oid
+--Result--
+[('testns', 'tester')]
++--------------------+
+--Query--
+SELECT nspname, rolname FROM pg_namespace, pg_roles WHERE pg_namespace.nspname = 'testns' AND pg_namespace.nspowner = pg_roles.oid
+--Result--
+[('testns', 'tester')]
++--------------------+
+--Query--
+SELECT lo_unlink(oid) FROM pg_largeobject_metadata WHERE oid >= 1000 AND oid < 3000 ORDER BY oid
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS SHARE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE
+--Result--
+[]
++--------------------+
+--Query--
+GRANT CREATE, USAGE ON SCHEMA regress_roleoption TO PUBLIC
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+CLUSTER maintain_test USING maintain_test_a_idx
+--Result--
+[]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW refresh_test
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX maintain_test_a_idx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA reindex_test
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+CLUSTER maintain_test USING maintain_test_a_idx
+--Result--
+[]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW refresh_test
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX maintain_test_a_idx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA reindex_test
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM (ANALYZE) maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+CLUSTER maintain_test USING maintain_test_a_idx
+--Result--
+[]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW refresh_test
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE maintain_test
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX maintain_test_a_idx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA reindex_test
+--Result--
+[]
++--------------------+

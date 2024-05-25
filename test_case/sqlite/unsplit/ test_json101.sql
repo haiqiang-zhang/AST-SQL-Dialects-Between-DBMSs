@@ -1,10 +1,7 @@
 SELECT json_array(1,2.5,null,'hello');
 SELECT json_array(1,'{"abc":2.5,"def":null,"ghi":hello}',99);
--- the second term goes in as a string:;
 SELECT json_array(1,json('{"abc":2.5,"def":null,"ghi":"hello"}'),99);
--- the second term goes in as JSON;
 SELECT json_array(1,json_object('abc',2.5,'def',null,'ghi','hello'),99);
--- the second term goes in as JSON;
 SELECT hex(json_array('String "\ Test'));
 SELECT json_array(-9223372036854775808,9223372036854775807,0,1,-1,
                     0.0, 1.0, -1.0, -1e99, +2e100,
@@ -363,16 +360,10 @@ SELECT json_valid('" \{ "');
 SELECT json_valid('" \| "');
 SELECT json_valid('" \} "');
 SELECT json_valid('" \~ "');
-/* Shallow enough to be parsed */
-  SELECT json_valid(printf('%.1000c0%.1000c','[',']'));
-/* Too deep by one */
-  SELECT json_valid(printf('%.1001c0%.1001c','[',']'));
-/* Shallow enough to be parsed { */
-  SELECT json_valid(replace(printf('%.1000c0%.1000c','[','}'),'[','{"a":'));
-/* } */;
-/* Too deep by one { */
-  SELECT json_valid(replace(printf('%.1001c0%.1001c','[','}'),'[','{"a":'));
-/* } */;
+SELECT json_valid(printf('%.1000c0%.1000c','[',']'));
+SELECT json_valid(printf('%.1001c0%.1001c','[',']'));
+SELECT json_valid(replace(printf('%.1000c0%.1000c','[','}'),'[','{"a":'));
+SELECT json_valid(replace(printf('%.1001c0%.1001c','[','}'),'[','{"a":'));
 CREATE TABLE t12(x);
 INSERT INTO t12(x) VALUES(
     '{"settings":

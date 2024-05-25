@@ -148,7 +148,6 @@ SELECT toTypeName(sumCount(v)), sumCount(v) FROM (SELECT '1'::Int256 AS v FROM n
 SELECT toTypeName(sumCount(v)), sumCount(v) FROM (SELECT '1'::UInt128 AS v FROM numbers(100));
 SELECT toTypeName(sumCount(v)), sumCount(v) FROM (SELECT '1'::UInt256 AS v FROM numbers(100));
 SELECT toTypeName(sumCount(v)), sumCount(v) FROM (SELECT '1.001'::Decimal(3, 3) AS v FROM numbers(100));
--- SumCountIf
 SELECT sumCountIf(n, n > 10) FROM (SELECT number AS n FROM system.numbers LIMIT 100 );
 SELECT sumCountIf(n, n > 10) FROM (SELECT toNullable(number) AS n FROM system.numbers LIMIT 100);
 SELECT sumCountIf(n, n > 10) FROM (SELECT If(number % 2 == 0, number, NULL) AS n FROM system.numbers LIMIT 100);

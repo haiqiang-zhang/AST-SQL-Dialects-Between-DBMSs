@@ -1,0 +1,75 @@
+--Query--
+SELECT * FROM cp_test ORDER BY b COLLATE "C"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM cp_test ORDER BY b COLLATE "C"
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE cp_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM cp_test
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE cp_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM cp_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_functiondef('ptest8'::regproc)
+--Result--
+[('CREATE OR REPLACE PROCEDURE public.ptest8(IN x text)\n LANGUAGE sql\nBEGIN ATOMIC\nEND\n',)]
++--------------------+
+--Query--
+CALL ptest8('')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+CALL ptest10(null, 7, 4)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+CALL ptest10(a => null, b => 8, c => 2)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+CALL ptest10(null, 7, c => 2)
+--Result--
+[(5,)]
++--------------------+
+--Query--
+CALL ptest10(null, c => 4, b => 11)
+--Result--
+[(7,)]
++--------------------+
+--Query--
+CALL ptest10(b => 8, c => 2, a => 0)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+CALL ptest11(null, 11, 12, 13)
+--Result--
+[(23,)]
++--------------------+

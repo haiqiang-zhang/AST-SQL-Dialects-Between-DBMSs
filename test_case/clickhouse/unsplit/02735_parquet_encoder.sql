@@ -1,7 +1,6 @@
 set engine_file_truncate_on_insert=1;
 set allow_suspicious_low_cardinality_types=1;
--- Do this for all kinds of data types: primitive, Nullable(primitive), Array(primitive),
--- Array(Nullable(primitive)), Array(Array(primitive)), Map(primitive, primitive), etc.
+
 
 drop table if exists basic_types_02735;
 create temporary table basic_types_02735 as select * from generateRandom('
@@ -52,8 +51,7 @@ create temporary table nullables_02735 as select * from generateRandom('
 insert into function file(nullables_02735.parquet) select * from nullables_02735;
 select (select sum(cityHash64(*)) from nullables_02735) - (select sum(cityHash64(*)) from file(nullables_02735.parquet));
 drop table nullables_02735;
---       the next two blocks can be simplified: arrays_out_02735 intermediate table is not needed,
---       a.csv and b.csv are not needed.
+
 
 drop table if exists arrays_02735;
 drop table if exists arrays_out_02735;

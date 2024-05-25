@@ -1,0 +1,45 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT depname, empno, 	nth_value(empno, 2) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, 8), ('develop', 8, 9), ('develop', 9, 10), ('develop', 10, 11), ('develop', 11, None), ('personnel', 2, 5), ('personnel', 5, None), ('sales', 1, 3), ('sales', 3, 4), ('sales', 4, None)]
++--------------------+
+--Query--
+SELECT depname, empno, 	nth_value(empno, NULL) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, None), ('develop', 8, None), ('develop', 9, None), ('develop', 10, None), ('develop', 11, None), ('personnel', 2, None), ('personnel', 5, None), ('sales', 1, None), ('sales', 3, None), ('sales', 4, None)]
++--------------------+
+--Query--
+SELECT depname, empno, 	nth_value(NULL, 2) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, None), ('develop', 8, None), ('develop', 9, None), ('develop', 10, None), ('develop', 11, None), ('personnel', 2, None), ('personnel', 5, None), ('sales', 1, None), ('sales', 3, None), ('sales', 4, None)]
++--------------------+
+--Query--
+SELECT depname, empno, 	nth_value(empno, case empno % 3 when 1 then 2 else NULL end) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, 8), ('develop', 8, None), ('develop', 9, None), ('develop', 10, 11), ('develop', 11, None), ('personnel', 2, None), ('personnel', 5, None), ('sales', 1, 3), ('sales', 3, None), ('sales', 4, None)]
++--------------------+
+--Query--
+SELECT depname, empno, 	nth_value(empno, 2) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empno_nulls ORDER BY 1, 2
+--Result--
+[('develop', None, None), ('develop', None, 7), ('develop', 7, 9), ('develop', 9, 11), ('develop', 11, None), ('personnel', None, 5), ('personnel', 5, None), ('sales', None, 1), ('sales', 1, 3), ('sales', 3, None)]
++--------------------+
+--Query--
+SELECT depname, empno, 1 + empno %3 as offset, 	nth_value(empno, 1 + empno %3) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, 2, 8), ('develop', 8, 3, 10), ('develop', 9, 1, 9), ('develop', 10, 2, 11), ('develop', 11, 3, None), ('personnel', 2, 3, None), ('personnel', 5, 3, None), ('sales', 1, 2, 3), ('sales', 3, 1, 3), ('sales', 4, 2, None)]
++--------------------+
+--Query--
+SELECT depname, empno, empno %3 as offset, 	nth_value(empno, empno %3) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, 1, 7), ('develop', 8, 2, 9), ('develop', 9, 0, None), ('develop', 10, 1, 10), ('develop', 11, 2, None), ('personnel', 2, 2, 5), ('personnel', 5, 2, None), ('sales', 1, 1, 1), ('sales', 3, 0, None), ('sales', 4, 1, 4)]
++--------------------+
+--Query--
+SELECT depname, empno, 	nth_value(-1, 2) OVER ( 		PARTITION BY depname ORDER BY empno ASC 		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING 		) fv FROM empsalary ORDER BY 1, 2
+--Result--
+[('develop', 7, -1), ('develop', 8, -1), ('develop', 9, -1), ('develop', 10, -1), ('develop', 11, None), ('personnel', 2, -1), ('personnel', 5, None), ('sales', 1, -1), ('sales', 3, -1), ('sales', 4, None)]
++--------------------+

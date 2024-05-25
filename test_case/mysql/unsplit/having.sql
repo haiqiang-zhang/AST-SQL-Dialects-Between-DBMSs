@@ -178,7 +178,7 @@ select count(s1) from t1 group by s1 having count(1+1)=2;
 select count(s1) from t1 group by s1 having s1*0=0;
 drop table t1;
 create table t1 (s1 char character set latin1 collate latin1_german1_ci);
-insert ignore into t1 values ('ÃÂÃÂ¼'),('y');
+insert ignore into t1 values ('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼'),('y');
 drop table t1;
 DROP SCHEMA IF EXISTS HU;
 CREATE SCHEMA HU;

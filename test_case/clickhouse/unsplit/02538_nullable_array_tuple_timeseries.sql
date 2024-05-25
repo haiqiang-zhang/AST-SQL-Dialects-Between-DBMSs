@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS tbl;
---   with Nullable and
---   with composite types Array and Tuple
+
 
 CREATE TABLE tbl (
     -- Nullable

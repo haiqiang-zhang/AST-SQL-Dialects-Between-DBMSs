@@ -1,0 +1,80 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA default_null_order='NULLS LAST'
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA default_null_order='NULLS FIRST'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM integers ORDER BY i
+--Result--
+[(None,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM integers ORDER BY i NULLS FIRST
+--Result--
+[(None,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM integers ORDER BY i NULLS LAST
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+SELECT 10 AS j, i FROM integers ORDER BY j, i NULLS LAST
+--Result--
+[(10, 1), (10, None)]
++--------------------+
+--Query--
+SELECT * FROM test ORDER BY i NULLS FIRST, j NULLS LAST
+--Result--
+[(None, 1), (1, 1), (1, None)]
++--------------------+
+--Query--
+SELECT * FROM test ORDER BY i NULLS FIRST, j NULLS FIRST
+--Result--
+[(None, 1), (1, None), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM test ORDER BY i NULLS LAST, j NULLS FIRST
+--Result--
+[(1, None), (1, 1), (None, 1)]
++--------------------+
+--Query--
+SELECT i, j, row_number() OVER (PARTITION BY i ORDER BY j NULLS FIRST) FROM test ORDER BY i NULLS FIRST, j NULLS FIRST
+--Result--
+[(None, 1, 1), (1, None, 1), (1, 1, 2)]
++--------------------+
+--Query--
+SELECT i, j, row_number() OVER (PARTITION BY i ORDER BY j NULLS LAST) FROM test ORDER BY i NULLS FIRST, j NULLS FIRST
+--Result--
+[(None, 1, 1), (1, None, 2), (1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM test ORDER BY i NULLS FIRST, j NULLS LAST LIMIT 2
+--Result--
+[(None, 1), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM test ORDER BY i NULLS LAST, j NULLS LAST LIMIT 2
+--Result--
+[(1, 1), (1, None)]
++--------------------+
+--Query--
+SELECT * FROM integers ORDER BY i
+--Result--
+[(None,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM integers ORDER BY i
+--Result--
+[(None,), (1,)]
++--------------------+

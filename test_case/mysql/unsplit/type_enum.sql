@@ -19,7 +19,7 @@ create table t1 (a enum(0xE4, '1', '2') not null default 0xE4) character set lat
 drop table t1;
 CREATE TABLE t1 (
   a INT  default 1,
-  b ENUM('value','ÃÂ¶ÃÂ¤ÃÂ¼_value','ÃÂÃÂÃÂ') character set latin1 NOT NULL
+  b ENUM('value','ÃÂÃÂÃÂÃÂ¶ÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂ¼_value','ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ') character set latin1 NOT NULL
 );
 drop table t1;
 CREATE TABLE t1 (c enum('a', 'A') BINARY);
@@ -30,9 +30,9 @@ CREATE TABLE t1 (c enum('ae','oe','ue','ss') collate latin1_german2_ci);
 SELECT * FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
-  a ENUM('ÃÂ¤','ÃÂ¶','ÃÂ¼') character set utf8mb3 default 'ÃÂ¼'
+  a ENUM('ÃÂÃÂÃÂÃÂ¤','ÃÂÃÂÃÂÃÂ¶','ÃÂÃÂÃÂÃÂ¼') character set utf8mb3 default 'ÃÂÃÂÃÂÃÂ¼'
 );
-insert into t1 values ('ÃÂ¤'), ('ÃÂ¶'), ('ÃÂ¼');
+insert into t1 values ('ÃÂÃÂÃÂÃÂ¤'), ('ÃÂÃÂÃÂÃÂ¶'), ('ÃÂÃÂÃÂÃÂ¼');
 select a from t1 order by a;
 drop table t1;
 create table t1 (a enum ('Y','N') CHARACTER SET utf8mb3 COLLATE utf8mb3_bin);
@@ -48,11 +48,11 @@ drop table t1;
 create table t1 (f1 int);
 alter table t1 add f2 enum(0xFFFF);
 drop table t1;
-create table t1(russian enum('E','F','EÃÂ¿F','FÃÂ¿E') NOT NULL DEFAULT'E');
+create table t1(russian enum('E','F','EÃÂÃÂÃÂÃÂ¿F','FÃÂÃÂÃÂÃÂ¿E') NOT NULL DEFAULT'E');
 drop table t1;
 create table t1(denormal enum('E','F','E,F','F,E') NOT NULL DEFAULT'E');
 drop table t1;
-create table t1(russian_deviant enum('E','F','EÃÂ¿F','F,E') NOT NULL DEFAULT'E');
+create table t1(russian_deviant enum('E','F','EÃÂÃÂÃÂÃÂ¿F','F,E') NOT NULL DEFAULT'E');
 drop table t1;
 CREATE TABLE t1 (
   id INT AUTO_INCREMENT PRIMARY KEY,

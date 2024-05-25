@@ -1,0 +1,2090 @@
+--Query--
+select '{[1,2], [3,4]}'::int4multirange
+--Result--
+[('{[1,5)}',)]
++--------------------+
+--Query--
+select pg_input_is_valid('{[1,2], [4,5]}', 'int4multirange')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select pg_input_is_valid('{[1,2], [4,5]', 'int4multirange')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select * from pg_input_error_info('{[1,2], [4,5]', 'int4multirange')
+--Result--
+[('malformed multirange literal: "{[1,2], [4,5]"', 'Unexpected end of input.', None, '22P02')]
++--------------------+
+--Query--
+select pg_input_is_valid('{[1,2], [4,zed]}', 'int4multirange')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select * from pg_input_error_info('{[1,2], [4,zed]}', 'int4multirange')
+--Result--
+[('invalid input syntax for type integer: "zed"', None, None, '22P02')]
++--------------------+
+--Query--
+select 'empty'::int4range::int4multirange
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select int4range(1, 3)::int4multirange
+--Result--
+[('{[1,3)}',)]
++--------------------+
+--Query--
+select int4range(1, null)::int4multirange
+--Result--
+[('{[1,)}',)]
++--------------------+
+--Query--
+select int4range(null, null)::int4multirange
+--Result--
+[('{(,)}',)]
++--------------------+
+--Query--
+select unnest(int4multirange(int4range('5', '6'), int4range('1', '2')))
+--Result--
+[(NumericRange(1, 2, '[)'),), (NumericRange(5, 6, '[)'),)]
++--------------------+
+--Query--
+SELECT nmr, isempty(nmr), lower(nmr), upper(nmr) FROM nummultirange_test ORDER BY nmr
+--Result--
+[('{}', True, None, None), ('{}', True, None, None), ('{}', True, None, None), ('{}', True, None, None), ('{(,5)}', False, None, 5.0), ('{(,)}', False, None, None), ('{(,)}', False, None, None), ('{[1.1,2.2)}', False, 1.1, 2.2), ('{[1.7,1.7],[1.9,2.1)}', False, 1.7, 2.1), ('{[1.7,1.9)}', False, 1.7, 1.9), ('{[3,)}', False, 3.0, None)]
++--------------------+
+--Query--
+SELECT nmr, lower_inc(nmr), lower_inf(nmr), upper_inc(nmr), upper_inf(nmr) FROM nummultirange_test ORDER BY nmr
+--Result--
+[('{}', False, False, False, False), ('{}', False, False, False, False), ('{}', False, False, False, False), ('{}', False, False, False, False), ('{(,5)}', False, True, False, False), ('{(,)}', False, True, False, True), ('{(,)}', False, True, False, True), ('{[1.1,2.2)}', True, False, False, False), ('{[1.7,1.7],[1.9,2.1)}', True, False, False, False), ('{[1.7,1.9)}', True, False, False, False), ('{[3,)}', True, False, False, True)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr = '{}'
+--Result--
+[('{}',), ('{}',), ('{}',), ('{}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr = '{(,5)}'
+--Result--
+[('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr = '{[3,)}'
+--Result--
+[('{[3,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr = '{[1.7,1.7]}'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr = '{[1.7,1.7],[1.9,2.1)}'
+--Result--
+[('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr < '{}'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr < '{[-1000.0, -1000.0]}'
+--Result--
+[('{}',), ('{(,)}',), ('{(,)}',), ('{(,5)}',), ('{}',), ('{}',), ('{}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr < '{[0.0, 1.0]}'
+--Result--
+[('{}',), ('{(,)}',), ('{(,)}',), ('{(,5)}',), ('{}',), ('{}',), ('{}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr < '{[1000.0, 1001.0]}'
+--Result--
+[('{}',), ('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',), ('{}',), ('{}',), ('{[1.1,2.2)}',), ('{}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr <= '{}'
+--Result--
+[('{}',), ('{}',), ('{}',), ('{}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr <= '{[3,)}'
+--Result--
+[('{}',), ('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',), ('{}',), ('{}',), ('{[1.1,2.2)}',), ('{}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr >= '{}'
+--Result--
+[('{}',), ('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',), ('{}',), ('{}',), ('{[1.1,2.2)}',), ('{}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr >= '{[3,)}'
+--Result--
+[('{[3,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr > '{}'
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',), ('{[1.1,2.2)}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr > '{[-1000.0, -1000.0]}'
+--Result--
+[('{[3,)}',), ('{[1.1,2.2)}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr > '{[0.0, 1.0]}'
+--Result--
+[('{[3,)}',), ('{[1.1,2.2)}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr > '{[1000.0, 1001.0]}'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr <> '{}'
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',), ('{[1.1,2.2)}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr <> '{(,5)}'
+--Result--
+[('{}',), ('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{}',), ('{}',), ('{[1.1,2.2)}',), ('{}',), ('{[1.7,1.9)}',), ('{[1.7,1.7],[1.9,2.1)}',)]
++--------------------+
+--Query--
+select nummultirange(numrange(5.0, 6.0), numrange(1.0, 2.0))
+--Result--
+[('{[1.0,2.0),[5.0,6.0)}',)]
++--------------------+
+--Query--
+analyze nummultirange_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE range_overlaps_multirange(numrange(4.0, 4.2), nmr)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE numrange(4.0, 4.2) && nmr
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE multirange_overlaps_range(nmr, numrange(4.0, 4.2))
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr && numrange(4.0, 4.2)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE multirange_overlaps_multirange(nmr, nummultirange(numrange(4.0, 4.2), numrange(6.0, 7.0)))
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr && nummultirange(numrange(4.0, 4.2), numrange(6.0, 7.0))
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr && nummultirange(numrange(6.0, 7.0))
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr && nummultirange(numrange(6.0, 7.0), numrange(8.0, 9.0))
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE multirange_contains_elem(nmr, 4.0)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr @> 4.0
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE multirange_contains_range(nmr, numrange(4.0, 4.2))
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr @> numrange(4.0, 4.2)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE multirange_contains_multirange(nmr, '{[4.0,4.2), [6.0, 8.0)}')
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE nmr @> '{[4.0,4.2), [6.0, 8.0)}'::nummultirange
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE elem_contained_by_multirange(4.0, nmr)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE 4.0 <@ nmr
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE range_contained_by_multirange(numrange(4.0, 4.2), nmr)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE numrange(4.0, 4.2) <@ nmr
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',), ('{(,5)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE multirange_contained_by_multirange('{[4.0,4.2), [6.0, 8.0)}', nmr)
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',)]
++--------------------+
+--Query--
+SELECT * FROM nummultirange_test WHERE '{[4.0,4.2), [6.0, 8.0)}'::nummultirange <@ nmr
+--Result--
+[('{(,)}',), ('{[3,)}',), ('{(,)}',)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange && nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange && nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() && 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) && 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() && nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() && nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) && nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) && nummultirange(numrange(1,2), numrange(7,8))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(7,8)) && nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) && nummultirange(numrange(1,2), numrange(3.5,8))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(3.5,8)) && numrange(3,4)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(3.5,8)) && nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select '{(10,20),(30,40),(50,60)}'::nummultirange && '(42,92)'::numrange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange() @> nummultirange()
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange() @> 'empty'::numrange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,null)) @> numrange(1,2)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,null)) @> numrange(null,2)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,null)) @> numrange(2,null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,5)) @> numrange(null,3)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,5)) @> numrange(null,8)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(5,null)) @> numrange(8,null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(5,null)) @> numrange(3,null)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5)) @> numrange(8,9)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5)) @> numrange(3,9)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5)) @> numrange(1,4)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5)) @> numrange(1,5)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(-4,-2), numrange(1,5)) @> numrange(1,5)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5), numrange(8,9)) @> numrange(1,5)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5), numrange(8,9)) @> numrange(6,7)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5), numrange(6,9)) @> numrange(6,7)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5)}'::nummultirange @> '{[1,5)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[-4,-2), [1,5)}'::nummultirange @> '{[1,5)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5), [8,9)}'::nummultirange @> '{[1,5)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5), [8,9)}'::nummultirange @> '{[6,7)}'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT '{[1,5), [6,9)}'::nummultirange @> '{[6,7)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select '{(10,20),(30,40),(50,60)}'::nummultirange @> '(52,56)'::numrange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,null) @> nummultirange(numrange(1,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,null) @> nummultirange(numrange(null,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,null) @> nummultirange(numrange(2,null))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,5) @> nummultirange(numrange(null,3))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,5) @> nummultirange(numrange(null,8))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(5,null) @> nummultirange(numrange(8,null))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(5,null) @> nummultirange(numrange(3,null))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) @> nummultirange(numrange(8,9))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) @> nummultirange(numrange(3,9))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) @> nummultirange(numrange(1,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) @> nummultirange(numrange(1,5))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,9) @> nummultirange(numrange(-4,-2), numrange(1,5))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,9) @> nummultirange(numrange(1,5), numrange(8,9))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,9) @> nummultirange(numrange(1,5), numrange(6,9))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,9) @> nummultirange(numrange(1,5), numrange(6,10))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT '{[1,9)}' @> '{[1,5)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,9)}' @> '{[-4,-2), [1,5)}'::nummultirange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT '{[1,9)}' @> '{[1,5), [8,9)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,9)}' @> '{[1,5), [6,9)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,9)}' @> '{[1,5), [6,10)}'::nummultirange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() <@ nummultirange()
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange <@ nummultirange()
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,2) <@ nummultirange(numrange(null,null))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,2) <@ nummultirange(numrange(null,null))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(2,null) <@ nummultirange(numrange(null,null))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,3) <@ nummultirange(numrange(null,5))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(null,8) <@ nummultirange(numrange(null,5))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(8,null) <@ nummultirange(numrange(5,null))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(3,null) <@ nummultirange(numrange(5,null))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(8,9) <@ nummultirange(numrange(1,5))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(3,9) <@ nummultirange(numrange(1,5))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,4) <@ nummultirange(numrange(1,5))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) <@ nummultirange(numrange(1,5))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) <@ nummultirange(numrange(-4,-2), numrange(1,5))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,5) <@ nummultirange(numrange(1,5), numrange(8,9))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(6,7) <@ nummultirange(numrange(1,5), numrange(8,9))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(6,7) <@ nummultirange(numrange(1,5), numrange(6,9))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5)}' <@ '{[1,5)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5)}' <@ '{[-4,-2), [1,5)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5)}' <@ '{[1,5), [8,9)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[6,7)}' <@ '{[1,5), [8,9)}'::nummultirange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT '{[6,7)}' <@ '{[1,5), [6,9)}'::nummultirange
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) <@ numrange(null,null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,2)) <@ numrange(null,null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(2,null)) <@ numrange(null,null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,3)) <@ numrange(null,5)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(null,8)) <@ numrange(null,5)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(8,null)) <@ numrange(5,null)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,null)) <@ numrange(5,null)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(8,9)) <@ numrange(1,5)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,9)) <@ numrange(1,5)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) <@ numrange(1,5)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5)) <@ numrange(1,5)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(-4,-2), numrange(1,5)) <@ numrange(1,9)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5), numrange(8,9)) <@ numrange(1,9)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5), numrange(6,9)) <@ numrange(1,9)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,5), numrange(6,10)) <@ numrange(1,9)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT '{[1,5)}'::nummultirange <@ '{[1,9)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[-4,-2), [1,5)}'::nummultirange <@ '{[1,9)}'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT '{[1,5), [8,9)}'::nummultirange <@ '{[1,9)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5), [6,9)}'::nummultirange <@ '{[1,9)}'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT '{[1,5), [6,10)}'::nummultirange <@ '{[1,9)}'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange &< nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange &< nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() &< 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) &< 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() &< nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) &< nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() &< nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(6,7) &< nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,2) &< nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,4) &< nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,6) &< nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(3.5,6) &< nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(6,7)) &< numrange(3,4)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) &< numrange(3,4)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) &< numrange(3,4)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,6)) &< numrange(3,4)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3.5,6)) &< numrange(3,4)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(6,7)) &< nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) &< nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) &< nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,6)) &< nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3.5,6)) &< nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() &> 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) &> 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange &> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange &> nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() &> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() &> nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) &> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> numrange(6,7)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> numrange(1,2)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> numrange(1,4)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> numrange(1,6)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> numrange(3.5,6)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(3,4) &> nummultirange(numrange(6,7))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(3,4) &> nummultirange(numrange(1,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(3,4) &> nummultirange(numrange(1,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(3,4) &> nummultirange(numrange(1,6))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(3,4) &> nummultirange(numrange(3.5,6))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> nummultirange(numrange(6,7))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> nummultirange(numrange(1,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> nummultirange(numrange(1,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> nummultirange(numrange(1,6))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(3,4)) &> nummultirange(numrange(3.5,6))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange -|- nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'empty'::numrange -|- nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() -|- 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() -|- nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() -|- nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT numrange(1,2) -|- nummultirange(numrange(2,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT numrange(1,2) -|- nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- numrange(2,4)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- numrange(3,4)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- nummultirange(numrange(2,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(5,6)) -|- nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(5,6)) -|- nummultirange(numrange(6,7))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(5,6)) -|- nummultirange(numrange(8,9))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) -|- nummultirange(numrange(2,4), numrange(6,7))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select 'empty'::numrange << nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(1,2) << nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(1,2) << nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select numrange(1,2) << nummultirange(numrange(0,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(1,2) << nummultirange(numrange(0,4), numrange(7,8))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange() << 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange() << numrange(1,2)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(3,4)) << numrange(3,6)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(0,2)) << numrange(3,6)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange(numrange(0,2), numrange(7,8)) << numrange(3,6)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(-4,-2), numrange(0,2)) << numrange(3,6)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange() << nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange() << nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2)) << nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2)) << nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2)) << nummultirange(numrange(3,4))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2)) << nummultirange(numrange(3,4), numrange(7,8))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2), numrange(4,5)) << nummultirange(numrange(3,4), numrange(7,8))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange() >> 'empty'::numrange
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange() >> numrange(1,2)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(3,4)) >> numrange(1,2)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange(numrange(0,4)) >> numrange(1,2)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(0,4), numrange(7,8)) >> numrange(1,2)
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select 'empty'::numrange >> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(1,2) >> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(3,6) >> nummultirange(numrange(3,4))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(3,6) >> nummultirange(numrange(0,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select numrange(3,6) >> nummultirange(numrange(0,2), numrange(7,8))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select numrange(3,6) >> nummultirange(numrange(-4,-2), numrange(0,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange() >> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2)) >> nummultirange()
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange() >> nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(1,2)) >> nummultirange(numrange(1,2))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select nummultirange(numrange(3,4)) >> nummultirange(numrange(1,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange(numrange(3,4), numrange(7,8)) >> nummultirange(numrange(1,2))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select nummultirange(numrange(3,4), numrange(7,8)) >> nummultirange(numrange(1,2), numrange(4,5))
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT nummultirange() + nummultirange()
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange() + nummultirange(numrange(1,2))
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) + nummultirange()
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) + nummultirange(numrange(1,2))
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) + nummultirange(numrange(2,4))
+--Result--
+[('{[1,4)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) + nummultirange(numrange(3,4))
+--Result--
+[('{[1,2),[3,4)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) + nummultirange(numrange(2,4))
+--Result--
+[('{[1,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) + nummultirange(numrange(3,4))
+--Result--
+[('{[1,2),[3,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) + nummultirange(numrange(0,9))
+--Result--
+[('{[0,9)}',)]
++--------------------+
+--Query--
+SELECT range_merge(nummultirange())
+--Result--
+[(NumericRange(empty=True),)]
++--------------------+
+--Query--
+SELECT range_merge(nummultirange(numrange(1,2)))
+--Result--
+[(NumericRange(Decimal('1'), Decimal('2'), '[)'),)]
++--------------------+
+--Query--
+SELECT range_merge(nummultirange(numrange(1,2), numrange(7,8)))
+--Result--
+[(NumericRange(Decimal('1'), Decimal('8'), '[)'),)]
++--------------------+
+--Query--
+SELECT nummultirange() - nummultirange()
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange() - nummultirange(numrange(1,2))
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) - nummultirange()
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(3,4)) - nummultirange()
+--Result--
+[('{[1,2),[3,4)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) - nummultirange(numrange(1,2))
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) - nummultirange(numrange(2,4))
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) - nummultirange(numrange(3,4))
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) - nummultirange(numrange(1,2))
+--Result--
+[('{[2,4)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) - nummultirange(numrange(2,3))
+--Result--
+[('{[1,2),[3,4)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) - nummultirange(numrange(0,8))
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,4)) - nummultirange(numrange(0,2))
+--Result--
+[('{[2,4)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,8)) - nummultirange(numrange(0,2), numrange(3,4))
+--Result--
+[('{[2,3),[4,8)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,8)) - nummultirange(numrange(2,3), numrange(5,null))
+--Result--
+[('{[1,2),[3,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) - nummultirange(numrange(-2,0))
+--Result--
+[('{[1,2),[4,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) - nummultirange(numrange(2,4))
+--Result--
+[('{[1,2),[4,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) - nummultirange(numrange(3,5))
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) - nummultirange(numrange(0,9))
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,3), numrange(4,5)) - nummultirange(numrange(2,9))
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) - nummultirange(numrange(8,9))
+--Result--
+[('{[1,2),[4,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2), numrange(4,5)) - nummultirange(numrange(-2,0), numrange(8,9))
+--Result--
+[('{[1,2),[4,5)}',)]
++--------------------+
+--Query--
+SELECT nummultirange() * nummultirange()
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange() * nummultirange(numrange(1,2))
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT nummultirange(numrange(1,2)) * nummultirange()
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+SELECT '{[1,3)}'::nummultirange * '{[1,5)}'::nummultirange
+--Result--
+[('{[1,3)}',)]
++--------------------+
+--Query--
+SELECT '{[1,3)}'::nummultirange * '{[0,5)}'::nummultirange
+--Result--
+[('{[1,3)}',)]
++--------------------+
+--Query--
+SELECT '{[1,3)}'::nummultirange * '{[0,2)}'::nummultirange
+--Result--
+[('{[1,2)}',)]
++--------------------+
+--Query--
+SELECT '{[1,3)}'::nummultirange * '{[2,5)}'::nummultirange
+--Result--
+[('{[2,3)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4)}'::nummultirange * '{[2,3)}'::nummultirange
+--Result--
+[('{[2,3)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4)}'::nummultirange * '{[0,2), [3,5)}'::nummultirange
+--Result--
+[('{[1,2),[3,4)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4), [7,10)}'::nummultirange * '{[0,8), [9,12)}'::nummultirange
+--Result--
+[('{[1,4),[7,8),[9,10)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4), [7,10)}'::nummultirange * '{[9,12)}'::nummultirange
+--Result--
+[('{[9,10)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4), [7,10)}'::nummultirange * '{[-5,-4), [5,6), [9,12)}'::nummultirange
+--Result--
+[('{[9,10)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4), [7,10)}'::nummultirange * '{[0,2), [3,8), [9,12)}'::nummultirange
+--Result--
+[('{[1,2),[3,4),[7,8),[9,10)}',)]
++--------------------+
+--Query--
+SELECT '{[1,4), [7,10)}'::nummultirange * '{[0,2), [3,8), [9,12)}'::nummultirange
+--Result--
+[('{[1,2),[3,4),[7,8),[9,10)}',)]
++--------------------+
+--Query--
+analyze test_multirange_gist
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr = '{}'::int4multirange
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> 'empty'::int4range
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ 'empty'::int4range
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> '{}'::int4multirange
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> '{}'::int4multirange
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ '{}'::int4multirange
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr = int4multirange(int4range(10,20), int4range(30,40), int4range(50,60))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> 10
+--Result--
+[(120,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> int4range(10,20)
+--Result--
+[(111,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && int4range(10,20)
+--Result--
+[(139,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ int4range(10,50)
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << int4range(100,500)
+--Result--
+[(54,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> int4range(100,500)
+--Result--
+[(2053,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< int4range(100,500)
+--Result--
+[(474,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> int4range(100,500)
+--Result--
+[(2893,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- int4range(100,500)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> '{}'::int4multirange
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> int4multirange(int4range(10,20), int4range(30,40))
+--Result--
+[(110,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && '{(10,20),(30,40),(50,60)}'::int4multirange
+--Result--
+[(218,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ '{(10,30),(40,60),(70,90)}'::int4multirange
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(54,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(2053,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(474,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(2893,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr = '{}'::int4multirange
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> 'empty'::int4range
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ 'empty'::int4range
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- 'empty'::int4range
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> '{}'::int4multirange
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> '{}'::int4multirange
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ '{}'::int4multirange
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- '{}'::int4multirange
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> 'empty'::int4range
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr = int4multirange(int4range(10,20), int4range(30,40), int4range(50,60))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> 10
+--Result--
+[(120,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> int4range(10,20)
+--Result--
+[(111,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && int4range(10,20)
+--Result--
+[(139,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ int4range(10,50)
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << int4range(100,500)
+--Result--
+[(54,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> int4range(100,500)
+--Result--
+[(2053,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< int4range(100,500)
+--Result--
+[(474,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> int4range(100,500)
+--Result--
+[(2893,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- int4range(100,500)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> '{}'::int4multirange
+--Result--
+[(3700,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr @> int4multirange(int4range(10,20), int4range(30,40))
+--Result--
+[(110,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr && '{(10,20),(30,40),(50,60)}'::int4multirange
+--Result--
+[(218,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr <@ '{(10,30),(40,60),(70,90)}'::int4multirange
+--Result--
+[(500,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr << int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(54,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr >> int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(2053,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &< int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(474,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr &> int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(2893,)]
++--------------------+
+--Query--
+select count(*) from test_multirange_gist where mr -|- int4multirange(int4range(100,200), int4range(400,500))
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT   room_id, range_agg(booked_during) FROM     reservations GROUP BY room_id ORDER BY room_id
+--Result--
+[(1, '{[2018-07-01,2018-07-14),[2018-07-20,2018-07-22)}'), (2, '{[2018-07-01,2018-07-03)}'), (3, None), (4, None), (5, '{[2018-07-01,2018-07-03)}'), (6, '{[2018-07-01,2018-07-10)}'), (7, '{[2018-07-01,2018-07-14)}'), (8, '{}')]
++--------------------+
+--Query--
+select range_agg(nmr) from nummultirange_test
+--Result--
+[('{(,)}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from nummultirange_test where false
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select range_agg(null::nummultirange) from nummultirange_test
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{}'::nummultirange)) t(nmr)
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{}'::nummultirange), ('{}'::nummultirange)) t(nmr)
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{[1,2]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,2]}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{[1,2], [5,6]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,2],[5,6]}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{[1,2], [2,3]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,3]}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{[1,2]}'::nummultirange), ('{[5,6]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,2],[5,6]}',)]
++--------------------+
+--Query--
+select range_agg(nmr) from (values ('{[1,2]}'::nummultirange), ('{[2,3]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,3]}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from nummultirange_test
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from nummultirange_test where false
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select range_intersect_agg(null::nummultirange) from nummultirange_test
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from (values ('{[1,3]}'::nummultirange), ('{[6,12]}'::nummultirange)) t(nmr)
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from (values ('{[1,6]}'::nummultirange), ('{[3,12]}'::nummultirange)) t(nmr)
+--Result--
+[('{[3,6]}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from (values ('{[1,6], [10,12]}'::nummultirange), ('{[4,14]}'::nummultirange)) t(nmr)
+--Result--
+[('{[4,6],[10,12]}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from (values ('{}'::nummultirange)) t(nmr)
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from (values ('{[1,2]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,2]}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from (values ('{[1,6], [10,12]}'::nummultirange)) t(nmr)
+--Result--
+[('{[1,6],[10,12]}',)]
++--------------------+
+--Query--
+select range_intersect_agg(nmr) from nummultirange_test where nmr @> 4.0
+--Result--
+[('{[3,5)}',)]
++--------------------+
+--Query--
+select * from nummultirange_test2 where nmr = '{}'
+--Result--
+[('{}',)]
++--------------------+
+--Query--
+select * from nummultirange_test2 where nmr = nummultirange(numrange(1.1, 2.2))
+--Result--
+[('{[1.1,2.2)}',), ('{[1.1,2.2)}',)]
++--------------------+
+--Query--
+select * from nummultirange_test2 where nmr = nummultirange(numrange(1.1, 2.3))
+--Result--
+[]
++--------------------+
+--Query--
+select * from nummultirange_test natural join nummultirange_test2 order by nmr
+--Result--
+[('{}',), ('{}',), ('{}',), ('{}',), ('{(,5)}',), ('{[1.1,2.2)}',), ('{[1.1,2.2)}',)]
++--------------------+
+--Query--
+select * from nummultirange_test natural join nummultirange_test2 order by nmr
+--Result--
+[('{}',), ('{}',), ('{}',), ('{}',), ('{(,5)}',), ('{[1.1,2.2)}',), ('{[1.1,2.2)}',)]
++--------------------+
+--Query--
+select * from nummultirange_test natural join nummultirange_test2 order by nmr
+--Result--
+[('{}',), ('{}',), ('{}',), ('{}',), ('{(,5)}',), ('{[1.1,2.2)}',), ('{[1.1,2.2)}',)]
++--------------------+
+--Query--
+select '{[4,50)}'::mydomainmultirange @> 7::mydomain
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select '{[4,5)}'::restrictedmultirange @> 7
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select intr_multirange(intr(1,10))
+--Result--
+[('{[1,10)}',)]
++--------------------+
+--Query--
+select unnest(multirange_of_text(textrange1('a','b'), textrange1('d','e')))
+--Result--
+[('[a,b)',), ('[d,e)',)]
++--------------------+
+--Query--
+select _textrange1(textrange2('a','z')) @> 'b'::text
+--Result--
+[(True,)]
++--------------------+
+--Query--
+revoke usage on type multitextrange1 from public
+--Result--
+[]
++--------------------+
+--Query--
+revoke usage on type textrange1 from public
+--Result--
+[]
++--------------------+
+--Query--
+select range_add_bounds(int4multirange(int4range(1, 17)))
+--Result--
+[(18,)]
++--------------------+
+--Query--
+select range_add_bounds(nummultirange(numrange(1.0001, 123.123)))
+--Result--
+[(124.1231,)]
++--------------------+
+--Query--
+select multirangetypes_sql(int4multirange(int4range(1,10)), ARRAY[2,20])
+--Result--
+[(12,)]
++--------------------+
+--Query--
+select ARRAY[nummultirange(numrange(1.1, 1.2)), nummultirange(numrange(12.3, 155.5))]
+--Result--
+[('{"{[1.1,1.2)}","{[12.3,155.5)}"}',)]
++--------------------+
+--Query--
+select * from i8mr_array
+--Result--
+[(42, '{"{[1,10)}","{[2,20)}"}')]
++--------------------+
+--Query--
+select *, row_to_json(upper(t)) as u from   (values (two_ints_multirange(two_ints_range(row(1,2), row(3,4)))),           (two_ints_multirange(two_ints_range(row(5,6), row(7,8))))) v(t)
+--Result--
+[('{["(1,2)","(3,4)")}', {'a': 3, 'b': 4}), ('{["(5,6)","(7,8)")}', {'a': 7, 'b': 8})]
++--------------------+
+--Query--
+select * from mr_outparam_succeed(int4multirange(int4range(1,2)))
+--Result--
+[('{[1,2)}', 'foo')]
++--------------------+
+--Query--
+select * from mr_outparam_succeed2(int4multirange(int4range(1,2)))
+--Result--
+[([2], 'foo')]
++--------------------+
+--Query--
+select * from mr_outparam_succeed3(int4multirange(int4range(1,2)))
+--Result--
+[(NumericRange(1, 2, '[)'), 'foo')]
++--------------------+
+--Query--
+select * from mr_outparam_succeed4(int4range(1,2))
+--Result--
+[('{[1,2)}', 'foo')]
++--------------------+
+--Query--
+select * from mr_inoutparam_succeed(int4multirange(int4range(1,2)))
+--Result--
+[(2, '{[1,2)}')]
++--------------------+
+--Query--
+select * from mr_table_succeed(123, int4multirange(int4range(1,11)))
+--Result--
+[(123, '{[1,11)}')]
++--------------------+
+--Query--
+select mr_polymorphic(int4range(1, 4))
+--Result--
+[('{[1,4)}',)]
++--------------------+

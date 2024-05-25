@@ -1,4 +1,4 @@
-PRAGMA enable_verification;;
+PRAGMA enable_verification;
 set secret_directory='__TEST_DIR__/create_secret_s3_serialization';
 CREATE OR REPLACE PERSISTENT SECRET s1 (
     TYPE S3,
@@ -36,10 +36,5 @@ CREATE OR REPLACE PERSISTENT SECRET s3 (
     USE_SSL true,
     URL_COMPATIBILITY_MODE true
 );
-set secret_directory='__TEST_DIR__/does_not_exist';
-set secret_directory='__TEST_DIR__/create_secret_s3_serialization';
-select name, type, provider, scope FROM duckdb_secrets() order by name;;
-select secret_string from duckdb_secrets(redact=false) order by type;;
-select count(*) FROM duckdb_secrets(redact=false);;
-select name, type, provider, scope FROM duckdb_secrets() order by name;;
-select secret_string from duckdb_secrets(redact=false) order by type;;
+select name, type, provider, scope FROM duckdb_secrets() order by name;
+select name, type, provider, scope FROM duckdb_secrets() order by name;

@@ -1,4 +1,3 @@
--- { echo }
 SELECT '--JSON_VALUE--';
 SELECT JSON_VALUE('{"hello":1}', '$');
 SELECT JSON_VALUE('{"hello":1}', '$.hello');

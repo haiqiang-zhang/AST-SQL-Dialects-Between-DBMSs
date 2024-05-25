@@ -1,0 +1,35 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1.0
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 1.0
+--Result--
+[(1.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT 1 UNION SELECT 1 UNION SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT 1.0 UNION SELECT 1.0 UNION SELECT 1.0) UNION SELECT 1
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL (SELECT 1.0 UNION ALL SELECT 1.0 UNION ALL SELECT 1.0) UNION ALL SELECT 1
+--Result--
+[(1.0,), (1.0,), (1.0,), (1.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT '1' UNION SELECT '1' UNION SELECT '1') UNION SELECT 1
+--Result--
+[('1',)]
++--------------------+

@@ -1,5 +1,4 @@
---     'Theodore', 'Diaz', 'Skilled Manual', 'Bachelors', 28, 
---     'Stephanie', 'Cox', 'Management abcd defg', 'Bachelors', 33, 
+
 --     'Peter', 'Nara', 'Skilled Manual', 'Graduate Degree', 26, 
 --     'Latoya', 'Shen', 'Professional', 'Graduate Degree', 25, 
 --     'Joshua', 'Lee', 'Professional', 'Partial College', 26, 

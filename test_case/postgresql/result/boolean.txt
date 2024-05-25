@@ -1,0 +1,325 @@
+--Query--
+SELECT 1 AS one
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT true AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT false AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 't' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool '   f           ' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 'true' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 'false' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 'y' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 'yes' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 'n' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 'no' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 'on' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 'off' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 'of' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool '1' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool '0' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('true', 'bool')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('asdf', 'bool')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('junk', 'bool')
+--Result--
+[('invalid input syntax for type boolean: "junk"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT bool 't' or bool 'f' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 't' and bool 'f' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT not bool 'f' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 't' = bool 'f' AS false
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT bool 't' <> bool 'f' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 't' > bool 'f' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 't' >= bool 'f' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 'f' < bool 't' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT bool 'f' <= bool 't' AS true
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'TrUe'::text::boolean AS true, 'fAlse'::text::boolean AS false
+--Result--
+[(True, False)]
++--------------------+
+--Query--
+SELECT '    true   '::text::boolean AS true,        '     FALSE'::text::boolean AS false
+--Result--
+[(True, False)]
++--------------------+
+--Query--
+SELECT true::boolean::text AS true, false::boolean::text AS false
+--Result--
+[('true', 'false')]
++--------------------+
+--Query--
+SELECT BOOLTBL1.* FROM BOOLTBL1
+--Result--
+[(True,), (True,), (True,)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*    FROM BOOLTBL1    WHERE f1 = bool 'true'
+--Result--
+[(True,), (True,), (True,)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*    FROM BOOLTBL1    WHERE f1 <> bool 'false'
+--Result--
+[(True,), (True,), (True,)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*    FROM BOOLTBL1    WHERE booleq(bool 'false', f1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*    FROM BOOLTBL1    WHERE f1 = bool 'false'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT BOOLTBL2.* FROM BOOLTBL2
+--Result--
+[(False,), (False,), (False,), (False,)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*, BOOLTBL2.*    FROM BOOLTBL1, BOOLTBL2    WHERE BOOLTBL2.f1 <> BOOLTBL1.f1
+--Result--
+[(True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*, BOOLTBL2.*    FROM BOOLTBL1, BOOLTBL2    WHERE boolne(BOOLTBL2.f1,BOOLTBL1.f1)
+--Result--
+[(True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*, BOOLTBL2.*    FROM BOOLTBL1, BOOLTBL2    WHERE BOOLTBL2.f1 = BOOLTBL1.f1 and BOOLTBL1.f1 = bool 'false'
+--Result--
+[(False, False), (False, False), (False, False), (False, False)]
++--------------------+
+--Query--
+SELECT BOOLTBL1.*, BOOLTBL2.*    FROM BOOLTBL1, BOOLTBL2    WHERE BOOLTBL2.f1 = BOOLTBL1.f1 or BOOLTBL1.f1 = bool 'true'    ORDER BY BOOLTBL1.f1, BOOLTBL2.f1
+--Result--
+[(False, False), (False, False), (False, False), (False, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False), (True, False)]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL1    WHERE f1 IS TRUE
+--Result--
+[(True,), (True,), (True,)]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL1    WHERE f1 IS NOT FALSE
+--Result--
+[(True,), (True,), (True,)]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL1    WHERE f1 IS FALSE
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL1    WHERE f1 IS NOT TRUE
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL2    WHERE f1 IS TRUE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL2    WHERE f1 IS NOT FALSE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL2    WHERE f1 IS FALSE
+--Result--
+[(False,), (False,), (False,), (False,)]
++--------------------+
+--Query--
+SELECT f1    FROM BOOLTBL2    WHERE f1 IS NOT TRUE
+--Result--
+[(False,), (False,), (False,), (False,)]
++--------------------+
+--Query--
+SELECT     d,     b IS TRUE AS istrue,     b IS NOT TRUE AS isnottrue,     b IS FALSE AS isfalse,     b IS NOT FALSE AS isnotfalse,     b IS UNKNOWN AS isunknown,     b IS NOT UNKNOWN AS isnotunknown FROM booltbl3 ORDER BY o
+--Result--
+[('true', True, False, False, True, False, True), ('false', False, True, True, False, False, True), ('null', False, True, False, True, True, False)]
++--------------------+
+--Query--
+SELECT istrue AND isnul AND istrue FROM booltbl4
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT istrue AND istrue AND isnul FROM booltbl4
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT isnul AND istrue AND istrue FROM booltbl4
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT isfalse AND isnul AND istrue FROM booltbl4
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT istrue AND isfalse AND isnul FROM booltbl4
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT isnul AND istrue AND isfalse FROM booltbl4
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT isfalse OR isnul OR isfalse FROM booltbl4
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT isfalse OR isfalse OR isnul FROM booltbl4
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT isnul OR isfalse OR isfalse FROM booltbl4
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT isfalse OR isnul OR istrue FROM booltbl4
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT istrue OR isfalse OR isnul FROM booltbl4
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT isnul OR istrue OR isfalse FROM booltbl4
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 0::boolean
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 1::boolean
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 2::boolean
+--Result--
+[(True,)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+select format_type('varchar'::regtype, 42)
+--Result--
+[('character varying(38)',)]
++--------------------+
+--Query--
+select format_type('bpchar'::regtype, null)
+--Result--
+[('character',)]
++--------------------+
+--Query--
+select format_type('bpchar'::regtype, -1)
+--Result--
+[('bpchar',)]
++--------------------+
+--Query--
+SELECT typinput, typoutput, typreceive, typsend, typmodin, typmodout,        typanalyze, typsubscript, typstorage FROM pg_type WHERE typname = 'myvarchar'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT typinput, typoutput, typreceive, typsend, typmodin, typmodout,        typanalyze, typsubscript, typstorage FROM pg_type WHERE typname = '_myvarchar'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT typinput, typoutput, typreceive, typsend, typmodin, typmodout,        typanalyze, typsubscript, typstorage FROM pg_type WHERE typname = 'myvarchardom'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT typinput, typoutput, typreceive, typsend, typmodin, typmodout,        typanalyze, typsubscript, typstorage FROM pg_type WHERE typname = '_myvarchardom'
+--Result--
+[]
++--------------------+

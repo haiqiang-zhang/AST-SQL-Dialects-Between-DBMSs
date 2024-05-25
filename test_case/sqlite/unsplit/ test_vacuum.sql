@@ -30,8 +30,7 @@ VACUUM;
 BEGIN;
 CREATE TABLE t6 AS SELECT * FROM t1;
 CREATE TABLE t7 AS SELECT * FROM t1;
--- The "SELECT * FROM sqlite_master" statement ensures that this test
-    -- works when shared-cache is enabled. If shared-cache is enabled, then
+
     -- db3 shares a cache with db2 (but not db - it was opened as 
     -- "./test.db").
     SELECT * FROM sqlite_master;

@@ -28,7 +28,6 @@ ATTACH 'test.db2' AS aux;
 CREATE TABLE t2(x);
 REINDEX;
 REINDEX t1;
-REINDEX aux.t1;
 REINDEX t2;
 CREATE TABLE collA(x);
 REINDEX collA;

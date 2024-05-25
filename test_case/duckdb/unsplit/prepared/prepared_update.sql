@@ -1,10 +1,10 @@
 CREATE TABLE integers(i INTEGER, j VARCHAR);
 INSERT INTO integers VALUES (1, 'hello');
-PREPARE s1 AS UPDATE integers SET i=?, j=?;;
+PREPARE s1 AS UPDATE integers SET i=?, j=?;
 EXECUTE s1(2, 'world');
-PREPARE s2 AS UPDATE integers SET j=? WHERE i=?;;
+PREPARE s2 AS UPDATE integers SET j=? WHERE i=?;
 EXECUTE s2('test', 2);
-PREPARE s3 AS UPDATE integers SET j=? WHERE i=? AND j=?;;
+PREPARE s3 AS UPDATE integers SET j=? WHERE i=? AND j=?;
 EXECUTE s3('test2', 2, 'test');
 SELECT * FROM integers;
 SELECT * FROM integers;

@@ -1,0 +1,110 @@
+--Query--
+SELECT c, count(*) FROM test_missing_target GROUP BY test_missing_target.c ORDER BY c
+--Result--
+[('ABAB    ', 2), ('BBBB    ', 2), ('CCCC    ', 2), ('XXXX    ', 1), ('bbbb    ', 1), ('cccc    ', 2)]
++--------------------+
+--Query--
+SELECT count(*) FROM test_missing_target GROUP BY test_missing_target.c ORDER BY c
+--Result--
+[(2,), (2,), (2,), (1,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT count(*) FROM test_missing_target GROUP BY b ORDER BY b
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT test_missing_target.b, count(*)   FROM test_missing_target GROUP BY b ORDER BY b
+--Result--
+[(1, 1), (2, 2), (3, 3), (4, 4)]
++--------------------+
+--Query--
+SELECT c FROM test_missing_target ORDER BY a
+--Result--
+[('XXXX    ',), ('ABAB    ',), ('ABAB    ',), ('BBBB    ',), ('BBBB    ',), ('bbbb    ',), ('cccc    ',), ('cccc    ',), ('CCCC    ',), ('CCCC    ',)]
++--------------------+
+--Query--
+SELECT count(*) FROM test_missing_target GROUP BY b ORDER BY b desc
+--Result--
+[(4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT count(*) FROM test_missing_target ORDER BY 1 desc
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT c, count(*) FROM test_missing_target GROUP BY 1 ORDER BY 1
+--Result--
+[('ABAB    ', 2), ('BBBB    ', 2), ('CCCC    ', 2), ('XXXX    ', 1), ('bbbb    ', 1), ('cccc    ', 2)]
++--------------------+
+--Query--
+SELECT a, a FROM test_missing_target 	ORDER BY a
+--Result--
+[(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9)]
++--------------------+
+--Query--
+SELECT a/2, a/2 FROM test_missing_target 	ORDER BY a/2
+--Result--
+[(0, 0), (0, 0), (1, 1), (1, 1), (2, 2), (2, 2), (3, 3), (3, 3), (4, 4), (4, 4)]
++--------------------+
+--Query--
+SELECT a/2, a/2 FROM test_missing_target 	GROUP BY a/2 ORDER BY a/2
+--Result--
+[(0, 0), (1, 1), (2, 2), (3, 3), (4, 4)]
++--------------------+
+--Query--
+SELECT x.b, count(*) FROM test_missing_target x, test_missing_target y 	WHERE x.a = y.a 	GROUP BY x.b ORDER BY x.b
+--Result--
+[(1, 1), (2, 2), (3, 3), (4, 4)]
++--------------------+
+--Query--
+SELECT count(*) FROM test_missing_target x, test_missing_target y 	WHERE x.a = y.a 	GROUP BY x.b ORDER BY x.b
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM test_missing_target2
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a%2, count(b) FROM test_missing_target GROUP BY test_missing_target.a%2 ORDER BY test_missing_target.a%2
+--Result--
+[(0, 5), (1, 5)]
++--------------------+
+--Query--
+SELECT count(c) FROM test_missing_target GROUP BY lower(test_missing_target.c) ORDER BY lower(test_missing_target.c)
+--Result--
+[(2,), (3,), (4,), (1,)]
++--------------------+
+--Query--
+SELECT count(b) FROM test_missing_target GROUP BY b/2 ORDER BY b/2
+--Result--
+[(1,), (5,), (4,)]
++--------------------+
+--Query--
+SELECT lower(test_missing_target.c), count(c)   FROM test_missing_target GROUP BY lower(c) ORDER BY lower(c)
+--Result--
+[('abab', 2), ('bbbb', 3), ('cccc', 4), ('xxxx', 1)]
++--------------------+
+--Query--
+SELECT a FROM test_missing_target ORDER BY upper(d)
+--Result--
+[(0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,)]
++--------------------+
+--Query--
+SELECT count(b) FROM test_missing_target 	GROUP BY (b + 1) / 2 ORDER BY (b + 1) / 2 desc
+--Result--
+[(7,), (3,)]
++--------------------+
+--Query--
+SELECT x.b/2, count(x.b) FROM test_missing_target x, test_missing_target y 	WHERE x.a = y.a 	GROUP BY x.b/2 ORDER BY x.b/2
+--Result--
+[(0, 1), (1, 5), (2, 4)]
++--------------------+
+--Query--
+SELECT * FROM test_missing_target3
+--Result--
+[(1,), (5,), (4,)]
++--------------------+

@@ -17,7 +17,6 @@ optimize table test_block_mismatch final;
 system stop merges test_block_mismatch;
 INSERT INTO test_block_mismatch VALUES (2, toDateTime('2023-01-01 12:12:12'));
 INSERT INTO test_block_mismatch VALUES (2, toDateTime('2023-01-01 12:12:12'));
--- lonely part will not be processed by PartsSplitter and 2023-01-01's parts will be - previously this led to the `Block structure mismatch in Pipe::unitePipes` exception.
 SELECT count(*) FROM test_block_mismatch FINAL;
 CREATE TABLE test_block_mismatch_sk1
 (

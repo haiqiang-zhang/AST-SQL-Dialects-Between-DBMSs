@@ -1,10 +1,9 @@
 CREATE TABLE collate_test(s VARCHAR);
-INSERT INTO collate_test VALUES ('hEllO'), ('WöRlD'), ('wozld');
+INSERT INTO collate_test VALUES ('hEllO'), ('WÃÂÃÂÃÂÃÂ¶RlD'), ('wozld');
 SELECT * FROM collate_test WHERE s='hello';
-SELECT * FROM collate_test WHERE s COLLATE NOCASE='hello' COLLATE NOACCENT;
-SELECT 'hëllo' COLLATE NOACCENT='hello';
-SELECT 'hëllo' COLLATE POSIX='hello';
-SELECT 'hëllo' COLLATE C='hello';
+SELECT 'hÃÂÃÂÃÂÃÂ«llo' COLLATE NOACCENT='hello';
+SELECT 'hÃÂÃÂÃÂÃÂ«llo' COLLATE POSIX='hello';
+SELECT 'hÃÂÃÂÃÂÃÂ«llo' COLLATE C='hello';
 SELECT * FROM collate_test WHERE s='hello' COLLATE NOCASE;
 SELECT * FROM collate_test WHERE s COLLATE NOCASE='hello';
 SELECT * FROM collate_test ORDER BY s COLLATE NOCASE;

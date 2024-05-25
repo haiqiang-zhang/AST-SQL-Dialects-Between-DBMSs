@@ -1,16 +1,4 @@
 PRAGMA enable_verification;
-ATTACH DATABASE ':memory:' AS new_database;;
+ATTACH DATABASE ':memory:' AS new_database;
 CREATE TABLE t1 AS SELECT 42 i;
-CREATE SCHEMA new_database.s1;;
-CREATE VIEW ${prefix}.v1 AS SELECT * FROM t1;
-CREATE TABLE ${prefix}.t1 AS SELECT 84 i;
-CREATE OR REPLACE VIEW ${prefix}.v1 AS SELECT * FROM ${prefix}.t1;
-CREATE OR REPLACE VIEW ${prefix}.v1 AS SELECT * FROM ${prefix}.t1 UNION ALL FROM t1 ORDER BY ALL;
-ALTER VIEW ${prefix}.v1 RENAME TO v2;
-DROP VIEW ${prefix}.v2;
-DROP TABLE ${prefix}.t1;
-SELECT * FROM ${prefix}.v1;
-SELECT * FROM ${prefix}.t1;
-SELECT * FROM ${prefix}.v1;
-SELECT * FROM ${prefix}.v1;
-SELECT * FROM ${prefix}.v2;
+CREATE SCHEMA new_database.s1;

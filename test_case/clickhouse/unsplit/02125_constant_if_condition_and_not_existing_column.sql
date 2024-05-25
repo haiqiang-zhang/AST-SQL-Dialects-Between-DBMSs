@@ -1,5 +1,4 @@
 drop table if exists test;
--- let's support this while can, see #31687
 create table test (x String) Engine=StripeLog;
 insert into test values (0);
 select if(0, y, 42) from test;

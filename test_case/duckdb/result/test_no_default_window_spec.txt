@@ -1,0 +1,30 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT four, ten, sum(ten) over (partition by four order by ten) st, last_value(ten) over (partition by four order by ten) lt FROM tenk1d ORDER BY four, ten
+--Result--
+[(0, 0, 0, 0), (0, 2, 2, 2), (0, 4, 6, 4), (0, 6, 12, 6), (0, 8, 20, 8), (1, 1, 1, 1), (1, 3, 4, 3), (1, 5, 9, 5), (1, 7, 16, 7), (1, 9, 25, 9), (2, 0, 0, 0), (2, 2, 2, 2), (2, 4, 6, 4), (2, 6, 12, 6), (2, 8, 20, 8), (3, 1, 1, 1), (3, 3, 4, 3), (3, 5, 9, 5), (3, 7, 16, 7), (3, 9, 25, 9)]
++--------------------+
+--Query--
+SELECT four, ten, sum(ten) over (partition by four order by ten range between unbounded preceding and current row) st, last_value(ten) over (partition by four order by ten range between unbounded preceding and current row) lt FROM tenk1d order by four, ten
+--Result--
+[(0, 0, 0, 0), (0, 2, 2, 2), (0, 4, 6, 4), (0, 6, 12, 6), (0, 8, 20, 8), (1, 1, 1, 1), (1, 3, 4, 3), (1, 5, 9, 5), (1, 7, 16, 7), (1, 9, 25, 9), (2, 0, 0, 0), (2, 2, 2, 2), (2, 4, 6, 4), (2, 6, 12, 6), (2, 8, 20, 8), (3, 1, 1, 1), (3, 3, 4, 3), (3, 5, 9, 5), (3, 7, 16, 7), (3, 9, 25, 9)]
++--------------------+
+--Query--
+SELECT four, ten, sum(ten) over (partition by four order by ten range between unbounded preceding and unbounded following) st, last_value(ten) over (partition by four order by ten range between unbounded preceding and unbounded following) lt FROM tenk1d order by four, ten
+--Result--
+[(0, 0, 20, 8), (0, 2, 20, 8), (0, 4, 20, 8), (0, 6, 20, 8), (0, 8, 20, 8), (1, 1, 25, 9), (1, 3, 25, 9), (1, 5, 25, 9), (1, 7, 25, 9), (1, 9, 25, 9), (2, 0, 20, 8), (2, 2, 20, 8), (2, 4, 20, 8), (2, 6, 20, 8), (2, 8, 20, 8), (3, 1, 25, 9), (3, 3, 25, 9), (3, 5, 25, 9), (3, 7, 25, 9), (3, 9, 25, 9)]
++--------------------+
+--Query--
+SELECT four, ten//4 as two, 	sum(ten//4) over (partition by four order by ten//4 range between unbounded preceding and current row) st, last_value(ten//4) over (partition by four order by ten//4 range between unbounded preceding and current row) lt FROM tenk1d order by four, ten//4
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (0, 1, 2, 1), (0, 1, 2, 1), (0, 2, 4, 2), (1, 0, 0, 0), (1, 0, 0, 0), (1, 1, 2, 1), (1, 1, 2, 1), (1, 2, 4, 2), (2, 0, 0, 0), (2, 0, 0, 0), (2, 1, 2, 1), (2, 1, 2, 1), (2, 2, 4, 2), (3, 0, 0, 0), (3, 0, 0, 0), (3, 1, 2, 1), (3, 1, 2, 1), (3, 2, 4, 2)]
++--------------------+
+--Query--
+SELECT four, ten//4 as two, sum(ten//4) OVER w st, last_value(ten//4) OVER w lt FROM tenk1d WINDOW w AS (partition by four order by ten//4 range between unbounded preceding and current row) order by four, ten//4
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (0, 1, 2, 1), (0, 1, 2, 1), (0, 2, 4, 2), (1, 0, 0, 0), (1, 0, 0, 0), (1, 1, 2, 1), (1, 1, 2, 1), (1, 2, 4, 2), (2, 0, 0, 0), (2, 0, 0, 0), (2, 1, 2, 1), (2, 1, 2, 1), (2, 2, 4, 2), (3, 0, 0, 0), (3, 0, 0, 0), (3, 1, 2, 1), (3, 1, 2, 1), (3, 2, 4, 2)]
++--------------------+

@@ -32,8 +32,6 @@ SELECT * FROM t2 INNER JOIN rdb ON rdb.key == t2.k ORDER BY rdb.key;
 SELECT '--- totals';
 SELECT rdb.key % 2, sum(k), max(value2) FROM t2 INNER JOIN rdb ON rdb.key == t2.k GROUP BY (rdb.key % 2) WITH TOTALS;
 SELECT '---';
-SELECT * FROM t1 INNER JOIN rdb ON rdb.key + 1 == t1.k;
-SELECT * FROM t1 INNER JOIN (SELECT * FROM rdb) AS rdb ON rdb.key == t1.k;
 SELECT * FROM t1 RIGHT SEMI JOIN (SELECT * FROM rdb) AS rdb ON rdb.key == t1.k;
 SELECT * FROM t1 RIGHT ANTI JOIN (SELECT * FROM rdb) AS rdb ON rdb.key == t1.k;
 DROP TABLE IF EXISTS rdb;

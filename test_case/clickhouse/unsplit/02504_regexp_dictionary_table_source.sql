@@ -18,7 +18,6 @@ INSERT INTO needle_table select concat(toString(number + 30), '/tclwebkit', toSt
 select * from needle_table;
 truncate table regexp_dictionary_source_table;
 truncate table regexp_dictionary_source_table;
--- test priority
 truncate table regexp_dictionary_source_table;
 INSERT INTO regexp_dictionary_source_table VALUES (1, 0, '(\d+)/tclwebkit', ['name', 'version'], ['Android', '$1']);
 INSERT INTO regexp_dictionary_source_table VALUES (3, 1, '33/tclwebkit', ['name'], ['Android1']);

@@ -19,8 +19,7 @@ DROP TABLE IF EXISTS t1;
 DROP TABLE IF EXISTS t2;
 DROP TABLE IF EXISTS t3;
 DROP TABLE IF EXISTS view1;
--- https://github.com/ClickHouse/ClickHouse/issues/4731
--- https://github.com/ClickHouse/ClickHouse/issues/4904
+
 DROP TABLE IF EXISTS A;
 DROP TABLE IF EXISTS B;
 CREATE TABLE A (ts DateTime, id String, id_b String) ENGINE = MergeTree PARTITION BY toStartOfHour(ts) ORDER BY (ts,id);

@@ -1,0 +1,25 @@
+--Query--
+SELECT   TeamName,   Player,   Score,   NTILE(2) OVER (PARTITION BY TeamName ORDER BY Score ASC) AS NTILE FROM ScoreBoard s ORDER BY TeamName, Score
+--Result--
+[('Mongrels', 'Apu', 350, 1), ('Mongrels', 'Ned', 666, 1), ('Mongrels', 'Meg', 1030, 2), ('Mongrels', 'Burns', 1270, 2), ('Simpsons', 'Homer', 1, 1), ('Simpsons', 'Lisa', 710, 1), ('Simpsons', 'Marge', 990, 2), ('Simpsons', 'Bart', 2010, 2)]
++--------------------+
+--Query--
+SELECT   TeamName,   Player,   Score,   NTILE(2) OVER (ORDER BY Score ASC) AS NTILE FROM ScoreBoard s ORDER BY Score
+--Result--
+[('Simpsons', 'Homer', 1, 1), ('Mongrels', 'Apu', 350, 1), ('Mongrels', 'Ned', 666, 1), ('Simpsons', 'Lisa', 710, 1), ('Simpsons', 'Marge', 990, 2), ('Mongrels', 'Meg', 1030, 2), ('Mongrels', 'Burns', 1270, 2), ('Simpsons', 'Bart', 2010, 2)]
++--------------------+
+--Query--
+SELECT   TeamName,   Player,   Score,   NTILE(1000) OVER (PARTITION BY TeamName ORDER BY Score ASC) AS NTILE FROM ScoreBoard s ORDER BY TeamName, Score
+--Result--
+[('Mongrels', 'Apu', 350, 1), ('Mongrels', 'Ned', 666, 2), ('Mongrels', 'Meg', 1030, 3), ('Mongrels', 'Burns', 1270, 4), ('Simpsons', 'Homer', 1, 1), ('Simpsons', 'Lisa', 710, 2), ('Simpsons', 'Marge', 990, 3), ('Simpsons', 'Bart', 2010, 4)]
++--------------------+
+--Query--
+SELECT   TeamName,   Player,   Score,   NTILE(1) OVER (PARTITION BY TeamName ORDER BY Score ASC) AS NTILE FROM ScoreBoard s ORDER BY TeamName, Score
+--Result--
+[('Mongrels', 'Apu', 350, 1), ('Mongrels', 'Ned', 666, 1), ('Mongrels', 'Meg', 1030, 1), ('Mongrels', 'Burns', 1270, 1), ('Simpsons', 'Homer', 1, 1), ('Simpsons', 'Lisa', 710, 1), ('Simpsons', 'Marge', 990, 1), ('Simpsons', 'Bart', 2010, 1)]
++--------------------+
+--Query--
+SELECT   TeamName,   Player,   Score,   NTILE(NULL) OVER (PARTITION BY TeamName ORDER BY Score ASC) AS NTILE FROM ScoreBoard s ORDER BY TeamName, Score
+--Result--
+[('Mongrels', 'Apu', 350, None), ('Mongrels', 'Ned', 666, None), ('Mongrels', 'Meg', 1030, None), ('Mongrels', 'Burns', 1270, None), ('Simpsons', 'Homer', 1, None), ('Simpsons', 'Lisa', 710, None), ('Simpsons', 'Marge', 990, None), ('Simpsons', 'Bart', 2010, None)]
++--------------------+

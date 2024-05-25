@@ -1,5 +1,4 @@
---                                   ^^
---                             push to system.query_views_log
+
 
 drop table if exists buffer_02572;
 drop table if exists data_02572;

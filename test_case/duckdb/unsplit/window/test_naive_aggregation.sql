@@ -1,4 +1,4 @@
-SET default_null_order='nulls_first';;
+SET default_null_order='nulls_first';
 PRAGMA enable_verification;
 PRAGMA debug_window_mode=separate;
 CREATE TABLE empsalary (depname varchar, empno bigint, salary int, enroll_date date);
@@ -8,7 +8,7 @@ CREATE TABLE filtering AS
 		 x
 		,round(x * 0.333,0) % 3 AS y
 		,round(x * 0.333,0) % 3 AS z
-	FROM generate_series(0,10) tbl(x);;
+	FROM generate_series(0,10) tbl(x);
 CREATE TABLE figure1 AS 
 	SELECT * 
 	FROM VALUES 
@@ -20,7 +20,7 @@ CREATE TABLE figure1 AS
 			(6, 'b'),
 			(7, 'c'),
 			(8, 'a')
-		v(i, s);;
+		v(i, s);
 SELECT depname, empno, salary, sum(salary) OVER (PARTITION BY depname ORDER BY empno) FROM empsalary ORDER BY depname, empno;
 SELECT sum(salary) OVER (PARTITION BY depname ORDER BY salary) ss FROM empsalary ORDER BY depname, ss;
 SELECT depname, min(salary) OVER (PARTITION BY depname ORDER BY salary, empno) m1, max(salary) OVER (PARTITION BY depname ORDER BY salary, empno) m2, AVG(salary) OVER (PARTITION BY depname ORDER BY salary, empno) m3 FROM empsalary ORDER BY depname, empno;
@@ -34,7 +34,7 @@ SELECT
 	,avg(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
 	,avg(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
 FROM filtering
-ORDER BY y, x;;
+ORDER BY y, x;
 SELECT
 	 x
 	,y
@@ -43,7 +43,7 @@ SELECT
 	,count(*) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
 	,count(*) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
 FROM filtering
-ORDER BY y, x;;
+ORDER BY y, x;
 SELECT
 	 x
 	,y
@@ -52,9 +52,9 @@ SELECT
 	,median(x) FILTER (WHERE x = 1) OVER (PARTITION BY y) AS x_filtered_window
 	,median(x) FILTER (WHERE z = 0) OVER (PARTITION BY y) AS z_filtered_window
 FROM filtering
-ORDER BY y, x;;
+ORDER BY y, x;
 SELECT x, count(x) FILTER (WHERE x % 2 = 0) OVER (ORDER BY x ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING)
-FROM generate_series(0,10) tbl(x);;
+FROM generate_series(0,10) tbl(x);
 SELECT i
 	, s
 	, COUNT(DISTINCT s) OVER( ORDER BY i ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING) AS c

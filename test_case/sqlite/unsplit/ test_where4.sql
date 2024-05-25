@@ -32,8 +32,7 @@ INSERT INTO t2 VALUES(1);
 INSERT INTO t2 VALUES(2);
 INSERT INTO t2 VALUES(3);
 CREATE TABLE t3(x,y,UNIQUE("x",'y' ASC));
--- Goofy syntax allowed
-    INSERT INTO t3 VALUES(1,11);
+INSERT INTO t3 VALUES(1,11);
 INSERT INTO t3 VALUES(2,NULL);
 SELECT * FROM t2 LEFT JOIN t3 ON a=x WHERE +y IS NULL;
 SELECT * FROM t2 LEFT JOIN t3 ON a=x WHERE y IS NULL;
@@ -54,8 +53,7 @@ SELECT * FROM test t1 LEFT OUTER JOIN test2 t2 ON t1.col1 = t2.col1
       WHERE +t1.col1 IS NULL;
 SELECT * FROM test t1 LEFT OUTER JOIN test2 t2 ON t1.col1 = t2.col1
       WHERE t1.col1 IS NULL;
--- Allow the 'x' syntax for backwards compatibility
-    CREATE TABLE t4(x,y,z,PRIMARY KEY('x' ASC, "y" ASC));
+CREATE TABLE t4(x,y,z,PRIMARY KEY('x' ASC, "y" ASC));
 SELECT *
       FROM t2 LEFT JOIN t4 b1
               LEFT JOIN t4 b2 ON b2.x=b1.x AND b2.y IN (b1.y);

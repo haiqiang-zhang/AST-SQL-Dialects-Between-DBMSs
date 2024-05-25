@@ -663,16 +663,14 @@ CREATE UNIQUE INDEX t4x ON t4(x);
 BEGIN;
 INSERT OR ROLLBACK INTO t4 VALUES(1);
 SELECT * FROM t4;
--- Create a database object (pages 2, 3 of the file)
-    BEGIN;
+BEGIN;
 CREATE TABLE abc(a PRIMARY KEY, b, c) WITHOUT rowid;
 INSERT INTO abc VALUES(1, 2, 3);
 INSERT INTO abc VALUES(4, 5, 6);
 INSERT INTO abc VALUES(7, 8, 9);
 PRAGMA cache_size = 10;
 BEGIN;
--- Make sure the pager is in EXCLUSIVE state.
-      CREATE TABLE def(d, e, f);
+CREATE TABLE def(d, e, f);
 INSERT INTO def VALUES
           ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
 INSERT INTO def SELECT * FROM def;
@@ -686,8 +684,7 @@ DELETE FROM abc WHERE a = 4;
 SELECT * FROM abc;
 PRAGMA integrity_check;
 BEGIN;
--- Make sure the pager is in EXCLUSIVE state.
-      UPDATE abc SET a=a+1;
+UPDATE abc SET a=a+1;
 INSERT INTO def VALUES
           ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
 INSERT INTO def SELECT * FROM def;

@@ -1,7 +1,6 @@
 drop table if exists data_01811;
 drop table if exists buffer_01811;
 create table data_01811 (key Int) Engine=Memory();
-/* Buffer with flush_rows=1000 */
 create table buffer_01811 (key Int) Engine=Buffer(currentDatabase(), data_01811,
     /* num_layers= */ 1,
     /* min_time= */   1,     /* max_time= */  86400,

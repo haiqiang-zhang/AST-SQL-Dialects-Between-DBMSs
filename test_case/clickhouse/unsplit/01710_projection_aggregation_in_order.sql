@@ -1,5 +1,3 @@
--- not that this optimization will take place.
-
 DROP TABLE IF EXISTS normal;
 CREATE TABLE normal
 (

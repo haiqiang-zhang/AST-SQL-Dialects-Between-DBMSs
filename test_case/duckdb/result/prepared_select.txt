@@ -1,0 +1,50 @@
+--Query--
+PREPARE s1 AS SELECT ?::VARCHAR FROM (SELECT ?::INTEGER) tbl(i) WHERE i > ?::INTEGER
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 AS SELECT FIRST(?::VARCHAR) FROM (VALUES (?::INTEGER)) tbl(i) WHERE i > ?::INTEGER GROUP BY i % ?::INTEGER HAVING SUM(i)::VARCHAR <> ?::VARCHAR
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s3 AS SELECT LENGTH(?::VARCHAR) UNION ALL SELECT ?::INTEGER ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s4 AS SELECT ?::INTEGER IN (?::INTEGER, ?::INTEGER, ?::INTEGER)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s5 AS SELECT ?::INTEGER IN (SELECT i FROM (VALUES (?::INTEGER), (?::INTEGER), (?::INTEGER)) tbl(i))
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s1('hello', 2, 1)
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+EXECUTE s2('hello', 2, 1, 2, 'blabla')
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+EXECUTE s2('hello', 2, 1, 2, '2')
+--Result--
+[]
++--------------------+
+--Query--
+EXECUTE s4(1, 2, 3, 1)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+EXECUTE s5(1, 2, 3, 1)
+--Result--
+[(True,)]
++--------------------+

@@ -1,29 +1,28 @@
 PRAGMA enable_verification;
-PRAGMA explain_output = PHYSICAL_ONLY;;
+PRAGMA explain_output = PHYSICAL_ONLY;
 create table integers (i int, j int);
 insert into integers values (2, 2), (2, 1), (1, 2), (1, NULL);
-CREATE TABLE v1(id bigint);;
-CREATE TABLE v2(id bigint);;
-INSERT INTO v1 VALUES (11),  (12),  (13);;
-INSERT INTO v2 VALUES (21),  (22);;
+CREATE TABLE v1(id bigint);
+CREATE TABLE v2(id bigint);
+INSERT INTO v1 VALUES (11),  (12),  (13);
+INSERT INTO v2 VALUES (21),  (22);
 CREATE VIEW vertices_view AS
   SELECT * FROM v1
   UNION ALL
-  SELECT * FROM v2;;
+  SELECT * FROM v2;
 PREPARE sw1 AS
 	SELECT i, row_number() OVER() AS row_no
 	FROM range(10, 20) tbl(i)
-	QUALIFY row_no <= ?::BIGINT
-;;
+	QUALIFY row_no <= ?::BIGINT;
 explain select first_value(i IGNORE NULLS) over () from integers;
 EXPLAIN
-SELECT i, COUNT(*) OVER() FROM integers;;
+SELECT i, COUNT(*) OVER() FROM integers;
 EXPLAIN
-SELECT i, SUM(i) OVER() FROM integers;;
+SELECT i, SUM(i) OVER() FROM integers;
 EXPLAIN
-SELECT j, COUNT(j) FILTER(WHERE i = 2) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
+SELECT j, COUNT(j) FILTER(WHERE i = 2) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
 EXPLAIN
-SELECT j, SUM(j) FILTER(WHERE i = 2) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
+SELECT j, SUM(j) FILTER(WHERE i = 2) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
 explain select row_number() over (), i, j from integers;
 select row_number() over (), i, j from integers;
 explain select rank() over (), i, j from integers;
@@ -33,25 +32,25 @@ select dense_rank() over (), i, j from integers;
 explain select percent_rank() over (), i, j from integers;
 select percent_rank() over (), i, j from integers;
 EXPLAIN
-SELECT i, COUNT(*) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
-SELECT i, COUNT(*) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
+SELECT i, COUNT(*) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
+SELECT i, COUNT(*) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
 EXPLAIN
-SELECT j, COUNT(j) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
-SELECT j, COUNT(j) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
+SELECT j, COUNT(j) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
+SELECT j, COUNT(j) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
 EXPLAIN
-SELECT i, SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
+SELECT i, SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
 EXPLAIN
-SELECT i, SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
-SELECT i, SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;;
+SELECT i, SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
+SELECT i, SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM integers;
 EXPLAIN
 SELECT SUM(s) FROM (
 	SELECT SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) s
 	FROM range(5000) tbl(i)
-);;
+);
 SELECT SUM(s) FROM (
 	SELECT SUM(i) OVER(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) s
 	FROM range(5000) tbl(i)
-);;
+);
 explain select i, j, first_value(i) over (), first_value(j) over () from integers;
 select i, j, first_value(i) over (), first_value(j) over () from integers;
 select row_number() over (), first_value(i) over (), first_value(j) over () from integers;
@@ -62,7 +61,7 @@ explain select last_value(i) over (), first_value(i) over () from integers;
 explain select first_value(i) over (), last_value(i) over (order by j) from integers;
 explain select last_value(i) over (order by j), first_value(i) over () from integers;
 SELECT id AS sparse_id, row_number() OVER () AS rnum
-FROM vertices_view;;
+FROM vertices_view;
 WITH RECURSIVE rte AS (
 	SELECT 1 l, 1::BIGINT r
 	UNION  ALL
@@ -70,6 +69,6 @@ WITH RECURSIVE rte AS (
 	FROM rte
 	WHERE l < 3
 )
-SELECT * FROM rte;;
-EXECUTE sw1(10);;
-EXECUTE sw1(2);;
+SELECT * FROM rte;
+EXECUTE sw1(10);
+EXECUTE sw1(2);

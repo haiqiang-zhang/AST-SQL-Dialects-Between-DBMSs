@@ -1,0 +1,365 @@
+--Query--
+comment on domain domaindroptest is 'About to drop this..'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT cast('123456' as domainvarchar)
+--Result--
+[('12345',)]
++--------------------+
+--Query--
+SELECT cast('12345' as domainvarchar)
+--Result--
+[('12345',)]
++--------------------+
+--Query--
+select testtext || testvarchar as concat, testnumeric + 42 as sum from basictest
+--Result--
+[('hahashort', 165.12), ('hahashort', 165.12)]
++--------------------+
+--Query--
+select pg_typeof(coalesce(4::domainint4, 7))
+--Result--
+[('integer',)]
++--------------------+
+--Query--
+select pg_typeof(coalesce(4::domainint4, 7::domainint4))
+--Result--
+[('domainint4',)]
++--------------------+
+--Query--
+select pg_input_is_valid('1', 'positiveint')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select pg_input_is_valid('junk', 'positiveint')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select pg_input_is_valid('-1', 'positiveint')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select * from pg_input_error_info('junk', 'positiveint')
+--Result--
+[('invalid input syntax for type integer: "junk"', None, None, '22P02')]
++--------------------+
+--Query--
+select * from pg_input_error_info('-1', 'positiveint')
+--Result--
+[('value for domain positiveint violates check constraint "positiveint_check"', None, None, '23514')]
++--------------------+
+--Query--
+select * from pg_input_error_info('junk', 'weirdfloat')
+--Result--
+[('invalid input syntax for type double precision: "junk"', None, None, '22P02')]
++--------------------+
+--Query--
+select * from pg_input_error_info('0.01', 'weirdfloat')
+--Result--
+[('value for domain weirdfloat violates check constraint "weirdfloat_check"', None, None, '23514')]
++--------------------+
+--Query--
+select * from domarrtest
+--Result--
+[([2, 2], [['a', 'b'], ['c', 'd']]), ([[2, 2], [2, 2]], [['a', 'b']]), ([2, 2], [['a', 'b'], ['c', 'd'], ['e', 'f']]), ([2, 2], [['a'], ['c']]), (None, [['a', 'b', 'c'], ['d', 'e', 'f']]), ([11, None, 22], None)]
++--------------------+
+--Query--
+select testint4arr[1], testchar4arr[2:2] from domarrtest
+--Result--
+[(2, [['c', 'd']]), (None, []), (2, [['c', 'd']]), (2, [['c']]), (None, [['d', 'e', 'f']]), (11, None)]
++--------------------+
+--Query--
+select array_dims(testint4arr), array_dims(testchar4arr) from domarrtest
+--Result--
+[('[1:2]', '[1:2][1:2]'), ('[1:2][1:2]', '[1:1][1:2]'), ('[1:2]', '[1:3][1:2]'), ('[1:2]', '[1:2][1:1]'), (None, '[1:2][1:3]'), ('[1:3]', None)]
++--------------------+
+--Query--
+select * from domarrtest where testchar4arr is null
+--Result--
+[([12, None, 21], None)]
++--------------------+
+--Query--
+select '{1,2,3}'::dia
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+select array_dims('{1,2,3}'::dia)
+--Result--
+[('[1:3]',)]
++--------------------+
+--Query--
+select pg_typeof('{1,2,3}'::dia)
+--Result--
+[('dia',)]
++--------------------+
+--Query--
+select pg_typeof('{1,2,3}'::dia || 42)
+--Result--
+[('integer[]',)]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('(1,2)',), ('(3,4)',), ('(11,)',)]
++--------------------+
+--Query--
+select (d1).r, (d1).i, (d1).* from dcomptable
+--Result--
+[(1.0, 2.0, 1.0, 2.0), (3.0, 4.0, 3.0, 4.0), (11.0, None, 11.0, None)]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('(11,)',), ('(2,2)',), ('(4,4)',)]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('(11,)',), ('(99,)',), ('(1,3)',), ('(3,5)',), ('(0,3)',), ('(98,101)',)]
++--------------------+
+--Query--
+explain (verbose, costs off)   update dcomptable set d1.r = (d1).r - 1, d1.i = (d1).i + 1 where (d1).i > 0
+--Result--
+[('Update on public.dcomptable',), ('  ->  Seq Scan on public.dcomptable',), ("        Output: ROW(((d1).r - '1'::double precision), ((d1).i + '1'::double precision)), ctid",), ("        Filter: ((dcomptable.d1).i > '0'::double precision)",)]
++--------------------+
+--Query--
+select makedcomp(1,2)
+--Result--
+[('(1,2)',)]
++--------------------+
+--Query--
+select * from makedcomp(1,2) m
+--Result--
+[(1.0, 2.0)]
++--------------------+
+--Query--
+select m, m is not null from makedcomp(1,2) m
+--Result--
+[('(1,2)', True)]
++--------------------+
+--Query--
+comment on constraint c1 on domain dcomptype is 'random commentary'
+--Result--
+[]
++--------------------+
+--Query--
+select conname, obj_description(oid, 'pg_constraint') from pg_constraint   where contypid = 'dcomptype'::regtype
+--Result--
+[('c1', 'random commentary')]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('{"(1,2)"}',), ('{"(3,4)","(5,6)"}',), ('{"(7,8)","(9,10)"}',), ('{"(9,10)"}',), ('{"(11,)"}',)]
++--------------------+
+--Query--
+select d1[2], d1[1].r, d1[1].i from dcomptable
+--Result--
+[(None, 1.0, 2.0), ('(5,6)', 3.0, 4.0), ('(9,10)', 7.0, 8.0), (None, 9.0, 10.0), (None, 11.0, None)]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('{"(1,2)","(,)"}',), ('{"(3,4)","(6,5)"}',), ('{"(7,8)","(10,9)"}',), ('{"(9,10)","(,)"}',), ('{"(11,)","(,)"}',)]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('{"(11,)","(,)"}',), ('{"(2,2)","(,)"}',), ('{"(4,4)","(6,5)"}',), ('{"(8,8)","(10,9)"}',), ('{"(10,10)","(,)"}',)]
++--------------------+
+--Query--
+select * from dcomptable
+--Result--
+[('{"(11,)","(,)"}',), ('{"(99,)"}',), ('{"(1,3)","(,)"}',), ('{"(3,5)","(6,5)"}',), ('{"(7,9)","(10,9)"}',), ('{"(9,11)","(,)"}',), ('{"(0,3)"}',), ('{"(98,101)"}',)]
++--------------------+
+--Query--
+explain (verbose, costs off)   update dcomptable set d1[1].r = d1[1].r - 1, d1[1].i = d1[1].i + 1     where d1[1].i > 0
+--Result--
+[('Update on public.dcomptable',), ('  ->  Seq Scan on public.dcomptable',), ("        Output: (d1[1].r := (d1[1].r - '1'::double precision))[1].i := (d1[1].i + '1'::double precision), ctid",), ("        Filter: (dcomptable.d1[1].i > '0'::double precision)",)]
++--------------------+
+--Query--
+select * from pitable
+--Result--
+[('{43}',)]
++--------------------+
+--Query--
+select * from vc4table
+--Result--
+[('{"too "}',)]
++--------------------+
+--Query--
+select f1, f1[1], (f1[1])[1] from dposintatable
+--Result--
+[('{"{42}"}', '{42}', 42)]
++--------------------+
+--Query--
+select pg_typeof(f1) from dposintatable
+--Result--
+[('dposinta[]',)]
++--------------------+
+--Query--
+select pg_typeof(f1[1]) from dposintatable
+--Result--
+[('dposinta',)]
++--------------------+
+--Query--
+select pg_typeof(f1[1][1]) from dposintatable
+--Result--
+[('dposinta',)]
++--------------------+
+--Query--
+select pg_typeof((f1[1])[1]) from dposintatable
+--Result--
+[('posint',)]
++--------------------+
+--Query--
+select f1, f1[1], (f1[2])[1] from dposintatable
+--Result--
+[('{"{42}","{99}"}', '{42}', 99)]
++--------------------+
+--Query--
+table dcomptable
+--Result--
+[('{"(,5)"}',)]
++--------------------+
+--Query--
+table dcomptable
+--Result--
+[('{"(1,5)"}',)]
++--------------------+
+--Query--
+table dcomptable
+--Result--
+[('{"(-1,5)"}',)]
++--------------------+
+--Query--
+SELECT cast('1' as dnotnull)
+--Result--
+[('1',)]
++--------------------+
+--Query--
+select * from domdeftest
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select * from domdeftest
+--Result--
+[(3,), (42,)]
++--------------------+
+--Query--
+select * from domdeftest
+--Result--
+[(3,), (42,), (None,)]
++--------------------+
+--Query--
+select count(*) from pg_constraint where contypid = 'connotnull'::regtype and contype = 'n'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) from pg_constraint where contypid = 'connotnull'::regtype and contype = 'n'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from domview
+--Result--
+[(None,), (5,)]
++--------------------+
+--Query--
+select * from domview
+--Result--
+[(None,), (5,)]
++--------------------+
+--Query--
+select * from domview
+--Result--
+[(None,), (5,)]
++--------------------+
+--Query--
+select 'x123'::dtop
+--Result--
+[('x123',)]
++--------------------+
+--Query--
+select 'x1234'::dtop
+--Result--
+[('x123',)]
++--------------------+
+--Query--
+prepare s1 as select $1::pos_int = 10 as "is_ten"
+--Result--
+[]
++--------------------+
+--Query--
+execute s1(10)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select array[1,2]::orderedpair
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+select * from op
+--Result--
+[([1, 3],)]
++--------------------+
+--Query--
+select array_elem_check(3)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select dom_check(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select dom_check(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select dom_check(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select dom_check(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1::inotnull
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.column_domain_usage   WHERE domain_name IN ('con', 'dom', 'pos_int', 'things')   ORDER BY domain_name
+--Result--
+[('test_db', 'public', 'con', 'test_db', 'public', 'domcontest', 'col1'), ('test_db', 'public', 'dom', 'test_db', 'public', 'domview', 'col1'), ('test_db', 'public', 'things', 'test_db', 'public', 'thethings', 'stuff')]
++--------------------+
+--Query--
+SELECT * FROM information_schema.domain_constraints   WHERE domain_name IN ('con', 'dom', 'pos_int', 'things')   ORDER BY constraint_name
+--Result--
+[('test_db', 'public', 'con_check', 'test_db', 'public', 'con', 'NO', 'NO'), ('test_db', 'public', 'meow', 'test_db', 'public', 'things', 'NO', 'NO'), ('test_db', 'public', 'pos_int_check', 'test_db', 'public', 'pos_int', 'NO', 'NO')]
++--------------------+
+--Query--
+SELECT * FROM information_schema.domains   WHERE domain_name IN ('con', 'dom', 'pos_int', 'things')   ORDER BY domain_name
+--Result--
+[('test_db', 'public', 'con', 'integer', None, None, None, None, None, None, None, None, 32, 2, 0, None, None, None, None, 'test_db', 'pg_catalog', 'int4', None, None, None, None, '1'), ('test_db', 'public', 'dom', 'integer', None, None, None, None, None, None, None, None, 32, 2, 0, None, None, None, None, 'test_db', 'pg_catalog', 'int4', None, None, None, None, '1'), ('test_db', 'public', 'pos_int', 'integer', None, None, None, None, None, None, None, None, 32, 2, 0, None, None, None, None, 'test_db', 'pg_catalog', 'int4', None, None, None, None, '1'), ('test_db', 'public', 'things', 'integer', None, None, None, None, None, None, None, None, 32, 2, 0, None, None, None, None, 'test_db', 'pg_catalog', 'int4', None, None, None, None, '1')]
++--------------------+
+--Query--
+SELECT * FROM information_schema.check_constraints   WHERE (constraint_schema, constraint_name)         IN (SELECT constraint_schema, constraint_name             FROM information_schema.domain_constraints             WHERE domain_name IN ('con', 'dom', 'pos_int', 'things'))   ORDER BY constraint_name
+--Result--
+[('test_db', 'public', 'con_check', '((VALUE > 0))'), ('test_db', 'public', 'meow', '((VALUE < 11))'), ('test_db', 'public', 'pos_int_check', '((VALUE > 0))')]
++--------------------+

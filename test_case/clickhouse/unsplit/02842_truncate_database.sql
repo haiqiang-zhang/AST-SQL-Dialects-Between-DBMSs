@@ -1,6 +1,5 @@
 DROP DATABASE IF EXISTS test_truncate_database;
--- create tables, views and dictionary and populate them. Then try truncating the database.
--- all tables, views and dictionaries should be removed leaving an empty database
+
 CREATE DATABASE test_truncate_database;
 USE test_truncate_database;
 CREATE TABLE source_table_memory (x UInt16) ENGINE = Memory;

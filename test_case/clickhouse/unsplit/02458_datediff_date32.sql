@@ -1,4 +1,3 @@
--- Date32 vs Date32
 SELECT dateDiff('second', toDate32('1927-01-01', 'UTC'), toDate32('1927-01-02', 'UTC'), 'UTC');
 SELECT dateDiff('minute', toDate32('1927-01-01', 'UTC'), toDate32('1927-01-02', 'UTC'), 'UTC');
 SELECT dateDiff('hour', toDate32('1927-01-01', 'UTC'), toDate32('1927-01-02', 'UTC'), 'UTC');
@@ -7,7 +6,6 @@ SELECT dateDiff('week', toDate32('1927-01-01', 'UTC'), toDate32('1927-01-08', 'U
 SELECT dateDiff('month', toDate32('1927-01-01', 'UTC'), toDate32('1927-02-01', 'UTC'), 'UTC');
 SELECT dateDiff('quarter', toDate32('1927-01-01', 'UTC'), toDate32('1927-04-01', 'UTC'), 'UTC');
 SELECT dateDiff('year', toDate32('1927-01-01', 'UTC'), toDate32('1928-01-01', 'UTC'), 'UTC');
--- Date32 vs DateTime64
 SELECT dateDiff('second', toDate32('1927-01-01', 'UTC'), toDateTime64('1927-01-02 00:00:00', 3, 'UTC'), 'UTC');
 SELECT dateDiff('minute', toDate32('1927-01-01', 'UTC'), toDateTime64('1927-01-02 00:00:00', 3, 'UTC'), 'UTC');
 SELECT dateDiff('hour', toDate32('1927-01-01', 'UTC'), toDateTime64('1927-01-02 00:00:00', 3, 'UTC'), 'UTC');
@@ -24,7 +22,6 @@ SELECT dateDiff('week', toDateTime64('1927-01-01 00:00:00', 3, 'UTC'), toDate32(
 SELECT dateDiff('month', toDateTime64('1927-01-01 00:00:00', 3, 'UTC'), toDate32('1927-02-01', 'UTC'), 'UTC');
 SELECT dateDiff('quarter', toDateTime64('1927-01-01 00:00:00', 3, 'UTC'), toDate32('1927-04-01', 'UTC'), 'UTC');
 SELECT dateDiff('year', toDateTime64('1927-01-01 00:00:00', 3, 'UTC'), toDate32('1928-01-01', 'UTC'), 'UTC');
--- Date32 vs DateTime
 SELECT dateDiff('second', toDate32('2015-08-18', 'UTC'), toDateTime('2015-08-19 00:00:00', 'UTC'), 'UTC');
 SELECT dateDiff('minute', toDate32('2015-08-18', 'UTC'), toDateTime('2015-08-19 00:00:00', 'UTC'), 'UTC');
 SELECT dateDiff('hour', toDate32('2015-08-18', 'UTC'), toDateTime('2015-08-19 00:00:00', 'UTC'), 'UTC');
@@ -41,7 +38,6 @@ SELECT dateDiff('week', toDateTime('2015-08-18 00:00:00', 'UTC'), toDate32('2015
 SELECT dateDiff('month', toDateTime('2015-08-18 00:00:00', 'UTC'), toDate32('2015-09-18', 'UTC'), 'UTC');
 SELECT dateDiff('quarter', toDateTime('2015-08-18 00:00:00', 'UTC'), toDate32('2015-11-18', 'UTC'), 'UTC');
 SELECT dateDiff('year', toDateTime('2015-08-18 00:00:00', 'UTC'), toDate32('2016-08-18', 'UTC'), 'UTC');
--- Date32 vs Date
 SELECT dateDiff('second', toDate32('2015-08-18', 'UTC'), toDate('2015-08-19', 'UTC'), 'UTC');
 SELECT dateDiff('minute', toDate32('2015-08-18', 'UTC'), toDate('2015-08-19', 'UTC'), 'UTC');
 SELECT dateDiff('hour', toDate32('2015-08-18', 'UTC'), toDate('2015-08-19', 'UTC'), 'UTC');

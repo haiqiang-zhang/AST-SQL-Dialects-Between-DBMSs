@@ -26,10 +26,8 @@ CREATE TABLE t2(a);
 PRAGMA writable_schema=ON;
 UPDATE sqlite_schema SET rootpage=3 WHERE rowid=2;
 PRAGMA writable_schema=RESET;
--- Make "t1" a large table. Large enough that the children of the root
-  -- node are interior nodes.
+
   PRAGMA page_size = 1024;
--- Set the root of table t2 to 137 - the leftmost child of the root of t1.
-  PRAGMA writable_schema = ON;
+PRAGMA writable_schema = ON;
 UPDATE sqlite_schema SET rootpage = 137 WHERE name='t2';
 PRAGMA writable_schema = RESET;

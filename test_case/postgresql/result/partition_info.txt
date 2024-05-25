@@ -1,0 +1,215 @@
+--Query--
+SELECT * FROM pg_partition_tree(NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_tree(0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors(NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors(0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_partition_root(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT pg_partition_root(0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test')
+--Result--
+[('ptif_test',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test0')
+--Result--
+[('ptif_test',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test01')
+--Result--
+[('ptif_test',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test3')
+--Result--
+[('ptif_test',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test_index')
+--Result--
+[('ptif_test_index',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test0_index')
+--Result--
+[('ptif_test_index',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test01_index')
+--Result--
+[('ptif_test_index',)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test3_index')
+--Result--
+[('ptif_test_index',)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test')
+--Result--
+[('ptif_test', None, 0, False), ('ptif_test0', 'ptif_test', 1, False), ('ptif_test1', 'ptif_test', 1, False), ('ptif_test2', 'ptif_test', 1, True), ('ptif_test3', 'ptif_test', 1, False), ('ptif_test01', 'ptif_test0', 2, True), ('ptif_test11', 'ptif_test1', 2, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test0') p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test0', 'ptif_test', 0, False), ('ptif_test01', 'ptif_test0', 1, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test01') p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test01', 'ptif_test0', 0, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test3') p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test3', 'ptif_test', 0, False)]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_test01')
+--Result--
+[('ptif_test01',), ('ptif_test0',), ('ptif_test',)]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_test')
+--Result--
+[('ptif_test',)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree(pg_partition_root('ptif_test01')) p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test', None, 0, False), ('ptif_test0', 'ptif_test', 1, False), ('ptif_test1', 'ptif_test', 1, False), ('ptif_test2', 'ptif_test', 1, True), ('ptif_test3', 'ptif_test', 1, False), ('ptif_test01', 'ptif_test0', 2, True), ('ptif_test11', 'ptif_test1', 2, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test_index')
+--Result--
+[('ptif_test_index', None, 0, False), ('ptif_test0_index', 'ptif_test_index', 1, False), ('ptif_test1_index', 'ptif_test_index', 1, False), ('ptif_test2_index', 'ptif_test_index', 1, True), ('ptif_test3_index', 'ptif_test_index', 1, False), ('ptif_test01_index', 'ptif_test0_index', 2, True), ('ptif_test11_index', 'ptif_test1_index', 2, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test0_index') p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test0_index', 'ptif_test_index', 0, False), ('ptif_test01_index', 'ptif_test0_index', 1, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test01_index') p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test01_index', 'ptif_test0_index', 0, True)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_test3_index') p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test3_index', 'ptif_test_index', 0, False)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree(pg_partition_root('ptif_test01_index')) p   JOIN pg_class c ON (p.relid = c.oid)
+--Result--
+[('ptif_test_index', None, 0, False), ('ptif_test0_index', 'ptif_test_index', 1, False), ('ptif_test1_index', 'ptif_test_index', 1, False), ('ptif_test2_index', 'ptif_test_index', 1, True), ('ptif_test3_index', 'ptif_test_index', 1, False), ('ptif_test01_index', 'ptif_test0_index', 2, True), ('ptif_test11_index', 'ptif_test1_index', 2, True)]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_test01_index')
+--Result--
+[('ptif_test01_index',), ('ptif_test0_index',), ('ptif_test_index',)]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_test_index')
+--Result--
+[('ptif_test_index',)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level, isleaf   FROM pg_partition_tree('ptif_normal_table')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_normal_table')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_normal_table')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_tree('ptif_test_view')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_tree('ptif_test_matview')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_tree('ptif_li_parent')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_tree('ptif_li_child')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_test_view')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_test_matview')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_li_parent')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_partition_ancestors('ptif_li_child')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test_view')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_test_matview')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_li_parent')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT pg_partition_root('ptif_li_child')
+--Result--
+[(None,)]
++--------------------+

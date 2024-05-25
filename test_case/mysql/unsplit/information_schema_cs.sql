@@ -3,8 +3,6 @@ DROP VIEW IF EXISTS v1;
 select table_name, data_type, column_type from information_schema.columns  where column_name = 'numeric_precision' and table_schema = 'information_schema';
 select * from information_schema.SCHEMATA where schema_name > 'm' ORDER BY SCHEMA_NAME;
 select schema_name from information_schema.schemata ORDER BY schema_name;
-create database mysqltest;
-create table mysqltest.t1(a int, b VARCHAR(30), KEY string_data (b));
 create table t3(a int, KEY a_data (a));
 create table mysqltest.t4(a int);
 create table t5 (id int auto_increment primary key);
@@ -389,8 +387,6 @@ create table t1 (
 );
 select column_default from information_schema.columns where table_name= 't1';
 drop table t1;
-CREATE TABLE test.t1( a INT );
-DROP TABLE test.t1;
 select * from information_schema.engines WHERE ENGINE="MyISAM";
 select user,db from information_schema.processlist;
 DROP TABLE IF EXISTS server_status;

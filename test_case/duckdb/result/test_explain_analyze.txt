@@ -1,0 +1,85 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA enable_profiling
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA disable_profiling
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA profiling_output='__TEST_DIR__/test.json'
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA enable_profiling='json'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 42
+--Result--
+[(42,)]
++--------------------+
+--Query--
+PRAGMA disable_profiling
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA profiling_output='__TEST_DIR__/test_2.json'
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA profiling_output='__TEST_DIR__/test.json'
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA enable_profiling='json'
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA disable_profiling
+--Result--
+[]
++--------------------+
+--Query--
+PRAGMA profiling_output='__TEST_DIR__/test_2.json'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN ANALYZE SELECT SUM(i) FROM integers
+--Result--
+[('analyzed_plan', '{\n   "name":  "Query", \n   "result": 0.000042,\n   "timing": 0.000043,\n   "cardinality": 0,\n   "extra-info": "EXPLAIN ANALYZE SELECT SUM(i) FROM integers", \n   "timings": [\n\n   ],\n   "children": [\n    {\n      "name": "RESULT_COLLECTOR",\n      "timing":0.000000,\n      "cardinality":0,\n      "extra_info": "",\n      "children": [\n       {\n         "name": "EXPLAIN_ANALYZE",\n         "timing":0.000000,\n         "cardinality":0,\n         "extra_info": "",\n         "children": [\n          {\n            "name": "UNGROUPED_AGGREGATE",\n            "timing":0.000002,\n            "cardinality":1,\n            "extra_info": "sum_no_overflow(#0)",\n            "children": [\n             {\n               "name": "PROJECTION",\n               "timing":0.000000,\n               "cardinality":100,\n               "extra_info": "i\\n",\n               "children": [\n                {\n                  "name": "SEQ_SCAN ",\n                  "timing":0.000004,\n                  "cardinality":100,\n                  "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                  "children": [\n                  ]\n                }\n               ]\n             }\n            ]\n          }\n         ]\n       }\n      ]\n    }\n   ]\n}')]
++--------------------+
+--Query--
+EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2)
+--Result--
+[('analyzed_plan', '{\n   "name":  "Query", \n   "result": 0.000117,\n   "timing": 0.000117,\n   "cardinality": 0,\n   "extra-info": "EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2)", \n   "timings": [\n\n   ],\n   "children": [\n    {\n      "name": "RESULT_COLLECTOR",\n      "timing":0.000000,\n      "cardinality":0,\n      "extra_info": "",\n      "children": [\n       {\n         "name": "EXPLAIN_ANALYZE",\n         "timing":0.000000,\n         "cardinality":0,\n         "extra_info": "",\n         "children": [\n          {\n            "name": "UNGROUPED_AGGREGATE",\n            "timing":0.000024,\n            "cardinality":1,\n            "extra_info": "sum_no_overflow(#0)",\n            "children": [\n             {\n               "name": "PROJECTION",\n               "timing":0.000004,\n               "cardinality":20000,\n               "extra_info": "i\\n",\n               "children": [\n                {\n                  "name": "UNION",\n                  "timing":0.000000,\n                  "cardinality":0,\n                  "extra_info": "",\n                  "children": [\n                   {\n                     "name": "PROJECTION",\n                     "timing":0.000002,\n                     "cardinality":10000,\n                     "extra_info": "i\\n",\n                     "children": [\n                      {\n                        "name": "CROSS_PRODUCT",\n                        "timing":0.000021,\n                        "cardinality":10000,\n                        "extra_info": "",\n                        "children": [\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000001,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\n\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n,\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000002,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n                        ]\n                      }\n                     ]\n                   }\n,\n                   {\n                     "name": "PROJECTION",\n                     "timing":0.000003,\n                     "cardinality":10000,\n                     "extra_info": "i\\n",\n                     "children": [\n                      {\n                        "name": "CROSS_PRODUCT",\n                        "timing":0.000013,\n                        "cardinality":10000,\n                        "extra_info": "",\n                        "children": [\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000001,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\n\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n,\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000002,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n                        ]\n                      }\n                     ]\n                   }\n                  ]\n                }\n               ]\n             }\n            ]\n          }\n         ]\n       }\n      ]\n    }\n   ]\n}')]
++--------------------+
+--Query--
+EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2)
+--Result--
+[('analyzed_plan', '{\n   "name":  "Query", \n   "result": 0.000138,\n   "timing": 0.000139,\n   "cardinality": 0,\n   "extra-info": "EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2)", \n   "timings": [\n\n   ],\n   "children": [\n    {\n      "name": "RESULT_COLLECTOR",\n      "timing":0.000000,\n      "cardinality":0,\n      "extra_info": "",\n      "children": [\n       {\n         "name": "EXPLAIN_ANALYZE",\n         "timing":0.000000,\n         "cardinality":0,\n         "extra_info": "",\n         "children": [\n          {\n            "name": "UNGROUPED_AGGREGATE",\n            "timing":0.000025,\n            "cardinality":1,\n            "extra_info": "sum_no_overflow(#0)",\n            "children": [\n             {\n               "name": "PROJECTION",\n               "timing":0.000005,\n               "cardinality":20000,\n               "extra_info": "i\\n",\n               "children": [\n                {\n                  "name": "UNION",\n                  "timing":0.000000,\n                  "cardinality":0,\n                  "extra_info": "",\n                  "children": [\n                   {\n                     "name": "PROJECTION",\n                     "timing":0.000005,\n                     "cardinality":10000,\n                     "extra_info": "i\\n",\n                     "children": [\n                      {\n                        "name": "CROSS_PRODUCT",\n                        "timing":0.000015,\n                        "cardinality":10000,\n                        "extra_info": "",\n                        "children": [\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000001,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\n\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n,\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000001,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n                        ]\n                      }\n                     ]\n                   }\n,\n                   {\n                     "name": "PROJECTION",\n                     "timing":0.000002,\n                     "cardinality":10000,\n                     "extra_info": "i\\n",\n                     "children": [\n                      {\n                        "name": "CROSS_PRODUCT",\n                        "timing":0.000015,\n                        "cardinality":10000,\n                        "extra_info": "",\n                        "children": [\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000001,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\n\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n,\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000002,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n                        ]\n                      }\n                     ]\n                   }\n                  ]\n                }\n               ]\n             }\n            ]\n          }\n         ]\n       }\n      ]\n    }\n   ]\n}')]
++--------------------+
+--Query--
+EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2)
+--Result--
+[('analyzed_plan', '{\n   "name":  "Query", \n   "result": 0.000119,\n   "timing": 0.000120,\n   "cardinality": 0,\n   "extra-info": "EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2)", \n   "timings": [\n\n   ],\n   "children": [\n    {\n      "name": "RESULT_COLLECTOR",\n      "timing":0.000000,\n      "cardinality":0,\n      "extra_info": "",\n      "children": [\n       {\n         "name": "EXPLAIN_ANALYZE",\n         "timing":0.000000,\n         "cardinality":0,\n         "extra_info": "",\n         "children": [\n          {\n            "name": "UNGROUPED_AGGREGATE",\n            "timing":0.000031,\n            "cardinality":1,\n            "extra_info": "sum_no_overflow(#0)",\n            "children": [\n             {\n               "name": "PROJECTION",\n               "timing":0.000002,\n               "cardinality":20000,\n               "extra_info": "i\\n",\n               "children": [\n                {\n                  "name": "UNION",\n                  "timing":0.000000,\n                  "cardinality":0,\n                  "extra_info": "",\n                  "children": [\n                   {\n                     "name": "PROJECTION",\n                     "timing":0.000008,\n                     "cardinality":10000,\n                     "extra_info": "i\\n",\n                     "children": [\n                      {\n                        "name": "CROSS_PRODUCT",\n                        "timing":0.000016,\n                        "cardinality":10000,\n                        "extra_info": "",\n                        "children": [\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000002,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\n\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n,\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000001,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n                        ]\n                      }\n                     ]\n                   }\n,\n                   {\n                     "name": "PROJECTION",\n                     "timing":0.000003,\n                     "cardinality":10000,\n                     "extra_info": "i\\n",\n                     "children": [\n                      {\n                        "name": "CROSS_PRODUCT",\n                        "timing":0.000017,\n                        "cardinality":10000,\n                        "extra_info": "",\n                        "children": [\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000002,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\n\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n,\n                         {\n                           "name": "SEQ_SCAN ",\n                           "timing":0.000002,\n                           "cardinality":100,\n                           "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                           "children": [\n                           ]\n                         }\n                        ]\n                      }\n                     ]\n                   }\n                  ]\n                }\n               ]\n             }\n            ]\n          }\n         ]\n       }\n      ]\n    }\n   ]\n}')]
++--------------------+
+--Query--
+EXPLAIN ANALYZE SELECT SUM(i) FROM integers
+--Result--
+[('analyzed_plan', '{\n   "name":  "Query", \n   "result": 0.000028,\n   "timing": 0.000029,\n   "cardinality": 0,\n   "extra-info": "EXPLAIN ANALYZE SELECT SUM(i) FROM integers", \n   "timings": [\n\n   ],\n   "children": [\n    {\n      "name": "RESULT_COLLECTOR",\n      "timing":0.000000,\n      "cardinality":0,\n      "extra_info": "",\n      "children": [\n       {\n         "name": "EXPLAIN_ANALYZE",\n         "timing":0.000000,\n         "cardinality":0,\n         "extra_info": "",\n         "children": [\n          {\n            "name": "UNGROUPED_AGGREGATE",\n            "timing":0.000000,\n            "cardinality":1,\n            "extra_info": "sum_no_overflow(#0)",\n            "children": [\n             {\n               "name": "PROJECTION",\n               "timing":0.000001,\n               "cardinality":100,\n               "extra_info": "i\\n",\n               "children": [\n                {\n                  "name": "SEQ_SCAN ",\n                  "timing":0.000001,\n                  "cardinality":100,\n                  "extra_info": "integers\\n[INFOSEPARATOR]\\ni\\n[INFOSEPARATOR]\\nEC: 100",\n                  "children": [\n                  ]\n                }\n               ]\n             }\n            ]\n          }\n         ]\n       }\n      ]\n    }\n   ]\n}')]
++--------------------+

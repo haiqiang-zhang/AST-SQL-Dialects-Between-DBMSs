@@ -1,0 +1,295 @@
+--Query--
+SELECT COUNT(*) FROM pg_enum WHERE enumtypid = 'rainbow'::regtype
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT 'red'::rainbow
+--Result--
+[('red',)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('red', 'rainbow')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('mauve', 'rainbow')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('mauve', 'rainbow')
+--Result--
+[('invalid input value for enum rainbow: "mauve"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info(repeat('too_long', 32), 'rainbow')
+--Result--
+[('invalid input value for enum rainbow: "too_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_long"', None, None, '22P02')]
++--------------------+
+--Query--
+SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'planets'::regtype ORDER BY 2
+--Result--
+[('venus', 1.0), ('earth', 2.0), ('mars', 3.0)]
++--------------------+
+--Query--
+SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'planets'::regtype ORDER BY 2
+--Result--
+[('venus', 1.0), ('earth', 2.0), ('mars', 3.0), ('uranus', 4.0)]
++--------------------+
+--Query--
+SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'planets'::regtype ORDER BY 2
+--Result--
+[('mercury', 0.0), ('venus', 1.0), ('earth', 2.0), ('mars', 3.0), ('jupiter', 3.25), ('saturn', 3.5), ('uranus', 4.0), ('neptune', 5.0)]
++--------------------+
+--Query--
+SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'planets'::regtype ORDER BY enumlabel::planets
+--Result--
+[('mercury', 0.0), ('venus', 1.0), ('earth', 2.0), ('mars', 3.0), ('jupiter', 3.25), ('saturn', 3.5), ('uranus', 4.0), ('neptune', 5.0)]
++--------------------+
+--Query--
+SELECT enum_last(NULL::planets)
+--Result--
+[('neptune',)]
++--------------------+
+--Query--
+SELECT enum_last(NULL::planets)
+--Result--
+[('pluto',)]
++--------------------+
+--Query--
+SELECT enumlabel,        case when enumsortorder > 20 then null else enumsortorder end as so FROM pg_enum WHERE enumtypid = 'insenum'::regtype ORDER BY enumsortorder
+--Result--
+[('L1', 1.0), ('i1', 2.0), ('i2', 3.0), ('i3', 4.0), ('i4', 5.0), ('i5', 6.0), ('i6', 7.0), ('i7', 8.0), ('i8', 9.0), ('i9', 10.0), ('i10', 11.0), ('i11', 12.0), ('i12', 13.0), ('i13', 14.0), ('i14', 15.0), ('i15', 16.0), ('i16', 17.0), ('i17', 18.0), ('i18', 19.0), ('i19', 20.0), ('i20', None), ('i21', None), ('i22', None), ('i23', None), ('i24', None), ('i25', None), ('i26', None), ('i27', None), ('i28', None), ('i29', None), ('i30', None), ('L2', None)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col = 'orange'
+--Result--
+[('orange',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col <> 'orange' ORDER BY col
+--Result--
+[('red',), ('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col > 'yellow' ORDER BY col
+--Result--
+[('green',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col >= 'yellow' ORDER BY col
+--Result--
+[('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col < 'green' ORDER BY col
+--Result--
+[('red',), ('orange',), ('yellow',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col <= 'green' ORDER BY col
+--Result--
+[('red',), ('orange',), ('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT 'red'::rainbow::text || 'hithere'
+--Result--
+[('redhithere',)]
++--------------------+
+--Query--
+SELECT 'red'::text::rainbow = 'red'::rainbow
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT min(col) FROM enumtest
+--Result--
+[('red',)]
++--------------------+
+--Query--
+SELECT max(col) FROM enumtest
+--Result--
+[('green',)]
++--------------------+
+--Query--
+SELECT max(col) FROM enumtest WHERE col < 'green'
+--Result--
+[('yellow',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col = 'orange'
+--Result--
+[('orange',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col <> 'orange' ORDER BY col
+--Result--
+[('red',), ('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col > 'yellow' ORDER BY col
+--Result--
+[('green',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col >= 'yellow' ORDER BY col
+--Result--
+[('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col < 'green' ORDER BY col
+--Result--
+[('red',), ('orange',), ('yellow',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col <= 'green' ORDER BY col
+--Result--
+[('red',), ('orange',), ('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT min(col) FROM enumtest
+--Result--
+[('red',)]
++--------------------+
+--Query--
+SELECT max(col) FROM enumtest
+--Result--
+[('green',)]
++--------------------+
+--Query--
+SELECT max(col) FROM enumtest WHERE col < 'green'
+--Result--
+[('yellow',)]
++--------------------+
+--Query--
+SELECT * FROM enumtest WHERE col = 'orange'
+--Result--
+[('orange',)]
++--------------------+
+--Query--
+SELECT 'red'::rgb
+--Result--
+[('red',)]
++--------------------+
+--Query--
+SELECT '{red,green,blue}'::rainbow[]
+--Result--
+[('{red,green,blue}',)]
++--------------------+
+--Query--
+SELECT ('{red,green,blue}'::rainbow[])[2]
+--Result--
+[('green',)]
++--------------------+
+--Query--
+SELECT 'red' = ANY ('{red,green,blue}'::rainbow[])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT 'yellow' = ANY ('{red,green,blue}'::rainbow[])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'red' = ALL ('{red,green,blue}'::rainbow[])
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT 'red' = ALL ('{red,red}'::rainbow[])
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT enum_first(NULL::rainbow)
+--Result--
+[('red',)]
++--------------------+
+--Query--
+SELECT enum_last('green'::rainbow)
+--Result--
+[('purple',)]
++--------------------+
+--Query--
+SELECT enum_range(NULL::rainbow)
+--Result--
+[('{red,orange,yellow,green,blue,purple}',)]
++--------------------+
+--Query--
+SELECT enum_range('orange'::rainbow, 'green'::rainbow)
+--Result--
+[('{orange,yellow,green}',)]
++--------------------+
+--Query--
+SELECT enum_range(NULL, 'green'::rainbow)
+--Result--
+[('{red,orange,yellow,green}',)]
++--------------------+
+--Query--
+SELECT enum_range('orange'::rainbow, NULL)
+--Result--
+[('{orange,yellow,green,blue,purple}',)]
++--------------------+
+--Query--
+SELECT enum_range(NULL::rainbow, NULL)
+--Result--
+[('{red,orange,yellow,green,blue,purple}',)]
++--------------------+
+--Query--
+SELECT echo_me('red'::rainbow)
+--Result--
+[('redwtf',)]
++--------------------+
+--Query--
+SELECT echo_me('red')
+--Result--
+[('redwtf',)]
++--------------------+
+--Query--
+SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'rainbow'::regtype ORDER BY 2
+--Result--
+[('crimson', 1.0), ('orange', 2.0), ('yellow', 3.0), ('green', 4.0), ('blue', 5.0), ('purple', 6.0)]
++--------------------+
+--Query--
+SAVEPOINT x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT enum_first(null::bogus)
+--Result--
+[('good',)]
++--------------------+
+--Query--
+SELECT 'new'::bogus
+--Result--
+[('new',)]
++--------------------+
+--Query--
+SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'bogus'::regtype ORDER BY 2
+--Result--
+[('good', 1.0), ('new', 2.0)]
++--------------------+
+--Query--
+SELECT 'bad'::bogus
+--Result--
+[('bad',)]
++--------------------+
+--Query--
+select enum_range(null::bogon)
+--Result--
+[('{good,bad,ugly}',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM pg_type WHERE typname = 'rainbow'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM pg_enum WHERE NOT EXISTS   (SELECT 1 FROM pg_type WHERE pg_type.oid = enumtypid)
+--Result--
+[]
++--------------------+

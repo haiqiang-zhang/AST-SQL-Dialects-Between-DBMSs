@@ -1,0 +1,40 @@
+--Query--
+SELECT pg_notify('notify_async1','sample message1')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT pg_notify('notify_async1','')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT pg_notify('notify_async1',NULL)
+--Result--
+[('',)]
++--------------------+
+--Query--
+NOTIFY notify_async2
+--Result--
+[]
++--------------------+
+--Query--
+LISTEN notify_async2
+--Result--
+[]
++--------------------+
+--Query--
+UNLISTEN notify_async2
+--Result--
+[]
++--------------------+
+--Query--
+UNLISTEN *
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_notification_queue_usage()
+--Result--
+[(0.0,)]
++--------------------+

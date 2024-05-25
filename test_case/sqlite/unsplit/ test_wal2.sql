@@ -193,13 +193,9 @@ PRAGMA synchronous = FULL;
 PRAGMA page_size = 4096;
 PRAGMA journal_mode = WAL;
 PRAGMA wal_autocheckpoint = 10;
--- 2 wal sync
-    PRAGMA wal_checkpoint;
--- 1 wal sync, 1 db sync
-    BEGIN;
--- 2 wal sync
-    PRAGMA wal_checkpoint;
--- 1 wal sync, 1 db sync;
+PRAGMA wal_checkpoint;
+BEGIN;
+PRAGMA wal_checkpoint;
 PRAGMA wal_autocheckpoint = 1000;
 PRAGMA auto_vacuum = 0;
 PRAGMA synchronous = FULL;
@@ -207,13 +203,9 @@ PRAGMA checkpoint_fullfsync = 1;
 PRAGMA page_size = 4096;
 PRAGMA journal_mode = WAL;
 PRAGMA wal_autocheckpoint = 10;
--- 2 wal sync
-    PRAGMA wal_checkpoint;
--- 1 wal sync, 1 db sync
-    BEGIN;
--- 2 wal sync
-    PRAGMA wal_checkpoint;
--- 1 wal sync, 1 db sync;
+PRAGMA wal_checkpoint;
+BEGIN;
+PRAGMA wal_checkpoint;
 PRAGMA wal_autocheckpoint = 1000;
 PRAGMA auto_vacuum = 0;
 PRAGMA synchronous = FULL;
@@ -221,13 +213,9 @@ PRAGMA checkpoint_fullfsync = 0;
 PRAGMA page_size = 4096;
 PRAGMA journal_mode = WAL;
 PRAGMA wal_autocheckpoint = 10;
--- 2 wal sync
-    PRAGMA wal_checkpoint;
--- 1 wal sync, 1 db sync
-    BEGIN;
--- 2 wal sync
-    PRAGMA wal_checkpoint;
--- 1 wal sync, 1 db sync;
+PRAGMA wal_checkpoint;
+BEGIN;
+PRAGMA wal_checkpoint;
 PRAGMA wal_autocheckpoint = 1000;
 PRAGMA page_size = 4096;
 PRAGMA wal_autocheckpoint = OFF;

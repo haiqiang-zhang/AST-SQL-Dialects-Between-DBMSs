@@ -1,0 +1,665 @@
+--Query--
+ANALYZE slow_emp4000
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE fast_emp4000
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM fast_emp4000     WHERE home_base <@ '(200,200),(2000,1000)'::box     ORDER BY (home_base[0])[0]
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10
+--Result--
+[('((1000,0),(0,1000))',), ('((0,1000),(1000,1000))',)]
++--------------------+
+--Query--
+SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM fast_emp4000     WHERE home_base <@ '(200,200),(2000,1000)'::box     ORDER BY (home_base[0])[0]
+--Result--
+[('Sort',), ('  Sort Key: ((home_base[0])[0])',), ('  ->  Index Only Scan using grect2ind on fast_emp4000',), ("        Index Cond: (home_base <@ '(2000,1000),(200,200)'::box)",)]
++--------------------+
+--Query--
+SELECT * FROM fast_emp4000     WHERE home_base <@ '(200,200),(2000,1000)'::box     ORDER BY (home_base[0])[0]
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box
+--Result--
+[('Aggregate',), ('  ->  Index Only Scan using grect2ind on fast_emp4000',), ("        Index Cond: (home_base && '(1000,1000),(0,0)'::box)",)]
++--------------------+
+--Query--
+SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box
+--Result--
+[(0,)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL
+--Result--
+[('Aggregate',), ('  ->  Index Only Scan using grect2ind on fast_emp4000',), ('        Index Cond: (home_base IS NULL)',)]
++--------------------+
+--Query--
+SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL
+--Result--
+[(0,)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon
+--Result--
+[('Aggregate',), ('  ->  Index Scan using ggpolygonind on gpolygon_tbl',), ("        Index Cond: (f1 && '((1000,1000),(0,0))'::polygon)",)]
++--------------------+
+--Query--
+SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon
+--Result--
+[(2,)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle
+--Result--
+[('Aggregate',), ('  ->  Index Scan using ggcircleind on gcircle_tbl',), ("        Index Cond: (f1 && '<(500,500),500>'::circle)",)]
++--------------------+
+--Query--
+SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle
+--Result--
+[(0,)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10
+--Result--
+[('Limit',), ('  ->  Index Scan using ggpolygonind on gpolygon_tbl',), ("        Order By: (f1 <-> '(0,0)'::point)",)]
++--------------------+
+--Query--
+SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10
+--Result--
+[('((1000,0),(0,1000))',), ('((0,1000),(1000,1000))',)]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10
+--Result--
+[('Limit',), ('  ->  Index Scan using ggcircleind on gcircle_tbl',), ("        Order By: (f1 <-> '(200,300)'::point)",)]
++--------------------+
+--Query--
+SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT point(x,x), (SELECT f1 FROM gpolygon_tbl ORDER BY f1 <-> point(x,x) LIMIT 1) as c FROM generate_series(0,10,1) x
+--Result--
+[('Function Scan on generate_series x',), ('  SubPlan 1',), ('    ->  Limit',), ('          ->  Index Scan using ggpolygonind on gpolygon_tbl',), ('                Order By: (f1 <-> point((x.x)::double precision, (x.x)::double precision))',)]
++--------------------+
+--Query--
+SELECT point(x,x), (SELECT f1 FROM gpolygon_tbl ORDER BY f1 <-> point(x,x) LIMIT 1) as c FROM generate_series(0,10,1) x
+--Result--
+[('(0,0)', '((1000,0),(0,1000))'), ('(1,1)', '((1000,0),(0,1000))'), ('(2,2)', '((1000,0),(0,1000))'), ('(3,3)', '((1000,0),(0,1000))'), ('(4,4)', '((1000,0),(0,1000))'), ('(5,5)', '((1000,0),(0,1000))'), ('(6,6)', '((1000,0),(0,1000))'), ('(7,7)', '((1000,0),(0,1000))'), ('(8,8)', '((1000,0),(0,1000))'), ('(9,9)', '((1000,0),(0,1000))'), ('(10,10)', '((1000,0),(0,1000))')]
++--------------------+
+--Query--
+ANALYZE array_index_op_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i = '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i <@ '{NULL}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM array_index_op_test WHERE i @> '{32}' ORDER BY seqno
+--Result--
+[('Sort',), ('  Sort Key: seqno',), ('  ->  Bitmap Heap Scan on array_index_op_test',), ("        Recheck Cond: (i @> '{32}'::integer[])",), ('        ->  Bitmap Index Scan on intarrayidx',), ("              Index Cond: (i @> '{32}'::integer[])",)]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{32}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{32}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{32,17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{32,17}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i <@ '{38,34,32,89}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i = '{47,77}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i = '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i <@ '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM array_index_op_test WHERE t @> '{AAAAAAAA72908}' ORDER BY seqno
+--Result--
+[('Sort',), ('  Sort Key: seqno',), ('  ->  Bitmap Heap Scan on array_index_op_test',), ("        Recheck Cond: (t @> '{AAAAAAAA72908}'::text[])",), ('        ->  Bitmap Index Scan on textarrayidx',), ("              Index Cond: (t @> '{AAAAAAAA72908}'::text[])",)]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t @> '{AAAAAAAA72908}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t && '{AAAAAAAA72908}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t @> '{AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t && '{AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t @> '{AAAAAAAA72908,AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t && '{AAAAAAAA72908,AAAAAAAAAA646}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t <@ '{AAAAAAAA72908,AAAAAAAAAAAAAAAAAAA17075,AA88409,AAAAAAAAAAAAAAAAAA36842,AAAAAAA48038,AAAAAAAAAAAAAA10611}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t = '{AAAAAAAAAA646,A87088}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t = '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t @> '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t && '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t <@ '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{32}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{32}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t @> '{AAAAAAA80240}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t && '{AAAAAAA80240}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i @> '{32}' AND t && '{AAAAAAA80240}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE i && '{32}' AND t @> '{AAAAAAA80240}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM array_index_op_test WHERE t = '{}' ORDER BY seqno
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM array_gin_test WHERE a @> '{2}'
+--Result--
+[(2000,)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('unique_idx3'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX unique_idx3 ON public.unique_tbl USING btree (i)',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('unique_idx4'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX unique_idx4 ON public.unique_tbl USING btree (i) NULLS NOT DISTINCT',)]
++--------------------+
+--Query--
+VACUUM FULL concur_heap
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL concur_heap
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_heap
+--Result--
+[]
++--------------------+
+--Query--
+explain (costs off)   select * from boolindex order by b, i limit 10
+--Result--
+[('Limit',), ('  ->  Index Scan using boolindex_b_i_key on boolindex',)]
++--------------------+
+--Query--
+explain (costs off)   select * from boolindex where b order by i limit 10
+--Result--
+[('Limit',), ('  ->  Index Scan using boolindex_b_i_key on boolindex',), ('        Index Cond: (b = true)',)]
++--------------------+
+--Query--
+explain (costs off)   select * from boolindex where b = true order by i desc limit 10
+--Result--
+[('Limit',), ('  ->  Index Scan Backward using boolindex_b_i_key on boolindex',), ('        Index Cond: (b = true)',)]
++--------------------+
+--Query--
+explain (costs off)   select * from boolindex where not b order by i limit 10
+--Result--
+[('Limit',), ('  ->  Index Scan using boolindex_b_i_key on boolindex',), ('        Index Cond: (b = false)',)]
++--------------------+
+--Query--
+explain (costs off)   select * from boolindex where b is true order by i desc limit 10
+--Result--
+[('Limit',), ('  ->  Index Scan Backward using boolindex_b_i_key on boolindex',), ('        Index Cond: (b = true)',)]
++--------------------+
+--Query--
+explain (costs off)   select * from boolindex where b is false order by i desc limit 10
+--Result--
+[('Limit',), ('  ->  Index Scan Backward using boolindex_b_i_key on boolindex',), ('        Index Cond: (b = false)',)]
++--------------------+
+--Query--
+REINDEX (VERBOSE) TABLE reindex_verbose
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX (CONCURRENTLY) TABLE concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_tab3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_describe_object(classid, objid, objsubid) as obj,        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,        deptype FROM pg_depend WHERE classid = 'pg_class'::regclass AND   objid in ('concur_reindex_tab'::regclass,             'concur_reindex_ind1'::regclass, 	    'concur_reindex_ind2'::regclass, 	    'concur_reindex_ind3'::regclass, 	    'concur_reindex_ind4'::regclass, 	    'concur_reindex_matview'::regclass)   ORDER BY 1, 2
+--Result--
+[('index concur_reindex_ind1', 'constraint concur_reindex_ind1 on table concur_reindex_tab', 'i'), ('index concur_reindex_ind2', 'column c2 of table concur_reindex_tab', 'a'), ('index concur_reindex_ind3', 'column c1 of table concur_reindex_tab', 'a'), ('index concur_reindex_ind3', 'table concur_reindex_tab', 'a'), ('index concur_reindex_ind4', 'column c1 of table concur_reindex_tab', 'a'), ('index concur_reindex_ind4', 'column c2 of table concur_reindex_tab', 'a'), ('materialized view concur_reindex_matview', 'schema public', 'n'), ('table concur_reindex_tab', 'schema public', 'n')]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_ind1
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_matview
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_describe_object(classid, objid, objsubid) as obj,        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,        deptype FROM pg_depend WHERE classid = 'pg_class'::regclass AND   objid in ('concur_reindex_tab'::regclass,             'concur_reindex_ind1'::regclass, 	    'concur_reindex_ind2'::regclass, 	    'concur_reindex_ind3'::regclass, 	    'concur_reindex_ind4'::regclass, 	    'concur_reindex_matview'::regclass)   ORDER BY 1, 2
+--Result--
+[('index concur_reindex_ind1', 'constraint concur_reindex_ind1 on table concur_reindex_tab', 'i'), ('index concur_reindex_ind2', 'column c2 of table concur_reindex_tab', 'a'), ('index concur_reindex_ind3', 'column c1 of table concur_reindex_tab', 'a'), ('index concur_reindex_ind3', 'table concur_reindex_tab', 'a'), ('index concur_reindex_ind4', 'column c1 of table concur_reindex_tab', 'a'), ('index concur_reindex_ind4', 'column c2 of table concur_reindex_tab', 'a'), ('materialized view concur_reindex_matview', 'schema public', 'n'), ('table concur_reindex_tab', 'schema public', 'n')]
++--------------------+
+--Query--
+COMMENT ON INDEX testcomment_idx1 IS 'test comment'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT obj_description('testcomment_idx1'::regclass, 'pg_class')
+--Result--
+[('test comment',)]
++--------------------+
+--Query--
+REINDEX TABLE testcomment
+--Result--
+[]
++--------------------+
+--Query--
+SELECT obj_description('testcomment_idx1'::regclass, 'pg_class')
+--Result--
+[('test comment',)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY testcomment
+--Result--
+[]
++--------------------+
+--Query--
+SELECT obj_description('testcomment_idx1'::regclass, 'pg_class')
+--Result--
+[('test comment',)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_clustered
+--Result--
+[]
++--------------------+
+--Query--
+SELECT indexrelid::regclass, indisclustered FROM pg_index   WHERE indrelid = 'concur_clustered'::regclass
+--Result--
+[('concur_clustered_i_idx', True)]
++--------------------+
+--Query--
+SELECT indexrelid::regclass, indisreplident FROM pg_index   WHERE indrelid = 'concur_replident'::regclass
+--Result--
+[('concur_replident_i_idx', True)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_replident
+--Result--
+[]
++--------------------+
+--Query--
+SELECT indexrelid::regclass, indisreplident FROM pg_index   WHERE indrelid = 'concur_replident'::regclass
+--Result--
+[('concur_replident_i_idx', True)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_appclass_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
+--Result--
+[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
+--Result--
+[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
++--------------------+
+--Query--
+SELECT pg_describe_object(classid, objid, objsubid) as obj,        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,        deptype FROM pg_depend WHERE classid = 'pg_class'::regclass AND   objid in ('concur_reindex_part'::regclass,             'concur_reindex_part_0'::regclass,             'concur_reindex_part_0_1'::regclass,             'concur_reindex_part_0_2'::regclass,             'concur_reindex_part_index'::regclass,             'concur_reindex_part_index_0'::regclass,             'concur_reindex_part_index_0_1'::regclass,             'concur_reindex_part_index_0_2'::regclass)   ORDER BY 1, 2
+--Result--
+[('column c1 of table concur_reindex_part', 'table concur_reindex_part', 'i'), ('column c2 of table concur_reindex_part_0', 'table concur_reindex_part_0', 'i'), ('index concur_reindex_part_index', 'column c1 of table concur_reindex_part', 'a'), ('index concur_reindex_part_index_0', 'column c1 of table concur_reindex_part_0', 'a'), ('index concur_reindex_part_index_0', 'index concur_reindex_part_index', 'P'), ('index concur_reindex_part_index_0', 'table concur_reindex_part_0', 'S'), ('index concur_reindex_part_index_0_1', 'column c1 of table concur_reindex_part_0_1', 'a'), ('index concur_reindex_part_index_0_1', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_1', 'table concur_reindex_part_0_1', 'S'), ('index concur_reindex_part_index_0_2', 'column c1 of table concur_reindex_part_0_2', 'a'), ('index concur_reindex_part_index_0_2', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_2', 'table concur_reindex_part_0_2', 'S'), ('table concur_reindex_part', 'schema public', 'n'), ('table concur_reindex_part_0', 'schema public', 'n'), ('table concur_reindex_part_0', 'table concur_reindex_part', 'a'), ('table concur_reindex_part_0_1', 'schema public', 'n'), ('table concur_reindex_part_0_1', 'table concur_reindex_part_0', 'a'), ('table concur_reindex_part_0_2', 'schema public', 'n'), ('table concur_reindex_part_0_2', 'table concur_reindex_part_0', 'a')]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_part_index_0_1
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_part_index_0_2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
+--Result--
+[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_part_0_1
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_part_0_2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_describe_object(classid, objid, objsubid) as obj,        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,        deptype FROM pg_depend WHERE classid = 'pg_class'::regclass AND   objid in ('concur_reindex_part'::regclass,             'concur_reindex_part_0'::regclass,             'concur_reindex_part_0_1'::regclass,             'concur_reindex_part_0_2'::regclass,             'concur_reindex_part_index'::regclass,             'concur_reindex_part_index_0'::regclass,             'concur_reindex_part_index_0_1'::regclass,             'concur_reindex_part_index_0_2'::regclass)   ORDER BY 1, 2
+--Result--
+[('column c1 of table concur_reindex_part', 'table concur_reindex_part', 'i'), ('column c2 of table concur_reindex_part_0', 'table concur_reindex_part_0', 'i'), ('index concur_reindex_part_index', 'column c1 of table concur_reindex_part', 'a'), ('index concur_reindex_part_index_0', 'column c1 of table concur_reindex_part_0', 'a'), ('index concur_reindex_part_index_0', 'index concur_reindex_part_index', 'P'), ('index concur_reindex_part_index_0', 'table concur_reindex_part_0', 'S'), ('index concur_reindex_part_index_0_1', 'column c1 of table concur_reindex_part_0_1', 'a'), ('index concur_reindex_part_index_0_1', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_1', 'table concur_reindex_part_0_1', 'S'), ('index concur_reindex_part_index_0_2', 'column c1 of table concur_reindex_part_0_2', 'a'), ('index concur_reindex_part_index_0_2', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_2', 'table concur_reindex_part_0_2', 'S'), ('table concur_reindex_part', 'schema public', 'n'), ('table concur_reindex_part_0', 'schema public', 'n'), ('table concur_reindex_part_0', 'table concur_reindex_part', 'a'), ('table concur_reindex_part_0_1', 'schema public', 'n'), ('table concur_reindex_part_0_1', 'table concur_reindex_part_0', 'a'), ('table concur_reindex_part_0_2', 'schema public', 'n'), ('table concur_reindex_part_0_2', 'table concur_reindex_part_0', 'a')]
++--------------------+
+--Query--
+SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
+--Result--
+[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
++--------------------+
+--Query--
+REINDEX INDEX concur_reindex_part_index
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_part_index
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_tab4
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE concur_exprs_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_expr ON public.concur_exprs_tab USING btree (((c1)::text) COLLATE "C")',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_pred ON public.concur_exprs_tab USING btree (c1) WHERE ((c1)::text > ((500000000)::text COLLATE "C"))',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_pred_2 ON public.concur_exprs_tab USING btree (((1 / c1))) WHERE (\'-H\'::text >= ((c2)::text COLLATE "C"))',)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_exprs_tab
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_expr ON public.concur_exprs_tab USING btree (((c1)::text) COLLATE "C")',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_pred ON public.concur_exprs_tab USING btree (c1) WHERE ((c1)::text > ((500000000)::text COLLATE "C"))',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_pred_2 ON public.concur_exprs_tab USING btree (((1 / c1))) WHERE (\'-H\'::text >= ((c2)::text COLLATE "C"))',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_expr ON public.concur_exprs_tab USING btree (((c1)::text) COLLATE "C")',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_pred ON public.concur_exprs_tab USING btree (c1) WHERE ((c1)::text > ((500000000)::text COLLATE "C"))',)]
++--------------------+
+--Query--
+SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass)
+--Result--
+[('CREATE UNIQUE INDEX concur_exprs_index_pred_2 ON public.concur_exprs_tab USING btree (((1 / c1))) WHERE (\'-H\'::text >= (c2 COLLATE "C"))',)]
++--------------------+
+--Query--
+SELECT attrelid::regclass, attnum, attstattarget   FROM pg_attribute WHERE attrelid IN (     'concur_exprs_index_expr'::regclass,     'concur_exprs_index_pred'::regclass,     'concur_exprs_index_pred_2'::regclass)   ORDER BY attrelid::regclass::text, attnum
+--Result--
+[('concur_exprs_index_expr', 1, 100), ('concur_exprs_index_pred', 1, -1), ('concur_exprs_index_pred_2', 1, -1)]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_temp_tab_1
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_temp_ind_1
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_temp_tab_2
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_temp_ind_2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT  b.relname,         b.relkind,         CASE WHEN a.relfilenode = b.relfilenode THEN 'relfilenode is unchanged'         ELSE 'relfilenode has changed' END   FROM reindex_temp_before b JOIN pg_class a ON b.oid = a.oid   ORDER BY 1
+--Result--
+[('concur_temp_ind_1', 'i', 'relfilenode is unchanged'), ('concur_temp_ind_2', 'i', 'relfilenode is unchanged')]
++--------------------+
+--Query--
+REINDEX SCHEMA schema_to_reindex
+--Result--
+[]
++--------------------+
+--Query--
+SELECT  b.relname,         b.relkind,         CASE WHEN a.relfilenode = b.relfilenode THEN 'relfilenode is unchanged'         ELSE 'relfilenode has changed' END   FROM reindex_before b JOIN pg_class a ON b.oid = a.oid   ORDER BY 1
+--Result--
+[('matview', 'm', 'relfilenode is unchanged'), ('matview_col1_idx', 'i', 'relfilenode has changed'), ('pg_toast_TABLE', 't', 'relfilenode is unchanged'), ('pg_toast_TABLE_index', 'i', 'relfilenode has changed'), ('table1', 'r', 'relfilenode is unchanged'), ('table1_col1_seq', 'S', 'relfilenode is unchanged'), ('table1_pkey', 'i', 'relfilenode has changed'), ('table2', 'r', 'relfilenode is unchanged'), ('table2_col1_seq', 'S', 'relfilenode is unchanged'), ('table2_col2_idx', 'i', 'relfilenode has changed'), ('table2_pkey', 'i', 'relfilenode has changed'), ('view', 'v', 'relfilenode is unchanged')]
++--------------------+
+--Query--
+REINDEX SCHEMA schema_to_reindex
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA CONCURRENTLY schema_to_reindex
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA schema_to_reindex
+--Result--
+[]
++--------------------+

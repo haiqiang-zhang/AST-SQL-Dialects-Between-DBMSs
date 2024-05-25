@@ -6,7 +6,7 @@ CREATE TABLE emp (empno INTEGER PRIMARY KEY,
 				  hiredate DATE,
 				  sal DOUBLE,
 				  comm DOUBLE,
-				  deptno INTEGER);;
+				  deptno INTEGER);
 INSERT INTO emp VALUES (7839, 'KING', 'PRESIDENT', NULL, DATE '1981-11-17', 5000.00, NULL, 10);
 INSERT INTO emp VALUES (7698, 'BLAKE', 'MANAGER', 7839, DATE '1981-05-01', 2850.00, NULL, 30);
 INSERT INTO emp VALUES (7782, 'CLARK', 'MANAGER', 7839, DATE '1981-06-09', 2450.00, NULL, 10);
@@ -18,7 +18,7 @@ INSERT INTO emp VALUES (7521, 'WARD', 'SALESMAN', 7698, DATE '1981-02-22', 1250.
 INSERT INTO emp VALUES (7654, 'MARTIN', 'SALESMAN', 7698, DATE '1981-09-28', 1250.00, 1400.00, 30);
 INSERT INTO emp VALUES (7844, 'TURNER', 'SALESMAN', 7698, DATE '1981-09-08', 1500.00, 0.00, 30);
 INSERT INTO emp VALUES (7900, 'JAMES', 'CLERK', 7698, DATE '1981-12-03', 950.00, NULL, 30);
-INSERT INTO emp VALUES (7934, 'MILLER', 'CLERK', 7782, DATE '1982-01-23', 1300.00, NULL, 10);;
+INSERT INTO emp VALUES (7934, 'MILLER', 'CLERK', 7782, DATE '1982-01-23', 1300.00, NULL, 10);
 CREATE VIEW ctenames AS (
   WITH RECURSIVE ctename AS (
       SELECT empno, ename,
@@ -32,7 +32,7 @@ CREATE VIEW ctenames AS (
          JOIN ctename ON emp.mgr = ctename.empno
   )
   SELECT * FROM ctename
-);;
+);
 WITH RECURSIVE ctename AS (
       SELECT empno, ename
       FROM emp
@@ -42,7 +42,7 @@ WITH RECURSIVE ctename AS (
       FROM emp
          JOIN ctename ON emp.mgr = ctename.empno
 )
-SELECT * FROM ctename;;
+SELECT * FROM ctename;
 WITH RECURSIVE ctename AS (
       SELECT empno, ename,
              0 AS level
@@ -54,7 +54,7 @@ WITH RECURSIVE ctename AS (
       FROM emp
          JOIN ctename ON emp.mgr = ctename.empno
 )
-SELECT * FROM ctename;;
+SELECT * FROM ctename;
 WITH RECURSIVE ctename AS (
       SELECT empno, ename,
              ename AS path
@@ -66,17 +66,17 @@ WITH RECURSIVE ctename AS (
       FROM emp
          JOIN ctename ON emp.mgr = ctename.empno
 )
-SELECT * FROM ctename;;
-SELECT * FROM ctenames;;
+SELECT * FROM ctename;
+SELECT * FROM ctenames;
 WITH RECURSIVE fib AS (
       SELECT 1 AS n,
-             1::bigint AS "fibₙ",
-             1::bigint AS "fibₙ₊₁"
+             1::bigint AS "fibÃÂÃÂ¢ÃÂÃÂÃÂÃÂ",
+             1::bigint AS "fibÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂ"
    UNION ALL
       SELECT n+1,
-             "fibₙ₊₁",
-             "fibₙ" + "fibₙ₊₁"
+             "fibÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂ",
+             "fibÃÂÃÂ¢ÃÂÃÂÃÂÃÂ" + "fibÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂ"
       FROM fib
 )
-SELECT n, "fibₙ" FROM fib
-LIMIT 20;;
+SELECT n, "fibÃÂÃÂ¢ÃÂÃÂÃÂÃÂ" FROM fib
+LIMIT 20;

@@ -83,7 +83,7 @@ INSERT INTO t1 VALUES (10363,'Tecniques de Comunicacio Oral i Escrita','Tecnicas
 INSERT INTO t1 VALUES (11403,'Projecte Fi de Carrera','Proyecto Fin de Carrera','Projecte Fi de Carrera','PFC',9.0,NULL,NULL,NULL);
 INSERT INTO t1 VALUES (11404,'+lgebra lineal','Algebra lineal','+lgebra lineal','+lgebra lineal',15.0,NULL,NULL,NULL);
 INSERT INTO t1 VALUES (11405,'+lgebra lineal','Algebra lineal','+lgebra lineal','+lgebra lineal',18.0,NULL,NULL,NULL);
-INSERT INTO t1 VALUES (11406,'Calcul Infinitesimal','CÃÂÃÂlculo Infinitesimal','Calcul Infinitesimal','Calcul Infinitesimal',15.0,NULL,NULL,NULL);
+INSERT INTO t1 VALUES (11406,'Calcul Infinitesimal','CÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂlculo Infinitesimal','Calcul Infinitesimal','Calcul Infinitesimal',15.0,NULL,NULL,NULL);
 CREATE TABLE t2 (
   idAssignatura int(11) DEFAULT '0' NOT NULL,
   Grup int(11) DEFAULT '0' NOT NULL,

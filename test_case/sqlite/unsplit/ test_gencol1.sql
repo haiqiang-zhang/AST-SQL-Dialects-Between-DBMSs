@@ -137,16 +137,12 @@ CREATE TEMPORARY TABLE tab (
     b INTEGER,
     x INTEGER
   );
--- Add some data
-  INSERT INTO tab (prim, a, b) VALUES ('2001-01-01', 0, 0);
--- Check that each column is 0 like I expect
-  SELECT * FROM tab;
--- Do an UPSERT on the b column
-  INSERT INTO tab (prim, b)
+INSERT INTO tab (prim, a, b) VALUES ('2001-01-01', 0, 0);
+SELECT * FROM tab;
+INSERT INTO tab (prim, b)
   VALUES ('2001-01-01',5)
       ON CONFLICT(prim) DO UPDATE SET  b=excluded.b;
--- Now b is NULL rather than 5
-  SELECT * FROM tab;
+SELECT * FROM tab;
 SELECT name, type FROM pragma_table_xinfo('t1');
 DROP TABLE t1;
 CREATE TABLE t1(

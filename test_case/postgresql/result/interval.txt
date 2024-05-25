@@ -1,0 +1,590 @@
+--Query--
+SELECT INTERVAL '01:00' AS "One hour"
+--Result--
+[(datetime.timedelta(seconds=3600),)]
++--------------------+
+--Query--
+SELECT INTERVAL '+02:00' AS "Two hours"
+--Result--
+[(datetime.timedelta(seconds=7200),)]
++--------------------+
+--Query--
+SELECT INTERVAL '-08:00' AS "Eight hours"
+--Result--
+[(datetime.timedelta(days=-1, seconds=57600),)]
++--------------------+
+--Query--
+SELECT INTERVAL '-1 +02:03' AS "22 hours ago..."
+--Result--
+[(datetime.timedelta(days=-1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT INTERVAL '-1 days +02:03' AS "22 hours ago..."
+--Result--
+[(datetime.timedelta(days=-1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT INTERVAL '1.5 weeks' AS "Ten days twelve hours"
+--Result--
+[(datetime.timedelta(days=10, seconds=43200),)]
++--------------------+
+--Query--
+SELECT INTERVAL '1.5 months' AS "One month 15 days"
+--Result--
+[(datetime.timedelta(days=45),)]
++--------------------+
+--Query--
+SELECT INTERVAL '10 years -11 month -12 days +13:14' AS "9 years..."
+--Result--
+[(datetime.timedelta(days=3303, seconds=47640),)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('1.5 weeks', 'interval')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('garbage', 'interval')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT pg_input_is_valid('@ 30 eons ago', 'interval')
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('garbage', 'interval')
+--Result--
+[('invalid input syntax for type interval: "garbage"', None, None, '22007')]
++--------------------+
+--Query--
+SELECT * FROM pg_input_error_info('@ 30 eons ago', 'interval')
+--Result--
+[('invalid input syntax for type interval: "@ 30 eons ago"', None, None, '22007')]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL
+--Result--
+[(datetime.timedelta(seconds=60),), (datetime.timedelta(seconds=18000),), (datetime.timedelta(days=10),), (datetime.timedelta(days=12410),), (datetime.timedelta(days=90),), (datetime.timedelta(days=-1, seconds=86386),), (datetime.timedelta(days=1, seconds=7384),), (datetime.timedelta(days=2190),), (datetime.timedelta(days=150),), (datetime.timedelta(days=150, seconds=43200),)]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL    WHERE INTERVAL_TBL.f1 <> interval '@ 10 days'
+--Result--
+[(datetime.timedelta(seconds=60),), (datetime.timedelta(seconds=18000),), (datetime.timedelta(days=12410),), (datetime.timedelta(days=90),), (datetime.timedelta(days=-1, seconds=86386),), (datetime.timedelta(days=1, seconds=7384),), (datetime.timedelta(days=2190),), (datetime.timedelta(days=150),), (datetime.timedelta(days=150, seconds=43200),)]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL    WHERE INTERVAL_TBL.f1 <= interval '@ 5 hours'
+--Result--
+[(datetime.timedelta(seconds=60),), (datetime.timedelta(seconds=18000),), (datetime.timedelta(days=-1, seconds=86386),)]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL    WHERE INTERVAL_TBL.f1 < interval '@ 1 day'
+--Result--
+[(datetime.timedelta(seconds=60),), (datetime.timedelta(seconds=18000),), (datetime.timedelta(days=-1, seconds=86386),)]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL    WHERE INTERVAL_TBL.f1 = interval '@ 34 years'
+--Result--
+[(datetime.timedelta(days=12410),)]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL    WHERE INTERVAL_TBL.f1 >= interval '@ 1 month'
+--Result--
+[(datetime.timedelta(days=12410),), (datetime.timedelta(days=90),), (datetime.timedelta(days=2190),), (datetime.timedelta(days=150),), (datetime.timedelta(days=150, seconds=43200),)]
++--------------------+
+--Query--
+SELECT * FROM INTERVAL_TBL    WHERE INTERVAL_TBL.f1 > interval '@ 3 seconds ago'
+--Result--
+[(datetime.timedelta(seconds=60),), (datetime.timedelta(seconds=18000),), (datetime.timedelta(days=10),), (datetime.timedelta(days=12410),), (datetime.timedelta(days=90),), (datetime.timedelta(days=1, seconds=7384),), (datetime.timedelta(days=2190),), (datetime.timedelta(days=150),), (datetime.timedelta(days=150, seconds=43200),)]
++--------------------+
+--Query--
+SELECT r1.*, r2.*    FROM INTERVAL_TBL r1, INTERVAL_TBL r2    WHERE r1.f1 > r2.f1    ORDER BY r1.f1, r2.f1
+--Result--
+[(datetime.timedelta(seconds=60), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(seconds=18000), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(seconds=18000), datetime.timedelta(seconds=60)), (datetime.timedelta(days=1, seconds=7384), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=1, seconds=7384), datetime.timedelta(seconds=60)), (datetime.timedelta(days=1, seconds=7384), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=10), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=10), datetime.timedelta(seconds=60)), (datetime.timedelta(days=10), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=10), datetime.timedelta(days=1, seconds=7384)), (datetime.timedelta(days=90), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=90), datetime.timedelta(seconds=60)), (datetime.timedelta(days=90), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=90), datetime.timedelta(days=1, seconds=7384)), (datetime.timedelta(days=90), datetime.timedelta(days=10)), (datetime.timedelta(days=150), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=150), datetime.timedelta(seconds=60)), (datetime.timedelta(days=150), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=150), datetime.timedelta(days=1, seconds=7384)), (datetime.timedelta(days=150), datetime.timedelta(days=10)), (datetime.timedelta(days=150), datetime.timedelta(days=90)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(seconds=60)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=1, seconds=7384)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=10)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=90)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=150)), (datetime.timedelta(days=2190), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=2190), datetime.timedelta(seconds=60)), (datetime.timedelta(days=2190), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=2190), datetime.timedelta(days=1, seconds=7384)), (datetime.timedelta(days=2190), datetime.timedelta(days=10)), (datetime.timedelta(days=2190), datetime.timedelta(days=90)), (datetime.timedelta(days=2190), datetime.timedelta(days=150)), (datetime.timedelta(days=2190), datetime.timedelta(days=150, seconds=43200)), (datetime.timedelta(days=12410), datetime.timedelta(days=-1, seconds=86386)), (datetime.timedelta(days=12410), datetime.timedelta(seconds=60)), (datetime.timedelta(days=12410), datetime.timedelta(seconds=18000)), (datetime.timedelta(days=12410), datetime.timedelta(days=1, seconds=7384)), (datetime.timedelta(days=12410), datetime.timedelta(days=10)), (datetime.timedelta(days=12410), datetime.timedelta(days=90)), (datetime.timedelta(days=12410), datetime.timedelta(days=150)), (datetime.timedelta(days=12410), datetime.timedelta(days=150, seconds=43200)), (datetime.timedelta(days=12410), datetime.timedelta(days=2190))]
++--------------------+
+--Query--
+SELECT f1, -f1 FROM INTERVAL_TBL
+--Result--
+[(datetime.timedelta(seconds=60), datetime.timedelta(days=-1, seconds=86340)), (datetime.timedelta(seconds=18000), datetime.timedelta(days=-1, seconds=68400)), (datetime.timedelta(days=10), datetime.timedelta(days=-10)), (datetime.timedelta(days=12410), datetime.timedelta(days=-12410)), (datetime.timedelta(days=90), datetime.timedelta(days=-90)), (datetime.timedelta(days=-1, seconds=86386), datetime.timedelta(seconds=14)), (datetime.timedelta(days=1, seconds=7384), datetime.timedelta(days=-2, seconds=79016)), (datetime.timedelta(days=2190), datetime.timedelta(days=-2190)), (datetime.timedelta(days=150), datetime.timedelta(days=-150)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=-151, seconds=43200))]
++--------------------+
+--Query--
+EXPLAIN (COSTS OFF) SELECT f1 FROM INTERVAL_TBL_OF r1 ORDER BY f1
+--Result--
+[('Index Only Scan using interval_tbl_of_f1_idx on interval_tbl_of r1',)]
++--------------------+
+--Query--
+SELECT f1 - f1 FROM INTERVAL_TBL_OF
+--Result--
+[(datetime.timedelta(0),), (datetime.timedelta(0),), (datetime.timedelta(0),), (datetime.timedelta(0),), (datetime.timedelta(0),)]
++--------------------+
+--Query--
+SELECT span * 8.2 AS product FROM INTERVAL_MULDIV_TBL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT span / 10 AS quotient FROM INTERVAL_MULDIV_TBL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT span / 100 AS quotient FROM INTERVAL_MULDIV_TBL
+--Result--
+[]
++--------------------+
+--Query--
+select avg(f1) from interval_tbl where isfinite(f1)
+--Result--
+[(datetime.timedelta(days=1500),)]
++--------------------+
+--Query--
+select '4 millenniums 5 centuries 4 decades 1 year 4 months 4 days 17 minutes 31 seconds'::interval
+--Result--
+[(datetime.timedelta(days=1657589),)]
++--------------------+
+--Query--
+SELECT justify_hours(interval '6 months 3 days 52 hours 3 minutes 2 seconds') as "6 mons 5 days 4 hours 3 mins 2 seconds"
+--Result--
+[(datetime.timedelta(days=185),)]
++--------------------+
+--Query--
+SELECT justify_days(interval '6 months 36 days 5 hours 4 minutes 3 seconds') as "7 mons 6 days 5 hours 4 mins 3 seconds"
+--Result--
+[(datetime.timedelta(days=216),)]
++--------------------+
+--Query--
+SELECT justify_interval(interval '1 month -1 hour') as "1 month -1 hour"
+--Result--
+[(datetime.timedelta(days=29),)]
++--------------------+
+--Query--
+SELECT '1 millisecond'::interval, '1 microsecond'::interval,        '500 seconds 99 milliseconds 51 microseconds'::interval
+--Result--
+[(datetime.timedelta(microseconds=1000), datetime.timedelta(microseconds=1), datetime.timedelta(seconds=500, microseconds=99051))]
++--------------------+
+--Query--
+SELECT '3 days 5 milliseconds'::interval
+--Result--
+[(datetime.timedelta(days=3, microseconds=5000),)]
++--------------------+
+--Query--
+SELECT interval '1-2'
+--Result--
+[(datetime.timedelta(days=425),)]
++--------------------+
+--Query--
+SELECT interval '999' second
+--Result--
+[(datetime.timedelta(seconds=999),)]
++--------------------+
+--Query--
+SELECT interval '999' minute
+--Result--
+[(datetime.timedelta(seconds=59940),)]
++--------------------+
+--Query--
+SELECT interval '999' hour
+--Result--
+[(datetime.timedelta(days=41, seconds=54000),)]
++--------------------+
+--Query--
+SELECT interval '999' day
+--Result--
+[(datetime.timedelta(days=999),)]
++--------------------+
+--Query--
+SELECT interval '999' month
+--Result--
+[(datetime.timedelta(days=30385),)]
++--------------------+
+--Query--
+SELECT interval '1' year
+--Result--
+[(datetime.timedelta(days=365),)]
++--------------------+
+--Query--
+SELECT interval '2' month
+--Result--
+[(datetime.timedelta(days=60),)]
++--------------------+
+--Query--
+SELECT interval '3' day
+--Result--
+[(datetime.timedelta(days=3),)]
++--------------------+
+--Query--
+SELECT interval '4' hour
+--Result--
+[(datetime.timedelta(seconds=14400),)]
++--------------------+
+--Query--
+SELECT interval '5' minute
+--Result--
+[(datetime.timedelta(seconds=300),)]
++--------------------+
+--Query--
+SELECT interval '6' second
+--Result--
+[(datetime.timedelta(seconds=6),)]
++--------------------+
+--Query--
+SELECT interval '1' year to month
+--Result--
+[(datetime.timedelta(days=30),)]
++--------------------+
+--Query--
+SELECT interval '1-2' year to month
+--Result--
+[(datetime.timedelta(days=425),)]
++--------------------+
+--Query--
+SELECT interval '1 2' day to hour
+--Result--
+[(datetime.timedelta(days=1, seconds=7200),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' day to hour
+--Result--
+[(datetime.timedelta(days=1, seconds=7200),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04' day to hour
+--Result--
+[(datetime.timedelta(days=1, seconds=7200),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' day to minute
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04' day to minute
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' day to second
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04' day to second
+--Result--
+[(datetime.timedelta(days=1, seconds=7384),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' hour to minute
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04' hour to minute
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' hour to second
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04' hour to second
+--Result--
+[(datetime.timedelta(days=1, seconds=7384),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' minute to second
+--Result--
+[(datetime.timedelta(days=1, seconds=123),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04' minute to second
+--Result--
+[(datetime.timedelta(days=1, seconds=7384),)]
++--------------------+
+--Query--
+SELECT interval '1 +2:03' minute to second
+--Result--
+[(datetime.timedelta(days=1, seconds=123),)]
++--------------------+
+--Query--
+SELECT interval '1 +2:03:04' minute to second
+--Result--
+[(datetime.timedelta(days=1, seconds=7384),)]
++--------------------+
+--Query--
+SELECT interval '1 -2:03' minute to second
+--Result--
+[(datetime.timedelta(seconds=86277),)]
++--------------------+
+--Query--
+SELECT interval '1 -2:03:04' minute to second
+--Result--
+[(datetime.timedelta(seconds=79016),)]
++--------------------+
+--Query--
+SELECT interval '123 11' day to hour
+--Result--
+[(datetime.timedelta(days=123, seconds=39600),)]
++--------------------+
+--Query--
+SELECT interval(0) '1 day 01:23:45.6789'
+--Result--
+[(datetime.timedelta(days=1, seconds=5026),)]
++--------------------+
+--Query--
+SELECT interval(2) '1 day 01:23:45.6789'
+--Result--
+[(datetime.timedelta(days=1, seconds=5025, microseconds=680000),)]
++--------------------+
+--Query--
+SELECT interval '12:34.5678' minute to second(2)
+--Result--
+[(datetime.timedelta(seconds=754, microseconds=570000),)]
++--------------------+
+--Query--
+SELECT interval '1.234' second
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=234000),)]
++--------------------+
+--Query--
+SELECT interval '1.234' second(2)
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=230000),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03' day to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=7380),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03.4567' day to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=123, microseconds=460000),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04.5678' day to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=7384, microseconds=570000),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03.45678' hour to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=123, microseconds=460000),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04.5678' hour to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=7384, microseconds=570000),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03.5678' minute to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=123, microseconds=570000),)]
++--------------------+
+--Query--
+SELECT interval '1 2:03:04.5678' minute to second(2)
+--Result--
+[(datetime.timedelta(days=1, seconds=7384, microseconds=570000),)]
++--------------------+
+--Query--
+SELECT f1, f1::INTERVAL DAY TO MINUTE AS "minutes",   (f1 + INTERVAL '1 month')::INTERVAL MONTH::INTERVAL YEAR AS "years"   FROM interval_tbl
+--Result--
+[(datetime.timedelta(seconds=60), datetime.timedelta(seconds=60), datetime.timedelta(0)), (datetime.timedelta(seconds=18000), datetime.timedelta(seconds=18000), datetime.timedelta(0)), (datetime.timedelta(days=10), datetime.timedelta(days=10), datetime.timedelta(0)), (datetime.timedelta(days=12410), datetime.timedelta(days=12410), datetime.timedelta(days=12410)), (datetime.timedelta(days=90), datetime.timedelta(days=90), datetime.timedelta(0)), (datetime.timedelta(days=-1, seconds=86386), datetime.timedelta(0), datetime.timedelta(0)), (datetime.timedelta(days=1, seconds=7384), datetime.timedelta(days=1, seconds=7380), datetime.timedelta(0)), (datetime.timedelta(days=2190), datetime.timedelta(days=2190), datetime.timedelta(days=2190)), (datetime.timedelta(days=150), datetime.timedelta(days=150), datetime.timedelta(0)), (datetime.timedelta(days=150, seconds=43200), datetime.timedelta(days=150, seconds=43200), datetime.timedelta(0))]
++--------------------+
+--Query--
+SELECT  interval '+1 -1:00:00',         interval '-1 +1:00:00',         interval '+1-2 -3 +4:05:06.789',         interval '-1-2 +3 -4:05:06.789'
+--Result--
+[(datetime.timedelta(seconds=82800), datetime.timedelta(days=-1, seconds=3600), datetime.timedelta(days=422, seconds=14706, microseconds=789000), datetime.timedelta(days=-423, seconds=71693, microseconds=211000))]
++--------------------+
+--Query--
+SELECT  interval '-23 hours 45 min 12.34 sec',         interval '-1 day 23 hours 45 min 12.34 sec',         interval '-1 year 2 months 1 day 23 hours 45 min 12.34 sec',         interval '-1 year 2 months 1 day 23 hours 45 min +12.34 sec'
+--Result--
+[(datetime.timedelta(days=-1, seconds=6312, microseconds=340000), datetime.timedelta(days=-1, seconds=85512, microseconds=340000), datetime.timedelta(days=-299, seconds=85512, microseconds=340000), datetime.timedelta(days=-299, seconds=85512, microseconds=340000))]
++--------------------+
+--Query--
+SELECT  interval '1 day -1 hours',         interval '-1 days +1 hours',         interval '1 years 2 months -3 days 4 hours 5 minutes 6.789 seconds',         - interval '1 years 2 months -3 days 4 hours 5 minutes 6.789 seconds'
+--Result--
+[(datetime.timedelta(days=-1, seconds=46800), datetime.timedelta(days=-1, seconds=46800), datetime.timedelta(days=-52, seconds=50093, microseconds=211000), datetime.timedelta(days=-52, seconds=50093, microseconds=211000))]
++--------------------+
+--Query--
+SELECT  interval '-23 hours 45 min 12.34 sec',         interval '-1 day 23 hours 45 min 12.34 sec',         interval '-1 year 2 months 1 day 23 hours 45 min 12.34 sec',         interval '-1 year 2 months 1 day 23 hours 45 min +12.34 sec'
+--Result--
+[(datetime.timedelta(days=-1, seconds=887, microseconds=660000), datetime.timedelta(days=-6, seconds=72887, microseconds=660000), datetime.timedelta(days=-506, seconds=72887, microseconds=660000), datetime.timedelta(days=-422, seconds=15287, microseconds=660000))]
++--------------------+
+--Query--
+select  interval 'P00021015T103020'       AS "ISO8601 Basic Format",         interval 'P0002-10-15T10:30:20'   AS "ISO8601 Extended Format"
+--Result--
+[(datetime.timedelta(days=1045, seconds=37820), datetime.timedelta(days=1045, seconds=37820))]
++--------------------+
+--Query--
+select  interval 'P0002'                  AS "year only",         interval 'P0002-10'               AS "year month",         interval 'P0002-10-15'            AS "year month day",         interval 'P0002T1S'               AS "year only plus time",         interval 'P0002-10T1S'            AS "year month plus time",         interval 'P0002-10-15T1S'         AS "year month day plus time",         interval 'PT10'                   AS "hour only",         interval 'PT10:30'                AS "hour minute"
+--Result--
+[(datetime.timedelta(days=730), datetime.timedelta(days=1030), datetime.timedelta(days=1045), datetime.timedelta(days=730, seconds=1), datetime.timedelta(days=1030, seconds=1), datetime.timedelta(days=1045, seconds=1), datetime.timedelta(seconds=36000), datetime.timedelta(seconds=37800))]
++--------------------+
+--Query--
+select interval 'P1Y0M3DT4H5M6S'
+--Result--
+[(datetime.timedelta(days=368, seconds=14706),)]
++--------------------+
+--Query--
+select interval 'P1.0Y0M3DT4H5M6S'
+--Result--
+[(datetime.timedelta(days=368, seconds=14706),)]
++--------------------+
+--Query--
+select interval 'P1.1Y0M3DT4H5M6S'
+--Result--
+[(datetime.timedelta(days=398, seconds=14706),)]
++--------------------+
+--Query--
+select interval 'P1.Y0M3DT4H5M6S'
+--Result--
+[(datetime.timedelta(days=368, seconds=14706),)]
++--------------------+
+--Query--
+select interval 'P.1Y0M3DT4H5M6S'
+--Result--
+[(datetime.timedelta(days=33, seconds=14706),)]
++--------------------+
+--Query--
+select interval 'P10.5e4Y'
+--Result--
+[(datetime.timedelta(days=38325000),)]
++--------------------+
+--Query--
+select interval '-10 mons -3 days +03:55:06.70'
+--Result--
+[(datetime.timedelta(days=303),)]
++--------------------+
+--Query--
+select interval '1 year 2 mons 3 days 04:05:06.699999'
+--Result--
+[(datetime.timedelta(days=428),)]
++--------------------+
+--Query--
+select '30 days'::interval = '1 month'::interval as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select interval_hash('30 days'::interval) = interval_hash('1 month'::interval) as t
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select make_interval(years := 2)
+--Result--
+[(datetime.timedelta(days=730),)]
++--------------------+
+--Query--
+select make_interval(years := 1, months := 6)
+--Result--
+[(datetime.timedelta(days=545),)]
++--------------------+
+--Query--
+select make_interval(years := 1, months := -1, weeks := 5, days := -7, hours := 25, mins := -180)
+--Result--
+[(datetime.timedelta(days=358),)]
++--------------------+
+--Query--
+select make_interval() = make_interval(years := 0, months := 0, weeks := 0, days := 0, mins := 0, secs := 0.0)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select make_interval(hours := -2, mins := -10, secs := -25.3)
+--Result--
+[(datetime.timedelta(days=6300),)]
++--------------------+
+--Query--
+SELECT EXTRACT(DECADE FROM INTERVAL '100 y')
+--Result--
+[(10.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(DECADE FROM INTERVAL '99 y')
+--Result--
+[(9.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(DECADE FROM INTERVAL '-99 y')
+--Result--
+[(-9.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(DECADE FROM INTERVAL '-100 y')
+--Result--
+[(-10.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(CENTURY FROM INTERVAL '100 y')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(CENTURY FROM INTERVAL '99 y')
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(CENTURY FROM INTERVAL '-99 y')
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT EXTRACT(CENTURY FROM INTERVAL '-100 y')
+--Result--
+[(-1.0,)]
++--------------------+
+--Query--
+SELECT extract(epoch from interval '1000000000 days')
+--Result--
+[(86400000000000.0,)]
++--------------------+
+--Query--
+SELECT i, isfinite(i) FROM INFINITE_INTERVAL_TBL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lhst.i lhs,     rhst.i rhs,     lhst.i < rhst.i AS lt,     lhst.i <= rhst.i AS le,     lhst.i = rhst.i AS eq,     lhst.i > rhst.i AS gt,     lhst.i >= rhst.i AS ge,     lhst.i <> rhst.i AS ne     FROM INFINITE_INTERVAL_TBL lhst CROSS JOIN INFINITE_INTERVAL_TBL rhst     WHERE NOT isfinite(lhst.i)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i AS interval,     -i AS um,     i * 2.0 AS mul,     i * -2.0 AS mul_neg,     i * 'infinity' AS mul_inf,     i * '-infinity' AS mul_inf_neg,     i / 3.0 AS div,     i / -3.0 AS div_neg     FROM INFINITE_INTERVAL_TBL     WHERE NOT isfinite(i)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i AS interval, date_trunc('hour', i)     FROM INFINITE_INTERVAL_TBL     WHERE NOT isfinite(i)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i AS interval, justify_days(i), justify_hours(i), justify_interval(i)     FROM INFINITE_INTERVAL_TBL     WHERE NOT isfinite(i)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT INTERVAL '42 days 2 seconds ago ago'
+--Result--
+[(datetime.timedelta(days=42),)]
++--------------------+
+--Query--
+SELECT INTERVAL '2 minutes ago 5 days'
+--Result--
+[(datetime.timedelta(days=5),)]
++--------------------+
+--Query--
+SELECT INTERVAL 'hour 5 months'
+--Result--
+[(datetime.timedelta(days=150),)]
++--------------------+
+--Query--
+SELECT INTERVAL '1 year months days 5 hours'
+--Result--
+[(datetime.timedelta(days=365),)]
++--------------------+

@@ -1434,7 +1434,7 @@ drop table temp_part_parent cascade;
 create table tab_part_attach (a int) partition by list (a);
 drop table tab_part_attach;
 create table at_test_sql_partop_1 (a int);
-/* Test case for bug #16242 */
+
 
 create table bar1 (a integer, b integer not null default 1)
   partition by range (a);
@@ -1444,9 +1444,9 @@ alter table bar2 add column b integer not null default 1;
 alter table bar1 attach partition bar2 default;
 select * from bar1;
 update bar1 set a = a + 1;
-/* End test case for bug #16242 */
 
-/* Test case for bug #17409 */
+
+
 
 create table attbl (p1 int constraint pk_attbl primary key);
 create table atref (c1 int references attbl(p1));
@@ -1460,7 +1460,7 @@ create table atref (c1 int references attbl(p1));
 alter table attbl alter column p1 set data type bigint;
 alter table atref alter column c1 set data type bigint;
 drop table attbl, atref;
-/* End test case for bug #17409 */
+
 
 create table alttype_cluster (a int);
 alter table alttype_cluster add primary key (a);

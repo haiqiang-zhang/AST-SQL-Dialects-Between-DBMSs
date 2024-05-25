@@ -1,4 +1,3 @@
--- The function name is case insensitive, with or without respect nulls and using any of the aliases
 Select number, first_value (number) RESPECT NULLS over (order by number) from numbers(1);
 Select number, First_value (number) RESPECT NULLS over (order by number) from numbers(1);
 Select number, FIRST_VALUE (number) RESPECT NULLS over (order by number) from numbers(1);
@@ -30,7 +29,6 @@ SELECT anyIf (number, isNull(number)) RESPECT NULLS from (SELECT if(number > 8, 
 SELECT anyLastIf (number, isNull(number)) RESPECT NULLS from (SELECT if(number > 8, NULL, number) as number FROM numbers(10));
 SELECT toTypeName(FIRST_VALUEIfState(number, isNull(number)) RESPECT NULLS) from (SELECT if(number > 8, NULL, number) as number FROM numbers(10));
 SELECT toTypeName(LAST_VALUEIfState(number, isNull(number)) RESPECT NULLS) from (SELECT if(number > 8, NULL, number) as number FROM numbers(10));
--- Aggregate_functions_null_for_empty should work the same way
 SELECT toTypeName(any(number) RESPECT NULLS) from numbers(1);
 SELECT toTypeName(anyOrNull(number) RESPECT NULLS) from numbers(1);
 SELECT any(number) RESPECT NULLS from numbers(0);

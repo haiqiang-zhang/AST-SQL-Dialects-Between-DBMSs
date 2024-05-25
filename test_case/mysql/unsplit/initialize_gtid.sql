@@ -1,3 +1,0 @@
-CREATE TABLE test.t1(a INT) ENGINE=innodb;
-DROP TABLE test.t1;
-DROP DATABASE test;

@@ -1,0 +1,50 @@
+--Query--
+COMMENT ON PUBLICATION testpub_default IS 'test publication'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT obj_description(p.oid, 'pg_publication') FROM pg_publication p
+--Result--
+[('test publication',)]
++--------------------+
+--Query--
+SELECT pubname, puballtables FROM pg_publication WHERE pubname = 'testpub_foralltables'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[('pub', 'sch2', 'tbl1_part1', ['a'], None)]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[('pub', 'sch1', 'tbl1', ['a'], None)]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[('pub', 'sch2', 'tbl1_part1', ['a'], None)]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[('pub', 'sch2', 'tbl1_part1', ['a'], None)]
++--------------------+
+--Query--
+SELECT * FROM pg_publication_tables
+--Result--
+[]
++--------------------+

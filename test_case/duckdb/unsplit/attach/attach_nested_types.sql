@@ -1,8 +1,8 @@
 PRAGMA enable_verification;
-ATTACH DATABASE ':memory:' AS database;;
-CREATE SCHEMA database.schema;;
-CREATE TABLE database.schema.table(col ROW(field INTEGER));;
-INSERT INTO database.schema.table VALUES ({'field': 42});;
+ATTACH DATABASE ':memory:' AS database;
+CREATE SCHEMA database.schema;
+CREATE TABLE database.schema.table(col ROW(field INTEGER));
+INSERT INTO database.schema.table VALUES ({'field': 42});
 USE database;
 USE database.schema;
 SELECT database.schema.table.col.field FROM database.schema.table;

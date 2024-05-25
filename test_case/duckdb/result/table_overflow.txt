@@ -1,0 +1,60 @@
+--Query--
+SELECT i+100::TINYINT FROM tinyints ORDER BY 1
+--Result--
+[(101,), (110,)]
++--------------------+
+--Query--
+SELECT i+120::TINYINT FROM tinyints WHERE i=1 ORDER BY 1
+--Result--
+[(121,)]
++--------------------+
+--Query--
+SELECT -100::TINYINT-i FROM tinyints ORDER BY 1
+--Result--
+[(-110,), (-101,)]
++--------------------+
+--Query--
+SELECT -120::TINYINT-i FROM tinyints WHERE i=1 ORDER BY 1
+--Result--
+[(-121,)]
++--------------------+
+--Query--
+SELECT i*10::TINYINT FROM tinyints ORDER BY 1
+--Result--
+[(10,), (100,)]
++--------------------+
+--Query--
+SELECT (i*10::TINYINT)*10::TINYINT FROM tinyints WHERE i=1 ORDER BY 1
+--Result--
+[(100,)]
++--------------------+
+--Query--
+SELECT (i*10::TINYINT)*10::TINYINT FROM (SELECT * FROM tinyints) tbl(i) WHERE i=1 ORDER BY 1
+--Result--
+[(100,)]
++--------------------+
+--Query--
+SELECT i+32765::SMALLINT FROM smallints WHERE i=1
+--Result--
+[(32766,)]
++--------------------+
+--Query--
+SELECT -32765::SMALLINT-i FROM smallints WHERE i=1
+--Result--
+[(-32766,)]
++--------------------+
+--Query--
+SELECT i*10000::SMALLINT FROM smallints WHERE i=1
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+SELECT i::TINYINT+120::TINYINT FROM smallints WHERE i=1
+--Result--
+[(121,)]
++--------------------+
+--Query--
+SELECT i::TINYINT+120::TINYINT FROM smallints WHERE i=1
+--Result--
+[(121,)]
++--------------------+

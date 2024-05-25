@@ -1,5 +1,5 @@
 SET force_compression='uncompressed';
-CREATE TABLE test (a VARCHAR);;
+CREATE TABLE test (a VARCHAR);
 INSERT INTO test VALUES ('a'), ('bb'), ('ccc'), ('dddd'), ('eeeee');
 INSERT INTO test FROM test;
 SELECT a, COUNT(*) FROM test GROUP BY a ORDER BY a;

@@ -1,0 +1,130 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+(SELECT a FROM test ORDER BY a+1) UNION SELECT b FROM test2 ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test UNION SELECT * FROM test2) res ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM (SELECT * FROM test UNION SELECT * FROM test2) res ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT b FROM (SELECT * FROM test2 UNION SELECT * FROM test) res ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT col1 FROM (SELECT * FROM test2 UNION SELECT * FROM test) res(col1) ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT b FROM test2 ORDER BY a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT b FROM test2 ORDER BY b
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT 1, a FROM test UNION SELECT b AS a, 1 FROM test2 ORDER BY a, 1
+--Result--
+[(1, None), (None, 1), (1, 1), (2, 1), (3, 1), (4, 1), (1, 2), (1, 3)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT b FROM test2 UNION SELECT b AS c FROM test2 ORDER BY c
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT b FROM test2 UNION SELECT b + 1 FROM test2 ORDER BY b + 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT a, 10 - a AS b FROM test UNION SELECT b, b + 1 FROM test2 ORDER BY 2
+--Result--
+[(None, None), (2, 3), (3, 4), (4, 5), (3, 7), (2, 8), (1, 9)]
++--------------------+
+--Query--
+SELECT a, 10 - a AS b FROM test UNION SELECT b, b + 1 FROM test2 ORDER BY b
+--Result--
+[(None, None), (2, 3), (3, 4), (4, 5), (3, 7), (2, 8), (1, 9)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT b FROM test2 ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+(SELECT a FROM test ORDER BY a+1) UNION SELECT b FROM test2 ORDER BY 1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM test UNION SELECT * FROM test2 ORDER BY a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM test UNION SELECT * FROM test2 ORDER BY b
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT * FROM test2 ORDER BY test.a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT b FROM test2 ORDER BY test2.b
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT test.a FROM test UNION SELECT * FROM test2 ORDER BY a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT test.a FROM test UNION SELECT test2.b FROM test2 ORDER BY b
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT * FROM test2 UNION SELECT * FROM test t1 ORDER BY test.a, test2.b, t1.a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM test UNION SELECT * FROM test2 UNION SELECT * FROM test t1 ORDER BY a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM (SELECT * FROM test) bla UNION SELECT * FROM test2 ORDER BY bla.a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT t1.a, t2.a FROM test t1, test t2 WHERE t1.a=t2.a UNION SELECT b, b - 1 FROM test2 ORDER BY t1.a, t2.a, test2.b
+--Result--
+[(None, None), (1, 1), (2, 1), (2, 2), (3, 2), (3, 3), (4, 3)]
++--------------------+
+--Query--
+SELECT NULL as a, NULL as b, 1 as id UNION SELECT CAST('2015-10-11 00:00:00' AS TIMESTAMP) as a, CAST('2015-10-11 12:34:56' AS TIMESTAMP) as b, 2 as id ORDER BY 3
+--Result--
+[(None, None, 1), (datetime.datetime(2015, 10, 11, 0, 0), datetime.datetime(2015, 10, 11, 12, 34, 56), 2)]
++--------------------+

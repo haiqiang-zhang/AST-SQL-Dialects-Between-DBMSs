@@ -1,0 +1,140 @@
+--Query--
+grant all on table event_trigger_fire1 to public
+--Result--
+[]
++--------------------+
+--Query--
+comment on table event_trigger_fire1 is 'here is a comment'
+--Result--
+[]
++--------------------+
+--Query--
+revoke all on table event_trigger_fire1 from public
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM dropped_objects WHERE schema IS NULL OR schema <> 'pg_toast'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM dropped_objects WHERE type = 'schema'
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX concur_reindex_ind
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_ind
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX concur_reindex_ind
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_ind
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_tab
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA concur_reindex_schema
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA CONCURRENTLY concur_reindex_schema
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA concur_reindex_schema
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA CONCURRENTLY concur_reindex_schema
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA concur_reindex_schema
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX SCHEMA CONCURRENTLY concur_reindex_schema
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX concur_reindex_partidx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX INDEX CONCURRENTLY concur_reindex_partidx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX TABLE CONCURRENTLY concur_reindex_part
+--Result--
+[]
++--------------------+
+--Query--
+SELECT     e.evtname,     pg_describe_object('pg_event_trigger'::regclass, e.oid, 0) as descr,     b.type, b.object_names, b.object_args,     pg_identify_object(a.classid, a.objid, a.objsubid) as ident   FROM pg_event_trigger as e,     LATERAL pg_identify_object_as_address('pg_event_trigger'::regclass, e.oid, 0) as b,     LATERAL pg_get_object_address(b.type, b.object_names, b.object_args) as a   ORDER BY e.evtname
+--Result--
+[]
++--------------------+

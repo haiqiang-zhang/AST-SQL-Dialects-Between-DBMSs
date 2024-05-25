@@ -35,8 +35,7 @@ insert into middle_table values (1,'b');
 insert into right_table values (1,'a');
 insert into right_table values (1,'b');
 insert into right_table values (1,'c');
--- 1 c a c
--- 1 c b c
+
 select left_table.id,val_left, val_middle, val_right from left_table
                                                               inner join middle_table on left_table.id = middle_table.id
                                                               inner join right_table on middle_table.id = right_table.id
@@ -81,5 +80,4 @@ insert into table_to_merge_b values (2,'b');
 insert into table_to_merge_c values (3,'a');
 insert into table_to_merge_c values (3,'b');
 insert into table_to_merge_c values (3,'c');
--- 1 c, 2 a, 2 b, 3 c
 SELECT * FROM merge_table ORDER BY id, val;

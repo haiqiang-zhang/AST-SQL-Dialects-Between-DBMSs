@@ -16,7 +16,6 @@ INSERT INTO codecTest (key, name, ref_valueF64, valueF64, ref_valueF32, valueF32
 	SELECT number AS n, 'n*sqrt(n)', n*sqrt(n) AS v, v, v, v FROM system.numbers LIMIT 201, 100;
 INSERT INTO codecTest (key, name, ref_valueF64, valueF64, ref_valueF32, valueF32)
 	SELECT number AS n, 'sin(n*n*n)*n', sin(n * n * n * n* n) AS v, v, v, v FROM system.numbers LIMIT 301, 100;
--- referencing previous row key, value, and case name to simplify debugging.
 SELECT 'F64';
 SELECT
 	c1.key, c1.name,
@@ -60,7 +59,6 @@ INSERT INTO codecTest (key, name, ref_valueF64, valueF64, ref_valueF32, valueF32
 	SELECT number AS n, 'n*sqrt(n)', n*sqrt(n) AS v, v, v, v FROM system.numbers LIMIT 201, 100;
 INSERT INTO codecTest (key, name, ref_valueF64, valueF64, ref_valueF32, valueF32)
 	SELECT number AS n, 'sin(n*n*n)*n', sin(n * n * n * n* n) AS v, v, v, v FROM system.numbers LIMIT 301, 100;
--- referencing previous row key, value, and case name to simplify debugging.
 SELECT 'F64';
 SELECT
 	c1.key, c1.name,

@@ -1,0 +1,35 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM monthly_sales     UNPIVOT(sales FOR month IN (jan, feb, mar, april))     ORDER BY empid
+--Result--
+[(1, 'electronics', 'Jan', 100), (1, 'electronics', 'Feb', 200), (1, 'electronics', 'Mar', 300), (1, 'electronics', 'April', 100), (2, 'clothes', 'Jan', 100), (2, 'clothes', 'Feb', 300), (2, 'clothes', 'Mar', 150), (2, 'clothes', 'April', 200), (3, 'cars', 'Jan', 200), (3, 'cars', 'Feb', 400), (3, 'cars', 'Mar', 100), (3, 'cars', 'April', 50)]
++--------------------+
+--Query--
+SELECT empid, dept, april, month, sales FROM monthly_sales     UNPIVOT(sales FOR month IN (jan, feb, mar))     ORDER BY empid
+--Result--
+[(1, 'electronics', 100, 'Jan', 100), (1, 'electronics', 100, 'Feb', 200), (1, 'electronics', 100, 'Mar', 300), (2, 'clothes', 200, 'Jan', 100), (2, 'clothes', 200, 'Feb', 300), (2, 'clothes', 200, 'Mar', 150), (3, 'cars', 50, 'Jan', 200), (3, 'cars', 50, 'Feb', 400), (3, 'cars', 50, 'Mar', 100)]
++--------------------+
+--Query--
+SELECT * FROM monthly_sales     UNPIVOT(sales FOR month IN (jan AS January, feb AS February, mar AS March, april))     ORDER BY empid
+--Result--
+[(1, 'electronics', 'January', 100), (1, 'electronics', 'February', 200), (1, 'electronics', 'March', 300), (1, 'electronics', 'April', 100), (2, 'clothes', 'January', 100), (2, 'clothes', 'February', 300), (2, 'clothes', 'March', 150), (2, 'clothes', 'April', 200), (3, 'cars', 'January', 200), (3, 'cars', 'February', 400), (3, 'cars', 'March', 100), (3, 'cars', 'April', 50)]
++--------------------+
+--Query--
+SELECT p.id, p.type, p.m, p.vals FROM monthly_sales     UNPIVOT(sales FOR month IN (jan, feb, mar, april)) AS p(id, type, m, vals)
+--Result--
+[(1, 'electronics', 'Jan', 100), (1, 'electronics', 'Feb', 200), (1, 'electronics', 'Mar', 300), (1, 'electronics', 'April', 100), (2, 'clothes', 'Jan', 100), (2, 'clothes', 'Feb', 300), (2, 'clothes', 'Mar', 150), (2, 'clothes', 'April', 200), (3, 'cars', 'Jan', 200), (3, 'cars', 'Feb', 400), (3, 'cars', 'Mar', 100), (3, 'cars', 'April', 50)]
++--------------------+
+--Query--
+SELECT empid, dept, month, sales_jan_feb, sales_mar_apr FROM monthly_sales     UNPIVOT((sales_jan_feb, sales_mar_apr) FOR month IN ((jan, feb), (mar, april)))
+--Result--
+[(1, 'electronics', 'Jan_Feb', 100, 200), (1, 'electronics', 'Mar_April', 300, 100), (2, 'clothes', 'Jan_Feb', 100, 300), (2, 'clothes', 'Mar_April', 150, 200), (3, 'cars', 'Jan_Feb', 200, 400), (3, 'cars', 'Mar_April', 100, 50)]
++--------------------+
+--Query--
+UNPIVOT (SELECT * FROM monthly_sales)     ON jan, feb, mar april     INTO         NAME month         VALUE sales
+--Result--
+[(1, 'electronics', 100, 'Jan', 100), (1, 'electronics', 100, 'Feb', 200), (1, 'electronics', 100, 'april', 300), (2, 'clothes', 200, 'Jan', 100), (2, 'clothes', 200, 'Feb', 300), (2, 'clothes', 200, 'april', 150), (3, 'cars', 50, 'Jan', 200), (3, 'cars', 50, 'Feb', 400), (3, 'cars', 50, 'april', 100)]
++--------------------+

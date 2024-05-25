@@ -1,8 +1,7 @@
 SELECT ignore(decrypt('aes-128-ofb', 'hello there', '1111111111111111'));
 SELECT ignore(decrypt('aes-128-ctr', 'hello there', '1111111111111111'));
 SELECT decrypt('aes-128-ctr', '', '1111111111111111') == '';
--- Validate against predefined ciphertext,plaintext,key and IV for MySQL compatibility mode
------------------------------------------------------------------------------------------
+
 CREATE TABLE encryption_test
 (
     input String,

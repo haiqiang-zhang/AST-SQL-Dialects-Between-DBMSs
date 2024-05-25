@@ -1,7 +1,5 @@
 DROP TABLE IF EXISTS 02540_date;
 CREATE TABLE 02540_date (txt String, x Date) engine=Memory;
---                                  ^----closed interval---^
-
 INSERT INTO 02540_date VALUES('65535', 65535);
 INSERT INTO 02540_date VALUES('toUInt16(65535)', toUInt16(65535));
 INSERT INTO 02540_date VALUES('toInt32(65535)', toInt32(65535));
@@ -29,8 +27,7 @@ INSERT INTO 02540_date VALUES('CAST(0 as UInt16)', CAST(0 as UInt16));
 INSERT INTO 02540_date VALUES('CAST(0 as Int32)', CAST(0 as Int32));
 INSERT INTO 02540_date VALUES('CAST(0 as UInt32)', CAST(0 as UInt32));
 INSERT INTO 02540_date VALUES('CAST(0 as Date)', CAST(0 as Date));
--- We can expect either 1970-01-01 or 1970-01-02
--- time_zone.toDayNum(std::min(time_t(from), time_t(0xFFFFFFFF)))
+
 INSERT INTO 02540_date VALUES('65536', 65536);
 INSERT INTO 02540_date VALUES('toUInt16(65536)', toUInt16(65536));
 INSERT INTO 02540_date VALUES('toInt32(65536)', toInt32(65536));

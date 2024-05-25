@@ -36,7 +36,7 @@ select c1 as 'no index' from t1 where c1 like cast(concat('%',0xA4A2, '%') as ch
 drop table t1;
 CREATE TABLE t1 (
   a char(1) NOT NULL default '',
-  b enum('ÃÂ¤ÃÂ¢','ÃÂ¤ÃÂ¤') default NULL
+  b enum('ÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂ¢','ÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂ¤') default NULL
 ) CHARACTER SET ujis;
 DROP TABLE t1;
 CREATE TABLE t1

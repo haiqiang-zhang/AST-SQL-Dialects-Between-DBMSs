@@ -8,7 +8,7 @@ CREATE TABLE tbl(
     sess_user VARCHAR DEFAULT SESSION_USER,
     cur_catalog VARCHAR DEFAULT CURRENT_CATALOG,
     cur_schema VARCHAR DEFAULT CURRENT_SCHEMA
-);;
+);
 EXPORT DATABASE '__TEST_DIR__/export_special_functions' (FORMAT CSV);
 ROLLBACK;
 IMPORT DATABASE '__TEST_DIR__/export_special_functions';

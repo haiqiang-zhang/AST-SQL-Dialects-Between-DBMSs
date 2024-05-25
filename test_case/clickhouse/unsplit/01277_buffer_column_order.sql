@@ -29,8 +29,7 @@ insert into mv_01277_1 select
     number b2,
     number c
 from numbers(1);
---
---     Code: 171. DB::Exception: Received from localhost:9000. DB::Exception: Block structure mismatch in Buffer stream: different names of columns:
+
 --     c Int32 Int32(size = 1), b2 Int32 Int32(size = 1), a2 Int32 Int32(size = 1), a1 Int32 Int32(size = 1), k2 Int32 Int32(size = 1), b1 Int32 Int32(size = 1), k1 Int32 Int32(size = 1)
 --     c Int32 Int32(size = 1), b2 Int32 Int32(size = 1), k2 Int32 Int32(size = 1), a1 Int32 Int32(size = 1), b1 Int32 Int32(size = 1), k1 Int32 Int32(size = 1), a2 Int32 Int32(size = 1).
 insert into mv_01277_2 select

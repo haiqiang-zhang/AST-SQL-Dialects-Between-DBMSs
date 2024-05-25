@@ -1,0 +1,130 @@
+--Query--
+SELECT '3' AS "One",   CASE     WHEN 1 < 2 THEN 3   END AS "Simple WHEN"
+--Result--
+[('3', 3)]
++--------------------+
+--Query--
+SELECT '<NULL>' AS "One",   CASE     WHEN 1 > 2 THEN 3   END AS "Simple default"
+--Result--
+[('<NULL>', None)]
++--------------------+
+--Query--
+SELECT '3' AS "One",   CASE     WHEN 1 < 2 THEN 3     ELSE 4   END AS "Simple ELSE"
+--Result--
+[('3', 3)]
++--------------------+
+--Query--
+SELECT '4' AS "One",   CASE     WHEN 1 > 2 THEN 3     ELSE 4   END AS "ELSE default"
+--Result--
+[('4', 4)]
++--------------------+
+--Query--
+SELECT '6' AS "One",   CASE     WHEN 1 > 2 THEN 3     WHEN 4 < 5 THEN 6     ELSE 7   END AS "Two WHEN with default"
+--Result--
+[('6', 6)]
++--------------------+
+--Query--
+SELECT '7' AS "None",    CASE WHEN random() < 0 THEN 1    END AS "NULL on no matches"
+--Result--
+[('7', None)]
++--------------------+
+--Query--
+SELECT CASE WHEN 1=0 THEN 1/0 WHEN 1=1 THEN 1 ELSE 2/0 END
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CASE 1 WHEN 0 THEN 1/0 WHEN 1 THEN 1 ELSE 2/0 END
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CASE 'a' WHEN 'a' THEN 1 ELSE 2 END
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT   CASE     WHEN i >= 3 THEN i   END AS ">= 3 or Null"   FROM CASE_TBL
+--Result--
+[(None,), (None,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT   CASE WHEN i >= 3 THEN (i + i)        ELSE i   END AS "Simplest Math"   FROM CASE_TBL
+--Result--
+[(1,), (2,), (6,), (8,)]
++--------------------+
+--Query--
+SELECT i AS "Value",   CASE WHEN (i < 0) THEN 'small'        WHEN (i = 0) THEN 'zero'        WHEN (i = 1) THEN 'one'        WHEN (i = 2) THEN 'two'        ELSE 'big'   END AS "Category"   FROM CASE_TBL
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'big'), (4, 'big')]
++--------------------+
+--Query--
+SELECT   CASE WHEN ((i < 0) or (i < 0)) THEN 'small'        WHEN ((i = 0) or (i = 0)) THEN 'zero'        WHEN ((i = 1) or (i = 1)) THEN 'one'        WHEN ((i = 2) or (i = 2)) THEN 'two'        ELSE 'big'   END AS "Category"   FROM CASE_TBL
+--Result--
+[('one',), ('two',), ('big',), ('big',)]
++--------------------+
+--Query--
+SELECT * FROM CASE_TBL WHERE COALESCE(f,i) = 4
+--Result--
+[(4, None)]
++--------------------+
+--Query--
+SELECT * FROM CASE_TBL WHERE NULLIF(f,i) = 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COALESCE(a.f, b.i, b.j)   FROM CASE_TBL a, CASE2_TBL b
+--Result--
+[(10.1,), (20.2,), (-30.3,), (1.0,), (10.1,), (20.2,), (-30.3,), (2.0,), (10.1,), (20.2,), (-30.3,), (3.0,), (10.1,), (20.2,), (-30.3,), (2.0,), (10.1,), (20.2,), (-30.3,), (1.0,), (10.1,), (20.2,), (-30.3,), (-6.0,)]
++--------------------+
+--Query--
+SELECT *   FROM CASE_TBL a, CASE2_TBL b   WHERE COALESCE(a.f, b.i, b.j) = 2
+--Result--
+[(4, None, 2, -2), (4, None, 2, -4)]
++--------------------+
+--Query--
+SELECT NULLIF(a.i,b.i) AS "NULLIF(a.i,b.i)",   NULLIF(b.i, 4) AS "NULLIF(b.i,4)"   FROM CASE_TBL a, CASE2_TBL b
+--Result--
+[(None, 1), (2, 1), (3, 1), (4, 1), (1, 2), (None, 2), (3, 2), (4, 2), (1, 3), (2, 3), (None, 3), (4, 3), (1, 2), (None, 2), (3, 2), (4, 2), (None, 1), (2, 1), (3, 1), (4, 1), (1, None), (2, None), (3, None), (4, None)]
++--------------------+
+--Query--
+SELECT *   FROM CASE_TBL a, CASE2_TBL b   WHERE COALESCE(f,b.i) = 2
+--Result--
+[(4, None, 2, -2), (4, None, 2, -4)]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM CASE_TBL WHERE NULLIF(1, 2) = 2
+--Result--
+[('Result',), ('  One-Time Filter: false',)]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM CASE_TBL WHERE NULLIF(1, 1) IS NOT NULL
+--Result--
+[('Result',), ('  One-Time Filter: false',)]
++--------------------+
+--Query--
+explain (costs off) SELECT * FROM CASE_TBL WHERE NULLIF(1, null) = 2
+--Result--
+[('Result',), ('  One-Time Filter: false',)]
++--------------------+
+--Query--
+SELECT * FROM CASE_TBL
+--Result--
+[(2, 10.1), (4, 20.2), (-3, -30.3), (-4, None)]
++--------------------+
+--Query--
+SELECT * FROM CASE_TBL
+--Result--
+[(4, 10.1), (8, 20.2), (-9, -30.3), (-12, None)]
++--------------------+
+--Query--
+SELECT * FROM CASE_TBL
+--Result--
+[(8, 20.2), (-9, -30.3), (-12, None), (-8, 10.1)]
++--------------------+
+--Query--
+SELECT   CASE 'foo'::text     WHEN 'foo' THEN ARRAY['a', 'b', 'c', 'd'] || enum_range(NULL::casetestenum)::text[]     ELSE ARRAY['x', 'y']     END
+--Result--
+[(['a', 'b', 'c', 'd', 'e', 'f', 'g'],)]
++--------------------+

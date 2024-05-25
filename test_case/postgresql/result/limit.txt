@@ -1,0 +1,25 @@
+--Query--
+SELECT   (SELECT n      FROM (VALUES (1)) AS x,           (SELECT n FROM generate_series(1,10) AS n              ORDER BY n LIMIT 1 OFFSET s-1) AS y) AS z   FROM generate_series(1,10) AS s
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+explain (verbose, costs off) select generate_series(0,2) as s1, generate_series((random()*.1)::int,2) as s2
+--Result--
+[('ProjectSet',), ("  Output: generate_series(0, 2), generate_series(((random() * '0.1'::double precision))::integer, 2)",), ('  ->  Result',)]
++--------------------+
+--Query--
+select generate_series(0,2) as s1, generate_series((random()*.1)::int,2) as s2
+--Result--
+[(0, 0), (1, 1), (2, 2)]
++--------------------+
+--Query--
+explain (verbose, costs off) select generate_series(0,2) as s1, generate_series((random()*.1)::int,2) as s2 order by s2 desc
+--Result--
+[('Sort',), ("  Output: (generate_series(0, 2)), (generate_series(((random() * '0.1'::double precision))::integer, 2))",), ("  Sort Key: (generate_series(((random() * '0.1'::double precision))::integer, 2)) DESC",), ('  ->  ProjectSet',), ("        Output: generate_series(0, 2), generate_series(((random() * '0.1'::double precision))::integer, 2)",), ('        ->  Result',)]
++--------------------+
+--Query--
+select generate_series(0,2) as s1, generate_series((random()*.1)::int,2) as s2 order by s2 desc
+--Result--
+[(2, 2), (1, 1), (0, 0)]
++--------------------+

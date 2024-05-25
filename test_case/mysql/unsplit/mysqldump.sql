@@ -757,7 +757,7 @@ CREATE TABLE t2 LIKE t1;
 SELECT LENGTH(a) FROM t2;
 DROP TABLE t1, t2;
 create table t1 (first char(28) , last varchar(37));
-insert into t1 values ("Magnus", "BlÃÂÃÂ¥udd");
+insert into t1 values ("Magnus", "BlÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥udd");
 drop table t1;
 CREATE TABLE `comment_table` (i INT COMMENT 'FIELD COMMENT') COMMENT = 'TABLE COMMENT';
 DROP TABLE `comment_table`;
@@ -832,15 +832,6 @@ SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
 SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
 SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
 SELECT COUNT(*) FROM INFORMATION_SCHEMA.routines WHERE routine_schema = 'sys';
-CREATE TABLE test.t1 (
-  a INT,
-  b INT,
-  c INT,
-  INDEX (a) VISIBLE,
-  INDEX (b) INVISIBLE,
-  INDEX (c)
-);
-DROP TABLE test.t1;
 CREATE DATABASE bug25717383;
 CREATE TABLE `tab
 one` (a int);

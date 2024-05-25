@@ -1,4 +1,3 @@
--- { echo }
 CREATE DATABASE IF NOT EXISTS test_01824;
 USE test_01824;
 DROP TABLE IF EXISTS t1_shard;

@@ -1,3 +1,3 @@
 PRAGMA enable_verification;
-ATTACH DATABASE ':memory:' AS varchar;;
+ATTACH DATABASE ':memory:' AS varchar;
 DETACH varchar;

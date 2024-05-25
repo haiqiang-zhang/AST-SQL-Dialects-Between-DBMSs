@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS adaptive_table;
--- granularity will adjust the amount of marks correctly.
--- Data for test was empirically derived, it's quite hard to get good parameters.
+
 
 CREATE TABLE adaptive_table(
     key UInt64,

@@ -1,5 +1,4 @@
--- Tag no-parallel: due to attaching to system.query_log
--- Tag no-replicated-database: Replicated database will has extra queries
+
 
 -- Attach MV to system.query_log and check that writing query_log will not fail
 

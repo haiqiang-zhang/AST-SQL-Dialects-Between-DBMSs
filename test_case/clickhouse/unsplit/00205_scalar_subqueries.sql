@@ -4,8 +4,6 @@ SELECT toUInt64((SELECT 9)) IN (SELECT number FROM system.numbers LIMIT 10);
 SELECT (SELECT toDate('2015-01-02')) = toDate('2015-01-02'), 'Hello' = (SELECT 'Hello');
 SELECT (SELECT toDate('2015-01-02'), 'Hello');
 SELECT (SELECT toDate('2015-01-02'), 'Hello') AS x, x, identity((SELECT 1)), identity((SELECT 1) AS y);
--- Scalar subquery with 0 rows must return Null
 SELECT (SELECT 1 WHERE 0);
--- Works for not-empty casle
 SELECT (SELECT 1, 2);
 SELECT (SELECT [1]);

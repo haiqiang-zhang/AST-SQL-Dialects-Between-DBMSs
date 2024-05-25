@@ -1,0 +1,30 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+PIVOT Cities USING SUM(Population)
+--Result--
+[(30100,)]
++--------------------+
+--Query--
+PIVOT Cities USING SUM(Population) GROUP BY Country
+--Result--
+[('US', 26872), ('NL', 3228)]
++--------------------+
+--Query--
+PIVOT Cities GROUP BY Country
+--Result--
+[('US',), ('NL',)]
++--------------------+
+--Query--
+PIVOT Cities ON Year GROUP BY Country
+--Result--
+[('NL', 1, 1, 1), ('US', 2, 2, 2)]
++--------------------+
+--Query--
+PIVOT (SELECT Country, Year FROM Cities) ON Year
+--Result--
+[('US', 2, 2, 2), ('NL', 1, 1, 1)]
++--------------------+

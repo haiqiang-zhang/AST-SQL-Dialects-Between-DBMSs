@@ -1,0 +1,50 @@
+--Query--
+PRAGMA enable_verification
+--Result--
+[]
++--------------------+
+--Query--
+FROM integers
+--Result--
+[(1,), (2,), (3,), (None,)]
++--------------------+
+--Query--
+FROM integers SELECT i + 1
+--Result--
+[(2,), (3,), (4,), (None,)]
++--------------------+
+--Query--
+FROM integers LIMIT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+FROM integers WHERE i IS NOT NULL
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+FROM integers ORDER BY i DESC NULLS FIRST
+--Result--
+[(None,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+FROM integers SELECT DISTINCT i%2 WHERE i>0 ORDER BY ALL
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+FROM integers SELECT i%2 AS g, SUM(i) sum GROUP BY g HAVING sum IS NOT NULL ORDER BY ALL
+--Result--
+[(0, 2), (1, 4)]
++--------------------+
+--Query--
+FROM integers JOIN integers i2 USING (i)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+FROM integers i1, integers i2 SELECT COUNT(*)
+--Result--
+[(16,)]
++--------------------+

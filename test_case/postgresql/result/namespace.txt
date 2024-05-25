@@ -1,0 +1,70 @@
+--Query--
+SELECT pg_catalog.set_config('search_path', ' ', false)
+--Result--
+[(' ',)]
++--------------------+
+--Query--
+SHOW search_path
+--Result--
+[('public, test_ns_schema_1',)]
++--------------------+
+--Query--
+SHOW search_path
+--Result--
+[('public, test_ns_schema_1',)]
++--------------------+
+--Query--
+SHOW search_path
+--Result--
+[('public, test_ns_schema_1',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM pg_class WHERE relnamespace =     (SELECT oid FROM pg_namespace WHERE nspname = 'test_ns_schema_1')
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT * FROM test_ns_schema_1.abc
+--Result--
+[(1, None), (2, None), (3, None)]
++--------------------+
+--Query--
+SELECT * FROM test_ns_schema_1.abc_view
+--Result--
+[(2, None), (3, None), (4, None)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM pg_class WHERE relnamespace =     (SELECT oid FROM pg_namespace WHERE nspname = 'test_ns_schema_1')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM pg_class WHERE relnamespace =     (SELECT oid FROM pg_namespace WHERE nspname = 'test_ns_schema_renamed')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+REINDEX TABLE test_maint_search_path.test_maint
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE test_maint_search_path.test_maint
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM FULL test_maint_search_path.test_maint
+--Result--
+[]
++--------------------+
+--Query--
+CLUSTER test_maint_search_path.test_maint USING test_maint_idx
+--Result--
+[]
++--------------------+
+--Query--
+REFRESH MATERIALIZED VIEW test_maint_search_path.test_maint_mv
+--Result--
+[]
++--------------------+

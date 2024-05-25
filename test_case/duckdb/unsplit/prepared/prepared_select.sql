@@ -15,6 +15,5 @@ PREPARE s5 AS SELECT ?::INTEGER IN (SELECT i FROM (VALUES (?::INTEGER), (?::INTE
 EXECUTE s1('hello', 2, 1);
 EXECUTE s2('hello', 2, 1, 2, 'blabla');
 EXECUTE s2('hello', 2, 1, 2, '2');
-EXECUTE s3('hello', 3);
 EXECUTE s4(1, 2, 3, 1);
 EXECUTE s5(1, 2, 3, 1);

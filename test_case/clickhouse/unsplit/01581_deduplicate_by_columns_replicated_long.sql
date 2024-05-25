@@ -1,6 +1,4 @@
---- See also tests/queries/0_stateless/01581_deduplicate_by_columns_local.sql
 
---- replicated case
 
 -- Just in case if previous tests run left some stuff behind.
 DROP TABLE IF EXISTS replicated_deduplicate_by_columns_r1 SYNC;

@@ -879,7 +879,7 @@ FROM ( SELECT repeat(_utf8mb4 0xE29883, 21844) AS data ) AS sub;
 SELECT length(repeat(_utf8mb4 0xE29883, 21846)) AS data;
 SELECT length(data) AS len
 FROM ( SELECT repeat(_utf8mb4 0xE29883, 21846) AS data ) AS sub;
-SELECT TRIM(BOTH 'ÃÂÃÂ¥' FROM 'aÃÂÃÂ¦aÃÂÃÂ¥');
+SELECT TRIM(BOTH 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥' FROM 'aÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦aÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥');
 SELECT HEX(TRIM(CONVERT(_gb18030 0x20202081408141208144202020 USING utf32)));
 CREATE TABLE t1 (COUNTRY char(100));
 INSERT INTO t1 VALUES ("Norway"), ("Australia");
@@ -981,7 +981,7 @@ SELECT TRIM(BOTH x'F09F8DA3' FROM _utf8mb4 x'F09F8DA3F09F8DA3');
 SELECT TRIM(leading _utf8mb4 x'F09F8DA3' from _gb18030 x'9439B9376181308B33');
 SELECT SUBSTRING_INDEX(_utf8mb4 x'C3A6C3B8F09F8DA361C3A6C3B8F09F8DA362',
                        _gb18030 x'81308B339439B937', 2);
-SELECT REPLACE('ÃÂÃÂ¦ÃÂÃÂ¸ÃÂÃÂ¥ÃÂÃÂ¦ÃÂÃÂ¸ÃÂÃÂ¥',_utf16 x'00e5', _gb18030 x'9439B937');
+SELECT REPLACE('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥',_utf16 x'00e5', _gb18030 x'9439B937');
 SELECT REPLACE(_latin1 x'E6F8E5E6F8E5',_utf16 x'00e5', _utf32 x'00000061');
 CREATE TABLE t1 (
   id INT NOT NULL,
@@ -1120,12 +1120,12 @@ DROP TABLE t0;
 CREATE TABLE t0(c0 DECIMAL);
 INSERT INTO t0 VALUES(NULL);
 DROP TABLE t0;
-SELECT _utf8mb4 'ÃÂÃÂ' COLLATE utf8mb4_0900_ai_ci = _utf8mb4 'ss' COLLATE utf8mb4_0900_ai_ci AS c;
-SELECT _latin1 'ÃÂÃÂ' COLLATE latin1_general_ci = _latin1 'ss' COLLATE latin1_general_ci AS c;
-SELECT _latin1 'ÃÂÃÂ' = _utf8mb4 'ss' AS c;
-SELECT _utf8mb4 'ss' = _latin1 'ÃÂÃÂ' AS c;
-SELECT _utf8mb4 'ss' = _utf8mb3 'ÃÂÃÂ' AS c;
-SELECT _utf8mb3 'ÃÂÃÂ' = _utf8mb4 'ss' AS c;
+SELECT _utf8mb4 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' COLLATE utf8mb4_0900_ai_ci = _utf8mb4 'ss' COLLATE utf8mb4_0900_ai_ci AS c;
+SELECT _latin1 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' COLLATE latin1_general_ci = _latin1 'ss' COLLATE latin1_general_ci AS c;
+SELECT _latin1 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' = _utf8mb4 'ss' AS c;
+SELECT _utf8mb4 'ss' = _latin1 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' AS c;
+SELECT _utf8mb4 'ss' = _utf8mb3 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' AS c;
+SELECT _utf8mb3 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' = _utf8mb4 'ss' AS c;
 CREATE TABLE t1 (
   c1 varchar(255)
 );

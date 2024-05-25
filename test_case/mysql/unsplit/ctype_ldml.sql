@@ -8,13 +8,6 @@ INSERT INTO t1 VALUES ('123'),('012'),('001');
 INSERT INTO t1 VALUES ('12'),('01');
 INSERT INTO t1 VALUES ('1'),('9');
 INSERT INTO t1 VALUES ('a'),('b'),('c'),('d'),('e');
-INSERT INTO t1 VALUES ('cz'),('ÃÂÃÂ'),('ÃÂÃÂ');
-INSERT INTO t1 VALUES ('f'),('fz'),('g'),('ÃÂÃÂ '),('ÃÂÃÂ¡');
-INSERT INTO t1 VALUES ('h'),('hz'),('GÃÂÃÂ¦'),('GÃÂÃÂ§'),('gÃÂÃÂ¦'),('gÃÂÃÂ§');
-INSERT INTO t1 VALUES ('i'),('iz'),('ÃÂÃÂ¦'),('ÃÂÃÂ§');
-INSERT INTO t1 VALUES ('y'),('yz'),('z'),('ÃÂÃÂ»'),('ÃÂÃÂ¼');
-INSERT INTO t1 VALUES ('ÃÂÃÂ'),('ÃÂÃÂ'),('ÃÂÃÂ¡'),('ÃÂÃÂ'),('ÃÂÃÂ '),('ÃÂÃÂ');
-INSERT INTO t1 VALUES ('ÃÂÃÂ'),('ÃÂÃÂ©'),('ÃÂÃÂ'),('ÃÂÃÂª'),('ÃÂÃÂ'),('ÃÂÃÂ'),('ÃÂÃÂ'),('ÃÂÃÂ');
 INSERT INTO t1 VALUES ('a'),('~'),('!'),('@'),('#'),('$'),('%'),('^');
 INSERT INTO t1 VALUES ('"'),('\''),('?');
 INSERT INTO t1 VALUES ('ch'),('k'),('cs'),('ccs'),('cscs');

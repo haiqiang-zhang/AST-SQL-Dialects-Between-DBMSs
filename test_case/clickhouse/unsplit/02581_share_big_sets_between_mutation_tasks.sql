@@ -1,5 +1,3 @@
--- no sanitizers: too slow sometimes
-
 DROP TABLE IF EXISTS 02581_trips;
 CREATE TABLE 02581_trips(id UInt32, id2 UInt32, description String) ENGINE=MergeTree ORDER BY id SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
 INSERT INTO 02581_trips SELECT number, number, '' FROM numbers(10000);

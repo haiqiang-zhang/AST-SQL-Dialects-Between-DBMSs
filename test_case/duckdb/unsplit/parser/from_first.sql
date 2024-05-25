@@ -1,6 +1,6 @@
 PRAGMA enable_verification;
-CREATE TABLE integers(i INTEGER);;
-INSERT INTO integers VALUES (1), (2), (3), (NULL);;
+CREATE TABLE integers(i INTEGER);
+INSERT INTO integers VALUES (1), (2), (3), (NULL);
 FROM integers;
 FROM integers SELECT i + 1;
 FROM integers LIMIT 2;

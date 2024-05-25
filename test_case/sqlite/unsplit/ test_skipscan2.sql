@@ -35,8 +35,7 @@ SELECT name FROM people WHERE height>=180 ORDER BY +name;
 EXPLAIN QUERY PLAN
   SELECT name FROM people WHERE height>=180 ORDER BY +name;
 ANALYZE;
--- We do not have enough people above to actually force the use
-  -- of a skip-scan.  So make a manual adjustment to the stat1 table
+
   -- to make it seem like there are many more.
   UPDATE sqlite_stat1 SET stat='10000 5000 20' WHERE idx='people_idx1';
 UPDATE sqlite_stat1 SET stat='10000 1' WHERE idx='sqlite_autoindex_people_1';

@@ -3,29 +3,22 @@ create database events_test;
 create event e_26 on schedule at '2037-01-01 00:00:00' disable do set @a = 5;
 select  event_definition, definer, convert_tz(execute_at, 'UTC', 'SYSTEM'), on_completion from information_schema.events;
 drop event e_26;
-create event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂ´ÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ° on schedule every 123 minute starts now() ends now() + interval 1 month do select 1;
-drop event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂ´ÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ°;
 select definer, event_name from information_schema.events;
 select get_lock("test_lock1", 20);
-create event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ° on schedule every 10 hour do select get_lock("test_lock1", 20);
 select definer, event_name from information_schema.events;
 select /*1*/ user, host, db, command, state, info
   from information_schema.processlist
   where (user='event_scheduler')
   order by info;
 select release_lock("test_lock1");
-drop event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ°;
 select count(*) from information_schema.events;
 select get_lock("test_lock2", 20);
-create event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ° on schedule every 10 hour do select get_lock("test_lock2", 20);
 select /*2*/ user, host, db, command, state, info
   from information_schema.processlist
   where (info like "select get_lock%" OR user='event_scheduler')
   order by info;
 select release_lock("test_lock2");
-drop event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ°;
 select get_lock("test_lock2_1", 20);
-create event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ°21 on schedule every 10 hour do select get_lock("test_lock2_1", 20);
 select /*3*/ user, host, db, command, state, info
   from information_schema.processlist
   where (info like "select get_lock%" OR user='event_scheduler')
@@ -35,7 +28,6 @@ select /*4*/ user, host, db, command, state, info
   where (info like "select get_lock%" OR user='event_scheduler')
   order by info;
 select release_lock("test_lock2_1");
-drop event ÃÂÃÂ·ÃÂÃÂ°ÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂºÃÂÃÂ°21;
 select count(*) = 0 from information_schema.processlist
   where db='events_test' and command = 'Connect' and user=current_user();
 create table t_16 (s1 int);

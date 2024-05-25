@@ -1,5 +1,4 @@
 SET session_timezone = 'UTC';
------------------------------------------------------------
 SELECT '--- YYYYMMDDToDateTime';
 SELECT 'Invalid input types are rejected';
 SELECT 'Result type is DateTime';
@@ -42,7 +41,6 @@ SELECT YYYYMMDDhhmmssToDateTime(True);
 SELECT YYYYMMDDhhmmssToDateTime(False);
 SELECT YYYYMMDDhhmmssToDateTime(NULL);
 SELECT YYYYMMDDhhmmssToDateTime(yyyymmdd) FROM (SELECT 19840121 AS yyyymmdd UNION ALL SELECT 20230911 AS yyyymmdd) ORDER BY yyyymmdd;
------------------------------------------------------------
 SELECT '--- YYYYMMDDToDateTime64';
 SELECT 'Invalid input types are rejected';
 SELECT 'Result type is DateTime';

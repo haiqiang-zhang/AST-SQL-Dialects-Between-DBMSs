@@ -374,7 +374,7 @@ DEALLOCATE PREPARE stmt;
 DROP VIEW v1;
 DROP TABLE t1, t2;
 CREATE TABLE t1 (
-  ÃÂÃÂ INTEGER,
+  ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ INTEGER,
   N INTEGER,
   a INTEGER,
   b INTEGER,
@@ -407,7 +407,7 @@ CREATE TABLE t1 (
   ac INTEGER,
   ad INTEGER
 );
-INSERT INTO t1 (ÃÂÃÂ, N) VALUES (1, 2);
+INSERT INTO t1 (ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ, N) VALUES (1, 2);
 DROP TABLE t1;
 CREATE TABLE t1 (f1 INTEGER, KEY k1 ((1)));
 INSERT INTO t1 VALUES() AS f2 ON DUPLICATE KEY UPDATE f1=1;
