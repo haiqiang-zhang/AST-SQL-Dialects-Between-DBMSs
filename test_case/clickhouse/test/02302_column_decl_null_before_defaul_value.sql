@@ -1,6 +1,3 @@
-select 'create table, column +type +NULL';
-DROP TABLE IF EXISTS null_before SYNC;
-CREATE TABLE null_before (id INT NULL) ENGINE=MergeTree() ORDER BY tuple();
 DESCRIBE TABLE null_before;
 select 'create table, column +type +NOT NULL';
 DROP TABLE IF EXISTS null_before SYNC;

@@ -1,0 +1,10 @@
+SELECT * FROM t1;
+CREATE TABLE t2(y);
+CREATE TABLE t3(z);
+SELECT * FROM t1;
+DROP TABLE t1;
+SELECT * FROM t3;
+SELECT name FROM temp.sqlite_master ORDER BY name;
+CREATE TABLE t1(x);
+DROP TABLE t1;
+SELECT name FROM sqlite_temp_master;

@@ -1,0 +1,3 @@
+CREATE TEMPORARY TABLE t (x Nullable(String) DEFAULT 'Hello', y String DEFAULT 'World');
+INSERT INTO t VALUES (NULL, NULL);
+SELECT * FROM t;

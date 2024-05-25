@@ -1,0 +1,12 @@
+pragma recursive_triggers = off;
+CREATE TABLE t1(a PRIMARY KEY, b);
+INSERT INTO t1 VALUES('a', 'b');
+INSERT INTO t1 VALUES('c', 'd');
+SELECT * FROM t1;
+DELETE FROM t1;
+CREATE TABLE t2(a, b);
+INSERT INTO t2 VALUES('e', 'f');
+INSERT INTO t2 VALUES('g', 'h');
+INSERT INTO t1 SELECT * FROM t2;
+SELECT * FROM t1;
+PRAGMA integrity_check;

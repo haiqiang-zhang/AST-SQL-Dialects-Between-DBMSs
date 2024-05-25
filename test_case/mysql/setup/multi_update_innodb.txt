@@ -1,0 +1,7 @@
+CREATE TABLE t1(
+  pk INT,
+  a INT,
+  b INT,
+  PRIMARY KEY (pk)
+) ENGINE=InnoDB;
+INSERT INTO t1 VALUES (0,0,0);

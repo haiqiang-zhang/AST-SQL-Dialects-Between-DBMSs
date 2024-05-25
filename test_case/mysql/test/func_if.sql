@@ -1,4 +1,3 @@
-drop table if exists t1;
 select IF(0,"ERROR","this"),IF(1,"is","ERROR"),IF(NULL,"ERROR","a"),IF(1,2,3)|0,IF(1,2.0,3.0)+0;
 CREATE TABLE t1 (st varchar(255) NOT NULL, u int(11) NOT NULL);
 INSERT INTO t1 VALUES ('a',1),('A',1),('aa',1),('AA',1),('a',1),('aaa',0),('BBB',0);

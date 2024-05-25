@@ -1,0 +1,10 @@
+SELECT @start_global_value;
+SELECT @start_session_value;
+drop database if exists demo;
+create database demo;
+SELECT @@session.max_error_count;
+SELECT @@session.max_error_count;
+SELECT @@session.max_error_count;
+drop database demo;
+SELECT @@global.max_error_count;
+SELECT @@session.max_error_count;

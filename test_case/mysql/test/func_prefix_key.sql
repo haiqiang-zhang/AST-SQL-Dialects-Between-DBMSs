@@ -1,5 +1,3 @@
-CREATE TABLE t1(a int, b VARCHAR(5), PRIMARY KEY(a))ENGINE=INNODB;
-INSERT INTO t1 VALUES (1, 'a'), (2, 'ab'), (3, 'abc'), (4, 'abcd'), (5, 'abcde');
 ALTER TABLE t1 ADD KEY k2 (b(4));
 DROP TABLE t1;
 CREATE TABLE t1(a int, b VARCHAR(5), PRIMARY KEY(a))ENGINE=INNODB  DEFAULT CHARSET=latin1;

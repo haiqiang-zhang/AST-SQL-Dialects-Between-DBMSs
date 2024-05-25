@@ -1,0 +1,1 @@
+SELECT YEAR(@X)-YEAR(@Y);

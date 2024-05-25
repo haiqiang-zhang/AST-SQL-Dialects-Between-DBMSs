@@ -1,0 +1,10 @@
+SET replication_alter_partitions_sync = 2;
+DROP TABLE IF EXISTS replica1;
+DROP TABLE IF EXISTS replica2;
+SELECT name FROM system.parts WHERE table = 'replica2' and database = currentDatabase() and active = 1;
+SET insert_quorum = 2, insert_quorum_parallel = 0;
+SELECT name FROM system.parts WHERE table = 'replica1' and database = currentDatabase() and active = 1 ORDER BY name;
+SET insert_quorum_parallel=1;
+SELECT name FROM system.parts WHERE table = 'replica1' and database = currentDatabase() and active = 1 ORDER BY name;
+DROP TABLE IF EXISTS replica1;
+DROP TABLE IF EXISTS replica2;

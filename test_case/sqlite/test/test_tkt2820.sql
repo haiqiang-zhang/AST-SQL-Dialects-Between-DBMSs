@@ -1,0 +1,14 @@
+SELECT name FROM sqlite_master ORDER BY 1;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+CREATE TABLE t1(a);
+CREATE TABLE t2(b);
+DROP TABLE t2;
+SELECT name FROM sqlite_master ORDER BY 1;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+CREATE INDEX i1 ON t1(a);
+DROP INDEX i1;
+SELECT name FROM sqlite_master ORDER BY 1;
+PRAGMA integrity_check;
+PRAGMA integrity_check;

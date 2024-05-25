@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS order_by_all;
-CREATE TABLE order_by_all
-(
-    a String,
-    b Nullable(Int32)
-)
-ENGINE = Memory;
-INSERT INTO order_by_all VALUES ('B', 3), ('C', NULL), ('D', 1), ('A', 2);
 SELECT '-- no modifiers';
 SET allow_experimental_analyzer = 0;
 SELECT a, b FROM order_by_all ORDER BY ALL;

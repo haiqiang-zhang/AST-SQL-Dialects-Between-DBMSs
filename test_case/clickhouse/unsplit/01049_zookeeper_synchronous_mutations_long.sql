@@ -1,0 +1,16 @@
+DROP TABLE IF EXISTS table_for_synchronous_mutations1;
+DROP TABLE IF EXISTS table_for_synchronous_mutations2;
+SELECT 'Replicated';
+SELECT is_done FROM system.mutations where database = currentDatabase() and table = 'table_for_synchronous_mutations1';
+SELECT is_done FROM system.mutations where database = currentDatabase() and table = 'table_for_synchronous_mutations1';
+DROP TABLE IF EXISTS table_for_synchronous_mutations1;
+DROP TABLE IF EXISTS table_for_synchronous_mutations2;
+SELECT 'Normal';
+DROP TABLE IF EXISTS table_for_synchronous_mutations_no_replication;
+CREATE TABLE table_for_synchronous_mutations_no_replication(k UInt32, v1 UInt64) ENGINE MergeTree ORDER BY k SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
+INSERT INTO table_for_synchronous_mutations_no_replication select number, number from numbers(100000);
+ALTER TABLE table_for_synchronous_mutations_no_replication UPDATE v1 = v1 + 1 WHERE 1 SETTINGS mutations_sync = 2;
+SELECT is_done FROM system.mutations where database = currentDatabase() and table = 'table_for_synchronous_mutations_no_replication';
+ALTER TABLE table_for_synchronous_mutations_no_replication UPDATE v1 = v1 + 1 WHERE 1 SETTINGS mutations_sync = 2;
+SELECT is_done FROM system.mutations where database = currentDatabase() and table = 'table_for_synchronous_mutations_no_replication';
+DROP TABLE IF EXISTS table_for_synchronous_mutations_no_replication;

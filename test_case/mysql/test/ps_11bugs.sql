@@ -1,6 +1,3 @@
-drop table if exists t1, t2;
-CREATE TABLE t1(session_id  char(9) NOT NULL);
-INSERT INTO t1 VALUES ("abc");
 SELECT * FROM t1;
 prepare st_1180 from 'SELECT * FROM t1 WHERE ?="1111" and session_id = "abc"';
 drop table t1;

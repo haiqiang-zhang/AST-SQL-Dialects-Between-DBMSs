@@ -1,13 +1,3 @@
-create table t1(f1 int);
-drop table t1;
-create table t1(f1 int);
-drop table t1;
-create table t1(f1 int);
-drop table t1;
-create table t1(f1 int);
-drop table t1;
-create table t1(f1 int);
-drop table t1;
 UNLOCK TABLES;
 UNLOCK TABLES;
 CREATE TABLE t1 (a INT);

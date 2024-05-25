@@ -1,4 +1,3 @@
-create table t1 (a int) engine=myisam;
 create view v1 as select * from t1;
 drop view v1;
 drop table t1;

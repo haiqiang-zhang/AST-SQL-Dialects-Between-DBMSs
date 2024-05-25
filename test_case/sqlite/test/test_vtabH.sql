@@ -1,0 +1,1 @@
+CREATE INDEX i6 ON t6(b, a);

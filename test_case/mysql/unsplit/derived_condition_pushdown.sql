@@ -1,0 +1,206 @@
+CREATE TABLE t0 (
+  i0 INTEGER
+);
+INSERT INTO t0 VALUES (0),(1),(2),(3),(4);
+CREATE TABLE t1 (f1 INTEGER, f2 INTEGER, f3 INTEGER,
+                 KEY(f1), KEY(f1,f2), KEY(f3));
+INSERT INTO t1
+SELECT i0, i0 + 10*i0,
+       i0 + 10*i0 + 100*i0
+FROM t0 AS a0;
+INSERT INTO t1
+SELECT i0, i0 + 10*i0,
+       i0 + 10*i0 + 100*i0
+FROM t0 AS a0;
+INSERT INTO t1 VALUES (NULL, 1, 2);
+INSERT INTO t1 VALUES (NULL, 1, 3);
+SELECT * FROM
+ (SELECT f1 FROM (SELECT f1 FROM t1) AS dt1 GROUP BY f1) AS dt2
+ WHERE f1 > 3;
+SELECT * FROM
+ (SELECT dt1.f1 FROM (SELECT f1 FROM t1) AS dt1, t1 AS t0
+  GROUP BY dt1.f1) AS dt2
+WHERE dt2.f1 > 3;
+SELECT f1 FROM (SELECT DISTINCT * FROM t1 WHERE f2 = 4) AS alias1
+WHERE ( alias1 . f1 = 24 AND alias1 . f3 = 101 );
+SELECT f1 FROM (SELECT DISTINCT * FROM t1 WHERE f2 = 4) AS alias1
+WHERE ( alias1 . f1 BETWEEN 24 AND 30 AND alias1 . f3 BETWEEN 101 and 103);
+DROP TABLE t0, t1;
+CREATE TABLE t(f0 INTEGER PRIMARY KEY, f1 INTEGER,f2 INTEGER);
+SELECT NULL IN(SELECT (f1 between 0 and 1)
+ FROM (SELECT f1 FROM t WHERE  (@b:=NULL) - f2)as dt
+);
+DROP TABLE t;
+SELECT 1 FROM information_schema.tables WHERE 12 IN (CONCAT_WS(TABLE_ROWS, ''));
+CREATE TABLE t1(g INTEGER);
+SELECT w.g FROM t1 INNER JOIN (
+SELECT g, ROW_NUMBER() OVER (PARTITION BY g) AS r FROM t1
+) w ON w.g=t1.g AND w.r=1 WHERE w.g IS NULL;
+DROP TABLE t1;
+CREATE TABLE t(f1 INTEGER);
+SELECT a1, a2
+ FROM (SELECT MAX(f1) AS a1 FROM t) as dt1,
+ (SELECT @a AS a2 FROM t) as dt2
+ WHERE dt1.a1 <= dt2.a2;
+DROP TABLE t;
+CREATE TABLE t(f1 INTEGER);
+CREATE ALGORITHM=temptable VIEW v AS SELECT f1 FROM t;
+SELECT f1 FROM (SELECT f1 FROM v) AS dt1 NATURAL JOIN v dt2 WHERE f1 > 5;
+DROP TABLE t;
+DROP VIEW v;
+CREATE TABLE t1(f1 INTEGER, KEY(f1));
+CREATE TABLE t2(f1 INTEGER);
+INSERT INTO t1 VALUES (1),(2),(3),(4),(5);
+CREATE ALGORITHM=temptable VIEW v AS SELECT f1 FROM t1;
+INSERT INTO t2 SELECT * FROM v WHERE f1=2;
+UPDATE t2 SET f1=3 WHERE f1 IN (SELECT f1 FROM v WHERE f1=2);
+DELETE FROM t2 WHERE f1 IN (SELECT f1 FROM v WHERE f1=3);
+DROP TABLE t1;
+DROP TABLE t2;
+DROp VIEW v;
+CREATE TABLE t1(f1 INTEGER);
+INSERT INTO t1 VALUES (100),(200),(300),(400),(500);
+DROP TABLE t1;
+CREATE TABLE t0 (
+  i0 INTEGER
+);
+INSERT INTO t0 VALUES (0),(1),(2),(3),(4);
+CREATE TABLE t1 (f1 INTEGER, f2 INTEGER, f3 INTEGER,
+                 KEY(f1), KEY(f1,f2), KEY(f3));
+INSERT INTO t1
+SELECT i0, i0 + 10*i0,
+       i0 + 10*i0 + 100*i0
+FROM t0 AS a0;
+INSERT INTO t1
+SELECT i0, i0 + 10*i0,
+       i0 + 10*i0 + 100*i0
+FROM t0 AS a0;
+INSERT INTO t1 VALUES (NULL, 1, 2);
+INSERT INTO t1 VALUES (NULL, 1, 3);
+CREATE TABLE t2 LIKE t1;
+INSERT INTO t2 SELECT * FROM t1;
+CREATE ALGORITHM=temptable VIEW v AS (SELECT f1,f2,f3 FROM t1
+                                      UNION
+                                      SELECT f1,f2,f3 FROM t1);
+INSERT INTO t2 SELECT * FROM v WHERE f1=2;
+UPDATE t2 SET f1=3 WHERE f1 IN (SELECT f1 FROM v WHERE f1=2);
+UPDATE t2 JOIN v ON t2.f2=v.f2 SET t2.f1 = t2.f1 + v.f1 WHERE v.f2 > 10;
+DELETE FROM t2 WHERE f1 IN (SELECT f1 FROM v WHERE f1=3);
+DELETE t2 FROM t2 JOIN v ON t2.f2=v.f2 WHERE v.f2 > 10;
+DROP VIEW v;
+DROP TABLE t0;
+DROP TABLE t1;
+DROP TABLE t2;
+CREATE TABLE t1(f1 VARBINARY(10000));
+SELECT * FROM (SELECT f1 FROM t1 UNION SELECT f1 FROM t1) as dt WHERE f1 > '10';
+DROP TABLE t1;
+CREATE TABLE t1(f1 INTEGER, f2 INTEGER);
+CREATE VIEW v1 AS SELECT * FROM t1 UNION SELECT * FROM t1;
+CREATE VIEW v2 AS SELECT * FROM v1;
+SELECT t1.f1 FROM t1 JOIN v2 USING(f2) WHERE v2.f2 = 1;
+DROP TABLE t1;
+DROP VIEW v1;
+DROP VIEW v2;
+SELECT a.table_name, d.table_name
+FROM information_schema.key_column_usage a
+     JOIN information_schema.table_constraints b
+     USING (table_schema , table_name , constraint_name)
+     JOIN information_schema.referential_constraints c
+     ON (c.constraint_name = b.constraint_name AND
+         c.table_name = b.table_name AND
+         c.constraint_schema = b.table_schema)
+     LEFT JOIN information_schema.table_constraints d
+     ON (a.referenced_table_schema = d.table_schema AND
+         a.referenced_table_name = d.table_name AND
+         d.constraint_type IN ('UNIQUE' , 'PRIMARY KEY'))
+WHERE b.constraint_type = 'FOREIGN KEY'
+ORDER BY a.table_name , a.ordinal_position;
+SELECT a.table_name
+FROM information_schema.key_column_usage a
+     JOIN information_schema.table_constraints b
+     USING (table_schema)
+WHERE b.constraint_type = 'FOREIGN KEY';
+CREATE TABLE t1 (f1 INTEGER);
+SELECT COUNT(*) FROM (SELECT SUM(f1) FROM t1) as dt WHERE @a = 1;
+DROP TABLE t1;
+CREATE TABLE t1 (f1 INTEGER UNSIGNED);
+DROP TABLE t1;
+CREATE TABLE t1 (f1 INTEGER);
+INSERT INTO t1 VALUES (1);
+SELECT * FROM (SELECT f1 FROM t1 UNION SELECT f1 FROM t1) AS dt WHERE f1 <> 0.5;
+DROP TABLE t1;
+CREATE ALGORITHM=TEMPTABLE VIEW v1 AS
+ SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS;
+SELECT * FROM v1 WHERE VIEW_DEFINITION LIKE 'x';
+CREATE ALGORITHM=TEMPTABLE VIEW v2 AS SELECT * FROM v1;
+SELECT * FROM v2 WHERE VIEW_DEFINITION LIKE 'x';
+CREATE ALGORITHM=TEMPTABLE VIEW v3 AS
+ SELECT * FROM (SELECT * FROM v1 UNION SELECT * FROM v2) AS dt;
+SELECT * FROM v3 WHERE VIEW_DEFINITION LIKE 'x';
+DROP VIEW v1, v2, v3;
+CREATE TABLE t1 (
+  str VARCHAR(200) CHARACTER SET utf16 COLLATE utf16_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARACTER SET ascii COLLATE ascii_general_ci;
+CREATE TABLE t2 (
+  str VARCHAR(200) CHARACTER SET utf16 COLLATE utf16_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARACTER SET ascii COLLATE ascii_general_ci;
+INSERT INTO t1 VALUES (_utf8mb4'Patch');
+DROP TABLE t1, t2;
+CREATE TABLE t1 (f1 INTEGER, f2 INTEGER);
+INSERT INTO t1 VALUES (NULL, NULL);
+SELECT 1
+FROM (SELECT 1
+      FROM t1 LEFT JOIN (SELECT 1 AS f1 FROM t1) AS dt1
+      ON dt1.f1 = t1.f2
+      WHERE dt1.f1 IS NOT NULL) AS dt2,
+     (SELECT 1 FROM t1 UNION ALL SELECT 2 FROM t1) AS dt3;
+DROP TABLE t1;
+CREATE TABLE t1 (f1 TINYINT);
+SELECT f1 FROM (SELECT f1 FROM t1 UNION SELECT f1 FROM t1 ) AS dt
+WHERE f1 > -32768 OR f1 = 1;
+DROP TABLE t1;
+SELECT * FROM (SELECT 'ÃÂÃÂ¥' AS x) AS dt WHERE x = 'ÃÂÃÂ¥';
+CREATE TABLE t1 (f1 VARCHAR(10));
+INSERT INTO t1 VALUES('ÃÂÃÂ¥');
+SELECT * FROM (SELECT f1 FROM t1 UNION SELECT f1 FROM t1) AS dt WHERE f1 = 'ÃÂÃÂ¥';
+DROP TABLE t1;
+CREATE TABLE t1 (f1 INTEGER);
+SELECT f1
+FROM t1 JOIN
+     LATERAL (SELECT (t1.f1 + t2.f1) AS f2
+              FROM t1 AS t2
+              GROUP BY f2) AS dt
+WHERE f2 = 9;
+DROP TABLE t1;
+CREATE TABLE t1 (f1 INTEGER, f2 INTEGER);
+INSERT INTO t1 VALUES(1,2);
+INSERT INTO t1 VALUES (2,2);
+SELECT f1, f2 FROM (SELECT f1, f2 FROM t1 GROUP BY f1, f2 WITH ROLLUP) as dt
+WHERE f2 IS NULL;
+DROP TABLE t1;
+CREATE TABLE t1(f1 INTEGER);
+INSERT INTO t1 VALUES (NULL);
+CREATE TABLE t2(f1 INTEGER);
+SELECT dt3.f1
+FROM t1 JOIN (SELECT f1
+              FROM (SELECT dt1.f1
+                    FROM t1
+                         LEFT JOIN (SELECT 1 AS f1
+                                    FROM t2) AS dt1
+                         ON TRUE) AS dt2
+              GROUP BY f1) AS dt3
+WHERE dt3.f1 IS NOT NULL;
+DROP TABLE t1,t2;
+CREATE TABLE t1 (f1 INTEGER, f2 VARCHAR(30) COLLATE utf8mb4_bin NOT NULL);
+INSERT INTO t1(f2) VALUES ('680519363848');
+DROP TABLE t1;
+PREPARE stmt FROM
+ 'WITH t1(f1) AS
+   (WITH t2(f1) AS
+     (SELECT ?) SELECT 1 FROM t2 WHERE t2.f1)
+   SELECT 1 FROM t1 JOIN t1 AS t3';
+PREPARE stmt FROM
+ 'WITH t1(f1) AS
+   (WITH t2(f1) AS
+     (SELECT ?+?) SELECT 1 FROM t2 WHERE t2.f1)
+   SELECT 1 FROM t1 JOIN t1 AS t3';

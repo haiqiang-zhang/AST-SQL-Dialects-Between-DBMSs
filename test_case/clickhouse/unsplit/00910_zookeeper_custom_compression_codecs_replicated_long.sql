@@ -1,0 +1,16 @@
+SET send_logs_level = 'fatal';
+SET allow_suspicious_codecs = 1;
+DROP TABLE IF EXISTS compression_codec_replicated1;
+DROP TABLE IF EXISTS compression_codec_replicated2;
+DROP TABLE IF EXISTS compression_codec_replicated1;
+DROP TABLE IF EXISTS compression_codec_replicated2;
+DROP TABLE IF EXISTS compression_codec_multiple_replicated1;
+DROP TABLE IF EXISTS compression_codec_multiple_replicated2;
+SET network_compression_method = 'lz4hc';
+DROP TABLE IF EXISTS compression_codec_multiple_replicated1;
+DROP TABLE IF EXISTS compression_codec_multiple_replicated2;
+DROP TABLE IF EXISTS compression_codec_multiple_more_types_replicated;
+DROP TABLE IF EXISTS compression_codec_multiple_with_key_replicated;
+SET network_compression_method = 'zstd';
+SET network_zstd_compression_level = 5;
+DROP TABLE IF EXISTS compression_codec_multiple_with_key_replicated;

@@ -1,6 +1,3 @@
-CREATE TABLE t1 (b VARCHAR(2));
-INSERT INTO t1 VALUES ('0'), ('1'), ('2'), ('3'), ('4'), ('5'), ('6'), ('7');
-INSERT INTO t1 VALUES ('8'), ('9'), ('A'), ('B'), ('C'), ('D'), ('E'), ('F');
 CREATE TEMPORARY TABLE head AS SELECT concat(b1.b, b2.b) AS head FROM t1 b1, t1 b2;
 CREATE TEMPORARY TABLE tail AS SELECT concat(b1.b, b2.b) AS tail FROM t1 b1, t1 b2;
 DROP TABLE t1;

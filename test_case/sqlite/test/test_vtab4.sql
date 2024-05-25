@@ -1,0 +1,5 @@
+BEGIN;
+CREATE TABLE sreal(a, b, c UNIQUE);
+BEGIN;
+BEGIN;
+BEGIN;

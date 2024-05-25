@@ -1,6 +1,3 @@
-CREATE TABLE t1 (a INT,    b INT,    c INT,
-                 INDEX(a), INDEX(b), INDEX(c)) engine=myisam;
-INSERT INTO t1 VALUES (1,2,3), (4,5,6), (7,8,9);
 DELETE FROM t1 WHERE a = 10 OR b = 20 ORDER BY c LIMIT 1;
 DROP TABLE t1;
 CREATE TABLE t1 (a INT) ENGINE=MyISAM;

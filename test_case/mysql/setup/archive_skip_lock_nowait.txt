@@ -1,0 +1,2 @@
+CREATE TABLE t1 ( a INT) ENGINE=archive;
+INSERT INTO t1 VALUES (1);

@@ -1,5 +1,3 @@
-CREATE TABLE t1 (a VARCHAR(200), b TEXT, FULLTEXT (a,b));
-INSERT INTO t1 VALUES ('a','b');
 SELECT table_name, cardinality  FROM INFORMATION_SCHEMA.STATISTICS
   WHERE cardinality > 0 and table_schema='test';
 DROP TABLE t1;

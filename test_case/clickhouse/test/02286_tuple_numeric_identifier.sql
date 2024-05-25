@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS t_tuple_numeric;
-CREATE TABLE t_tuple_numeric (t Tuple(`1` Tuple(`2` Int, `3` Int), `4` Int)) ENGINE = Memory;
-SHOW CREATE TABLE t_tuple_numeric;
-INSERT INTO t_tuple_numeric VALUES (((2, 3), 4));
 SELECT `t`.`1`.`2`, `t`.`1`.`3`, `t`.`4` FROM t_tuple_numeric;
 SELECT t.1.1, t.1.2, t.2 FROM t_tuple_numeric;
 DROP TABLE t_tuple_numeric;

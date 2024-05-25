@@ -1,0 +1,12 @@
+SET max_rows_to_group_by = 100000;
+SET max_block_size = 100001;
+SET group_by_overflow_mode = 'any';
+SET max_bytes_before_external_group_by = 0;
+DROP TABLE IF EXISTS numbers500k;
+CREATE TABLE  numbers500k (number UInt32) ENGINE = TinyLog;
+INSERT INTO numbers500k SELECT number FROM system.numbers LIMIT 500000;
+SET totals_mode = 'after_having_auto';
+SET totals_mode = 'after_having_inclusive';
+SET totals_mode = 'after_having_exclusive';
+SET totals_mode = 'before_having';
+DROP TABLE numbers500k;

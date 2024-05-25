@@ -1,0 +1,12 @@
+drop table if exists data_01319;
+drop table if exists dist_01319;
+drop table if exists dist_layer_01319;
+create table data_01319 (key Int, sub_key Int) Engine=Null();
+set optimize_skip_unused_shards=1;
+set force_optimize_skip_unused_shards=1;
+set force_optimize_skip_unused_shards_nesting=2;
+set optimize_skip_unused_shards_nesting=2;
+set force_optimize_skip_unused_shards_nesting=1;
+set force_optimize_skip_unused_shards_nesting=2;
+set optimize_skip_unused_shards_nesting=1;
+drop table data_01319;

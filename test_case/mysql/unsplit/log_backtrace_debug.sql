@@ -1,0 +1,1 @@
+SELECT "--- STACKTRACE TO FOLLOW ---";

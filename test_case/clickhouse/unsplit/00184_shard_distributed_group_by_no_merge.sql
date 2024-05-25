@@ -1,0 +1,18 @@
+SELECT 'distributed_group_by_no_merge=1';
+SELECT 'distributed_group_by_no_merge=2';
+SET max_distributed_connections=1;
+SET max_threads=1;
+SELECT 'LIMIT';
+SELECT 'OFFSET';
+SELECT 'ALIAS';
+DROP TABLE IF EXISTS data_00184;
+CREATE TABLE data_00184 Engine=Memory() AS SELECT * FROM numbers(2);
+SELECT 'ORDER BY';
+SELECT 'ORDER BY LIMIT';
+SELECT 'LIMIT BY';
+SELECT 'LIMIT BY LIMIT';
+SELECT 'GROUP BY ORDER BY';
+SELECT 'GROUP BY w/ ALIAS';
+SELECT 'ORDER BY w/ ALIAS';
+SELECT 'func(aggregate function) GROUP BY';
+drop table data_00184;

@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS constraint_test_assumption;
-DROP TABLE IF EXISTS constraint_test_transitivity;
-DROP TABLE IF EXISTS constraint_test_transitivity2;
-DROP TABLE IF EXISTS constraint_test_transitivity3;
-DROP TABLE IF EXISTS constraint_test_constants_repl;
-DROP TABLE IF EXISTS constraint_test_constants;
 SET convert_query_to_cnf = 1;
 SET optimize_using_constraints = 1;
 SET optimize_move_to_prewhere = 1;

@@ -1,0 +1,1 @@
+SET connections_with_failover_max_tries=0;

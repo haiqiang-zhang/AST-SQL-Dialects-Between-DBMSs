@@ -1,7 +1,3 @@
--- Tag no-replicated-database: Fails due to additional replicas or shards
-
-DROP TABLE IF EXISTS r1 SYNC;
-DROP TABLE IF EXISTS r2 SYNC;
 SET insert_quorum_parallel=1;
 SET insert_quorum=3;
 SELECT 'insert to two replicas works';

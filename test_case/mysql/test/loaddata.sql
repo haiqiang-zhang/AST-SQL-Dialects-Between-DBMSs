@@ -1,4 +1,3 @@
-create table t1 (a date, b date, c date not null, d date);
 SELECT * from t1;
 SELECT * from t1;
 SELECT * from t1;

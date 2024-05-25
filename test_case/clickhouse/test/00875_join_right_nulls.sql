@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS t;
-DROP TABLE IF EXISTS nt;
-CREATE TABLE t (x String) ENGINE = Log();
-CREATE TABLE nt (x Nullable(String)) ENGINE = Log();
-INSERT INTO t (x) VALUES ('id'), ('1');
-INSERT INTO nt (x) VALUES ('id'), (NULL), ('1');
 SET join_use_nulls = 1;
 SELECT 'on';
 SELECT 'n rj n', t1.x, t2.x FROM nt AS t1 RIGHT JOIN nt AS t2 ON t1.x = t2.x ORDER BY t1.x;

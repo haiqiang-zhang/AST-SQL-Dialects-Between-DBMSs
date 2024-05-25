@@ -1,0 +1,1 @@
+set optimize_group_by_function_keys=0;

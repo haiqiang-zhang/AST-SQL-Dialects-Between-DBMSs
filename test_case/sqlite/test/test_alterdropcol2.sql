@@ -1,0 +1,18 @@
+ALTER TABLE t1 DROP c;
+SELECT * FROM t1;
+SELECT sql FROM sqlite_schema;
+CREATE TABLE x1(a PRIMARY KEY, b, c);
+ALTER TABLE x1 DROP COLUMN c;
+CREATE TABLE 'one two'('x y', 'z 1', 'a b');
+CREATE INDEX idx ON 'one two'('z 1');
+CREATE TABLE x1234(a, b, c PRIMARY KEY) WITHOUT ROWID;
+CREATE INDEX i1 ON x1234(b) WHERE ((a+5) % 10)==0;
+CREATE TABLE p1(x, y UNIQUE);
+CREATE TABLE c1(u, v, FOREIGN KEY (v) REFERENCES p1(y));
+ALTER TABLE c1 DROP u;
+CREATE TABLE log(l);
+CREATE VIEW v1 AS SELECT u, v, w FROM c1;
+CREATE TABLE yyy(q, w, e CHECK (e > 0), r);
+INSERT INTO yyy VALUES(1,1,1,1), (2,2,2,2);
+CREATE TABLE zzz(q, w, e, r, CHECK (e > 0));
+INSERT INTO zzz VALUES(1,1,1,1), (2,2,2,2);

@@ -1,6 +1,3 @@
-drop table if exists t1;
-create table t1 (c text character set ujis);
-insert into t1 values (0xa4a2),(0xa4a3);
 select hex(left(c,1)) from t1 group by c;
 drop table t1;
 select locate(0xa2a1,0xa1a2a1a3);

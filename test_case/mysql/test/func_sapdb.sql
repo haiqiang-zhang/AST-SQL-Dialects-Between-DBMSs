@@ -1,4 +1,3 @@
-drop table if exists t1, test;
 select extract(DAY_MICROSECOND FROM "1999-01-02 10:11:12.000123");
 select extract(HOUR_MICROSECOND FROM "1999-01-02 10:11:12.000123");
 select extract(MINUTE_MICROSECOND FROM "1999-01-02 10:11:12.000123");

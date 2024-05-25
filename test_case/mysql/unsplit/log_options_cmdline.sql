@@ -1,0 +1,13 @@
+CREATE TABLE t1(a int);
+INSERT INTO t1 SELECT FOUND_ROWS();
+INSERT INTO t1 SELECT FOUND_ROWS();
+INSERT INTO t1 SELECT FOUND_ROWS();
+DROP TABLE t1;
+SELECT @@GLOBAL.LOG_ERROR_SERVICES;
+SELECT @@global.log_error_services;
+SELECT @@log_error_services;
+SELECT @@global.log_error_suppression_list;
+SELECT @@global.log_error_suppression_list;
+SELECT @@global.log_error_suppression_list;
+SELECT @@global.log_error_suppression_list;
+SELECT @@global.log_error_services;

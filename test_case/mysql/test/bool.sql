@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS t1;
 SELECT IF(NULL AND 1, 1, 2), IF(1 AND NULL, 1, 2);
 SELECT NULL AND 1, 1 AND NULL, 0 AND NULL, NULL and 0;
 create table t1 (a int);

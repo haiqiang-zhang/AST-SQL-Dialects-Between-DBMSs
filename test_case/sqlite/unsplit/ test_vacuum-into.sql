@@ -1,0 +1,16 @@
+VACUUM main INTO 'out.db';
+VACUUM INTO 'out2.db';
+VACUUM main INTO ':memory:';
+CREATE TABLE t2(name TEXT);
+INSERT INTO t2 VALUES(':memory:');
+VACUUM main INTO (SELECT name FROM t2);
+PRAGMA page_size;
+PRAGMA page_size=1024;
+CREATE TABLE t1(a, b);
+INSERT INTO t1 VALUES(1, 2);
+PRAGMA synchronous = normal;
+PRAGMA synchronous = full;
+PRAGMA synchronous = off;
+PRAGMA synchronous = extra;
+PRAGMA fullfsync = 1;
+PRAGMA synchronous = full;

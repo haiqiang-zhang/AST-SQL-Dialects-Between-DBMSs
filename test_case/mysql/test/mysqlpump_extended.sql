@@ -1,7 +1,3 @@
-CREATE DATABASE db1_extended;
-CREATE TABLE t1 (a INT);
-CREATE TABLE t2 (a INT, b VARCHAR(10), primary key(a));
-CREATE DATABASE db2_extended;
 DROP DATABASE db2_extended;
 DROP DATABASE db1_extended;
 CREATE DATABASE db1_extended;

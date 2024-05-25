@@ -1,0 +1,56 @@
+SELECT t1.a
+    FROM t1, t2, t3
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t1, t2, t3
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;
+SELECT t1.a
+    FROM t1 CROSS JOIN t2 CROSS JOIN t3
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t1 CROSS JOIN t2 CROSS JOIN t3
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;
+SELECT t1.a
+    FROM t1 CROSS JOIN t3 CROSS JOIN t2
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t1 CROSS JOIN t3 CROSS JOIN t2
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;
+SELECT t1.a
+    FROM t2 CROSS JOIN t1 CROSS JOIN t3
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t2 CROSS JOIN t1 CROSS JOIN t3
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;
+SELECT t1.a
+    FROM t2 CROSS JOIN t3 CROSS JOIN t1
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t2 CROSS JOIN t3 CROSS JOIN t1
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;
+SELECT t1.a
+    FROM t3 CROSS JOIN t1 CROSS JOIN t2
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t3 CROSS JOIN t1 CROSS JOIN t2
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;
+SELECT t1.a
+    FROM t3 CROSS JOIN t2 CROSS JOIN t1
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a;
+SELECT t1.a
+    FROM t3 CROSS JOIN t2 CROSS JOIN t1
+   WHERE t1.a=t2.c AND t2.b=t3.d
+   ORDER BY t1.a DESC;

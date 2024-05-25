@@ -1,16 +1,3 @@
-CREATE TABLE hobbies_r (
-	name		text,
-	person 		text
-);
-CREATE TABLE equipment_r (
-	name 		text,
-	hobby		text
-);
-INSERT INTO hobbies_r (name) VALUES ('skywalking');
-INSERT INTO equipment_r (name, hobby) VALUES ('advil', 'posthacking');
-INSERT INTO equipment_r (name, hobby) VALUES ('peet''s coffee', 'posthacking');
-INSERT INTO equipment_r (name, hobby) VALUES ('hightops', 'basketball');
-INSERT INTO equipment_r (name, hobby) VALUES ('guts', 'skywalking');
 CREATE FUNCTION hobby_construct(text, text)
    RETURNS hobbies_r
    AS 'select $1 as name, $2 as hobby'

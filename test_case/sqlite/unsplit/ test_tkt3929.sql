@@ -1,0 +1,7 @@
+PRAGMA page_size = 1024;
+CREATE TABLE t1(a, b);
+CREATE INDEX i1 ON t1(a, b);
+INSERT INTO t1(a) VALUES(1);
+INSERT INTO t1(a) VALUES(2);
+SELECT * FROM t1;
+PRAGMA integrity_check;

@@ -1,5 +1,3 @@
-drop table if exists t1;
-CREATE TABLE t1 (a INT);
 ALTER TABLE t1
 PARTITION BY LIST(a)
 (PARTITION p1 VALUES IN (1,2,3,4,5,6,7,8,9,10,

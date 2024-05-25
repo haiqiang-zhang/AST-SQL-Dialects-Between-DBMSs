@@ -1,6 +1,3 @@
-drop table if exists t1, t2;
-create table t1 (a int);
-insert into t1 values (1);
 insert ignore into t1 values ("hej");
 insert ignore into t1 values ("hej"),("dÃÂÃÂ¥");
 insert ignore into t1 values ("hej");

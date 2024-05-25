@@ -1,5 +1,3 @@
-drop table if exists t1;
-create table t1 (i int);
 select * from t1;
 select * from t1;
 select * from t1;

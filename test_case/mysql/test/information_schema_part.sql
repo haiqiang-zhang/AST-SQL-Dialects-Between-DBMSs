@@ -1,9 +1,3 @@
-drop table if exists t1,t2,t3,t4;
-create table t1 (a int not null,b int not null,c int not null, primary key(a,b))
-partition by list (b*a)
-(partition x1 values in (1),
- partition x2 values in (3, 11, 5, 7),
- partition x3 values in (16, 8, 5+19, 70-43));
 select * from information_schema.partitions where table_schema="test"
 and table_name="t1";
 create table t2 (a int not null,b int not null,c int not null, primary key(a,b))

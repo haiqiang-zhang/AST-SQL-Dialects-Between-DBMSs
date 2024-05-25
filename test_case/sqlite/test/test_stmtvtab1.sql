@@ -1,0 +1,2 @@
+CREATE INDEX t1a ON t1(a);
+CREATE INDEX t1b ON t1(b);

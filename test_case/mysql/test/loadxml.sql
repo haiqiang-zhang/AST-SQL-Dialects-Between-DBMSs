@@ -1,5 +1,3 @@
-drop table if exists t1, t2;
-create table t1 (a int, b varchar(64));
 select * from t1 order by a;
 delete from t1;
 select * from t1 order by a;

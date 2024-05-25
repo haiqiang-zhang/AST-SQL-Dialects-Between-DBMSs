@@ -1,0 +1,1 @@
+SELECT COUNT(*) INTO @a FROM information_schema.processlist;

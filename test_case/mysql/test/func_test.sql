@@ -1,4 +1,3 @@
-drop table if exists t1,t2;
 select 0=0,1>0,1>=1,1<0,1<=0,1!=0,strcmp("abc","abcd"),strcmp("b","a"),strcmp("a","a");
 select "a"<"b","a"<="b","b">="a","b">"a","a"="A","a"<>"b";
 select "a "="A", "A "="a", "a  " <= "A b";

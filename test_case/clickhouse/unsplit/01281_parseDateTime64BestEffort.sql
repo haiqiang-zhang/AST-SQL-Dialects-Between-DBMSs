@@ -1,0 +1,18 @@
+SELECT 'orNull';
+SELECT parseDateTime64BestEffortOrNull('2020-05-14T03:37:03.253184Z', 3, 'UTC');
+SELECT parseDateTime64BestEffortOrNull('foo', 3, 'UTC');
+SELECT 'orZero';
+SELECT parseDateTime64BestEffortOrZero('2020-05-14T03:37:03.253184Z', 3, 'UTC');
+SELECT parseDateTime64BestEffortOrZero('bar', 3, 'UTC');
+SELECT 'non-const';
+SELECT parseDateTime64BestEffort(materialize('2020-05-14T03:37:03.253184Z'), 3, 'UTC');
+SELECT 'Timezones';
+SELECT parseDateTime64BestEffort('2020-05-14T03:37:03.253184Z', 3, 'UTC');
+SELECT parseDateTime64BestEffort('2020-05-14T03:37:03.253184Z', 3, 'Europe/Minsk');
+SELECT parseDateTime64BestEffort('2020-05-14T03:37:03.253184', 3, 'UTC');
+SELECT parseDateTime64BestEffort('2020-05-14T03:37:03', 3, 'UTC');
+SELECT parseDateTime64BestEffort('2020-05-14 03:37:03', 3, 'UTC');
+SELECT 'Unix Timestamp with Milliseconds';
+SELECT parseDateTime64BestEffort('1640649600123', 3, 'UTC');
+SELECT parseDateTime64BestEffort('1640649600123', 1, 'UTC');
+SELECT parseDateTime64BestEffort('1640649600123', 6, 'UTC');

@@ -1,0 +1,190 @@
+CREATE TABLE td(d INT);
+INSERT INTO td(d) VALUES (10),(1),(2),(3),(4),(5),(6),(7),(8),(9);
+INSERT INTO td(d) SELECT d+10 FROM td UNION
+               SELECT d+20 FROM td UNION
+               SELECT d+30 FROM td UNION
+               SELECT d+40 FROM td UNION
+               SELECT d+50 FROM td UNION
+               SELECT d+60 FROM td UNION
+               SELECT d+70 FROM td UNION
+               SELECT d+80 FROM td UNION
+               SELECT d+90 FROM td;
+INSERT INTO td(d) SELECT d+100 FROM td UNION
+               SELECT d+200 FROM td UNION
+               SELECT d+300 FROM td UNION
+               SELECT d+400 FROM td UNION
+               SELECT d+500 FROM td UNION
+               SELECT d+600 FROM td UNION
+               SELECT d+700 FROM td UNION
+               SELECT d+800 FROM td UNION
+               SELECT d+900 FROM td;
+INSERT INTO td(d) SELECT d+1000 FROM td UNION
+               SELECT d+2000 FROM td UNION
+               SELECT d+3000 FROM td UNION
+               SELECT d+4000 FROM td UNION
+               SELECT d+5000 FROM td UNION
+               SELECT d+6000 FROM td UNION
+               SELECT d+7000 FROM td UNION
+               SELECT d+8000 FROM td UNION
+               SELECT d+9000 FROM td;
+INSERT INTO td(d) SELECT d+10000 FROM td UNION
+               SELECT d+20000 FROM td UNION
+               SELECT d+30000 FROM td UNION
+               SELECT d+40000 FROM td UNION
+               SELECT d+50000 FROM td UNION
+               SELECT d+60000 FROM td UNION
+               SELECT d+70000 FROM td UNION
+               SELECT d+80000 FROM td UNION
+               SELECT d+90000 FROM td;
+INSERT INTO td(d) SELECT d+100000 FROM td UNION
+               SELECT d+200000 FROM td UNION
+               SELECT d+300000 FROM td UNION
+               SELECT d+400000 FROM td UNION
+               SELECT d+500000 FROM td UNION
+               SELECT d+600000 FROM td UNION
+               SELECT d+700000 FROM td UNION
+               SELECT d+800000 FROM td UNION
+               SELECT d+900000 FROM td;
+CREATE TABLE cpy(d INT, summ INT, nth INT, lagg INT);
+SELECT * from cpy ORDER BY d DESC LIMIT 10;
+SELECT * from cpy ORDER BY d DESC LIMIT 10;
+DROP TABLE td, cpy;
+CREATE TABLE `C` (
+  `pk` int(11) NOT NULL AUTO_INCREMENT,
+  `col_int` int(11) NOT NULL,
+  `col_int_gckey` int(11) GENERATED ALWAYS AS ((`col_int` + `col_int`)) VIRTUAL NOT NULL,
+  `col_int_key` int(11) GENERATED ALWAYS AS ((`col_int_gckey` + `col_int`)) VIRTUAL NOT NULL,
+  `col_date` date NOT NULL,
+  `col_date_gckey` date GENERATED ALWAYS AS ((`col_date` + interval 30 day)) VIRTUAL NOT NULL,
+  `col_date_key` date GENERATED ALWAYS AS ((`col_date_gckey` + interval 30 day)) VIRTUAL NOT NULL,
+  `col_datetime` datetime NOT NULL,
+  `col_time` time NOT NULL,
+  `col_datetime_gckey` datetime GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time`)) VIRTUAL NOT NULL,
+  `col_time_gckey` time GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time`)) VIRTUAL NOT NULL,
+  `col_datetime_key` datetime GENERATED ALWAYS AS (addtime(`col_datetime_gckey`,`col_time`)) VIRTUAL NOT NULL,
+  `col_time_key` time GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time_gckey`)) VIRTUAL NOT NULL,
+  `col_varchar` varchar(15) NOT NULL,
+  `col_varchar_gckey` varchar(15) GENERATED ALWAYS AS (concat(`col_varchar`,`col_varchar`)) VIRTUAL NOT NULL,
+  `col_varchar_key` varchar(15) GENERATED ALWAYS AS (concat(`col_varchar_gckey`,_latin1'x')) VIRTUAL NOT NULL,
+  PRIMARY KEY (`pk`),
+  UNIQUE KEY `col_date_key` (`col_date_key`),
+  UNIQUE KEY `col_date_key_2` (`col_date_key`,`col_time_key`,`col_datetime_key`),
+  UNIQUE KEY `col_varchar_key` (`col_varchar_key`(3)),
+  UNIQUE KEY `col_varchar_key_2` (`col_varchar_key`(5) DESC),
+  UNIQUE KEY `col_int_key_3` (`col_int_key`,`col_varchar_key`(5)),
+  UNIQUE KEY `col_int_key_4` (`col_int_key` DESC,`col_varchar_key`(5)),
+  UNIQUE KEY `col_varchar_key_3` (`col_varchar_key`(2),`col_varchar`(3)),
+  UNIQUE KEY `col_varchar_key_4` (`col_varchar_key`(2) DESC,`col_varchar`(3) DESC),
+  UNIQUE KEY `col_int_key_10` (`col_int_key`,`col_varchar_key`(5),`col_date_key`,`col_time_key`,`col_datetime_key`),
+  KEY `col_int_gckey` (`col_int_gckey`),
+  KEY `col_int_gckey_2` (`col_int_gckey` DESC),
+  KEY `col_date_gckey` (`col_date_gckey`),
+  KEY `col_datetime_gckey` (`col_datetime_gckey`),
+  KEY `col_time_gckey` (`col_time_gckey`),
+  KEY `col_varchar_gckey` (`col_varchar_gckey`(5)),
+  KEY `col_int_key` (`col_int_key`),
+  KEY `col_int_key_2` (`col_int_key` DESC),
+  KEY `col_time_key` (`col_time_key`),
+  KEY `col_datetime_key` (`col_datetime_key`),
+  KEY `col_int_key_5` (`col_int_key`,`col_int`),
+  KEY `col_int_key_6` (`col_int_key` DESC,`col_int` DESC),
+  KEY `col_int_key_7` (`col_int_key`,`col_date_key`),
+  KEY `col_int_key_8` (`col_int_key`,`col_time_key`),
+  KEY `col_int_key_9` (`col_int_key`,`col_datetime_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+CREATE TABLE `DD` (
+  `pk` int(11) NOT NULL AUTO_INCREMENT,
+  `col_int` int(11) NOT NULL,
+  `col_int_gckey` int(11) GENERATED ALWAYS AS ((`col_int` + `col_int`)) VIRTUAL NOT NULL,
+  `col_int_key` int(11) GENERATED ALWAYS AS ((`col_int_gckey` + `col_int`)) VIRTUAL NOT NULL,
+  `col_date` date NOT NULL,
+  `col_date_gckey` date GENERATED ALWAYS AS ((`col_date` + interval 30 day)) VIRTUAL NOT NULL,
+  `col_date_key` date GENERATED ALWAYS AS ((`col_date_gckey` + interval 30 day)) VIRTUAL NOT NULL,
+  `col_datetime` datetime NOT NULL,
+  `col_time` time NOT NULL,
+  `col_datetime_gckey` datetime GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time`)) VIRTUAL NOT NULL,
+  `col_time_gckey` time GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time`)) VIRTUAL NOT NULL,
+  `col_datetime_key` datetime GENERATED ALWAYS AS (addtime(`col_datetime_gckey`,`col_time`)) VIRTUAL NOT NULL,
+  `col_time_key` time GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time_gckey`)) VIRTUAL NOT NULL,
+  `col_varchar` varchar(15) NOT NULL,
+  `col_varchar_gckey` varchar(15) GENERATED ALWAYS AS (concat(`col_varchar`,`col_varchar`)) VIRTUAL NOT NULL,
+  `col_varchar_key` varchar(15) GENERATED ALWAYS AS (concat(`col_varchar_gckey`,_latin1'x')) VIRTUAL NOT NULL,
+  PRIMARY KEY (`pk`),
+  UNIQUE KEY `col_date_key` (`col_date_key`),
+  UNIQUE KEY `col_date_key_2` (`col_date_key`,`col_time_key`,`col_datetime_key`),
+  UNIQUE KEY `col_varchar_key` (`col_varchar_key`(3)),
+  UNIQUE KEY `col_varchar_key_2` (`col_varchar_key`(5) DESC),
+  UNIQUE KEY `col_int_key_3` (`col_int_key`,`col_varchar_key`(5)),
+  UNIQUE KEY `col_int_key_4` (`col_int_key` DESC,`col_varchar_key`(5)),
+  UNIQUE KEY `col_varchar_key_3` (`col_varchar_key`(2),`col_varchar`(3)),
+  UNIQUE KEY `col_varchar_key_4` (`col_varchar_key`(2) DESC,`col_varchar`(3) DESC),
+  UNIQUE KEY `col_int_key_10` (`col_int_key`,`col_varchar_key`(5),`col_date_key`,`col_time_key`,`col_datetime_key`),
+  KEY `col_int_gckey` (`col_int_gckey`),
+  KEY `col_int_gckey_2` (`col_int_gckey` DESC),
+  KEY `col_date_gckey` (`col_date_gckey`),
+  KEY `col_datetime_gckey` (`col_datetime_gckey`),
+  KEY `col_time_gckey` (`col_time_gckey`),
+  KEY `col_varchar_gckey` (`col_varchar_gckey`(5)),
+  KEY `col_int_key` (`col_int_key`),
+  KEY `col_int_key_2` (`col_int_key` DESC),
+  KEY `col_time_key` (`col_time_key`),
+  KEY `col_datetime_key` (`col_datetime_key`),
+  KEY `col_int_key_5` (`col_int_key`,`col_int`),
+  KEY `col_int_key_6` (`col_int_key` DESC,`col_int` DESC),
+  KEY `col_int_key_7` (`col_int_key`,`col_date_key`),
+  KEY `col_int_key_8` (`col_int_key`,`col_time_key`),
+  KEY `col_int_key_9` (`col_int_key`,`col_datetime_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=latin1;
+CREATE TABLE `E` (
+  `pk` int(11) NOT NULL AUTO_INCREMENT,
+  `col_int` int(11) NOT NULL,
+  `col_int_gckey` int(11) GENERATED ALWAYS AS ((`col_int` + `col_int`)) VIRTUAL NOT NULL,
+  `col_int_key` int(11) GENERATED ALWAYS AS ((`col_int_gckey` + `col_int`)) VIRTUAL NOT NULL,
+  `col_date` date NOT NULL,
+  `col_date_gckey` date GENERATED ALWAYS AS ((`col_date` + interval 30 day)) VIRTUAL NOT NULL,
+  `col_date_key` date GENERATED ALWAYS AS ((`col_date_gckey` + interval 30 day)) VIRTUAL NOT NULL,
+  `col_datetime` datetime NOT NULL,
+  `col_time` time NOT NULL,
+  `col_datetime_gckey` datetime GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time`)) VIRTUAL NOT NULL,
+  `col_time_gckey` time GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time`)) VIRTUAL NOT NULL,
+  `col_datetime_key` datetime GENERATED ALWAYS AS (addtime(`col_datetime_gckey`,`col_time`)) VIRTUAL NOT NULL,
+  `col_time_key` time GENERATED ALWAYS AS (addtime(`col_datetime`,`col_time_gckey`)) VIRTUAL NOT NULL,
+  `col_varchar` varchar(15) NOT NULL,
+  `col_varchar_gckey` varchar(15) GENERATED ALWAYS AS (concat(`col_varchar`,`col_varchar`)) VIRTUAL NOT NULL,
+  `col_varchar_key` varchar(15) GENERATED ALWAYS AS (concat(`col_varchar_gckey`,_latin1'x')) VIRTUAL NOT NULL,
+  PRIMARY KEY (`pk`),
+  UNIQUE KEY `col_date_key` (`col_date_key`),
+  UNIQUE KEY `col_date_key_2` (`col_date_key`,`col_time_key`,`col_datetime_key`),
+  UNIQUE KEY `col_varchar_key` (`col_varchar_key`(3)),
+  UNIQUE KEY `col_varchar_key_2` (`col_varchar_key`(5) DESC),
+  UNIQUE KEY `col_int_key_3` (`col_int_key`,`col_varchar_key`(5)),
+  UNIQUE KEY `col_int_key_4` (`col_int_key` DESC,`col_varchar_key`(5)),
+  UNIQUE KEY `col_varchar_key_3` (`col_varchar_key`(2),`col_varchar`(3)),
+  UNIQUE KEY `col_varchar_key_4` (`col_varchar_key`(2) DESC,`col_varchar`(3) DESC),
+  UNIQUE KEY `col_int_key_10` (`col_int_key`,`col_varchar_key`(5),`col_date_key`,`col_time_key`,`col_datetime_key`),
+  KEY `col_int_gckey` (`col_int_gckey`),
+  KEY `col_int_gckey_2` (`col_int_gckey` DESC),
+  KEY `col_date_gckey` (`col_date_gckey`),
+  KEY `col_datetime_gckey` (`col_datetime_gckey`),
+  KEY `col_time_gckey` (`col_time_gckey`),
+  KEY `col_varchar_gckey` (`col_varchar_gckey`(5)),
+  KEY `col_int_key` (`col_int_key`),
+  KEY `col_int_key_2` (`col_int_key` DESC),
+  KEY `col_time_key` (`col_time_key`),
+  KEY `col_datetime_key` (`col_datetime_key`),
+  KEY `col_int_key_5` (`col_int_key`,`col_int`),
+  KEY `col_int_key_6` (`col_int_key` DESC,`col_int` DESC),
+  KEY `col_int_key_7` (`col_int_key`,`col_date_key`),
+  KEY `col_int_key_8` (`col_int_key`,`col_time_key`),
+  KEY `col_int_key_9` (`col_int_key`,`col_datetime_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=latin1;
+SELECT outr1.col_varchar AS f1, outr2.col_varchar AS f2
+    FROM `C` AS outr1 LEFT JOIN `E` AS outr2
+    ON (outr1.col_int_key = outr2.col_int_key)
+    WHERE outr1.col_varchar_key !=
+         (SELECT LEAD(innr1.pk, 5) OVER () AS y
+          FROM `DD` AS innr2 LEFT OUTER JOIN `DD` AS innr1
+          ON (innr2.col_date <> innr1.col_date_key)
+          WHERE innr1.col_int < 5 XOR outr2.col_date IS NULL
+          LIMIT 1);
+DROP TABLE `C`, `E`, `DD`;

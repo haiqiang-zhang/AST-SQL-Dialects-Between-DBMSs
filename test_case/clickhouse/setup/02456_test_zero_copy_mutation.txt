@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS mutation_1;
+DROP TABLE IF EXISTS mutation_2;

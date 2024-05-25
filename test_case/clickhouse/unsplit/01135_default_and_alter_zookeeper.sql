@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS default_table SYNC;
+DROP TABLE IF EXISTS default_table SYNC;

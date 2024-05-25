@@ -1,9 +1,3 @@
-drop table if exists merge_dist_01223;
-drop table if exists dist_01223;
-drop table if exists dist_layer_01223;
-drop table if exists data_01223;
-create table data_01223 (key Int) Engine=Memory();
-insert into data_01223 select * from numbers(3);
 select 'DISTINCT ORDER BY';
 select 'GROUP BY ORDER BY';
 select 'GROUP BY ORDER BY LIMIT';

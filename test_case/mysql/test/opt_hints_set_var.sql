@@ -1,4 +1,3 @@
-CREATE TABLE t1(f1 INT);
 SELECT /*+ SET_VAR(foo = 10) */ 1;
 SELECT /*+ SET_VAR(foo = 1K) */ 1;
 SELECT /*+ SET_VAR(foo = 21M) */ 1;

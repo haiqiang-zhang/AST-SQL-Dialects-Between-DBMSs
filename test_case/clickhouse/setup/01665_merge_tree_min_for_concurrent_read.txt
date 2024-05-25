@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS data_01655;
+CREATE TABLE data_01655 (key Int) Engine=MergeTree() ORDER BY key;
+INSERT INTO data_01655 VALUES (1);

@@ -1,9 +1,3 @@
-create table copydml_test (id serial, t text);
-insert into copydml_test (t) values ('a');
-insert into copydml_test (t) values ('b');
-insert into copydml_test (t) values ('c');
-insert into copydml_test (t) values ('d');
-insert into copydml_test (t) values ('e');
 create rule qqq as on insert to copydml_test do instead nothing;
 drop rule qqq on copydml_test;
 create rule qqq as on insert to copydml_test do also delete from copydml_test;

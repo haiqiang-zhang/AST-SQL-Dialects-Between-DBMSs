@@ -1,4 +1,3 @@
-drop table if exists t1, t2;
 select null,isnull(null),isnull(1/0),isnull(1/0 = null),ifnull(null,1),ifnull(null,"TRUE"),ifnull("TRUE","ERROR"),1/0 is null,1 is not null;
 select 1 | NULL,1 & NULL,1+NULL,1-NULL;
 select NULL=NULL,NULL<>NULL,IFNULL(NULL,1.1)+0,IFNULL(NULL,1) | 0;

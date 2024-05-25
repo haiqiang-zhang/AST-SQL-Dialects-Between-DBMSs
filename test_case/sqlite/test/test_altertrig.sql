@@ -1,0 +1,16 @@
+ALTER TABLE t3 RENAME TO t5;
+SELECT sql FROM sqlite_schema WHERE type='trigger';
+ALTER TABLE t5 RENAME TO t3;
+SELECT sql FROM sqlite_schema WHERE type='trigger';
+ALTER TABLE t3 RENAME TO t10;
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+CREATE TABLE t3(e,f);
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+ALTER TABLE t3 RENAME e TO abc;
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+SELECT sqL FROM sqlite_schema WHERE type='trigger';
+ALTER TABLE t4 RENAME TO abc;
+SELECT sqL FROM sqlite_schema WHERE type='trigger';

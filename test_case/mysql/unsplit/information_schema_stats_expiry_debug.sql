@@ -1,0 +1,44 @@
+CREATE TABLE t1(a int,KEY(a));
+SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, AVG_ROW_LENGTH, DATA_LENGTH,
+  MAX_DATA_LENGTH, INDEX_LENGTH, DATA_FREE, AUTO_INCREMENT from
+  information_schema.tables WHERE table_name='t1';
+SELECT TABLE_NAME,COLUMN_NAME, INDEX_NAME, CARDINALITY from
+  information_schema.statistics where table_name='t1' ORDER BY COLUMN_NAME;
+INSERT INTO t1 VALUES(3);
+SELECT SLEEP(2);
+SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, AVG_ROW_LENGTH, DATA_LENGTH,
+  MAX_DATA_LENGTH, INDEX_LENGTH, DATA_FREE, AUTO_INCREMENT from
+  information_schema.tables WHERE table_name='t1';
+SELECT TABLE_NAME,COLUMN_NAME, INDEX_NAME, CARDINALITY from
+  information_schema.statistics where table_name='t1' ORDER BY COLUMN_NAME;
+DROP TABLE t1;
+CREATE TABLE t2(a int,KEY(a));
+CREATE TABLE t3(b int, KEY(b));
+SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, AVG_ROW_LENGTH, DATA_LENGTH,
+  MAX_DATA_LENGTH, INDEX_LENGTH, DATA_FREE, AUTO_INCREMENT from
+  information_schema.tables WHERE table_name='t2';
+INSERT INTO t2 VALUES(1);
+SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, AVG_ROW_LENGTH, DATA_LENGTH,
+  MAX_DATA_LENGTH, INDEX_LENGTH, DATA_FREE, AUTO_INCREMENT from
+  information_schema.tables WHERE table_name='t2';
+SELECT * FROM t2;
+INSERT INTO t3 VALUES(1);
+SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, AVG_ROW_LENGTH, DATA_LENGTH,
+  MAX_DATA_LENGTH, INDEX_LENGTH, DATA_FREE, AUTO_INCREMENT from
+  information_schema.tables WHERE table_name='t2';
+SELECT * FROM t3;
+SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, AVG_ROW_LENGTH, DATA_LENGTH,
+  MAX_DATA_LENGTH, INDEX_LENGTH, DATA_FREE, AUTO_INCREMENT from
+  information_schema.tables WHERE table_name='t3';
+DROP TABLE t2,t3;
+CREATE TABLE t1 (a INT);
+INSERT INTO t1 VALUES
+  (0),(1),(2),(3),(4),(5),(6),(7),(8),(9),
+  (10),(11),(12),(13),(14),(15),(16),(17),(18),(19);
+SELECT table_rows FROM information_schema.tables WHERE table_name = "t1";
+INSERT INTO t1 VALUES
+  (0),(1),(2),(3),(4),(5),(6),(7),(8),(9),
+  (10),(11),(12),(13),(14),(15),(16),(17),(18),(19);
+SELECT table_rows FROM information_schema.tables WHERE table_name = "t1";
+SELECT table_rows FROM information_schema.tables WHERE table_name = "t1";
+DROP table t1;

@@ -1,4 +1,3 @@
-drop table if exists t1,t2,t3;
 select * from (select 2 from DUAL) b;
 CREATE TABLE t1 (a int not null, b char (10) not null);
 insert into t1 values(1,'a'),(2,'b'),(3,'c'),(3,'c');

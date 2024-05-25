@@ -1,32 +1,3 @@
-CREATE TABLE t1 (
-  str_col VARCHAR(255),
-  dbl_col DOUBLE,
-  decimal_col DECIMAL(5, 2),
-  date_col DATE,
-  time_col TIME,
-  time_with_fractions_col TIME(6),
-  datetime_col DATETIME,
-  datetime_with_fractions_col DATETIME(6),
-  json_col JSON,
-  dbl_with_length DOUBLE(4, 2),
-  unsigned_int INT UNSIGNED,
-  geometry_col POINT,
-  INDEX idx1 ((CONVERT(SUBSTRING(str_col, 2, 1) USING latin1))),
-  INDEX idx2 ((ABS(dbl_col))),
-  INDEX idx3 ((TRUNCATE(decimal_col, 0))),
-  INDEX idx4 ((YEAR(date_col))),
-  INDEX idx5 ((ADDTIME('01:00:00', time_col))),
-  INDEX idx6 ((ADDTIME('01:00:00', time_with_fractions_col))),
-  INDEX idx7 ((DATE_SUB(datetime_col, INTERVAL 30 DAY))),
-  INDEX idx8 ((DATE_SUB(datetime_with_fractions_col, INTERVAL 30 DAY))),
-  INDEX idx9 ((JSON_VALID(json_col))),
-  INDEX idx10 ((ROUND(dbl_col, 2))),
-  INDEX idx11 ((dbl_with_length * 2.0)),
-  INDEX idx12 ((ABS(unsigned_int))),
-  INDEX idx13 ((ST_X(geometry_col)))
-);
-DROP TABLE t1;
-CREATE TABLE t1 (col1 INT, INDEX my_index((FLOOR(col1))));
 ALTER TABLE t1 RENAME INDEX my_index TO foobar;
 DROP TABLE t1;
 CREATE TABLE t1 (

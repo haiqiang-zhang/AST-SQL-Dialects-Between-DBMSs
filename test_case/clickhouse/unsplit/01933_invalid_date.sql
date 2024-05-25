@@ -1,0 +1,3 @@
+SELECT toDate('2019^7^8');
+CREATE TEMPORARY TABLE test (d Date);
+INSERT INTO test VALUES ('2018-01-01');

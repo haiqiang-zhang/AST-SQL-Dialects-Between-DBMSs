@@ -1,0 +1,5 @@
+PRAGMA integrity_check;
+SELECT * FROM t1;
+SELECT * FROM t1;
+SELECT * FROM t1;
+SELECT * FROM t1;

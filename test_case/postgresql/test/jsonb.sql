@@ -1,6 +1,3 @@
-CREATE TABLE testjsonb (
-       j jsonb
-);
 SELECT '""'::jsonb;
 SELECT '"abc"'::jsonb;
 SELECT '"\n\"\\"'::jsonb;

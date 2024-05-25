@@ -1,7 +1,3 @@
-CREATE TABLE deptest (f1 serial primary key, f2 text);
-DROP TABLE deptest;
-CREATE TABLE deptest1 (f1 int unique);
-CREATE TABLE deptest (a serial primary key, b text);
 RESET SESSION AUTHORIZATION;
 CREATE SCHEMA deptest;
 CREATE FUNCTION deptest_func() RETURNS void LANGUAGE plpgsql

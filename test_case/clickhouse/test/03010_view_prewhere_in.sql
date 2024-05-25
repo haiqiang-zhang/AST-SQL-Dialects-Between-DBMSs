@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS v;
 CREATE VIEW v (`date` UInt32,`value` UInt8) AS
 WITH
     data AS (SELECT '' id LIMIT 0),

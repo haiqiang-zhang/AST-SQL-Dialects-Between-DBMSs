@@ -1,4 +1,3 @@
-drop table if exists t1,t2;
 drop view if exists v1;
 create table t1(n int not null, key(n), key(n), key(n), key(n));
 insert into t1 values (200000);

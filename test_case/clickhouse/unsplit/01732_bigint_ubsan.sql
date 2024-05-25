@@ -1,0 +1,7 @@
+CREATE TEMPORARY TABLE decimal
+(
+    f dec(38, 38)
+);
+INSERT INTO decimal VALUES (0);
+INSERT INTO decimal VALUES (0.42);
+INSERT INTO decimal VALUES (-0.42);

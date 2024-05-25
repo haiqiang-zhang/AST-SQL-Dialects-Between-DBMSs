@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS join_inner_table SYNC;
+SET max_parallel_replicas = 3;
+SET prefer_localhost_replica = 1;
+SET cluster_for_parallel_replicas = 'test_cluster_one_shard_three_replicas_localhost';
+SET joined_subquery_requires_alias = 0;
+SELECT '=============== INNER QUERY (NO PARALLEL) ===============';
+SELECT '=============== INNER QUERY (PARALLEL) ===============';
+SELECT '=============== QUERIES EXECUTED BY PARALLEL INNER QUERY ALONE ===============';
+SYSTEM FLUSH LOGS;
+DROP TABLE IF EXISTS join_outer_table SYNC;
+SELECT '=============== OUTER QUERY (NO PARALLEL) ===============';
+SELECT '=============== OUTER QUERY (PARALLEL) ===============';
+SYSTEM FLUSH LOGS;

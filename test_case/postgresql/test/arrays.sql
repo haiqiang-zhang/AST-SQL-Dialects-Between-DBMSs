@@ -1,17 +1,3 @@
-CREATE TABLE arrtest (
-	a 			int2[],
-	b 			int4[][][],
-	c 			name[],
-	d			text[][],
-	e 			float8[],
-	f			char(5)[],
-	g			varchar(5)[]
-);
-CREATE TABLE array_op_test (
-	seqno		int4,
-	i			int4[],
-	t			text[]
-);
 ANALYZE array_op_test;
 INSERT INTO arrtest (a[1:5], b[1:1][1:2][1:2], c, d, f, g)
    VALUES ('{1,2,3,4,5}', '{{{0,0},{1,2}}}', '{}', '{}', '{}', '{}');

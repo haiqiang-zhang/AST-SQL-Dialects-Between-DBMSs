@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS test_collate;
+CREATE TABLE test_collate (x UInt32, s Nullable(String)) ENGINE=Memory();
+INSERT INTO test_collate VALUES (1, 'ÃÂÃÂ'), (1, 'ÃÂÃÂ'), (1, 'ÃÂÃÂ°'), (1, null), (2, 'ÃÂÃÂ'), (2, 'ÃÂÃÂ'), (2, 'ÃÂÃÂ¯'), (2, null);
+SELECT 'Order by without collate';
+SELECT * FROM test_collate ORDER BY s, x;
+SELECT 'Order by with collate';
+SELECT 'Order by tuple without collate';
+SELECT * FROM test_collate ORDER BY x, s;
+SELECT 'Order by tuple with collate';
+DROP TABLE test_collate;

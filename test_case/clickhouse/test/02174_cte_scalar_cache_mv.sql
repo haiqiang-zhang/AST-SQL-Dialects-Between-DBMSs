@@ -1,6 +1,3 @@
-CREATE TABLE t1 (i Int64, j Int64) ENGINE = Memory;
-INSERT INTO t1 SELECT number, number FROM system.numbers LIMIT 100;
-CREATE TABLE t2 (k Int64, l Int64, m Int64, n Int64) ENGINE = Memory;
 CREATE MATERIALIZED VIEW mv1 TO t2 AS
     WITH
     (SELECT max(i) FROM t1) AS t1

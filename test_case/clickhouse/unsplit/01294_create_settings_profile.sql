@@ -1,0 +1,16 @@
+DROP SETTINGS PROFILE IF EXISTS s1_01294, s2_01294, s3_01294, s4_01294, s5_01294, s6_01294, s7_01294, s8_01294, s9_01294, s10_01294;
+DROP SETTINGS PROFILE IF EXISTS s2_01294_renamed;
+DROP USER IF EXISTS u1_01294;
+DROP ROLE IF EXISTS r1_01294;
+SELECT '-- default';
+SELECT '-- same as default';
+SELECT '-- rename';
+SELECT '-- settings';
+SELECT '-- to roles';
+SELECT '-- complex';
+SELECT '-- multiple profiles in one command';
+SELECT '-- readonly ambiguity';
+SELECT '-- system.settings_profiles';
+SELECT name, storage, num_elements, apply_to_all, apply_to_list, apply_to_except FROM system.settings_profiles WHERE name LIKE 's%\_01294' ORDER BY name;
+SELECT '-- system.settings_profile_elements';
+SELECT * FROM system.settings_profile_elements WHERE profile_name LIKE 's%\_01294' ORDER BY profile_name, index;

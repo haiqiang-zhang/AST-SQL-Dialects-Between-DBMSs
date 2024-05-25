@@ -1,12 +1,3 @@
-CREATE TABLE visits
-(
-    `CounterID` UInt32,
-    `StartDate` Date,
-    `StartTime` DateTime,
-    `GoalsID` Array(UInt32),
-    `Sign` Int8
-)
-ENGINE = Null;
 CREATE MATERIALIZED VIEW goal_view TO goal
 (
     `CounterID` UInt32,

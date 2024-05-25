@@ -1,0 +1,13 @@
+select initcap('');
+select initcap('Hello');
+select initcap('hello');
+select initcap('hello world');
+select initcap('yeah, well, i`m gonna go build my own theme park');
+select initcap('CRC32IEEE is the best function');
+select initcap('42oK');
+select initcapUTF8('');
+select initcapUTF8('Hello');
+select initcapUTF8('yeah, well, i`m gonna go build my own theme park');
+select initcapUTF8('ÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ²ÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ, ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂº ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂ°?');
+select initcapUTF8('ÃÂÃÂÃÂÃÂ¤tsch, bÃÂÃÂÃÂÃÂ¤tsch');
+select initcapUTF8('We dont support cases when lowercase and uppercase characters occupy different number of bytes in UTF-8. As an example, this happens for ÃÂÃÂÃÂÃÂ and ÃÂÃÂ¡ÃÂÃÂºÃÂÃÂ.');

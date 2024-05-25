@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS join;
 SELECT '----- Default Settings -----';
 CREATE TABLE join (k UInt64, s String) ENGINE = Join(ANY, LEFT, k);
 INSERT INTO join VALUES (1,21);

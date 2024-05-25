@@ -1,10 +1,3 @@
-CREATE TABLE slow_emp4000 (
-	home_base	 box
-);
-CREATE TABLE fast_emp4000 (
-	home_base	 box
-);
-INSERT INTO fast_emp4000 SELECT * FROM slow_emp4000;
 ANALYZE slow_emp4000;
 ANALYZE fast_emp4000;
 CREATE INDEX grect2ind ON fast_emp4000 USING gist (home_base);

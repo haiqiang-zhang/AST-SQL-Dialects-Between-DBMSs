@@ -1,0 +1,18 @@
+PRAGMA journal_mode = truncate;
+INSERT INTO t1 VALUES(1, 2);
+INSERT INTO t1 VALUES(3, 4);
+SELECT * FROM t1;
+PRAGMA journal_mode = delete;
+INSERT INTO t1 VALUES(5, 6);
+SELECT * FROM t1;
+PRAGMA journal_mode = truncate;
+INSERT INTO t1 VALUES(5, 6);
+SELECT * FROM t1;
+CREATE TABLE t2(a UNIQUE, b UNIQUE);
+-- 64;
+SELECT count(*) FROM t2;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+PRAGMA journal_mode = persist;
+PRAGMA journal_mode = WAL;

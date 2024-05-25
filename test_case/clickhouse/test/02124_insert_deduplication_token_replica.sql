@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS insert_dedup_token1 SYNC;
-DROP TABLE IF EXISTS insert_dedup_token2 SYNC;
 select 'create replica 1 and check deduplication';
 select 'two inserts with exact data, one inserted, one deduplicated by data digest';
 select 'two inserts with the same dedup token, one inserted, one deduplicated by the token';

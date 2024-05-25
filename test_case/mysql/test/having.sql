@@ -1,5 +1,3 @@
-drop table if exists t1,t2,t3;
-create table t1 (a int);
 select count(a) as b from t1 where a=0 having b > 0;
 insert into t1 values (null);
 select count(a) as b from t1 where a=0 having b > 0;

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS t_ephemeral_02205_1;
-CREATE TABLE t_ephemeral_02205_1 (x UInt32 DEFAULT y, y UInt32 EPHEMERAL 17, z UInt32 DEFAULT 5) ENGINE = Memory;
 DESCRIBE t_ephemeral_02205_1;
 # Test INSERT without columns list - should participate only ordinary columns (x, z)
 INSERT INTO t_ephemeral_02205_1 VALUES (1, 2);

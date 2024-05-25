@@ -1,5 +1,3 @@
-CREATE TABLE t1 (s1 INT) ENGINE=InnoDB;
-INSERT INTO t1 VALUES (1),(2);
 SELECT @@transaction_isolation;
 SELECT * FROM t1;
 SELECT @@transaction_isolation;

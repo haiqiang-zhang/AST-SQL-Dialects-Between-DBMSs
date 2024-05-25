@@ -1,5 +1,3 @@
-drop table if exists t1;
-CREATE TABLE t1 (a text) character set big5;
 SELECT * FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (a CHAR(50) CHARACTER SET big5 NOT NULL, FULLTEXT(a));

@@ -1,0 +1,14 @@
+PRAGMA table_xinfo(generate_series);
+CREATE VIEW v1(a,b) AS VALUES(1,2),(3,4);
+SELECT * FROM v1;
+CREATE VIEW v2(x) AS SELECT value FROM generate_series(1,5);
+CREATE TABLE t0(x);
+INSERT INTO t0(x) VALUES(123),(456),(789);
+SELECT * FROM t0 ORDER BY x;
+CREATE TABLE t1(x);
+INSERT INTO t1(x) VALUES(2),(3);
+ATTACH ':memory:' AS aux1;
+CREATE TABLE aux1.t1(a,b,c);
+CREATE TABLE t600(a INTEGER PRIMARY KEY, b TEXT);
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<100)
+    INSERT INTO t600(a,b) SELECT x, printf('(%03d)',x) FROM c;

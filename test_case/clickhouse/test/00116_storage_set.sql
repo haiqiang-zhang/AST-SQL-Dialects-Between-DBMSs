@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS set;
-DROP TABLE IF EXISTS set2;
-DROP TABLE IF EXISTS tab;
-CREATE TABLE set (x String) ENGINE = Set;
 SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set;
 SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s NOT IN set;
 INSERT INTO set VALUES ('Hello'), ('World');

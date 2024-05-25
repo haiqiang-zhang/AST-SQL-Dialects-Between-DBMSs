@@ -1,4 +1,3 @@
-create database d1;
 select database();
 create database d2;
 drop database if exists d1;

@@ -1,0 +1,3 @@
+SET log_queries = 1;
+SELECT 1 LIMIT 0;
+SYSTEM FLUSH LOGS;

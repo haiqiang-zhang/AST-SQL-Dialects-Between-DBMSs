@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS delta_table;
+DROP TABLE IF EXISTS zstd_table;
+DROP TABLE IF EXISTS lz4_table;
+SELECT 1;
+DROP TABLE IF EXISTS delta_table;
+DROP TABLE IF EXISTS zstd_table;
+DROP TABLE IF EXISTS lz4_table;

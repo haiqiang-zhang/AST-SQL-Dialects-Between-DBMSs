@@ -1,0 +1,13 @@
+set log_queries=1;
+select '01231_log_queries_min_type/QUERY_START';
+system flush logs;
+set log_queries_min_type='EXCEPTION_BEFORE_START';
+select '01231_log_queries_min_type/EXCEPTION_BEFORE_START';
+system flush logs;
+set max_rows_to_read='100K';
+set log_queries_min_type='EXCEPTION_WHILE_PROCESSING';
+set max_rows_to_read=0;
+system flush logs;
+set max_rows_to_read='100K';
+system flush logs;
+set max_rows_to_read=0;

@@ -1,0 +1,4 @@
+set allow_suspicious_low_cardinality_types=0;
+set allow_suspicious_fixed_string_types=0;
+set allow_experimental_variant_type=0;
+set allow_experimental_variant_type=1;

@@ -1,0 +1,15 @@
+SET min_execution_speed = 100000000000, timeout_before_checking_execution_speed = 0;
+SET min_execution_speed = 0;
+SELECT 'Ok (1)';
+SET min_execution_speed_bytes = 800000000000, timeout_before_checking_execution_speed = 0;
+SET min_execution_speed_bytes = 0;
+SELECT 'Ok (2)';
+SET max_execution_speed = 1000000;
+SET max_block_size = 100;
+CREATE TEMPORARY TABLE times (t DateTime);
+INSERT INTO times SELECT now();
+SELECT 'Ok (3)';
+SET max_execution_speed = 0;
+SET max_execution_speed_bytes = 8000000;
+SELECT 'Ok (4)';
+SET max_execution_speed_bytes = 0;

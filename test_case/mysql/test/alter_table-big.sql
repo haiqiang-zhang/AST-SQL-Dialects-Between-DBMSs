@@ -1,8 +1,3 @@
-drop table if exists t1, t2, t3;
-create table t1 (i int);
-select count(*) = 1 from information_schema.processlist
-    where state = "Waiting for table metadata lock" and
-          info = "insert into t1 values ()";
 select * from t1;
 select count(*) = 1 from information_schema.processlist
     where state = "Waiting for table metadata lock" and

@@ -1,4 +1,3 @@
-CREATE DATABASE i_s_routines_test;
 SELECT * FROM INFORMATION_SCHEMA.ROUTINES
 WHERE ROUTINE_SCHEMA = 'i_s_routines_test' AND ROUTINE_NAME = 'test_func1';
 DROP DATABASE IF EXISTS i_s_routines_test;

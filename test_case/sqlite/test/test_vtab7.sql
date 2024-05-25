@@ -1,0 +1,16 @@
+SELECT * FROM log;
+INSERT INTO log VALUES('xSync');
+SELECT * FROM log;
+INSERT INTO log VALUES('xSync');
+SELECT * FROM log;
+INSERT INTO log VALUES('xSync');
+SELECT name FROM sqlite_master ORDER BY name;
+CREATE TABLE newtab(d, e, f);
+SELECT name FROM sqlite_master ORDER BY name;
+DROP TABLE newtab;
+ATTACH 'test2.db' AS db2;
+CREATE TABLE db2.stuff(description, shape, color);
+SELECT * from stuff;
+INSERT INTO db2.stuff VALUES('abc', 'square', 'green');
+CREATE TABLE def(d, e, f);
+SELECT name FROM sqlite_master ORDER BY name;

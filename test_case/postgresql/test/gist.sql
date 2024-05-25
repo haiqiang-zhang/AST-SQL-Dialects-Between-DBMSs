@@ -1,4 +1,3 @@
-create table gist_point_tbl(id int4, p point);
 create index gist_pointidx on gist_point_tbl using gist(p);
 create index gist_pointidx2 on gist_point_tbl using gist(p) with (buffering = on, fillfactor=50);
 create index gist_pointidx3 on gist_point_tbl using gist(p) with (buffering = off);

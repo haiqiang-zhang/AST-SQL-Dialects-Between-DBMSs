@@ -1,9 +1,3 @@
-CREATE TABLE xmltest (
-    id int,
-    data xml
-);
-INSERT INTO xmltest VALUES (1, '<value>one</value>');
-INSERT INTO xmltest VALUES (2, '<value>two</value>');
 SELECT * FROM xmltest;
 SELECT pg_input_is_valid('<value>one</value>', 'xml');
 SELECT pg_input_is_valid('<value>one</', 'xml');

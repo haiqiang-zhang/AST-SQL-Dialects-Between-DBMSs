@@ -1,0 +1,3 @@
+CREATE TEMPORARY TABLE table (x UInt8);
+SELECT * FROM table ORDER BY x;
+DROP TABLE table;

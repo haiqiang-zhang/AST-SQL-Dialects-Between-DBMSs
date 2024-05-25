@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS dict_table;
-DROP TABLE IF EXISTS data_table;
 DROP DICTIONARY IF EXISTS dict;
 create table dict_table
 (

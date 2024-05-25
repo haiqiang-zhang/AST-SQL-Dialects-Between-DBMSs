@@ -1,4 +1,3 @@
-drop table if exists t1;
 select (1,2,3) IN ((3,2,3), (1,2,3), (1,3,3));
 select row(10,2,3) IN (row(3,2,3), row(1,2,3), row(1,3,3));
 select row(1,2,3) IN (row(3,NULL,3), row(1,2,3), row(1,3,3));

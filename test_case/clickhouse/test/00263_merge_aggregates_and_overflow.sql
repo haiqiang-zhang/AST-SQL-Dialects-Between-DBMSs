@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS numbers_10k_log;
 SET max_block_size = 1000;
 CREATE TABLE numbers_10k_log ENGINE = Log AS SELECT number FROM system.numbers LIMIT 10000;
 SET max_threads = 4;

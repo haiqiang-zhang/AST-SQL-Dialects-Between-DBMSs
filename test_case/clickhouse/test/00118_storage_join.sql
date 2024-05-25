@@ -1,6 +1,3 @@
-DROP TABLE IF EXISTS t2;
-CREATE TABLE t2 (k UInt64, s String) ENGINE = Join(ANY, LEFT, k);
-INSERT INTO t2 VALUES (1, 'abc'), (2, 'def');
 SELECT k, s FROM (SELECT number AS k FROM system.numbers LIMIT 10) js1 ANY LEFT JOIN t2 USING k ORDER BY k;
 INSERT INTO t2 VALUES (6, 'ghi');
 SELECT k, s FROM (SELECT number AS k FROM system.numbers LIMIT 10) js1 ANY LEFT JOIN t2 USING k ORDER BY k;

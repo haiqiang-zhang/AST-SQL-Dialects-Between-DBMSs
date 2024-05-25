@@ -1,0 +1,1 @@
+set schema_inference_use_cache_for_file=0;

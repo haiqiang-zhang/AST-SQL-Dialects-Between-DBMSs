@@ -1,0 +1,18 @@
+SET group_by_two_level_threshold = 1, max_threads = 1;
+SELECT
+    k,
+    anyLast(s)
+FROM
+(
+    SELECT
+        123456789 AS k,
+        'Hello 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890' AS s
+    UNION ALL
+    SELECT
+        234567890,
+        'World 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890'
+)
+GROUP BY k
+    WITH TOTALS
+HAVING length(anyLast(s)) > 0
+ORDER BY k;

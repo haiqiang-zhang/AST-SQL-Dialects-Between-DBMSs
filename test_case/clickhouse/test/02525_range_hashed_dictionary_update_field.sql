@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS test_table;
-CREATE TABLE test_table
-(
-   uid Int64,
-   start Int64,
-   end Int64,
-   insert_time DateTime
-) ENGINE = MergeTree ORDER BY (uid, start);
 DROP DICTIONARY IF EXISTS test_dictionary;
 CREATE DICTIONARY test_dictionary
 (

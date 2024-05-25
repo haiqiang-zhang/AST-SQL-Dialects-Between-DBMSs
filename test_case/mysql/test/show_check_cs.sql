@@ -1,5 +1,3 @@
-drop table if exists t1,t2;
-drop table if exists t1aa,t2aa;
 drop database if exists mysqltest;
 drop database if exists mysqltest1;
 create table t1 (a int not null primary key, b int not null,c int not null, key(b,c));

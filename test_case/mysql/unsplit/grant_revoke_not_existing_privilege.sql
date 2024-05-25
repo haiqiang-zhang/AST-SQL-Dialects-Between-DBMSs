@@ -1,0 +1,2 @@
+CREATE DATABASE rngp_db;
+DROP DATABASE rngp_db;

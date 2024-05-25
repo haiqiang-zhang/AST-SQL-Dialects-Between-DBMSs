@@ -1,0 +1,10 @@
+create database MYDB;
+CREATE TABLE mytable (id int primary key) ENGINE=innodb;
+CREATE TABLE FOO (id int,constraint FOREIGN KEY (id) REFERENCES mytable(id) ON DELETE CASCADE) ENGINE=innodb;
+CREATE TABLE mytable_ref (id int,constraint FOREIGN KEY (id) REFERENCES FOO(id) ON DELETE CASCADE) ENGINE=innodb;
+INSERT INTO mytable VALUES (10),(20),(30),(40);
+INSERT INTO FOO VALUES (20),(10);
+INSERT INTO mytable_ref VALUES (20),(10);
+INSERT INTO mytable VALUES (50);
+INSERT INTO FOO VALUES (50);
+INSERT INTO mytable_ref VALUES (50);

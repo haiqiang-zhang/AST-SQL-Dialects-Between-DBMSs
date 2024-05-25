@@ -1,0 +1,16 @@
+select @category1_id:= 10001;
+select @category2_id:= 10002;
+select @category3_id:= 10003;
+select @topic1_id:= 10101;
+select @topic2_id:= 10102;
+select @topic3_id:= 10103;
+select @topic4_id:= 10104;
+select @topic5_id:= 10105;
+select @keyword1_id:= 10201;
+select @keyword2_id:= 10202;
+select @keyword3_id:= 10203;
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1 (i INT);
+LOCK TABLES t1 WRITE;
+UNLOCK TABLES;
+DROP TABLE t1;

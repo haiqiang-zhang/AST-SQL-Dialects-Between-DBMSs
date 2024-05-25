@@ -1,0 +1,13 @@
+DROP ROLE IF EXISTS r1_01293, r2_01293, r3_01293, r4_01293, r5_01293, r6_01293, r7_01293, r8_01293, r9_01293;
+DROP ROLE IF EXISTS r2_01293_renamed;
+DROP ROLE IF EXISTS r1_01293@'%', 'r2_01293@%.myhost.com';
+SELECT '-- default';
+SELECT '-- same as default';
+SELECT '-- rename';
+SELECT '-- host after @';
+SELECT '-- settings';
+SELECT '-- multiple roles in one command';
+SELECT '-- system.roles';
+SELECT name, storage from system.roles WHERE name='r1_01293';
+SELECT '-- system.settings_profile_elements';
+SELECT * FROM system.settings_profile_elements WHERE role_name LIKE 'r%\_01293' ORDER BY role_name, index;

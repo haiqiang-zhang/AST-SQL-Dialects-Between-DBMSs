@@ -1,0 +1,82 @@
+select @@collation_connection;
+drop table if exists t1;
+create table t1 (a char (20) not null, b int not null primary key auto_increment, index (a,b));
+insert into t1 (a) values ('ÃÂ¤'),('ac'),('ae'),('ad'),('ÃÂc'),('aeb');
+insert into t1 (a) values ('ÃÂ¼c'),('uc'),('ue'),('ud'),('ÃÂ'),('ueb'),('uf');
+insert into t1 (a) values ('ÃÂ¶'),('oc'),('ÃÂa'),('oe'),('od'),('ÃÂc'),('oeb');
+insert into t1 (a) values ('s'),('ss'),('ÃÂ'),('ÃÂb'),('ssa'),('ssc'),('ÃÂa');
+insert into t1 (a) values ('eÃÂ¤'),('uÃÂ¼'),('ÃÂ¶o'),('ÃÂ¤ÃÂ¤'),('ÃÂ¤ÃÂ¤a'),('aeae');
+insert into t1 (a) values ('q'),('a'),('u'),('o'),('ÃÂ©'),('ÃÂ'),('a');
+select a,b from t1 order by a,b;
+select a,b from t1 order by upper(a),b;
+select a from t1 order by a desc,b;
+select * from t1 where a like "ÃÂ¶%";
+select * from t1 where a like binary "%ÃÂ%";
+select * from t1 where a like "%ÃÂ%";
+select * from t1 where a like "%U%";
+select * from t1 where a like "%ss%";
+drop table t1;
+select strcmp('ÃÂ¤','ae'),strcmp('ae','ÃÂ¤'),strcmp('aeq','ÃÂ¤q'),strcmp('ÃÂ¤q','aeq');
+select strcmp('ss','ÃÂ'),strcmp('ÃÂ','ss'),strcmp('ÃÂs','sss'),strcmp('ÃÂq','ssq');
+select strcmp('ÃÂ¤','af'),strcmp('a','ÃÂ¤'),strcmp('ÃÂ¤ÃÂ¤','aeq'),strcmp('ÃÂ¤ÃÂ¤','aeaeq');
+select strcmp('ss','ÃÂa'),strcmp('ÃÂ','ssa'),strcmp('sÃÂa','sssb'),strcmp('s','ÃÂ');
+select strcmp('ÃÂ¶','oÃÂ¶'),strcmp('ÃÂ','uÃÂ¼'),strcmp('ÃÂ¶','oeb');
+select strcmp('af','ÃÂ¤'),strcmp('ÃÂ¤','a'),strcmp('aeq','ÃÂ¤ÃÂ¤'),strcmp('aeaeq','ÃÂ¤ÃÂ¤');
+select strcmp('ÃÂa','ss'),strcmp('ssa','ÃÂ'),strcmp('sssb','sÃÂa'),strcmp('ÃÂ','s');
+select strcmp('u','ÃÂ¶a'),strcmp('u','ÃÂ¶');
+select strcmp('sÃÂ¤', 'ÃÂa'), strcmp('aÃÂ¤', 'ÃÂ¤x');
+create table t1 (word varchar(255) not null, word2 varchar(255) not null default '', index(word));
+update t1 set word2=word;
+select word, word=binary 0xdf as t from t1 having t > 0;
+select word, word=cast(0xdf AS CHAR) as t from t1 having t > 0;
+select * from t1 where word=binary 0xDF;
+select * from t1 where word=CAST(0xDF as CHAR);
+select * from t1 where word2=binary 0xDF;
+select * from t1 where word2=CAST(0xDF as CHAR);
+select * from t1 where word='ae';
+select * from t1 where word= 0xe4 or word=CAST(0xe4 as CHAR);
+select * from t1 where word between binary 0xDF and binary 0xDF;
+select * from t1 where word between CAST(0xDF AS CHAR) and CAST(0xDF AS CHAR);
+select * from t1 where word like 'ae';
+select * from t1 where word like 'AE';
+select * from t1 where word like binary 0xDF;
+select * from t1 where word like CAST(0xDF as CHAR);
+drop table t1;
+CREATE TABLE t1 (
+  autor varchar(80) NOT NULL default '',
+  PRIMARY KEY  (autor)
+);
+INSERT INTO t1 VALUES ('Powell, B.'),('Powell, Bud.'),('Powell, L. H.'),('Power, H.'),
+('Poynter, M. A. L. Lane'),('Poynting, J. H. und J. J. Thomson.'),('Pozzi, S(amuel-Jean).'),
+('Pozzi, Samuel-Jean.'),('Pozzo, A.'),('Pozzoli, Serge.');
+SELECT * FROM t1 WHERE autor LIKE 'Poz%' ORDER BY autor;
+DROP TABLE t1;
+CREATE TABLE t1 (
+s1 CHAR(5) CHARACTER SET latin1 COLLATE latin1_german2_ci
+);
+INSERT INTO t1 VALUES ('ue');
+SELECT DISTINCT s1 FROM t1;
+SELECT s1,COUNT(*) FROM t1 GROUP BY s1;
+SELECT COUNT(DISTINCT s1) FROM t1;
+DROP TABLE t1;
+create table t1 (s1 char(5) character set latin1 collate latin1_german2_ci);
+insert into t1 values (0xf6) /* this is o-umlaut */;
+select * from t1 where length(s1)=1 and s1='oe';
+drop table t1;
+select hex(weight_string('ÃÂ'));
+select hex(weight_string('ÃÂ¤'));
+select hex(weight_string('ÃÂ'));
+select hex(weight_string('ÃÂ¶'));
+select hex(weight_string('ÃÂ'));
+select hex(weight_string('ÃÂ¼'));
+select hex(weight_string('S'));
+select hex(weight_string('s'));
+select hex(weight_string('ÃÂ'));
+select hex(weight_string('ÃÂ¤' as char(1)));
+select hex(weight_string('ÃÂ¶' as char(1)));
+select hex(weight_string('ÃÂ¼' as char(1)));
+select hex(weight_string('ÃÂ' as char(1)));
+select hex(weight_string('xÃÂ¤' as char(2)));
+select hex(weight_string('xÃÂ¶' as char(2)));
+select hex(weight_string('xÃÂ¼' as char(2)));
+select hex(weight_string('xÃÂ' as char(2)));

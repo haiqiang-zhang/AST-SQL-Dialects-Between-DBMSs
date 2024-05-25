@@ -1,0 +1,13 @@
+UPDATE parameters1 SET mountcnt = mountcnt + 1;
+SELECT * FROM parameters1;
+UPDATE parameters2 SET mountcnt = mountcnt + 1;
+SELECT * FROM parameters2;
+CREATE TABLE t1(a, b);
+INSERT INTO t1 VALUES(1, 2);
+ALTER TABLE t1 ADD COLUMN c DEFAULT 3;
+SELECT * FROM t1;
+UPDATE t1 SET a = 'one';
+SELECT * FROM t1;
+CREATE TABLE t2(a REAL, b REAL, c REAL);
+INSERT INTO t2 VALUES(1, 2, 3);
+UPDATE t2 SET a = 'I';

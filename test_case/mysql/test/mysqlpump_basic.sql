@@ -1,21 +1,3 @@
-CREATE DATABASE db1_basic;
-CREATE TABLE t1 (a INT);
-CREATE TABLE t2 (a INT, b VARCHAR(10), primary key(a));
-CREATE TABLE t3 (`a"b"` char(2));
-CREATE TABLE t4 (
-  name VARCHAR(64) NOT NULL,
-  value FLOAT DEFAULT NULL,
-  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  comment VARCHAR(1024) DEFAULT NULL,
-  PRIMARY KEY (name)
-);
-CREATE TABLE t5 (
-  id int(11) NOT NULL,
-  id2 tinyint(3) NOT NULL,
-  PRIMARY KEY (id),
-  KEY index2 (id2)
-);
-CREATE TABLE t6 (`x"z"` INT, xyz VARCHAR(20), notes TEXT);
 ALTER TABLE t6 ADD INDEX t6_index (`x"z"`, xyz, notes(3));
 CREATE TABLE t7 (
   PS_PARTKEY int(11) NOT NULL,

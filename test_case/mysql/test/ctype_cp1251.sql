@@ -1,6 +1,3 @@
-drop table if exists t1;
-create table t1 (a varchar(10) not null) character set cp1251;
-insert into t1 values ("a"),("ab"),("abc");
 select * from t1;
 select a, left(a,1) as b from t1;
 select a, left(a,1) as b from t1 group by a;

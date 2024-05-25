@@ -1,0 +1,58 @@
+drop table if exists t1, t2;
+create table t1 (a int, b varchar(64));
+select * from t1 order by a;
+delete from t1;
+select * from t1 order by a;
+delete from t1;
+select * from t1 order by a;
+delete from t1;
+select * from t1 order by a;
+select 1 as xml;
+delete from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+insert into t1 select * from t1;
+create table t2(fl text);
+drop table t1;
+drop table t2;
+create table t1 (
+  id int(11) not null,
+  text text,
+  primary key (id)
+) default charset=latin1;
+select * from t1;
+drop table t1;
+CREATE TABLE t1 (a text, b text);
+SELECT * FROM t1 ORDER BY a;
+DROP TABLE t1;
+CREATE TABLE t1 (col1 VARCHAR(3), col2 VARCHAR(3), col3 VARCHAR(3), col4 VARCHAR(4));
+SELECT * FROM t1 ORDER BY col1, col2, col3, col4;
+DROP TABLE t1;
+CREATE TABLE t1 (col1 VARCHAR(3), col2 VARCHAR(3), col3 INTEGER);
+SELECT * FROM t1 ORDER BY col1, col2, col3;
+DROP TABLE t1;
+CREATE TABLE t1 (col1 VARCHAR(3), col2 VARCHAR(3), col3 INTEGER);
+CREATE TABLE t2(i INT NOT NULL);
+DROP TABLE t1, t2;
+CREATE TABLE t3 (col1 VARCHAR(3), col2 VARCHAR(3), col3 INTEGER);
+CREATE VIEW v3 AS SELECT * FROM t3 WHERE col3 < 0 WITH CHECK OPTION;
+DROP VIEW v3;
+DROP TABLE t3;
+CREATE TABLE t4 (col1 VARCHAR(3), col2 VARCHAR(3), col3 INTEGER, col4 INT NOT NULL);
+DROP TABLE t4;
+CREATE TABLE t1(a INT NOT NULL PRIMARY KEY, p INT NULL);
+SELECT * FROM t1 ORDER BY a;
+DROP TABLE t1;
+CREATE TABLE t1(a INT NOT NULL PRIMARY KEY, p INT NULL, s VARCHAR(100));
+SELECT * FROM t1 ORDER BY a;
+DROP TABLE t1;

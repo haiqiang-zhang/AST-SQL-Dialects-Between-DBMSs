@@ -1,4 +1,3 @@
-drop table if exists t1,t2,t3,t4;
 drop view if exists v1;
 drop procedure if exists p1;
 drop procedure if exists p2;

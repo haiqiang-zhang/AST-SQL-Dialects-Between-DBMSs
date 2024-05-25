@@ -1,0 +1,12 @@
+SELECT '"\uaBcD"'::jsonpath;
+select '"\ud83d\ude04\ud83d\udc36"'::jsonpath as correct_in_utf8;
+select '"the Copyright \u00a9 sign"'::jsonpath as correct_in_utf8;
+select '"dollar \u0024 character"'::jsonpath as correct_everywhere;
+select '"dollar \\u0024 character"'::jsonpath as not_an_escape;
+select '"null \\u0000 escape"'::jsonpath as not_an_escape;
+SELECT '$."\uaBcD"'::jsonpath;
+select '$."\ud83d\ude04\ud83d\udc36"'::jsonpath as correct_in_utf8;
+select '$."the Copyright \u00a9 sign"'::jsonpath as correct_in_utf8;
+select '$."dollar \u0024 character"'::jsonpath as correct_everywhere;
+select '$."dollar \\u0024 character"'::jsonpath as not_an_escape;
+select '$."null \\u0000 escape"'::jsonpath as not_an_escape;

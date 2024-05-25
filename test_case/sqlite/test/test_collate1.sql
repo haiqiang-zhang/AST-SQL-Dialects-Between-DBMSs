@@ -1,0 +1,94 @@
+SELECT c2 FROM collate1t1 ORDER BY 1;
+DROP TABLE collate1t1;
+CREATE TABLE collate1t1(c1, c2);
+INSERT INTO collate1t1 VALUES('5', '0x11');
+INSERT INTO collate1t1 VALUES('5', '0xA');
+INSERT INTO collate1t1 VALUES(NULL, NULL);
+INSERT INTO collate1t1 VALUES('7', '0xA');
+INSERT INTO collate1t1 VALUES('11', '0x11');
+INSERT INTO collate1t1 VALUES('11', '0x101');
+DROP TABLE collate1t1;
+CREATE TABLE collate1t1(c1 numeric, c2 text);
+INSERT INTO collate1t1 VALUES(1, 1);
+INSERT INTO collate1t1 VALUES(12, 12);
+INSERT INTO collate1t1 VALUES(NULL, NULL);
+INSERT INTO collate1t1 VALUES(101, 101);
+SELECT c1 FROM collate1t1 ORDER BY 1;
+SELECT c2 FROM collate1t1 ORDER BY 1;
+SELECT c2+0 FROM collate1t1 ORDER BY 1;
+SELECT c1||'' FROM collate1t1 ORDER BY 1;
+DROP TABLE collate1t1;
+CREATE TABLE c5(
+      id INTEGER PRIMARY KEY,
+      a TEXT COLLATE binary COLLATE nocase COLLATE rtrim,
+      b TEXT COLLATE nocase COLLATE binary,
+      c TEXT COLLATE rtrim COLLATE binary COLLATE rtrim COLLATE nocase
+    );
+INSERT INTO c5 VALUES(1, 'abc','abc','abc');
+INSERT INTO c5 VALUES(2, 'abc   ','ABC','ABC');
+SELECT id FROM c5 WHERE a='abc' ORDER BY id;
+SELECT id FROM c5 WHERE b='abc' ORDER BY id;
+SELECT id FROM c5 WHERE c='abc' ORDER BY id;
+SELECT """""""";
+CREATE TABLE x1(a);
+PRAGMA foreign_keys = ON;
+CREATE TABLE c1(x, y REFERENCES p1);
+SELECT 'abc' UNION ALL SELECT 'DEF'
+    ORDER BY 1 COLLATE nocase COLLATE nocase COLLATE nocase COLLATE nocase;
+SELECT 'abc' UNION ALL SELECT 'DEF'
+    ORDER BY 1 COLLATE nocase COLLATE nocase COLLATE nocase COLLATE binary;
+SELECT 'abc' UNION ALL SELECT 'DEF'
+    ORDER BY 1 COLLATE binary COLLATE binary COLLATE binary COLLATE nocase;
+SELECT ' ' > char(20) COLLATE rtrim;
+SELECT '' < char(20) COLLATE rtrim;
+DROP TABLE IF EXISTS t0;
+CREATE TABLE t0(c0 COLLATE RTRIM, c1 BLOB UNIQUE,
+                  PRIMARY KEY (c0, c1)) WITHOUT ROWID;
+INSERT INTO t0 VALUES (123, 3), (' ', 1), ('	', 2), ('', 4);
+SELECT * FROM t0 WHERE c1 = 1;
+CREATE TABLE t1(a, b);
+CREATE TABLE t2(c, d);
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+SELECT * FROM (
+        SELECT b COLLATE nocase IN (SELECT c FROM t2) FROM t1
+    );
+INSERT INTO t1 VALUES(0,NULL);
+CREATE VIEW v1a(z,y) AS SELECT x COLLATE x FROM t2;

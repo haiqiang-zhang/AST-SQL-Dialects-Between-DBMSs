@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS t0,t1,t2,t3,t4,t5;
 DROP VIEW IF EXISTS v1;
 select table_name, data_type, column_type from information_schema.columns  where column_name = 'numeric_precision' and table_schema = 'information_schema';
 select * from information_schema.SCHEMATA where schema_name > 'm' ORDER BY SCHEMA_NAME;

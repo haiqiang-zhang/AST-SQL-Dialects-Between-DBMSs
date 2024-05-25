@@ -1,0 +1,12 @@
+SELECT @@global.default_tmp_storage_engine;
+SELECT @@session.default_tmp_storage_engine;
+CREATE TEMPORARY TABLE t1(a INT);
+DROP TABLE t1;
+SELECT @@global.default_tmp_storage_engine;
+SELECT @@session.default_tmp_storage_engine;
+CREATE TEMPORARY TABLE t1(a INT);
+DROP TABLE t1;
+CREATE TABLE t2(i INT) ENGINE=MYISAM;
+ALTER TABLE t2 CHANGE COLUMN i j INT, ALGORITHM=INPLACE;
+ALTER TABLE t2 CHANGE COLUMN j k INT, ALGORITHM=COPY;
+DROP TABLE t2;
