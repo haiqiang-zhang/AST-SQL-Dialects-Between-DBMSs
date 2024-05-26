@@ -12,14 +12,14 @@ from sql_classifer import classify_sql
 
 
 test_case_path = './test_case'
-dbms_test_case_used = ['sqlite']
+dbms_test_case_used = ['sqlite', 'mysql', 'postgresql', 'duckdb', 'clickhouse']
 
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    # "mysql": MySQLAdapter,
+    "mysql": MySQLAdapter,
     "sqlite": SQLiteAdapter,
-    # "postgresql": PostgresqlAdapter,
-    # "duckdb": DuckDBAdapter,
-    # "clickhouse": ClickHouseAdapter
+    "postgresql": PostgresqlAdapter,
+    "duckdb": DuckDBAdapter,
+    "clickhouse": ClickHouseAdapter
 
 }
 
