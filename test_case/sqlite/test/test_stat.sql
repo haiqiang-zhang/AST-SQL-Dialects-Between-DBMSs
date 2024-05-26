@@ -1,15 +1,3 @@
-PRAGMA table_info(dbstat);
-PRAGMA table_info=dbstat;
-PRAGMA auto_vacuum = OFF;
-PRAGMA journal_mode = WAL;
-PRAGMA journal_mode = delete;
-CREATE TABLE t1(a, b);
-CREATE INDEX i1 ON t1(b);
-INSERT INTO t1(rowid, a, b) VALUES(2, 2, 3);
-INSERT INTO t1(rowid, a, b) VALUES(3, 4, 5);
-DROP TABLE t1;
-CREATE TABLE t3(a PRIMARY KEY, b);
-DROP TABLE t3;
 VACUUM;
 CREATE TABLE t4(x);
 CREATE INDEX i4 ON t4(x);

@@ -1,5 +1,3 @@
--- Tag no-parallel: Messes with internal cache
-
 SYSTEM DROP QUERY CACHE;
 SELECT '-- Run a query with query cache not enabled';
 SELECT 124437993;

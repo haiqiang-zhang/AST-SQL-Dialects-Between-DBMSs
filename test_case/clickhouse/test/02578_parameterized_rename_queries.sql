@@ -1,10 +1,3 @@
--- Case 1: RENAME DATABASE
-
-DROP DATABASE IF EXISTS 02661_db;
-DROP DATABASE IF EXISTS 02661_db1;
-SET param_old_db_name = 02661_db;
-SET param_new_db_name = 02661_db1;
-CREATE DATABASE {old_db_name:Identifier};
 RENAME DATABASE {old_db_name:Identifier} TO {new_db_name:Identifier};
 SELECT name FROM system.databases WHERE name = {new_db_name:String};
 DROP TABLE IF EXISTS 02661_t;

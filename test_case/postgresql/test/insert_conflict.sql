@@ -1,7 +1,3 @@
-create unique index op_index_key on insertconflicttest(key, fruit text_pattern_ops);
-create unique index collation_index_key on insertconflicttest(key, fruit collate "C");
-create unique index both_index_key on insertconflicttest(key, fruit collate "C" text_pattern_ops);
-create unique index both_index_expr_key on insertconflicttest(key, lower(fruit) collate "C" text_pattern_ops);
 explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (key, fruit) do nothing;
 explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (fruit, key, fruit, key) do nothing;
 explain (costs off) insert into insertconflicttest values(0, 'Crowberry') on conflict (lower(fruit), key, lower(fruit), key) do nothing;

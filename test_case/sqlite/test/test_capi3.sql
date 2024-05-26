@@ -1,4 +1,3 @@
-pragma encoding;
 SELECT * FROM sqlite_master;
 PRAGMA writable_schema=ON;
 INSERT INTO sqlite_master VALUES(NULL,NULL,NULL,NULL,NULL);

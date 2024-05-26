@@ -4,14 +4,6 @@ select id-5,facility from t1 order by "id-5";
 select id >= 0 and id <= 5 as grp,count(*) from t1 group by grp;
 SELECT DISTINCT FACILITY FROM t1;
 SELECT FACILITY FROM t2;
-SELECT count(*) from t1,t2 where t1.facility=t2.facility;
-select count(facility) from t1;
-select count(*) from t1;
-select count(*) from t1 where facility IS NULL;
-select count(*) from t1 where facility = NULL;
-select count(*) from t1 where facility IS NOT NULL;
-select count(*) from t1 where id IS NULL;
-select count(*) from t1 where id IS NOT NULL;
 drop table t1,t2;
 CREATE TABLE t1 (UserId int(11) DEFAULT '0' NOT NULL);
 INSERT INTO t1 VALUES (20);
@@ -127,11 +119,8 @@ drop table t1,t2,t3;
 create table t1 (a int not null, b int not null, t time);
 insert into t1 values (1,1,"00:06:15"),(1,2,"00:06:15"),(1,2,"00:30:15"),(1,3,"00:06:15"),(1,3,"00:30:15");
 select a,sec_to_time(sum(time_to_sec(t))) from t1 group by a,b;
-select distinct a,sec_to_time(sum(time_to_sec(t))) from t1 group by a,b;
 create table t2 (a int not null primary key, b int);
 insert into t2 values (1,1),(2,2),(3,3);
-select t1.a,sec_to_time(sum(time_to_sec(t))) from t1 left join t2 on (t1.b=t2.a) group by t1.a,t2.b;
-select distinct t1.a,sec_to_time(sum(time_to_sec(t))) from t1 left join t2 on (t1.b=t2.a) group by t1.a,t2.b;
 drop table t1,t2;
 create table t1 (a int not null,b char(5), c text);
 insert into t1 (a) values (1),(2),(3),(4),(1),(2),(3),(4);
@@ -239,8 +228,6 @@ INSERT INTO t1 VALUES
 (307,'ba','1150'),
 (611,'ba','-1'),
 (612,'ba','1150');
-select count(distinct x,y) from t1;
-select count(distinct concat(x,y)) from t1;
 drop table t1;
 CREATE TABLE t1 (a INT, b INT, PRIMARY KEY (a,b));
 INSERT INTO t1 VALUES (1, 101);
@@ -331,8 +318,6 @@ INSERT INTO t1 SELECT a+16 FROM t1;
 INSERT INTO t1 SELECT a+32 FROM t1;
 INSERT INTO t1 SELECT a+64 FROM t1;
 INSERT INTO t1 VALUE(NULL);
-SELECT COUNT(DISTINCT a) FROM t1;
-SELECT COUNT(DISTINCT (a+0)) FROM t1;
 DROP TABLE t1;
 create table tb(
 id int auto_increment primary key,
@@ -346,8 +331,6 @@ insert into tb(v) (select v from tb);
 insert into tb(v) (select v from tb);
 insert into tb(v) (select v from tb);
 update tb set v=concat(v, id);
-select count(distinct case when id<=64 then id end) from tb;
-select count(distinct case when id<=63 then id end) from tb;
 drop table tb;
 CREATE TABLE t1 (
   a INT,
@@ -388,7 +371,6 @@ CREATE TABLE t(a INT, b INT);
 INSERT INTO t VALUES(1,2);
 INSERT INTO t VALUES(2,4);
 SELECT  LEAST(1,COUNT(DISTINCT a)) FROM t GROUP BY a;
-SELECT DISTINCT LEAST(1,COUNT(DISTINCT a)) FROM t GROUP BY a;
 DROP TABLE t;
 CREATE TABLE t1 (
   pk integer NOT NULL,
@@ -459,5 +441,4 @@ INSERT INTO t1 VALUES
  (-2007568257), (-2007568260), (-2007570000), (-2007567234), (-2007567230),
  (2007568257), (2007568260), (2007570000), (2007567234), (2007567230);
 SELECT SQL_SMALL_RESULT DISTINCT CAST(v AS FLOAT) FROM t1;
-SELECT SQL_BIG_RESULT DISTINCT CAST(v AS FLOAT) FROM t1;
 DROP TABLE t1;

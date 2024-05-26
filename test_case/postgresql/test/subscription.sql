@@ -1,5 +1,3 @@
-BEGIN;
-COMMIT;
 SELECT obj_description(s.oid, 'pg_subscription') FROM pg_subscription s;
 SELECT subname, stats_reset IS NULL stats_reset_is_null FROM pg_stat_subscription_stats WHERE subname = 'regress_testsub';
 SELECT subname, stats_reset IS NULL stats_reset_is_null FROM pg_stat_subscription_stats WHERE subname = 'regress_testsub';

@@ -1,10 +1,1 @@
-SET max_bytes_before_external_sort = 33554432;
-set max_block_size = 1048576;
-SET max_bytes_before_external_group_by = '100M';
-SET max_memory_usage = '410M';
-SET group_by_two_level_threshold = '100K';
-SET group_by_two_level_threshold_bytes = '50M';
-SET join_algorithm = 'partial_merge';
-SET default_max_bytes_in_join = 0;
-SET max_bytes_in_join = 10000000;
 SYSTEM FLUSH LOGS;

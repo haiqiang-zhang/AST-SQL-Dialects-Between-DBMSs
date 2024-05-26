@@ -1,17 +1,3 @@
-CREATE OPERATOR === (
-        PROCEDURE = int8eq,
-        LEFTARG = bigint,
-        RIGHTARG = bigint,
-        COMMUTATOR = ===
-);
-CREATE OPERATOR !== (
-        PROCEDURE = int8ne,
-        LEFTARG = bigint,
-        RIGHTARG = bigint,
-        NEGATOR = ===,
-        COMMUTATOR = !==
-);
-DROP OPERATOR !==(bigint, bigint);
 SELECT  ctid, oprcom
 FROM    pg_catalog.pg_operator fk
 WHERE   oprcom != 0 AND

@@ -98,9 +98,6 @@ SELECT DISTINCT * FROM
 SELECT c, count(*) FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
       GROUP BY c ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c HAVING count(*)>1;
 SELECT t4.c, t3.a FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3
       WHERE t3.a=14
@@ -185,12 +182,6 @@ SELECT x+y FROM (
 SELECT DISTINCT * FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
       ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c HAVING count(*)>1;
 SELECT t4.c, t3.a FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3
       WHERE t3.a=14
@@ -281,12 +272,6 @@ CREATE INDEX i6 ON t2(f);
 SELECT DISTINCT * FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
       ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c HAVING count(*)>1;
 SELECT t4.c, t3.a FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3
       WHERE t3.a=14
@@ -371,12 +356,6 @@ SELECT x+y FROM (
 SELECT DISTINCT * FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
       ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c ORDER BY 1;
-SELECT c, count(*) FROM 
-        (SELECT c FROM t1 UNION ALL SELECT e FROM t2) 
-      GROUP BY c HAVING count(*)>1;
 SELECT t4.c, t3.a FROM 
         (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3
       WHERE t3.a=14

@@ -1,23 +1,5 @@
-begin;
-create table t1(a,b,c);
-insert into t1 values(1,0,0);
-insert into t1 values(2,0,1);
-insert into t1 values(3,1,0);
-insert into t1 values(4,1,1);
-insert into t1 values(5,null,0);
-insert into t1 values(6,null,1);
-insert into t1 values(7,null,null);
 select * from t1;
 select ifnull(a+b,99) from t1;
-select ifnull(b*c,99) from t1;
-select ifnull(case when b<>0 then 1 else 0 end, 99) from t1;
-select ifnull(case when not b<>0 then 1 else 0 end, 99) from t1;
-select ifnull(case when b<>0 and c<>0 then 1 else 0 end, 99) from t1;
-select ifnull(case when not (b<>0 and c<>0) then 1 else 0 end, 99) from t1;
-select ifnull(case when b<>0 or c<>0 then 1 else 0 end, 99) from t1;
-select ifnull(case when not (b<>0 or c<>0) then 1 else 0 end, 99) from t1;
-select ifnull(case b when c then 1 else 0 end, 99) from t1;
-select ifnull(case c when b then 1 else 0 end, 99) from t1;
 select count(*), count(b), count(c), sum(b), sum(c), 
            avg(b), avg(c), min(b), max(b) from t1;
 SELECT sum(b), total(b) FROM t1 WHERE b<0;

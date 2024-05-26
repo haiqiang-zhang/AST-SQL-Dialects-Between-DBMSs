@@ -1,7 +1,4 @@
 SELECT bitShiftLeft(if(number = NULL, '14342', '4242348'), 1) FROM numbers(1);
-SELECT bitShiftLeft(if(number = NULL, '14342', '4242348'), 1) FROM numbers(3);
-SELECT bitShiftLeft(if(materialize(NULL), '14342', '4242348'), 1) FROM numbers(1);
-SELECT bitShiftLeft(if(materialize(1), '123', '123'), 1)  from numbers(1);
 DROP TABLE IF EXISTS t0;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t0 (vkey UInt32, pkey UInt32, c0 UInt32) engine = TinyLog;

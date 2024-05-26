@@ -1,4 +1,3 @@
-UPDATE t1 set data=repeat('a',18*1024*1024);
 select length(data) from t1;
 delete from t1 where left(data,1)='a';
 INSERT INTO t1 (data) VALUES (repeat('a',1*1024*1024));
@@ -7,11 +6,8 @@ delete from t1 where left(data,1)='b';
 UPDATE t1 set data=repeat('c',17*1024*1024);
 delete from t1 where left(data,1)='c';
 INSERT INTO t1 set data=repeat('a',18*1024*1024);
-select length(data) from t1;
-select length(data) from t1;
 drop table t1;
 CREATE TABLE t1 (data BLOB) ENGINE=myisam;
 INSERT INTO t1 (data) VALUES (NULL);
 UPDATE IGNORE t1 set data=repeat('a',18*1024*1024);
-select length(data) from t1;
 drop table t1;

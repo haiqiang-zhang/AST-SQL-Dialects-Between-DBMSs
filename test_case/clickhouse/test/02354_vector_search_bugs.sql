@@ -1,12 +1,3 @@
--- Tests vector search in ClickHouse, i.e. Annoy and Usearch indexes. Both index types share similarities in implementation and usage,
--- therefore they are tested in a single file.
-
--- This file contains tests for various bugs and special cases
-
-SET allow_experimental_annoy_index = 1;
-SET allow_experimental_usearch_index = 1;
-SET allow_experimental_analyzer = 1;
-DROP TABLE IF EXISTS tab;
 SELECT 'Issue #52258: Empty Arrays or Arrays with default values are rejected';
 SELECT '- Annoy';
 SELECT '- Usearch';

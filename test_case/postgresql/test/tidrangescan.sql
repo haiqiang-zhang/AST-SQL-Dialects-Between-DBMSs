@@ -1,5 +1,3 @@
-SET enable_seqscan TO off;
-CREATE TABLE tidrangescan(id integer, data text);
 EXPLAIN (COSTS OFF)
 SELECT ctid FROM tidrangescan WHERE ctid < '(1, 0)';
 SELECT ctid FROM tidrangescan WHERE ctid < '(1, 0)';

@@ -1,6 +1,3 @@
-set allow_deprecated_syntax_for_merge_tree=1;
-create table prewhere_column_missing (d Date default '2015-01-01', x UInt64) engine=MergeTree(d, x, 1);
-insert into prewhere_column_missing (x) values (0);
 select * from prewhere_column_missing;
 alter table prewhere_column_missing add column arr Array(UInt64);
 select * from prewhere_column_missing;

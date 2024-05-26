@@ -1,4 +1,3 @@
-ALTER TABLE data_compact ADD COLUMN root.nested_array Array(Array(UInt8));
 SELECT table, part_type FROM system.parts WHERE table = 'data_compact' AND database = currentDatabase();
 SELECT root.nested_array FROM data_compact;
 DROP TABLE IF EXISTS data_wide;

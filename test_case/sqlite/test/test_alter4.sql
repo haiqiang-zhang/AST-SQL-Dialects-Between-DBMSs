@@ -1,4 +1,3 @@
-CREATE TEMP TABLE abc(a, b, c);
 SELECT sql FROM sqlite_temp_master;
 SELECT sql FROM temp.sqlite_master;
 ALTER TABLE abc ADD d INTEGER;
@@ -174,7 +173,6 @@ CREATE TABLE t5(
 INSERT INTO t5 DEFAULT VALUES;
 SELECT typeof(a), a, typeof(b), b FROM t5;
 ALTER TABLE t5 ADD COLUMN c INTEGER DEFAULT (-(-9223372036854775808));
-SELECT typeof(c), c FROM t5;
 CREATE TABLE t1(c INTEGER PRIMARY KEY, d);
 PRAGMA foreign_keys = on;
 ALTER TABLE t1 ADD COLUMN e;

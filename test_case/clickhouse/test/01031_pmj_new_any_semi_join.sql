@@ -1,6 +1,3 @@
-SET join_algorithm = 'prefer_partial_merge';
-SET join_use_nulls = 0;
-SET any_join_distinct_right_table_keys = 0;
 SELECT 'any left';
 SELECT t1.*, t2.* FROM t1 ANY LEFT JOIN t2 USING(x) ORDER BY t1.x, t2.x;
 SELECT 'any left (rev)';

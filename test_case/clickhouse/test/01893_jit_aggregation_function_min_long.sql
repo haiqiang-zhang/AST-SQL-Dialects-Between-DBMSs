@@ -1,5 +1,3 @@
-SET compile_aggregate_expressions = 1;
-SET min_count_to_compile_aggregate_expression = 0;
 SELECT 'Test unsigned integer values';
 DROP TABLE IF EXISTS test_table_unsigned_values;
 CREATE TABLE test_table_unsigned_values
@@ -26,7 +24,6 @@ CREATE TABLE test_table_signed_values
     value4 Int64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_signed_values SELECT number % 3, number, number, number, number FROM system.numbers LIMIT 120;
-SELECT id, min(value1), min(value2), min(value3), min(value4) FROM test_table_signed_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_signed_values;
 SELECT 'Test float values';
 DROP TABLE IF EXISTS test_table_float_values;
@@ -38,7 +35,6 @@ CREATE TABLE test_table_float_values
     value2 Float64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_float_values SELECT number % 3, number, number FROM system.numbers LIMIT 120;
-SELECT id, min(value1), min(value2) FROM test_table_float_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_float_values;
 SELECT 'Test nullable unsigned integer values';
 DROP TABLE IF EXISTS test_table_nullable_unsigned_values;
@@ -52,7 +48,6 @@ CREATE TABLE test_table_nullable_unsigned_values
     value4 Nullable(UInt64)
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_unsigned_values SELECT number % 3, number, number, number, number FROM system.numbers LIMIT 120;
-SELECT id, min(value1), min(value2), min(value3), min(value4) FROM test_table_nullable_unsigned_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_unsigned_values;
 SELECT 'Test nullable signed integer values';
 DROP TABLE IF EXISTS test_table_nullable_signed_values;
@@ -66,7 +61,6 @@ CREATE TABLE test_table_nullable_signed_values
     value4 Nullable(Int64)
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_signed_values SELECT number % 3, number, number, number, number FROM system.numbers LIMIT 120;
-SELECT id, min(value1), min(value2), min(value3), min(value4) FROM test_table_nullable_signed_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_signed_values;
 SELECT 'Test nullable float values';
 DROP TABLE IF EXISTS test_table_nullable_float_values;
@@ -78,7 +72,6 @@ CREATE TABLE test_table_nullable_float_values
     value2 Nullable(Float64)
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_float_values SELECT number % 3, number, number FROM system.numbers LIMIT 120;
-SELECT id, min(value1), min(value2) FROM test_table_nullable_float_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_float_values;
 SELECT 'Test null specifics';
 DROP TABLE IF EXISTS test_table_null_specifics;
@@ -93,5 +86,4 @@ CREATE TABLE test_table_null_specifics
 INSERT INTO test_table_null_specifics VALUES (0, 1, 1, NULL);
 INSERT INTO test_table_null_specifics VALUES (0, 2, NULL, NULL);
 INSERT INTO test_table_null_specifics VALUES (0, 3, 3, NULL);
-SELECT id, min(value1), min(value2), min(value3) FROM test_table_null_specifics GROUP BY id ORDER BY id;
 DROP TABLE IF EXISTS test_table_null_specifics;

@@ -1,5 +1,3 @@
-drop database if exists demo;
-create database demo;
 select "Starting ...";
 select "The end";
 select "Oops ... now what ?";

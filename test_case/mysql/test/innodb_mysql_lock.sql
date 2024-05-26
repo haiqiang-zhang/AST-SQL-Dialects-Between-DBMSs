@@ -1,3 +1,13 @@
+SELECT COUNT(*) = 1 FROM information_schema.innodb_trx
+  WHERE trx_query = 'INSERT INTO t1 VALUES (1)' AND
+  trx_operation_state = 'inserting' AND
+  trx_state = 'LOCK WAIT';
+SELECT COUNT(*) = 1 FROM information_schema.processlist
+  WHERE info = "DROP TABLE t1" and 
+  state = "Waiting for table metadata lock";
+drop table if exists t1;
+create table t1 (c1 int primary key, c2 int, c3 int) engine=InnoDB;
+insert into t1 values (1,1,0),(2,2,0),(3,3,0),(4,4,0),(5,5,0);
 update t1 set c3=c3+1 where c2=3;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and

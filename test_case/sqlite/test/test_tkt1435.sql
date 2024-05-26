@@ -1,15 +1,3 @@
-CREATE TEMPORARY TABLE tlList (
-       row INTEGER PRIMARY KEY,
-       name STRING,
-       version STRING,
-       flavor STRING
-    );
-INSERT INTO tlList 
-      values(NULL, 'libhello:script', '/localhost@rpl:linux/0-1-1', '1#x86');
-INSERT INTO tlList 
-      values(NULL, 'libhello:user', '/localhost@rpl:linux/0-1-1', '1#x86');
-INSERT INTO tlList 
-      values(NULL, 'libhello:runtime', '/localhost@rpl:linux/0-1-1', '1#x86');
 select row, pinned from tlList, Instances, Versions, Flavors
         where
             Instances.troveName = tlList.name

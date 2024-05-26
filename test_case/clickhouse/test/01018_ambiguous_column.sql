@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer = 1;
 select * from system.one cross join system.one;
 select * from system.one cross join system.one r;
 select * from system.one l cross join system.one;

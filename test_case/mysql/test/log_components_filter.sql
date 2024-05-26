@@ -88,6 +88,5 @@ INSERT INTO my_rules VALUES(NULL, 'IF s1<"strinx" THEN set cmp1:="LT/S works" EL
 INSERT INTO my_rules VALUES(NULL, 'IF NOT EXISTS does_not_exist THEN set f1:=1.4. IF f1>=1.4 THEN set cmp14:="GE/# works" ELSE set cmp14:="GE/# is broken".');
 INSERT INTO my_rules VALUES(NULL, 'IF f1>=1 THEN set cmp15:="GE/# works" ELSE set cmp15:="GE/# is broken".');
 INSERT INTO my_rules VALUES(NULL, 'IF f1>=1.5 THEN set cmp16:="GE/# is broken" ELSE set cmp16:="GE/# works".');
-SELECT group_concat(rule ORDER BY id SEPARATOR ' ') FROM my_rules INTO @rules;
 DROP TABLE my_rules;
 SELECT variable_value AS decompiled_filter_rules FROM performance_schema.global_status WHERE variable_name="dragnet.Status";

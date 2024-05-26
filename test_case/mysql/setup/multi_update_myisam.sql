@@ -1,0 +1,7 @@
+CREATE TABLE t1(
+  pk INT,
+  a INT,
+  PRIMARY KEY (pk)
+) ENGINE=MyISAM;
+INSERT INTO t1 VALUES (0,0);
+UPDATE t1 AS A, t1 AS B SET A.pk = 1, B.a = 2;

@@ -1,4 +1,3 @@
-alter table t1 add primary key aaa(tt);
 select * from t1 where tt like 'Aa%';
 select * from t1 ignore index (primary) where tt like 'Aa%';
 select * from t1 where tt like '%Aa%';

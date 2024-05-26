@@ -1,12 +1,3 @@
-DROP DICTIONARY IF EXISTS 02155_test_dictionary;
-CREATE DICTIONARY 02155_test_dictionary
-(
-    id UInt64,
-    value String
-)
-PRIMARY KEY id
-SOURCE(CLICKHOUSE(TABLE '02155_test_table'))
-LAYOUT(DIRECT());
 SELECT name, comment FROM system.dictionaries WHERE name == '02155_test_dictionary' AND database == currentDatabase();
 ALTER TABLE 02155_test_dictionary MODIFY COMMENT '02155_test_dictionary_comment_0';
 SELECT name, comment FROM system.dictionaries WHERE name == '02155_test_dictionary' AND database == currentDatabase();

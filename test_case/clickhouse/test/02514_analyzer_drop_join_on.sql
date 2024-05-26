@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer = 1;
 EXPLAIN PLAN header = 1
 SELECT count() FROM a JOIN b ON b.b1 = a.a1 JOIN c ON c.c1 = b.b1 JOIN d ON d.d1 = c.c1 GROUP BY a.a2;
 EXPLAIN PLAN header = 1

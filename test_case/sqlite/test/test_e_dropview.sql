@@ -1,8 +1,3 @@
-DROP VIEW IF EXISTS v1;
-DROP VIEW IF EXISTS v2;
-DROP VIEW IF EXISTS main.v1;
-DROP VIEW IF EXISTS main.v2;
-CREATE VIEW "new view" AS SELECT * FROM t1 AS x, t1 AS y;
 SELECT * FROM sqlite_master WHERE name = 'new view';
 DROP VIEW "new view";
 SELECT * FROM sqlite_master WHERE name = 'new view';

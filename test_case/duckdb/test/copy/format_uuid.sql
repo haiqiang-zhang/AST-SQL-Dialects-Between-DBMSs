@@ -1,0 +1,18 @@
+COPY test3 TO '__TEST_DIR__/part' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE, FILENAME_PATTERN "leading_{uuid}_trailing");
+COPY test4 TO '__TEST_DIR__/part' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE);
+COPY test5 TO '__TEST_DIR__/part' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE, FILENAME_PATTERN "basename");
+COPY testpto TO '__TEST_DIR__/pto' (FORMAT PARQUET, PER_THREAD_OUTPUT TRUE, OVERWRITE_OR_IGNORE TRUE, FILENAME_PATTERN "basename_{uuid}");
+PRAGMA threads=1;
+COPY test5 TO '__TEST_DIR__/to_be_overwritten2' (FORMAT PARQUET, PARTITION_BY (a), OVERWRITE_OR_IGNORE);
+COPY test5 TO '__TEST_DIR__/directory0' (FORMAT PARQUET, PARTITION_BY (a), overwrite_or_ignore TRUE, FILENAME_PATTERN "my_filename");
+SELECT * FROM test2;
+SELECT * FROM '__TEST_DIR__/part/a=9/leading_????????-????-4???-????-????????????.parquet';
+SELECT * FROM '__TEST_DIR__/part/a=9/data_[0-9]*.parquet';
+SELECT * FROM '__TEST_DIR__/part/a=9/basename[0-9]*.parquet';
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/to_be_overwritten/a=9/a_file_name*');
+SELECT * FROM '__TEST_DIR__/to_be_overwritten/a=9/a_file_name*.parquet';
+SELECT * FROM '__TEST_DIR__/incorrect_pos/a=5/a_name_with_????????-????-4???-????-????????????_numbers.parquet';
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/to_be_overwritten2/a=9/*');
+SELECT * FROM '__TEST_DIR__/to_be_overwritten2/a=9/data_0*.parquet';
+SELECT COUNT(*) FROM GLOB('__TEST_DIR__/directory0/a=7/*');
+SELECT * FROM '__TEST_DIR__/directory0/a=7/my_filename0.parquet';

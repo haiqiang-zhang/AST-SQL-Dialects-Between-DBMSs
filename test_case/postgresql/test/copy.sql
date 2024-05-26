@@ -1,12 +1,3 @@
-create temp table copytest (
-	style	text,
-	test 	text,
-	filler	int);
-insert into copytest values('DOS',E'abc\r\ndef',1);
-insert into copytest values('Unix',E'abc\ndef',2);
-insert into copytest values('Mac',E'abc\rdef',3);
-insert into copytest values(E'esc\\ape',E'a\\r\\\r\\\n\\nb',4);
-create temp table copytest2 (like copytest);
 select * from copytest except select * from copytest2;
 truncate copytest2;
 select * from copytest except select * from copytest2;
@@ -37,8 +28,6 @@ select tableoid::regclass,count(*),sum(a) from parted_copytest
 group by tableoid order by tableoid::regclass::name;
 truncate parted_copytest;
 end;
-select tableoid::regclass,count(*),sum(a) from parted_copytest
-group by tableoid order by tableoid::regclass::name;
 truncate table parted_copytest;
 create index on parted_copytest (b);
 select * from parted_copytest where b = 2;

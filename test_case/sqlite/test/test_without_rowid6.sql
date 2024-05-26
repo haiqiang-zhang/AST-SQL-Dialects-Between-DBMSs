@@ -1,4 +1,3 @@
-CREATE INDEX t1a ON t1(b, b);
 WITH RECURSIVE
     c(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM c WHERE i<1000)
   INSERT INTO t1(a,b,c,d,e) SELECT i, i+1000, printf('x%dy',i), 0, 0 FROM c;
@@ -17,7 +16,6 @@ CREATE TABLE t1(
   ) WITHOUT ROWID;
 INSERT INTO t1(a,b,c) VALUES(1,8,3),(4,5,6),(7,2,9);
 SELECT a FROM t1 WHERE b>3 ORDER BY b;
-SELECT name, key FROM pragma_index_xinfo('t1');
 EXPLAIN QUERY PLAN
   SELECT a FROM t1 WHERE b>3 ORDER BY b;
 PRAGMA index_list(t1);
@@ -51,7 +49,6 @@ CREATE TABLE t1(a,b,c,
   ) WITHOUT ROWID;
 INSERT INTO t1(a,b,c) VALUES(1,8,3),(4,5,6),(7,2,9);
 SELECT a FROM t1 WHERE b>3 ORDER BY b;
-SELECT name, key FROM pragma_index_xinfo('t1');
 EXPLAIN QUERY PLAN
   SELECT a FROM t1 WHERE b>3 ORDER BY b;
 PRAGMA index_list(t1);

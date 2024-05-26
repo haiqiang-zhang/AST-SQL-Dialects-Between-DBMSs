@@ -1,8 +1,3 @@
--- Basic random-based correctness test
-CREATE TEMPORARY TABLE table_lz4 (id UInt64, ui UInt256 CODEC(LZ4)) ENGINE = Memory;
-INSERT INTO table_lz4 SELECT * FROM generateRandom() LIMIT 50;
-CREATE TEMPORARY TABLE table_gcd (id UInt64, ui UInt256 CODEC(GCD, LZ4)) ENGINE = Memory;
-INSERT INTO table_gcd SELECT * FROM table_lz4;
 SELECT COUNT(*)
 FROM (
     SELECT table_lz4.id, table_lz4.ui AS ui1, table_gcd.id, table_gcd.ui AS ui2
@@ -10,9 +5,6 @@ FROM (
         ON table_lz4.id = table_gcd.id
 )
 WHERE ui1 != ui2;
--- Compression/decompression works for all data types supported by GCD codec
-
--- Int*
 CREATE TEMPORARY TABLE table_gcd_codec_uint8 (n UInt8 CODEC(GCD, LZ4)) ENGINE = Memory;
 CREATE TEMPORARY TABLE table_gcd_codec_uint16 (n UInt16 CODEC(GCD, LZ4)) ENGINE = Memory;
 CREATE TEMPORARY TABLE table_gcd_codec_uint32 (n UInt32 CODEC(GCD, LZ4)) ENGINE = Memory;

@@ -1,0 +1,5 @@
+CHECKPOINT;
+SELECT MIN(i), MAX(i), COUNT(i), COUNT(*) FROM vals;
+SELECT MIN(i), MAX(i), COUNT(i), COUNT(*) FROM vals;
+INSERT INTO vals SELECT * FROM vals;
+SELECT MIN(i), MAX(i), COUNT(i), COUNT(*) FROM vals;

@@ -1,5 +1,3 @@
-BEGIN;
-INSERT INTO t2 SELECT a, b FROM t1;
 SELECT a FROM t2;
 DELETE FROM t2 WHERE a > 5;
 PRAGMA count_changes = 1;

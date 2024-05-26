@@ -1,0 +1,12 @@
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;
+SELECT MIN(i), MAX(i), COUNT(*) FROM test;

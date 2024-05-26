@@ -1,0 +1,5 @@
+CREATE TABLE t (
+  c char(20) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf32 COLLATE=utf32_unicode_ci;
+INSERT INTO t VALUES ('a'),('ab'),('aba');
+ALTER TABLE t ADD INDEX (c);

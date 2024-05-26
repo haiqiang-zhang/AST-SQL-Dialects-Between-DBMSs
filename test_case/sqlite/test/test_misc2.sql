@@ -1,11 +1,3 @@
-pragma recursive_triggers = off;
-CREATE TABLE FOO(bar integer);
-INSERT INTO foo(bar) VALUES (1);
-INSERT INTO foo(bar) VALUES (111);
-CREATE TABLE t1(a,b,c);
-INSERT INTO t1 VALUES(1,2,3);
-CREATE TABLE t2(a,b,c);
-INSERT INTO t2 VALUES(7,8,9);
 SELECT 'rowid', * FROM (SELECT * FROM t1, t2);
 CREATE VIEW v1 AS SELECT * FROM t1, t2;
 SELECT 'rowid', * FROM v1;
@@ -68,12 +60,10 @@ CREATE TEMP TABLE x AS
       SELECT dim1.n, dim2.n, dim3.n
       FROM counts AS dim1, counts AS dim2, counts AS dim3
       WHERE dim1.n>=6 AND dim2.n>=6 AND dim3.n>=6;
-SELECT count(*) FROM x;
 DROP TABLE x;
 CREATE TEMP TABLE x AS
       SELECT dim1.n, dim2.n, dim3.n, dim4.n
       FROM counts AS dim1, counts AS dim2, counts AS dim3, counts AS dim4
       WHERE dim1.n<5 AND dim2.n<5 AND dim3.n<5 AND dim4.n<5;
-SELECT count(*) FROM x;
 CREATE TABLE t1229(x);
 INSERT INTO t1229 VALUES(1);

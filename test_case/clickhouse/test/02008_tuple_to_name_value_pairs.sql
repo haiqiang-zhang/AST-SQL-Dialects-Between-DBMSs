@@ -8,7 +8,6 @@ CREATE TABLE test02008 (
 ) ENGINE=Memory();
 INSERT INTO test02008 VALUES (tuple(tuple(1, 2), tuple(3, 4)));
 INSERT INTO test02008 VALUES (tuple(tuple(5, 6), tuple(7, 8)));
-SELECT tupleToNameValuePairs(col) FROM test02008 ORDER BY col;
 DROP TABLE IF EXISTS test02008;
 CREATE TABLE test02008 (
        col Tuple(CPU double, Memory double, Disk double)

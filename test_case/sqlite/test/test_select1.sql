@@ -15,10 +15,6 @@ SELECT test1.f1, test2.r1 FROM test1, test2;
 SELECT test1.f1, test2.r1 FROM test2, test1;
 SELECT * FROM test2, test1;
 SELECT * FROM test1 AS a, test1 AS b;
-SELECT max(test1.f1,test2.r1), min(test1.f2,test2.r2)
-           FROM test2, test1;
-SELECT min(test1.f1,test2.r1), max(test1.f2,test2.r2)
-           FROM test1, test2;
 DROP TABLE test2;
 DELETE FROM test1;
 INSERT INTO test1 VALUES(11,22);
@@ -34,20 +30,14 @@ SELECT count(f1) FROM test1;
 SELECT Count() FROM test1;
 SELECT COUNT(*) FROM test1;
 SELECT COUNT(*)+1 FROM test1;
-SELECT count(*),count(a),count(b) FROM t3;
-SELECT count(*),count(a),count(b) FROM t4;
-SELECT count(*),count(a),count(b) FROM t4 WHERE b=5;
 SELECT Min(f1) FROM test1;
 SELECT MIN(f1,f2) FROM test1;
 SELECT coalesce(min(a),'xyzzy') FROM t3;
 SELECT min(coalesce(a,'xyzzy')) FROM t3;
-SELECT min(b), min(b) FROM t4;
 SELECT Max(f1) FROM test1;
 SELECT max(f1,f2) FROM test1;
 SELECT MAX(f1,f2)+1 FROM test1;
 SELECT MAX(f1)+1 FROM test1;
-SELECT coalesce(max(a),'xyzzy') FROM t3;
-SELECT max(coalesce(a,'xyzzy')) FROM t3;
 SELECT Sum(f1) FROM test1;
 SELECT SUM(f1)+1 FROM test1;
 SELECT sum(a) FROM t3;
@@ -65,7 +55,6 @@ SELECT f1 FROM test1 WHERE min(f1,f2)!=11;
 SELECT f1 FROM test1 WHERE max(f1,f2)!=11;
 SELECT f1 FROM test1 ORDER BY f1;
 SELECT f1 FROM test1 ORDER BY -f1;
-SELECT f1 FROM test1 ORDER BY min(f1,f2);
 SELECT f1 FROM test1 ORDER BY 8.4;
 SELECT f1 FROM test1 ORDER BY '8.4';
 CREATE TABLE t5(a,b);
@@ -78,7 +67,6 @@ INSERT INTO t5 VALUES(3,10);
 SELECT * FROM t5 ORDER BY 2, 1 DESC;
 SELECT * FROM t5 ORDER BY 1 DESC, b;
 SELECT * FROM t5 ORDER BY b DESC, 1;
-SELECT max(f1) FROM test1 ORDER BY f2;
 CREATE TABLE test2(t1 text, t2 text);
 INSERT INTO test2 VALUES('abc','xyz');
 SELECT f1 FROM test1 ORDER BY f2;
@@ -145,13 +133,10 @@ SELECT f1 FROM test1 WHERE ('x' || f1) BETWEEN 'x10' AND 'x20'
     ORDER BY f1;
 SELECT f1 FROM test1 WHERE 5-3==2
     ORDER BY f1;
-SELECT min(1,2,3), -max(1,2,3)
-    FROM test1 ORDER BY f1;
 PRAGMA empty_result_callbacks=on;
 SELECT f1 AS x FROM test1 ORDER BY x;
 SELECT f1 AS x FROM test1 ORDER BY -x;
 SELECT f1-23 AS x FROM test1 ORDER BY abs(x);
-SELECT f1-23 AS x FROM test1 ORDER BY -abs(x);
 SELECT f1-22 AS x, f2-22 as y FROM test1;
 SELECT f1-22 AS x, f2-22 as y FROM test1 WHERE x>0 AND y<50;
 SELECT f1 COLLATE nocase AS x FROM test1 ORDER BY x;
@@ -212,9 +197,6 @@ INSERT INTO abc SELECT a+(select max(a) FROM abc),
             b+(select max(a) FROM abc), c+(select max(a) FROM abc) FROM abc;
 INSERT INTO abc SELECT a+(select max(a) FROM abc), 
             b+(select max(a) FROM abc), c+(select max(a) FROM abc) FROM abc;
-SELECT count(
-        (SELECT a FROM abc WHERE a = NULL AND b >= upper.c) 
-      ) FROM abc AS upper;
 SELECT * FROM sqlite_master WHERE rowid>10;
 SELECT * FROM sqlite_master WHERE rowid=10;
 SELECT * FROM sqlite_master WHERE rowid<10;

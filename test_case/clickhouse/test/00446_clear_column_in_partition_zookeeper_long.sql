@@ -1,5 +1,3 @@
--- no-shared-merge-tree: different sychronization, replaced with another test
-
 SELECT '===Ordinary case===';
 SET replication_alter_partitions_sync = 2;
 DROP TABLE IF EXISTS clear_column;

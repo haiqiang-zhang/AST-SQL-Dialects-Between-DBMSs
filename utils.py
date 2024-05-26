@@ -142,9 +142,11 @@ def parse_result_file(filename:str):
     return result_list
 
 
-def get_test_result_path(test_path:str):
+def get_test_result_path(test_path:str, test_dir_name:str='unsplit'):
+
+    dbms = test_path.split('/')[2]
     # get the result path
-    result_path = test_path.replace('unsplit', 'result')
+    result_path = test_path.replace(f"/{dbms}/{test_dir_name}", f"/{dbms}/result")
     result_path = result_path.replace('.sql', '.txt')
     return result_path
 

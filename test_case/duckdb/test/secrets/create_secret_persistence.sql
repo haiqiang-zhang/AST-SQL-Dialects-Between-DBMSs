@@ -1,0 +1,11 @@
+SELECT name, storage, scope FROM duckdb_secrets() where storage='memory' order by name;
+SELECT name, scope FROM duckdb_secrets() where storage != 'memory';
+SELECT name, scope FROM duckdb_secrets();
+SELECT name, storage, scope FROM duckdb_secrets() where name='my_tmp_secret_3' order by storage;
+SELECT name, scope FROM duckdb_secrets();
+SELECT name, scope FROM duckdb_secrets();
+SELECT name, scope FROM duckdb_secrets();
+SELECT name, scope FROM duckdb_secrets();
+SELECT name, scope FROM duckdb_secrets() order by name;
+SELECT name, scope FROM duckdb_secrets();
+SELECT name, storage, scope FROM duckdb_secrets() order by name;

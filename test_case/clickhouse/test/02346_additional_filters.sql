@@ -30,15 +30,11 @@ select * from v_numbers settings additional_table_filters={'system.numbers' : 'n
 create table table_2 (x UInt32, y String) engine = MergeTree order by x;
 insert into table_2 values (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg');
 create materialized view mv_table to table_2 (x UInt32, y String) as select * from table_1;
--- probably it is expected
--- { echoOn }
 select * from mv_table;
 select * from mv_table settings additional_table_filters={'mv_table' : 'x != 5'};
 select * from mv_table settings additional_table_filters={'table_1' : 'x != 5'};
 select * from mv_table settings additional_table_filters={'table_2' : 'x != 5'};
 create table m_table (x UInt32, y String) engine = Merge(currentDatabase(), '^table_');
--- probably it is expected
--- { echoOn }
 select * from m_table order by x;
 select * from m_table order by x settings additional_table_filters={'table_1' : 'x != 2'};
 select * from m_table order by x  settings additional_table_filters={'table_2' : 'x != 5'};

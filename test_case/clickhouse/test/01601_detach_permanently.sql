@@ -1,4 +1,3 @@
-SET send_logs_level = 'fatal';
 SELECT 'database atomic tests';
 DROP DATABASE IF EXISTS test1601_detach_permanently_atomic;
 CREATE DATABASE test1601_detach_permanently_atomic Engine=Atomic;
@@ -19,7 +18,6 @@ DETACH table test1601_detach_permanently_atomic.test_name_reuse;
 SELECT 'can not detach permanently the table which is already detached (temporary)';
 DETACH DATABASE test1601_detach_permanently_atomic;
 ATTACH DATABASE test1601_detach_permanently_atomic;
-SELECT count() FROM test1601_detach_permanently_atomic.test_name_reuse;
 SELECT 'After database reattachement the table is back (it was detached temporary)';
 SELECT 'And we can detach it permanently';
 DETACH table test1601_detach_permanently_atomic.test_name_reuse PERMANENTLY;

@@ -1,5 +1,3 @@
-SET group_by_two_level_threshold_bytes = 1;
-SET group_by_two_level_threshold = 1;
 SELECT groupArray(DISTINCT toString(number % 10)) FROM numbers_mt(50000) 
     GROUP BY number ORDER BY number LIMIT 10
     SETTINGS max_threads = 2, max_block_size = 2000;

@@ -1,11 +1,3 @@
--- Tests vector search in ClickHouse, i.e. Annoy and Usearch indexes. Both index types share similarities in implementation and usage,
--- therefore they are tested in a single file.
-
--- This file tests that various conditions are checked during creation of vector search indexes.
-
-SET allow_experimental_annoy_index = 1;
-SET allow_experimental_usearch_index = 1;
-DROP TABLE IF EXISTS tab;
 SELECT 'At most two index arguments';
 SELECT '1st argument (distance function) must be String';
 SELECT 'Rejects unsupported distance functions';

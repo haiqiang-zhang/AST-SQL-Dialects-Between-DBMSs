@@ -1,5 +1,3 @@
-ALTER TABLE rename_table_multiple RENAME COLUMN value1 TO value1_string;
-ALTER TABLE rename_table_multiple MODIFY COLUMN value1_string String;
 SHOW CREATE TABLE rename_table_multiple;
 INSERT INTO rename_table_multiple VALUES (4, '5', 6);
 ALTER TABLE rename_table_multiple RENAME COLUMN value2 TO value2_old, ADD COLUMN value2 Int64 DEFAULT 7;

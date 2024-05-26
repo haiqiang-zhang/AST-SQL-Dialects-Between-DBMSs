@@ -1,5 +1,3 @@
-BEGIN;
-CREATE TABLE t1(a, b);
 SELECT count(*) FROM t1;
 PRAGMA cache_size = 17;
 PRAGMA cache_size;
@@ -8,7 +6,6 @@ PRAGMA cache_size=1000;
 PRAGMA locking_mode = exclusive;
 BEGIN;
 DELETE FROM t1;
-SELECT count(*) FROM t1;
 PRAGMA cache_size = 17;
 PRAGMA cache_size;
 PRAGMA locking_mode = normal;

@@ -1,4 +1,3 @@
-SET max_block_size = 4213;
 SELECT DISTINCT (blockSize() <= 4214)
 FROM
 (

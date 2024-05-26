@@ -1,7 +1,3 @@
-SET client_min_messages TO 'warning';
-RESET client_min_messages;
-CREATE SCHEMA alt_nsp1;
-CREATE SCHEMA alt_nsp2;
 GRANT ALL ON SCHEMA alt_nsp1, alt_nsp2 TO public;
 SET search_path = alt_nsp1, public;
 CREATE FUNCTION alt_func1(int) RETURNS int LANGUAGE sql

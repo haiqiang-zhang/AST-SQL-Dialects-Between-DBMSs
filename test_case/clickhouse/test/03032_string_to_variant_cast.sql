@@ -1,1 +1,0 @@
-set allow_experimental_variant_type=1;

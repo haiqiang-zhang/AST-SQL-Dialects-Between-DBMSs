@@ -1,4 +1,3 @@
-DROP SETTINGS PROFILE IF EXISTS s1_01418, s2_01418;
 SELECT '--- assigning ---';
 SELECT name, value FROM system.settings WHERE name LIKE 'custom_%' ORDER BY name;
 SELECT '--- modifying ---';

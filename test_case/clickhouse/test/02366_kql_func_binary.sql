@@ -1,4 +1,3 @@
-set dialect='kusto';
 print ' -- binary functions';
 print binary_and(4,7), binary_or(4,7);
 print binary_shift_left(1, 1) == binary_shift_left(1, 65);

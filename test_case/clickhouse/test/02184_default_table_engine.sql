@@ -1,6 +1,3 @@
-SET default_table_engine = 'None';
-SET default_table_engine = 'Log';
-CREATE TABLE table_02184 (x UInt8);
 SHOW CREATE TABLE table_02184;
 DROP TABLE table_02184;
 SET default_table_engine = 'MergeTree';
@@ -27,7 +24,6 @@ SELECT sum(number) FROM numbers2;
 SHOW CREATE TABLE numbers2;
 DROP TABLE numbers2;
 CREATE TABLE numbers3 ENGINE = Log AS SELECT number FROM numbers(10);
-SELECT sum(number) FROM numbers3;
 SHOW CREATE TABLE numbers3;
 DROP TABLE numbers3;
 CREATE TABLE test_table (EventDate Date, CounterID UInt32,  UserID UInt64,  EventTime DateTime('America/Los_Angeles'), UTCEventTime DateTime('UTC')) PARTITION BY EventDate PRIMARY KEY CounterID;

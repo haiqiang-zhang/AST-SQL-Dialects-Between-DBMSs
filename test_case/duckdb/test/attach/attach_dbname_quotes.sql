@@ -1,0 +1,12 @@
+ATTACH ':memory:' as "my""db";
+CREATE TABLE "my""db".tbl(i int);
+INSERT INTO "my""db".tbl VALUES (42);
+USE "my""db";
+CREATE SCHEMA "my""db"."my""schema";
+CREATE TABLE "my""db"."my""schema".tbl(i int);
+INSERT INTO "my""db"."my""schema".tbl VALUES (84);
+USE "my""db"."my""schema";
+CREATE SCHEMA """";
+USE """";
+SELECT * FROM tbl;
+SELECT * FROM tbl;

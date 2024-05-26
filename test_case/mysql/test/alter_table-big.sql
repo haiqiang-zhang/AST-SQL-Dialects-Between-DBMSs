@@ -1,3 +1,6 @@
+select count(*) = 1 from information_schema.processlist
+    where state = "Waiting for table metadata lock" and
+          info = "insert into t1 values ()";
 select * from t1;
 select count(*) = 1 from information_schema.processlist
     where state = "Waiting for table metadata lock" and

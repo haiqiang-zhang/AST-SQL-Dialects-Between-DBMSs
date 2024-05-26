@@ -1,0 +1,3 @@
+SELECT 42;
+SELECT 42;
+SELECT * FROM integers ORDER BY 1;

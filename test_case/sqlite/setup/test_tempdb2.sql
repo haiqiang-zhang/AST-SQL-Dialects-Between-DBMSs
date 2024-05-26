@@ -1,0 +1,9 @@
+PRAGMA page_size=1024;
+PRAGMA cache_size=50;
+BEGIN;
+CREATE TABLE t1(a INTEGER PRIMARY KEY, b);
+CREATE TABLE t2(a INTEGER PRIMARY KEY, b);
+PRAGMA lock_status;
+BEGIN;
+DELETE FROM t1;
+PRAGMA cache_size = -100;

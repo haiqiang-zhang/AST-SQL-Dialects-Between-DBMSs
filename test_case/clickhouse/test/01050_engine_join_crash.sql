@@ -1,7 +1,3 @@
-SET any_join_distinct_right_table_keys = 1;
-SET enable_optimize_predicate_expression = 0;
-CREATE TABLE testJoinTable (number UInt64, data String) ENGINE = Join(ANY, INNER, number) SETTINGS any_join_distinct_right_table_keys = 1;
-INSERT INTO testJoinTable VALUES (1, '1'), (2, '2'), (3, '3');
 SELECT * FROM (SELECT * FROM numbers(10)) js1 INNER JOIN (SELECT * FROM testJoinTable) js2 USING number ORDER BY number;
 SELECT * FROM testJoinTable ORDER BY number;
 DROP TABLE testJoinTable;

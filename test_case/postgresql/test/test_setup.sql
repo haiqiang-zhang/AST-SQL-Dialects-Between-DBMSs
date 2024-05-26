@@ -1,4 +1,3 @@
-SET synchronous_commit = on;
 GRANT ALL ON SCHEMA public TO public;
 CREATE TABLE CHAR_TBL(f1 char(4));
 INSERT INTO CHAR_TBL (f1) VALUES

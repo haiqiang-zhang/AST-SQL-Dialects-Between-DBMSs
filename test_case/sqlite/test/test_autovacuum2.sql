@@ -1,6 +1,3 @@
-PRAGMA page_size=1024;
-PRAGMA auto_vacuum=FULL;
-CREATE TABLE t1(x);
 VACUUM;
 INSERT INTO t1(x) VALUES(zeroblob(10000));
 PRAGMA page_count;

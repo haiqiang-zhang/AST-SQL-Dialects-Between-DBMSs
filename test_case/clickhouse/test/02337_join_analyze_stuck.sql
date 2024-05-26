@@ -1,4 +1,3 @@
-SET max_analyze_depth = 1;
 EXPLAIN SYNTAX
 WITH
     x AS ( SELECT number FROM numbers(10) ),

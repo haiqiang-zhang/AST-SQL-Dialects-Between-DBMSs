@@ -1,5 +1,3 @@
-set enable_hashjoin = off;
-set enable_mergejoin = off;
 explain (costs off)
   select * from ec0 where ff = f1 and f1 = '42'::int8;
 set enable_mergejoin = on;

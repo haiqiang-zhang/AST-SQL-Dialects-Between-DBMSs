@@ -23,7 +23,6 @@ SHOW INDEX FROM `'` FROM `'`;
 SHOW INDEX FROM `'`.`'`;
 DROP TABLE `'`.`'`;
 DROP DATABASE `'`;
--- we notice if something is buggy in the implementation of SHOW INDEX.
 DROP DATABASE IF EXISTS database_123456789abcde;
 CREATE DATABASE database_123456789abcde;
 DROP TABLE IF EXISTS database_123456789abcde.tbl;

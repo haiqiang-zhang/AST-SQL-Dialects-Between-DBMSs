@@ -1,0 +1,10 @@
+SELECT name FROM duckdb_secrets();
+SELECT name FROM duckdb_secrets();
+SELECT name FROM duckdb_secrets();
+SELECT name FROM duckdb_secrets();
+SELECT name FROM duckdb_secrets() ORDER BY name;
+SELECT name FROM duckdb_secrets() ORDER BY name;
+SELECT name FROM duckdb_secrets();
+SELECT name FROM duckdb_secrets();
+SELECT name FROM duckdb_secrets() ORDER BY name;
+SELECT name FROM duckdb_secrets() ORDER BY name;

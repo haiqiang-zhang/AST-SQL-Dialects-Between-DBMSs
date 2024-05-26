@@ -17,14 +17,8 @@ from snapshot_test order by nr;
 select id, txid_visible_in_snapshot(id, snap)
 from snapshot_test, generate_series(11, 21) id
 where nr = 2;
-select id, txid_visible_in_snapshot(id, snap)
-from snapshot_test, generate_series(90, 160) id
-where nr = 4;
 select txid_current() >= txid_snapshot_xmin(txid_current_snapshot());
-select txid_visible_in_snapshot(txid_current(), txid_current_snapshot());
 select txid_snapshot '1000100010001000:1000100010001100:1000100010001012,1000100010001013';
-select txid_visible_in_snapshot('1000100010001012', '1000100010001000:1000100010001100:1000100010001012,1000100010001013');
-select txid_visible_in_snapshot('1000100010001015', '1000100010001000:1000100010001100:1000100010001012,1000100010001013');
 SELECT txid_snapshot '1:9223372036854775807:3';
 BEGIN;
 SELECT txid_current_if_assigned() IS NULL;

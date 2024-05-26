@@ -1,4 +1,3 @@
-SET join_use_nulls = 1;
 SELECT '--';
 select c FROM (
     select

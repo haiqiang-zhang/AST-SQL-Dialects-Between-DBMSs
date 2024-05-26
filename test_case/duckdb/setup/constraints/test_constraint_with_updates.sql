@@ -1,0 +1,10 @@
+CREATE TABLE integers(i INTEGER, j INTEGER CHECK(i + j < 5), k INTEGER);
+INSERT INTO integers VALUES (1, 2, 4);
+UPDATE integers SET k=7;
+UPDATE integers SET i=i, j=3;
+UPDATE integers SET i=i, j=3;
+UPDATE integers SET j=2;
+DROP TABLE integers;
+CREATE TABLE integers(i INTEGER NOT NULL, j INTEGER NOT NULL);
+INSERT INTO integers VALUES (1, 2);
+UPDATE integers SET j=3;

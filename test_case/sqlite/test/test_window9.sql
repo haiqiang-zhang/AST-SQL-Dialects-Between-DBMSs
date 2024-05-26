@@ -1,22 +1,10 @@
 SELECT name, color, dense_rank() OVER (ORDER BY name) FROM fruits;
-SELECT name, color,
-    dense_rank() OVER (PARTITION BY name ORDER BY color)
-  FROM fruits;
-SELECT name, color,
-    dense_rank() OVER (ORDER BY name),
-    dense_rank() OVER (PARTITION BY name ORDER BY color)
-  FROM fruits;
-SELECT name, color,
-    dense_rank() OVER (ORDER BY name),
-    dense_rank() OVER (PARTITION BY name ORDER BY color)
-  FROM fruits ORDER BY color;
 CREATE TABLE t1(a BLOB, b INTEGER, c COLLATE nocase);
 INSERT INTO t1 VALUES(1, 2, 'abc');
 INSERT INTO t1 VALUES(3, 4, 'ABC');
 SELECT c=='Abc' FROM t1;
 SELECT c=='Abc', rank() OVER (ORDER BY b) FROM t1;
 SELECT b=='2' FROM t1;
-SELECT b=='2', rank() OVER (ORDER BY a) FROM t1;
 CREATE TABLE t2(a,b,c);
 SELECT EXISTS(SELECT 1 FROM t1 ORDER BY sum(a) OVER ()) FROM t1;
 SELECT sum(a) OVER () FROM t2

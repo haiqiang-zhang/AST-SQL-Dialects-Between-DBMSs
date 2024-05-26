@@ -1,4 +1,3 @@
-CREATE INDEX i1 ON t1(a, b);
 SELECT c FROM t1 WHERE (a, b) >= (1, 0);
 SELECT c FROM t1 WHERE (a, b) > (1, 0);
 CREATE TABLE t2(a INTEGER, b INTEGER, c INTEGER, d INTEGER);

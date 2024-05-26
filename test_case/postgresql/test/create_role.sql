@@ -1,5 +1,3 @@
-CREATE INDEX tenant_idx ON tenant_table(i);
-CREATE VIEW tenant_view AS SELECT * FROM pg_catalog.pg_class;
 REVOKE ALL PRIVILEGES ON tenant_table FROM PUBLIC;
 DROP INDEX tenant_idx;
 ALTER TABLE tenant_table ADD COLUMN t text;

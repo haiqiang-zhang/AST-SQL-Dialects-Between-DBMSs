@@ -1,55 +1,3 @@
-CREATE INDEX i1 ON t1(a);
-DELETE FROM t1;
-DELETE FROM t1 INDEXED BY i1;
-DELETE FROM t1 NOT INDEXED;
-DELETE FROM main.t1;
-DELETE FROM main.t1 INDEXED BY i1;
-DELETE FROM main.t1 NOT INDEXED;
-DELETE FROM t1 WHERE a>2;
-DELETE FROM t1 INDEXED BY i1 WHERE a>2;
-DELETE FROM t1 NOT INDEXED WHERE a>2;
-DELETE FROM main.t1 WHERE a>2;
-DELETE FROM main.t1 INDEXED BY i1 WHERE a>2;
-DELETE FROM main.t1 NOT INDEXED WHERE a>2;
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(x, y);
-INSERT INTO t1 VALUES(1, 'one');
-INSERT INTO t1 VALUES(2, 'two');
-INSERT INTO t1 VALUES(3, 'three');
-INSERT INTO t1 VALUES(4, 'four');
-INSERT INTO t1 VALUES(5, 'five');
-CREATE TABLE t2(x, y);
-INSERT INTO t2 VALUES(1, 'one');
-INSERT INTO t2 VALUES(2, 'two');
-INSERT INTO t2 VALUES(3, 'three');
-INSERT INTO t2 VALUES(4, 'four');
-INSERT INTO t2 VALUES(5, 'five');
-CREATE TABLE t3(x, y);
-INSERT INTO t3 VALUES(1, 'one');
-INSERT INTO t3 VALUES(2, 'two');
-INSERT INTO t3 VALUES(3, 'three');
-INSERT INTO t3 VALUES(4, 'four');
-INSERT INTO t3 VALUES(5, 'five');
-CREATE TABLE t4(x, y);
-INSERT INTO t4 VALUES(1, 'one');
-INSERT INTO t4 VALUES(2, 'two');
-INSERT INTO t4 VALUES(3, 'three');
-INSERT INTO t4 VALUES(4, 'four');
-INSERT INTO t4 VALUES(5, 'five');
-CREATE TABLE t5(x, y);
-INSERT INTO t5 VALUES(1, 'one');
-INSERT INTO t5 VALUES(2, 'two');
-INSERT INTO t5 VALUES(3, 'three');
-INSERT INTO t5 VALUES(4, 'four');
-INSERT INTO t5 VALUES(5, 'five');
-CREATE TABLE t6(x, y);
-INSERT INTO t6 VALUES(1, 'one');
-INSERT INTO t6 VALUES(2, 'two');
-INSERT INTO t6 VALUES(3, 'three');
-INSERT INTO t6 VALUES(4, 'four');
-INSERT INTO t6 VALUES(5, 'five');
-DELETE FROM t1;
 SELECT * FROM t1;
 DELETE FROM main.t2;
 SELECT * FROM t2;
@@ -102,31 +50,12 @@ SELECT count(*) FROM aux.t9
         UNION ALL
       SELECT count(*) FROM aux2.t9;
 INSERT INTO main.t8 VALUES(1, 2);
-SELECT count(*) FROM temp.t7 
-        UNION ALL
-      SELECT count(*) FROM main.t7
-        UNION ALL
-      SELECT count(*) FROM aux.t7
-        UNION ALL
-      SELECT count(*) FROM aux2.t7;
 DELETE FROM main.t8 WHERE oid>1;
 DELETE FROM aux.t8 WHERE oid>1;
 INSERT INTO aux.t9 VALUES(1, 2);
 INSERT INTO main.t7 VALUES(3, 4);
-SELECT count(*) FROM temp.t7 UNION ALL SELECT count(*) FROM main.t7 UNION ALL
-  SELECT count(*) FROM aux.t7  UNION ALL SELECT count(*) FROM aux2.t7;
-SELECT count(*) FROM main.t8 UNION ALL SELECT count(*) FROM aux.t8  
-  UNION ALL SELECT count(*) FROM aux2.t8;
-SELECT count(*) FROM aux.t9  UNION ALL SELECT count(*) FROM aux2.t9;
-SELECT count(*) FROM aux2.t10;
 DELETE FROM t8;
 DELETE FROM t9;
 DELETE FROM t10;
 INSERT INTO temp.t7 VALUES('hello', 'world');
-SELECT count(*) FROM temp.t7 UNION ALL SELECT count(*) FROM main.t7 UNION ALL
-  SELECT count(*) FROM aux.t7  UNION ALL SELECT count(*) FROM aux2.t7;
-SELECT count(*) FROM main.t8 UNION ALL SELECT count(*) FROM aux.t8  
-  UNION ALL SELECT count(*) FROM aux2.t8;
-SELECT count(*) FROM aux.t9  UNION ALL SELECT count(*) FROM aux2.t9;
-SELECT count(*) FROM aux2.t10;
 CREATE INDEX i8 ON t8(a, b);

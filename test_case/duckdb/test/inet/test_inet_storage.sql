@@ -1,0 +1,5 @@
+DESCRIBE tbl;
+DESCRIBE tbl;
+SELECT i FROM tbl ORDER BY id;
+SELECT i FROM tbl WHERE id%2=1 ORDER BY id;
+SELECT * FROM iview;

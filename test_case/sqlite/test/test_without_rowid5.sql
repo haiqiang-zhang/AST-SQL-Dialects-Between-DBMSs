@@ -21,10 +21,8 @@ CREATE TABLE IF NOT EXISTS wordcount_d(
 INSERT INTO wordcount_d VALUES('one',1);
 CREATE TABLE ipk(key INTEGER PRIMARY KEY, val TEXT) WITHOUT ROWID;
 INSERT INTO ipk VALUES('rival','bonus');
--- ok to insert non-integer key
-  SELECT * FROM ipk;
+SELECT * FROM ipk;
 BEGIN;
--- no automatic generation of keys;
 CREATE TABLE nn(a, b, c, d, e, PRIMARY KEY(c,a,e));
 CREATE TABLE nnw(a, b, c, d, e, PRIMARY KEY(c,a,e)) WITHOUT ROWID;
 INSERT INTO nn VALUES(1,2,3,4,5);
@@ -33,6 +31,5 @@ INSERT INTO nn VALUES(NULL, 3,4,5,6);
 INSERT INTO nn VALUES(3,4,NULL,7,8);
 INSERT INTO nn VALUES(4,5,6,7,NULL);
 SELECT count(*) FROM nn;
-SELECT count(*) FROM nnw;
 CREATE TABLE b1(a INTEGER PRIMARY KEY, b BLOB) WITHOUT ROWID;
 INSERT INTO b1 VALUES(1,x'0102030405060708090a0b0c0d0e0f');

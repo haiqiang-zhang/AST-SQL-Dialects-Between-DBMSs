@@ -1,13 +1,6 @@
-drop database if exists events_test;
-drop database if exists mysqltest_db1;
-drop database if exists mysqltest_db2;
-create database events_test;
 select * from performance_schema.global_variables where variable_name like 'event_scheduler';
 CREATE EVENT lower_case ON SCHEDULE EVERY 1 MINUTE DO SELECT 1;
 DROP EVENT Lower_case;
-CREATE EVENT ÃÂ¤ÃÂ®ÃÂ«ÃÂ¥ÃÂ­_ÃÂ°ÃÂ¥ÃÂ£ÃÂ¨ÃÂ±ÃÂ²ÃÂºÃÂ°_1251 ON SCHEDULE EVERY 1 YEAR DO SELECT 100;
-CREATE EVENT ÃÂÃÂ®ÃÂÃÂ¥ÃÂ_ÃÂ°ÃÂ¥ÃÂ£ÃÂ¨ÃÂ±ÃÂ²ÃÂºÃÂ°_1251 ON SCHEDULE EVERY 2 YEAR DO SELECT 200;
-DROP EVENT ÃÂÃÂ®ÃÂÃÂ¥ÃÂ_ÃÂ°ÃÂ¥ÃÂ£ÃÂ¨ÃÂ±ÃÂ²ÃÂºÃÂ°_1251;
 create event e_55 on schedule at 20000101000000 do drop table t;
 select get_lock('test_bug16407', 60);
 select count(*) > 0 from information_schema.processlist
@@ -20,17 +13,12 @@ select count(*) = 0 from information_schema.processlist
 SELECT * FROM information_schema.processlist;
 select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name;
 select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name;
-select get_lock('ee_16407_2', 60);
 create table events_smode_test(ev_name char(10), a date);
-select release_lock('ee_16407_2');
-select release_lock('ee_16407_2');
-select release_lock('ee_16407_2');
 select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name;
 select count(*) = 3 from information_schema.processlist
   where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)';
 select /*2*/ user, host, db, info from information_schema.processlist
 where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)';
-select release_lock('ee_16407_2');
 select count(*) = 0
   from information_schema.processlist
   where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)';
@@ -38,14 +26,10 @@ SELECT * FROM information_schema.processlist;
 select /*3*/ user, host, db, info from information_schema.processlist
 where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)';
 select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name;
-select get_lock('ee_16407_5', 60);
-select release_lock('ee_16407_5');
-select release_lock('ee_16407_5');
 select count(*) = 2 from information_schema.processlist
   where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)';
 select /*4*/ user, host, db, info from information_schema.processlist
 where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)';
-select release_lock('ee_16407_5');
 select count(*) = 0 from information_schema.processlist
   where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)';
 select /*5*/ user, host, db, info from information_schema.processlist
@@ -76,11 +60,8 @@ create table t1 (a int);
 insert into t1 values (2);
 create table t2 (a char(20));
 insert into t2 values ("e22830_1");
-select get_lock('ee_22830', 60);
-select release_lock('ee_22830');
 select 123;
 select event_name, event_definition, interval_value, interval_field from information_schema.events order by event_name;
-select release_lock('ee_22830');
 select group_concat(interval_value order by interval_value) = '1,1,1,8'
   from information_schema.events;
 select event_name, event_definition, interval_value, interval_field from information_schema.events order by event_name;
@@ -234,8 +215,6 @@ CREATE EVENT e1 ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 DAY DO INSERT INTO
 SELECT SLEEP(3);
 DROP TABLE t1;
 CREATE EVENT cafe ON SCHEDULE EVERY 2 YEAR DO SELECT 1;
-CREATE EVENT cafÃÂÃÂ© ON SCHEDULE EVERY 2 YEAR DO SELECT 1;
-DROP EVENT CaFÃÂÃÂ©;
 CREATE EVENT my_event
     ON SCHEDULE EVERY 2 SECOND
       STARTS '2019-08-01 01:20:30'

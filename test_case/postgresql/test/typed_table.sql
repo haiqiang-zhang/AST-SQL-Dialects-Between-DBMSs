@@ -1,6 +1,3 @@
-CREATE TYPE person_type AS (id int, name text);
-CREATE TABLE persons OF person_type;
-CREATE TABLE IF NOT EXISTS persons OF person_type;
 SELECT * FROM persons;
 CREATE FUNCTION get_all_persons() RETURNS SETOF person_type
 LANGUAGE SQL

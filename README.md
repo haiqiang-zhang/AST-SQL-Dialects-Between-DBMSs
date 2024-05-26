@@ -1,5 +1,7 @@
 # Understanding the Difference Between SQL Dialects using DBMS Test Suites
 
+The README.md will be updated, so please check our project repository for the latest information.
+
 The project website is available at [https://github.com/haiqiang-zhang/AST-SQL-Dialects-Testing-Between-DBMSs](https://github.com/haiqiang-zhang/AST-SQL-Dialects-Testing-Between-DBMSs)
 
 
@@ -40,6 +42,7 @@ The test results are available in the `test_result` folder.
         * Please install the DuckDB and start the service.
     * ClickHouse
         * Please install the ClickHouse and start the service.
+* configure the test process in the start of `test_main.py`.
 * run the `test_main.py` script to test the compatibility of the SQL dialects.
 
 
@@ -48,3 +51,6 @@ There are three mandatory folders for each DBMS:
 * `setup`: the setup SQL script for the DBMS.
 * `test`: the test SQL script for the DBMS.
 * `result`: the expected result of the test SQL script. (each test sql script should have a corresponding result file)
+Some of folders we provide for MySQL, PostgreSQL, SQLite, DuckDB, ClickHouse test cases:
+* `unsplit`: the sql script that combines setup and test cases together.
+* `test_raw`: the raw test sql script extracted from official test suites.

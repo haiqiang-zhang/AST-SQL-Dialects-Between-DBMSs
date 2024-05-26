@@ -1,6 +1,3 @@
-begin;
-rollback;
-create temporary table gexec_test(a int, b text, c date, d float);
 prepare q as select repeat('x',2*n) as "0123456789abcdef", repeat('y',20-2*n) as "0123456789" from generate_series(1,10) as n;
 execute q;
 execute q;

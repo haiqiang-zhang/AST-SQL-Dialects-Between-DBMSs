@@ -1,14 +1,9 @@
 SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 1;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 2;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 5;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 10;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 20;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 DROP TABLE IF EXISTS stripe1;
 DROP TABLE IF EXISTS stripe2;
 DROP TABLE IF EXISTS stripe3;

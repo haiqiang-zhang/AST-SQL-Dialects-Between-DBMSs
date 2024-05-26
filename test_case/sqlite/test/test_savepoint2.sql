@@ -1,6 +1,3 @@
-PRAGMA cache_size=10;
-BEGIN;
-CREATE TABLE t3(x TEXT);
 SELECT count(*) FROM t3;
 PRAGMA integrity_check;
 PRAGMA integrity_check;

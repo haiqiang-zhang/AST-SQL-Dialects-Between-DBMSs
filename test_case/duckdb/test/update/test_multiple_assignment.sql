@@ -1,0 +1,4 @@
+SELECT * FROM tbl;
+SELECT * FROM tbl;
+SELECT * FROM tbl;
+SELECT * FROM tbl;

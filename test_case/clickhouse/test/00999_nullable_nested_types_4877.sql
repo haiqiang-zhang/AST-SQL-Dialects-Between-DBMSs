@@ -1,4 +1,3 @@
-SET join_use_nulls = 0;
 SELECT * from l LEFT JOIN r USING a ORDER BY a;
 SELECT a from l RIGHT JOIN r USING a ORDER BY a;
 SELECT * from l RIGHT JOIN r USING a ORDER BY a;

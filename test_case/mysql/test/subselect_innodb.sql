@@ -1,8 +1,3 @@
-CREATE INDEX FFOLDERID_IDX ON t1 (FOLDERID);
-CREATE INDEX CMFLDRPARNT_IDX ON t1 (PARENTID);
-INSERT INTO t1 VALUES("0c9aab05b15048c59bc35c8461507deb", "System", "System", "2003-06-05 16:30:00", "The system content repository folder.", "3", "2003-06-05 16:30:00", "System", "0", NULL, "9c9aab05b15048c59bc35c8461507deb", "1");
-INSERT INTO t1 VALUES("2f6161e879db43c1a5b82c21ddc49089", "Default", "System", "2003-06-09 10:52:02", "The default content repository folder.", "3", "2003-06-05 16:30:00", "System", "0", NULL, "03eea05112b845949f3fd03278b5fe43", "1");
-INSERT INTO t1 VALUES("c373e9f5ad0791724315444553544200", "AddDocumentTest", "admin", "2003-06-09 10:51:25", "Movie Reviews", "0", "2003-06-09 10:51:25", "admin", "0", "2f6161e879db43c1a5b82c21ddc49089", "03eea05112b845949f3fd03278b5fe43", NULL);
 SELECT 'c373e9f5ad0791a0dab5444553544200' IN(SELECT t1.FOLDERID FROM t1 WHERE t1.PARENTID='2f6161e879db43c1a5b82c21ddc49089' AND t1.FOLDERNAME = 'Level1');
 drop table t1;
 create table t1 (a int) engine=innodb;
@@ -194,7 +189,6 @@ INSERT INTO t3 VALUES("c373e9f5ad0791ab034b444553544200", "LevelB", "admin", "20
 INSERT INTO t3 VALUES("c373e9f5ad0791ac7311444553544200", "LevelC", "admin", "2003-06-09 10:51:32", NULL, "0", "2003-06-09 10:51:32", "admin", "0", "c373e9f5ad0791ab034b444553544200", "03eea05112b845949f3fd03278b5fe43", NULL);
 INSERT INTO t3 VALUES("c373e9f5ad0791ad66cf444553544200", "test2", "admin", "2003-06-09 10:51:32", NULL, "0", "2003-06-09 10:51:32", "admin", "0", "c373e9f5ad0791724315444553544200", "03eea05112b845949f3fd03278b5fe43", NULL);
 INSERT INTO t3 VALUES("c373e9f5ad0791aebd87444553544200", "test3", "admin", "2003-06-09 10:51:33", NULL, "0", "2003-06-09 10:51:33", "admin", "0", "c373e9f5ad0791ad66cf444553544200", "03eea05112b845949f3fd03278b5fe43", NULL);
-INSERT INTO t3 VALUES("c373e9f5ad0791dbaac4444553544200", "Special CafÃÂÃÂ© Folder", "admin", "2003-06-09 10:51:43", "test folder names with special chars", "0", "2003-06-09 10:51:43", "admin", "0", "2f6161e879db43c1a5b82c21ddc49089", "03eea05112b845949f3fd03278b5fe43", NULL);
 INSERT INTO t3 VALUES("c373e9f5ad0796bf913f444553544200", "CopiedFolder", "admin", "2003-06-09 11:09:05", "Movie Reviews", "0", "2003-06-09 11:09:05", "admin", "0", "c373e9f5ad0791a23c0e444553544200", "03eea05112b845949f3fd03278b5fe43", NULL);
 INSERT INTO t3 VALUES("c373e9f5ad0796c0eca4444553544200", "Movie Reviews", "admin", "2003-06-09 11:09:13", "Movie Reviews", "0", "2003-06-09 11:09:13", "admin", "33", "c373e9f5ad0796bf913f444553544200", "03eea05112b845949f3fd03278b5fe43", NULL);
 INSERT INTO t3 VALUES("c373e9f5ad0796d9b895444553544200", "NewBookFolder", "admin", "2003-06-09 11:12:41", "NewBooks - folder", "0", "2003-06-09 11:12:41", "admin", "0", "c373e9f5ad0796c0eca4444553544200", "03eea05112b845949f3fd03278b5fe43", NULL);
@@ -205,7 +199,6 @@ INSERT INTO t4 VALUES("4d09dd60850711d4998a204c4f4f5020", "__SystemResourceType"
 INSERT INTO t4 VALUES("91d4d595478211d497b40010a4ef934d", "__PmcSystemDefaultType", "The type for all the default available fields", NULL, "2003-06-05 16:30:00", "System", "1");
 INSERT INTO t4 VALUES("c373e9f59cf15a59b08a444553544200", "NoFieldDocType", "plain doc type", NULL, "2003-06-06 07:48:40", "admin", NULL);
 INSERT INTO t4 VALUES("c373e9f59cf15a5c6a99444553544200", "Movie Review", "This doc type is for movie reviews", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<props autocheckin=\"false\" autopublish=\"false\" binary=\"choice\" categories=\"none\" cleanup=\"false\" folder=\"none\"><![CDATA[Doc type for cm tests]]></props>\r\n", "2003-06-06 07:48:40", "admin", NULL);
-INSERT INTO t4 VALUES("c373e9f59cf15a6116a5444553544200", "Special DocÃÂÃÂu20A4u20A4u0113ÃÂÃÂ©ÃÂÃÂ©ÃÂÃÂ¸ÃÂÃÂu016BType", "test special chars xxxÃÂÃÂ© in doc type", NULL, "2003-06-06 07:48:41", "admin", NULL);
 INSERT INTO t4 VALUES("c373e9f59cf15a695d47444553544200", "Movie", NULL, NULL, "2003-06-06 07:48:41", "admin", NULL);
 INSERT INTO t4 VALUES("c373e9f5ad079174ff17444553544200", "Discussion", NULL, NULL, "2003-06-09 10:51:25", "admin", NULL);
 INSERT INTO t4 VALUES("c373e9f5ad0791da7e2b444553544200", "Books", "list of recommended books", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<props autocheckin=\"false\" autopublish=\"false\" binary=\"choice\" categories=\"none\" cleanup=\"false\" folder=\"none\"><![CDATA[Doc type for cm tests]]><![CDATA[Doc type for book tests]]></props>\r\n", "2003-06-09 10:51:40", "admin", NULL);

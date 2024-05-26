@@ -1,0 +1,6 @@
+PRAGMA enable_verification;
+BEGIN TRANSACTION;
+CREATE TABLE integers(i INTEGER, j INTEGER);
+INSERT INTO integers VALUES (1, 1), (2, 2), (3, 3);
+ALTER TABLE integers ALTER j TYPE BIGINT;
+COMMIT;

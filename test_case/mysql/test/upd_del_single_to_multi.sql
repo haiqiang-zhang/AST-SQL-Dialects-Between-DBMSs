@@ -1,4 +1,3 @@
-update t1 set t1.a=3 where a in (select a from t2);
 select * from t1;
 delete from t1;
 insert into t1 values(10),(11),(12),(13),(14),(15),(16);

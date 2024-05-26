@@ -1,0 +1,7 @@
+CREATE TABLE t1(
+    a INT,
+    b INTEGER,
+    c BLOB,
+    d TEXT,
+    e REAL
+  ) STRICT;

@@ -1,0 +1,3 @@
+PRAGMA enable_verification;
+CREATE TABLE a(i INTEGER);
+INSERT INTO a VALUES (42);

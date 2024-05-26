@@ -1,4 +1,3 @@
-PRAGMA auto_vacuum = off;
 VACUUM;
 VACUUM;
 PRAGMA page_count;

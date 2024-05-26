@@ -3,8 +3,6 @@ SELECT 70 = 10 * sum(t1.id) + sum(t2.id) AND count() == 4 FROM t1 JOIN t2 ON 1;
 SELECT 70 = 10 * sum(t1.id) + sum(t2.id) AND count() == 4 FROM t1 JOIN t2 ON 2 = 2 AND 3 = 3;
 SELECT 70 = 10 * sum(t1.id) + sum(t2.id) AND count() == 4 FROM t1 JOIN t2 ON toNullable(1);
 SELECT 70 = 10 * sum(t1.id) + sum(t2.id) AND count() == 4 FROM t1 JOIN t2 ON toLowCardinality(1);
-SELECT 70 = 10 * sum(t1.id) + sum(t2.id) AND count() == 4 FROM t1 JOIN t2 ON toLowCardinality(toNullable(1));
-SELECT 70 = 10 * sum(t1.id) + sum(t2.id) AND count() == 4 FROM t1 JOIN t2 ON toNullable(toLowCardinality(1));
 SELECT '- ON NULL -';
 SELECT '- inner -';
 SELECT * FROM t1 JOIN t2 ON NULL;
@@ -49,16 +47,6 @@ SETTINGS allow_experimental_analyzer=1, join_use_nulls=1;
 SELECT a + 1, x + 1, toTypeName(a), toTypeName(x)
 FROM (SELECT 1 as x) as t1
 LEFT JOIN ( SELECT sum(number) as a from numbers(3) GROUP BY NULL) AS t2
-ON TRUE
-SETTINGS allow_experimental_analyzer=1, join_use_nulls=1;
-SELECT a + 1, x + 1, toTypeName(a), toTypeName(x)
-FROM (SELECT 1 as x) as t1
-RIGHT JOIN ( SELECT sum(number) as a from numbers(3) GROUP BY NULL) AS t2
-ON TRUE
-SETTINGS allow_experimental_analyzer=1, join_use_nulls=1;
-SELECT a + 1, x + 1, toTypeName(a), toTypeName(x)
-FROM (SELECT 1 as x) as t1
-FULL JOIN ( SELECT sum(number) as a from numbers(3) GROUP BY NULL) AS t2
 ON TRUE
 SETTINGS allow_experimental_analyzer=1, join_use_nulls=1;
 DROP TABLE IF EXISTS t1;

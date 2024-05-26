@@ -1,10 +1,3 @@
-CREATE INDEX i1w ON t1("w");
--- Verify quoted identifier names
-    CREATE INDEX i1xy ON t1(`x`,'y' ASC);
--- Old MySQL compatibility
-    CREATE INDEX i2p ON t2(p);
-CREATE INDEX i2r ON t2(r);
-CREATE INDEX i2qs ON t2(q, s);
 SELECT x, y, w FROM t1 WHERE w=10;
 SELECT x, y, w FROM t1 WHERE w IS 10;
 EXPLAIN QUERY PLAN 
@@ -357,7 +350,6 @@ CREATE TABLE t202(y, z);
 INSERT INTO t201 VALUES('key');
 INSERT INTO t202 VALUES('key', -1);
 CREATE INDEX t202i ON t202(y, ifnull(z, 0));
-SELECT count(*) FROM t201 LEFT JOIN t202 ON (x=y) WHERE ifnull(z, 0) >=0;
 CREATE TABLE t12(a, b, c);
 CREATE TABLE t13(x);
 CREATE INDEX t12ab ON t12(b, a);
@@ -372,7 +364,6 @@ SELECT * FROM t12 WHERE
   AND (b=1 OR c=1);
 CREATE INDEX t1a ON t1(a);
 INSERT INTO t1(a) VALUES(NULL),(NULL),(42),(NULL),(NULL);
-SELECT count(*) FROM t1 LEFT JOIN t2 ON a IS NOT NULL;
 DROP TABLE IF EXISTS t1;
 DROP TABLE IF EXISTS t2;
 BEGIN;

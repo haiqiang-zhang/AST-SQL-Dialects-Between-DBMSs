@@ -1,13 +1,3 @@
-DROP DICTIONARY IF EXISTS simple_key_flat_dictionary_01862;
-CREATE DICTIONARY simple_key_flat_dictionary_01862
-(
-    id UInt64,
-    value String
-)
-PRIMARY KEY id
-SOURCE(CLICKHOUSE(TABLE 'simple_key_source_table_01862'))
-LAYOUT(FLAT())
-LIFETIME(MIN 0 MAX 1000);
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_flat_dictionary_01862';
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_flat_dictionary_01862';
 SELECT name, round(found_rate, 2) FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_flat_dictionary_01862';
@@ -69,9 +59,6 @@ SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabas
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_cache_dictionary_01862';
 DROP DICTIONARY simple_key_cache_dictionary_01862;
 DROP TABLE simple_key_source_table_01862;
--- Complex key
---
-
 DROP TABLE IF EXISTS complex_key_source_table_01862;
 CREATE TABLE complex_key_source_table_01862
 (
@@ -126,8 +113,6 @@ SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabas
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'complex_key_cache_dictionary_01862';
 DROP DICTIONARY complex_key_cache_dictionary_01862;
 DROP TABLE complex_key_source_table_01862;
--- Range
---
 DROP TABLE IF EXISTS range_key_source_table_01862;
 CREATE TABLE range_key_source_table_01862
 (
@@ -156,8 +141,6 @@ SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabas
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_range_hashed_dictionary_01862';
 DROP DICTIONARY simple_key_range_hashed_dictionary_01862;
 DROP TABLE range_key_source_table_01862;
--- IP Trie
---
 DROP TABLE IF EXISTS ip_trie_source_table_01862;
 CREATE TABLE ip_trie_source_table_01862
 (

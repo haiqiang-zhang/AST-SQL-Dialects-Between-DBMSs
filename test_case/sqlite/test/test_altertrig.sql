@@ -1,4 +1,3 @@
-ALTER TABLE t3 RENAME TO t5;
 SELECT sql FROM sqlite_schema WHERE type='trigger';
 ALTER TABLE t5 RENAME TO t3;
 SELECT sql FROM sqlite_schema WHERE type='trigger';

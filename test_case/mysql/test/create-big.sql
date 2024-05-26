@@ -1,5 +1,15 @@
 select count(*) = 1 from information_schema.processlist
     where state = "Waiting for table metadata lock" and
+          info = "create table t1 (j char(5))";
+select count(*) = 1 from information_schema.processlist
+    where state = "Waiting for table metadata lock" and
+          info = "create table t1 select 'Test' as j";
+create table t3 (j char(5));
+select count(*) = 1 from information_schema.processlist
+    where state = "Waiting for table metadata lock" and
+          info = "create table t1 like t3";
+select count(*) = 1 from information_schema.processlist
+    where state = "Waiting for table metadata lock" and
           info = "rename table t3 to t1";
 select count(*) = 1 from information_schema.processlist
     where state = "Waiting for table metadata lock" and

@@ -1,14 +1,6 @@
-SET extra_float_digits = 0;
-CREATE TABLE aggtest (
-	a 			int2,
-	b			float4
-);
 ANALYZE aggtest;
 SELECT avg(a) AS avg_32 FROM aggtest WHERE a < 100;
 SELECT any_value(v) FROM (VALUES (1), (2), (3)) AS v (v);
-SELECT any_value(v) FROM (VALUES (NULL)) AS v (v);
-SELECT any_value(v) FROM (VALUES (NULL), (1), (2)) AS v (v);
-SELECT any_value(v) FROM (VALUES (array['hello', 'world'])) AS v (v);
 SELECT avg(b)::numeric(10,3) AS avg_107_943 FROM aggtest;
 SELECT sum(a) AS sum_198 FROM aggtest;
 SELECT sum(b) AS avg_431_773 FROM aggtest;
@@ -18,62 +10,14 @@ SELECT stddev_pop(b) FROM aggtest;
 SELECT stddev_samp(b) FROM aggtest;
 SELECT var_pop(b) FROM aggtest;
 SELECT var_samp(b) FROM aggtest;
-SELECT stddev_pop(b::numeric) FROM aggtest;
-SELECT stddev_samp(b::numeric) FROM aggtest;
-SELECT var_pop(b::numeric) FROM aggtest;
-SELECT var_samp(b::numeric) FROM aggtest;
 SELECT var_pop(1.0::float8), var_samp(2.0::float8);
 SELECT stddev_pop(3.0::float8), stddev_samp(4.0::float8);
-SELECT var_pop('inf'::float8), var_samp('inf'::float8);
-SELECT stddev_pop('inf'::float8), stddev_samp('inf'::float8);
-SELECT var_pop('nan'::float8), var_samp('nan'::float8);
-SELECT stddev_pop('nan'::float8), stddev_samp('nan'::float8);
-SELECT var_pop(1.0::float4), var_samp(2.0::float4);
-SELECT stddev_pop(3.0::float4), stddev_samp(4.0::float4);
-SELECT var_pop('inf'::float4), var_samp('inf'::float4);
-SELECT stddev_pop('inf'::float4), stddev_samp('inf'::float4);
-SELECT var_pop('nan'::float4), var_samp('nan'::float4);
-SELECT stddev_pop('nan'::float4), stddev_samp('nan'::float4);
-SELECT var_pop(1.0::numeric), var_samp(2.0::numeric);
-SELECT stddev_pop(3.0::numeric), stddev_samp(4.0::numeric);
-SELECT var_pop('inf'::numeric), var_samp('inf'::numeric);
-SELECT stddev_pop('inf'::numeric), stddev_samp('inf'::numeric);
-SELECT var_pop('nan'::numeric), var_samp('nan'::numeric);
-SELECT stddev_pop('nan'::numeric), stddev_samp('nan'::numeric);
 select sum(null::int4) from generate_series(1,3);
-select sum(null::int8) from generate_series(1,3);
-select sum(null::numeric) from generate_series(1,3);
-select sum(null::float8) from generate_series(1,3);
 select avg(null::int4) from generate_series(1,3);
-select avg(null::int8) from generate_series(1,3);
-select avg(null::numeric) from generate_series(1,3);
-select avg(null::float8) from generate_series(1,3);
-select sum('NaN'::numeric) from generate_series(1,3);
-select avg('NaN'::numeric) from generate_series(1,3);
 SELECT sum(x::float8), avg(x::float8), var_pop(x::float8)
 FROM (VALUES ('1'), ('infinity')) v(x);
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8)
-FROM (VALUES ('infinity'), ('1')) v(x);
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8)
-FROM (VALUES ('infinity'), ('infinity')) v(x);
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8)
-FROM (VALUES ('-infinity'), ('infinity')) v(x);
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8)
-FROM (VALUES ('-infinity'), ('-infinity')) v(x);
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric)
-FROM (VALUES ('1'), ('infinity')) v(x);
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric)
-FROM (VALUES ('infinity'), ('1')) v(x);
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric)
-FROM (VALUES ('infinity'), ('infinity')) v(x);
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric)
-FROM (VALUES ('-infinity'), ('infinity')) v(x);
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric)
-FROM (VALUES ('-infinity'), ('-infinity')) v(x);
 SELECT avg(x::float8), var_pop(x::float8)
 FROM (VALUES (100000003), (100000004), (100000006), (100000007)) v(x);
-SELECT avg(x::float8), var_pop(x::float8)
-FROM (VALUES (7000000000005), (7000000000007)) v(x);
 SELECT regr_count(b, a) FROM aggtest;
 SELECT regr_sxx(b, a) FROM aggtest;
 SELECT regr_syy(b, a) FROM aggtest;
@@ -83,30 +27,15 @@ SELECT regr_r2(b, a) FROM aggtest;
 SELECT regr_slope(b, a), regr_intercept(b, a) FROM aggtest;
 SELECT covar_pop(b, a), covar_samp(b, a) FROM aggtest;
 SELECT corr(b, a) FROM aggtest;
-SELECT covar_pop(1::float8,2::float8), covar_samp(3::float8,4::float8);
-SELECT covar_pop(1::float8,'inf'::float8), covar_samp(3::float8,'inf'::float8);
-SELECT covar_pop(1::float8,'nan'::float8), covar_samp(3::float8,'nan'::float8);
 CREATE TABLE regr_test (x float8, y float8);
 INSERT INTO regr_test VALUES (10,150),(20,250),(30,350),(80,540),(100,200);
 SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x)
 FROM regr_test WHERE x IN (10,20,30,80);
-SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x)
-FROM regr_test;
 SELECT float8_accum('{4,140,2900}'::float8[], 100);
 SELECT float8_regr_accum('{4,140,2900,1290,83075,15050}'::float8[], 200, 100);
-SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x)
-FROM regr_test WHERE x IN (10,20,30);
-SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x)
-FROM regr_test WHERE x IN (80,100);
 SELECT float8_combine('{3,60,200}'::float8[], '{0,0,0}'::float8[]);
-SELECT float8_combine('{0,0,0}'::float8[], '{2,180,200}'::float8[]);
-SELECT float8_combine('{3,60,200}'::float8[], '{2,180,200}'::float8[]);
 SELECT float8_regr_combine('{3,60,200,750,20000,2000}'::float8[],
                            '{0,0,0,0,0,0}'::float8[]);
-SELECT float8_regr_combine('{0,0,0,0,0,0}'::float8[],
-                           '{2,180,200,740,57800,-3400}'::float8[]);
-SELECT float8_regr_combine('{3,60,200,750,20000,2000}'::float8[],
-                           '{2,180,200,740,57800,-3400}'::float8[]);
 DROP TABLE regr_test;
 explain (verbose, costs off)
 select s1, s2, sm
@@ -202,9 +131,6 @@ insert into minmaxtest3 values(17), (18);
 explain (costs off)
   select min(f1), max(f1) from minmaxtest;
 select min(f1), max(f1) from minmaxtest;
-explain (costs off)
-  select distinct min(f1), max(f1) from minmaxtest;
-select distinct min(f1), max(f1) from minmaxtest;
 drop table minmaxtest cascade;
 create temp table t1 (a int, b int, c int, d int, primary key (a, b));
 create temp table t2 (x int, y int, z int, primary key (x, y));
@@ -243,9 +169,6 @@ select t1.f1 from t1 left join t2 using (f1) group by t1.f1;
 select f1, count(*) from
 t1 x(x0,x1) left join (t1 left join t2 using(f1)) on (x0 = 0)
 group by f1;
-select f2, count(*) from
-t1 x(x0,x1) left join (t1 left join t2 using(f2)) on (x0 = 0)
-group by f2;
 drop table t1, t2;
 select array_agg(distinct val)
 from (select null as val from generate_series(1, 2));
@@ -253,20 +176,6 @@ set enable_presorted_aggregate to off;
 reset enable_presorted_aggregate;
 select array_agg(a order by b)
   from (values (1,4),(2,3),(3,1),(4,2)) v(a,b);
-select array_agg(a order by a)
-  from (values (1,4),(2,3),(3,1),(4,2)) v(a,b);
-select array_agg(a order by a desc)
-  from (values (1,4),(2,3),(3,1),(4,2)) v(a,b);
-select array_agg(b order by a desc)
-  from (values (1,4),(2,3),(3,1),(4,2)) v(a,b);
-select array_agg(distinct a)
-  from (values (1),(2),(1),(3),(null),(2)) v(a);
-select array_agg(distinct a order by a)
-  from (values (1),(2),(1),(3),(null),(2)) v(a);
-select array_agg(distinct a order by a desc)
-  from (values (1),(2),(1),(3),(null),(2)) v(a);
-select array_agg(distinct a order by a desc nulls last)
-  from (values (1),(2),(1),(3),(null),(2)) v(a);
 select
     string_agg(distinct 'a', ','),
     sum((
@@ -275,17 +184,10 @@ select
         where a.id = b.id
 )) from unnest(array[1]) a(id);
 select string_agg(a,',') from (values('aaaa'),('bbbb'),('cccc')) g(a);
-select string_agg(a,',') from (values('aaaa'),(null),('bbbb'),('cccc')) g(a);
-select string_agg(a,'AB') from (values(null),(null),('bbbb'),('cccc')) g(a);
-select string_agg(a,',') from (values(null),(null)) g(a);
 create table bytea_test_table(v bytea);
 select string_agg(v, '') from bytea_test_table;
 insert into bytea_test_table values(decode('ff','hex'));
-select string_agg(v, '') from bytea_test_table;
 insert into bytea_test_table values(decode('aa','hex'));
-select string_agg(v, '') from bytea_test_table;
-select string_agg(v, NULL) from bytea_test_table;
-select string_agg(v, decode('ee', 'hex')) from bytea_test_table;
 drop table bytea_test_table;
 create table pagg_test (x int, y int);
 insert into pagg_test
@@ -341,13 +243,6 @@ select any_value(v) filter (where v > 2) from (values (1), (2), (3)) as v (v);
 select (select count(*)
         from (values (1)) t0(inner_c))
 from (values (2),(3)) t1(outer_c);
-select (select count(*) filter (where outer_c <> 0)
-        from (values (1)) t0(inner_c))
-from (values (2),(3)) t1(outer_c);
-select (select count(inner_c) filter (where outer_c <> 0)
-        from (values (1)) t0(inner_c))
-from (values (2),(3)) t1(outer_c);
-select max(0) filter (where b1) from bool_test;
 select (select max(0) filter (where b1)) from bool_test;
 select p, percentile_cont(p) within group (order by x::float8)
 from generate_series(1,5) x,
@@ -355,21 +250,12 @@ from generate_series(1,5) x,
 group by p order by p;
 select percentile_cont(0.5) within group (order by b) from aggtest;
 select percentile_cont(0.5) within group (order by b), sum(b) from aggtest;
-select rank(3) within group (order by x)
-from (values (1),(1),(2),(2),(3),(3),(4)) v(x);
-select cume_dist(3) within group (order by x)
-from (values (1),(1),(2),(2),(3),(3),(4)) v(x);
-select percent_rank(3) within group (order by x)
-from (values (1),(1),(2),(2),(3),(3),(4),(5)) v(x);
-select dense_rank(3) within group (order by x)
-from (values (1),(1),(2),(2),(3),(3),(4)) v(x);
 select percentile_cont(array[0,1,0.25,0.75,0.5,1,0.3,0.32,0.35,0.38,0.4]) within group (order by x)
 from generate_series(1,6) x;
 select percentile_disc(array[0.25,0.5,0.75]) within group (order by x)
 from unnest('{fred,jim,fred,jack,jill,fred,jill,jim,jim,sheila,jim,sheila}'::text[]) u(x);
 select pg_collation_for(percentile_disc(1) within group (order by x collate "POSIX"))
   from (values ('fred'),('jim')) v(x);
-select rank('adam'::varchar) within group (order by x) from (values ('fred'),('jim')) v(x);
 select rank('3') within group (order by x) from generate_series(1,5) x;
 select percent_rank(0) within group (order by x) from generate_series(1,0) x;
 begin work;
@@ -391,23 +277,10 @@ SET enable_hashagg = off;
 SET enable_seqscan = off;
 EXPLAIN (COSTS OFF)
 SELECT count(*) FROM btg GROUP BY y, x;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM btg GROUP BY z, y, w, x;
-EXPLAIN (COSTS OFF) SELECT count(*)
-FROM (SELECT * FROM btg ORDER BY x, y, w, z) AS q1
-GROUP BY w, x, z, y;
 SET enable_hashjoin = off;
 SET enable_nestloop = off;
-EXPLAIN (COSTS OFF)
-SELECT count(*)
-  FROM btg t1 JOIN btg t2 ON t1.z = t2.z AND t1.w = t2.w AND t1.x = t2.x
-  GROUP BY t1.x, t1.y, t1.z, t1.w;
 RESET enable_nestloop;
 RESET enable_hashjoin;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM btg GROUP BY w, x, z, y ORDER BY y, x, z, w;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM btg GROUP BY w, x, y, z ORDER BY x*x, z;
 CREATE INDEX btg_y_x_w_idx ON btg(y, x, w);
 EXPLAIN (VERBOSE, COSTS OFF)
 SELECT y, x, array_agg(distinct w)
@@ -436,9 +309,6 @@ CREATE TABLE agg_sort_order (c1 int PRIMARY KEY, c2 int);
 CREATE UNIQUE INDEX agg_sort_order_c2_idx ON agg_sort_order(c2);
 INSERT INTO agg_sort_order SELECT i, i FROM generate_series(1,100)i;
 ANALYZE agg_sort_order;
-EXPLAIN (COSTS OFF)
-SELECT array_agg(c1 ORDER BY c2),c2
-FROM agg_sort_order WHERE c2 < 100 GROUP BY c1 ORDER BY 2;
 DROP TABLE agg_sort_order CASCADE;
 DROP TABLE btg;
 RESET enable_hashagg;
@@ -502,13 +372,8 @@ SET max_parallel_workers_per_gather = 4;
 SET parallel_leader_participation = off;
 SET enable_indexonlyscan = off;
 ROLLBACK;
-SELECT dense_rank(x) WITHIN GROUP (ORDER BY x) FROM (VALUES (1),(1),(2),(2),(3),(3)) v(x) GROUP BY (x) ORDER BY 1;
 SELECT min(x ORDER BY y) FROM (VALUES(1, NULL)) AS d(x,y);
-SELECT min(x ORDER BY y) FROM (VALUES(1, 2)) AS d(x,y);
 select v||'a', case v||'a' when 'aa' then 1 else 0 end, count(*)
-  from unnest(array['a','b']) u(v)
- group by v||'a' order by 1;
-select v||'a', case when v||'a' = 'aa' then 1 else 0 end, count(*)
   from unnest(array['a','b']) u(v)
  group by v||'a' order by 1;
 set enable_memoize to off;

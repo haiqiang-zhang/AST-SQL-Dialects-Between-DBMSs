@@ -1,8 +1,3 @@
-SET allow_experimental_map_type = 1;
-DROP TABLE IF EXISTS table_map_with_key_integer;
-CREATE TABLE table_map_with_key_integer (d DATE, m Map(Int8, Int8))
-ENGINE = MergeTree() ORDER BY d;
-INSERT INTO table_map_with_key_integer VALUES ('2020-01-01', map(127, 1, 0, 1, -1, 1)) ('2020-01-01', map());
 SELECT 'Map(Int8, Int8)';
 SELECT m FROM table_map_with_key_integer;
 SELECT m[127], m[1], m[0], m[-1] FROM table_map_with_key_integer;

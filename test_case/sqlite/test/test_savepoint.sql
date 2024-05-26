@@ -1,9 +1,3 @@
-PRAGMA lock_status;
-PRAGMA lock_status;
-PRAGMA lock_status;
-PRAGMA lock_status;
-PRAGMA lock_status;
-CREATE TABLE t2(d, e, f);
 SELECT sql FROM sqlite_master;
 CREATE TABLE t3(g, h, i);
 INSERT INTO t3 VALUES('III', 'IV', 'V');
@@ -17,7 +11,6 @@ INSERT INTO blobs VALUES('a twentyeight character blob');
 BEGIN;
 SELECT count(*) FROM blobs;
 SELECT x FROM blobs WHERE rowid = 2;
-SELECT count(*) FROM blobs;
 PRAGMA auto_vacuum = incremental;
 CREATE TABLE t1(a, b, c);
 CREATE INDEX i1 ON t1(a, b);

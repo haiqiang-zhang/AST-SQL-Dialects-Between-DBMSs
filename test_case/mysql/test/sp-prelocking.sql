@@ -1,17 +1,4 @@
-drop database if exists mysqltest;
-drop table if exists t1, t2, t3, t4;
-drop procedure if exists sp1;
-drop procedure if exists sp2;
-drop procedure if exists sp3;
-drop procedure if exists sp4;
-drop function if exists f1;
-drop function if exists f2;
-drop function if exists f3;
-create database mysqltest;
 select 1 as "my-col";
-select database();
-select database();
-select database();
 select database();
 drop database mysqltest;
 create table t1 (a int);

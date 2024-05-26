@@ -1,0 +1,11 @@
+ATTACH ':memory:' as db2;
+create schema db2.schema1;
+drop schema db2.schema1;
+drop schema schema1;
+select current_schema();
+select current_schema();
+select current_schema();
+select current_schema();
+select current_schema();
+select current_schema();
+select current_schema();

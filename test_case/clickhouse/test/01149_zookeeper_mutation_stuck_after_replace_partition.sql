@@ -1,8 +1,3 @@
-SET insert_keeper_fault_injection_probability=0;
-drop table if exists mt;
-drop table if exists rmt sync;
-create table mt (n UInt64, s String) engine = MergeTree partition by intDiv(n, 10) order by n;
-insert into mt values (3, '3'), (4, '4');
 select * from mt;
 select table, partition_id, name, rows from system.parts where database=currentDatabase() and table in ('mt', 'rmt') and active=1 order by table, name;
 SET mutations_sync = 1;

@@ -125,21 +125,13 @@ drop table t1;
 create table t1 (a char(10) character set koi8r);
 select a,hex(a) from t1;
 alter table t1 change a a char(10) character set cp1251;
-select a,hex(a) from t1;
 alter table t1 change a a binary(4);
-select hex(a) from t1;
 alter table t1 change a a char(10) character set cp1251;
-select a,hex(a) from t1;
 alter table t1 change a a char(10) character set koi8r;
-select a,hex(a) from t1;
 alter table t1 change a a varchar(10) character set cp1251;
-select a,hex(a) from t1;
 alter table t1 change a a char(10) character set koi8r;
-select a,hex(a) from t1;
 alter table t1 change a a text character set cp1251;
-select a,hex(a) from t1;
 alter table t1 change a a char(10) character set koi8r;
-select a,hex(a) from t1;
 delete from t1;
 alter table t1 DEFAULT CHARACTER SET latin1;
 alter table t1 CONVERT TO CHARACTER SET latin1;
@@ -159,9 +151,7 @@ drop table t1;
 CREATE TABLE T12207(a int) ENGINE=MYISAM;
 DROP TABLE T12207;
 create table t1 (a text) character set koi8r;
-select hex(a) from t1;
 alter table t1 convert to character set cp1251;
-select hex(a) from t1;
 drop table t1;
 create table t1 ( a timestamp );
 drop table t1;
@@ -292,15 +282,11 @@ CREATE TABLE t1 (s CHAR(8) BINARY);
 INSERT INTO t1 VALUES ('test');
 SELECT LENGTH(s) FROM t1;
 ALTER TABLE t1 MODIFY s CHAR(10) BINARY;
-SELECT LENGTH(s) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (s BINARY(8));
 INSERT INTO t1 VALUES ('test');
-SELECT LENGTH(s) FROM t1;
 SELECT HEX(s) FROM t1;
 ALTER TABLE t1 MODIFY s BINARY(10);
-SELECT HEX(s) FROM t1;
-SELECT LENGTH(s) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (v VARCHAR(3), b INT);
 INSERT INTO t1 VALUES ('abc', 5);
@@ -761,7 +747,6 @@ DROP TABLE t1;
 CREATE TABLE t1(fld1 VARCHAR(3072), KEY a(fld1)) charset latin1 ENGINE= INNODB
 ROW_FORMAT= DYNAMIC;
 INSERT INTO t1 VALUES('a');
-SELECT COUNT(*) FROM t1 WHERE fld1= 'a';
 DROP TABLE t1;
 CREATE TABLE t1(fld1 int, key key1(fld1)) ENGINE= INNODB;
 ALTER TABLE t1 DROP INDEX key1, ADD INDEX key1(fld1) COMMENT 'test',
@@ -1001,9 +986,6 @@ SELECT schema_name, table_name, column_name,
        JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE foo RENAME COLUMN col1 TO col2;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE foo;
 SELECT * FROM t1;
 DROP VIEW v1;
@@ -1067,9 +1049,6 @@ CREATE TABLE t3 (t3_fld1 LONGTEXT) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (REPEAT('a',300));
 INSERT INTO t2 VALUES (REPEAT('b',65680));
 INSERT INTO t3 VALUES (REPEAT('c',16777300));
-SELECT LENGTH(t1_fld1) FROM t1;
-SELECT LENGTH(t2_fld1) FROM t2;
-SELECT LENGTH(t3_fld1) FROM t3;
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1(c1 VARCHAR(512) CHARSET SWE7);
 ALTER TABLE t1 MODIFY COLUMN c1 VARCHAR(512) CHARSET BINARY,
@@ -1328,7 +1307,6 @@ INSERT INTO t1 VALUES('a');
 SELECT partition_name, table_rows FROM
 information_schema.partitions WHERE table_name = 't1';
 SELECT * FROM t1 PARTITION(p2);
-SELECT * FROM t1 PARTITION(p1);
 CREATE TABLE t2(c1 VARCHAR(10)) COLLATE=utf8mb4_bin;
 ALTER TABLE t1 MODIFY c1 VARCHAR(10) CHARSET utf8mb4, ALGORITHM=INPLACE;
 CREATE TABLE t3(c1 VARCHAR(10), c2 VARCHAR(10) COLLATE utf8mb4_bin) PARTITION BY KEY(c1) PARTITIONS 3;

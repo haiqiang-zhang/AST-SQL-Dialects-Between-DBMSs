@@ -6,6 +6,3 @@ SELECT ignore(*) FROM (
     LEFT ANY JOIN user
     ON uId = `uuu`
 );
-SELECT ignore(*) FROM order
-LEFT ANY JOIN user ON uId = user.id
-LEFT ANY JOIN product ON pId = product.id;

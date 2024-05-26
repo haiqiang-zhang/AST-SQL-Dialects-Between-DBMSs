@@ -1,6 +1,3 @@
-SET enable_optimize_predicate_expression = 1;
-SET joined_subquery_requires_alias = 0;
-SET convert_query_to_cnf = 0;
 EXPLAIN SYNTAX SELECT co,co2,co3,num FROM ( SELECT co,co2,co3,count() AS num FROM (SELECT dummy+1 AS co,dummy+2 AS co2 ,dummy+3 AS co3) GROUP BY cube (co,co2,co3) ) WHERE co!=0 AND co2 !=2;
 SELECT co,co2,co3,num FROM ( SELECT co,co2,co3,count() AS num FROM (SELECT dummy+1 AS co,dummy+2 AS co2 ,dummy+3 AS co3) GROUP BY cube (co,co2,co3) ) WHERE co!=0 AND co2 !=2;
 DROP TABLE IF EXISTS t1;
@@ -19,8 +16,6 @@ DROP TABLE IF EXISTS t1;
 DROP TABLE IF EXISTS t2;
 DROP TABLE IF EXISTS t3;
 DROP TABLE IF EXISTS view1;
--- https://github.com/ClickHouse/ClickHouse/issues/4731
--- https://github.com/ClickHouse/ClickHouse/issues/4904
 DROP TABLE IF EXISTS A;
 DROP TABLE IF EXISTS B;
 CREATE TABLE A (ts DateTime, id String, id_b String) ENGINE = MergeTree PARTITION BY toStartOfHour(ts) ORDER BY (ts,id);

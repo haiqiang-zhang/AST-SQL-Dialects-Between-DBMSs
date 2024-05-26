@@ -1,12 +1,3 @@
-SET allow_suspicious_ttl_expressions = 1;
-drop table if exists ttl;
-create table ttl (d Date, a Int) engine = MergeTree order by a partition by toDayOfMonth(d);
-insert into ttl values (toDateTime('2000-10-10 00:00:00'), 1);
-insert into ttl values (toDateTime('2000-10-10 00:00:00'), 2);
-insert into ttl values (toDateTime('2100-10-10 00:00:00'), 3);
-insert into ttl values (toDateTime('2100-10-10 00:00:00'), 4);
-set mutations_sync = 2;
-alter table ttl modify ttl d + interval 1 day;
 select * from ttl order by a;
 select '=============';
 drop table if exists ttl;
@@ -47,5 +38,4 @@ select '=============';
 drop table if exists ttl;
 create table ttl (i Int, s String ttl toDate('2000-01-02')) engine = MergeTree order by i;
 alter table ttl modify column s String ttl toDate('2000-01-02');
-select count() from system.mutations where database = currentDatabase() and table = 'ttl' and is_done;
 drop table if exists ttl;

@@ -1,7 +1,5 @@
-SET allow_experimental_analyzer = 1;
 SELECT tuple(1, 'a').1;
 SELECT CAST(('hello', 1) AS Tuple(hello String, count UInt32)) AS t, t.hello;
-SELECT tuple(1, 'a').*;
 SELECT '---';
 SELECT CAST(('hello', 1) AS Tuple(name String, count UInt32)).*;
 SELECT untuple(CAST(('hello', 1) AS Tuple(name String, count UInt32)));

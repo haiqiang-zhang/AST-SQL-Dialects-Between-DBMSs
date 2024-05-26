@@ -1,16 +1,3 @@
-SET allow_suspicious_codecs = 1;
-CREATE TABLE codecs1 (a UInt8 CODEC(NONE, NONE)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs2 (a UInt8 CODEC(NONE, LZ4)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs3 (a UInt8 CODEC(LZ4, NONE)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs4 (a UInt8 CODEC(LZ4, LZ4)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs5 (a UInt8 CODEC(LZ4, ZSTD)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs6 (a UInt8 CODEC(Delta)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs7 (a UInt8 CODEC(Delta, Delta)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs8 (a UInt8 CODEC(LZ4, Delta)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs9 (a UInt8 CODEC(Gorilla)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs10 (a FixedString(2) CODEC(Gorilla)) ENGINE = MergeTree ORDER BY tuple();
-CREATE TABLE codecs11 (a Decimal(15,5) CODEC(Gorilla)) ENGINE = MergeTree ORDER BY tuple();
-SET allow_suspicious_codecs = 0;
 SHOW CREATE TABLE codecs1;
 SHOW CREATE TABLE codecs2;
 SHOW CREATE TABLE codecs3;

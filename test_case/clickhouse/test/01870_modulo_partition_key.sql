@@ -1,5 +1,3 @@
-SET insert_keeper_max_retries=100;
-SET insert_keeper_retry_max_backoff_ms=10;
 SELECT 'simple partition key:';
 DROP TABLE IF EXISTS table1 SYNC;
 SELECT toInt64(partition) as p FROM system.parts WHERE table='table1' and database=currentDatabase() ORDER BY p;

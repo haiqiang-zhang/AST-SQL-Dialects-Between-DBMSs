@@ -1,4 +1,3 @@
-CREATE INDEX i1 ON t1(a);
 REINDEX;
 PRAGMA integrity_check;
 REINDEX t1;

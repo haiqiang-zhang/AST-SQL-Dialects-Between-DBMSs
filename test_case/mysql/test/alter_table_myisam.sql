@@ -1,4 +1,3 @@
-alter table t1 add column new_col int, order by payoutid,bandid;
 select * from t1;
 alter table t1 order by bandid,payoutid;
 select * from t1;

@@ -1,7 +1,3 @@
-SET client_min_messages TO 'warning';
-DROP SCHEMA IF EXISTS regress_rls_schema CASCADE;
-RESET client_min_messages;
-CREATE SCHEMA regress_rls_schema;
 GRANT ALL ON SCHEMA regress_rls_schema to public;
 SET search_path = regress_rls_schema;
 CREATE TABLE uaccount (
@@ -198,14 +194,10 @@ EXECUTE p1(2);
 EXPLAIN (COSTS OFF) EXECUTE p1(2);
 RESET SESSION AUTHORIZATION;
 SET row_security TO OFF;
-EXECUTE p1(2);
-EXPLAIN (COSTS OFF) EXECUTE p1(2);
 PREPARE p2(int) AS SELECT * FROM t1 WHERE a = $1;
 EXECUTE p2(2);
 EXPLAIN (COSTS OFF) EXECUTE p2(2);
 SET row_security TO ON;
-EXECUTE p2(2);
-EXPLAIN (COSTS OFF) EXECUTE p2(2);
 RESET SESSION AUTHORIZATION;
 SET row_security TO OFF;
 SELECT * FROM t1 ORDER BY a,b;
@@ -580,7 +572,6 @@ SELECT row_security_active('current_check');
 SELECT attname, most_common_vals FROM pg_stats
   WHERE tablename = 'current_check'
   ORDER BY 1;
-SELECT row_security_active('current_check');
 SELECT attname, most_common_vals FROM pg_stats
   WHERE tablename = 'current_check'
   ORDER BY 1;

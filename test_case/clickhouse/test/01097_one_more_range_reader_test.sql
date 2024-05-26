@@ -1,4 +1,3 @@
-alter table t add column s String default 'foo';
 select s from t prewhere a = 1;
 drop table t;
 create table t (id UInt32, a Int) engine = MergeTree order by id;

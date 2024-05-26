@@ -1,5 +1,3 @@
-CREATE INDEX int_func_index ON t1 ((ABS(int_col)));
-CREATE INDEX string_func_index ON t1 ((SUBSTRING(string_col, 1, 2)));
 SELECT * FROM INFORMATION_SCHEMA.STATISTICS
 WHERE INDEX_NAME IN ('int_func_index', 'string_func_index');
 SELECT COUNT(*) AS should_be_2 FROM INFORMATION_SCHEMA.COLUMNS

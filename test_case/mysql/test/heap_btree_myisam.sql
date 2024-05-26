@@ -1,4 +1,3 @@
-alter table t1 modify a int not null auto_increment, engine=myisam, comment="new myisam table";
 select * from t1;
 drop table t1;
 create table t1 (a int not null) engine=heap;

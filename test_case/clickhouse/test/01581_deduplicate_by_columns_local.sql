@@ -6,9 +6,6 @@ CREATE TABLE full_duplicates  (
 ) ENGINE=MergeTree
 PARTITION BY (partition_key + 1) -- ensure that column in expression is properly handled when deduplicating. See [1] below.
 ORDER BY (pk, toString(sk * 10));
--- Valid cases
--- NOTE: here and below we need FINAL to force deduplication in such a small set of data in only 1 part.
-
 SELECT 'OLD DEDUPLICATE';
 INSERT INTO full_duplicates SELECT * FROM source_data;
 OPTIMIZE TABLE full_duplicates FINAL DEDUPLICATE;

@@ -1,0 +1,11 @@
+SELECT name FROM student WHERE id = 122879;
+SELECT name FROM student WHERE id = 122881;
+SELECT name FROM student WHERE id = 245780;
+SELECT name FROM student WHERE id = 150881;
+SELECT name FROM student WHERE id = 122879;
+SELECT name FROM student WHERE id = 122881;
+SELECT name FROM student WHERE id = 245780;
+SELECT name FROM student WHERE id = 150881;
+select id, name from student where id=122881;
+select id, name from student where id=122881;
+select id, name from student where id=122881;

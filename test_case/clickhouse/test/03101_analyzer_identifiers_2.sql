@@ -1,5 +1,3 @@
-SET allow_experimental_analyzer = 1;
-CREATE TEMPORARY TABLE test1 (a String, nest Nested(x String, y String));
 SELECT a, nest.* FROM test1 ARRAY JOIN nest;
 SELECT a, n.* FROM test1 ARRAY JOIN nest AS n;
 CREATE TEMPORARY TABLE test2 (a String, nest Array(Tuple(x String, y String)));
@@ -20,12 +18,9 @@ SELECT x FROM (SELECT * FROM (SELECT 99 AS x) AS t);
 SELECT '---';
 SELECT t.x FROM (SELECT 1 AS x) AS t;
 SELECT '---';
--- this will work, but keep in mind that there are two different `x`.
 SELECT x IN (SELECT 1 AS x) FROM (SELECT 1 AS x);
 SELECT '---';
 SELECT x + 1 AS x, x FROM (SELECT 1 AS x);
 SELECT x, x + 1 AS x FROM (SELECT 1 AS x);
 SELECT '---';
 SELECT arrayMap(x -> x + 1, [1, 2]);
-SELECT x, arrayMap((x, y) -> x[1] + y + arrayFirst(x -> x != y, x), arr) FROM (SELECT 1 AS x, [([1, 2], 3), ([4, 5], 6)] AS arr);
-SELECT x1, arrayMap((x2, y2) -> x2[1] + y2 + arrayFirst(x3 -> x3 != y2, x2), arr) FROM (SELECT 1 AS x1, [([1, 2], 3), ([4, 5], 6)] AS arr);

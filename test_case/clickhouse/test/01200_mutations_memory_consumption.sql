@@ -1,4 +1,3 @@
-ALTER TABLE table_with_single_pk DELETE WHERE key % 77 = 0 SETTINGS mutations_sync = 1;
 SYSTEM FLUSH LOGS;
 DROP TABLE IF EXISTS table_with_single_pk;
 DROP TABLE IF EXISTS table_with_multi_pk;

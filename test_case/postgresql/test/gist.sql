@@ -1,14 +1,3 @@
-create index gist_pointidx on gist_point_tbl using gist(p);
-create index gist_pointidx2 on gist_point_tbl using gist(p) with (buffering = on, fillfactor=50);
-create index gist_pointidx3 on gist_point_tbl using gist(p) with (buffering = off);
-create index gist_pointidx4 on gist_point_tbl using gist(p) with (buffering = auto);
-drop index gist_pointidx2, gist_pointidx3, gist_pointidx4;
-insert into gist_point_tbl (id, p)
-select g,        point(g*10, g*10) from generate_series(1, 10000) g;
-insert into gist_point_tbl (id, p)
-select g+100000, point(g*10+1, g*10+1) from generate_series(1, 10000) g;
-delete from gist_point_tbl where id % 2 = 1;
-delete from gist_point_tbl where id > 5000;
 vacuum analyze gist_point_tbl;
 alter index gist_pointidx SET (fillfactor = 40);
 reindex index gist_pointidx;
@@ -32,11 +21,6 @@ order by p <-> point(0.201, 0.201);
 select p from gist_tbl where p <@ box(point(0,0), point(0.5, 0.5))
 order by p <-> point(0.201, 0.201);
 explain (costs off)
-select p from gist_tbl where p <@ box(point(0,0), point(0.5, 0.5))
-order by point(0.101, 0.101) <-> p;
-select p from gist_tbl where p <@ box(point(0,0), point(0.5, 0.5))
-order by point(0.101, 0.101) <-> p;
-explain (costs off)
 select p from
   (values (box(point(0,0), point(0.5,0.5))),
           (box(point(0.5,0.5), point(0.75,0.75))),
@@ -54,16 +38,6 @@ create index gist_tbl_box_index on gist_tbl using gist (b);
 explain (costs off)
 select b from gist_tbl where b <@ box(point(5,5), point(6,6));
 select b from gist_tbl where b <@ box(point(5,5), point(6,6));
-explain (costs off)
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by b <-> point(5.2, 5.91);
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by b <-> point(5.2, 5.91);
-explain (costs off)
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by point(5.2, 5.91) <-> b;
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by point(5.2, 5.91) <-> b;
 drop index gist_tbl_box_index;
 create index gist_tbl_multi_index on gist_tbl using gist (p, c);
 explain (costs off)

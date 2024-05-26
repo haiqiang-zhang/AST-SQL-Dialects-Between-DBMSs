@@ -1,0 +1,2 @@
+drop database if exists 02911_support_alias_column_in_indices;
+create database 02911_support_alias_column_in_indices;

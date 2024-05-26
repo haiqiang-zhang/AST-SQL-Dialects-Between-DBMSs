@@ -1,0 +1,2 @@
+SELECT COUNT(*) FROM integers WHERE i=4;
+SELECT COUNT(*) FROM integers WHERE i=4;

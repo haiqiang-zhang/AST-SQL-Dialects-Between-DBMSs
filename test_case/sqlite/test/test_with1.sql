@@ -127,12 +127,6 @@ WITH flat(fid, fpath) AS (
     SELECT id, fpath || '/' || name FROM f, flat WHERE parentid=fid
   )
   SELECT count(*) FROM flat;
-WITH x(i) AS (
-    SELECT 1
-    UNION ALL
-    SELECT i+1 FROM x WHERE i<10
-  )
-  SELECT count(*) FROM x;
 CREATE TABLE tree(i, p);
 INSERT INTO tree VALUES(1, NULL);
 INSERT INTO tree VALUES(2, 1);
@@ -330,45 +324,10 @@ INSERT INTO org VALUES('Lanny','Fred');
 INSERT INTO org VALUES('Mary','Fred');
 INSERT INTO org VALUES('Noland','Gail');
 INSERT INTO org VALUES('Olivia','Gail');
--- The above are all under Alice.  Add a few more records for people
-  -- not in Alice's group, just to prove that they won't be selected.
-  INSERT INTO org VALUES('Xaviar',NULL);
+INSERT INTO org VALUES('Xaviar',NULL);
 INSERT INTO org VALUES('Xia','Xaviar');
 INSERT INTO org VALUES('Xerxes','Xaviar');
 INSERT INTO org VALUES('Xena','Xia');
--- Find all members of Alice's group, breath-first order  
-  WITH RECURSIVE
-    under_alice(name,level) AS (
-       VALUES('Alice','0')
-       UNION ALL
-       SELECT org.name, under_alice.level+1
-         FROM org, under_alice
-        WHERE org.boss=under_alice.name
-        ORDER BY 2
-    )
-  SELECT group_concat(substr('...............',1,level*3) || name,x'0a')
-    FROM under_alice;
-WITH RECURSIVE
-    under_alice(name,level) AS (
-       VALUES('Alice','0')
-       UNION ALL
-       SELECT org.name, under_alice.level+1
-         FROM org, under_alice
-        WHERE org.boss=under_alice.name
-        ORDER BY 2 DESC
-    )
-  SELECT group_concat(substr('...............',1,level*3) || name,x'0a')
-    FROM under_alice;
-WITH RECURSIVE
-    under_alice(name,level) AS (
-       VALUES('Alice','0')
-       UNION ALL
-       SELECT org.name, under_alice.level+1
-         FROM org, under_alice
-        WHERE org.boss=under_alice.name
-    )
-  SELECT group_concat(substr('...............',1,level*3) || name,x'0a')
-    FROM under_alice;
 WITH RECURSIVE
   t1(x) AS (VALUES(2) UNION ALL SELECT x+2 FROM t1 WHERE x<20),
   t2(y) AS (VALUES(3) UNION ALL SELECT y+3 FROM t2 WHERE y<20)
@@ -450,8 +409,7 @@ WITH RECURSIVE t21(a,b) AS (
     SELECT x, x FROM t21 ORDER BY 1
   )
   SELECT * FROM t21 AS tA, t21 AS tB;
-/* This variant from chromium bug 922312 on 2019-01-16 */
-   WITH RECURSIVE t21(a,b) AS (
+WITH RECURSIVE t21(a,b) AS (
     WITH t21(x) AS (VALUES(1))
     SELECT x, x FROM t21 ORDER BY 1 LIMIT 5
   )

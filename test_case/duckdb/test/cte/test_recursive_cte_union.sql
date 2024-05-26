@@ -1,0 +1,18 @@
+with recursive t as (select 1 as x union select x+1 from t where x < 3) select * from t order by x;
+with recursive t(x) as (select 1 union select x+1 from t where x < 3) select * from t order by x;
+with recursive t(x) as (select 1 union select x+1 from t where x < 3) select zz from t t1(zz) order by zz;
+with recursive t(x) as (select 1 union select zzz+1 from t t1(zzz) where zzz < 3) select zz from t t1(zz) order by zz;
+with recursive t as (select 1 as x union select x from t) select * from t;
+with recursive t as (select 1 as x union select x+1 from t as m where m.x < 3) select * from t order by x;
+with recursive t as (select 1 as x union select m.x+f.x from t as m, t as f where m.x < 3) select * from t order by x;
+with recursive t as (select 1 as x, 'hello' as y union select x+1, y || '-' || 'hello' from t where x < 3) select * from t order by x;
+with recursive t as (select 1 as x union select x+1 from t where x < 3) select min(a1.x) from t a1, t a2;
+with recursive t as (select 1 as x union select x+(SELECT 1) from t where x < 3) select * from t order by x;
+with recursive t as (select 1 as x union all select * from (select x from t where x < 5) tbl(i) join (select 1) tbl2(i) using (i)) select * from t limit 3;
+with recursive t as (select 1 as x union all select * from (select 1) tbl2(i) join (select x from t where x < 5) tbl(i) using (i)) select * from t limit 3;
+with recursive t as (select 1 as x union all select * from (select x from t where x < 5) tbl(i) join (select first(i) from (values (1)) tbl3(i) limit 1) tbl2(i) using (i)) select * from t limit 3;
+with recursive t as (select 1 as x union all select * from (select first(i) from (values (1)) tbl3(i) limit 1) tbl2(i) join (select x from t where x < 5) tbl(i) using (i)) select * from t limit 3;
+with recursive t as (select 1 as x union select x+(SELECT 1+t.x) from t where x < 5) select * from t order by x;
+with recursive t as (select (select min(x) from integers) as x union select x+1 from t where x < 3) select * from t order by x;
+with recursive t as (select 1 as x union select sum(x+1) from t where x < 3) select * from t order by 1 nulls last;
+select * from vr;

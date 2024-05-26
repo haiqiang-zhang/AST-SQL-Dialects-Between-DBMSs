@@ -1,6 +1,3 @@
-drop database if exists events_test;
-drop database if exists mysqltest_no_such_database;
-create database events_test;
 select @@autocommit;
 create table t1 (a varchar(255)) engine=innodb;
 insert into t1 (a) values ("OK: create event");

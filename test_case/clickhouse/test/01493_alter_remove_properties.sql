@@ -1,3 +1,4 @@
+SHOW CREATE TABLE prop_table;
 SYSTEM STOP TTL MERGES prop_table;
 INSERT INTO prop_table (column_codec, column_comment, column_ttl) VALUES ('str', toDate('2019-10-01'), 1);
 SELECT column_default, column_materialized, column_alias, column_codec, column_comment, column_ttl FROM prop_table;

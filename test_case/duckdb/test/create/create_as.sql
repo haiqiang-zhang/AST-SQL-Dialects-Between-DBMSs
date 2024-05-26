@@ -1,0 +1,6 @@
+SELECT * FROM tbl1;
+SELECT * FROM tbl2;
+SELECT * FROM tbl3;
+SELECT * FROM tbl1;
+SELECT * FROM tbl1;
+SELECT * FROM tbl1;

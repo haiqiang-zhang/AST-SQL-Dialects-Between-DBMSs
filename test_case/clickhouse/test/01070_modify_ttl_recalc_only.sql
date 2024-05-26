@@ -1,14 +1,3 @@
-set mutations_sync = 2;
-set session_timezone = '';
-SET allow_suspicious_ttl_expressions = 1;
-drop table if exists ttl;
-create table ttl (d Date, a Int) engine = MergeTree order by a partition by toDayOfMonth(d)
-SETTINGS max_number_of_merges_with_ttl_in_pool=0,materialize_ttl_recalculate_only=true;
-insert into ttl values (toDateTime('2000-10-10 00:00:00'), 1);
-insert into ttl values (toDateTime('2000-10-10 00:00:00'), 2);
-insert into ttl values (toDateTime('2100-10-10 00:00:00'), 3);
-insert into ttl values (toDateTime('2100-10-10 00:00:00'), 4);
-alter table ttl modify ttl d + interval 1 day;
 select * from ttl order by a;
 select delete_ttl_info_min, delete_ttl_info_max  from system.parts where database = currentDatabase() and table = 'ttl' and active > 0 order by name asc;
 optimize table ttl final;
@@ -74,5 +63,4 @@ drop table if exists ttl;
 create table ttl (i Int, s String ttl toDate('2000-01-02')) engine = MergeTree order by i
 SETTINGS max_number_of_merges_with_ttl_in_pool=0,materialize_ttl_recalculate_only=true;
 alter table ttl modify column s String ttl toDate('2000-01-02');
-select count() from system.mutations where database = currentDatabase() and table = 'ttl' and is_done;
 drop table if exists ttl;

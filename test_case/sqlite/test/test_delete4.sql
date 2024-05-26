@@ -1,13 +1,10 @@
-DELETE FROM t1 WHERE y=1;
 SELECT x FROM t1;
 DELETE FROM t1 WHERE y=1;
 SELECT x FROM t1;
 INSERT INTO t1 VALUES(2, 4);
 SELECT printf('(%d)',changes());
 SELECT * FROM t1;
-SELECT printf('(%d)',changes());
 DELETE FROM t1;
-SELECT printf('(%d)',changes());
 PRAGMA integrity_check;
 DROP TABLE IF EXISTS t4;
 CREATE TABLE t4(col0, col1);

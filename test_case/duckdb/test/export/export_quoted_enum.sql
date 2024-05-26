@@ -1,0 +1,3 @@
+EXPORT DATABASE '__TEST_DIR__/export_enum' (FORMAT CSV);
+ROLLBACK;
+IMPORT DATABASE '__TEST_DIR__/export_enum';

@@ -71,14 +71,10 @@ select 2 = multiMatchAnyIndex(materialize('gogleuedeuniangoogle'), ['google1', '
 select 0 != multiMatchAnyIndex(materialize('gogleuedeuniangoogle'), ['.*goo.*', '.*yan.*']) from system.numbers limit 10;
 select 5 = multiMatchAnyIndex(materialize('vladizlvav dabe don\'t heart me no more'), ['what', 'is', 'love', 'baby', 'no mo??', 'dont', 'h.rt me']) from system.numbers limit 10;
 SELECT multiMatchAny(materialize('/odezhda-dlya-bega/'), ['/odezhda-dlya-bega/', 'kurtki-i-vetrovki-dlya-bega', 'futbolki-i-mayki-dlya-bega']);
-SELECT 1 = multiMatchAny('ÃÂÃÂÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂÃÂÃÂ¸ÃÂÃÂºÃÂÃÂ°ÃÂÃÂ½ÃÂÃÂ', ['f[ae]b[ei]rl', 'ÃÂÃÂ[ÃÂÃÂ¸ÃÂÃÂ°ÃÂÃÂÃÂÃÂµ]ÃÂÃÂ±[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸][ÃÂÃÂÃÂÃÂ¿ÃÂÃÂ»]', 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂºÃÂÃÂ´', 'a[ft],th', '^ÃÂÃÂ[ÃÂÃÂ°ÃÂÃÂ¸ÃÂÃÂµÃÂÃÂ]?ÃÂÃÂ±?[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸]?$', 'ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂ¸ÃÂÃÂº', 'fab', 'ÃÂÃÂÃÂÃÂ°[ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ²]+ÃÂÃÂµ?[ÃÂÃÂÃÂÃÂ»ÃÂÃÂºÃÂÃÂ¾]']);
 SELECT [] = multiMatchAllIndices(materialize('Butterbrot!'), []::Array(String)) from system.numbers limit 5;
 SELECT [1, 2] = arraySort(multiMatchAllIndices(materialize('gogleuedeuniangoogle'), ['.*goo.*', '.*yan.*'])) from system.numbers limit 5;
 SELECT [1, 3] = arraySort(multiMatchAllIndices(materialize('gogleuedeuniangoogle'), ['.*goo.*', 'neverexisted', '.*yan.*'])) from system.numbers limit 5;
-SELECT [] = multiMatchAllIndices(materialize('gogleuedeuniangoogle'), ['neverexisted', 'anotherone', 'andanotherone']) from system.numbers limit 5;
-SELECT [1, 2, 3, 11] = arraySort(multiMatchAllIndices('ÃÂÃÂÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂÃÂÃÂ¸ÃÂÃÂºÃÂÃÂ°ÃÂÃÂ½ÃÂÃÂ', ['', 'ÃÂÃÂÃÂÃÂ¸ÃÂÃÂºÃÂÃÂ°ÃÂÃÂ½', 'ÃÂÃÂ°', 'f[ae]b[ei]rl', 'ÃÂÃÂ[ÃÂÃÂ¸ÃÂÃÂ°ÃÂÃÂÃÂÃÂµ]ÃÂÃÂ±[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸][ÃÂÃÂÃÂÃÂ¿ÃÂÃÂ»]', 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂºÃÂÃÂ´', 'a[ft],th', '^ÃÂÃÂ[ÃÂÃÂ°ÃÂÃÂ¸ÃÂÃÂµÃÂÃÂ]?ÃÂÃÂ±?[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸]?$', 'ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂ¸ÃÂÃÂº', 'fab', 'ÃÂÃÂÃÂÃÂ°[ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ²]+ÃÂÃÂµ?[ÃÂÃÂÃÂÃÂ»ÃÂÃÂºÃÂÃÂ¾]']));
 SELECT [1] = multiMatchAllIndices(materialize('/odezhda-dlya-bega/'), ['/odezhda-dlya-bega/', 'kurtki-i-vetrovki-dlya-bega', 'futbolki-i-mayki-dlya-bega']);
-SELECT [] = multiMatchAllIndices(materialize('aaaa'), ['.*aa.*aaa.*', 'aaaaaa{2}', '\(aa\){3}']);
 SELECT 'All tests above must return 1, all tests below return something.';
 SELECT arraySort(multiMatchAllIndices(arrayJoin(['aaaa', 'aaaaaa', 'bbbb', 'aaaaaaaaaaaaaa']), ['.*aa.*aaa.*', 'aaaaaa{2}', '(aa){3}']));
 SELECT '-- With non-const pattern';
@@ -153,12 +149,6 @@ select 1 = multiMatchAnyIndex(materialize('gogleuedeuniangoogle'), materialize([
 select 2 = multiMatchAnyIndex(materialize('gogleuedeuniangoogle'), materialize(['google1', 'unian'])) from system.numbers limit 10;
 select 0 != multiMatchAnyIndex(materialize('gogleuedeuniangoogle'), materialize(['.*goo.*', '.*yan.*'])) from system.numbers limit 10;
 select 5 = multiMatchAnyIndex(materialize('vladizlvav dabe don\'t heart me no more'), materialize(['what', 'is', 'love', 'baby', 'no mo??', 'dont', 'h.rt me'])) from system.numbers limit 10;
-SELECT multiMatchAny(materialize('/odezhda-dlya-bega/'), materialize(['/odezhda-dlya-bega/', 'kurtki-i-vetrovki-dlya-bega', 'futbolki-i-mayki-dlya-bega']));
-SELECT 1 = multiMatchAny(materialize('ÃÂÃÂÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂÃÂÃÂ¸ÃÂÃÂºÃÂÃÂ°ÃÂÃÂ½ÃÂÃÂ'), materialize(['f[ae]b[ei]rl', 'ÃÂÃÂ[ÃÂÃÂ¸ÃÂÃÂ°ÃÂÃÂÃÂÃÂµ]ÃÂÃÂ±[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸][ÃÂÃÂÃÂÃÂ¿ÃÂÃÂ»]', 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂºÃÂÃÂ´', 'a[ft],th', '^ÃÂÃÂ[ÃÂÃÂ°ÃÂÃÂ¸ÃÂÃÂµÃÂÃÂ]?ÃÂÃÂ±?[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸]?$', 'ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂ¸ÃÂÃÂº', 'fab', 'ÃÂÃÂÃÂÃÂ°[ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ²]+ÃÂÃÂµ?[ÃÂÃÂÃÂÃÂ»ÃÂÃÂºÃÂÃÂ¾]']));
-SELECT [] = multiMatchAllIndices(materialize('Butterbrot!'), materialize([]::Array(String))) from system.numbers limit 5;
 SELECT [1, 2] = arraySort(multiMatchAllIndices(materialize('gogleuedeuniangoogle'), materialize(['.*goo.*', '.*yan.*']))) from system.numbers limit 5;
 SELECT [1, 3] = arraySort(multiMatchAllIndices(materialize('gogleuedeuniangoogle'), materialize(['.*goo.*', 'neverexisted', '.*yan.*']))) from system.numbers limit 5;
-SELECT [] = multiMatchAllIndices(materialize('gogleuedeuniangoogle'), materialize(['neverexisted', 'anotherone', 'andanotherone'])) from system.numbers limit 5;
-SELECT [1, 2, 3, 11] = arraySort(multiMatchAllIndices(materialize('ÃÂÃÂÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂÃÂÃÂ¸ÃÂÃÂºÃÂÃÂ°ÃÂÃÂ½ÃÂÃÂ'), materialize(['', 'ÃÂÃÂÃÂÃÂ¸ÃÂÃÂºÃÂÃÂ°ÃÂÃÂ½', 'ÃÂÃÂ°', 'f[ae]b[ei]rl', 'ÃÂÃÂ[ÃÂÃÂ¸ÃÂÃÂ°ÃÂÃÂÃÂÃÂµ]ÃÂÃÂ±[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸][ÃÂÃÂÃÂÃÂ¿ÃÂÃÂ»]', 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂºÃÂÃÂ´', 'a[ft],th', '^ÃÂÃÂ[ÃÂÃÂ°ÃÂÃÂ¸ÃÂÃÂµÃÂÃÂ]?ÃÂÃÂ±?[ÃÂÃÂµÃÂÃÂÃÂÃÂ¸]?$', 'ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂ¸ÃÂÃÂº', 'fab', 'ÃÂÃÂÃÂÃÂ°[ÃÂÃÂ±ÃÂÃÂµÃÂÃÂÃÂÃÂ²]+ÃÂÃÂµ?[ÃÂÃÂÃÂÃÂ»ÃÂÃÂºÃÂÃÂ¾]'])));
 SELECT [1] = multiMatchAllIndices(materialize('/odezhda-dlya-bega/'), materialize(['/odezhda-dlya-bega/', 'kurtki-i-vetrovki-dlya-bega', 'futbolki-i-mayki-dlya-bega']));
-SELECT [] = multiMatchAllIndices(materialize('aaaa'), materialize(['.*aa.*aaa.*', 'aaaaaa{2}', '\(aa\){3}']));

@@ -1,5 +1,3 @@
--- we do not split rows corresponding to the same key
-
 SELECT max(bs) <= 5, b FROM (
     SELECT blockSize() as bs, * FROM t1 JOIN t2 ON t1.a = t2.a
 ) GROUP BY b

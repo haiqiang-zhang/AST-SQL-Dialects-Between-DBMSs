@@ -13,14 +13,6 @@ CREATE TABLE t1(
 );
 INSERT INTO t1 VALUES (0,0,0,0,1), (1,0,1,0,1), (0,1,2,0,1), (2,0,2,0,1), (4,0,0,0,1);
 SELECT c,sum(e) FROM t1 GROUP BY c WITH ROLLUP;
-SELECT c,d,sum(e) FROM t1 GROUP BY c,d WITH ROLLUP;
-SELECT c,d,a,sum(e) FROM t1 GROUP BY c,d,a WITH ROLLUP;
-SELECT c,d,a,b,sum(e) FROM t1 GROUP BY c,d,a,b WITH ROLLUP;
-SELECT a,sum(e) FROM t1 GROUP BY a WITH ROLLUP;
-SELECT a,b,sum(e) FROM t1 GROUP BY a,b WITH ROLLUP;
-SELECT d,a,c,sum(e) FROM t1 GROUP BY d,a,c;
-SELECT a,d,c,sum(e) FROM t1 GROUP BY a,d,c;
-SELECT b,a,sum(e) FROM t1 GROUP BY b,a;
 DROP TABLE t1;
 CREATE TABLE num10 (n INT);
 INSERT INTO num10 VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);

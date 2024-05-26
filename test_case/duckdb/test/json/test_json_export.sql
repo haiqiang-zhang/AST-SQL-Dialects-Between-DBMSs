@@ -1,0 +1,10 @@
+export database '__TEST_DIR__/test_export' (FORMAT JSON);
+drop table text;
+import database '__TEST_DIR__/test_export';
+COPY text TO '__TEST_DIR__/text.json' (ARRAY);
+drop table text;
+create table text(i varchar);
+COPY text from '__TEST_DIR__/text.json' (ARRAY);
+select * from text;
+select * from text;
+select * from '__TEST_DIR__/text.json';

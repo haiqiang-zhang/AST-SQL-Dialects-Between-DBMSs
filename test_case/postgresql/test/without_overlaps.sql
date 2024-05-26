@@ -1,16 +1,7 @@
-SET datestyle TO ISO, YMD;
 SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng_pk';
 SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng_pk';
-SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng2_pk';
-SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng2_pk';
 CREATE TYPE textrange2 AS range (subtype=text, collation="C");
 DROP TYPE textrange2;
-SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_mltrng2_pk';
-SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_mltrng2_pk';
-SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
-SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
-SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
-SELECT pg_get_indexdef(conindid, 0, true) FROM pg_constraint WHERE conname = 'temporal_rng3_uq';
 CREATE TYPE textrange2 AS range (subtype=text, collation="C");
 DROP TYPE textrange2;
 CREATE TABLE temporal_rng (
@@ -61,7 +52,6 @@ INSERT INTO temporal_rng (id, valid_at) VALUES
   ('[1,2)', daterange('2018-03-03', '2018-04-04')),
   ('[2,3)', daterange('2018-01-01', '2018-01-05')),
   ('[3,4)', daterange('2018-01-01', NULL));
-SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_fk_rng2rng_fk';
 INSERT INTO temporal_rng (id, valid_at) VALUES ('[1,2)', daterange('2018-02-03', '2018-03-03'));
 BEGIN;
 INSERT INTO temporal_rng (id, valid_at) VALUES
@@ -121,7 +111,6 @@ INSERT INTO temporal_rng (id, valid_at) VALUES ('[6,7)', daterange('2018-01-01',
 INSERT INTO temporal_rng (id, valid_at) VALUES ('[9,10)', daterange('2018-01-01', '2021-01-01'));
 INSERT INTO temporal_rng (id, valid_at) VALUES ('[-1,-1]', daterange(null, null));
 INSERT INTO temporal_rng (id, valid_at) VALUES ('[12,13)', daterange('2018-01-01', '2021-01-01'));
-SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'temporal_fk_mltrng2mltrng_fk';
 BEGIN;
 COMMIT;
 BEGIN;

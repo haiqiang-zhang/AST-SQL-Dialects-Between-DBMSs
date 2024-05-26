@@ -1,4 +1,3 @@
-set enable_optimize_predicate_expression = 0;
 select 1 from t as l join t as r on l.id = r.id prewhere l.x;
 select 2 from t as l join t as r on l.id = r.id where r.x;
 select 3 from t as l join t as r on l.id = r.id prewhere l.x where r.x;

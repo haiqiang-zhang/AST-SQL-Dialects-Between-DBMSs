@@ -1,12 +1,3 @@
-SET allow_experimental_analyzer = 1;
-DROP TABLE IF EXISTS test_table;
-CREATE TABLE test_table
-(
-    id UInt64,
-    value String,
-    value_array Array(UInt64)
-) ENGINE=MergeTree ORDER BY id;
-INSERT INTO test_table VALUES (0, 'Value_0', [1,2,3]);
 SELECT * FROM test_table ARRAY JOIN value_array;
 SELECT '--';
 SELECT *, value_array_element FROM test_table ARRAY JOIN value_array AS value_array_element;

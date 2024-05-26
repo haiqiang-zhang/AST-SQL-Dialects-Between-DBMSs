@@ -1,4 +1,3 @@
-ALTER TABLE mutation_table UPDATE price = 150 WHERE id = 1 SETTINGS mutations_sync = 2;
 SELECT * FROM mutation_table;
 DROP TABLE IF EXISTS mutation_table;
 create table mutation_table (  dt Nullable(Date), name Nullable(String))

@@ -1,0 +1,11 @@
+DESCRIBE s1.tbl;
+DESCRIBE tbl;
+DESCRIBE t2;
+PRAGMA "SHOW"('t2');
+SHOW TABLES;
+DESCRIBE TABLES;
+PRAGMA show_tables;
+SHOW integers;
+SHOW "select";
+PRAGMA "SHOW"('integers');
+DESCRIBE v1;

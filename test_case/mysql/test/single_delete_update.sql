@@ -85,7 +85,6 @@ INSERT INTO t2 (a, b, c) SELECT i, i, i FROM t1;
 INSERT INTO t2 (a, b, c) SELECT t1.i, t1.i, t1.i FROM t1, t1 x1, t1 x2;
 SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 12;
 UPDATE t2 SET d = 10 WHERE b = 10 ORDER BY a, c LIMIT 12;
-SELECT COUNT(*) FROM t2 WHERE b = 10 AND d = 10 ORDER BY a, c;
 DROP TABLE t2;
 CREATE TABLE t2 (a CHAR(2), b CHAR(2), c CHAR(2), d CHAR(2), INDEX (a,b(1),c));
 INSERT INTO t2 SELECT i, i, i, i FROM t1;

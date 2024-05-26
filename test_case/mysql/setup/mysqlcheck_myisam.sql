@@ -1,0 +1,13 @@
+create table t1 (a int) engine=myisam;
+create view v1 as select * from t1;
+drop view v1;
+drop table t1;
+create table `t``1`(a int) engine=myisam;
+create table `t 1`(a int) engine=myisam;
+drop table `t``1`, `t 1`;
+create database d_bug25347;
+create table t_bug25347 (a int) engine=myisam;
+create view v_bug25347 as select * from t_bug25347;
+insert into t_bug25347 values (1),(2),(3);
+insert into t_bug25347 values (4),(5),(6);
+insert into t_bug25347 values (7),(8),(9);

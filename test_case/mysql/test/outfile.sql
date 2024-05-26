@@ -1,9 +1,6 @@
 select load_file(concat(@tmpdir,"/outfile-test.1"));
-select load_file(concat(@tmpdir,"/outfile-test.2"));
 select length(load_file(concat(@tmpdir,"/outfile-test.3")));
-select load_file(concat(@tmpdir,"/outfile-test.not-exist"));
 drop table t1;
-select load_file(concat(@tmpdir,"/outfile-test.4"));
 CREATE TABLE t1 (a INT);
 DROP TABLE t1;
 create table t1(a int);

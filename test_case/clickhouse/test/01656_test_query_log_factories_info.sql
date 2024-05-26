@@ -1,5 +1,3 @@
-SET database_atomic_wait_for_drop_and_detach_synchronously=1;
-SET log_queries=1;
 SELECT uniqArray([1, 1, 2]),
        SUBSTRING('Hello, world', 7, 5),
        POW(1, 2), ROUND(TANh(1)), CrC32(''),

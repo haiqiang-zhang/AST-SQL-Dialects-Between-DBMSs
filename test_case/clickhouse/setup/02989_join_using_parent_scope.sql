@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS tabc;
+CREATE TABLE tabc (a UInt32, b UInt32 ALIAS a + 1, c UInt32 ALIAS b + 1, s String) ENGINE = MergeTree ORDER BY a;
+INSERT INTO tabc (a, s) SELECT number, 'abc' || toString(number) FROM numbers(4);
+DROP TABLE IF EXISTS ta;
+CREATE TABLE ta (a Int32) ENGINE = MergeTree ORDER BY tuple();
+INSERT INTO ta SELECT number FROM numbers(4);
+DROP TABLE IF EXISTS tb;
+CREATE TABLE tb (b Int32) ENGINE = MergeTree ORDER BY tuple();
+INSERT INTO tb SELECT number FROM numbers(4);
+SET join_use_nulls = 1;
+SET analyzer_compatibility_join_using_top_level_identifier = 1;

@@ -1,0 +1,15 @@
+SELECT * FROM integers ORDER BY i;
+SELECT * FROM integers ORDER BY i DESC;
+SELECT FIRST(i ORDER BY i), LAST(i ORDER BY i) FROM integers;
+SELECT FIRST(i ORDER BY i DESC), LAST(i ORDER BY i DESC) FROM integers;
+SELECT list_sort(LIST(i)), list_reverse_sort(LIST(i)) FROM integers;
+SELECT * FROM integers ORDER BY i;
+SELECT * FROM integers ORDER BY i DESC;
+SELECT FIRST(i ORDER BY i), LAST(i ORDER BY i) FROM integers;
+SELECT FIRST(i ORDER BY i DESC), LAST(i ORDER BY i DESC) FROM integers;
+SELECT list_sort(LIST(i)), list_reverse_sort(LIST(i)) FROM integers;
+SELECT * FROM integers ORDER BY i;
+SELECT * FROM integers ORDER BY i DESC;
+SELECT FIRST(i ORDER BY i), LAST(i ORDER BY i) FROM integers;
+SELECT FIRST(i ORDER BY i DESC), LAST(i ORDER BY i DESC) FROM integers;
+SELECT list_sort(LIST(i)), list_reverse_sort(LIST(i)) FROM integers;

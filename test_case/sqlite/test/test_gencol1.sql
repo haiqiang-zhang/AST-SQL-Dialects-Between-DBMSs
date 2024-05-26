@@ -33,7 +33,6 @@ REPLACE INTO t0(c0) VALUES(NULL);
 SELECT * FROM t0;
 DROP TABLE t0;
 CREATE TABLE t0(c0 NOT NULL DEFAULT 'xyz', c1 AS(c0) STORED NOT NULL);
-REPLACE INTO t0(c0) VALUES(NULL);
 SELECT * FROM t0;
 SELECT * FROM t1;
 DROP TABLE t1;
@@ -54,7 +53,6 @@ CREATE TABLE t2(
    a NOT NULL DEFAULT 'aaa',
    b AS(a) STORED NOT NULL,
    c NOT NULL DEFAULT 'ccc');
-REPLACE INTO t2(a,c) VALUES(NULL,NULL);
 SELECT * FROM t2;
 CREATE TABLE t3(a NOT NULL DEFAULT 123, b AS(a) UNIQUE);
 REPLACE INTO t3 VALUES(NULL);
@@ -120,7 +118,6 @@ SELECT c0, c1, c2 FROM t0 LEFT JOIN t1;
 DROP TABLE t1;
 CREATE TABLE t1(c1, c2 AS (c1 ISNULL));
 SELECT * FROM t1;
-SELECT quote(c0), quote(c1) from t0;
 SELECT *, (1 BETWEEN CAST(t0.c0 AS TEXT) AND t0.c0) FROM t0;
 SELECT * FROM t0 WHERE (1 BETWEEN CAST(t0.c0 AS TEXT) AND t0.c0);
 SELECT * FROM t0;
@@ -133,16 +130,12 @@ CREATE TEMPORARY TABLE tab (
     b INTEGER,
     x INTEGER
   );
--- Add some data
-  INSERT INTO tab (prim, a, b) VALUES ('2001-01-01', 0, 0);
--- Check that each column is 0 like I expect
-  SELECT * FROM tab;
--- Do an UPSERT on the b column
-  INSERT INTO tab (prim, b)
+INSERT INTO tab (prim, a, b) VALUES ('2001-01-01', 0, 0);
+SELECT * FROM tab;
+INSERT INTO tab (prim, b)
   VALUES ('2001-01-01',5)
       ON CONFLICT(prim) DO UPDATE SET  b=excluded.b;
--- Now b is NULL rather than 5
-  SELECT * FROM tab;
+SELECT * FROM tab;
 SELECT name, type FROM pragma_table_xinfo('t1');
 DROP TABLE t1;
 CREATE TABLE t1(
@@ -151,6 +144,5 @@ CREATE TABLE t1(
     b BLOB AS (x) VIRTUAL
   );
 CREATE INDEX x2 ON t1(a);
-SELECT quote(a) FROM t1 INDEXED BY x2;
 EXPLAIN SELECT a FROM t1 INDEXED BY x2;
 EXPLAIN SELECT b FROM t1 INDEXED BY x2;

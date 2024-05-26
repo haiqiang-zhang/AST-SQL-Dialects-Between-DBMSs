@@ -1,28 +1,4 @@
-CREATE INDEX i1 ON t1(a, c);
-DROP INDEX i1;
-CREATE INDEX i1 ON t1(a, b);
-CREATE TABLE u1(a, b, c);
-CREATE TABLE u2(x, y, z);
-INSERT INTO u1 VALUES('a1', 'b1', 'c1');
-INSERT INTO u2 VALUES('a1', 'b1', 'c1');
-CREATE TABLE t0(c0 INT);
-INSERT INTO t0 VALUES(0);
-CREATE TABLE t1_a(a INTEGER PRIMARY KEY, b TEXT);
-INSERT INTO t1_a VALUES(1,'one');
-CREATE TABLE t1_b(c INTEGER PRIMARY KEY, d TEXT);
-INSERT INTO t1_b VALUES(2,'two');
-CREATE VIEW v0 AS SELECT CAST(t0.c0 AS INTEGER) AS c0 FROM t0;
-CREATE VIEW v1(a,b) AS SELECT a, b FROM t1_a UNION ALL SELECT c, 0 FROM t1_b;
 SELECT v1.a, quote(v1.b), t0.c0 AS cd FROM t0 LEFT JOIN v0 ON v0.c0!=0,v1;
-SELECT a, quote(b), cd FROM (
-    SELECT v1.a, v1.b, t0.c0 AS cd FROM t0 LEFT JOIN v0 ON v0.c0!=0, v1
-  ) WHERE a=2 AND b='0' AND cd=0;
-SELECT a, quote(b), cd FROM (
-    SELECT v1.a, v1.b, t0.c0 AS cd FROM t0 LEFT JOIN v0 ON v0.c0!=0, v1
-  ) WHERE a=1 AND b='one' AND cd=0;
-SELECT a, quote(b), cd FROM (
-    SELECT v1.a, v1.b, t0.c0 AS cd FROM t0 LEFT JOIN v0 ON v0.c0!=0, v1
-  ) WHERE a=2 AND b=0 AND cd=0;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t1(a INT, b INT, c TEXT, PRIMARY KEY(a,b)) WITHOUT ROWID;
 INSERT INTO t1(a,b,c) VALUES

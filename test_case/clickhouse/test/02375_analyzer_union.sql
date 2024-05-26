@@ -1,11 +1,3 @@
-SET allow_experimental_analyzer = 0;
-DROP TABLE IF EXISTS test_table;
-CREATE TABLE test_table
-(
-    id UInt64,
-    value String
-) ENGINE=TinyLog;
-INSERT INTO test_table VALUES (0, 'Value');
 SELECT 'Union constants';
 SELECT 1 UNION ALL SELECT 1;
 SELECT '--';

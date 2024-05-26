@@ -1,0 +1,2 @@
+CREATE TABLE test1(one int, two int, three int);
+INSERT INTO test1 VALUES(1,2,3);

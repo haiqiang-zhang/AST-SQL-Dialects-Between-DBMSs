@@ -2,12 +2,33 @@ import os
 from utils import clean_query, clean_query_postgresql
 
 dbms_tests = ['clickhouse', 'mysql', 'postgresql', 'sqlite', 'duckdb']
-# dbms_tests = ['postgresql']
+
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
+
+
+setup_query_keyword = [
+    # DDL
+    "create",
+    "alter",
+    "drop",
+    # DML
+    "insert",
+    "update",
+    "delete",
+    # SET
+    "set",
+    "reset",
+    "pragma",
+    # TRANSACTION
+    "begin",
+    "commit",
+    "rollback",
+    "end",
+]
 
 def extract_and_save_sql_statements(input_sql_file, setup_directory, test_directory, dbms_test):
     # setup keywords
-    keywords = ["create table", "insert into", "drop table", "create database"]
+    keywords = setup_query_keyword
 
     # setup dir path
     if not os.path.exists(setup_directory):
@@ -37,7 +58,7 @@ def extract_and_save_sql_statements(input_sql_file, setup_directory, test_direct
     
     for q in clean_query_list:
         if not extraction_done:
-            if any(keyword in q.lower() for keyword in keywords):
+            if any(q.lower().startswith(keyword.lower()) for keyword in keywords):
                 q = q + ';\n'
                 extracted_statements.append(q)
             else:

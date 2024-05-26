@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer=1;
 SELECT
     sum(x.n) as n,
     sum(z.n) as n2

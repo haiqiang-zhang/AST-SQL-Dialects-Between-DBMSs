@@ -1,0 +1,3 @@
+PRAGMA cache_size=10;
+BEGIN;
+CREATE TABLE t3(x TEXT);

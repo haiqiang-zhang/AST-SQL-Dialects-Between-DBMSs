@@ -1,6 +1,3 @@
-CREATE  VIEW v1 AS select t1.id as id from t1;
-CREATE  VIEW v2 AS select t1.id as renamed from t1;
-CREATE  VIEW v3 AS select t1.id + 12 as renamed from t1;
 select * from v1 group by id limit 1;
 select * from v1 group by id limit 0;
 select * from v1 where id=1000 group by id;

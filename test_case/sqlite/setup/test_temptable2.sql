@@ -1,0 +1,7 @@
+CREATE TEMP TABLE t1(a, b);
+CREATE INDEX i1 ON t1(a, b);
+PRAGMA temp.integrity_check;
+CREATE TEMP TABLE t2(a, b);
+INSERT INTO t2 VALUES(1, 2);
+BEGIN;
+INSERT INTO t2 VALUES(3, 4);

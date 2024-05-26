@@ -1,4 +1,3 @@
-SET force_primary_key = 1;
 SELECT k, s FROM t_sparse_pk WHERE k = 2 ORDER BY k, s;
 SELECT k, s FROM t_sparse_pk WHERE k = 0 OR k = 3 ORDER BY k, s;
 DROP TABLE IF EXISTS t_sparse_pk;
@@ -13,9 +12,6 @@ INSERT INTO t_full_pk SELECT number % 10, number % 4 = 0 FROM numbers(1000);
 INSERT INTO t_sparse_pk SELECT number % 10, number % 6 = 0 FROM numbers(1000);
 INSERT INTO t_full_pk SELECT number % 10, number % 6 = 0 FROM numbers(1000);
 SELECT count(v), sum(v) FROM t_sparse_pk WHERE k = 0;
-SELECT count(v), sum(v) FROM t_full_pk WHERE k = 0;
-SELECT count(v), sum(v) FROM t_sparse_pk WHERE k = 0 OR k = 3 OR k = 7 OR k = 8;
-SELECT count(v), sum(v) FROM t_full_pk WHERE k = 0 OR k = 3 OR k = 7 OR k = 8;
 SET force_primary_key = 0;
 SELECT (k = NULL) OR (k = 1000) FROM t_sparse_pk LIMIT 3;
 SELECT range(k) FROM t_sparse_pk LIMIT 3;

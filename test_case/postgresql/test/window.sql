@@ -1,24 +1,5 @@
-CREATE TEMPORARY TABLE empsalary (
-    depname varchar,
-    empno bigint,
-    salary int,
-    enroll_date date
-);
-INSERT INTO empsalary VALUES
-('develop', 10, 5200, '2007-08-01'),
-('sales', 1, 5000, '2006-10-01'),
-('personnel', 5, 3500, '2007-12-10'),
-('sales', 4, 4800, '2007-08-08'),
-('personnel', 2, 3900, '2006-12-23'),
-('develop', 7, 4200, '2008-01-01'),
-('develop', 9, 4500, '2008-01-01'),
-('sales', 3, 4800, '2007-08-01'),
-('develop', 8, 6000, '2006-10-01'),
-('develop', 11, 5200, '2007-08-15');
 SELECT depname, empno, salary, sum(salary) OVER (PARTITION BY depname) FROM empsalary ORDER BY depname, salary;
 SELECT depname, empno, salary, rank() OVER (PARTITION BY depname ORDER BY salary) FROM empsalary;
-SELECT depname, empno, salary, sum(salary) OVER w FROM empsalary WINDOW w AS (PARTITION BY depname);
-SELECT depname, empno, salary, rank() OVER w FROM empsalary WINDOW w AS (PARTITION BY depname ORDER BY salary) ORDER BY rank() OVER w;
 SELECT sum(salary),
 	row_number() OVER (ORDER BY depname),
 	sum(sum(salary)) OVER (ORDER BY depname DESC)
@@ -44,43 +25,25 @@ CREATE OR REPLACE TEMP VIEW v_window AS
 	SELECT i, sum(i) over (order by i rows between 1 preceding and 1 following
 	exclude current row) as sum_rows FROM generate_series(1, 10) i;
 SELECT * FROM v_window;
-SELECT pg_get_viewdef('v_window');
 CREATE OR REPLACE TEMP VIEW v_window AS
 	SELECT i, sum(i) over (order by i rows between 1 preceding and 1 following
 	exclude group) as sum_rows FROM generate_series(1, 10) i;
 SELECT * FROM v_window;
-SELECT pg_get_viewdef('v_window');
 CREATE OR REPLACE TEMP VIEW v_window AS
 	SELECT i, sum(i) over (order by i rows between 1 preceding and 1 following
 	exclude ties) as sum_rows FROM generate_series(1, 10) i;
 SELECT * FROM v_window;
-SELECT pg_get_viewdef('v_window');
 CREATE OR REPLACE TEMP VIEW v_window AS
 	SELECT i, sum(i) over (order by i rows between 1 preceding and 1 following
 	exclude no others) as sum_rows FROM generate_series(1, 10) i;
 SELECT * FROM v_window;
-SELECT pg_get_viewdef('v_window');
 CREATE OR REPLACE TEMP VIEW v_window AS
 	SELECT i, sum(i) over (order by i groups between 1 preceding and 1 following) as sum_rows FROM generate_series(1, 10) i;
 SELECT * FROM v_window;
-SELECT pg_get_viewdef('v_window');
 DROP VIEW v_window;
 CREATE TEMP VIEW v_window AS
 	SELECT i, min(i) over (order by i range between '1 day' preceding and '10 days' following) as min_i
   FROM generate_series(now(), now()+'100 days'::interval, '1 hour') i;
-SELECT pg_get_viewdef('v_window');
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following),
-	salary, enroll_date from empsalary;
-select sum(salary) over (order by enroll_date desc range between '1 year'::interval preceding and '1 year'::interval following),
-	salary, enroll_date from empsalary;
-select sum(salary) over (order by enroll_date desc range between '1 year'::interval following and '1 year'::interval following),
-	salary, enroll_date from empsalary;
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following
-	exclude current row), salary, enroll_date from empsalary;
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following
-	exclude group), salary, enroll_date from empsalary;
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following
-	exclude ties), salary, enroll_date from empsalary;
 select first_value(salary) over(order by salary range between 1000 preceding and 1000 following),
 	lead(salary) over(order by salary range between 1000 preceding and 1000 following),
 	nth_value(salary, 1) over(order by salary range between 1000 preceding and 1000 following),
@@ -88,34 +51,9 @@ select first_value(salary) over(order by salary range between 1000 preceding and
 select last_value(salary) over(order by salary range between 1000 preceding and 1000 following),
 	lag(salary) over(order by salary range between 1000 preceding and 1000 following),
 	salary from empsalary;
-select first_value(salary) over(order by salary range between 1000 following and 3000 following
-	exclude current row),
-	lead(salary) over(order by salary range between 1000 following and 3000 following exclude ties),
-	nth_value(salary, 1) over(order by salary range between 1000 following and 3000 following
-	exclude ties),
-	salary from empsalary;
-select last_value(salary) over(order by salary range between 1000 following and 3000 following
-	exclude group),
-	lag(salary) over(order by salary range between 1000 following and 3000 following exclude group),
-	salary from empsalary;
 select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
 	exclude ties),
 	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following),
-	salary, enroll_date from empsalary;
-select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
-	exclude ties),
-	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
-	exclude ties),
-	salary, enroll_date from empsalary;
-select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
-	exclude group),
-	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
-	exclude group),
-	salary, enroll_date from empsalary;
-select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
-	exclude current row),
-	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following
-	exclude current row),
 	salary, enroll_date from empsalary;
 select x, y,
        first_value(y) over w,
@@ -126,49 +64,12 @@ from
    union all select null, 43) ss
 window w as
   (order by x asc nulls first range between 2 preceding and 2 following);
-select x, y,
-       first_value(y) over w,
-       last_value(y) over w
-from
-  (select x, x as y from generate_series(1,5) as x
-   union all select null, 42
-   union all select null, 43) ss
-window w as
-  (order by x asc nulls last range between 2 preceding and 2 following);
-select x, y,
-       first_value(y) over w,
-       last_value(y) over w
-from
-  (select x, x as y from generate_series(1,5) as x
-   union all select null, 42
-   union all select null, 43) ss
-window w as
-  (order by x desc nulls first range between 2 preceding and 2 following);
-select x, y,
-       first_value(y) over w,
-       last_value(y) over w
-from
-  (select x, x as y from generate_series(1,5) as x
-   union all select null, 42
-   union all select null, 43) ss
-window w as
-  (order by x desc nulls last range between 2 preceding and 2 following);
 END;
 END;
 CREATE FUNCTION unbounded(x int) RETURNS int LANGUAGE SQL IMMUTABLE RETURN x;
 DROP FUNCTION unbounded;
 select x, last_value(x) over (order by x::smallint range between current row and 2147450884 following)
 from generate_series(32764, 32766) x;
-select x, last_value(x) over (order by x::smallint desc range between current row and 2147450885 following)
-from generate_series(-32766, -32764) x;
-select x, last_value(x) over (order by x range between current row and 4 following)
-from generate_series(2147483644, 2147483646) x;
-select x, last_value(x) over (order by x desc range between current row and 5 following)
-from generate_series(-2147483646, -2147483644) x;
-select x, last_value(x) over (order by x range between current row and 4 following)
-from generate_series(9223372036854775804, 9223372036854775806) x;
-select x, last_value(x) over (order by x desc range between current row and 5 following)
-from generate_series(-9223372036854775806, -9223372036854775804) x;
 create temp table numerics(
     id int,
     f_float4 float4,
@@ -186,66 +87,6 @@ insert into numerics values
 (7, 100, 100, 100),
 (8, 'infinity', 'infinity', 'infinity'),
 (9, 'NaN', 'NaN', 'NaN');
-select id, f_float4, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float4 range between
-             1 preceding and 1 following);
-select id, f_float4, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float4 range between
-             1 preceding and 1.1::float4 following);
-select id, f_float4, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float4 range between
-             'inf' preceding and 'inf' following);
-select id, f_float4, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float4 range between
-             'inf' preceding and 'inf' preceding);
-select id, f_float4, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float4 range between
-             'inf' following and 'inf' following);
-select id, f_float8, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float8 range between
-             1 preceding and 1 following);
-select id, f_float8, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float8 range between
-             1 preceding and 1.1::float8 following);
-select id, f_float8, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float8 range between
-             'inf' preceding and 'inf' following);
-select id, f_float8, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float8 range between
-             'inf' preceding and 'inf' preceding);
-select id, f_float8, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_float8 range between
-             'inf' following and 'inf' following);
-select id, f_numeric, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_numeric range between
-             1 preceding and 1 following);
-select id, f_numeric, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_numeric range between
-             1 preceding and 1.1::numeric following);
-select id, f_numeric, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_numeric range between
-             'inf' preceding and 'inf' following);
-select id, f_numeric, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_numeric range between
-             'inf' preceding and 'inf' preceding);
-select id, f_numeric, first_value(id) over w, last_value(id) over w
-from numerics
-window w as (order by f_numeric range between
-             'inf' following and 'inf' following);
 create temp table datetimes(
     id int,
     f_time time,
@@ -254,83 +95,6 @@ create temp table datetimes(
     f_timestamptz timestamptz,
     f_timestamp timestamp
 );
-select id, f_time, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_time range between
-             '70 min'::interval preceding and '2 hours'::interval following);
-select id, f_time, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_time desc range between
-             '70 min' preceding and '2 hours' following);
-select id, f_time, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_time desc range between
-             '-70 min' preceding and '2 hours' following);
-select id, f_timetz, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timetz range between
-             '70 min'::interval preceding and '2 hours'::interval following);
-select id, f_timetz, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timetz desc range between
-             '70 min' preceding and '2 hours' following);
-select id, f_timetz, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timetz desc range between
-             '70 min' preceding and '-2 hours' following);
-select id, f_interval, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_interval range between
-             '1 year'::interval preceding and '1 year'::interval following);
-select id, f_interval, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_interval desc range between
-             '1 year' preceding and '1 year' following);
-select id, f_interval, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_interval desc range between
-             '-1 year' preceding and '1 year' following);
-select id, f_timestamptz, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timestamptz range between
-             '1 year'::interval preceding and '1 year'::interval following);
-select id, f_timestamptz, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timestamptz desc range between
-             '1 year' preceding and '1 year' following);
-select id, f_timestamptz, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timestamptz desc range between
-             '1 year' preceding and '-1 year' following);
-select id, f_timestamp, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timestamp range between
-             '1 year'::interval preceding and '1 year'::interval following);
-select id, f_timestamp, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timestamp desc range between
-             '1 year' preceding and '1 year' following);
-select id, f_timestamp, first_value(id) over w, last_value(id) over w
-from datetimes
-window w as (order by f_timestamp desc range between
-             '-1 year' preceding and '1 year' following);
-select first_value(salary) over(order by enroll_date groups between 1 preceding and 1 following),
-	lead(salary) over(order by enroll_date groups between 1 preceding and 1 following),
-	nth_value(salary, 1) over(order by enroll_date groups between 1 preceding and 1 following),
-	salary, enroll_date from empsalary;
-select last_value(salary) over(order by enroll_date groups between 1 preceding and 1 following),
-	lag(salary) over(order by enroll_date groups between 1 preceding and 1 following),
-	salary, enroll_date from empsalary;
-select first_value(salary) over(order by enroll_date groups between 1 following and 3 following
-	exclude current row),
-	lead(salary) over(order by enroll_date groups between 1 following and 3 following exclude ties),
-	nth_value(salary, 1) over(order by enroll_date groups between 1 following and 3 following
-	exclude ties),
-	salary, enroll_date from empsalary;
-select last_value(salary) over(order by enroll_date groups between 1 following and 3 following
-	exclude group),
-	lag(salary) over(order by enroll_date groups between 1 following and 3 following exclude group),
-	salary, enroll_date from empsalary;
 WITH cte (x) AS (
         SELECT * FROM generate_series(1, 35, 2)
 )
@@ -376,34 +140,6 @@ explain (costs off)
 select f1, sum(f1) over (partition by f1 order by f2
                          range between 1 preceding and 1 following)
 from t1 where f1 = f2;
-select f1, sum(f1) over (partition by f1 order by f2
-                         range between 1 preceding and 1 following)
-from t1 where f1 = f2;
-select f1, sum(f1) over (partition by f1, f1 order by f2
-                         range between 2 preceding and 1 preceding)
-from t1 where f1 = f2;
-select f1, sum(f1) over (partition by f1, f2 order by f2
-                         range between 1 following and 2 following)
-from t1 where f1 = f2;
-explain (costs off)
-select f1, sum(f1) over (partition by f1 order by f2
-                         groups between 1 preceding and 1 following)
-from t1 where f1 = f2;
-select f1, sum(f1) over (partition by f1 order by f2
-                         groups between 1 preceding and 1 following)
-from t1 where f1 = f2;
-select f1, sum(f1) over (partition by f1, f1 order by f2
-                         groups between 2 preceding and 1 preceding)
-from t1 where f1 = f2;
-select f1, sum(f1) over (partition by f1, f2 order by f2
-                         groups between 1 following and 2 following)
-from t1 where f1 = f2;
-SELECT rank() OVER (ORDER BY length('abc'));
-SELECT sum(salary), row_number() OVER (ORDER BY depname), sum(
-    sum(salary) FILTER (WHERE enroll_date > '2007-01-01')
-) FILTER (WHERE depname <> 'sales') OVER (ORDER BY depname DESC) AS "filtered_sum",
-    depname
-FROM empsalary GROUP BY depname;
 EXPLAIN (COSTS OFF)
 SELECT
     empno,
@@ -872,86 +608,24 @@ WINDOW fwd AS (
 );
 SELECT i,AVG(v::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,AVG(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,AVG(v::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,AVG(v::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1.5),(2,2.5),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,AVG(v::interval) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,'1 sec'),(2,'2 sec'),(3,NULL),(4,NULL)) t(i,v);
 SELECT i,SUM(v::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::money) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,'1.10'),(2,'2.20'),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::interval) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,'1 sec'),(2,'2 sec'),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1.1),(2,2.2),(3,NULL),(4,NULL)) t(i,v);
 SELECT SUM(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,1.01),(2,2),(3,3)) v(i,n);
 SELECT i,COUNT(v) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,COUNT(*) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
 SELECT VAR_POP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VAR_POP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VAR_POP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VAR_POP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
 SELECT VAR_SAMP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VAR_SAMP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VAR_SAMP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VAR_SAMP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
 SELECT VARIANCE(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VARIANCE(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VARIANCE(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT VARIANCE(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
 SELECT STDDEV_POP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
-SELECT STDDEV_POP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
-SELECT STDDEV_POP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
-SELECT STDDEV_POP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
 SELECT STDDEV_SAMP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
-SELECT STDDEV_SAMP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
-SELECT STDDEV_SAMP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
-SELECT STDDEV_SAMP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n);
 SELECT STDDEV(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
   FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT STDDEV(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT STDDEV(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT STDDEV(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
-  FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n);
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND CURRENT ROW)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v);
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING)
-  FROM (VALUES(1,1),(2,2),(3,3),(4,4)) t(i,v);
 SELECT a, b,
        SUM(b) OVER(ORDER BY A ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
 FROM (VALUES(1,1::numeric),(2,2),(3,'NaN'),(4,3),(5,4)) t(a,b);

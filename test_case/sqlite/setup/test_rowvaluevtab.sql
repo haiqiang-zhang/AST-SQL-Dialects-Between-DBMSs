@@ -1,0 +1,11 @@
+CREATE TABLE t1(a, b, c);
+CREATE INDEX t1b ON t1(b);
+INSERT INTO t1 VALUES('one', 1, 1);
+INSERT INTO t1 VALUES('two', 1, 2);
+INSERT INTO t1 VALUES('three', 1, 3);
+INSERT INTO t1 VALUES('four', 2, 1);
+INSERT INTO t1 VALUES('five', 2, 2);
+INSERT INTO t1 VALUES('six', 2, 3);
+INSERT INTO t1 VALUES('seven', 3, 1);
+INSERT INTO t1 VALUES('eight', 3, 2);
+INSERT INTO t1 VALUES('nine', 3, 3);

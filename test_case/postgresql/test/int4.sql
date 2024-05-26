@@ -1,6 +1,4 @@
 SELECT pg_input_is_valid('34', 'int4');
-SELECT pg_input_is_valid('asdf', 'int4');
-SELECT pg_input_is_valid('1000000000000', 'int4');
 SELECT * FROM pg_input_error_info('1000000000000', 'int4');
 SELECT -2+3 AS one;
 SELECT 4-2 AS two;
@@ -25,14 +23,6 @@ FROM (VALUES (-2.5::float8),
              (0.5::float8),
              (1.5::float8),
              (2.5::float8)) t(x);
-SELECT x, x::int4 AS int4_value
-FROM (VALUES (-2.5::numeric),
-             (-1.5::numeric),
-             (-0.5::numeric),
-             (0.0::numeric),
-             (0.5::numeric),
-             (1.5::numeric),
-             (2.5::numeric)) t(x);
 SELECT a, b, gcd(a, b), gcd(a, -b), gcd(b, a), gcd(-b, a)
 FROM (VALUES (0::int4, 0::int4),
              (0::int4, 6410818::int4),

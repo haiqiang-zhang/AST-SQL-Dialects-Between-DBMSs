@@ -1,4 +1,3 @@
-UPDATE parameters1 SET mountcnt = mountcnt + 1;
 SELECT * FROM parameters1;
 UPDATE parameters2 SET mountcnt = mountcnt + 1;
 SELECT * FROM parameters2;

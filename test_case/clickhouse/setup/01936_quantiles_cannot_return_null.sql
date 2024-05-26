@@ -1,0 +1,1 @@
+set aggregate_functions_null_for_empty=0;

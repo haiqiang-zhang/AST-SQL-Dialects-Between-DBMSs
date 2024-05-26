@@ -1,0 +1,13 @@
+BEGIN;
+CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c);
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
+CREATE INDEX i1 ON t1(b,c);
+CREATE UNIQUE INDEX i2 ON t1(c,a);
+CREATE TABLE t2 AS SELECT * FROM t1;
+DROP TABLE t2;

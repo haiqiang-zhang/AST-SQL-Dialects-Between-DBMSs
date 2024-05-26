@@ -1,4 +1,3 @@
-insert t1 values (10);
 select * from t1;
 insert t1 values (20);
 select * from t1;

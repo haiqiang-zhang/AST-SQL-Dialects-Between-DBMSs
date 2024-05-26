@@ -1,0 +1,11 @@
+drop database if exists mysqltest1;
+create schema foo;
+drop schema foo;
+DROP SCHEMA IF EXISTS schema1;
+CREATE SCHEMA schema1;
+CREATE TABLE schema1.t1 (a INT);
+ALTER SCHEMA schema1 DEFAULT CHARACTER SET utf8mb3;
+DROP SCHEMA IF EXISTS schema1;
+CREATE SCHEMA schema1;
+CREATE TABLE schema1.t1 (id INT);
+CREATE SCHEMA IF NOT EXISTS schema1;

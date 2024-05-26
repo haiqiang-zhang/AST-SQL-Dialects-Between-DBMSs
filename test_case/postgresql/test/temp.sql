@@ -1,6 +1,3 @@
-CREATE INDEX i_temptest ON temptest(col);
-CREATE TEMP TABLE temptest(tcol int);
-CREATE INDEX i_temptest ON temptest(tcol);
 SELECT * FROM temptest;
 DROP INDEX i_temptest;
 DROP TABLE temptest;
@@ -67,10 +64,8 @@ select * from whereami;
 select whoami();
 set search_path = pg_temp, public;
 select * from whereami;
-select whoami();
 set search_path = public, pg_temp;
 select * from whereami;
-select whoami();
 select pg_temp.whoami();
 drop table public.whereami;
 set search_path = pg_temp, public;

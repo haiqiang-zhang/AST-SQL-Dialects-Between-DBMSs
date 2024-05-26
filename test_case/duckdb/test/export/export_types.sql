@@ -1,0 +1,2 @@
+EXPORT DATABASE '__TEST_DIR__/export_types' (FORMAT CSV);
+ROLLBACK;

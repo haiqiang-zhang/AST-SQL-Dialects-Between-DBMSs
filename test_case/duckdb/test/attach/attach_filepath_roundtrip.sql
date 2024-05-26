@@ -1,0 +1,11 @@
+ATTACH '__TEST_DIR__/concurrent.db';
+DETACH concurrent;
+ATTACH '__TEST_DIR__/db1.db';
+DETACH db1;
+ATTACH '__TEST_DIR__/db1.db';
+ATTACH '__TEST_DIR__/con2_rollback_detach.db';
+START TRANSACTION;
+COMMIT;
+ATTACH '__TEST_DIR__/con1.db';
+ATTACH '__TEST_DIR__/con1_commit.db';
+SELECT database_name FROM duckdb_databases() ORDER BY 1;

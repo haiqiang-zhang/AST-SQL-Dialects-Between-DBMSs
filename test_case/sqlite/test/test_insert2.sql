@@ -52,18 +52,13 @@ INSERT INTO t4 SELECT x+(SELECT max(x) FROM t4),y FROM t4;
 INSERT INTO t4 SELECT x+(SELECT max(x) FROM t4),y FROM t4;
 INSERT INTO t4 SELECT x+(SELECT max(x) FROM t4),y FROM t4;
 INSERT INTO t4 SELECT x+(SELECT max(x) FROM t4),y FROM t4;
-SELECT count(*) FROM t4;
 BEGIN;
 UPDATE t4 SET y='lots of data for the row where x=' || x
                      || ' and y=' || y || ' - even more data to fill space';
-SELECT count(*) FROM t4;
 BEGIN;
 INSERT INTO t4 SELECT x+(SELECT max(x)+1 FROM t4),y FROM t4;
-SELECT count(*) from t4;
-SELECT count(*) FROM t4;
 BEGIN;
 DELETE FROM t4 WHERE x!=123;
-SELECT count(*) FROM t4;
 PRAGMA integrity_check;
 CREATE TABLE Dependencies(depId integer primary key,
         class integer, name str, flag str);

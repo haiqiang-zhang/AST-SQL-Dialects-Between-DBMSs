@@ -1,20 +1,2 @@
-CREATE VIEW v AS SELECT * FROM t1;
-DROP TABLE v;
-DROP DICTIONARY IF EXISTS dict;
-CREATE DICTIONARY dict
-(
-    `key` UInt64,
-    `value` UInt16
-)
-PRIMARY KEY key
-SOURCE(CLICKHOUSE(
-    HOST '127.0.0.1' PORT tcpPort()
-    TABLE 'dict_data' DB concat(currentDatabase(), '_1') USER 'default' PASSWORD ''))
-LIFETIME(MIN 0 MAX 0)
-LAYOUT(SPARSE_HASHED());
-DROP TABLE IF EXISTS t1;
-DROP TABLE IF EXISTS t3;
-DROP DICTIONARY dict;
-CREATE TABLE t1 (x String) ENGINE = Memory AS SELECT 1;
 SELECT x, toTypeName(x) FROM t1;
 DROP TABLE t1;

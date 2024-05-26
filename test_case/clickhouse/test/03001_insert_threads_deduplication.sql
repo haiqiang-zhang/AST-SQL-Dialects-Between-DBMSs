@@ -18,9 +18,6 @@ SELECT count() FROM ds;
 INSERT INTO ds SELECT * FROM landing
 SETTINGS insert_deduplicate=1, insert_deduplication_token='token2',
          max_insert_threads=1;
-SELECT count() FROM ds;
-SELECT count() FROM ds;
-SELECT count() FROM ds;
 DROP TABLE IF EXISTS landing SYNC;
 DROP TABLE IF EXISTS landing_dist SYNC;
 DROP TABLE IF EXISTS ds SYNC;

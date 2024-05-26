@@ -23,4 +23,3 @@ SELECT nan AS x, isFinite(exp(x)) /* exp(nan) is allowed to return inf */, exp2(
 SELECT nan AS x, erf(x), erfc(x), lgamma(x), tgamma(x);
 SELECT nan AS x, sin(x), cos(x), tan(x), asin(x), acos(x), atan(x);
 SELECT min(x), max(x) FROM (SELECT arrayJoin([toFloat32(0.0), nan, toFloat32(1.0), toFloat32(-1.0)]) AS x);
-SELECT min(x), max(x) FROM (SELECT arrayJoin([toFloat64(0.0), -nan, toFloat64(1.0), toFloat64(-1.0)]) AS x);

@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS partitions;
+CREATE TABLE partitions (x UInt64) ENGINE = MergeTree ORDER BY x PARTITION BY x;

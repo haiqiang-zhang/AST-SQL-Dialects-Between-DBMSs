@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer = true;
 SELECT
     Carrier,
     sum(toFloat64(C3)) AS C1,

@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer = 1;
 EXPLAIN QUERY TREE passes=1
 WITH merged_test AS(
 	SELECT * FROM  t Final

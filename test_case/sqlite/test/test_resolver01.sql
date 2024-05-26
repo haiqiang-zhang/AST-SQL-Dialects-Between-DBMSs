@@ -25,13 +25,10 @@ INSERT INTO t5 VALUES('ax');
 INSERT INTO t5 VALUES('bx');
 INSERT INTO t5 VALUES('cy');
 SELECT count(*), substr(m,2,1) AS m FROM t5 GROUP BY m ORDER BY 1, 2;
-SELECT count(*), substr(m,2,1) AS mx FROM t5 GROUP BY m ORDER BY 1, 2;
-SELECT count(*), substr(m,2,1) AS mx FROM t5 GROUP BY mx ORDER BY 1, 2;
 SELECT count(*), substr(m,2,1) AS mx FROM t5
    GROUP BY substr(m,2,1) ORDER BY 1, 2;
 CREATE TABLE t61(name);
 SELECT min(name) FROM t61 GROUP BY lower(name);
-SELECT min(name) AS name FROM t61 GROUP BY lower(name);
 CREATE TABLE t63(name);
 INSERT INTO t63 VALUES (NULL);
 INSERT INTO t63 VALUES ('abc');

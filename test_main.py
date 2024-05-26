@@ -11,15 +11,21 @@ import decimal
 from sql_classifer import classify_sql
 
 
-test_case_path = './test_case'
-dbms_test_case_used = ['sqlite', 'mysql', 'postgresql', 'duckdb', 'clickhouse']
+# ================== Configuration ==================
 
+test_case_path = './test_case'
+test_case_folder_name = "unsplit"
+
+# Configure which test cases to run
+dbms_test_case_used = ['postgresql']
+
+# Configure Which DBMS to be tested
 DBMS_ADAPTERS:dict[str, type[DBMSAdapter]] = {
-    "mysql": MySQLAdapter,
-    "sqlite": SQLiteAdapter,
+    # "mysql": MySQLAdapter,
+    # "sqlite": SQLiteAdapter,
     "postgresql": PostgresqlAdapter,
-    "duckdb": DuckDBAdapter,
-    "clickhouse": ClickHouseAdapter
+    # "duckdb": DuckDBAdapter,
+    # "clickhouse": ClickHouseAdapter
 
 }
 
@@ -43,9 +49,9 @@ setup_query_keyword = [
     "end",
 ]
 
-
-
 encodings = ['utf-8', 'Windows-1252', 'koi8-r', 'iso8859-1']
+
+# ================== End of Configuration ==================
 
 def convert_decimals(obj):
     if isinstance(obj, list):
@@ -59,21 +65,7 @@ def convert_decimals(obj):
     else:
         return obj
 
-def run_setup_in_all_dbms(setup_paths:str):
-    # check setup_paths exists
-    if os.path.exists(setup_paths):
-        with open(setup_paths, 'r') as file:
-            setup_query = file.read()
-        setup_query = clean_query(setup_query)
-
-        # Execute the SQL query
-        for dbms in DBMS_ADAPTERS:
-            DBMS_ADAPTERS[dbms].run_setup(setup_query, setup_paths)
-
-
-def run_test_in_all_dbms(test_paths:str, filename:str):
-    result_list = []
-    # Read the contents of the test case file
+def read_sql_file(test_paths:str, filename:str, encodings:list):
     sql_query = None
     for encoding in encodings:
         try:
@@ -82,20 +74,41 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
         except UnicodeDecodeError as e:
             continue
     
-    if not sql_query:
+    if sql_query is None:
         raise UnicodeError(f"Error decode sql file '{filename}'")
+    
+    return sql_query
+
+
+def run_test_in_all_dbms(test_paths:str, filename:str, setup_paths:str=""):
+    result_list = []
+    # Read the contents of the test case file
 
     # clean the query
     print("Start parsing SQL file: ", filename)
+    sql_query = read_sql_file(test_paths, filename, encodings)
     if 'postgresql' in test_paths:
         sql_query = clean_query_postgresql(sql_query)
     else:
         sql_query = clean_query(sql_query)
+
+    if setup_paths:
+        setup_query = read_sql_file(setup_paths, filename, encodings)
+
+        if setup_query.strip() != "":
+            if 'postgresql' in setup_paths:
+                setup_query = clean_query_postgresql(setup_query)
+            else:
+                setup_query = clean_query(setup_query)
+
+            sql_query = setup_query + sql_query
+
+    
     print("Finish parsing SQL file: ", filename)
 
     # get the result of the test case
     
-    result_list = parse_result_file(get_test_result_path(test_paths))
+    result_list = parse_result_file(get_test_result_path(test_paths, test_dir_name=test_case_folder_name))
 
 
     df = pd.DataFrame(columns=['DBMS', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number'])
@@ -105,6 +118,7 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
     for dbms in DBMS_ADAPTERS:
         result_index_counter = 0
         db_adaptor = DBMS_ADAPTERS[dbms]()
+
         success_counter = 0
         diff_counter = 0
         failure_counter = 0
@@ -139,10 +153,8 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
     return df, df_verbose_all_result_one_file
 
 
-def run_all(test_paths:str, filename:str, setup_paths:str=""):
-    if setup_paths:
-        run_setup_in_all_dbms(setup_paths)
-    return run_test_in_all_dbms(test_paths, filename)
+# def run_all(test_paths:str, filename:str, setup_paths:str=""):
+#     return run_test_in_all_dbms(test_paths, filename, setup_paths)
 
 
 
@@ -173,7 +185,7 @@ for dbms in os.listdir(test_case_path):
         
     first_init_dbmss(DBMS_ADAPTERS)
     print(f"Running test cases of {dbms}")
-    test_folder=os.path.join(test_case_path, dbms, 'unsplit')
+    test_folder=os.path.join(test_case_path, dbms, test_case_folder_name)
     file_counter = 0
 
     # iterate all files in the test folder(it is a multi-level folder, the level is not fixed)
@@ -181,8 +193,7 @@ for dbms in os.listdir(test_case_path):
         for filename in sorted(filenames):
             if filename.endswith('.sql'):
                 test_paths = os.path.join(dirpath, filename)
-                # setup_paths = os.path.join(test_case_path, dbmss, test_group, 'setup', filename)
-                # result_paths = os.path.join(test_case_path, dbmss, test_group, 'result', filename)
+                setup_paths = test_paths.replace(f"/{dbms}/{test_case_folder_name}", f"/{dbms}/setup")
 
                 if os.path.getsize(test_paths) == 0:
                     continue
@@ -190,7 +201,7 @@ for dbms in os.listdir(test_case_path):
                 df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_Type', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
                 
                 try:
-                    df_one_file, df_verbose_all_result_one_file = run_all(test_paths, filename)
+                    df_one_file, df_verbose_all_result_one_file = run_test_in_all_dbms(test_paths, filename, setup_paths=setup_paths)
                     for i in range(len(df_one_file)):
                         # check DBMS_Base = dbms, DBMS_Tested = df_one_file[i]['DBMS'] exist or not
                         if df[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS'])].empty:

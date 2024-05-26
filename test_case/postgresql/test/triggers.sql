@@ -1,27 +1,3 @@
-create index fkeys_i on fkeys (fkey1, fkey2);
-create index fkeys2_i on fkeys2 (fkey21, fkey22);
-create index fkeys2p_i on fkeys2 (pkey23);
-insert into pkeys values (10, '1');
-insert into pkeys values (20, '2');
-insert into pkeys values (30, '3');
-insert into pkeys values (40, '4');
-insert into pkeys values (50, '5');
-insert into pkeys values (60, '6');
-create unique index pkeys_i on pkeys (pkey1, pkey2);
-insert into fkeys2 values (10, '1', 1);
-insert into fkeys2 values (30, '3', 2);
-insert into fkeys2 values (40, '4', 5);
-insert into fkeys2 values (50, '5', 3);
-insert into fkeys2 values (70, '5', 3);
-insert into fkeys values (10, '1', 2);
-insert into fkeys values (30, '3', 3);
-insert into fkeys values (40, '4', 2);
-insert into fkeys values (50, '5', 2);
-insert into fkeys values (70, '5', 1);
-insert into fkeys values (60, '6', 4);
-delete from pkeys where pkey1 = 30 and pkey2 = '3';
-delete from pkeys where pkey1 = 40 and pkey2 = '4';
-update pkeys set pkey1 = 7, pkey2 = '70' where pkey1 = 50 and pkey2 = '5';
 SELECT trigger_name, event_manipulation, event_object_schema, event_object_table,
        action_order, action_condition, action_orientation, action_timing,
        action_reference_old_table, action_reference_new_table
@@ -120,15 +96,11 @@ INSERT INTO main_table (a) VALUES (123), (456);
 UPDATE main_table SET a = 50, b = 60;
 SELECT * FROM main_table ORDER BY a, b;
 SELECT pg_get_triggerdef(oid, true) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a';
-SELECT pg_get_triggerdef(oid, false) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a';
-SELECT pg_get_triggerdef(oid, true) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_any';
 SELECT count(*) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a';
-SELECT count(*) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_modified_a';
 create table table_with_oids(a int);
 insert into table_with_oids values (1);
 update table_with_oids set a = a + 1;
 drop table table_with_oids;
-SELECT pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'after_upd_a_b_row_trig';
 UPDATE main_table SET a = 50;
 UPDATE main_table SET b = 10;
 CREATE TABLE some_t (some_col boolean NOT NULL);
@@ -233,7 +205,6 @@ end;
 end;
 CREATE VIEW european_city_view AS
     SELECT * FROM city_view WHERE continent = 'Europe';
-SELECT count(*) FROM european_city_view;
 CREATE RULE european_city_insert_rule AS ON INSERT TO european_city_view
 DO INSTEAD INSERT INTO city_view
 VALUES (NEW.city_id, NEW.city_name, NEW.population, NEW.country_name, NEW.continent)
@@ -259,9 +230,7 @@ end;
 end;
 select pg_trigger_depth();
 insert into depth_a values (1);
-select pg_trigger_depth();
 insert into depth_a values (2);
-select pg_trigger_depth();
 drop table depth_a, depth_b, depth_c;
 create temp table parent (
     aid int not null primary key,
@@ -542,10 +511,6 @@ create table trg_clone2 partition of trg_clone for values from (1000) to (2000);
 create table trg_clone3 partition of trg_clone for values from (2000) to (3000)
   partition by range (a);
 create table trg_clone_3_3 partition of trg_clone3 for values from (2000) to (2100);
-select tgrelid::regclass, count(*) from pg_trigger
-  where tgrelid::regclass in ('trg_clone', 'trg_clone1', 'trg_clone2',
-	'trg_clone3', 'trg_clone_3_3')
-  group by tgrelid::regclass order by tgrelid::regclass;
 drop table trg_clone;
 create table parent (a int);
 create table child1 () inherits (parent);

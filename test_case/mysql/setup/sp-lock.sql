@@ -1,0 +1,11 @@
+drop table if exists t1;
+drop procedure if exists p1;
+drop procedure if exists p2;
+drop procedure if exists p3;
+drop procedure if exists p4;
+drop function if exists f1;
+create table t1 (a int);
+create procedure p1() begin end;
+alter procedure p1 comment 'changed comment';
+drop procedure p1;
+create procedure p1() begin end;

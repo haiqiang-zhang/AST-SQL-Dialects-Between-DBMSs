@@ -1,4 +1,3 @@
-ALTER TABLE test_generic_events_all ADD COLUMN OperatingSystem UInt64 DEFAULT 42;
 SELECT OperatingSystem FROM test_generic_events_all PREWHERE APIKey = 42 WHERE SessionType = 42;
 SELECT * FROM test_generic_events_all PREWHERE APIKey = 42 WHERE SessionType = 42;
 DROP TABLE IF EXISTS test_generic_events_all;

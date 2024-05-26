@@ -3,9 +3,7 @@ SELECT name FROM system.parts WHERE database=currentDatabase() AND table = '0258
 CREATE TABLE 02581_set (id UInt32) ENGINE = Set;
 INSERT INTO 02581_set SELECT number*10+7 FROM numbers(10000000);
 ALTER TABLE 02581_trips UPDATE description='d' WHERE id IN 02581_set SETTINGS mutations_sync=2;
-SELECT count() from 02581_trips WHERE description = '';
 INSERT INTO 02581_set SELECT number*10+8 FROM numbers(10000000);
 ALTER TABLE 02581_trips UPDATE description='d' WHERE id IN 02581_set SETTINGS mutations_sync=2;
-SELECT count() from 02581_trips WHERE description = '';
 DROP TABLE 02581_set;
 DROP TABLE 02581_trips;

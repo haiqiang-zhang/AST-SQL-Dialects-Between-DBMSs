@@ -1,8 +1,3 @@
-PRAGMA cache_size = 10;
-CREATE TABLE t3(a INTEGER PRIMARY KEY, b);
-CREATE TABLE t4(a);
-BEGIN;
-INSERT INTO t4 VALUES('xyz');
 SELECT * FROM t4 WHERE a = 'xyz';
 SELECT * FROM t4 WHERE a = 'xyz';
 SELECT * FROM t4 WHERE a = 'xyz';

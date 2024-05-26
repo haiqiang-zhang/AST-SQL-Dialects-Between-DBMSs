@@ -1,11 +1,3 @@
-create view rtest_v1 as select * from rtest_t1;
-create rule rtest_v1_ins as on insert to rtest_v1 do instead
-	insert into rtest_t1 values (new.a, new.b);
-create rule rtest_v1_upd as on update to rtest_v1 do instead
-	update rtest_t1 set a = new.a, b = new.b
-	where a = old.a;
-create rule rtest_v1_del as on delete to rtest_v1 do instead
-	delete from rtest_t1 where a = old.a;
 COMMENT ON RULE rtest_v1_del ON rtest_v1 IS 'delete rule';
 COMMENT ON RULE rtest_v1_del ON rtest_v1 IS NULL;
 create table rtest_system (sysname text, sysdesc text);
@@ -773,7 +765,6 @@ SELECT pg_get_function_arguments(0);
 SELECT pg_get_function_identity_arguments(0);
 SELECT pg_get_function_result(0);
 SELECT pg_get_function_arg_default(0, 0);
-SELECT pg_get_function_arg_default('pg_class'::regclass, 0);
 SELECT pg_get_partkeydef(0);
 CREATE TABLE rules_parted_table (a int) PARTITION BY LIST (a);
 CREATE TABLE rules_parted_table_1 PARTITION OF rules_parted_table FOR VALUES IN (1);

@@ -1,8 +1,3 @@
-SET max_threads = 1;
-SET optimize_read_in_order=0;
-CREATE TABLE nullable_key (k Nullable(int), v int) ENGINE MergeTree ORDER BY k SETTINGS allow_nullable_key = 1, index_granularity = 1;
-INSERT INTO nullable_key SELECT number * 2, number * 3 FROM numbers(10);
-INSERT INTO nullable_key SELECT NULL, -number FROM numbers(3);
 SELECT * FROM nullable_key ORDER BY k, v;
 SET force_primary_key = 1;
 SET max_rows_to_read = 3;

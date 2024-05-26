@@ -22,13 +22,6 @@ INSERT INTO t SELECT
     ['x', 'y', 'z'][number % 3] AS f2,
     number AS c
 FROM numbers(1000);
-SELECT
-    date_trunc('month', d),
-    SUM(c)
-FROM t
-FINAL
-WHERE f2 = 'x'
-GROUP BY 1;
 DROP TABLE t;
 CREATE TABLE t (o Nullable(String), p Nullable(String)) ENGINE = ReplacingMergeTree ORDER BY (p, o) SETTINGS allow_nullable_key = 1, index_granularity = 2;
 INSERT INTO t SELECT number, NULL FROM numbers(10);

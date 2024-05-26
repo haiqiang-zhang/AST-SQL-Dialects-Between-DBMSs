@@ -1,9 +1,3 @@
-DROP DATABASE IF EXISTS mysqltest_db1;
-CREATE DATABASE mysqltest_db1;
-CREATE TABLE t1(num_value INT);
-CREATE TABLE t2(user_str TEXT);
-CREATE TABLE patch (a blob);
-DROP TABLE patch;
 SELECT trigger_name, definer FROM INFORMATION_SCHEMA.TRIGGERS ORDER BY trigger_name;
 SELECT * FROM INFORMATION_SCHEMA.TRIGGERS ORDER BY trigger_name;
 DROP TABLE t1;

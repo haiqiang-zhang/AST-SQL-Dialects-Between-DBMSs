@@ -1,4 +1,3 @@
-SET session_timezone = 'Africa/Juba';
 SELECT '-- const / non-const inputs';
 WITH toDateTime('2021-08-15 18:57:56', 'Asia/Shanghai') AS dt
 SELECT dt, dateTimeToSnowflake(dt), materialize(dateTimeToSnowflake(dt));

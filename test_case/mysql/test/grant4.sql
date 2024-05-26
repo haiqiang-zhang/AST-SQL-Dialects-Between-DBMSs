@@ -1,8 +1,3 @@
-drop database if exists mysqltest_db1;
-create database mysqltest_db1;
-create table t_column_priv_only (a int, b int);
-create table t_select_priv like t_column_priv_only;
-create table t_no_priv like t_column_priv_only;
 select column_name as 'Field',column_type as 'Type',is_nullable as 'Null',column_key as 'Key',column_default as 'Default',extra as 'Extra' from information_schema.columns where table_schema='mysqltest_db1' and table_name='t_column_priv_only';
 select column_name as 'Field',column_type as 'Type',is_nullable as 'Null',column_key as 'Key',column_default as 'Default',extra as 'Extra' from information_schema.columns where table_schema='mysqltest_db1' and table_name='t_no_priv';
 drop table if exists test.t_duplicated;

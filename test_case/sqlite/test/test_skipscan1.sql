@@ -1,15 +1,4 @@
-CREATE INDEX t1abc ON t1(a,b,c);
-INSERT INTO t1 VALUES('abc',123,4,5);
-INSERT INTO t1 VALUES('abc',234,5,6);
-INSERT INTO t1 VALUES('abc',234,6,7);
-INSERT INTO t1 VALUES('abc',345,7,8);
-INSERT INTO t1 VALUES('def',567,8,9);
-INSERT INTO t1 VALUES('def',345,9,10);
-INSERT INTO t1 VALUES('bcd',100,6,11);
-/* Fake the sqlite_stat1 table so that the query planner believes
-  ** the table contains thousands of rows and that the first few
-  ** columns are not selective. */
-  ANALYZE;
+ANALYZE;
 DELETE FROM sqlite_stat1;
 INSERT INTO sqlite_stat1 VALUES('t1','t1abc','10000 5000 2000 10');
 ANALYZE sqlite_master;
@@ -59,10 +48,7 @@ EXPLAIN QUERY PLAN
 CREATE TABLE t2(a TEXT, b INT, c INT, d INT,
                   PRIMARY KEY(a,b,c));
 INSERT INTO t2 SELECT * FROM t1;
-/* Fake the sqlite_stat1 table so that the query planner believes
-  ** the table contains thousands of rows and that the first few
-  ** columns are not selective. */
-  ANALYZE;
+ANALYZE;
 UPDATE sqlite_stat1 SET stat='10000 5000 2000 10' WHERE idx NOT NULL;
 ANALYZE sqlite_master;
 SELECT a,b,c,d,'|' FROM t2 WHERE d<>99 AND b=345 ORDER BY a;
@@ -73,10 +59,7 @@ EXPLAIN QUERY PLAN
 CREATE TABLE t3(a TEXT, b INT, c INT, d INT,
                   PRIMARY KEY(a,b,c)) WITHOUT ROWID;
 INSERT INTO t3 SELECT * FROM t1;
-/* Fake the sqlite_stat1 table so that the query planner believes
-  ** the table contains thousands of rows and that the first few
-  ** columns are not selective. */
-  ANALYZE;
+ANALYZE;
 UPDATE sqlite_stat1 SET stat='10000 5000 2000 10' WHERE idx NOT NULL;
 ANALYZE sqlite_master;
 SELECT a,b,c,d,'|' FROM t3 WHERE b=345 ORDER BY a;
@@ -123,16 +106,13 @@ EXPLAIN QUERY PLAN
     SELECT xh, loc FROM t5 WHERE loc >= 'M' AND loc < 'N';
 CREATE INDEX t1ab ON t1(a,b);
 ANALYZE sqlite_master;
--- Only two distinct values for the skip-scan column.  Skip-scan is not used.
-  INSERT INTO sqlite_stat1 VALUES('t1','t1ab','500000 250000 125000');
+INSERT INTO sqlite_stat1 VALUES('t1','t1ab','500000 250000 125000');
 ANALYZE sqlite_master;
 EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1;
--- Four distinct values for the skip-scan column.  Skip-scan is used.
-  UPDATE sqlite_stat1 SET stat='500000 250000 62500';
+UPDATE sqlite_stat1 SET stat='500000 250000 62500';
 ANALYZE sqlite_master;
 EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1;
--- Two distinct values for the skip-scan column again.  Skip-scan is not used.
-  UPDATE sqlite_stat1 SET stat='500000 125000 62500';
+UPDATE sqlite_stat1 SET stat='500000 125000 62500';
 ANALYZE sqlite_master;
 EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1;
 UPDATE sqlite_stat1 SET stat='500000 125000 1 sz=100';

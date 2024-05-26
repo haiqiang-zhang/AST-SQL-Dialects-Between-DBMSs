@@ -1,5 +1,3 @@
-SET allow_suspicious_low_cardinality_types=1;
--- special cases
 SELECT concatWithSeparator('|') = '';
 SELECT concatWithSeparator('|', 'a') == 'a';
 SELECT concatWithSeparator('|', 'a', 'b') == 'a|b';

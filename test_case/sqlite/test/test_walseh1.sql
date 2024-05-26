@@ -1,7 +1,3 @@
-PRAGMA journal_mode = wal;
-CREATE TABLE t1(x, y);
-INSERT INTO t1 VALUES(1, 2);
-INSERT INTO t1 VALUES(3, 4);
 SELECT * FROM sqlite_schema;
 SELECT * FROM t1;
 SELECT * FROM t1;

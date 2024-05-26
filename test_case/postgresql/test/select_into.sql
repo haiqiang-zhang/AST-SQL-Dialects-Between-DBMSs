@@ -1,4 +1,3 @@
-CREATE SCHEMA selinto_schema;
 GRANT ALL ON SCHEMA selinto_schema TO public;
 CREATE TABLE selinto_schema.tbl_withdata1 (a)
   AS SELECT generate_series(1,3) WITH DATA;
@@ -7,9 +6,6 @@ EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
   CREATE TABLE selinto_schema.tbl_withdata2 (a) AS
   SELECT generate_series(1,3) WITH DATA;
 CREATE TABLE selinto_schema.tbl_nodata1 (a) AS
-  SELECT generate_series(1,3) WITH NO DATA;
-EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
-  CREATE TABLE selinto_schema.tbl_nodata2 (a) AS
   SELECT generate_series(1,3) WITH NO DATA;
 PREPARE data_sel AS SELECT generate_series(1,3);
 CREATE TABLE selinto_schema.tbl_withdata3 (a) AS

@@ -1,6 +1,3 @@
-SET max_threads = 1;
-CREATE TABLE IF NOT EXISTS functional_index_mergetree (x Float64) ENGINE = MergeTree ORDER BY round(x);
-INSERT INTO functional_index_mergetree VALUES (7.42)(7.41)(7.51);
 SELECT 'TP1';
 SELECT * FROM functional_index_mergetree WHERE x > 7.42;
 SELECT * FROM functional_index_mergetree WHERE x < 7.49;

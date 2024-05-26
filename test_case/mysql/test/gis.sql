@@ -1,40 +1,15 @@
 SELECT fid, ST_AsText(g) FROM gis_point;
-SELECT fid, ST_AsText(g) FROM gis_line;
-SELECT fid, ST_AsText(g) FROM gis_polygon;
-SELECT fid, ST_AsText(g) FROM gis_multi_point;
-SELECT fid, ST_AsText(g) FROM gis_multi_line;
-SELECT fid, ST_AsText(g) FROM gis_multi_polygon;
-SELECT fid, ST_AsText(g) FROM gis_geometrycollection;
-SELECT fid, ST_AsText(g) FROM gis_geometry;
 SELECT fid, ST_Dimension(g) FROM gis_geometry;
 SELECT fid, ST_GeometryType(g) FROM gis_geometry;
 SELECT fid, ST_IsEmpty(g) FROM gis_geometry;
-SELECT fid, ST_AsText(ST_Envelope(g)) FROM gis_geometry;
 SELECT fid, ST_X(g) FROM gis_point;
 SELECT fid, ST_Y(g) FROM gis_point;
-SELECT fid, ST_AsText(ST_StartPoint(g)) FROM gis_line;
-SELECT fid, ST_AsText(ST_EndPoint(g)) FROM gis_line;
 SELECT fid, ST_Length(g) FROM gis_line;
 SELECT fid, ST_NumPoints(g) FROM gis_line;
-SELECT fid, ST_AsText(ST_PointN(g, 2)) FROM gis_line;
 SELECT fid, ST_IsClosed(g) FROM gis_line;
-SELECT fid, ST_AsText(ST_Centroid(g)) FROM gis_polygon;
 SELECT fid, ST_Area(g) FROM gis_polygon;
-SELECT fid, ST_AsText(ST_ExteriorRing(g)) FROM gis_polygon;
 SELECT fid, ST_NumInteriorRings(g) FROM gis_polygon;
-SELECT fid, ST_AsText(ST_InteriorRingN(g, 1)) FROM gis_polygon;
-SELECT fid, ST_IsClosed(g) FROM gis_multi_line;
-SELECT fid, ST_AsText(ST_Centroid(g)) FROM gis_multi_polygon;
-SELECT fid, ST_Area(g) FROM gis_multi_polygon;
 SELECT fid, ST_NumGeometries(g) from gis_multi_point;
-SELECT fid, ST_NumGeometries(g) from gis_multi_line;
-SELECT fid, ST_NumGeometries(g) from gis_multi_polygon;
-SELECT fid, ST_NumGeometries(g) from gis_geometrycollection;
-SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_multi_point;
-SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_multi_line;
-SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_multi_polygon;
-SELECT fid, ST_AsText(ST_GeometryN(g, 2)) from gis_geometrycollection;
-SELECT fid, ST_AsText(ST_GeometryN(g, 1)) from gis_geometrycollection;
 SELECT g1.fid as first, g2.fid as second,
 MBRWithin(g1.g, g2.g) as w, MBRContains(g1.g, g2.g) as c, MBROverlaps(g1.g, g2.g) as o,
 MBREquals(g1.g, g2.g) as e, MBRDisjoint(g1.g, g2.g) as d, ST_Touches(g1.g, g2.g) as t,
@@ -53,7 +28,6 @@ CREATE TABLE t1 (
 );
 ALTER TABLE t1 ADD fid INT NOT NULL;
 DROP TABLE t1;
-SELECT ST_AsText(ST_GeometryFromWKB(ST_AsWKB(ST_GeometryFromText('POINT(1 4)'))));
 SELECT ST_SRID(ST_GeomFromText('LineString(1 1,2 2)'));
 create table t1 (a geometry not null SRID 0);
 insert into t1 values (ST_GeomFromText('Point(1 2)'));
@@ -63,14 +37,6 @@ create table t1(a geometry not null SRID 0, spatial index(a));
 insert into t1 values
 (ST_GeomFromText('POINT(1 1)')), (ST_GeomFromText('POINT(3 3)')), 
 (ST_GeomFromText('POINT(4 4)')), (ST_GeomFromText('POINT(6 6)'));
-select ST_AsText(a) from t1 where
-  MBRContains(ST_GeomFromText('Polygon((0 0, 0 2, 2 2, 2 0, 0 0))'), a)
-  or
-  MBRContains(ST_GeomFromText('Polygon((2 2, 2 5, 5 5, 5 2, 2 2))'), a);
-select ST_AsText(a) from t1 where
-  MBRContains(ST_GeomFromText('Polygon((0 0, 0 2, 2 2, 2 0, 0 0))'), a)
-  and
-  MBRContains(ST_GeomFromText('Polygon((0 0, 0 7, 7 7, 7 0, 0 0))'), a);
 drop table t1;
 CREATE TABLE t1 (Coordinates POINT NOT NULL SRID 0, SPATIAL INDEX(Coordinates));
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(383293632 1754448)'));
@@ -230,8 +196,6 @@ insert into t1 values ('85984',ST_GeomFromText('MULTIPOLYGON(((-115.006363
 36.252666,-115.261439 36.247366,-115.247239 36.247066)))'));
 select object_id, ST_geometrytype(geo), ST_ISSIMPLE(GEO), ST_ASTEXT(ST_centroid(geo)) from
 t1 where object_id=85998;
-select object_id, ST_geometrytype(geo), ST_ISSIMPLE(GEO), ST_ASTEXT(ST_centroid(geo)) from
-t1 where object_id=85984;
 drop table t1;
 create table t1 (fl geometry not null);
 drop table t1;
@@ -319,29 +283,15 @@ SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrintersect FROM t1 a1 JOIN t1
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbroverlaps  FROM t1 a1 JOIN t1 a2 ON MBROverlaps(   a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrtouches   FROM t1 a1 JOIN t1 a2 ON MBRTouches(    a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrwithin    FROM t1 a1 JOIN t1 a2 ON MBRWithin(     a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRcontains     FROM t1 a1 JOIN t1 a2 ON MBRContains(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRdisjoint     FROM t1 a1 JOIN t1 a2 ON MBRDisjoint(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRequals       FROM t1 a1 JOIN t1 a2 ON MBREquals(        a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS `intersect`    FROM t1 a1 JOIN t1 a2 ON MBRIntersects(    a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRoverlaps     FROM t1 a1 JOIN t1 a2 ON MBROverlaps(      a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS ST_touches      FROM t1 a1 JOIN t1 a2 ON ST_Touches(       a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
-SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS MBRwithin       FROM t1 a1 JOIN t1 a2 ON MBRWithin(        a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name;
 SELECT GROUP_CONCAT(a1.name ORDER BY a1.name) AS MBRoverlaps FROM t1 a1 WHERE MBROverlaps(a1.square, @vert1) GROUP BY a1.name;
 SELECT GROUP_CONCAT(a1.name ORDER BY a1.name) AS MBRoverlaps FROM t1 a1 WHERE MBROverlaps(a1.square, @horiz1) GROUP BY a1.name;
-SELECT MBROverlaps(@horiz1, @vert1) FROM DUAL;
-SELECT MBROverlaps(@horiz1, @horiz2) FROM DUAL;
-SELECT MBROverlaps(@horiz1, @horiz3) FROM DUAL;
-SELECT MBROverlaps(@horiz1, @point1) FROM DUAL;
-SELECT MBROverlaps(@horiz1, @point2) FROM DUAL;
 DROP TABLE t1;
 create table t1(f1 geometry, f2 point, f3 linestring);
 select f1 from t1 union select f1 from t1;
 insert into t1 (f2,f3) values (ST_GeomFromText('POINT(1 1)'),
   ST_GeomFromText('LINESTRING(0 0,1 1,2 2)'));
-select ST_AsText(f2),ST_AsText(f3) from t1;
-select ST_AsText(a) from (select f2 as a from t1 union select f3 from t1) t;
 create table t2 as select f2 as a from t1 union select f3 from t1;
-select ST_AsText(a) from t2;
 drop table t1, t2;
 SELECT ST_AsText(ST_GeometryFromText(CONCAT(
   'MULTIPOLYGON(((',
@@ -502,82 +452,6 @@ ST_PolyFromText(
 INSERT INTO map_neatlines VALUES(115, 
 ST_PolyFromText( 
 'POLYGON( ( 0 0, 0 48, 84 48, 84 0, 0 0 ) )', 0));
-SELECT ST_Dimension(shore) 
-FROM lakes 
-WHERE name = 'Blue Lake';
-SELECT ST_GeometryType(centerlines) 
-FROM divided_routes
-WHERE name = 'Route 75';
-SELECT ST_AsText(boundary) 
-FROM named_places 
-WHERE name = 'Goose Island';
-SELECT ST_AsText(ST_PolyFromWKB(ST_AsBinary(boundary),0)) 
-FROM named_places 
-WHERE name = 'Goose Island';
-SELECT ST_SRID(boundary) 
-FROM named_places 
-WHERE name = 'Goose Island';
-SELECT ST_IsEmpty(centerline) 
-FROM road_segments 
-WHERE name = 'Route 5' 
-AND aliases = 'Main Street';
-SELECT ST_AsText(ST_Envelope(boundary)) 
-FROM named_places 
-WHERE name = 'Goose Island';
-SELECT ST_X(position) 
-FROM bridges 
-WHERE name = 'Cam Bridge';
-SELECT ST_Y(position) 
-FROM bridges 
-WHERE name = 'Cam Bridge';
-SELECT ST_AsText(ST_StartPoint(centerline)) 
-FROM road_segments 
-WHERE fid = 102;
-SELECT ST_AsText(ST_EndPoint(centerline)) 
-FROM road_segments 
-WHERE fid = 102;
-SELECT ST_Length(centerline) 
-FROM road_segments 
-WHERE fid = 106;
-SELECT ST_NumPoints(centerline) 
-FROM road_segments 
-WHERE fid = 102;
-SELECT ST_AsText(ST_PointN(centerline, 1)) 
-FROM road_segments 
-WHERE fid = 102;
-SELECT ST_AsText(ST_Centroid(boundary)) 
-FROM named_places 
-WHERE name = 'Goose Island';
-SELECT ST_Area(boundary) 
-FROM named_places 
-WHERE name = 'Goose Island';
-SELECT ST_AsText(ST_ExteriorRing(shore)) 
-FROM lakes 
-WHERE name = 'Blue Lake';
-SELECT ST_NumInteriorRings(shore) 
-FROM lakes 
-WHERE name = 'Blue Lake';
-SELECT ST_AsText(ST_InteriorRingN(shore, 1)) 
-FROM lakes 
-WHERE name = 'Blue Lake';
-SELECT ST_NumGeometries(centerlines) 
-FROM divided_routes 
-WHERE name = 'Route 75';
-SELECT ST_AsText(ST_GeometryN(centerlines, 2)) 
-FROM divided_routes 
-WHERE name = 'Route 75';
-SELECT ST_IsClosed(centerlines) 
-FROM divided_routes 
-WHERE name = 'Route 75';
-SELECT ST_Length(centerlines) 
-FROM divided_routes 
-WHERE name = 'Route 75';
-SELECT ST_AsText(ST_Centroid(shores)) 
-FROM ponds 
-WHERE fid = 120;
-SELECT ST_Area(shores) 
-FROM ponds 
-WHERE fid = 120;
 SELECT ST_Equals(boundary,
 ST_PolyFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',0))
 FROM named_places
@@ -586,10 +460,6 @@ SELECT ST_Disjoint(centerlines, boundary)
 FROM divided_routes, named_places 
 WHERE divided_routes.name = 'Route 75' 
 AND named_places.name = 'Ashton';
-SELECT ST_Touches(centerline, shore) 
-FROM streams, lakes 
-WHERE streams.name = 'Cam Stream' 
-AND lakes.name = 'Blue Lake';
 SELECT ST_Crosses(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes 
 WHERE road_segments.fid = 102 
@@ -605,18 +475,6 @@ AND named_places.name = 'Ashton';
 SELECT ST_Distance(position, boundary) 
 FROM bridges, named_places 
 WHERE bridges.name = 'Cam Bridge' 
-AND named_places.name = 'Ashton';
-SELECT ST_AsText(ST_Difference(named_places.boundary, forests.boundary)) 
-FROM named_places, forests 
-WHERE named_places.name = 'Ashton' 
-AND forests.name = 'Green Forest';
-SELECT ST_AsText(ST_Union(shore, boundary)) 
-FROM lakes, named_places 
-WHERE lakes.name = 'Blue Lake' 
-AND named_places.name = 'Goose Island';
-SELECT ST_AsText(ST_SymDifference(shore, boundary)) 
-FROM lakes, named_places 
-WHERE lakes.name = 'Blue Lake' 
 AND named_places.name = 'Ashton';
 SELECT count(*) 
 FROM buildings, bridges 
@@ -648,10 +506,8 @@ SELECT HEX(
 CREATE TABLE t1(g GEOMETRY);
 INSERT INTO t1 VALUES (ST_GeomFromWKB(
   UNHEX('000000000100000000000000000000000000000000')));
-SELECT ST_AsText(g) FROM t1;
 INSERT INTO t1 VALUES (POLYGON(LINESTRING(POINT(0,0),POINT(1,0),POINT(1,1), POINT(0,0))));
 INSERT INTO t1 VALUES (UNHEX('00000000010700000000000000'));
-SELECT ST_AsText(g) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (p POINT);
 INSERT INTO t1 VALUES (POINT(0,0));
@@ -700,8 +556,6 @@ INSERT INTO t1 VALUES(
                       2, ST_GeomFromText('POINT(30 30)'),
                       ST_GeomFromText('LINESTRING(2 3, 7 8, 9 10, 15 16)'),
                       ST_GeomFromText('POLYGON((10 30, 30 40, 40 50, 40 30, 30 20, 10 30))'));
-SELECT ST_AsText(p) FROM t1 WHERE ST_Within(p, @poly1);
-SELECT ST_AsText(p) FROM t1 WHERE ST_Equals(p, ST_PointFromText('POINT(20 20)'));
 DROP TABLE t1;
 CREATE TABLE t1 (
                    a INT NOT NULL,
@@ -720,8 +574,6 @@ INSERT INTO t1 VALUES(
                       2, ST_GeomFromText('POINT(30 30)'),
                       ST_GeomFromText('LINESTRING(2 3, 7 8, 9 10, 15 16)'),
                       ST_GeomFromText('POLYGON((10 30, 30 40, 40 50, 40 30, 30 20, 10 30))'));
-SELECT ST_AsText(p) FROM t1 WHERE ST_Within(p, @poly1);
-SELECT ST_AsText(p) FROM t1 WHERE ST_Equals(p, ST_PointFromText('POINT(20 20)'));
 DROP TABLE t1;
 CREATE TABLE t1 (p POINT NOT NULL) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (ST_GEOMFROMTEXT('POINT(1 1)'));
@@ -734,19 +586,8 @@ WHERE MBRCOVEREDBY
 DROP TABLE t1;
 CREATE TABLE t1 (p POINT NOT NULL) ENGINE=MyISAM;
 INSERT INTO t1 VALUES (ST_GEOMFROMTEXT('POINT(1 1)'));
-SELECT ST_ASTEXT(p) FROM t1
-WHERE MBRCOVEREDBY
-(
-  p,
-  ST_GEOMFROMTEXT('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))')
-);
 DROP TABLE t1;
 SELECT ST_NUMINTERIORRING(ST_GEOMFROMTEXT('POLYGON((0 0, 1 0, 1 1, 0 0))'));
-SELECT ST_NUMINTERIORRING(
-  ST_GEOMFROMTEXT(
-    'POLYGON((0 0, 1 0, 1 1, 0 0),(0.1 0.1, 0.9 0.8, 0.9 0.1, 0.1 0.1))'
-  )
-);
 SELECT ST_ASTEXT(ST_CONVEXHULL(ST_GEOMFROMTEXT('LINESTRING(0 0, 5 5)'))) as result;
 CREATE VIEW v1 AS SELECT
 ST_ASTEXT(ST_CONVEXHULL(ST_GEOMFROMTEXT('LINESTRING(0 0, 5 5)')));
@@ -758,8 +599,6 @@ DROP VIEW v1;
 DROP VIEW v2;
 CREATE TABLE t1 (g GEOMETRY);
 INSERT INTO t1 (g) VALUES (ST_GeomFromText("MULTIPOLYGON(((0 7,-3 -14,9 -11,0 7)))"));
-SELECT ST_AsText(ST_Buffer(g, 2)), ST_AsText(ST_Buffer(g, 2)) FROM t1;
-SELECT ST_AsText(ST_Buffer(g, 2)), ST_AsText(ST_Difference(g, g)) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1(id INT PRIMARY KEY AUTO_INCREMENT, g GEOMETRY NOT NULL SRID 0,
                 SPATIAL INDEX(g));
@@ -788,21 +627,6 @@ DROP TABLE t2;
 SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((0 6,-11 -6,6 0,0
 6),(3 1,5 0,-2 0,3 1))'), ST_GEOMFROMTEXT('POLYGON((5 4,6 0,9 12,-7 -12,5
 -19,5 4))')));
-SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((0 0,10 10,20 0,0 0))'),
-ST_GEOMFROMTEXT('POLYGON((10 5,20 7,10 10,30 10,20 0,20 5,10 5))')));
-SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((0 0,0 40,40 40,40
-0,0 0),(10 10,30 10,30 30,10 30,10 10))'), ST_GEOMFROMTEXT('POLYGON((5
-15,5 30,30 15,5 15))')));
-SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('MULTIPOLYGON(((0 0,0 40,40
-40,40 0,0 0),(10 10,30 10,30 30,10 30,10 10)))'),
-ST_GEOMFROMTEXT('MULTIPOLYGON(((10 10,10 20,20 10,10 10)),((20 10,30
-20,30 10,20 10)),((10 20,10 30,20 20,10 20)),((20 20,30 30,30 20,20 20)))')));
-SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('MULTIPOLYGON(((0 0,0 40,40
-40,40 0,0 0),(10 10,30 10,30 30,10 30,10 10)))'),
-ST_GEOMFROMTEXT('MULTIPOLYGON(((15 10,10 15,10 17,15 10)),((15 10,10
-20,10 22,15 10)),((15 10,10 25,10 27,15 10)),((25 10,30 17,30 15,25
-10)),((25 10,30 22,30 20,25 10)),((25 10,30 27,30 25,25 10)),((18
-10,20 30,19 10,18 10)),((21 10,20 30,22 10,21 10)))')));
 CREATE TABLE t(a BLOB NOT NULL, b DATE NOT NULL) ENGINE=Innodb;
 SELECT NOT EXISTS
 ( SELECT 1 FROM t WHERE (SELECT a FROM t)
@@ -819,8 +643,6 @@ SELECT NOT EXISTS
 SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t) AS result;
 INSERT INTO t VALUES(ST_GeomFromText('POINT(0 0)'), CURDATE());
-SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t) AS result;
-SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t) AS result;
 DROP TABLE t;
 CREATE TABLE t1(a BLOB NOT NULL, b INT NOT NULL) ENGINE=Innodb;
 SELECT NOT EXISTS
@@ -835,11 +657,7 @@ SELECT NOT EXISTS
 ( SELECT 1 FROM t1 WHERE (SELECT st_AsWKB(a) FROM t1)
     IN (SELECT b FROM t1)
     )AS rescol  FROM t1;
-SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t1) AS result;
-SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t1) AS result;
 INSERT INTO t1 VALUES(ST_GeomFromText('POINT(0 0)'), 1);
-SELECT ST_GeomFromText('POINT(0 0)') IN (SELECT b FROM t1) AS result;
-SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) IN (SELECT b FROM t1) AS result;
 SELECT ST_AsWKB(ST_GeomFromText('POINT(0 0)')) > (SELECT b FROM t1) AS result;
 DROP TABLE t1;
 CREATE TABLE t1 (
@@ -860,7 +678,6 @@ ALTER TABLE t1 ADD COLUMN g GEOMETRY;
 SELECT i, g FROM t1;
 UPDATE t1 SET g=POINT(0,0) WHERE g IS NULL;
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-SELECT i, ST_ASTEXT(g) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   i INT NOT NULL
@@ -934,7 +751,6 @@ ALTER TABLE t1 MODIFY COLUMN b BLOB;
 ALTER TABLE t1 ALGORITHM=COPY, MODIFY COLUMN b GEOMETRY NOT NULL;
 ALTER TABLE t1 MODIFY COLUMN b BLOB;
 INSERT INTO t1 VALUES(NULL);
-SELECT HEX(b) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   p1 POINT,
@@ -952,20 +768,15 @@ CREATE TABLE t1 (
   p POINT
 ) ENGINE=InnoDB;
 INSERT INTO t1 VALUES(POINT(0,0));
-SELECT ST_AsText(p) FROM t1;
-SELECT ST_AsText(p) FROM t1;
-SELECT ST_AsText(p) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   mp MULTIPOINT NOT NULL
 ) ENGINE=InnoDB;
 INSERT INTO t1 VALUES(MULTIPOINT(POINT(1,1)));
-SELECT ST_AsText(mp) FROM t1;
 ALTER TABLE t1 MODIFY COLUMN mp GEOMETRYCOLLECTION NOT NULL;
 ALTER TABLE t1 MODIFY COLUMN mp GEOMETRY NOT NULL;
 ALTER TABLE t1 MODIFY COLUMN mp GEOMETRYCOLLECTION NOT NULL;
 ALTER TABLE t1 MODIFY COLUMN mp MULTIPOINT NOT NULL;
-SELECT ST_AsText(mp) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (g GEOMETRY) ENGINE=InnoDB;
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
@@ -976,12 +787,10 @@ DROP TABLE t1;
 CREATE TABLE t1 (g GEOMETRY) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (POINT(0,0));
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-SELECT ST_ASTEXT(g) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (g GEOMETRY) ENGINE=MyISAM;
 INSERT INTO t1 VALUES (POINT(0,0));
 ALTER TABLE t1 MODIFY COLUMN g GEOMETRY NOT NULL;
-SELECT ST_ASTEXT(g) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (g GEOMETRY) ENGINE=InnoDB;
 INSERT INTO t1 VALUES (NULL);
@@ -991,12 +800,6 @@ INSERT INTO t1 VALUES (NULL);
 SELECT g FROM t1;
 SELECT g FROM t1;
 DROP TABLE t1;
-SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('LINESTRING(12 6,9 4,-9
-1,-4 -6,12 -9,-9 -17,17 -11,-16 17,19 -19,0 -16,6 -5,15 3,14 -5,18 13,-9
-10,-11 8)'), ST_GEOMFROMTEXT('GEOMETRYCOLLECTION(MULTILINESTRING((-18 2,1
-7),(-19 -3,-16 -12),(10 0,3 8,12 19,8 -15)),MULTILINESTRING((8 16,-8 -3),(18
-3,8 12),(-19 4,20 14)),POLYGON((2 3,-9 -7,12 -13,2 3)),MULTILINESTRING((16
--7,-2 2,11 -10,-1 8),(6 0,-15 0,16 0,-6 -14)))')));
 SELECT ST_ISVALID(
   ST_UNION(
     ST_GEOMFROMTEXT('
@@ -1017,18 +820,8 @@ ST_GEOMFROMTEXT('MULTILINESTRING((8 16,-8 -3),(-2 2,-0.561069
 0.671756),(8.93182 -8.09091,11 -10),(6 0,3.875 0),(-1.3 0,-15 0,-1.3
 0),(3.875 0,16 0))'),
 ST_GEOMFROMTEXT('POLYGON((2 3,-9 -7,12 -13,2 3))'))) as valid0;
-SELECT ST_ISVALID(ST_INTERSECTION(ST_GEOMFROMTEXT('POLYGON((0 5,-6
--17,12 17,0 5),(4 6,5 5,0 1,4 6))'), ST_GEOMFROMTEXT('POLYGON((3 9,-15 -5,13
--11,3 9))')));
-SELECT ST_ISVALID(ST_INTERSECTION(ST_GEOMFROMTEXT('POLYGON((5 6,-15
--13,1 -8,5 6))'), ST_GEOMFROMTEXT('POLYGON((0 8,-19 6,18 -17,20 8,11 17,0
-8),(3 2,3 -1,1 0,3 2),(1 3,4 4,0 -1,1 3))')));
 SELECT point(1,1) IN ('1',1,'1') AS res;
 SELECT st_centroid(point(1,1)) IN ('1',1,'1') AS res;
-SELECT ST_AsText(ST_GeomFromText('POINT(0 0)', NULL));
-SELECT ST_SRID(ST_GeomFromText('POINT(0 0)', NULL));
-SELECT ST_ISVALID(ST_BUFFER(ST_GEOMFROMTEXT('MULTILINESTRING((-5 15,7
-15,19 -10,-11 -2),(2 13,2 -9))'), 1));
 CREATE TABLE t1 (g GEOMETRY);
 INSERT INTO t1 VALUES (ST_GeomFromText('LINESTRING(-3 11,-10 15,-16 -13)'));
 CREATE TABLE t2 (g GEOMETRY);
@@ -1041,15 +834,6 @@ FROM (t1 RIGHT OUTER JOIN t2 ON ST_CONTAINS(t2.g, t1.g))
 WHERE t1.g NOT IN (SELECT g FROM t2);
 DROP PROCEDURE proc;
 DROP TABLE t1, t2;
-SELECT ST_ISVALID(ST_INTERSECTION(ST_GEOMFROMTEXT('POLYGON((6 7,18
-14,-8 1,0 0,18 -8,6 7),(6 0,-4 3,5 3,6 0))'),
-ST_GEOMFROMTEXT('MULTIPOLYGON(((2 3,-3 5,-10 -1,2 3)))')));
-SELECT ST_ISVALID(ST_SYMDIFFERENCE(ST_GEOMFROMTEXT('POLYGON((6 7,18
-14,-8 1,0 0,18 -8,6 7),(6 0,-4 3,5 3,6 0))'), ST_GEOMFROMTEXT('POLYGON((0
-7,-5 6,11 -13,0 7))')));
-SELECT ST_ISVALID(ST_UNION(ST_GEOMFROMTEXT('POLYGON((4 5,12 11,-12
--3,4 5))'), ST_GEOMFROMTEXT('MULTIPOLYGON(((5 4,-14 0,1 0,5 4)),((1 6,13 0,10
-12,1 6)))')));
 SELECT ST_ISVALID(ST_DIFFERENCE(ST_GEOMFROMTEXT('POLYGON((8 6,5 7,-1
 4,-8 -7,0 -17,8 6),(3 6,5 5,0 -2,3 6))'), ST_GEOMFROMTEXT('POLYGON((3 5,-17
 11,-8 -3,3 5))'))) AS result;
@@ -1062,54 +846,6 @@ INSERT INTO r VALUES (1, ST_GEOMFROMTEXT('POINT(1 1)'));
 DROP TABLE d, dp, r;
 SELECT '2010-10-10 10:10:10' + INTERVAL
   ST_GeometryType(ST_GeomFromText('POINT(1 1)')) HOUR_SECOND;
-SELECT ST_SRID(ST_GEOMCOLLFROMTEXT(@wkt_gc, -1));
-SELECT ST_SRID(ST_GEOMCOLLFROMTXT(@wkt_gc, -1));
-SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMTEXT(@wkt_gc, -1));
-SELECT ST_SRID(ST_GEOMETRYFROMTEXT(@wkt_pt, -1));
-SELECT ST_SRID(ST_GEOMFROMTEXT(@wkt_pt, -1));
-SELECT ST_SRID(ST_LINEFROMTEXT(@wkt_ls, -1));
-SELECT ST_SRID(ST_LINESTRINGFROMTEXT(@wkt_ls, -1));
-SELECT ST_SRID(ST_MLINEFROMTEXT(@wkt_mls, -1));
-SELECT ST_SRID(ST_MPOINTFROMTEXT(@wkt_mpt, -1));
-SELECT ST_SRID(ST_MPOLYFROMTEXT(@wkt_mpy, -1));
-SELECT ST_SRID(ST_MULTILINESTRINGFROMTEXT(@wkt_mls, -1));
-SELECT ST_SRID(ST_MULTIPOINTFROMTEXT(@wkt_mpt, -1));
-SELECT ST_SRID(ST_MULTIPOLYGONFROMTEXT(@wkt_mpy, -1));
-SELECT ST_SRID(ST_POINTFROMTEXT(@wkt_pt, -1));
-SELECT ST_SRID(ST_POLYFROMTEXT(@wkt_py, -1));
-SELECT ST_SRID(ST_POLYGONFROMTEXT(@wkt_py, -1));
-SELECT ST_SRID(ST_GEOMCOLLFROMTEXT(@wkt_gc, 0));
-SELECT ST_SRID(ST_GEOMCOLLFROMTXT(@wkt_gc, 0));
-SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMTEXT(@wkt_gc, 0));
-SELECT ST_SRID(ST_GEOMETRYFROMTEXT(@wkt_pt, 0));
-SELECT ST_SRID(ST_GEOMFROMTEXT(@wkt_pt, 0));
-SELECT ST_SRID(ST_LINEFROMTEXT(@wkt_ls, 0));
-SELECT ST_SRID(ST_LINESTRINGFROMTEXT(@wkt_ls, 0));
-SELECT ST_SRID(ST_MLINEFROMTEXT(@wkt_mls, 0));
-SELECT ST_SRID(ST_MPOINTFROMTEXT(@wkt_mpt, 0));
-SELECT ST_SRID(ST_MPOLYFROMTEXT(@wkt_mpy, 0));
-SELECT ST_SRID(ST_MULTILINESTRINGFROMTEXT(@wkt_mls, 0));
-SELECT ST_SRID(ST_MULTIPOINTFROMTEXT(@wkt_mpt, 0));
-SELECT ST_SRID(ST_MULTIPOLYGONFROMTEXT(@wkt_mpy, 0));
-SELECT ST_SRID(ST_POINTFROMTEXT(@wkt_pt, 0));
-SELECT ST_SRID(ST_POLYFROMTEXT(@wkt_py, 0));
-SELECT ST_SRID(ST_POLYGONFROMTEXT(@wkt_py, 0));
-SELECT ST_SRID(ST_GEOMCOLLFROMTEXT(@wkt_gc, 4294967296));
-SELECT ST_SRID(ST_GEOMCOLLFROMTXT(@wkt_gc, 4294967296));
-SELECT ST_SRID(ST_GEOMETRYCOLLECTIONFROMTEXT(@wkt_gc, 4294967296));
-SELECT ST_SRID(ST_GEOMETRYFROMTEXT(@wkt_pt, 4294967296));
-SELECT ST_SRID(ST_GEOMFROMTEXT(@wkt_pt, 4294967296));
-SELECT ST_SRID(ST_LINEFROMTEXT(@wkt_ls, 4294967296));
-SELECT ST_SRID(ST_LINESTRINGFROMTEXT(@wkt_ls, 4294967296));
-SELECT ST_SRID(ST_MLINEFROMTEXT(@wkt_mls, 4294967296));
-SELECT ST_SRID(ST_MPOINTFROMTEXT(@wkt_mpt, 4294967296));
-SELECT ST_SRID(ST_MPOLYFROMTEXT(@wkt_mpy, 4294967296));
-SELECT ST_SRID(ST_MULTILINESTRINGFROMTEXT(@wkt_mls, 4294967296));
-SELECT ST_SRID(ST_MULTIPOINTFROMTEXT(@wkt_mpt, 4294967296));
-SELECT ST_SRID(ST_MULTIPOLYGONFROMTEXT(@wkt_mpy, 4294967296));
-SELECT ST_SRID(ST_POINTFROMTEXT(@wkt_pt, 4294967296));
-SELECT ST_SRID(ST_POLYFROMTEXT(@wkt_py, 4294967296));
-SELECT ST_SRID(ST_POLYGONFROMTEXT(@wkt_py, 4294967296));
 CREATE TABLE t1 (a DECIMAL(54,20));
 INSERT INTO t1 VALUES (0);
 DROP TABLE t1;
@@ -1143,15 +879,6 @@ WHERE MBRContains(
   ),
   g
 );
-SELECT COUNT(*)
-FROM t1 FORCE INDEX (g_idx)
-WHERE MBRContains(
-  ST_GeomFromText(
-    'LINESTRING(-111 -85,-136 -53,116 -20,-80 47,111 0)',
-    4326,
-    'axis-order=long-lat'),
-  g
-);
 DROP TABLE t1;
 CREATE TABLE t1 (
   g POLYGON SRID 4326 NOT NULL
@@ -1164,25 +891,6 @@ INSERT INTO t1 VALUES (
     'axis-order=long-lat'
   )
 );
-SELECT COUNT(*)
-FROM t1 IGNORE INDEX (g_idx)
-WHERE MBRContains(
-  ST_GeomFromText(
-    'LINESTRING(-111 -85,-136 -53,116 -20,-80 47,111 0)',
-    4326,
-    'axis-order=long-lat'
-  ),
-  g
-);
-SELECT COUNT(*)
-FROM t1 FORCE INDEX (g_idx)
-WHERE MBRContains(
-  ST_GeomFromText(
-    'LINESTRING(-111 -85,-136 -53,116 -20,-80 47,111 0)',
-    4326,
-    'axis-order=long-lat'),
-  g
-);
 DROP TABLE t1;
 CREATE TABLE t1 (
   g POLYGON SRID 4326 NOT NULL,
@@ -1194,25 +902,6 @@ INSERT INTO t1 VALUES (
     4326,
     'axis-order=long-lat'
   )
-);
-SELECT COUNT(*)
-FROM t1 IGNORE INDEX (g_idx)
-WHERE MBRContains(
-  ST_GeomFromText(
-    'LINESTRING(-111 -85,-136 -53,116 -20,-80 47,111 0)',
-    4326,
-    'axis-order=long-lat'
-  ),
-  g
-);
-SELECT COUNT(*)
-FROM t1 FORCE INDEX (g_idx)
-WHERE MBRContains(
-  ST_GeomFromText(
-    'LINESTRING(-111 -85,-136 -53,116 -20,-80 47,111 0)',
-    4326,
-    'axis-order=long-lat'),
-  g
 );
 DROP TABLE t1;
 CREATE TABLE t1(g GEOMETRY NOT NULL);
@@ -1244,7 +933,6 @@ INSERT INTO t1 VALUES (POINT(0,0));
 CREATE TABLE t2(c1 LINESTRING);
 INSERT INTO t2 VALUES (LINESTRING(POINT(0,0),POINT(1,1)));
 CREATE TABLE t3 SELECT * FROM t1;
-SELECT ST_AsText(c1) FROM t3;
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1 (
   point_col POINT SRID 4326

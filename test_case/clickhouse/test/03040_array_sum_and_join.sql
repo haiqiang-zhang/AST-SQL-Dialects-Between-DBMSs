@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer=1;
 select t.1 as cnt,
        t.2 as name,
        t.3 as percent
@@ -21,4 +20,3 @@ from (
                )
          );
 SELECT arrayMap(x -> arrayMap(x -> (x.1), [(1, 1), (2, 2)]), [(3, 3), (4, 4)]);
-SELECT arrayMap(x -> (x.1, arrayMap(x -> (x.1), [(1, 1), (2, 2)])), [(3, 3), (4, 4)]);

@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer=1;
 SELECT
     user_id
      , (count(user_id) OVER (PARTITION BY user_id)) AS count

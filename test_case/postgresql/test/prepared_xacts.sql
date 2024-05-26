@@ -1,5 +1,3 @@
-BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-UPDATE pxtest1 SET foobar = 'bbb' WHERE foobar = 'aaa';
 SELECT * FROM pxtest1;
 SELECT * FROM pxtest1;
 SELECT gid FROM pg_prepared_xacts;

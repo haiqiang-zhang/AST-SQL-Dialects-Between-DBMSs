@@ -1,5 +1,3 @@
-SET log_queries=1;
-SET log_profile_events=true;
 SYSTEM FLUSH LOGS;
 SYSTEM FLUSH LOGS;
 SYSTEM FLUSH LOGS;

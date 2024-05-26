@@ -1,0 +1,2 @@
+CREATE TABLE b (i TINYINT);
+INSERT INTO b VALUES (1), (2), (3), (4), (5);

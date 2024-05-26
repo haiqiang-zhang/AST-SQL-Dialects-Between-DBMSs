@@ -11,11 +11,9 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table level lock" and
         info = "select n from t1";
 select release_lock("mysqltest_lock");
-select release_lock("mysqltest_lock");
 drop table t1;
 create table t1(n int);
 insert into t1 values (1);
-select get_lock("mysqltest_lock", 100);
 select n from t1 where get_lock('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and info = "select n from t1 where get_lock('mysqltest_lock', 100)";
@@ -24,29 +22,21 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table level lock" and
         info = "update low_priority t1 set n = 4";
 select n from t1;
-select release_lock("mysqltest_lock");
-select release_lock("mysqltest_lock");
 drop table t1;
 create table t1 (a int, b int);
 create table t2 (c int, d int);
 insert into t1 values(1,1);
 insert into t1 values(2,2);
 insert into t2 values(1,2);
-select get_lock("mysqltest_lock", 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and info = "select a from t1 where get_lock('mysqltest_lock', 100)";
 update t1,t2 set c=a where b=d;
 select c from t2;
-select release_lock("mysqltest_lock");
-select release_lock("mysqltest_lock");
-select get_lock("mysqltest_lock", 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and info = "select c from t2 where get_lock('mysqltest_lock', 100)";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table level lock" and
         info = "update t1,t2 set c=a where b=d";
-select release_lock("mysqltest_lock");
-select release_lock("mysqltest_lock");
 lock table t1 read;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
@@ -152,7 +142,6 @@ unlock tables;
 drop table t1,t2;
 create table t1 (i int);
 insert into t1 values (1);
-select get_lock('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "select * from t1 where get_lock('mysqltest_lock', 100)";
@@ -164,8 +153,6 @@ select * from t1;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table level lock" and
         info = "select * from t1";
-select release_lock('mysqltest_lock');
-select release_lock('mysqltest_lock');
 drop table t1;
 drop table if exists t1;
 create table t1 (a int) ENGINE=MEMORY;
@@ -204,15 +191,12 @@ drop table t1;
 drop table if exists t1,t2;
 create table t1 (a int);
 insert into t1 values (1);
-select get_lock('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "select * from t1 where get_lock('mysqltest_lock', 100)";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table level lock" and
         info = "update t1 set a= 2";
-select release_lock('mysqltest_lock');
-select release_lock('mysqltest_lock');
 drop table t1;
 select @tlwa < @tlwb;
 drop table if exists t1;
@@ -319,7 +303,6 @@ select count(*) = 1 from information_schema.processlist
 LOCK TABLES t1 READ, t2 READ;
 UNLOCK TABLES;
 SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 LOCK TABLE t1 READ, t2 READ;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
@@ -330,25 +313,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t1 READ";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t2 READ";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
@@ -408,7 +385,6 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "SELECT * FROM t2";
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1";
@@ -416,10 +392,7 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t1 WRITE";
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t2";
@@ -427,8 +400,6 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t2 WRITE";
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 LOCK TABLE t1 WRITE, t2 WRITE;
 select count(*) = 1 from information_schema.processlist
@@ -440,25 +411,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t1 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t2 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
@@ -500,14 +465,11 @@ LOCK TABLE v1 READ, v2 READ;
 SELECT * FROM t1;
 SELECT * FROM t2;
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2";
 LOCK TABLES v1 READ, v2 READ;
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 LOCK TABLE v1 READ, v2 READ;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
@@ -518,25 +480,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v1 READ";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v2 READ";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
@@ -590,14 +546,11 @@ LOCK TABLES v3 WRITE, v4 WRITE;
 SELECT * FROM t1;
 SELECT * FROM t2;
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2";
 LOCK TABLES v3 WRITE, v4 WRITE;
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 LOCK TABLES v3 WRITE, v4 WRITE;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
@@ -608,25 +561,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v3 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v4 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
@@ -686,7 +633,6 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "SELECT * FROM t2";
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1";
@@ -694,10 +640,7 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v1 WRITE";
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t2";
@@ -705,8 +648,6 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v2 WRITE";
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 LOCK TABLE v1 WRITE, v2 WRITE;
 select count(*) = 1 from information_schema.processlist
@@ -718,25 +659,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v1 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES v2 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
@@ -776,14 +711,11 @@ UNLOCK TABLES;
 UNLOCK TABLES;
 LOCK TABLES t5 WRITE, t6 WRITE;
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2";
 LOCK TABLES v3 WRITE, t6 WRITE;
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 LOCK TABLES t5 WRITE, t6 WRITE;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
@@ -794,25 +726,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t5 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t6 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
@@ -872,7 +798,6 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "SELECT * FROM t2";
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1";
@@ -880,10 +805,7 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t7 WRITE";
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t2";
@@ -891,8 +813,6 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t8 WRITE";
 UNLOCK TABLES;
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 LOCK TABLE t7 WRITE, t8 WRITE;
 select count(*) = 1 from information_schema.processlist
@@ -904,25 +824,19 @@ select count(*) = 1 from information_schema.processlist
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t7 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
-SELECT GET_LOCK('mysqltest_lock', 100);
 select count(*) = 1 from information_schema.processlist
   where state = "User lock" and
         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))";
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "LOCK TABLES t8 WRITE";
-SELECT RELEASE_LOCK('mysqltest_lock');
-SELECT RELEASE_LOCK('mysqltest_lock');
 UNLOCK TABLES;
 DELETE FROM t1 LIMIT 1;
 DELETE FROM t2 LIMIT 1;

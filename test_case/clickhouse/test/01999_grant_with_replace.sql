@@ -1,4 +1,3 @@
-DROP USER IF EXISTS test_user_01999;
 SELECT 'A';
 SELECT 'B';
 SELECT 'C';

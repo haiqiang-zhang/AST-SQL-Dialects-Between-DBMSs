@@ -6,8 +6,6 @@ select * from numbers(1) t1 left semi join numbers(1) t2 using number;
 select * from numbers(1) t1 right semi join numbers(1) t2 using number;
 select * from numbers(1) t1 left anti join numbers(1) t2 using number;
 select * from numbers(1) t1 right anti join numbers(1) t2 using number;
--- legacy
-
 select * from numbers(1) t1 all left join numbers(1) t2 using number;
 select * from numbers(1) t1 all right join numbers(1) t2 using number;
 select * from numbers(1) t1 any left join numbers(1) t2 using number;

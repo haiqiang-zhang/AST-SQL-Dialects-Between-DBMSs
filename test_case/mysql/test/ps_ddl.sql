@@ -1,9 +1,3 @@
-drop temporary table if exists t1, t2, t3;
-drop table if exists t1, t2, t3;
-drop procedure if exists p_verify_reprepare_count;
-drop procedure if exists p1;
-drop function if exists f1;
-drop view if exists v1, v2;
 select variable_value from
   performance_schema.session_status where
   variable_name='com_stmt_reprepare'
@@ -266,10 +260,6 @@ drop procedure p1;
 create procedure p1() select "hi there, again";
 drop procedure p1;
 deallocate prepare stmt;
-create table test.t1(f1 int);
-drop table test.t1;
-create table test.t1(f1 int primary key, f2 int, key(f2));
-drop table test.t1;
 create table t1 (a int);
 create algorithm=temptable view v1 as select a*a as a2 from t1;
 prepare stmt from "select * from v1";

@@ -1,4 +1,3 @@
-set dialect='kusto';
 print '-- test Query only has table name: --';
 Customers;
 print '-- Query has Column Selection --';

@@ -1,7 +1,3 @@
-BEGIN;
-ROLLBACK;
-BEGIN;
-COMMIT;
 SELECT amname, amhandler, amtype FROM pg_am where amtype = 't' ORDER BY 1, 2;
 CREATE TABLE tableam_parted_heap2 (a text, b int) PARTITION BY list (a);
 SET default_table_access_method = 'heap';
@@ -57,7 +53,6 @@ SELECT amname FROM pg_class c, pg_am am
   WHERE c.relam = am.oid AND c.oid = 'heapmv'::regclass;
 SELECT amname FROM pg_class c, pg_am am
   WHERE c.relam = am.oid AND c.oid = 'heapmv'::regclass;
-SELECT COUNT(a), COUNT(1) FILTER(WHERE a=1) FROM heapmv;
 DROP MATERIALIZED VIEW heapmv;
 DROP TABLE heaptable;
 CREATE TABLE am_partitioned(x INT, y INT)

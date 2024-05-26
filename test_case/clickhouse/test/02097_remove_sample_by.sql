@@ -1,4 +1,3 @@
-ALTER TABLE t_remove_sample_by REMOVE SAMPLE BY;
 SHOW CREATE TABLE t_remove_sample_by;
 DROP TABLE t_remove_sample_by;
 CREATE TABLE t_remove_sample_by(id UInt64) ENGINE = Memory;

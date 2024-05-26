@@ -21,6 +21,5 @@ WITH s(i) AS (
     )
     INSERT INTO t1 SELECT i FROM s;
 BEGIN;
-SELECT count(*) FROM sqlite_master;
 PRAGMA optimize;
 PRAGMA optimize;

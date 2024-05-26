@@ -1,4 +1,3 @@
-set optimize_min_equality_disjunction_chain_length = 2;
 select * from bug;
 select * from bug where (k =1 or k=2 or k =3) and (s=21 or s=22 or s=23);
 select * from bug where (k =1 or k=2 or k =3) and (s=21 or s=22 or s=23) SETTINGS allow_experimental_analyzer = 1;

@@ -1,16 +1,3 @@
--- TODO: correct testing with real unique shards
-
-set optimize_distributed_group_by_sharding_key=1;
-set max_bytes_before_external_group_by = 0;
-drop table if exists dist_01247;
-drop table if exists data_01247;
-create table data_01247 as system.numbers engine=Memory();
-insert into data_01247 select * from system.numbers limit 2;
--- (and this is how we ensure that this optimization will work)
-
-set max_distributed_connections=1;
-set prefer_localhost_replica=0;
-set enable_positional_arguments=0;
 select '-';
 select 'optimize_skip_unused_shards';
 set optimize_skip_unused_shards=1;
@@ -49,6 +36,5 @@ create table data_01247 engine=Memory() as select number key, 0 value from numbe
 select 'GROUP BY sharding_key, ...';
 select 'GROUP BY ..., sharding_key';
 select 'sharding_key (compound)';
--- window functions
 select 'window functions';
 drop table data_01247;

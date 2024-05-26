@@ -1,8 +1,5 @@
 SELECT * FROM tokenbf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id;
 SELECT * FROM ngrambf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id;
--- Required string: 'Hello '
--- Alternatives: 'Hello ClickHouse', 'Hello World'
-
 SELECT *
 FROM
 (
@@ -46,9 +43,6 @@ SETTINGS
 SELECT '---';
 SELECT * FROM tokenbf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id;
 SELECT * FROM ngrambf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id;
--- Required string: -
--- Alternatives: 'ClickHouse', 'World'
-
 SELECT *
 FROM
 (
@@ -92,9 +86,6 @@ SETTINGS
 SELECT '---';
 SELECT * FROM tokenbf_tab WHERE match(str, 'OLAP.*') ORDER BY id;
 SELECT * FROM ngrambf_tab WHERE match(str, 'OLAP.*') ORDER BY id;
--- Required string: 'OLAP'
--- Alternatives: -
-
 SELECT *
 FROM
 (

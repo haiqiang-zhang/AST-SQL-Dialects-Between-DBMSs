@@ -1,18 +1,6 @@
 select (1,2,3) IN ((3,2,3), (1,2,3), (1,3,3));
 select row(10,2,3) IN (row(3,2,3), row(1,2,3), row(1,3,3));
-select row(1,2,3) IN (row(3,NULL,3), row(1,2,3), row(1,3,3));
-select row(10,2,3) IN (row(3,NULL,3), row(1,2,3), row(1,3,3));
-select row('a',1.5,3) IN (row(1,2,3), row('a',1.5,3), row('a','a','a'));
-select row('a',0,3) IN (row(3,2,3), row('a','a','3'), row(1,3,3));
-select row('a',0,3) IN (row(3,2,3), row('a','0','3'), row(1,3,3));
-select row('a',1.5,3) IN (row(3,NULL,3), row('a',1.5,3), row(1,3,3));
-select row('b',1.5,3) IN (row(3,NULL,3), row('a',1.5,3), row(1,3,3));
-select row('b',1.5,3) IN (row('b',NULL,3), row('a',1.5,3), row(1,3,3));
-select row('b',1.5,3) IN (row('b',NULL,4), row('a',1.5,3), row(1,3,3));
 select (1,2,(3,4)) IN ((3,2,(3,4)), (1,2,(3,4)));
-select row(1,2,row(3,4)) IN (row(3,2,row(3,4)), row(1,2,row(3,NULL)));
-select row(1,2,row(3,null)) IN (row(3,2,row(3,4)), row(1,2,row(4,5)));
-select row(1,2,row(3,null)) IN (row(3,2,row(3,4)), row(1,2,row(3,5)));
 SELECT (1,2,3)=(0,NULL,3);
 SELECT (1,2,3)=(1,NULL,3);
 SELECT (1,2,3)=(1,NULL,0);
@@ -37,9 +25,6 @@ select * from t1 where ROW(1,2,3)=ROW(a,b,c);
 select * from t1 where ROW(0,2,3)=ROW(a,b,c);
 select * from t1 where ROW(1,2,3)<ROW(a,b,c);
 select ROW(a,2,3) IN(row(1,b,c), row(2,3,1)) from t1;
-select ROW(c,2,3) IN(row(1,b,a), row(2,3,1)) from t1;
-select ROW(a,b,c) IN(row(1,2,3), row(3,2,1)) from t1;
-select ROW(1,2,3) IN(row(a,b,c), row(1,2,3)) from t1;
 drop table t1;
 create table t1 (i int);
 drop table t1;
@@ -122,8 +107,6 @@ SELECT @x;
 DROP TABLE t1;
 CREATE TABLE t1 (a INT, b INT);
 INSERT INTO t1 VALUES (1,1);
-SELECT ROW(a, 1) IN (SELECT SUM(b), 1) FROM t1 GROUP BY a;
-SELECT ROW(a, 1) IN (SELECT SUM(b), 3) FROM t1 GROUP BY a;
 DROP TABLE t1;
 create table t1 (a varchar(200),
                  b int unsigned not null primary key auto_increment)

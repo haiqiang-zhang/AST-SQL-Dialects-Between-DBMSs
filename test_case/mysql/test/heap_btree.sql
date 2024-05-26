@@ -1,4 +1,3 @@
-delete from t1 where a=1 or a=0;
 select * from t1;
 select * from t1 where a=4;
 update t1 set b=5 where a=4;
@@ -30,9 +29,7 @@ select * from t1 where b=1;
 drop table t1;
 create table t1 (id int unsigned not null, primary key  using BTREE (id)) engine=HEAP;
 insert into t1 values(1);
-select max(id) from t1;
 insert into t1 values(2);
-select max(id) from t1;
 drop table t1;
 create table t1 (n int) engine=heap;
 drop table t1;

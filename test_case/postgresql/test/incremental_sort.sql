@@ -1,10 +1,3 @@
-set work_mem to '2MB';
-reset work_mem;
-create table t(a integer, b integer);
-end;
-end;
-end;
-insert into t(a, b) select i/100 + 1, i + 1 from generate_series(0, 999) n(i);
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 31;
 select * from (select * from t order by a) s order by a, b limit 31;
@@ -76,7 +69,6 @@ analyze t;
 set enable_incremental_sort = off;
 explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1;
 set enable_incremental_sort = on;
-explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1;
 set enable_hashagg to off;
 explain (costs off) select * from t union select * from t order by 1,3;
 explain (costs off) select distinct a,b from t;

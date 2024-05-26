@@ -1,0 +1,13 @@
+SELECT * FROM test;
+SELECT * FROM test WHERE a=3;
+SELECT * FROM test;
+SELECT * FROM test WHERE a=1;
+SELECT * FROM test;
+SELECT * FROM test WHERE a=3;
+SELECT * FROM test;
+SELECT * FROM test;
+SELECT * FROM test;
+SELECT * FROM test;
+SELECT * FROM test;
+SELECT * FROM test WHERE a=1;
+SELECT * FROM test;

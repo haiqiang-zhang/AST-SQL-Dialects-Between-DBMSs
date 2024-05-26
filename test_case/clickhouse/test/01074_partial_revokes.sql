@@ -1,4 +1,3 @@
-DROP USER IF EXISTS test_user_01074;
 SELECT '--simple 1';
 SELECT '--cleanup';
 SELECT '--simple 2';

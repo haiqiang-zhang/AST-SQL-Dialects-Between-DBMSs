@@ -1,0 +1,4 @@
+CREATE TABLE pxtest1 (foobar VARCHAR(10));
+INSERT INTO pxtest1 VALUES ('aaa');
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+UPDATE pxtest1 SET foobar = 'bbb' WHERE foobar = 'aaa';

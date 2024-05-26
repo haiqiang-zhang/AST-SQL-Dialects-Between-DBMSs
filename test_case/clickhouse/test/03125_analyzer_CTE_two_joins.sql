@@ -1,6 +1,3 @@
-SET allow_experimental_analyzer=1;
-create table events ( distinct_id String ) engine = Memory;
-INSERT INTO events VALUES ('1234'), ('1');
 WITH cte1 as (
     SELECT '1234' as x
  ), cte2 as (

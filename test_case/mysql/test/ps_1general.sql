@@ -1,8 +1,3 @@
-drop database if exists mysqltest;
-drop database if exists client_test_db;
-drop database if exists testtets;
-drop table if exists t1Aa,t2Aa,v1Aa,v2Aa;
-drop view if exists t1Aa,t2Aa,v1Aa,v2Aa;
 select '------ basic tests ------' as test_sequence;
 prepare stmt1 from ' select 1 as my_col ';
 prepare stmt1 from ' select ? as my_col ';

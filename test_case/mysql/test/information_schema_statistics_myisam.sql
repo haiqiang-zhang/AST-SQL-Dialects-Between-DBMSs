@@ -1,8 +1,4 @@
-DELETE FROM t1 WHERE f1=1;
-DELETE FROM t2 WHERE f1=1;
 SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t2;
-SELECT COUNT(*) FROM t3;
 SELECT table_rows, avg_row_length, data_length, max_data_length, index_length,
        data_free, auto_increment, checksum, update_time, check_time
 FROM information_schema.tables WHERE table_name in ('t1', 't2');

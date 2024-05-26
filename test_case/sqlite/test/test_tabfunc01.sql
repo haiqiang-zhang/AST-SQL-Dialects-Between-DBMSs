@@ -1,5 +1,3 @@
-PRAGMA table_xinfo(generate_series);
-CREATE VIEW v1(a,b) AS VALUES(1,2),(3,4);
 SELECT * FROM v1;
 CREATE VIEW v2(x) AS SELECT value FROM generate_series(1,5);
 CREATE TABLE t0(x);

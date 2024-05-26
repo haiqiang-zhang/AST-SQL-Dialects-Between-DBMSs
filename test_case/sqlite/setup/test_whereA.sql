@@ -1,0 +1,5 @@
+PRAGMA reverse_unordered_selects=on;
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1(a,b);
+INSERT INTO t1 VALUES(1,2);
+CREATE INDEX t1b ON t1(b);

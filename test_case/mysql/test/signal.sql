@@ -1,14 +1,3 @@
-drop procedure if exists test_invalid;
-drop procedure if exists test_signal_syntax;
-drop function if exists test_signal_func;
-drop procedure if exists test_invalid;
-drop procedure if exists test_resignal_syntax;
-drop procedure if exists test_signal;
-drop procedure if exists test_resignal;
-drop table if exists t_warn;
-drop table if exists t_cursor;
-create table t_warn(a integer(2));
-create table t_cursor(a integer);
 select "Caught by SQLSTATE";
 select "Caught by number";
 select "Caught by SQLWARNING";

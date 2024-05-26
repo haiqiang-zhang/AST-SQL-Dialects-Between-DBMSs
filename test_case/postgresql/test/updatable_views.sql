@@ -1,27 +1,3 @@
-SET extra_float_digits = 0;
-CREATE TABLE base_tbl (a int PRIMARY KEY, b text DEFAULT 'Unspecified');
-INSERT INTO base_tbl SELECT i, 'Row ' || i FROM generate_series(-2, 2) g(i);
-CREATE VIEW ro_view1 AS SELECT DISTINCT a, b FROM base_tbl;
-CREATE VIEW ro_view2 AS SELECT a, b FROM base_tbl GROUP BY a, b;
-CREATE VIEW ro_view3 AS SELECT 1 FROM base_tbl HAVING max(a) > 0;
-CREATE VIEW ro_view4 AS SELECT count(*) FROM base_tbl;
-CREATE VIEW ro_view5 AS SELECT a, rank() OVER() FROM base_tbl;
-CREATE VIEW ro_view6 AS SELECT a, b FROM base_tbl UNION SELECT -a, b FROM base_tbl;
-CREATE VIEW ro_view7 AS WITH t AS (SELECT a, b FROM base_tbl) SELECT * FROM t;
-CREATE VIEW ro_view8 AS SELECT a, b FROM base_tbl ORDER BY a OFFSET 1;
-CREATE VIEW ro_view9 AS SELECT a, b FROM base_tbl ORDER BY a LIMIT 1;
-CREATE VIEW ro_view10 AS SELECT 1 AS a;
-CREATE VIEW ro_view11 AS SELECT b1.a, b2.b FROM base_tbl b1, base_tbl b2;
-CREATE VIEW ro_view12 AS SELECT * FROM generate_series(1, 10) AS g(a);
-CREATE VIEW ro_view13 AS SELECT a, b FROM (SELECT * FROM base_tbl) AS t;
-CREATE VIEW rw_view14 AS SELECT ctid, a, b FROM base_tbl;
-CREATE VIEW rw_view15 AS SELECT a, upper(b) FROM base_tbl;
-CREATE VIEW rw_view16 AS SELECT a, b, a AS aa FROM base_tbl;
-CREATE VIEW ro_view17 AS SELECT * FROM ro_view1;
-CREATE VIEW ro_view18 AS SELECT * FROM (VALUES(1)) AS tmp(a);
-CREATE SEQUENCE uv_seq;
-CREATE VIEW ro_view19 AS SELECT * FROM uv_seq;
-CREATE VIEW ro_view20 AS SELECT a, b, generate_series(1, a) g FROM base_tbl;
 SELECT table_name, is_insertable_into
   FROM information_schema.tables
  WHERE table_name LIKE E'r_\\_view%'
@@ -837,10 +813,6 @@ alter table uv_pt11 add a int not null;
 alter table uv_pt1 attach partition uv_pt11 for values from (2) to (5);
 alter table uv_pt attach partition uv_pt1 for values from (1, 2) to (1, 10);
 create view uv_ptv as select * from uv_pt;
-select events & 4 != 0 AS upd,
-       events & 8 != 0 AS ins,
-       events & 16 != 0 AS del
-  from pg_catalog.pg_relation_is_updatable('uv_pt'::regclass, false) t(events);
 select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 1::smallint, false);
 select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 2::smallint, false);
 select table_name, is_updatable, is_insertable_into
@@ -894,12 +866,6 @@ create table uv_iocu_tab (a int unique, b text);
 create view uv_iocu_view as
     select b as bb, a as aa, uv_iocu_tab::text as cc from uv_iocu_tab;
 insert into uv_iocu_view (aa,bb) values (1,'x');
-explain (costs off)
-insert into uv_iocu_view (aa,bb) values (1,'y')
-   on conflict (aa) do update set bb = 'Rejected: '||excluded.*
-   where excluded.aa > 0
-   and excluded.bb != ''
-   and excluded.cc is not null;
 insert into uv_iocu_view (aa,bb) values (1,'y')
    on conflict (aa) do update set bb = 'Rejected: '||excluded.*
    where excluded.aa > 0

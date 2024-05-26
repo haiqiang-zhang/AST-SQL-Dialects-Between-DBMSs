@@ -1,5 +1,3 @@
-PRAGMA writable_schema = 1;
-INSERT INTO t1 VALUES(1, 2);
 SELECT * FROM t2;
 DELETE FROM t2;
 SELECT * FROM t2;

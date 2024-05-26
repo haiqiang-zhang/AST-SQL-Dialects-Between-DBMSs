@@ -1,0 +1,1 @@
+CREATE TABLE t1(a TEXT,b INT,c INT,d INT);

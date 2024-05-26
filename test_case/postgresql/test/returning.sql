@@ -1,7 +1,3 @@
-CREATE TEMP TABLE foo (f1 serial, f2 text, f3 int default 42);
-INSERT INTO foo (f2,f3)
-  VALUES ('test', DEFAULT), ('More', 11), (upper('more'), 7+9)
-  RETURNING *, f1+f3 AS sum;
 SELECT * FROM foo;
 UPDATE foo SET f2 = lower(f2), f3 = DEFAULT RETURNING foo.*, f1+f3 AS sum13;
 SELECT * FROM foo;

@@ -9819,11 +9819,6 @@ SELECT +   10;
 SELECT ~   10;
 SELECT NOT 10;
 SELECT quote( + 'helloworld' ), typeof( + 'helloworld');
-SELECT quote( + 45 ), typeof( + 45);
-SELECT quote( + 45.2 ), typeof( + 45.2);
-SELECT quote( + 45.0 ), typeof( + 45.0);
-SELECT quote( + X'ABCDEF' ), typeof( + X'ABCDEF');
-SELECT quote( + NULL ), typeof( + NULL);
 SELECT 'helloworld'  = 'helloworld',   'helloworld' == 'helloworld',
            'helloworld'  = '12345', 'helloworld' == '12345',
            'helloworld'  = NULL,       'helloworld' == NULL,
@@ -10380,25 +10375,11 @@ SELECT a = 'BBB' FROM t24;
 SELECT 'BBB' = a COLLATE binary FROM t24;
 SELECT a COLLATE binary = 'BBB' FROM t24;
 SELECT typeof(5);
-SELECT typeof(5.1);
-SELECT typeof('5.1');
-SELECT typeof(X'ABCD');
-SELECT typeof(NULL);
-SELECT typeof(3.4e-02);
-SELECT typeof(3e+5);
 SELECT 3.4e-02;
 SELECT 3e+4;
 SELECT 'is not';
-SELECT typeof('is not');
 SELECT 'isn''t';
-SELECT typeof('isn''t');
-SELECT typeof(X'0123456789ABCDEF');
-SELECT typeof(x'0123456789ABCDEF');
-SELECT typeof(X'0123456789abcdef');
-SELECT typeof(x'0123456789abcdef');
-SELECT typeof(X'53514C697465');
 SELECT NULL;
-SELECT typeof(NULL);
 SELECT 0, +0, -0;
 SELECT 1, +1, -1;
 SELECT 2, +2, -2;
@@ -10410,9 +10391,7 @@ SELECT 123.4e05;
 SELECT 'abcde';
 SELECT X'414243';
 SELECT NULL;
-SELECT CURRENT_TIME;
 SELECT CURRENT_DATE;
-SELECT CURRENT_TIMESTAMP;
 ATTACH 'test.db2' AS dbname;
 CREATE TABLE dbname.tblname(cname);
 SELECT 123 FROM tblname;
@@ -10479,10 +10458,7 @@ SELECT cname AND 34+22 FROM tblname;
 SELECT cname OR 34+22 FROM tblname;
 SELECT cname OR 34+22 FROM tblname;
 SELECT count(*) FROM tblname;
-SELECT count(DISTINCT cname) FROM tblname;
-SELECT count(DISTINCT 34+22) FROM tblname;
 SELECT substr(cname, 10, 20) FROM tblname;
-SELECT substr(34+22, 10, 20) FROM tblname;
 SELECT changes() FROM tblname;
 SELECT ( cname ) FROM tblname;
 SELECT ( 34+22 ) FROM tblname;
@@ -10606,285 +10582,51 @@ SELECT 'abc' LIKE 'aBc';
 SELECT 'aBc' LIKE 'aBc';
 SELECT 'ac'  LIKE 'aBc';
 SELECT 'A' LIKE 'a';
-SELECT 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ' LIKE 'ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¦';
-SELECT 'A' LIKE 'a' ESCAPE 'x';
 SELECT 'abc%'  LIKE 'abcX%' ESCAPE 'X';
-SELECT 'abc5'  LIKE 'abcX%' ESCAPE 'X';
 SELECT 'abc'   LIKE 'abcX%' ESCAPE 'X';
 SELECT 'abcX%' LIKE 'abcX%' ESCAPE 'X';
 SELECT 'abc%%' LIKE 'abcX%' ESCAPE 'X';
-SELECT 'abc_'  LIKE 'abcX_' ESCAPE 'X';
-SELECT 'abc5'  LIKE 'abcX_' ESCAPE 'X';
 SELECT 'abc'   LIKE 'abcX_' ESCAPE 'X';
 SELECT 'abcX_' LIKE 'abcX_' ESCAPE 'X';
 SELECT 'abc__' LIKE 'abcX_' ESCAPE 'X';
-SELECT 'abcX'  LIKE 'abcXX' ESCAPE 'X';
-SELECT 'abc5'  LIKE 'abcXX' ESCAPE 'X';
 SELECT 'abc'   LIKE 'abcXX' ESCAPE 'X';
 SELECT 'abcXX' LIKE 'abcXX' ESCAPE 'X';
 SELECT 'abc' LIKE 'def';
 SELECT 'abc' LIKE 'def' ESCAPE 'X';
-SELECT 'abcxyz' LIKE 'ABC%';
 SELECT 'abc%xyz' LIKE 'ABC\%x%' ESCAPE '\';
 PRAGMA case_sensitive_like = 1;
-SELECT 'abcxyz' LIKE 'ABC%';
 SELECT 'abc%xyz' LIKE 'ABC\%X%' ESCAPE '\';
-SELECT 'ABCxyz' LIKE 'ABC%';
 SELECT 'ABC%xyz' LIKE 'ABC\%x%' ESCAPE '\';
 PRAGMA case_sensitive_like = 0;
 SELECT 'abcxyz' LIKE 'ABC%';
 SELECT 'abc%xyz' LIKE 'ABC\%X%' ESCAPE '\';
 SELECT 'ABCxyz' LIKE 'ABC%';
 SELECT 'ABC%xyz' LIKE 'ABC\%X%' ESCAPE '\';
-SELECT 'abcxyz' GLOB 'abc%';
 SELECT 'abcxyz' GLOB 'abc*';
-SELECT 'abcxyz' GLOB 'abc___';
-SELECT 'abcxyz' GLOB 'abc???';
-SELECT 'abcxyz' GLOB 'abc*';
-SELECT 'ABCxyz' GLOB 'abc*';
 SELECT 'abcxyz' GLOB 'ABC*';
-SELECT 'abcxyz' NOT GLOB 'ABC*';
-SELECT 'abcxyz' NOT GLOB 'abc*';
 SELECT 'abcxyz' NOT LIKE 'ABC%';
 SELECT 'abcxyz' NOT LIKE 'abc%';
-SELECT 'abdxyz' NOT LIKE 'abc%';
-SELECT 'abcxyz' NOT GLOB NULL;
 SELECT 'abcxyz' NOT LIKE NULL;
 SELECT NULL NOT GLOB 'abc*';
 SELECT NULL NOT LIKE 'ABC%';
-SELECT 'abc' GLOB 'def';
-SELECT 'X' NOT GLOB 'Y';
-SELECT CASE WHEN 1 THEN 'true' WHEN 0 THEN 'false' ELSE 'else' END;
-SELECT CASE 0 WHEN 1 THEN 'true' WHEN 0 THEN 'false' ELSE 'else' END;
-SELECT CASE WHEN NULL THEN 'A' WHEN 1 THEN 'B' END, iif(NULL,8,99);
-SELECT CASE WHEN 0 THEN 'A' WHEN NULL THEN 'B' ELSE 'C' END, iif(0,8,99);
-SELECT CASE 23 WHEN 1 THEN 'A' WHEN 23 THEN 'B' WHEN 23 THEN 'C' END;
-SELECT CASE 1 WHEN 1 THEN 'A' WHEN 23 THEN 'B' WHEN 23 THEN 'C' END;
-SELECT CASE 24 WHEN 1 THEN 'A' WHEN 23 THEN 'B' WHEN 23 THEN 'C' ELSE 'D' END;
 SELECT CASE 24 WHEN 1 THEN 'A' WHEN 23 THEN 'B' WHEN 23 THEN 'C' END;
-SELECT CASE 24 WHEN 1 THEN 'A' WHEN 23 THEN 'B' WHEN 23 THEN 'C' END;
-SELECT CASE 55 WHEN '55' THEN 'A' ELSE 'B' END;
 SELECT CASE NULL WHEN NULL THEN 'A' ELSE 'B' END;
-SELECT CASE NULL WHEN 'abc' THEN 'A' WHEN 'def' THEN 'B' END;
-SELECT CASE NULL WHEN 'abc' THEN 'A' WHEN 'def' THEN 'B' ELSE 'C' END;
 CREATE TABLE t2(x, w1, r1, w2, r2, r3);
 INSERT INTO t2 VALUES(1, 1, 'R1', 2, 'R2', 'R3');
 INSERT INTO t2 VALUES(2, 1, 'R1', 2, 'R2', 'R3');
 INSERT INTO t2 VALUES(3, 1, 'R1', 2, 'R2', 'R3');
-SELECT CASE x WHEN w1 THEN r1 WHEN w2 THEN r2 ELSE r3 END FROM t2;
 SELECT CASE WHEN x=w1 THEN r1 WHEN x=w2 THEN r2 ELSE r3 END FROM t2;
 CREATE TABLE t3(a TEXT, b REAL, c INTEGER);
 INSERT INTO t3 VALUES(X'555655', '1.23abc', 4.5);
-SELECT typeof(a), a, typeof(b), b, typeof(c), c FROM t3;
-SELECT 
-    typeof(CAST(X'555655' as TEXT)), CAST(X'555655' as TEXT),
-    typeof(CAST('1.23abc' as REAL)), CAST('1.23abc' as REAL),
-    typeof(CAST(4.5 as INTEGER)), CAST(4.5 as INTEGER);
-SELECT typeof( CAST(NULL AS integer) ),  CAST(NULL AS integer);
 SELECT typeof( CAST(NULL AS text) ),  CAST(NULL AS text);
-SELECT typeof( CAST(NULL AS blob) ),  CAST(NULL AS blob);
-SELECT typeof( CAST(NULL AS number) ),  CAST(NULL AS number);
-SELECT typeof( CAST('abc' AS blob)       ),  CAST('abc' AS blob);
-SELECT typeof( CAST('def' AS shobblob_x) ),  CAST('def' AS shobblob_x);
-SELECT typeof( CAST('ghi' AS abbLOb10)   ),  CAST('ghi' AS abbLOb10);
-SELECT quote( CAST('ghi' AS blob) );
-SELECT quote( CAST(456 AS blob) );
-SELECT quote( CAST(1.78 AS blob) );
-SELECT quote( CAST('ghi' AS blob) );
-SELECT quote( CAST(456 AS blob) );
-SELECT quote( CAST(1.78 AS blob) );
-SELECT quote( CAST('ghi' AS blob) );
-SELECT quote( CAST(456 AS blob) );
-SELECT quote( CAST(1.78 AS blob) );
-SELECT typeof( CAST (X'676869' AS text) ),  CAST (X'676869' AS text);
-SELECT typeof( CAST (X'670068006900' AS text) ),  CAST (X'670068006900' AS text);
-SELECT typeof( CAST (X'676869' AS text) == 'ghi' ),  CAST (X'676869' AS text) == 'ghi';
-SELECT typeof( CAST (X'670068006900' AS text) ),  CAST (X'670068006900' AS text);
-SELECT typeof( CAST (1 AS text)   ),  CAST (1 AS text);
-SELECT typeof( CAST (45 AS text)  ),  CAST (45 AS text);
-SELECT typeof( CAST (-45 AS text) ),  CAST (-45 AS text);
-SELECT typeof( CAST (8.8 AS text)    ),  CAST (8.8 AS text);
-SELECT typeof( CAST (2.3e+5 AS text) ),  CAST (2.3e+5 AS text);
-SELECT typeof( CAST (-2.3e-5 AS text) ),  CAST (-2.3e-5 AS text);
-SELECT typeof( CAST (0.0 AS text) ),  CAST (0.0 AS text);
-SELECT typeof( CAST (0 AS text) ),  CAST (0 AS text);
-SELECT typeof( CAST (X'312E3233' AS REAL) ),  CAST (X'312E3233' AS REAL);
-SELECT typeof( CAST (X'3233302E30' AS REAL) ),  CAST (X'3233302E30' AS REAL);
-SELECT typeof( CAST (X'2D392E3837' AS REAL) ),  CAST (X'2D392E3837' AS REAL);
-SELECT typeof( CAST (X'302E30303031' AS REAL) ),  CAST (X'302E30303031' AS REAL);
-SELECT typeof( 
-    CAST (X'31002E0032003300' AS REAL) ),  
-    CAST (X'31002E0032003300' AS REAL);
-SELECT typeof( 
-    CAST (X'3200330030002E003000' AS REAL) ),  
-    CAST (X'3200330030002E003000' AS REAL);
-SELECT typeof( 
-    CAST (X'2D0039002E0038003700' AS REAL) ),  
-    CAST (X'2D0039002E0038003700' AS REAL);
-SELECT typeof( 
-    CAST (X'30002E003000300030003100' AS REAL) ),  
-    CAST (X'30002E003000300030003100' AS REAL);
-SELECT typeof( CAST('1.23abcd' AS REAL) ),  CAST('1.23abcd' AS REAL);
-SELECT typeof( CAST('1.45.23abcd' AS REAL) ),  CAST('1.45.23abcd' AS REAL);
-SELECT typeof( CAST('-2.12e-01ABC' AS REAL) ),  CAST('-2.12e-01ABC' AS REAL);
-SELECT typeof( CAST('1 2 3 4' AS REAL) ),  CAST('1 2 3 4' AS REAL);
-SELECT typeof( CAST(' 1.23abcd' AS REAL) ),  CAST(' 1.23abcd' AS REAL);
-SELECT typeof( CAST('    1.45.23abcd' AS REAL) ),  CAST('    1.45.23abcd' AS REAL);
-SELECT typeof( CAST('   -2.12e-01ABC' AS REAL) ),  CAST('   -2.12e-01ABC' AS REAL);
-SELECT typeof( CAST(' 1 2 3 4' AS REAL) ),  CAST(' 1 2 3 4' AS REAL);
-SELECT typeof( CAST('' AS REAL) ),  CAST('' AS REAL);
-SELECT typeof( CAST('not a number' AS REAL) ),  CAST('not a number' AS REAL);
-SELECT typeof( CAST('XXI' AS REAL) ),  CAST('XXI' AS REAL);
-SELECT typeof( CAST(X'313233' AS INTEGER) ),  CAST(X'313233' AS INTEGER);
-SELECT typeof( CAST(X'2D363738' AS INTEGER) ),  CAST(X'2D363738' AS INTEGER);
-SELECT typeof( 
-  CAST(X'31303030303030' AS INTEGER) 
-),  
-  CAST(X'31303030303030' AS INTEGER);
-SELECT typeof( 
-  CAST(X'2D31313235383939393036383432363234' AS INTEGER) 
-),  
-  CAST(X'2D31313235383939393036383432363234' AS INTEGER);
 PRAGMA encoding = 'utf-16be';
-SELECT typeof( CAST(X'003100320033' AS INTEGER) ),  CAST(X'003100320033' AS INTEGER);
-SELECT typeof( CAST(X'002D003600370038' AS INTEGER) ),  CAST(X'002D003600370038' AS INTEGER);
-SELECT typeof( 
-  CAST(X'0031003000300030003000300030' AS INTEGER) 
-),  
-  CAST(X'0031003000300030003000300030' AS INTEGER);
-SELECT typeof( 
-  CAST(X'002D0031003100320035003800390039003900300036003800340032003600320034' AS INTEGER) 
-),  
-  CAST(X'002D0031003100320035003800390039003900300036003800340032003600320034' AS INTEGER);
-SELECT typeof( CAST('123abcd' AS INT) ),  CAST('123abcd' AS INT);
-SELECT typeof( CAST('14523abcd' AS INT) ),  CAST('14523abcd' AS INT);
-SELECT typeof( CAST('-2.12e-01ABC' AS INT) ),  CAST('-2.12e-01ABC' AS INT);
-SELECT typeof( CAST('1 2 3 4' AS INT) ),  CAST('1 2 3 4' AS INT);
-SELECT typeof( CAST('   123abcd' AS INT) ),  CAST('   123abcd' AS INT);
-SELECT typeof( CAST('  14523abcd' AS INT) ),  CAST('  14523abcd' AS INT);
-SELECT typeof( CAST(' -2.12e-01ABC' AS INT) ),  CAST(' -2.12e-01ABC' AS INT);
-SELECT typeof( CAST('     1 2 3 4' AS INT) ),  CAST('     1 2 3 4' AS INT);
-SELECT typeof( CAST('' AS INTEGER) ),  CAST('' AS INTEGER);
-SELECT typeof( CAST('not a number' AS INTEGER) ),  CAST('not a number' AS INTEGER);
-SELECT typeof( CAST('XXI' AS INTEGER) ),  CAST('XXI' AS INTEGER);
-SELECT typeof( CAST('0x1234' AS INTEGER) ),  CAST('0x1234' AS INTEGER);
-SELECT typeof( CAST('0X1234' AS INTEGER) ),  CAST('0X1234' AS INTEGER);
-SELECT typeof( CAST(3.14159 AS INTEGER) ),  CAST(3.14159 AS INTEGER);
-SELECT typeof( CAST(1.99999 AS INTEGER) ),  CAST(1.99999 AS INTEGER);
-SELECT typeof( CAST(-1.99999 AS INTEGER) ),  CAST(-1.99999 AS INTEGER);
-SELECT typeof( CAST(-0.99999 AS INTEGER) ),  CAST(-0.99999 AS INTEGER);
-SELECT typeof( CAST(2e+50 AS INT) ),  CAST(2e+50 AS INT);
-SELECT typeof( CAST(-2e+50 AS INT) ),  CAST(-2e+50 AS INT);
-SELECT typeof( 
-  CAST(-9223372036854775809.0 AS INT)
-),  
-  CAST(-9223372036854775809.0 AS INT);
-SELECT typeof( 
-  CAST(9223372036854775809.0 AS INT)
-),  
-  CAST(9223372036854775809.0 AS INT);
-SELECT typeof( CAST('45'   AS NUMERIC)  ),  CAST('45'   AS NUMERIC);
-SELECT typeof( CAST('45.0' AS NUMERIC)  ),  CAST('45.0' AS NUMERIC);
-SELECT typeof( CAST('45.2' AS NUMERIC)  ),  CAST('45.2' AS NUMERIC);
-SELECT typeof( CAST('11abc' AS NUMERIC) ),  CAST('11abc' AS NUMERIC);
-SELECT typeof( CAST('11.1abc' AS NUMERIC) ),  CAST('11.1abc' AS NUMERIC);
-SELECT typeof(CAST( '9.223372036e14' AS NUMERIC)), CAST( '9.223372036e14' AS NUMERIC);
-SELECT typeof(CAST('-9.223372036e14' AS NUMERIC)), CAST('-9.223372036e14' AS NUMERIC);
-SELECT typeof( CAST('9223372036854775807' AS numeric) ),  CAST('9223372036854775807' AS numeric);
-SELECT typeof( CAST('9223372036854775808' AS numeric) ),  CAST('9223372036854775808' AS numeric);
-SELECT typeof( CAST('-9223372036854775808' AS numeric) ),  CAST('-9223372036854775808' AS numeric);
-SELECT typeof( CAST('-9223372036854775809' AS numeric) ),  CAST('-9223372036854775809' AS numeric);
-SELECT typeof( CAST(13.0 AS NUMERIC) ),  CAST(13.0 AS NUMERIC);
-SELECT typeof( CAST(13.5 AS NUMERIC) ),  CAST(13.5 AS NUMERIC);
-SELECT typeof( 
-  CAST(-9223372036854775808 AS NUMERIC)
-),  
-  CAST(-9223372036854775808 AS NUMERIC);
-SELECT typeof( 
-  CAST(9223372036854775807 AS NUMERIC)
-),  
-  CAST(9223372036854775807 AS NUMERIC);
-SELECT typeof( 
-  CAST('9223372036854775807 ' AS NUMERIC)
-),  
-  CAST('9223372036854775807 ' AS NUMERIC);
-SELECT typeof( 
-  CAST('   9223372036854775807   ' AS NUMERIC)
-),  
-  CAST('   9223372036854775807   ' AS NUMERIC);
-SELECT typeof( 
-  CAST('  ' AS NUMERIC)
-),  
-  CAST('  ' AS NUMERIC);
-WITH t1(x) AS (VALUES
-     ('9000000000000000001'),
-     ('9000000000000000001x'),
-     ('9000000000000000001 '),
-     (' 9000000000000000001 '),
-     (' 9000000000000000001'),
-     (' 9000000000000000001.'),
-     ('9223372036854775807'),
-     ('9223372036854775807 '),
-     ('   9223372036854775807   '),
-     ('9223372036854775808'),
-     ('   9223372036854775808   '),
-     ('9223372036854775807.0'),
-     ('9223372036854775807e+0'),
-     ('-5.0'),
-     ('-5e+0'))
-  SELECT typeof(CAST(x AS NUMERIC)), CAST(x AS NUMERIC)||'' FROM t1;
 CREATE TABLE t1(a, b);
 INSERT INTO t1 VALUES(1, 2);
 INSERT INTO t1 VALUES(NULL, 2);
 INSERT INTO t1 VALUES(1, NULL);
 INSERT INTO t1 VALUES(NULL, NULL);
-SELECT typeof( EXISTS ( SELECT a FROM t1 ) ),  EXISTS ( SELECT a FROM t1 );
-SELECT typeof( EXISTS ( SELECT b FROM t1 ) ),  EXISTS ( SELECT b FROM t1 );
-SELECT typeof( EXISTS ( SELECT 24 ) ),  EXISTS ( SELECT 24 );
-SELECT typeof( EXISTS ( SELECT NULL ) ),  EXISTS ( SELECT NULL );
-SELECT typeof( EXISTS ( SELECT a FROM t1 WHERE a IS NULL ) ),  EXISTS ( SELECT a FROM t1 WHERE a IS NULL );
-SELECT typeof( EXISTS ( SELECT a FROM t1 WHERE 0) ),  EXISTS ( SELECT a FROM t1 WHERE 0);
-SELECT typeof( EXISTS ( SELECT b FROM t1 WHERE a = 5) ),  EXISTS ( SELECT b FROM t1 WHERE a = 5);
-SELECT typeof( EXISTS ( SELECT 24 WHERE 0) ),  EXISTS ( SELECT 24 WHERE 0);
-SELECT typeof( EXISTS ( SELECT NULL WHERE 1=2) ),  EXISTS ( SELECT NULL WHERE 1=2);
-SELECT typeof( EXISTS ( SELECT * FROM t1 ) ),  EXISTS ( SELECT * FROM t1 );
-SELECT typeof( EXISTS ( SELECT *, *, * FROM t1 ) ),  EXISTS ( SELECT *, *, * FROM t1 );
-SELECT typeof( EXISTS ( SELECT 24, 25 ) ),  EXISTS ( SELECT 24, 25 );
-SELECT typeof( EXISTS ( SELECT NULL, NULL, NULL ) ),  EXISTS ( SELECT NULL, NULL, NULL );
-SELECT typeof( EXISTS ( SELECT a,b,a||b FROM t1 WHERE a IS NULL ) ),  EXISTS ( SELECT a,b,a||b FROM t1 WHERE a IS NULL );
-SELECT typeof( EXISTS ( SELECT a, a FROM t1 WHERE 0) ),  EXISTS ( SELECT a, a FROM t1 WHERE 0);
-SELECT typeof( EXISTS ( SELECT b, b, a FROM t1 WHERE a = 5) ),  EXISTS ( SELECT b, b, a FROM t1 WHERE a = 5);
-SELECT typeof( EXISTS ( SELECT 24, 46, 89 WHERE 0) ),  EXISTS ( SELECT 24, 46, 89 WHERE 0);
-SELECT typeof( EXISTS ( SELECT NULL, NULL WHERE 1=2) ),  EXISTS ( SELECT NULL, NULL WHERE 1=2);
-SELECT typeof( EXISTS (SELECT 'not null') ),  EXISTS (SELECT 'not null');
-SELECT typeof( EXISTS (SELECT NULL) ),  EXISTS (SELECT NULL);
-SELECT typeof( EXISTS (SELECT NULL FROM t1) ),  EXISTS (SELECT NULL FROM t1);
-SELECT typeof( EXISTS (SELECT 'bread' FROM t1) ),  EXISTS (SELECT 'bread' FROM t1);
-SELECT typeof( (SELECT 35)   ),  (SELECT 35);
-SELECT typeof( (SELECT NULL) ),  (SELECT NULL);
-SELECT typeof( (SELECT count(*) FROM t2) ),  (SELECT count(*) FROM t2);
-SELECT typeof( (SELECT 4 FROM t2) ),  (SELECT 4 FROM t2);
 CREATE TABLE t4(x, y);
 INSERT INTO t4 VALUES(1, 'one');
 INSERT INTO t4 VALUES(2, 'two');
 INSERT INTO t4 VALUES(3, 'three');
-SELECT typeof( ( SELECT x FROM t4 ORDER BY x )      ),  ( SELECT x FROM t4 ORDER BY x );
-SELECT typeof( ( SELECT x FROM t4 ORDER BY y )      ),  ( SELECT x FROM t4 ORDER BY y );
-SELECT typeof( ( SELECT x FROM t4 ORDER BY x DESC ) ),  ( SELECT x FROM t4 ORDER BY x DESC );
-SELECT typeof( ( SELECT x FROM t4 ORDER BY y DESC ) ),  ( SELECT x FROM t4 ORDER BY y DESC );
-SELECT typeof( ( SELECT y FROM t4 ORDER BY y DESC ) ),  ( SELECT y FROM t4 ORDER BY y DESC );
-SELECT typeof( ( SELECT sum(x) FROM t4 )           ),  ( SELECT sum(x) FROM t4 );
-SELECT typeof( ( SELECT string_agg(y,'') FROM t4 ) ),  ( SELECT string_agg(y,'') FROM t4 );
-SELECT typeof( ( SELECT max(x) FROM t4 WHERE y LIKE '___') ),  ( SELECT max(x) FROM t4 WHERE y LIKE '___');
-SELECT typeof( ( SELECT x FROM t4 WHERE x>3 ORDER BY x )      ),  ( SELECT x FROM t4 WHERE x>3 ORDER BY x );
-SELECT typeof( ( SELECT x FROM t4 WHERE y<'one' ORDER BY y )  ),  ( SELECT x FROM t4 WHERE y<'one' ORDER BY y );
-SELECT CASE WHEN NULL THEN 'true' ELSE 'false' END, iif(NULL,'true','false');
 SELECT CASE WHEN 0.0 THEN 'true' ELSE 'false' END, iif(0.0,'true','false');
-SELECT CASE WHEN 0 THEN 'true' ELSE 'false' END, iif(0,'true','false');
-SELECT CASE WHEN 'engligh' THEN 'true' ELSE 'false' END, iif('engligh','true','false');
-SELECT CASE WHEN '0' THEN 'true' ELSE 'false' END, iif('0','true','false');
-SELECT CASE WHEN 1 THEN 'true' ELSE 'false' END, iif(1,'true','false');
-SELECT CASE WHEN 1.0 THEN 'true' ELSE 'false' END, iif(1.0,'true','false');
-SELECT CASE WHEN 0.1 THEN 'true' ELSE 'false' END, iif(0.1,'true','false');
-SELECT CASE WHEN -0.1 THEN 'true' ELSE 'false' END, iif(-0.1,'true','false');
-SELECT CASE WHEN '1english' THEN 'true' ELSE 'false' END, iif('1engl','true','false');

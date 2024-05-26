@@ -1,5 +1,3 @@
-SET insert_quorum_parallel=1;
-SET insert_quorum=3;
 SELECT 'insert to two replicas works';
 SET insert_quorum=2, insert_quorum_parallel=1;
 SET insert_quorum=1, insert_quorum_parallel=1;
@@ -8,7 +6,6 @@ SET insert_quorum=2, insert_quorum_parallel=1;
 SELECT 'deduplication works';
 SET insert_quorum=1, insert_quorum_parallel=1;
 SET insert_quorum=3, insert_quorum_parallel=1;
--- work back ok when quorum=2
 SET insert_quorum=2, insert_quorum_parallel=1;
 SYSTEM STOP FETCHES r2;
 SET insert_quorum_timeout=0;

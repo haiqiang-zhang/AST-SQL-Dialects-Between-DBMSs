@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS t_sparse_s3;

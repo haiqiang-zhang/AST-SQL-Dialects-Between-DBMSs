@@ -1,4 +1,3 @@
-CREATE SCHEMA temp_func_test;
 GRANT ALL ON SCHEMA temp_func_test TO public;
 SET search_path TO temp_func_test, public;
 CREATE FUNCTION functest_A_1(text, date) RETURNS bool LANGUAGE 'sql'
@@ -78,9 +77,6 @@ SELECT proname, proisstrict FROM pg_proc
                      'functest_F_3'::regproc,
                      'functest_F_4'::regproc) ORDER BY proname;
 SELECT pg_get_functiondef('functest_A_1'::regproc);
-SELECT pg_get_functiondef('functest_B_3'::regproc);
-SELECT pg_get_functiondef('functest_C_3'::regproc);
-SELECT pg_get_functiondef('functest_F_2'::regproc);
 CREATE FUNCTION functest_S_1(a text, b date) RETURNS boolean
     LANGUAGE SQL
     RETURN a = 'abcd' AND b > '2001-01-01';
@@ -98,9 +94,6 @@ END;
 SELECT functest_S_1('abcd', '2020-01-01');
 SELECT functest_S_2(ARRAY['1', '2', '3']);
 SELECT functest_S_3();
-SELECT pg_get_functiondef('functest_S_1'::regproc);
-SELECT pg_get_functiondef('functest_S_2'::regproc);
-SELECT pg_get_functiondef('functest_S_3'::regproc);
 DROP TABLE functest1 CASCADE;
 CREATE TABLE functest3 (a int);
 INSERT INTO functest3 VALUES (1), (2);

@@ -1,4 +1,3 @@
-set precise_float_parsing = 1;
 select toFloat32OrZero('2023-01-01');
 select toFloat64OrZero('2023-01-01');
 select toFloat32OrNull('2023-01-01');

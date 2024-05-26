@@ -1,5 +1,3 @@
-alter table t1 change lfdnr lfdnr int(10) unsigned not null auto_increment;
-update t1 set status=1 where type='Open';
 select status from t1;
 drop table t1;
 CREATE TABLE t1 (

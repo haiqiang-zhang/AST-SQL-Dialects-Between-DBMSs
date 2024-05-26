@@ -1,23 +1,3 @@
-CREATE UNIQUE INDEX i1 ON t1(b, c);
-CREATE UNIQUE INDEX i2 ON t1(d COLLATE nocase);
-CREATE TABLE t2(x INTEGER PRIMARY KEY, y);
-CREATE TABLE t3(c1 PRIMARY KEY NOT NULL, c2 NOT NULL);
-CREATE INDEX i3 ON t3(c2);
-CREATE TABLE t4(a, b NOT NULL, c NOT NULL, d NOT NULL);
-CREATE UNIQUE INDEX t4i1 ON t4(b, c);
-CREATE UNIQUE INDEX t4i2 ON t4(d COLLATE nocase);
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-DROP table "t2";
-DROP table "t3";
-DROP table "t4";
-CREATE TABLE t1(a, b, c);
-CREATE INDEX i1 ON t1(a, b);
-CREATE INDEX i2 ON t1(b COLLATE nocase, c COLLATE nocase);
-INSERT INTO t1 VALUES('a', 'b', 'c');
-INSERT INTO t1 VALUES('A', 'B', 'C');
-INSERT INTO t1 VALUES('a', 'b', 'c');
-INSERT INTO t1 VALUES('A', 'B', 'C');
 SELECT DISTINCT a, b FROM t1;
 SELECT DISTINCT b, a FROM t1;
 SELECT DISTINCT a, b, c FROM t1;
@@ -117,4 +97,3 @@ CREATE  TABLE t0 AS  SELECT  DISTINCT 0xda, 'lit0', 'lit0', 'lit0', 'lit0', 'lit
 SELECT count(*) FROM t0;
 DROP TABLE IF EXISTS t2;
 CREATE  TABLE t2 AS  SELECT  DISTINCT ':memory:', 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0.0*7/0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 ORDER  BY '%J%j%w%s', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', '%J%j%w%s', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 'unixepoch', 42e-300, 'unixepoch', 'unixepoch', 'unixepoch' LIMIT 0xda;
-SELECT count(*) FROM t2;

@@ -1,5 +1,4 @@
 SELECT tupleConcat((1, 'y'), (2, 'n'));
-SELECT tupleConcat((1, 'y'), (2, 'n'), (3, 'n'));
 WITH (1,2,3) || ('a','b','c') || ('2020-10-08'::Date, '2020-11-08'::Date) AS t
 SELECT t, t.1, t.2, t.3, t.4, t.5, t.6, t.7, t.8;
 DROP TABLE IF EXISTS t_02833;

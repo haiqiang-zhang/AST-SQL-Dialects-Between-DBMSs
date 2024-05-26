@@ -1,53 +1,3 @@
-ALTER TABLE t1 PARTITION BY LIST (YEAR(dt)) (
-    PARTITION d1 VALUES IN (1991, 1994),
-    PARTITION d2 VALUES IN (1993),
-    PARTITION d3 VALUES IN (1992, 1995, 1996)
-);
-INSERT INTO t1 (dt, st, uid, id2nd, filler) VALUES
-   ('1991-07-14', 'After Partitioning Insert', 299, 1234567, 'Insert row');
-UPDATE t1 SET filler='Updating the row' WHERE uid=298;
-DROP TABLE t1;
-CREATE TABLE t1 (
-a char(2) NOT NULL,
-b char(2) NOT NULL,
-c int(10) unsigned NOT NULL,
-d varchar(255) DEFAULT NULL,
-e varchar(1000) DEFAULT NULL,
-PRIMARY KEY (a, b, c),
-KEY (a),
-KEY (a, b)
-)
-/*!50100 PARTITION BY KEY (a)
-PARTITIONS 20 */;
-INSERT INTO t1 (a, b, c, d, e) VALUES
-('07', '03', 343, '1', '07_03_343'),
-('01', '04', 343, '2', '01_04_343'),
-('01', '06', 343, '3', '01_06_343'),
-('01', '07', 343, '4', '01_07_343'),
-('01', '08', 343, '5', '01_08_343'),
-('01', '09', 343, '6', '01_09_343'),
-('03', '03', 343, '7', '03_03_343'),
-('03', '06', 343, '8', '03_06_343'),
-('03', '07', 343, '9', '03_07_343'),
-('04', '03', 343, '10', '04_03_343'),
-('04', '06', 343, '11', '04_06_343'),
-('05', '03', 343, '12', '05_03_343'),
-('11', '03', 343, '13', '11_03_343'),
-('11', '04', 343, '14', '11_04_343');
-UPDATE t1 AS A,
-(SELECT '03' AS a, '06' AS b, 343 AS c, 'last' AS d) AS B
-SET A.e = B.d  
-WHERE A.a = '03'  
-AND A.b = '06' 
-AND A.c = 343;
-DROP TABLE t1;
-CREATE TABLE t1 (a VARCHAR(51) CHARACTER SET latin1)
-PARTITION BY KEY (a) PARTITIONS 1;
-INSERT INTO t1 VALUES ('a'),('b'),('c');
-DROP TABLE t1;
-CREATE TABLE t1 (a INT NOT NULL, b INT NOT NULL)
-PARTITION BY KEY (a) PARTITIONS 2;
-INSERT INTO t1 VALUES (0,1), (0,2);
 SELECT * FROM t1;
 UPDATE t1 SET a = 1, b = 1 WHERE a = 0 AND b = 2;
 ALTER TABLE t1 ADD PRIMARY KEY (a);
@@ -169,9 +119,7 @@ DROP TABLE t0;
 CREATE TABLE t1 (
   pk INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (pk)
-)
-/*!50100 PARTITION BY HASH (pk)
-PARTITIONS 2 */;
+);
 INSERT INTO t1 VALUES (NULL);
 INSERT INTO t1 VALUES (NULL);
 INSERT INTO t1 VALUES (NULL);
@@ -254,11 +202,7 @@ INSERT INTO t1 VALUES (1,1,0), (1,1,1), (1,1,2), (1,1,53), (1,1,4), (1,1,5),
 SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 ALTER TABLE t1 DROP INDEX b;
-SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
-SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 ALTER TABLE t1 ADD INDEX b USING HASH (b);
-SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
-SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 DROP TABLE t1;
 CREATE TABLE `t1` (
   `c1` int(11) DEFAULT NULL,
@@ -280,10 +224,7 @@ CREATE TABLE `t1` (
 CREATE TABLE `t2` (
   `c1` int(11) DEFAULT NULL,
   KEY `c1` (`c1`)
-) DEFAULT CHARSET=latin1
-/*!50100 PARTITION BY RANGE (c1)
-(PARTITION a VALUES LESS THAN (100) ,
- PARTITION b VALUES LESS THAN MAXVALUE ) */;
+) DEFAULT CHARSET=latin1;
 INSERT INTO `t1` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
 INSERT INTO `t2` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20);
 SELECT c1 FROM t1 WHERE (c1 > 2 AND c1 < 5);
@@ -1031,7 +972,6 @@ INSERT INTO t1 SET number=1;
 insert into t2 select * from t1;
 SELECT SLEEP(1);
 UPDATE t1 SET number=6;
-select count(*) from t1, t2 where t1.createdDate = t2.createdDate;
 drop table t1, t2;
 CREATE TABLE t1 (c1 INT)
        PARTITION BY LIST(1 DIV c1) (
@@ -1080,7 +1020,6 @@ insert into t1 select s1 from t1;
 insert into t1 select s1 from t1;
 insert into t1 select s1 from t1 order by s1 desc;
 insert into t1 select s1 from t1 where s1=3;
-select count(*) from t1;
 drop table t1;
 CREATE TABLE t1 (a int) PARTITION BY RANGE (a)
   (PARTITION p0 VALUES LESS THAN (100),
@@ -1121,7 +1060,6 @@ SELECT b, c FROM t1 WHERE b = 1 GROUP BY b, c;
 DROP TABLE t1;
 CREATE TABLE t1(id INT,KEY(id))
   PARTITION BY HASH(id) PARTITIONS 2;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t1 (s1 INT PRIMARY KEY) PARTITION BY HASH(s1);
@@ -1236,7 +1174,6 @@ CREATE TABLE t1 (c1 INT NOT NULL, c2 INT)
             SUBPARTITION p31,
             SUBPARTITION p32,
             SUBPARTITION p33));
-SELECT MBRTOUCHES(a.c1, b.c2) FROM t1 AS a JOIN t1 AS b;
 ALTER TABLE t1 CONVERT TO CHARACTER SET latin1;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);

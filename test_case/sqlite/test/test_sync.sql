@@ -1,5 +1,3 @@
-PRAGMA fullfsync=OFF;
-CREATE TABLE t1(a,b);
 ATTACH DATABASE 'test2.db' AS db2;
 PRAGMA main.synchronous=on;
 PRAGMA db2.synchronous=on;

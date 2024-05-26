@@ -6,36 +6,16 @@ select count(*) from t1_30237_bool
   where ((A OR B) OR C) != (A OR (B OR C));
 select A, B, C, (A XOR B) XOR C, A XOR (B XOR C), A XOR B XOR C
   from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where ((A XOR B) XOR C) != (A XOR (B XOR C));
 select A, B, C, (A AND B) AND C, A AND (B AND C), A AND B AND C
   from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where ((A AND B) AND C) != (A AND (B AND C));
 select A, B, C, (A OR B) AND C, A OR (B AND C), A OR B AND C
   from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where (A OR (B AND C)) != (A OR B AND C);
 select A, B, C, (A AND B) OR C, A AND (B OR C), A AND B OR C
   from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where ((A AND B) OR C) != (A AND B OR C);
-select A, B, C, (A XOR B) AND C, A XOR (B AND C), A XOR B AND C
-  from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where (A XOR (B AND C)) != (A XOR B AND C);
 select A, B, C, (A AND B) XOR C, A AND (B XOR C), A AND B XOR C
   from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where ((A AND B) XOR C) != (A AND B XOR C);
-select A, B, C, (A XOR B) OR C, A XOR (B OR C), A XOR B OR C
-  from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where ((A XOR B) OR C) != (A XOR B OR C);
 select A, B, C, (A OR B) XOR C, A OR (B XOR C), A OR B XOR C
   from t1_30237_bool order by A, B, C;
-select count(*) from t1_30237_bool
-  where (A OR (B XOR C)) != (A OR B XOR C);
 drop table t1_30237_bool;
 select (NOT FALSE) OR TRUE, NOT (FALSE OR TRUE), NOT FALSE OR TRUE;
 select (NOT FALSE) XOR FALSE, NOT (FALSE XOR FALSE), NOT FALSE XOR FALSE;

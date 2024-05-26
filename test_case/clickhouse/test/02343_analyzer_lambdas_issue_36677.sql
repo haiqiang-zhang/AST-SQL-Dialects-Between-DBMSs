@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer = 1;
 SELECT
     arraySum(x -> ((x.1) / ((x.2) * (x.2))), arrayZip(mag, magerr)) / arraySum(x -> (1. / (x * x)), magerr) AS weightedmeanmag,
     arraySum(x -> ((((x.1) - weightedmeanmag) * ((x.1) - weightedmeanmag)) / ((x.2) * (x.2))), arrayZip(mag, magerr)) AS chi2,

@@ -1,4 +1,3 @@
-SET optimize_move_to_prewhere=1;
 SELECT * FROM (EXPLAIN actions=1 SELECT * FROM t_02809 WHERE a IN (SELECT * FROM system.one)) WHERE explain LIKE '%Prewhere filter';
 SELECT * FROM (EXPLAIN actions=1 SELECT * FROM t_02809 WHERE a IN (1,2,3)) WHERE explain LIKE '%Prewhere filter';
 SELECT * FROM (EXPLAIN actions=1 SELECT * FROM t_02809 WHERE a IN t_02809_set) WHERE explain LIKE '%Prewhere filter';

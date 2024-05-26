@@ -1,4 +1,3 @@
-PRAGMA journal_mode = WAL;
 SELECT * FROM t1;
 PRAGMA locking_mode = exclusive;
 PRAGMA journal_mode = WAL;

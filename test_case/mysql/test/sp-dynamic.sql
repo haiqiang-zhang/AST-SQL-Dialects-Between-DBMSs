@@ -1,3 +1,4 @@
+prepare stmt from "create table t1 (a int)";
 prepare stmt_alter from "alter table t1 add (b int)";
 deallocate prepare stmt_alter;
 deallocate prepare stmt;

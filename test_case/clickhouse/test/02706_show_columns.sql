@@ -33,7 +33,6 @@ SHOW COLUMNS FROM `'` FROM `'`;
 SHOW COLUMNS FROM `'`.`'`;
 DROP TABLE `'`.`'`;
 DROP DATABASE `'`;
--- we notice if something is buggy in the implementation of SHOW COLUMNS.
 DROP DATABASE IF EXISTS database_123456789abcde;
 CREATE DATABASE database_123456789abcde;
 DROP TABLE IF EXISTS database_123456789abcde.tab;

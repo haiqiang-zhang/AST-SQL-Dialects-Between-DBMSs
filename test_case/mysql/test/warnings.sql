@@ -1,13 +1,3 @@
-insert ignore into t1 values ("hej");
-insert ignore into t1 values ("hej"),("dÃÂÃÂ¥");
-insert ignore into t1 values ("hej");
-insert ignore into t1 values ("hej"),("dÃÂÃÂ¥");
-drop table t1;
-drop temporary table if exists not_exists;
-drop table if exists not_exists_table;
-drop database if exists not_exists_db;
-create table t1(id int);
-create table if not exists t1(id int);
 select @@warning_count;
 drop table t1;
 create table t1(a tinyint, b int not null, c date, d char(5));

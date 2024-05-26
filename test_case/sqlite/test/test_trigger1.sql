@@ -1,9 +1,3 @@
-BEGIN;
-DROP TRIGGER IF EXISTS tr1;
-BEGIN;
-DROP TRIGGER IF EXISTS biggles;
-DROP TABLE t1;
-CREATE TEMP TABLE temp_table(a);
 SELECT count(*) FROM sqlite_master WHERE name = 'temp_trig';
 create table t1(a,b);
 insert into t1 values(1,'a');

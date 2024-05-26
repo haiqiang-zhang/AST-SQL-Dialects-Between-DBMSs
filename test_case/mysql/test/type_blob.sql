@@ -54,9 +54,6 @@ select c from t1 group by c;
 select d from t1 group by d;
 select distinct * from t1;
 select t,count(*) from t1 group by t;
-select b,count(*) from t1 group by b;
-select c,count(*) from t1 group by c;
-select d,count(*) from t1 group by d;
 drop table t1;
 CREATE TABLE t1 (
   t1_id bigint(21) NOT NULL auto_increment,
@@ -144,7 +141,6 @@ CREATE TABLE t1 (
     );
 INSERT INTO t1 VALUES (0,'traktor','1111111111111');
 INSERT INTO t1 VALUES (1,'traktor','1111111111111111111111111');
-select count(*) from t1 where f2='traktor';
 drop table t1;
 create table t1 (foobar tinyblob not null, boggle smallint not null, key (foobar(32), boggle));
 insert into t1 values ('fish', 10),('bear', 20);
@@ -211,14 +207,8 @@ insert into t1 values ('b'),('a\0'),('a'),('a '),('aa'),(NULL);
 select hex(a) from t1 order by a;
 select hex(concat(a,'\0')) as b from t1 order by concat(a,'\0');
 alter table t1 modify a varbinary(5);
-select hex(a) from t1 order by a;
-select hex(concat(a,'\0')) as b from t1 order by concat(a,'\0');
 alter table t1 modify a char(5);
-select hex(a) from t1 order by a;
-select hex(concat(a,'\0')) as b from t1 order by concat(a,'\0');
 alter table t1 modify a binary(5);
-select hex(a) from t1 order by a;
-select hex(concat(a,'\0')) as b from t1 order by concat(a,'\0');
 drop table t1;
 CREATE TABLE t (c TEXT CHARSET ASCII);
 INSERT INTO t (c) VALUES (REPEAT('3',65535));
@@ -250,7 +240,6 @@ CREATE TABLE t2(id INT NOT NULL, c TEXT NOT NULL);
 INSERT INTO t1 VALUES (1);
 INSERT INTO t2 VALUES (1, '');
 SELECT LENGTH(c) FROM t2;
-SELECT LENGTH(c) FROM t2;
 DROP TABLE t1, t2;
 CREATE TABLE t1(a CHAR(1));
 INSERT INTO t1 VALUES ('0'), ('0');
@@ -270,8 +259,6 @@ VALUES(2,ST_GeomFromText('POINT(20 20)'),
        ST_GeomFromText('POLYGON((40 50,40 70,50 100,70 100,80 80,70 50,40 50))'));
 SELECT c1,ST_Astext(c4) FROM tab WHERE
   c4=ST_GeomFromText('POLYGON((30 30,40 40,50 50,30 50,30 40,30 30))');
-select count(*) from tab;
-select count(distinct c2) from tab;
 drop table tab;
 select @g1 < @g2;
 select @g1 = @g2;
@@ -281,7 +268,6 @@ select @g1=ST_GeomFromText('POLYGON((30 30,40 40,50 50,30 50,30 40,30 30))');
 select @g1 = ST_GeomFromText('POLYGON((30 30,40 40,50 50,30 50,30 40,30 30))');
 select @g1 != ST_GeomFromText('POLYGON((30 30,40 40,50 50,30 50,30 40,30 30))');
 select crc32(ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)'));
-select hex(ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)'));
 select @g1=@g2;
 select @g1 < @g2;
 select @g1 = @g2;

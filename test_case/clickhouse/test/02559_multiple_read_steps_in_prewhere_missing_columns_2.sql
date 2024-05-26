@@ -1,4 +1,3 @@
-SET enable_multiple_prewhere_read_steps=1, move_all_conditions_to_prewhere=1;
 SELECT * FROM t_02559
 WHERE (key < 5 OR key > 500)
     AND NOT has(value, toString(key))

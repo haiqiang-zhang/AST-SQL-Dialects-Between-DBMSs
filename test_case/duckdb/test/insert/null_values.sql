@@ -1,0 +1,3 @@
+SELECT COUNT(i), SUM(i), MIN(i), MAX(i), COUNT(*) FROM integers;
+SELECT COUNT(i), SUM(i), MIN(i), MAX(i), COUNT(*) FROM integers;
+SELECT SUM(CASE WHEN i IS NULL THEN 1 ELSE 0 END) FROM integers;

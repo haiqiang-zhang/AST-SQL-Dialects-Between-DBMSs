@@ -1,0 +1,18 @@
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=4;
+SELECT i FROM integers WHERE i=4;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=4;
+SELECT i FROM integers WHERE i=4;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers WHERE i=1;
+SELECT i FROM integers ORDER BY i;
+SELECT i FROM integers ORDER BY i;

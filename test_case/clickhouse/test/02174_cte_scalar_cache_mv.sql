@@ -1,28 +1,3 @@
-CREATE MATERIALIZED VIEW mv1 TO t2 AS
-    WITH
-    (SELECT max(i) FROM t1) AS t1
-    SELECT
-           t1 as k, -- Using local cache x 4
-           t1 as l,
-           t1 as m,
-           t1 as n
-    FROM t1
-    LIMIT 5;
-set allow_experimental_analyzer = 0;
-INSERT INTO t1
-WITH
-    (SELECT max(i) FROM t1) AS t1
-SELECT
-       number as i,
-       t1 + t1 + t1 AS j -- Using global cache
-FROM system.numbers
-LIMIT 100
-SETTINGS
-    min_insert_block_size_rows=5,
-    max_insert_block_size=5,
-    min_insert_block_size_rows_for_materialized_views=5,
-    max_block_size=5,
-    max_threads=1;
 SELECT k, l, m, n, count()
 FROM t2
 GROUP BY k, l, m, n
@@ -44,10 +19,6 @@ SETTINGS
     min_insert_block_size_rows_for_materialized_views=5,
     max_block_size=5,
     max_threads=1;
-SELECT k, l, m, n, count()
-FROM t2
-GROUP BY k, l, m, n
-ORDER BY k, l, m, n;
 SYSTEM FLUSH LOGS;
 DROP TABLE mv1;
 set allow_experimental_analyzer = 0;

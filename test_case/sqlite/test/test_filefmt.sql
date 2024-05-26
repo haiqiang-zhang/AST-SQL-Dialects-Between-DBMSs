@@ -1,8 +1,4 @@
 SELECT count(*) FROM sqlite_master;
-SELECT count(*) FROM sqlite_master;
-SELECT count(*) FROM sqlite_master;
-SELECT count(*) FROM sqlite_master;
-SELECT count(*) FROM sqlite_master;
 PRAGMA page_size = 1024;
 PRAGMA auto_vacuum = 0;
 CREATE TABLE t1(a);

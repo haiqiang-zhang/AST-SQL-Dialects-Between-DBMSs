@@ -1,6 +1,3 @@
-create view test as
-      select test1.id as id,a as a,b as b
-      from test1 join test2 on test2.id =  test1.id;
 select * from test1;
 select * from test2;
 select * from test1;
@@ -28,6 +25,5 @@ insert into tbl select a+64, b+64 from tbl;
 select count(*) from vw;
 select a, b from vw where a<103 or a>226 order by a;
 select * from vw;
-select count(*) from vw;
 select a, b from vw where a<=102 or a>=227 order by a;
 PRAGMA integrity_check;

@@ -1,4 +1,3 @@
-CREATE VIEW v1 AS SELECT f1 from a;
 SELECT col_varchar_key FROM t1
 WHERE ( col_varchar_key, col_varchar_key ) NOT IN (
   SELECT alias1.col_varchar_key, alias1.col_varchar_key

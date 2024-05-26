@@ -1,14 +1,3 @@
-CREATE SCHEMA lock_schema1;
-SET search_path = lock_schema1;
-CREATE TABLE lock_tbl1 (a BIGINT);
-CREATE TABLE lock_tbl1a (a BIGINT);
-CREATE VIEW lock_view1 AS SELECT * FROM lock_tbl1;
-CREATE VIEW lock_view2(a,b) AS SELECT * FROM lock_tbl1, lock_tbl1a;
-CREATE VIEW lock_view3 AS SELECT * from lock_view2;
-CREATE VIEW lock_view4 AS SELECT (select a from lock_tbl1a limit 1) from lock_tbl1;
-CREATE VIEW lock_view5 AS SELECT * from lock_tbl1 where a in (select * from lock_tbl1a);
-CREATE VIEW lock_view6 AS SELECT * from (select * from lock_tbl1) sub;
-BEGIN TRANSACTION;
 LOCK TABLE lock_tbl1 IN ACCESS SHARE MODE;
 LOCK lock_tbl1 IN ROW SHARE MODE;
 LOCK TABLE lock_tbl1 IN ROW EXCLUSIVE MODE;

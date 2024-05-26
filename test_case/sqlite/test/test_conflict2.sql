@@ -594,7 +594,6 @@ PRAGMA count_changes=on;
 SELECT b FROM t1 WHERE a=1000;
 SELECT count(*) FROM t1;
 PRAGMA count_changes=on;
-SELECT count(*) FROM t1;
 PRAGMA integrity_check;
 PRAGMA count_changes=0;
 CREATE TABLE t2(
@@ -661,16 +660,14 @@ CREATE UNIQUE INDEX t4x ON t4(x);
 BEGIN;
 INSERT OR ROLLBACK INTO t4 VALUES(1);
 SELECT * FROM t4;
--- Create a database object (pages 2, 3 of the file)
-    BEGIN;
+BEGIN;
 CREATE TABLE abc(a PRIMARY KEY, b, c) WITHOUT rowid;
 INSERT INTO abc VALUES(1, 2, 3);
 INSERT INTO abc VALUES(4, 5, 6);
 INSERT INTO abc VALUES(7, 8, 9);
 PRAGMA cache_size = 10;
 BEGIN;
--- Make sure the pager is in EXCLUSIVE state.
-      CREATE TABLE def(d, e, f);
+CREATE TABLE def(d, e, f);
 INSERT INTO def VALUES
           ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
 INSERT INTO def SELECT * FROM def;
@@ -684,8 +681,7 @@ DELETE FROM abc WHERE a = 4;
 SELECT * FROM abc;
 PRAGMA integrity_check;
 BEGIN;
--- Make sure the pager is in EXCLUSIVE state.
-      UPDATE abc SET a=a+1;
+UPDATE abc SET a=a+1;
 INSERT INTO def VALUES
           ('xxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyy', 'zzzzzzzzzzzzzzzz');
 INSERT INTO def SELECT * FROM def;
@@ -743,7 +739,6 @@ CREATE TABLE t1(
   ) WITHOUT ROWID;
 INSERT INTO t1 VALUES('alpha','beta',1);
 CREATE UNIQUE INDEX t1xy ON t1(x,y);
-REPLACE INTO t1(x,y,z) VALUES('alpha','gamma',1);
 PRAGMA integrity_check;
 SELECT x,y FROM t1 INDEXED BY t1xy;
 SELECT x,y,z FROM t1 NOT INDEXED;

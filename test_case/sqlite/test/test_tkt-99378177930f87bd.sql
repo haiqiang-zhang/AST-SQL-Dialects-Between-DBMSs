@@ -1,4 +1,3 @@
-CREATE INDEX t1x ON t1(d, a, b->>'x', c);
 SELECT a,
          SUM(1)                              AS t1,
          SUM(CASE WHEN b->>'x'=1 THEN 1 END) AS t2,
@@ -99,4 +98,3 @@ CREATE INDEX t1x ON t1(x > 0);
 CREATE VIEW t2(y) AS SELECT avg(w) FROM t0 GROUP BY w>1;
 CREATE VIEW t3(z) AS SELECT count(*) FROM t2 WHERE y BETWEEN 0 and 0;
 SELECT count(*) FROM t1 NOT INDEXED WHERE (SELECT z FROM t3);
-SELECT count(*) FROM t1 INDEXED BY t1x WHERE (SELECT z FROM t3);

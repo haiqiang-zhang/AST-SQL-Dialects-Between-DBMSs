@@ -1,4 +1,3 @@
-alter table t1 drop column at;
 select * from t1;
 insert into t1 values (2, 1);
 select * from t1;
@@ -26,10 +25,8 @@ CREATE TABLE t1 (id INTEGER) ENGINE=MyISAM;
 CREATE TABLE t2 (id INTEGER) ENGINE=MyISAM;
 INSERT INTO t2 VALUES (1),(2);
 SELECT GET_LOCK('B26162',120);
-SELECT 'rl_acquirer', GET_LOCK('B26162',120), id FROM t2 WHERE id = 1;
 INSERT INTO t1 VALUES (5);
 SELECT 'rl_contender', id FROM t2 WHERE id > 1;
-SELECT RELEASE_LOCK('B26162');
 SELECT RELEASE_LOCK('B26162');
 DROP TABLE t1,t2;
 CREATE TABLE t1 (id INT NOT NULL) ENGINE=MyISAM;

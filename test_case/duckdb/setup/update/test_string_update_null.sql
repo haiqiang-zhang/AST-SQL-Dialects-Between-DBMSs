@@ -1,0 +1,7 @@
+SET default_null_order='nulls_first';
+SET immediate_transaction_mode=true;
+CREATE TABLE test (a VARCHAR);
+INSERT INTO test VALUES ('hello'), ('world');
+BEGIN TRANSACTION;
+UPDATE test SET a=NULL where a='world';
+COMMIT;

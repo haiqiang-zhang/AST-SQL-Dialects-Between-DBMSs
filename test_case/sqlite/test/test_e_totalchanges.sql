@@ -1,11 +1,3 @@
-CREATE INDEX t1_b ON t1(b);
-CREATE TABLE t2(x, y, PRIMARY KEY(x, y)) WITHOUT ROWID;
-CREATE INDEX t2_y ON t2(y);
-INSERT INTO t1 VALUES(1, 2);
-INSERT INTO t1 VALUES(3, 4);
-UPDATE t1 SET a = a+1;
-DELETE FROM t1;
-DELETE FROM t1;
 WITH data(a,b) AS (
       SELECT 0, 0 UNION ALL SELECT a+1, b+1 FROM data WHERE a<99
   )
@@ -19,11 +11,8 @@ CREATE TABLE log(detail);
 INSERT INTO log VALUES('here we go!');
 DELETE FROM log;
 INSERT INTO t1 VALUES('a', 'b');
--- 1 + 1
-  UPDATE t1 SET b='c';
--- 1 + 1 + 2
-  DELETE FROM t1;
--- 1 + 1 + 1;
+UPDATE t1 SET b='c';
+DELETE FROM t1;
 INSERT INTO t1 VALUES(1, 2), (3, 4);
 INSERT INTO t2 VALUES(1, 2), (3, 4);
 SELECT count(*) FROM t1;

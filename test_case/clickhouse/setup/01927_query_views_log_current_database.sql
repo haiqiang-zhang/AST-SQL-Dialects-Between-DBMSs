@@ -1,0 +1,16 @@
+SET log_queries=0;
+SET log_query_threads=0;
+CREATE TABLE table_a (a String, b Int64) ENGINE = MergeTree ORDER BY b;
+CREATE TABLE table_b (a Float64,  b Int64) ENGINE = MergeTree ORDER BY tuple();
+CREATE TABLE table_c (a Float64) ENGINE = MergeTree ORDER BY a;
+CREATE TABLE table_d (a Float64, count Int64) ENGINE MergeTree ORDER BY a;
+CREATE TABLE table_e (a Float64, count Int64) ENGINE MergeTree ORDER BY a;
+CREATE TABLE table_f (a Float64, count Int64) ENGINE MergeTree ORDER BY a;
+CREATE MATERIALIZED VIEW matview_a_to_b TO table_b AS SELECT toFloat64(a) AS a, b + sleepEachRow(0.000001) AS count FROM table_a;
+CREATE MATERIALIZED VIEW matview_b_to_c TO table_c AS SELECT SUM(a + sleepEachRow(0.000002)) as a FROM table_b;
+CREATE MATERIALIZED VIEW matview_join_d_e TO table_f AS SELECT table_d.a as a, table_e.count + sleepEachRow(0.000003) as count FROM table_d LEFT JOIN table_e ON table_d.a = table_e.a;
+SET log_query_views=1;
+SET log_queries_min_type='QUERY_FINISH';
+SET log_queries=1;
+INSERT INTO table_a SELECT '111', * FROM numbers(100);
+INSERT INTO table_d SELECT 0.5, * FROM numbers(50);

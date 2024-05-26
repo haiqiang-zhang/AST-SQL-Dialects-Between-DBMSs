@@ -70,7 +70,6 @@ SELECT COUNT(*) = 0 FROM information_schema.processlist
           info LIKE 'DROP TABLESPACE%';
 CREATE TABLESPACE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ADD DATAFILE 'x.ibd';
 DROP TABLESPACE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
-CREATE TABLESPACE `aÃÂ°ÃÂÃÂÃÂ` ADD DATAFILE 'x.ibd';
 LOCK TABLE t1 READ;
 UNLOCK TABLES;
 UNLOCK TABLES;

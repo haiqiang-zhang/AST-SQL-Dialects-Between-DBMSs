@@ -76,7 +76,6 @@ CREATE TABLE t2(a PRIMARY KEY, b);
 INSERT INTO t2 VALUES('abc', 'xxx');
 INSERT INTO t2 VALUES('def', 'yyy');
 SELECT a, max(b || a) FROM t2 WHERE (b||b||b)!='value' GROUP BY a;
-SELECT b, max(a || b) FROM t2 WHERE (b||b||b)!='value' GROUP BY a;
 create table t_distinct_bug (a, b, c);
 insert into t_distinct_bug values ('1', '1', 'a');
 insert into t_distinct_bug values ('1', '2', 'b');

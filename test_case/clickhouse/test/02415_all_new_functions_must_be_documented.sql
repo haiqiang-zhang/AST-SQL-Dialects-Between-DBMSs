@@ -1,4 +1,3 @@
--- Please help shorten this list down to zero elements.
 SELECT name FROM system.functions WHERE NOT is_aggregate AND origin = 'System' AND alias_to = '' AND length(description) < 10
 AND name NOT IN (
     'aes_decrypt_mysql', 'aes_encrypt_mysql', 'decrypt', 'encrypt',

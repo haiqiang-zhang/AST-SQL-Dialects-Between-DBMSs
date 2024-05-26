@@ -1,0 +1,9 @@
+PREPARE s1 AS UPDATE integers SET i=?, j=?;
+EXECUTE s1(2, 'world');
+PREPARE s2 AS UPDATE integers SET j=? WHERE i=?;
+EXECUTE s2('test', 2);
+PREPARE s3 AS UPDATE integers SET j=? WHERE i=? AND j=?;
+EXECUTE s3('test2', 2, 'test');
+SELECT * FROM integers;
+SELECT * FROM integers;
+SELECT * FROM integers;

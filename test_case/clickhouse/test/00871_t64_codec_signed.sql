@@ -35,7 +35,6 @@ SELECT * FROM t64 WHERE i8 != t_i8;
 SELECT * FROM t64 WHERE i16 != t_i16;
 SELECT * FROM t64 WHERE i32 != t_i32;
 SELECT * FROM t64 WHERE i64 != t_i64;
-INSERT INTO t64 SELECT (intExp2(32) - 2 + number) AS x, x, x, x, x, x, x, x FROM numbers(2);
 INSERT INTO t64 SELECT (intExp2(32) - 2 + number) AS x, x, x, x, x, x, x, x FROM numbers(3);
 INSERT INTO t64 SELECT (intExp2(32) - 64 + number) AS x, x, x, x, x, x, x, x FROM numbers(64);
 INSERT INTO t64 SELECT (intExp2(32) - 64 + number) AS x, x, x, x, x, x, x, x FROM numbers(65);

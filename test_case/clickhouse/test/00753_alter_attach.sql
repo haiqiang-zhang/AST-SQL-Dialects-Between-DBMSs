@@ -1,7 +1,3 @@
-ALTER TABLE alter_attach DETACH PARTITION 1;
-ALTER TABLE alter_attach ADD COLUMN s String;
-INSERT INTO alter_attach VALUES (4, 2, 'Hello'), (5, 2, 'World');
-ALTER TABLE alter_attach ATTACH PARTITION 1;
 SELECT * FROM alter_attach ORDER BY x;
 ALTER TABLE alter_attach DETACH PARTITION 2;
 ALTER TABLE alter_attach DROP COLUMN s;

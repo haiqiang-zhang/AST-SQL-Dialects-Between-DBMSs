@@ -1,11 +1,4 @@
 SELECT number FROM numbers(10) LIMIT 0 + 1;
-SELECT number FROM numbers(10) LIMIT 1 - 1;
-SELECT number FROM numbers(10) LIMIT 2 - 1;
-SELECT number FROM numbers(10) LIMIT 1.0;
 SELECT number FROM numbers(10) LIMIT toUInt8('1');
 SELECT number FROM numbers(10) LIMIT toFloat32('1');
 SELECT count() <= 1 FROM (SELECT number FROM numbers(10) LIMIT randConstant() % 2);
-SELECT number FROM numbers(10) LIMIT 0 + 1 BY number;
-SELECT number FROM numbers(10) LIMIT 0 BY number;
-SELECT TOP 5 * FROM numbers(10);
-SELECT number from numbers(10) order by number limit (select sum(number), count() from numbers(3)).1;

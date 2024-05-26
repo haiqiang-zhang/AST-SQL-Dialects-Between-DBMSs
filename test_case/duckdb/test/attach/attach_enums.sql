@@ -1,0 +1,11 @@
+ATTACH '__TEST_DIR__/attach_enums.db' AS db1;
+DROP TYPE db1.mood;
+DROP TYPE IF EXISTS db1.main.mood;
+CREATE TYPE db1.mood AS ENUM ('sad', 'ok', 'happy');
+INSERT INTO db1.person VALUES ('Moe', 'happy');
+DETACH db1;
+ATTACH '__TEST_DIR__/attach_enums.db' AS db1 (READ_ONLY);
+ATTACH '__TEST_DIR__/attach_enums_2.db' AS db2;
+INSERT INTO db2.person VALUES ('Moe', 'kkcry');
+SELECT enum_range(NULL::db1.mood) AS my_enum_range;
+SELECT enum_range(NULL::db1.main.mood) AS my_enum_range;

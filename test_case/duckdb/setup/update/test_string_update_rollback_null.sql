@@ -1,0 +1,10 @@
+SET default_null_order='nulls_first';
+CREATE TABLE test (a VARCHAR);
+INSERT INTO test VALUES ('test'), ('world');
+BEGIN TRANSACTION;
+UPDATE test SET a=NULL WHERE a='world';
+ROLLBACK;
+UPDATE test SET a=NULL WHERE a='world';
+BEGIN TRANSACTION;
+UPDATE test SET a='world' WHERE a IS NULL;
+ROLLBACK;

@@ -1,0 +1,3 @@
+SELECT i FROM tbl ORDER BY id;
+SELECT i FROM tbl WHERE id%2=1 ORDER BY id;
+SELECT host(i) FROM tbl WHERE id%2=1 ORDER BY id;

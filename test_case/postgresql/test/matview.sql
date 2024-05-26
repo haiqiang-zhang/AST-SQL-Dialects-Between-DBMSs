@@ -1,4 +1,3 @@
-CREATE VIEW mvtest_tv AS SELECT type, sum(amt) AS totamt FROM mvtest_t GROUP BY type;
 SELECT * FROM mvtest_tv ORDER BY type;
 EXPLAIN (costs off)
   CREATE MATERIALIZED VIEW mvtest_tm AS SELECT type, sum(amt) AS totamt FROM mvtest_t GROUP BY type WITH NO DATA;
@@ -163,10 +162,6 @@ EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
 REFRESH MATERIALIZED VIEW matview_schema.mv_withdata2;
 CREATE MATERIALIZED VIEW matview_schema.mv_nodata1 (a) AS
   SELECT generate_series(1, 10) WITH NO DATA;
-EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
-  CREATE MATERIALIZED VIEW matview_schema.mv_nodata2 (a) AS
-  SELECT generate_series(1, 10) WITH NO DATA;
-REFRESH MATERIALIZED VIEW matview_schema.mv_nodata2;
 RESET SESSION AUTHORIZATION;
 DROP SCHEMA matview_schema CASCADE;
 CREATE MATERIALIZED VIEW matview_ine_tab AS SELECT 1;

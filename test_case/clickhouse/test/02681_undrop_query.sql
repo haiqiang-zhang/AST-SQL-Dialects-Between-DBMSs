@@ -1,4 +1,3 @@
-set database_atomic_wait_for_drop_and_detach_synchronously = 0;
 select 'test MergeTree undrop';
 drop table if exists 02681_undrop_mergetree sync;
 create table 02681_undrop_mergetree (id Int32) Engine=MergeTree() order by id;

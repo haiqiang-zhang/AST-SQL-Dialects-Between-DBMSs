@@ -1,5 +1,3 @@
-CREATE INDEX t1b ON t1(b);
-CREATE INDEX t2d ON t2(d);
 ANALYZE sqlite_master;
 INSERT INTO sqlite_stat1 VALUES('t1','t1b','10000 500');
 INSERT INTO sqlite_stat1 VALUES('t2','t2d','10000 500');

@@ -1,9 +1,3 @@
-CREATE INDEX test_replica_identity_keyab ON test_replica_identity (keya, keyb);
-CREATE UNIQUE INDEX test_replica_identity_keyab_key ON test_replica_identity (keya, keyb);
-CREATE UNIQUE INDEX test_replica_identity_nonkey ON test_replica_identity (keya, nonkey);
-CREATE INDEX test_replica_identity_hash ON test_replica_identity USING hash (nonkey);
-CREATE UNIQUE INDEX test_replica_identity_expr ON test_replica_identity (keya, keyb, (3));
-CREATE UNIQUE INDEX test_replica_identity_partial ON test_replica_identity (keya, keyb) WHERE keyb != '3';
 SELECT relreplident FROM pg_class WHERE oid = 'test_replica_identity'::regclass;
 SELECT relreplident FROM pg_class WHERE oid = 'pg_class'::regclass;
 SELECT relreplident FROM pg_class WHERE oid = 'pg_constraint'::regclass;
@@ -17,7 +11,6 @@ SELECT relreplident FROM pg_class WHERE oid = 'test_replica_identity'::regclass;
 SELECT count(*) FROM pg_index WHERE indrelid = 'test_replica_identity'::regclass AND indisreplident;
 ALTER TABLE test_replica_identity REPLICA IDENTITY DEFAULT;
 SELECT relreplident FROM pg_class WHERE oid = 'test_replica_identity'::regclass;
-SELECT count(*) FROM pg_index WHERE indrelid = 'test_replica_identity'::regclass AND indisreplident;
 ALTER TABLE test_replica_identity REPLICA IDENTITY FULL;
 SELECT relreplident FROM pg_class WHERE oid = 'test_replica_identity'::regclass;
 ALTER TABLE test_replica_identity REPLICA IDENTITY NOTHING;

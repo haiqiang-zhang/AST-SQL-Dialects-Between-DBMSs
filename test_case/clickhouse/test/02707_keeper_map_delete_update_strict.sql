@@ -1,4 +1,3 @@
-SET keeper_map_strict_mode = 1;
 SELECT '-----------';
 SELECT '-----------';
 SELECT '-----------';

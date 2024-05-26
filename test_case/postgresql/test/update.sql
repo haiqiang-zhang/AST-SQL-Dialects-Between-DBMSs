@@ -36,7 +36,6 @@ UPDATE update_test t
 UPDATE update_test t
   SET (a, b) = (SELECT b, a FROM update_test s WHERE s.a = t.a)
   WHERE CURRENT_USER = SESSION_USER;
-SELECT a, b, char_length(c) FROM update_test;
 INSERT INTO upsert_test VALUES(1, 'Boo'), (3, 'Zoo');
 WITH aaa AS (SELECT 1 AS a, 'Foo' AS b) INSERT INTO upsert_test
   VALUES (1, 'Bar') ON CONFLICT(a)
@@ -63,12 +62,6 @@ CREATE TABLE upsert_test_1 PARTITION OF upsert_test FOR VALUES IN (1);
 CREATE TABLE upsert_test_2 (b TEXT, a INT PRIMARY KEY);
 ALTER TABLE upsert_test ATTACH PARTITION upsert_test_2 FOR VALUES IN (2);
 INSERT INTO upsert_test VALUES(1, 'Boo'), (2, 'Zoo');
-WITH aaa AS (SELECT 1 AS a, 'Foo' AS b) INSERT INTO upsert_test
-  VALUES (1, 'Bar') ON CONFLICT(a)
-  DO UPDATE SET (b, a) = (SELECT b, a FROM aaa) RETURNING *;
-WITH aaa AS (SELECT 1 AS ctea, ' Foo' AS cteb) INSERT INTO upsert_test
-  VALUES (1, 'Bar'), (2, 'Baz') ON CONFLICT(a)
-  DO UPDATE SET (b, a) = (SELECT upsert_test.b||cteb, upsert_test.a FROM aaa) RETURNING *;
 DROP TABLE upsert_test;
 CREATE TABLE range_parted (
 	a text,

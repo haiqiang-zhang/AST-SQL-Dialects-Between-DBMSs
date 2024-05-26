@@ -1,0 +1,1 @@
+SELECT _id FROM (SELECT *, fts_main_data.match_bm25(_id, 'duck') AS score FROM data) sq WHERE score IS NOT NULL ORDER BY score DESC;

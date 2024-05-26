@@ -1,13 +1,7 @@
 SELECT COLUMNS('product.*') from ColumnsClauseTest ORDER BY product_price;
 DROP TABLE ColumnsClauseTest;
 SELECT number, COLUMNS('') FROM numbers(2);
-SELECT number, COLUMNS('ber') FROM numbers(2);
-SELECT number, COLUMNS('x') FROM numbers(2);
-SELECT COLUMNS('') FROM numbers(2);
 SELECT * FROM numbers(2) WHERE NOT ignore();
-SELECT * FROM numbers(2) WHERE NOT ignore(*);
-SELECT * FROM numbers(2) WHERE NOT ignore(COLUMNS('.+'));
-SELECT * FROM numbers(2) WHERE NOT ignore(COLUMNS('x'));
 SELECT COLUMNS('n') + COLUMNS('u') FROM system.numbers LIMIT 2;
 SELECT COLUMNS('a') + COLUMNS('b') FROM (SELECT 1 AS a, 2 AS b);
 SELECT COLUMNS('a') + COLUMNS('a') FROM (SELECT 1 AS a, 2 AS b);

@@ -1,8 +1,4 @@
 SELECT t2.userid, MIN(t1.score) FROM t1, t2 WHERE t1.userID=t2.userID GROUP BY t2.userid;
-SELECT t2.userid, MIN(t1.score) FROM t1, t2 WHERE t1.userID=t2.userID GROUP BY t2.userid ORDER BY NULL;
-SELECT t2.userid, MIN(t1.score) FROM t1, t2 WHERE t1.userID=t2.userID AND t1.spID=2  GROUP BY t2.userid;
-SELECT t2.userid, MIN(t1.score+0.0) FROM t1, t2 WHERE t1.userID=t2.userID AND t1.spID=2  GROUP BY t2.userid;
-SELECT t2.userid, MIN(t1.score+0.0) FROM t1, t2 WHERE t1.userID=t2.userID AND t1.spID=2  GROUP BY t2.userid ORDER BY NULL;
 drop table t1,t2;
 CREATE TABLE t1 (
   cid mediumint(9) NOT NULL auto_increment,
@@ -25,8 +21,6 @@ INSERT INTO t2 VALUES (62,2);
 INSERT INTO t2 VALUES (91,2);
 INSERT INTO t2 VALUES (92,2);
 SELECT cid, CONCAT(firstname, ' ', surname), COUNT(call_id) FROM t1 LEFT JOIN t2 ON cid=contact_id WHERE firstname like '%foo%' GROUP BY cid;
-SELECT cid, CONCAT(firstname, ' ', surname), COUNT(call_id) FROM t1 LEFT JOIN t2 ON cid=contact_id WHERE firstname like '%foo%' GROUP BY cid ORDER BY NULL;
-SELECT HIGH_PRIORITY cid, CONCAT(firstname, ' ', surname), COUNT(call_id) FROM t1 LEFT JOIN t2 ON cid=contact_id WHERE firstname like '%foo%' GROUP BY cid ORDER BY surname, firstname;
 drop table t2;
 unlock tables;
 drop table t1;
@@ -58,7 +52,6 @@ create table t1 (foo int);
 insert into t1 values (1);
 select 1+1, "a",count(*) from t1 where foo in (2);
 insert into t1 values (1);
-select 1+1,"a",count(*) from t1 where foo in (2);
 drop table t1;
 CREATE TABLE t1 (
   spID int(10) unsigned,
@@ -68,13 +61,7 @@ CREATE TABLE t1 (
   key (score)
 );
 INSERT INTO t1 VALUES (1,1,1),(2,2,2),(2,1,1),(3,3,3),(4,3,3),(5,3,3),(6,3,3),(7,3,3);
-select userid,count(*) from t1 group by userid order by userid desc;
-select userid,count(*) from t1 group by userid having (count(*)+1) IN (4,3) order by userid desc;
-select userid,count(*) from t1 group by userid having 3  IN (1,COUNT(*)) order by userid desc;
-select spid,count(*) from t1 where spid between 1 and 2 group by spid;
-select spid,count(*) from t1 where spid between 1 and 2 group by spid order by spid desc;
 select sql_big_result spid,sum(userid) from t1 group by spid order by spid desc;
-select sql_big_result score,count(*) from t1 group by score order by score desc;
 drop table t1;
 create table t1 (a date default null, b date default null);
 insert t1 values ('1999-10-01','2000-01-10'), ('1997-01-01','1998-10-01');
@@ -82,13 +69,9 @@ drop table t1;
 CREATE TABLE t1 (a char(1));
 INSERT INTO t1 VALUES ('A'),('B'),('A'),('B'),('A'),('B'),(NULL),('a'),('b'),(NULL),('A'),('B'),(NULL);
 SELECT a FROM t1 GROUP BY a;
-SELECT a,count(*) FROM t1 GROUP BY a;
 SELECT binary a FROM t1 GROUP BY 1;
-SELECT binary a,count(*) FROM t1 GROUP BY 1;
 SELECT a FROM t1 GROUP BY a ORDER BY a;
-SELECT a,count(*) FROM t1 GROUP BY a ORDER BY a;
 SELECT binary a FROM t1 GROUP BY 1 ORDER BY 1;
-SELECT binary a,count(*) FROM t1 GROUP BY 1 ORDER BY 1;
 drop table t1;
 CREATE TABLE t1 (
   `a` char(193) default NULL,
@@ -97,14 +80,10 @@ CREATE TABLE t1 (
 INSERT INTO t1 VALUES ('abc','def'),('hij','klm');
 SELECT CONCAT(a, b) FROM t1 GROUP BY 1;
 SELECT CONCAT(a, b),count(*) FROM t1 GROUP BY 1;
-SELECT CONCAT(a, b),count(distinct a) FROM t1 GROUP BY 1;
-SELECT 1 FROM t1 GROUP BY CONCAT(a, b);
 INSERT INTO t1 values ('hij','klm');
-SELECT CONCAT(a, b),count(*) FROM t1 GROUP BY 1;
 DROP TABLE t1;
 create table t1 (One int unsigned, Two int unsigned, Three int unsigned, Four int unsigned);
 insert into t1 values (1,2,1,4),(1,2,2,4),(1,2,3,4),(1,2,4,4),(1,1,1,4),(1,1,2,4),(1,1,3,4),(1,1,4,4),(1,3,1,4),(1,3,2,4),(1,3,3,4),(1,3,4,4);
-select One, Two, sum(Four) from t1 group by One,Two;
 drop table t1;
 create table t1 (id integer primary key not null auto_increment, gender char(1));
 insert into t1 values (NULL, 'M'), (NULL, 'F'),(NULL, 'F'),(NULL, 'F'),(NULL, 'M');
@@ -146,8 +125,6 @@ NOT NULL);
 drop table t1,t2,t3;
 create table t1 (a blob null);
 insert into t1 values (NULL),(NULL),(NULL),(NULL),(NULL),(NULL),(NULL),(NULL),(NULL),(""),(""),(""),("b");
-select a,count(*) from t1 group by a;
-select a,count(*) from t1 group by a;
 drop table t1;
 create table t1 (a int not null, b int not null);
 insert into t1 values (1,1),(1,2),(3,1),(3,2),(2,2),(2,1);
@@ -159,7 +136,6 @@ drop table t1,t2;
 create table t1 (a int, b int);
 insert into t1 values (1, 4),(10, 40),(1, 4),(10, 43),(1, 4),(10, 41),(1, 4),(10, 43),(1, 4);
 select a, MAX(b), INTERVAL (MAX(b), 1,3,10,30,39,40,50,60,100,1000) from t1 group by a;
-select a, MAX(b), CASE MAX(b) when 4 then 4 when 43 then 43 else 0 end from t1 group by a;
 select a, MAX(b), FIELD(MAX(b), '43', '4', '5') from t1 group by a;
 select a, MAX(b), CONCAT_WS(MAX(b), '43', '4', '5') from t1 group by a;
 select a, MAX(b), ELT(MAX(b), 'a', 'b', 'c', 'd', 'e', 'f') from t1 group by a;
@@ -171,8 +147,6 @@ select id, sum(qty) as sqty, count(qty) as cqty from t1 group by id having sum(q
 select id, sum(qty) as sqty from t1 group by id having sqty>2 and count(qty)>1;
 select id, sum(qty) as sqty, count(qty) as cqty from t1 group by id having sqty>2 and cqty>1;
 select id, sum(qty) as sqty, count(qty) as cqty from t1 group by id having sum(qty)>2 and count(qty)>1;
-select count(*), case interval(qty,2,3,4,5,6,7,8) when -1 then NULL when 0 then "zero" when 1 then "one" when 2 then "two" end as category from t1 group by category;
-select count(*), interval(qty,2,3,4,5,6,7,8) as category from t1 group by category;
 drop table t1;
 CREATE TABLE t1 (
   userid int(10) unsigned,
@@ -180,7 +154,6 @@ CREATE TABLE t1 (
   key (score)
 );
 INSERT INTO t1 VALUES (1,1),(2,2),(1,1),(3,3),(3,3),(3,3),(3,3),(3,3);
-SELECT userid,count(*) FROM t1 GROUP BY userid ORDER BY userid DESC;
 DROP TABLE t1;
 CREATE TABLE t1 (
   i int(11) default NULL,
@@ -191,8 +164,6 @@ DROP TABLE t1;
 create table t1 (a int);
 insert into t1 values(null);
 select min(a) is null from t1;
-select min(a) is null or null from t1;
-select 1 and min(a) is null from t1;
 drop table t1;
 create table t1 ( col1 int, col2 int );
 insert into t1 values (1,1),(1,2),(1,3),(2,1),(2,2);
@@ -214,8 +185,6 @@ SELECT a, ROUND(RAND(100)*10) r2, SUM(1) r1 FROM t1 WHERE a = 1
 SELECT a,SUM(b) FROM t1 WHERE a=1 GROUP BY c;
 SELECT a*SUM(b) FROM t1 WHERE a=1 GROUP BY c;
 SELECT SUM(a)*SUM(b) FROM t1 WHERE a=1 GROUP BY c;
-SELECT a,SUM(b) FROM t1 WHERE a=1 GROUP BY c HAVING a=1;
-SELECT a AS d,SUM(b) FROM t1 WHERE a=1 GROUP BY c HAVING d=1;
 SELECT SUM(a)*SUM(b) AS d FROM t1 WHERE a=1 GROUP BY c HAVING d > 0;
 SELECT a, ROUND(RAND(100)*10) r2 FROM t1;
 SELECT ROUND(RAND(100)*10) r2 FROM t1 GROUP BY r2;
@@ -247,7 +216,6 @@ drop table t1,t2;
 create table t1 (b int4 unsigned not null);
 insert into t1 values(3000000000);
 select * from t1;
-select min(b) from t1;
 drop table t1;
 CREATE TABLE t1 (id int PRIMARY KEY, user_id int, hostname longtext);
 INSERT INTO t1 VALUES
@@ -286,7 +254,6 @@ SELECT n+1 AS n FROM t1 GROUP BY n;
 DROP TABLE t1;
 create table t1(f1 varchar(5) key);
 insert into t1 values (1),(2);
-select sql_buffer_result max(f1) is null from t1;
 select sql_buffer_result max(f1)+1 from t1;
 drop table t1;
 CREATE TABLE t1(a INT);
@@ -312,7 +279,6 @@ CREATE TABLE t2 (
 INSERT INTO t1 values(NULL, '');
 INSERT INTO `t2` VALUES ('486878','WDT'),('486910','WDT');
 SELECT SQL_BUFFER_RESULT avg(t2.f1) FROM t1, t2 where t2.f2 = 'SIR' GROUP BY t1.f1;
-SELECT avg(t2.f1) FROM t1, t2 where t2.f2 = 'SIR' GROUP BY t1.f1;
 DROP TABLE t1, t2;
 create table t1 (c1 char(3), c2 char(3));
 create table t2 (c3 char(3), c4 char(3));
@@ -344,8 +310,6 @@ INSERT INTO t1 SELECT  a + 16, MOD(a + 16, 20) FROM t1;
 INSERT INTO t1 SELECT  a + 32, MOD(a + 32, 20) FROM t1;
 INSERT INTO t1 SELECT  a + 64, MOD(a + 64, 20) FROM t1;
 SELECT MIN(b), MAX(b) from t1;
-SELECT b, sum(1) FROM t1 GROUP BY b;
-SELECT SQL_BIG_RESULT b, sum(1) FROM t1 GROUP BY b;
 DROP TABLE t1;
 CREATE TABLE t1 (a INT, b INT);
 INSERT INTO t1 VALUES (1,1),(2,1),(3,2),(4,2),(5,3),(6,3);
@@ -389,16 +353,7 @@ DROP TABLE t1;
 CREATE TABLE t1 (a INT, b INT, c INT DEFAULT 0);
 INSERT INTO t1 (a, b) VALUES (3,3), (2,2), (3,3), (2,2), (3,3), (4,4);
 CREATE TABLE t2 SELECT * FROM t1;
-SELECT COUNT(*) FROM t1 ORDER BY COUNT(*);
-SELECT COUNT(*) FROM t1 ORDER BY COUNT(*) + 1;
-SELECT COUNT(*) FROM t1 ORDER BY COUNT(*) + a;
-SELECT COUNT(*) FROM t1 ORDER BY COUNT(*), 1;
-SELECT COUNT(*) FROM t1 ORDER BY COUNT(*), a;
 SELECT COUNT(*) FROM t1 ORDER BY SUM(a);
-SELECT COUNT(*) FROM t1 ORDER BY SUM(a + 1);
-SELECT COUNT(*) FROM t1 ORDER BY SUM(a) + 1;
-SELECT COUNT(*) FROM t1 ORDER BY SUM(a), b;
-SELECT SUM(a) FROM t1 ORDER BY COUNT(b);
 SELECT t1.a FROM t1 ORDER BY (SELECT SUM(t2.a) FROM t2);
 SELECT t1.a FROM t1 ORDER BY (SELECT SUM(t2.a) FROM t2 ORDER BY t2.a);
 SELECT t1.a FROM t1 GROUP BY t1.a
@@ -414,18 +369,6 @@ SELECT 1 FROM t1 GROUP BY t1.a
 SELECT t1.a FROM t1 
   WHERE t1.a = (SELECT t2.a FROM t2 GROUP BY t2.a
                   ORDER BY SUM(t2.b), SUM(t1.b) LIMIT 1);
-SELECT t1.a, SUM(t1.b) FROM t1 
-  WHERE t1.a = (SELECT SUM(t2.b) FROM t2 GROUP BY t2.a
-                  ORDER BY SUM(t2.b), SUM(t1.b) LIMIT 1)
-  GROUP BY t1.a;
-SELECT t1.a, SUM(t1.b) FROM t1 
-  WHERE t1.a = (SELECT SUM(t2.b) FROM t2
-                  ORDER BY SUM(t2.b) + SUM(t1.b) LIMIT 1)
-  GROUP BY t1.a;
-SELECT t1.a, SUM(t1.b) FROM t1 
-  WHERE t1.a = (SELECT SUM(t2.b) FROM t2
-                  ORDER BY SUM(t2.b + t1.a) LIMIT 1)
-  GROUP BY t1.a;
 SELECT t1.a FROM t1 GROUP BY t1.a
     HAVING (1, 1) = (SELECT SUM(t1.a), t1.a FROM t2 LIMIT 1);
 select avg (
@@ -514,42 +457,22 @@ INSERT INTO t1 VALUES (2, 1);
 DROP TABLE t1;
 CREATE TABLE t1(i INT);
 INSERT INTO t1 VALUES (1), (10);
-SELECT COUNT(i) FROM t1;
-SELECT COUNT(i) FROM t1 WHERE i > 1;
 DROP TABLE t1;
 CREATE TABLE t1 (a INT, b INT);
 INSERT INTO t1 VALUES (4, 40), (1, 10), (2, 20), (2, 20), (3, 30);
-SELECT (SELECT t1.a) aa, COUNT(DISTINCT b) FROM t1 GROUP BY aa;
-SELECT (SELECT (SELECT t1.a)) aa, COUNT(DISTINCT b) FROM t1 GROUP BY aa;
-SELECT (SELECT tt.a FROM t1 tt LIMIT 1) aa, COUNT(DISTINCT b) FROM t1
-  GROUP BY aa;
 CREATE TABLE t2 SELECT DISTINCT a FROM t1;
-SELECT (SELECT t2.a FROM t2 WHERE t2.a = t1.a) aa, b, COUNT(DISTINCT b)
-  FROM t1 GROUP BY aa, b;
-SELECT (SELECT t2.a FROM t2 WHERE t2.a = t1.a) aa, b, COUNT(         b)
-  FROM t1 GROUP BY aa, b;
-SELECT (SELECT t2.a FROM t2 WHERE t2.a = t1.a) aa, b, COUNT(DISTINCT b)
-  FROM t1 GROUP BY aa, b ORDER BY -aa, -b;
-SELECT (SELECT t2.a FROM t2 WHERE t2.a = t1.a) aa, b, COUNT(         b)
-  FROM t1 GROUP BY aa, b ORDER BY -aa, -b;
 DROP TABLE t1, t2;
 CREATE TABLE t1 (a INT PRIMARY KEY);
 CREATE TABLE t2 (a INT PRIMARY KEY);
 INSERT INTO t2 VALUES (1), (2);
-SELECT MIN(t2.a) FROM t2 LEFT JOIN t1 ON t2.a = t1.a;
-SELECT MAX(t2.a) FROM t2 LEFT JOIN t1 ON t2.a = t1.a;
 DROP TABLE t1, t2;
 CREATE TABLE t1 (a text, b varchar(10));
 INSERT INTO t1 VALUES (repeat('1', 1300),'one'), (repeat('1', 1300),'two');
 SELECT SUBSTRING(a,1,10), LENGTH(a), GROUP_CONCAT(b) FROM t1 GROUP BY a;
-SELECT SUBSTRING(a,1,10), LENGTH(a), GROUP_CONCAT(b) FROM t1 GROUP BY a;
-SELECT SUBSTRING(a,1,10), LENGTH(a) FROM t1 GROUP BY a;
 SELECT SUBSTRING(a,1,10), LENGTH(a) FROM t1 GROUP BY a;
 DROP TABLE t1;
 CREATE TABLE t1(f1 INT NOT NULL);
 INSERT INTO t1 VALUES (16777214),(0);
-SELECT COUNT(*) FROM t1 LEFT JOIN t1 t2
-ON 1 WHERE t2.f1 > 1 GROUP BY t2.f1;
 DROP TABLE t1;
 CREATE TABLE t1 (i int);
 INSERT INTO t1 VALUES (1);
@@ -582,26 +505,17 @@ SELECT a, AVG(t1.b),
 (SELECT t11.c FROM t1 t11 WHERE t11.a = t1.a AND t11.b = AVG(t1.b)) AS t11c,
 (SELECT t12.c FROM t1 t12 WHERE t12.a = t1.a AND t12.b = AVG(t1.b)) AS t12c
 FROM t1 GROUP BY a;
-SELECT a, AVG(t1.b),
-(SELECT t11.c FROM t1 t11 WHERE t11.a = t1.a AND t11.b = AVG(t1.b)) AS t11c,
-(SELECT t12.c FROM t1 t12 WHERE t12.a = t1.a AND t12.b = AVG(t1.b)) AS t12c
-FROM t1 GROUP BY a;
 DROP TABLE t1;
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES (0),(0);
 SELECT 1 FROM t1 GROUP BY IF(`a`,'','');
 SELECT 1 FROM t1 GROUP BY SUBSTRING('',SLEEP(0),'');
-SELECT 1 FROM t1 GROUP BY SUBSTRING(SYSDATE() FROM 'K' FOR 'jxW<');
 DROP TABLE t1;
 CREATE TABLE t1 (f1 int, f2 DATE);
-SELECT MIN(f2),MAX(f2) FROM t1;
-SELECT f1,MIN(f2),MAX(f2) FROM t1 GROUP BY 1;
 DROP TABLE t1;
 CREATE TABLE t1 ( f1 int, f2 time);
 INSERT INTO t1 VALUES (1,'01:27:35'), (1,'06:11:01'), (2,'19:53:05'),
 (2,'21:44:25'), (3,'10:55:12'), (3,'05:45:11'), (4,'00:25:00');
-SELECT MIN(f2),MAX(f2) FROM t1;
-SELECT f1,MIN(f2),MAX(f2) FROM t1 GROUP BY 1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   pk INT NOT NULL,
@@ -677,9 +591,6 @@ INSERT INTO t2 VALUES
 (86,4,'t','t'),(87,7,'b','b'),(88,3,'y','y'),(89,8,'k','k'),(90,4,'c','c'),
 (91,6,'z','z'),(92,1,'t','t'),(93,7,'o','o'),(94,1,'u','u'),(95,0,'t','t'),
 (96,2,'k','k'),(97,7,'u','u'),(98,2,'b','b'),(99,1,'m','m'),(100,5,'o','o');
-SELECT SUM(alias2.col_varchar_nokey) , alias2.pk AS field2 FROM t1 AS alias1
-STRAIGHT_JOIN t2 AS alias2 ON alias2.pk = alias1.col_int_key WHERE alias1.pk
-GROUP BY field2 ORDER BY alias1.col_int_key,alias2.pk;
 DROP TABLE t1,t2;
 CREATE TABLE t1 (i int);
 INSERT INTO t1 VALUES (1);
@@ -846,9 +757,6 @@ CREATE TABLE t2 (pk int(11) NOT NULL AUTO_INCREMENT, col_int_key int(11) NOT
 NULL, col_varchar_key varchar(1) NOT NULL, col_varchar_nokey varchar(1) NOT
 NULL, PRIMARY KEY (pk), KEY col_int_key (col_int_key), KEY col_varchar_key
 (col_varchar_key,col_int_key));
-SELECT SUM(alias2.col_varchar_nokey) , alias2.pk AS field2 FROM t1 AS alias1
-STRAIGHT_JOIN t2 AS alias2 ON alias2.pk = alias1.col_int_key WHERE alias1.pk
-group by field2 ORDER BY alias1.col_int_key,alias2.pk;
 DROP TABLE t1,t2;
 CREATE TABLE t1 (pk int(11) NOT NULL AUTO_INCREMENT, col_int_key int(11) NOT
 NULL, col_datetime_key datetime NOT NULL, col_varchar_key varchar(1) NOT
@@ -879,7 +787,6 @@ CREATE TABLE t1 (
 ) charset utf8mb4;
 INSERT INTO t1 VALUES (1,NULL),(0,'a'),(1,NULL),(0,'a');
 INSERT INTO t1 VALUES (1,'a'),(0,'a'),(1,'a'),(0,'a');
-SELECT SQL_BUFFER_RESULT MIN(a), b FROM t1 WHERE t1.b = 'a' GROUP BY b;
 DROP TABLE t1;
 CREATE TABLE t1(a INT);
 INSERT INTO t1 VALUES (0);
@@ -900,15 +807,8 @@ INSERT INTO t1 SELECT NULL, kp1, kp2 from t1;
 DROP TABLE t1;
 CREATE TABLE t1(a INTEGER);
 INSERT INTO t1 VALUES (1), (2);
-SELECT SUM(a) FROM t1 ORDER BY COUNT(*);
-SELECT COUNT(*) FROM t1 ORDER BY COUNT(*);
-SELECT COUNT(*) AS c FROM t1 ORDER BY COUNT(*);
 SELECT COUNT(*) AS c FROM t1 ORDER BY c;
-SELECT a, COUNT(*) FROM t1 GROUP BY a ORDER BY COUNT(*);
-SELECT a, COUNT(*) AS c FROM t1 GROUP BY a ORDER BY COUNT(*);
 SELECT a, COUNT(*) AS c FROM t1 GROUP BY a ORDER BY c;
-SELECT a AS c FROM t1 GROUP BY a ORDER BY COUNT(*);
-SELECT 1 FROM t1 HAVING COUNT(*) > 1 ORDER BY COUNT(*);
 SELECT (SELECT 1 AS foo ORDER BY a) AS x
 FROM t1;
 SELECT (SELECT 1 AS foo ORDER BY t1.a) AS x
@@ -917,7 +817,6 @@ SELECT (SELECT 1 AS foo ORDER BY COUNT(a)) AS x
 FROM t1;
 SELECT (SELECT 1 AS foo ORDER BY COUNT(t1.a)) AS x
 FROM t1;
-SELECT SUM(a) FROM t1 ORDER BY (SELECT COUNT(t1.a) FROM t1 AS t2);
 SELECT a FROM t1;
 SELECT a FROM t1;
 SELECT a FROM t1;
@@ -989,7 +888,6 @@ DROP TABLE t1;
 CREATE TABLE t1(cc CHAR(1), n CHAR(1), d CHAR(1));
 CREATE OR REPLACE ALGORITHM = MERGE VIEW v1 AS
  SELECT * FROM t1 WHERE cc = 'AUS' ORDER BY n;
-SELECT d, COUNT(*) FROM v1 GROUP BY d;
 DROP TABLE t1;
 DROP VIEW v1;
 CREATE TABLE t0 ( a INT );
@@ -1004,7 +902,6 @@ CREATE TABLE t1 (
   KEY idx3 (a, b)
 ) ENGINE = InnoDB;
 INSERT INTO t1 (a, b) SELECT t01.a, t02.a FROM t0 t01, t0 t02;
-SELECT DISTINCT a, MAX(b) FROM t1 WHERE a >= 0 GROUP BY a,a;
 DROP TABLE t0, t1;
 CREATE TABLE t1(
  a INTEGER,
@@ -1102,15 +999,10 @@ DROP TABLE t;
 CREATE TABLE t(d DATE, i INT);
 INSERT INTO t VALUES(NULL,1),('2017-01-14',3);
 SELECT WEEK(d)/10, GROUP_CONCAT(i) FROM t GROUP BY WEEK(d)/10;
-SELECT WEEK(d)/10, GROUP_CONCAT(i) FROM t GROUP BY WEEK(d)/10 ORDER BY WEEK(d)/10 DESC;
 DROP TABLE t;
 CREATE TABLE t1 (i INTEGER NOT NULL, j INTEGER NOT NULL, key(i,j));
 INSERT INTO t1 VALUES (1,2),(1,4),(1,3),(2,5),(5,3),(2,6),(6,2);
-SELECT i, SUM(j) FROM t1 GROUP BY i;
-SELECT i, SUM(j) FROM t1 GROUP BY i ORDER BY i;
-SELECT i, SUM(j) FROM t1 GROUP BY i ORDER BY SUM(j);
 ALTER TABLE t1 ADD UNIQUE INDEX (i,j);
-SELECT i, SUM(j) FROM t1 GROUP BY j,i ORDER BY i,j;
 DROP TABLE t1;
 CREATE TABLE t1 (
 	f1 INTEGER,
@@ -1131,17 +1023,11 @@ CREATE TABLE t1 (
 );
 INSERT INTO t1 (vc, b) VALUES (1, true), (2, false), (3, true), (4, false);
 INSERT INTO t1 (vc) VALUES (5), (6), (7), (8), (9), (10);
-SELECT COUNT(b), COUNT(*)
-FROM t1;
-SELECT COUNT(b)
-FROM t1
-HAVING COUNT(1) > 0;
 DROP TABLE t1;
 CREATE TABLE d (pk INT PRIMARY KEY);
 INSERT INTO d VALUES (1),(2),(3),(4),(5);
 CREATE TABLE c (col_varchar VARCHAR(1));
 INSERT INTO c VALUES ('a'),('b'),('c'),('d'),('e');
-SELECT COUNT(pk) FROM d WHERE EXISTS (SELECT col_varchar FROM c);
 DROP TABLE c, d;
 CREATE TABLE t1 (
   f1 integer,
@@ -1161,18 +1047,6 @@ CREATE TABLE t2 (
   PRIMARY KEY (id),
   UNIQUE KEY codeid (code_id,id_game)
 );
-select count(distinct x.id_aams)
-from (select *
-      from (select t1.id_aams, t2.*
-            from t1 left join t2
-                 on t2.code_id='G0000000012' and
-                    t1.id_aams=t2.id_game
-            where t1.id_aams=1715000360
-            order by t2.id desc
-           ) as g
-      group by g.id_aams
-      having g.id is null
-     ) as x;
 PREPARE stmt from "
 select count(distinct x.id_aams)
 from (select g.id_aams, g.id
@@ -1241,7 +1115,6 @@ SELECT
 DROP TABLE t1;
 CREATE TABLE t(x INTEGER);
 INSERT INTO t VALUES (1), (2), (3);
-SELECT RAND(1) r, COUNT(*) FROM t GROUP BY x ORDER BY r;
 DROP TABLE t;
 CREATE TABLE t1 (
   a INTEGER,
@@ -1280,7 +1153,6 @@ PREPARE stmt from
 DROP TABLE t1;
 CREATE TABLE t1 (a INTEGER);
 INSERT INTO t1 VALUES (NULL), (1), (2);
-SELECT DISTINCT a, COUNT(*) FROM t1 GROUP BY a WITH ROLLUP;
 DROP TABLE t1;
 CREATE TABLE t1(id INT, b1 BIT, b9 BIT(9), b64 BIT(64));
 INSERT INTO t1 VALUES
@@ -1324,12 +1196,6 @@ CREATE TABLE t2 (a INTEGER, b INTEGER, KEY (b));
 INSERT INTO t2 VALUES (1, 11);
 CREATE TABLE t3 (a INTEGER PRIMARY KEY, b INTEGER);
 INSERT INTO t3 VALUES (1, 10), (2, 11), (3, 0), (4, 0), (5, 0), (6, 0);
-SELECT t1.a, MAX(t2.a)
-FROM t1 LEFT JOIN (t2 JOIN t3 ON t2.b = t3.b) ON t1.b = t3.a
-GROUP BY t1.a;
-SELECT SQL_BUFFER_RESULT t1.a, MAX(t2.a)
-FROM t1 LEFT JOIN (t2 JOIN t3 ON t2.b = t3.b) ON t1.b = t3.a
-GROUP BY t1.a;
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1 (f1 INTEGER, PRIMARY KEY(f1));
 SELECT SUM(t1.f1)
@@ -1404,8 +1270,6 @@ CREATE TABLE t3(b INT PRIMARY KEY, d INT);
 INSERT INTO t3
 WITH RECURSIVE qn(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM qn WHERE n<250)
 SELECT n, n FROM qn;
-SELECT b, COUNT(*) FROM t1 LEFT JOIN t2 USING (b) LEFT JOIN t3 USING (b)
-GROUP BY b;
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1(x INT, y INT);
 CREATE TABLE t2(x INT, y INT);
@@ -1424,8 +1288,6 @@ CREATE TABLE t1 (a INTEGER PRIMARY KEY, b INTEGER);
 INSERT INTO t1 VALUES  (1, 1), (2, 2), (3, 2);
 CREATE TABLE t2 (a INTEGER PRIMARY KEY, b INTEGER);
 INSERT INTO t2 VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6);
-SELECT t1.a, MAX(t2.b) FROM t1 LEFT JOIN t2 ON t1.b = t2.a AND t1.a <> 2
-GROUP BY t1.a;
 DROP TABLE t1, t2;
 CREATE TABLE t(f FLOAT, d double, id INT);
 INSERT INTO t VALUES (0.0, 0.0, 1),
@@ -1433,17 +1295,12 @@ INSERT INTO t VALUES (0.0, 0.0, 1),
   (ROUND(CAST(-.4 AS FLOAT)), ROUND(CAST(-.4 AS DOUBLE)), 1), # Insert -0.0
   (100, 100, 100);
 SELECT * FROM t;
-SELECT f, SUM(id) FROM t GROUP BY f;
-SELECT d, SUM(id) FROM t GROUP BY d;
-SELECT f, SUM(id) FROM t GROUP BY id, f;
-SELECT d, SUM(id) FROM t GROUP BY id, d;
 SELECT DISTINCT f from t;
 SELECT DISTINCT d from t;
 SELECT DISTINCT id, f from t;
 SELECT DISTINCT id, d from t;
 SELECT COUNT(DISTINCT f), COUNT(DISTINCT d), AVG(DISTINCT f), AVG(DISTINCT d) FROM t;
 SELECT COUNT(DISTINCT f, id), GROUP_CONCAT(DISTINCT f, id) FROM t;
-SELECT COUNT(DISTINCT d, id), GROUP_CONCAT(DISTINCT d, id) FROM t;
 DROP TABLE t;
 CREATE TABLE product (
   value INT NOT NULL AUTO_INCREMENT,
@@ -1454,8 +1311,4 @@ CREATE TABLE product (
   KEY idx_key (value)
 );
 INSERT INTO product(code, name) VALUES(@str, @str);
-SELECT COUNT(*)
-FROM ( SELECT ANY_VALUE(value)
-       FROM product
-       GROUP BY code, name, comment, platform ) derived;
 DROP TABLE product;

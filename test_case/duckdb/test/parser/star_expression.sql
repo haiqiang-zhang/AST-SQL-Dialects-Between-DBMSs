@@ -1,0 +1,2 @@
+SELECT * FROM integers WHERE COLUMNS(*) IS NULL ORDER BY ALL;
+SELECT * FROM integers ORDER BY *, *;

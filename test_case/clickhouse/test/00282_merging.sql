@@ -1,7 +1,3 @@
-set allow_deprecated_syntax_for_merge_tree=1;
-CREATE TABLE IF NOT EXISTS merge (d Date DEFAULT '2000-01-01', x UInt64) ENGINE = MergeTree(d, x, 5);
-INSERT INTO merge (x) VALUES (1), (2), (3);
-INSERT INTO merge (x) VALUES (4), (5), (6);
 SELECT * FROM merge ORDER BY _part_index, x;
 OPTIMIZE TABLE merge;
 SELECT * FROM merge ORDER BY _part_index, x;
@@ -56,5 +52,4 @@ SET max_block_size = 10000;
 INSERT INTO merge (x) SELECT number AS x FROM (SELECT number FROM system.numbers LIMIT 10000);
 INSERT INTO merge (x) SELECT number AS x FROM (SELECT number + 5000 AS number FROM system.numbers LIMIT 10000);
 OPTIMIZE TABLE merge;
-SELECT count(), uniqExact(x), min(x), max(x), sum(x), sum(cityHash64(x)) FROM merge;
 DROP TABLE merge;

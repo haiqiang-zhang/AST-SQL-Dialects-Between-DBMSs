@@ -1,0 +1,9 @@
+PRAGMA enable_verification;
+BEGIN TRANSACTION;
+CREATE TABLE integers(i INTEGER, j INTEGER);
+INSERT INTO integers VALUES (1, 3), (2, 3);
+UPDATE integers SET j=5 WHERE i=2;
+UPDATE integers SET j=5 WHERE i=2;
+UPDATE integers SET j=5 WHERE i=2;
+DELETE FROM integers WHERE i=2;
+COMMIT;

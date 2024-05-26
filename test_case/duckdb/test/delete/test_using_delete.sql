@@ -1,0 +1,10 @@
+SELECT * FROM a;
+DELETE FROM a USING (values (1)) tbl(i);
+SELECT * FROM a;
+SELECT * FROM a;
+DELETE FROM a USING (values (1)) tbl(i), (values (1), (2)) tbl2(i) WHERE a.i=tbl.i AND a.i=tbl2.i;
+SELECT * FROM a;
+DELETE FROM a USING (values (4)) tbl(i) WHERE a.i=tbl.i;
+SELECT * FROM a;
+DELETE FROM a USING a a2(i) WHERE a.i>a2.i;
+SELECT * FROM a;

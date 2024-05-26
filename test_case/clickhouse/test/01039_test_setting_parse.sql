@@ -1,4 +1,3 @@
-SET max_memory_usage = '1G';
 SELECT value FROM system.settings WHERE name = 'max_memory_usage';
 SET max_memory_usage = '3Gi';
 SELECT value FROM system.settings WHERE name = 'max_memory_usage';

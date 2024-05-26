@@ -1,0 +1,10 @@
+ATTACH '__TEST_DIR__/tester.db' as search_con;
+PRAGMA create_fts_index(search_con.main.my_table, 'CustomerId', 'CustomerName');
+SELECT search_con.fts_main_my_table.match_bm25(1, 'han');
+DETACH search_con;
+CREATE TABLE data AS SELECT 0 __index, 0 id, 'lorem ipsum' nl, NULL code;
+PRAGMA create_fts_index('data', '__index', '*', overwrite=1);
+ATTACH ':memory:' AS memory;
+USE memory;
+ATTACH '__TEST_DIR__/index.db' AS db;
+USE db;

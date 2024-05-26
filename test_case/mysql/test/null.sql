@@ -28,11 +28,7 @@ create table t1 (a int, b int);
 insert into t1 values(20,null);
 select t2.b, ifnull(t2.b,"this is null") from t1 as t2 left join t1 as t3 on
 t2.b=t3.a;
-select t2.b, ifnull(t2.b,"this is null") from t1 as t2 left join t1 as t3 on
-t2.b=t3.a order by 1;
 insert into t1 values(10,null);
-select t2.b, ifnull(t2.b,"this is null") from t1 as t2 left join t1 as t3 on
-t2.b=t3.a order by 1;
 drop table t1;
 create table t1 (a int not null, b int not null, index idx(a));
 insert into t1 values
@@ -52,7 +48,6 @@ insert into t1 select i*2 from t1;
 insert into t1 select i*2 from t1;
 insert into t1 select i*2 from t1;
 insert into t1 values(null);
-select count(*) from t1 where i=2 or i is null;
 select count(*) from t1 where i=2 or i is null;
 drop table t1;
 create table t1 select

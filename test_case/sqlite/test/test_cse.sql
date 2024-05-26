@@ -19,7 +19,6 @@ SELECT coalesce(b,c,d,e), a, b, c, d, e FROM t1 WHERE a=2
       UNION ALL
       SELECT coalesce(e,d,c,b), e, d, c, b, a FROM t1 WHERE a=1;
 SELECT upper(b), typeof(b), b FROM t1;
-SELECT b, typeof(b), upper(b), typeof(b), b FROM t1;
 CREATE TABLE t2(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,
                     a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,
                     a20,a21,a22,a23,a24,a25,a26,a27,a28,a29,

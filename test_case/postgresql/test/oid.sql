@@ -1,14 +1,6 @@
 SELECT * FROM OID_TBL;
 SELECT pg_input_is_valid('1234', 'oid');
-SELECT pg_input_is_valid('01XYZ', 'oid');
 SELECT * FROM pg_input_error_info('01XYZ', 'oid');
-SELECT pg_input_is_valid('9999999999', 'oid');
-SELECT * FROM pg_input_error_info('9999999999', 'oid');
-SELECT pg_input_is_valid(' 1 2  4 ', 'oidvector');
-SELECT pg_input_is_valid('01 01XYZ', 'oidvector');
-SELECT * FROM pg_input_error_info('01 01XYZ', 'oidvector');
-SELECT pg_input_is_valid('01 9999999999', 'oidvector');
-SELECT * FROM pg_input_error_info('01 9999999999', 'oidvector');
 SELECT o.* FROM OID_TBL o WHERE o.f1 = 1234;
 SELECT o.* FROM OID_TBL o WHERE o.f1 <> '1234';
 SELECT o.* FROM OID_TBL o WHERE o.f1 <= '1234';

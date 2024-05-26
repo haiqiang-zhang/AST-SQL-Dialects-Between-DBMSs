@@ -1,8 +1,6 @@
 select "--- Local --" as "";
 drop table t1,t2;
 create table if not exists t5 (a int);
-create temporary table `ÃÂÃÂ¤ÃÂÃÂ¶ÃÂÃÂ¼ÃÂÃÂÃÂÃÂÃÂÃÂ` (a int);
-insert into `ÃÂÃÂ¤ÃÂÃÂ¶ÃÂÃÂ¼ÃÂÃÂÃÂÃÂÃÂÃÂ` values (1);
 select * from t5  /* must be (1),(1) */;
 drop table t5;
 create table t5 (c1 int, c2 varchar(128) character set latin1 not null);

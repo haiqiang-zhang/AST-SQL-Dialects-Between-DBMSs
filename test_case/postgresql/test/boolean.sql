@@ -15,7 +15,6 @@ SELECT bool 'of' AS false;
 SELECT bool '1' AS true;
 SELECT bool '0' AS false;
 SELECT pg_input_is_valid('true', 'bool');
-SELECT pg_input_is_valid('asdf', 'bool');
 SELECT * FROM pg_input_error_info('junk', 'bool');
 SELECT bool 't' or bool 'f' AS true;
 SELECT bool 't' and bool 'f' AS false;

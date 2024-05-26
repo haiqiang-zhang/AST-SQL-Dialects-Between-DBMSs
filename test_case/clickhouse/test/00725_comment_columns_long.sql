@@ -1,3 +1,4 @@
+SHOW CREATE TABLE check_query_comment_column;
 DESCRIBE TABLE check_query_comment_column;
 ALTER TABLE check_query_comment_column
   COMMENT COLUMN first_column 'comment 1_1',

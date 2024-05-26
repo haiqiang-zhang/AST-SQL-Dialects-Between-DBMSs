@@ -1,5 +1,3 @@
-ALTER TABLE test_02559 ADD COLUMN y UInt8 DEFAULT 0;
-INSERT INTO test_02559 VALUES (2, 'Goodbye.', 3);
 SELECT * FROM test_02559 ORDER BY x;
 SET enable_multiple_prewhere_read_steps=true, move_all_conditions_to_prewhere=true;
 SELECT s FROM test_02559 PREWHERE x AND y ORDER BY s;

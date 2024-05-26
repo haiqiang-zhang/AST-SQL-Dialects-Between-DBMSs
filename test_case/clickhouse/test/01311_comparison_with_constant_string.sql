@@ -1,8 +1,6 @@
 SELECT number = '1' FROM numbers(3);
 SELECT '---';
-SELECT '1' != number FROM numbers(3);
 SELECT '---';
-SELECT '1' > number FROM numbers(3);
 SELECT '---';
 SELECT 1 = '257';
 SELECT '---';

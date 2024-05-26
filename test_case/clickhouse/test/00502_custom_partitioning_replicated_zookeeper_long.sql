@@ -1,7 +1,3 @@
--- no-shared-merge-tree: different synchronization
-
-SET replication_alter_partitions_sync = 2;
-SET insert_keeper_fault_injection_probability=0;
 SELECT '*** Not partitioned ***';
 DROP TABLE IF EXISTS not_partitioned_replica1_00502 SYNC;
 DROP TABLE IF EXISTS not_partitioned_replica2_00502 SYNC;

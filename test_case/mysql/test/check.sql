@@ -1,14 +1,3 @@
-drop view if exists v1;
-create table t1(n int not null, key(n), key(n), key(n), key(n));
-insert into t1 values (200000);
-drop table t1;
-Create table t1(f1 int);
-Create table t2(f1 int);
-Create view v1 as Select * from t1;
-drop view v1;
-drop table t1, t2;
-DROP TABLE IF EXISTS t1;
-CREATE TABLE t1(a INT);
 LOCK TABLE t1 WRITE;
 UNLOCK TABLES;
 DROP TABLE t1;

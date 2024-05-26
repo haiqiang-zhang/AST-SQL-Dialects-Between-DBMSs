@@ -1,7 +1,3 @@
-PRAGMA legacy_alter_table = 1;
-CREATE TABLE t1(a, b, CHECK(t1.a != t1.b));
-CREATE TABLE t2(a, b);
-CREATE INDEX t2expr ON t2(a) WHERE t2.b>0;
 SELECT sql FROM sqlite_master;
 CREATE TABLE t3(c, d);
 ALTER TABLE t3 RENAME TO t3new;
@@ -51,8 +47,6 @@ INSERT INTO ddd VALUES(
 PRAGMA legacy_alter_table = 1;
 ATTACH 'test.db2' AS aux;
 PRAGMA foreign_keys = on;
-INSERT INTO aux.c1 VALUES(NULL, 2);
-INSERT INTO aux.c1 VALUES(NULL, 1);
 SELECT sql FROM aux.sqlite_master WHERE name = 'c1';
 PRAGMA legacy_alter_table = 1;
 CREATE VIEW v1 AS SELECT * FROM t2;

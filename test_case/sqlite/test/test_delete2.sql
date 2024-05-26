@@ -1,7 +1,3 @@
-BEGIN;
-INSERT INTO q(s,id) VALUES('hello','id.1');
-INSERT INTO q(s,id) VALUES('goodbye','id.2');
-INSERT INTO q(s,id) VALUES('again','id.3');
 SELECT * FROM q;
 SELECT * FROM q WHERE id='id.1';
 PRAGMA integrity_check;

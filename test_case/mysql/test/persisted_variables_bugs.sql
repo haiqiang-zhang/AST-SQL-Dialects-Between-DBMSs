@@ -1,4 +1,3 @@
-DROP DATABASE bug27374791;
 SELECT @@max_binlog_cache_size;
 SELECT * FROM performance_schema.persisted_variables WHERE
   VARIABLE_NAME= 'max_binlog_cache_size';

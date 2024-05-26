@@ -1,4 +1,3 @@
-ALTER TABLE t1 RENAME a TO aaa;
 SELECT sql FROM sqlite_master WHERE name='tr1';
 INSERT INTO t1 VALUES(1, 2);
 CREATE TABLE t2(a,b,c);

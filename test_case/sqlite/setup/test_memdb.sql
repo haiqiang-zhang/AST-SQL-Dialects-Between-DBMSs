@@ -1,0 +1,2 @@
+BEGIN;
+CREATE TABLE t3(x TEXT);

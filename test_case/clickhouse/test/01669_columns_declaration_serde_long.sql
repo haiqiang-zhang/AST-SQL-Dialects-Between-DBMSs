@@ -1,7 +1,3 @@
-CREATE TEMPORARY TABLE test ("\\" String DEFAULT '\r\n\t\\' || '
-');
-INSERT INTO test VALUES ('Hello, world!');
-INSERT INTO test ("\\") VALUES ('Hello, world!');
 SELECT * FROM test;
 DROP TEMPORARY TABLE test;
 DROP TABLE IF EXISTS test;

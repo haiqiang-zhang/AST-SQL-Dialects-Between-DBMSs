@@ -7,11 +7,7 @@ select '010'::xid,
 	   '0xffffffffffffffff'::xid8,
 	   '-1'::xid8;
 SELECT pg_input_is_valid('42', 'xid');
-SELECT pg_input_is_valid('asdf', 'xid');
 SELECT * FROM pg_input_error_info('0xffffffffff', 'xid');
-SELECT pg_input_is_valid('42', 'xid8');
-SELECT pg_input_is_valid('asdf', 'xid8');
-SELECT * FROM pg_input_error_info('0xffffffffffffffffffff', 'xid8');
 select '1'::xid = '1'::xid;
 select '1'::xid != '1'::xid;
 select '1'::xid8 = '1'::xid8;
@@ -32,11 +28,6 @@ drop table xid8_t1;
 select '12:13:'::pg_snapshot;
 select '12:18:14,16'::pg_snapshot;
 select '12:16:14,14'::pg_snapshot;
-select pg_input_is_valid('12:13:', 'pg_snapshot');
-select pg_input_is_valid('31:12:', 'pg_snapshot');
-select * from pg_input_error_info('31:12:', 'pg_snapshot');
-select pg_input_is_valid('12:16:14,13', 'pg_snapshot');
-select * from pg_input_error_info('12:16:14,13', 'pg_snapshot');
 create temp table snapshot_test (
 	nr	integer,
 	snap	pg_snapshot
@@ -53,14 +44,8 @@ from snapshot_test order by nr;
 select id, pg_visible_in_snapshot(id::text::xid8, snap)
 from snapshot_test, generate_series(11, 21) id
 where nr = 2;
-select id, pg_visible_in_snapshot(id::text::xid8, snap)
-from snapshot_test, generate_series(90, 160) id
-where nr = 4;
 select pg_current_xact_id() >= pg_snapshot_xmin(pg_current_snapshot());
-select pg_visible_in_snapshot(pg_current_xact_id(), pg_current_snapshot());
 select pg_snapshot '1000100010001000:1000100010001100:1000100010001012,1000100010001013';
-select pg_visible_in_snapshot('1000100010001012', '1000100010001000:1000100010001100:1000100010001012,1000100010001013');
-select pg_visible_in_snapshot('1000100010001015', '1000100010001000:1000100010001100:1000100010001012,1000100010001013');
 SELECT pg_snapshot '1:9223372036854775807:3';
 BEGIN;
 SELECT pg_current_xact_id_if_assigned() IS NULL;

@@ -1,4 +1,3 @@
-SET join_use_nulls = 0;
 SELECT 'left';
 SELECT * FROM t1 LEFT JOIN left_join j USING(x) ORDER BY x, str, s;
 SELECT 'inner';

@@ -1,5 +1,3 @@
-SET insert_keeper_fault_injection_probability=0;
-drop table if exists rmt2;
 system stop replicated sends rmt1;
 system start replicated sends rmt1;
 set receive_timeout=5;

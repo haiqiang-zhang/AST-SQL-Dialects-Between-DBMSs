@@ -1,0 +1,9 @@
+SET immediate_transaction_mode=true;
+CREATE TABLE test (a INTEGER);
+INSERT INTO test VALUES (1), (2), (3);
+BEGIN TRANSACTION;
+UPDATE test SET a=4 WHERE a=1;
+ROLLBACK;
+BEGIN TRANSACTION;
+UPDATE test SET a=4 WHERE a=1;
+COMMIT;

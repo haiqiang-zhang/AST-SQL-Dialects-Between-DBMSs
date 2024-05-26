@@ -1,5 +1,0 @@
-DROP DATABASE db_name;
-CREATE DATABASE db1name;
-DROP DATABASE db1name;
-CREATE DATABASE db_name;
-DROP DATABASE db_name;

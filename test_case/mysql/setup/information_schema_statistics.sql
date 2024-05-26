@@ -1,0 +1,3 @@
+CREATE TEMPORARY TABLE t1 (f1 int, f2 int primary key, UNIQUE KEY (f1));
+DROP TEMPORARY TABLE t1;
+CREATE TABLE t1 (f1 int);

@@ -1,0 +1,1 @@
+CREATE TEMPORARY TABLE table (x UInt8);

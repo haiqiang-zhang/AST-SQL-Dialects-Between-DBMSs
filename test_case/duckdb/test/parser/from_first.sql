@@ -1,0 +1,9 @@
+FROM integers;
+FROM integers SELECT i + 1;
+FROM integers LIMIT 2;
+FROM integers WHERE i IS NOT NULL;
+FROM integers ORDER BY i DESC NULLS FIRST;
+FROM integers SELECT DISTINCT i%2 WHERE i>0 ORDER BY ALL;
+FROM integers SELECT i%2 AS g, SUM(i) sum GROUP BY g HAVING sum IS NOT NULL ORDER BY ALL;
+FROM integers JOIN integers i2 USING (i);
+FROM integers i1, integers i2 SELECT COUNT(*);

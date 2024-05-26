@@ -1,4 +1,3 @@
-PRAGMA integrity_check;
 REINDEX;
 CREATE TABLE t1(a);
 INSERT INTO t1 VALUES('Abc2');

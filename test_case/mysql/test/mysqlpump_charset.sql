@@ -5,7 +5,6 @@ DROP DATABASE db1_charset;
 CREATE DATABASE db1_charset;
 SELECT * FROM t_latin1 ORDER BY 1;
 SELECT * FROM t_utf8 ORDER BY 1;
-SELECT hex(c1), hex(c2) FROM t_koi8r ORDER BY 1;
 DROP DATABASE db1_charset;
 CREATE DATABASE db1_charset;
 CREATE TABLE t_allcharsets

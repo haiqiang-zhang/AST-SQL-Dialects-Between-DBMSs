@@ -1,0 +1,12 @@
+PRAGMA enable_verification;
+set secret_directory='__TEST_DIR__/create_secret_transactional';
+PRAGMA threads=1;
+BEGIN TRANSACTION;
+COMMIT;
+BEGIN TRANSACTION;
+COMMIT;
+CREATE PERSISTENT SECRET perm_s1 (TYPE S3);
+BEGIN TRANSACTION;
+CREATE SECRET tmp_s1 (TYPE S3);
+DROP SECRET perm_s1;
+COMMIT;

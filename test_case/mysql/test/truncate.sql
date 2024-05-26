@@ -1,6 +1,5 @@
 select count(*) from t1;
 insert into t1 values(1,2,"test");
-select count(*) from t1;
 delete from t1;
 select * from t1;
 drop table t1;

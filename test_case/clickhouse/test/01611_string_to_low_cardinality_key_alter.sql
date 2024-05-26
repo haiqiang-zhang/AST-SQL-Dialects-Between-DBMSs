@@ -1,4 +1,3 @@
-ALTER TABLE table_with_lc_key MODIFY COLUMN lc_key String;
 SHOW CREATE TABLE table_with_lc_key;
 DETACH TABLE table_with_lc_key;
 ATTACH TABLE table_with_lc_key;

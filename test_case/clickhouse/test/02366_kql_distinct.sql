@@ -1,4 +1,3 @@
-set dialect = 'kusto';
 print '--  distinct * --';
 Customers | distinct *;
 print '--  distinct one column --';

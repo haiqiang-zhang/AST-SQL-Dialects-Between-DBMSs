@@ -1,5 +1,3 @@
-CREATE MATERIALIZED VIEW mv TO test1 (b String, a UInt8) AS SELECT d AS b, c AS a FROM test2;
-INSERT INTO test2 VALUES (1, 'test');
 SELECT * FROM test1;
 DROP TABLE test1;
 DROP TABLE test2;

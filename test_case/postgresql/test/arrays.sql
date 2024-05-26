@@ -57,8 +57,6 @@ SELECT a FROM arrtest WHERE a[2] IS NULL;
 DELETE FROM arrtest WHERE a[2] IS NULL AND b IS NULL;
 SELECT a,b,c FROM arrtest;
 SELECT pg_input_is_valid('{1,2,3}', 'integer[]');
-SELECT pg_input_is_valid('{1,2', 'integer[]');
-SELECT pg_input_is_valid('{1,zed}', 'integer[]');
 SELECT * FROM pg_input_error_info('{1,zed}', 'integer[]');
 select '{{1,2,3},{4,5,6},{7,8,9}}'::int[];
 select ('{{1,2,3},{4,5,6},{7,8,9}}'::int[])[1:2][2];
@@ -154,22 +152,10 @@ SELECT array_cat(ARRAY[1,2], ARRAY[3,4]) AS "{1,2,3,4}";
 SELECT array_cat(ARRAY[1,2], ARRAY[[3,4],[5,6]]) AS "{{1,2},{3,4},{5,6}}";
 SELECT array_cat(ARRAY[[3,4],[5,6]], ARRAY[1,2]) AS "{{3,4},{5,6},{1,2}}";
 SELECT array_position(ARRAY[1,2,3,4,5], 4);
-SELECT array_position(ARRAY[5,3,4,2,1], 4);
-SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], 'mon');
-SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], 'sat');
-SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], NULL);
-SELECT array_position(ARRAY['sun','mon','tue','wed','thu',NULL,'fri','sat'], NULL);
-SELECT array_position(ARRAY['sun','mon','tue','wed','thu',NULL,'fri','sat'], 'sat');
 SELECT array_positions(NULL, 10);
-SELECT array_positions(NULL, NULL::int);
-SELECT array_positions(ARRAY[1,2,3,4,5,6,1,2,3,4,5,6], 4);
-SELECT array_positions(ARRAY[1,2,3,4,5,6,1,2,3,4,5,6], NULL);
-SELECT array_positions(ARRAY[1,2,3,NULL,5,6,1,2,3,NULL,5,6], NULL);
 SELECT array_length(array_positions(ARRAY(SELECT 'AAAAAAAAAAAAAAAAAAAAAAAAA'::text || i % 10
                                           FROM generate_series(1,100) g(i)),
                                   'AAAAAAAAAAAAAAAAAAAAAAAAA5'), 1);
-SELECT array_position('[2:4]={1,2,3}'::int[], 1);
-SELECT array_positions('[2:4]={1,2,3}'::int[], 1);
 SELECT
     array_position(ids, (1, 1)),
     array_positions(ids, (1, 1))
@@ -189,7 +175,6 @@ SELECT ARRAY[0,0] || ARRAY[1,1] || ARRAY[2,2] AS "{0,0,1,1,2,2}";
 SELECT 0 || ARRAY[1,2] || 3 AS "{0,1,2,3}";
 SELECT ARRAY[1.1] || ARRAY[2,3,4];
 SELECT array_agg(x) || array_agg(x) FROM (VALUES (ROW(1,2)), (ROW(3,4))) v(x);
-SELECT ROW(1,2) || array_agg(x) FROM (VALUES (ROW(3,4)), (ROW(5,6))) v(x);
 SELECT * FROM array_op_test WHERE i @> '{32}' ORDER BY seqno;
 SELECT * FROM array_op_test WHERE i && '{32}' ORDER BY seqno;
 SELECT * FROM array_op_test WHERE i @> '{17}' ORDER BY seqno;
@@ -298,16 +283,12 @@ INSERT INTO arraggtest (f1, f2, f3) VALUES
 SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest;
 INSERT INTO arraggtest (f1, f2, f3) VALUES
 ('{3,3,2,4,5,6}','{{white,yellow},{pink,orange}}','{2.1,3.3,1.8,1.7,1.6}');
-SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest;
 INSERT INTO arraggtest (f1, f2, f3) VALUES
 ('{2}','{{black,red},{green,orange}}','{1.6,2.2,2.6,0.4}');
-SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest;
 INSERT INTO arraggtest (f1, f2, f3) VALUES
 ('{4,2,6,7,8,1}','{{red},{black},{purple},{blue},{blue}}',NULL);
-SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest;
 INSERT INTO arraggtest (f1, f2, f3) VALUES
 ('{}','{{pink,white,blue,red,grey,orange}}','{2.1,1.87,1.4,2.2}');
-SELECT max(f1), min(f1), max(f2), min(f2), max(f3), min(f3) FROM arraggtest;
 create type comptype as (f1 int, f2 text);
 create table comptable (c1 comptype, c2 comptype[]);
 insert into comptable
@@ -332,93 +313,23 @@ select * from unnest2(array[[1,2,3],[4,5,6]]);
 drop function unnest1(anyarray);
 drop function unnest2(anyarray);
 select array_fill(null::integer, array[3,3]);
-select array_fill(null::text, array[3,3]);
-select array_fill(7, array[3,3]);
-select array_fill('juhu'::text, array[3,3]);
 select a, a = '{}' as is_eq, array_dims(a)
   from (select array_fill(42, array[0]) as a) ss;
-select a, a = '{}' as is_eq, array_dims(a)
-  from (select array_fill(42, '{}') as a) ss;
-select a, a = '{}' as is_eq, array_dims(a)
-  from (select array_fill(42, '{}', '{}') as a) ss;
 select string_to_array('1|2|3', '|');
-select string_to_array('1|2|3|', '|');
-select string_to_array('1||2|3||', '||');
-select string_to_array('1|2|3', '');
-select string_to_array('', '|');
-select string_to_array('1|2|3', NULL);
-select string_to_array(NULL, '|') IS NULL;
-select string_to_array('abc', '');
-select string_to_array('abc', '', 'abc');
-select string_to_array('abc', ',');
-select string_to_array('abc', ',', 'abc');
-select string_to_array('1,2,3,4,,6', ',');
-select string_to_array('1,2,3,4,,6', ',', '');
-select string_to_array('1,2,3,4,*,6', ',', '*');
 select v, v is null as "is null" from string_to_table('1|2|3', '|') g(v);
-select v, v is null as "is null" from string_to_table('1|2|3|', '|') g(v);
-select v, v is null as "is null" from string_to_table('1||2|3||', '||') g(v);
-select v, v is null as "is null" from string_to_table('1|2|3', '') g(v);
-select v, v is null as "is null" from string_to_table('', '|') g(v);
-select v, v is null as "is null" from string_to_table('1|2|3', NULL) g(v);
-select v, v is null as "is null" from string_to_table(NULL, '|') g(v);
-select v, v is null as "is null" from string_to_table('abc', '') g(v);
-select v, v is null as "is null" from string_to_table('abc', '', 'abc') g(v);
-select v, v is null as "is null" from string_to_table('abc', ',') g(v);
-select v, v is null as "is null" from string_to_table('abc', ',', 'abc') g(v);
-select v, v is null as "is null" from string_to_table('1,2,3,4,,6', ',') g(v);
-select v, v is null as "is null" from string_to_table('1,2,3,4,,6', ',', '') g(v);
-select v, v is null as "is null" from string_to_table('1,2,3,4,*,6', ',', '*') g(v);
 select array_to_string(NULL::int4[], ',') IS NULL;
-select array_to_string('{}'::int4[], ',');
-select array_to_string(array[1,2,3,4,NULL,6], ',');
-select array_to_string(array[1,2,3,4,NULL,6], ',', '*');
-select array_to_string(array[1,2,3,4,NULL,6], NULL);
-select array_to_string(array[1,2,3,4,NULL,6], ',', NULL);
-select array_to_string(string_to_array('1|2|3', '|'), '|');
-select array_length(array[1,2,3], 1);
-select array_length(array[[1,2,3], [4,5,6]], 0);
-select array_length(array[[1,2,3], [4,5,6]], 1);
-select array_length(array[[1,2,3], [4,5,6]], 2);
-select array_length(array[[1,2,3], [4,5,6]], 3);
 select cardinality(NULL::int[]);
-select cardinality('{}'::int[]);
-select cardinality(array[1,2,3]);
-select cardinality('[2:4]={5,6,7}'::int[]);
-select cardinality('{{1,2}}'::int[]);
-select cardinality('{{1,2},{3,4},{5,6}}'::int[]);
-select cardinality('{{{1,9},{5,6}},{{2,3},{3,4}}}'::int[]);
 select array_agg(ar)
   from (values ('{1,2}'::int[]), ('{3,4}'::int[])) v(ar);
 select array_agg(distinct ar order by ar desc)
   from (select array[i / 2] from generate_series(1,10) a(i)) b(ar);
-select array_agg(ar)
-  from (select array_agg(array[i, i+1, i-1])
-        from generate_series(1,2) a(i)) b(ar);
 select array_agg(array[i+1.2, i+1.3, i+1.4]) from generate_series(1,3) g(i);
-select array_agg(array['Hello', i::text]) from generate_series(9,11) g(i);
-select array_agg(array[i, nullif(i, 3), i+1]) from generate_series(1,4) g(i);
 select unnest(array[1,2,3]);
-select * from unnest(array[1,2,3]);
-select unnest(array[1,2,3,4.5]::float8[]);
-select unnest(array[1,2,3,4.5]::numeric[]);
-select unnest(array[1,2,3,null,4,null,null,5,6]);
-select unnest(array[1,2,3,null,4,null,null,5,6]::text[]);
 select abs(unnest(array[1,2,null,-3]));
 select array_remove(array[1,2,2,3], 2);
-select array_remove(array[1,2,2,3], 5);
-select array_remove(array[1,NULL,NULL,3], NULL);
-select array_remove(array['A','CC','D','C','RR'], 'RR');
-select array_remove(array[1.0, 2.1, 3.3], 1);
 select array_remove(array['X','X','X'], 'X') = '{}';
 select array_replace(array[1,2,5,4],5,3);
-select array_replace(array[1,2,5,4],5,NULL);
-select array_replace(array[1,2,NULL,4,NULL],NULL,5);
-select array_replace(array['A','B','DD','B'],'B','CC');
-select array_replace(array[1,NULL,3],NULL,NULL);
-select array_replace(array['AB',NULL,'CDE'],NULL,'12');
 select array(select array[i,i/2] from generate_series(1,5) i);
-select array(select array['Hello', i::text] from generate_series(9,11) i);
 create temp table src (f1 text);
 insert into src
   select string_agg(random()::text,'') from generate_series(1,10000);
@@ -432,50 +343,10 @@ drop table dest;
 drop type textandtext;
 SELECT
     op,
-    width_bucket(op::numeric, ARRAY[1, 3, 5, 10.0]::numeric[]) AS wb_n1,
-    width_bucket(op::numeric, ARRAY[0, 5.5, 9.99]::numeric[]) AS wb_n2,
-    width_bucket(op::numeric, ARRAY[-6, -5, 2.0]::numeric[]) AS wb_n3,
-    width_bucket(op::float8, ARRAY[1, 3, 5, 10.0]::float8[]) AS wb_f1,
-    width_bucket(op::float8, ARRAY[0, 5.5, 9.99]::float8[]) AS wb_f2,
-    width_bucket(op::float8, ARRAY[-6, -5, 2.0]::float8[]) AS wb_f3
-FROM (VALUES
-  (-5.2),
-  (-0.0000000001),
-  (0.000000000001),
-  (1),
-  (1.99999999999999),
-  (2),
-  (2.00000000000001),
-  (3),
-  (4),
-  (4.5),
-  (5),
-  (5.5),
-  (6),
-  (7),
-  (8),
-  (9),
-  (9.99999999999999),
-  (10),
-  (10.0000000000001)
-) v(op);
-SELECT
-    op,
-    width_bucket(op, ARRAY[1, 3, 9, 'NaN', 'NaN']::float8[]) AS wb
-FROM (VALUES
-  (-5.2::float8),
-  (4::float8),
-  (77::float8),
-  ('NaN'::float8)
-) v(op);
-SELECT
-    op,
     width_bucket(op, ARRAY[1, 3, 5, 10]) AS wb_1
 FROM generate_series(0,11) as op;
 SELECT width_bucket(now(),
                     array['yesterday', 'today', 'tomorrow']::timestamptz[]);
-SELECT width_bucket(5, ARRAY[3]);
-SELECT width_bucket(5, '{}');
 SELECT arr, trim_array(arr, 2)
 FROM
 (VALUES ('{1,2,3,4,5,6}'::bigint[]),
@@ -485,9 +356,4 @@ FROM
         ('{{1,10},{2,20},{3,30},{4,40}}')) v(arr);
 SELECT array_shuffle('{1,2,3,4,5,6}'::int[]) <@ '{1,2,3,4,5,6}';
 SELECT array_shuffle('{1,2,3,4,5,6}'::int[]) @> '{1,2,3,4,5,6}';
-SELECT array_dims(array_shuffle('[-1:2][2:3]={{1,2},{3,NULL},{5,6},{7,8}}'::int[]));
-SELECT array_dims(array_shuffle('{{{1,2},{3,NULL}},{{5,6},{7,8}},{{9,10},{11,12}}}'::int[]));
 SELECT array_sample('{1,2,3,4,5,6}'::int[], 3) <@ '{1,2,3,4,5,6}';
-SELECT array_length(array_sample('{1,2,3,4,5,6}'::int[], 3), 1);
-SELECT array_dims(array_sample('[-1:2][2:3]={{1,2},{3,NULL},{5,6},{7,8}}'::int[], 3));
-SELECT array_dims(array_sample('{{{1,2},{3,NULL}},{{5,6},{7,8}},{{9,10},{11,12}}}'::int[], 2));

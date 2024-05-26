@@ -8,7 +8,6 @@ select count(*) from t1;
 insert into t1 values (1);
 insert low_priority into t1 values (1);
 lock table t1 read;
-select count(*) from t1;
 unlock tables;
 lock table t1 write;
 insert into t1 values (1);
@@ -26,11 +25,9 @@ select count(*) = 1 from information_schema.processlist
 unlock tables;
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 insert into t1 values (1), (1);
 delete low_priority from t1 limit 1;
 lock table t1 read;
-select count(*) from t1;
 unlock tables;
 lock table t1 write;
 delete from t1 limit 1;
@@ -46,25 +43,20 @@ select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "alter table t1 add column c2 int";
 unlock tables;
-select count(*) from t1;
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 insert into t1 values (1), (1);
 delete low_priority from t1 limit 1;
 lock table t1 read;
-select count(*) from t1;
 unlock tables;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and 
         info = "lock table t1 write";
 delete from t1 limit 1;
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "rename table t1 to t2";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "alter table t1 add column c2 int";
@@ -117,7 +109,6 @@ select count(*) = 1 from information_schema.processlist
         info = "rename table t1 to t2";
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 insert into t1 values (1);
 delete low_priority from t1 limit 2;
 select count(*) = 1 from information_schema.processlist
@@ -136,7 +127,6 @@ select count(*) = 1 from information_schema.processlist
 lock table t1 read;
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "delete from t1 limit 2";
@@ -167,7 +157,6 @@ select count(*) = 1 from information_schema.processlist
 unlock tables;
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
   where state = "Waiting for table metadata lock" and
         info = "delete from t1 limit 1";
@@ -308,7 +297,6 @@ where state = "Waiting for table metadata lock" and
       info = "insert into t1 values (1)";
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 read";
@@ -325,7 +313,6 @@ where state = "Waiting for table metadata lock" and
       info = "insert low_priority into t1 values (1)";
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 lock table t1 read;
 unlock tables;
 unlock tables;
@@ -335,7 +322,6 @@ where state = "Waiting for table metadata lock" and
       info = "lock table t1 read";
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 delete from t1 limit 1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
@@ -352,7 +338,6 @@ where state = "Waiting for table metadata lock" and
       info = "alter table t1 add primary key (c1)";
 select column_name from information_schema.columns where
   table_schema='test' and table_name='t1';
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "delete from t1 limit 1";
@@ -363,7 +348,6 @@ where state = "Waiting for table metadata lock" and
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "delete low_priority from t1 limit 1";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
@@ -373,7 +357,6 @@ select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "select count(*) from t1";
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
@@ -381,7 +364,6 @@ select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "insert into t1 values (1),(1)";
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
@@ -389,7 +371,6 @@ select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "delete low_priority from t1 limit 1";
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
@@ -398,12 +379,10 @@ where state = "Waiting for table metadata lock" and
       info = "lock table t1 read";
 unlock tables;
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
@@ -412,35 +391,30 @@ select column_name from information_schema.columns where
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "handler t1 open";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "select count(*) from t1";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "delete from t1 limit 2";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "insert low_priority into t1 values (1)";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "alter table t1 add index (not_exist)";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
@@ -448,7 +422,6 @@ select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 read";
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
@@ -462,15 +435,10 @@ select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
 unlock tables;
-select count(*) from t1;
 insert into t2 values (1), (1);
-select count(*) from t2;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "insert into t2 values (1)";
-select count(*) from t1;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "insert into t1 values (1)";
@@ -478,82 +446,63 @@ insert into t1 values (1);
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "alter table t1 add primary key (c1)";
-select count(*) from t1;
 delete from t1 limit 1;
-select count(*) from t1;
-select count(*) from t2;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "alter table t2 add column c2 int";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "select count(*) from t2";
-select count(*) from t1;
-select count(*) from t2;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "alter table t2 drop column c2";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "insert into t2 values (1)";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "alter table t1 add column c2 int";
-select count(*) from t1;
 delete from t1 limit 1;
-select count(*) from t1;
 lock table t2 write;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "select count(*) from t2";
 unlock tables;
-select count(*) from t1;
 lock table t2 write;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "delete from t2 limit 1";
 unlock tables;
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
-select count(*) from t1;
 delete from t1 limit 1;
 unlock tables;
 delete from t1 limit 1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "lock table t1 write";
-select count(*) from t1;
 unlock tables;
-select count(*) from t1;
-select count(*) from t2;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t2 to t3";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "select count(*) from t2";
-select count(*) from t1;
-select count(*) from t2;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t2 to t3";
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "delete from t2 limit 1";
-select count(*) from t1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
-select count(*) from t1;
 delete from t1 limit 1;
 delete from t1 limit 1;
 select count(*) = 1 from information_schema.processlist
 where state = "Waiting for table metadata lock" and
       info = "rename table t1 to t2";
-select count(*) from t1;
 drop table t1, t2;
 drop table if exists t1, t2;
 create table t1 (i int);
@@ -789,8 +738,6 @@ CREATE DATABASE db2;
 ALTER DATABASE db2 DEFAULT CHARACTER SET utf8mb3;
 DROP DATABASE db2;
 CREATE TABLE db1.t1 (a INT);
-CREATE TABLE test.t2 (a INT);
-DROP TABLE test.t2;
 UNLOCK TABLES;
 UNLOCK TABLES;
 UNLOCK TABLES;

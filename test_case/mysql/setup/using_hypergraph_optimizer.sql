@@ -1,0 +1,2 @@
+CREATE TABLE t(x INT);
+INSERT INTO t VALUES (1), (2), (3);

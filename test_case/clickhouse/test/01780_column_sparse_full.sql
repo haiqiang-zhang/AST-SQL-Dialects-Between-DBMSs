@@ -30,17 +30,14 @@ SELECT toUInt32(s) % 5 AS k, groupUniqArray(u % 4) FROM t_sparse_full WHERE s !=
 SELECT max(range(id % 10)[u]) FROM t_sparse_full;
 SELECT '======';
 SELECT '======';
-SELECT sum(u) FROM t_sparse_full GROUP BY id % 3 AS k WITH TOTALS ORDER BY k;
 SELECT '======';
 SELECT sum(u) AS value FROM t_sparse_full GROUP BY id % 3 AS k WITH ROLLUP ORDER BY value;
 SELECT '======';
 SELECT sum(u) AS value FROM t_sparse_full GROUP BY id % 3 AS k WITH CUBE ORDER BY value;
 SELECT '======';
-SELECT sum(id) FROM t_sparse_full GROUP BY u % 3 AS k ORDER BY k;
 SELECT '======';
 SELECT count() FROM t_sparse_full WHERE u % 4 = 0;
 SELECT '======';
-SELECT count() FROM t_sparse_full WHERE u IN (SELECT u FROM t_sparse_full WHERE id % 4 = 2);
 SELECT '======';
 SELECT DISTINCT u FROM t_sparse_full ORDER BY id LIMIT 5;
 SELECT '======';

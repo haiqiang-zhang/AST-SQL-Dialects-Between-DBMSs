@@ -1,7 +1,3 @@
-DROP PROCEDURE IF EXISTS p1;
-CREATE TABLE t1 ( number INT NOT NULL, alpha CHAR(6) NOT NULL );
-INSERT INTO t1 VALUES (1413006,'idlfmv'),
-(1413065,'smpsfz'),(1413127,'sljrhx'),(1413304,'qerfnd');
 SELECT CONCAT_WS('<---->',number,alpha) AS new
 FROM t1 GROUP BY new LIMIT 1;
 drop table t1;
@@ -10,17 +6,6 @@ insert into t1 values ('AAAA', 105, '2003-03-01', 1);
 select * from t1 where concat(A,C,B,D) = 'AAAA2003-03-011051';
 drop table t1;
 select 'a' union select concat('a', -4);
-select 'a' union select concat('a', -4.5);
-select 'a' union select concat('a', -(4 + 1));
-select 'a' union select concat('a', 4 - 5);
-select 'a' union select concat('a', -'3');
-select 'a' union select concat('a', -concat('3',4));
-select 'a' union select concat('a', -0);
-select 'a' union select concat('a', -0.0);
-select 'a' union select concat('a', -0.0000);
-select concat((select x from (select 'a' as x) as t1 ),
-  (select y from (select 'b' as y) as t2 )) from (select 1 union select 2 )
-  as t3;
 create table t1(f1 varchar(6)) charset=utf8mb3;
 insert into t1 values ("123456");
 select concat(f1, 2) a from t1 union select 'x' a from t1;

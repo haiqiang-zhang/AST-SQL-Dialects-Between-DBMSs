@@ -1,6 +1,3 @@
-SET convert_query_to_cnf = 1;
-DROP TABLE IF EXISTS cnf_test;
-CREATE TABLE cnf_test (i Int64) ENGINE = MergeTree() ORDER BY i;
 EXPLAIN SYNTAX SELECT i FROM cnf_test WHERE NOT ((i > 1) OR (i > 2));
 EXPLAIN SYNTAX SELECT i FROM cnf_test WHERE NOT ((i > 1) AND (i > 2));
 EXPLAIN SYNTAX SELECT i FROM cnf_test WHERE ((i > 1) AND (i > 2)) OR ((i > 3) AND (i > 4)) OR ((i > 5) AND (i > 6));

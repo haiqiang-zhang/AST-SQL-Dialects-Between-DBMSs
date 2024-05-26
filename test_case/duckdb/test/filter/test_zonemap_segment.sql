@@ -1,0 +1,16 @@
+SELECT SUM(i) FROM integers WHERE i=1;
+SELECT SUM(i) FROM integers WHERE i=2;
+SELECT SUM(i) FROM integers WHERE i=3;
+SELECT SUM(i) FROM integers WHERE i=4;
+SELECT SUM(i) FROM integers WHERE i=1;
+SELECT SUM(i) FROM integers WHERE i=2;
+SELECT SUM(i) FROM integers WHERE i=3;
+SELECT SUM(i) FROM integers WHERE i=4;
+SELECT SUM(i) FROM integers WHERE i=4;
+SELECT SUM(i) FROM integers WHERE i=5;
+SELECT SUM(i) FROM integers WHERE i=1;
+SELECT SUM(i) FROM integers WHERE i=2;
+SELECT SUM(i) FROM integers WHERE i=3;
+SELECT SUM(i) FROM integers WHERE i=4;
+SELECT SUM(i) FROM integers WHERE i=5;
+SELECT SUM(i) FROM integers WHERE i=6;

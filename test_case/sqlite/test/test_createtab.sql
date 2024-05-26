@@ -1,7 +1,3 @@
-PRAGMA auto_vacuum=0;
-PRAGMA encoding;
-CREATE TABLE t2(a,b);
-INSERT INTO t2 VALUES(1,2);
 SELECT * FROM t2;
 CREATE TABLE t3(a,b);
 INSERT INTO t3 VALUES(4,5);

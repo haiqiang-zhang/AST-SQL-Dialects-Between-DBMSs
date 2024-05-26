@@ -1,9 +1,3 @@
-PRAGMA freelist_count;
-CREATE TABLE abc(a, b, c);
-PRAGMA freelist_count;
-DROP TABLE abc;
-PRAGMA freelist_count;
-PRAGMA main.freelist_count;
 ATTACH 'test2.db' AS aux;
 PRAGMA aux.auto_vacuum=OFF;
 PRAGMA aux.freelist_count;
@@ -34,8 +28,7 @@ PRAGMA aux1.cache_size=50;
 BEGIN;
 PRAGMA lock_status;
 PRAGMA cache_spill=ON;
--- Applies to all databases
-  BEGIN;
+BEGIN;
 PRAGMA lock_status;
 PRAGMA page_size=16384;
 CREATE TABLE t1(x);

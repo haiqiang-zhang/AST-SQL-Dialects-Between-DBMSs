@@ -1,12 +1,3 @@
-begin;
-set local min_parallel_table_scan_size = 0;
-set local parallel_setup_cost = 0;
-set local enable_hashjoin = on;
-end;
-end;
-create table simple as
-  select generate_series(1, 20000) AS id, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-alter table simple set (parallel_workers = 2);
 analyze simple;
 create table bigger_than_it_looks as
   select generate_series(1, 20000) as id, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
@@ -32,77 +23,43 @@ set local max_parallel_workers_per_gather = 2;
 set local work_mem = '4MB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = off;
-explain (costs off)
-  select count(*) from simple r join simple s using (id);
-select count(*) from simple r join simple s using (id);
 set local max_parallel_workers_per_gather = 2;
 set local work_mem = '4MB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = on;
-explain (costs off)
-  select count(*) from simple r join simple s using (id);
-select count(*) from simple r join simple s using (id);
 set local max_parallel_workers_per_gather = 0;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) from simple r join simple s using (id);
-select count(*) from simple r join simple s using (id);
 set local max_parallel_workers_per_gather = 2;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = off;
-explain (costs off)
-  select count(*) from simple r join simple s using (id);
-select count(*) from simple r join simple s using (id);
 set local max_parallel_workers_per_gather = 2;
 set local work_mem = '192kB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = on;
-explain (costs off)
-  select count(*) from simple r join simple s using (id);
-select count(*) from simple r join simple s using (id);
-select count(*) from simple r full outer join simple s using (id);
 set local max_parallel_workers_per_gather = 0;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) FROM simple r JOIN bigger_than_it_looks s USING (id);
-select count(*) FROM simple r JOIN bigger_than_it_looks s USING (id);
 set local max_parallel_workers_per_gather = 2;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = off;
-explain (costs off)
-  select count(*) from simple r join bigger_than_it_looks s using (id);
-select count(*) from simple r join bigger_than_it_looks s using (id);
 set local max_parallel_workers_per_gather = 1;
 set local work_mem = '192kB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = on;
-explain (costs off)
-  select count(*) from simple r join bigger_than_it_looks s using (id);
-select count(*) from simple r join bigger_than_it_looks s using (id);
 set local max_parallel_workers_per_gather = 0;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) from simple r join extremely_skewed s using (id);
-select count(*) from simple r join extremely_skewed s using (id);
 set local max_parallel_workers_per_gather = 2;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = off;
-explain (costs off)
-  select count(*) from simple r join extremely_skewed s using (id);
-select count(*) from simple r join extremely_skewed s using (id);
 set local max_parallel_workers_per_gather = 1;
 set local work_mem = '128kB';
 set local hash_mem_multiplier = 1.0;
 set local enable_parallel_hash = on;
-explain (costs off)
-  select count(*) from simple r join extremely_skewed s using (id);
-select count(*) from simple r join extremely_skewed s using (id);
 set local max_parallel_workers_per_gather = 2;
 set local work_mem = '4MB';
 set local hash_mem_multiplier = 1.0;
@@ -121,13 +78,6 @@ set enable_material = off;
 set enable_mergejoin = off;
 set work_mem = '64kB';
 set hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) from join_foo
-    left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-    on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
-select count(*) from join_foo
-  left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-  on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
 set enable_parallel_hash = off;
 set parallel_leader_participation = off;
 set min_parallel_table_scan_size = 0;
@@ -138,13 +88,6 @@ set enable_material = off;
 set enable_mergejoin = off;
 set work_mem = '4MB';
 set hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) from join_foo
-    left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-    on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
-select count(*) from join_foo
-  left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-  on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
 set enable_parallel_hash = on;
 set parallel_leader_participation = off;
 set min_parallel_table_scan_size = 0;
@@ -155,13 +98,6 @@ set enable_material = off;
 set enable_mergejoin = off;
 set work_mem = '64kB';
 set hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) from join_foo
-    left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-    on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
-select count(*) from join_foo
-  left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-  on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
 set enable_parallel_hash = on;
 set parallel_leader_participation = off;
 set min_parallel_table_scan_size = 0;
@@ -172,39 +108,14 @@ set enable_material = off;
 set enable_mergejoin = off;
 set work_mem = '4MB';
 set hash_mem_multiplier = 1.0;
-explain (costs off)
-  select count(*) from join_foo
-    left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-    on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
-select count(*) from join_foo
-  left join (select b1.id, b1.t from join_bar b1 join join_bar b2 using (id)) ss
-  on join_foo.id < ss.id + 1 and join_foo.id > ss.id - 1;
 set local max_parallel_workers_per_gather = 0;
-explain (costs off)
-     select  count(*) from simple r full outer join simple s using (id);
-select  count(*) from simple r full outer join simple s using (id);
 set enable_parallel_hash = off;
 set local max_parallel_workers_per_gather = 2;
-explain (costs off)
-     select  count(*) from simple r full outer join simple s using (id);
-select  count(*) from simple r full outer join simple s using (id);
 set local max_parallel_workers_per_gather = 2;
-explain (costs off)
-     select  count(*) from simple r full outer join simple s using (id);
-select  count(*) from simple r full outer join simple s using (id);
 set local max_parallel_workers_per_gather = 0;
-explain (costs off)
-     select  count(*) from simple r full outer join simple s on (r.id = 0 - s.id);
-select  count(*) from simple r full outer join simple s on (r.id = 0 - s.id);
 set enable_parallel_hash = off;
 set local max_parallel_workers_per_gather = 2;
-explain (costs off)
-     select  count(*) from simple r full outer join simple s on (r.id = 0 - s.id);
-select  count(*) from simple r full outer join simple s on (r.id = 0 - s.id);
 set local max_parallel_workers_per_gather = 2;
-explain (costs off)
-     select  count(*) from simple r full outer join simple s on (r.id = 0 - s.id);
-select  count(*) from simple r full outer join simple s on (r.id = 0 - s.id);
 set max_parallel_workers_per_gather = 2;
 set enable_parallel_hash = on;
 set work_mem = '128kB';

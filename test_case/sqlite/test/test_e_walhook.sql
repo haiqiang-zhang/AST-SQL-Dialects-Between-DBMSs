@@ -1,9 +1,3 @@
-PRAGMA journal_mode = wal;
-INSERT INTO t1 VALUES(2);
-BEGIN;
-INSERT INTO t1 VALUES(3);
-INSERT INTO t1 VALUES(4);
-INSERT INTO t1 VALUES(5);
 ATTACH 'test.db2' AS aux;
 CREATE TABLE aux.t2(x);
 PRAGMA aux.journal_mode = wal;

@@ -1,10 +1,3 @@
--- Tests vector search in ClickHouse, i.e. Annoy and Usearch indexes. Both index types share similarities in implementation and usage,
--- therefore they are tested in a single file.
-
--- This file contains tests for the non-standard default granularity of vector search indexes.
-
-SET allow_experimental_annoy_index = 1;
-SET allow_experimental_usearch_index = 1;
 SELECT 'Test the default index granularity for vector search indexes (CREATE TABLE AND ALTER TABLE), should be 100 million for Annoy and USearch';
 SELECT '- Annoy';
 DROP TABLE IF EXISTS tab;

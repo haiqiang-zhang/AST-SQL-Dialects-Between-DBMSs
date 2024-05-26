@@ -1,4 +1,3 @@
-ALTER TABLE t_vertical_merges ADD COLUMN c String;
 OPTIMIZE TABLE t_vertical_merges FINAL;
 SELECT a, b, c FROM t_vertical_merges;
 DROP TABLE IF EXISTS t_vertical_merges;

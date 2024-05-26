@@ -1,16 +1,10 @@
-SET optimize_functions_to_subcolumns = 1;
 SELECT t1.1 FROM t_tuple_element;
 EXPLAIN SYNTAX SELECT t1.1 FROM t_tuple_element;
 SELECT tupleElement(t1, 2) FROM t_tuple_element;
 EXPLAIN SYNTAX SELECT tupleElement(t1, 2) FROM t_tuple_element;
-SELECT tupleElement(t1, 'a') FROM t_tuple_element;
-EXPLAIN SYNTAX SELECT tupleElement(t1, 'a') FROM t_tuple_element;
 SELECT t2.1 FROM t_tuple_element;
 EXPLAIN SYNTAX SELECT t2.1 FROM t_tuple_element;
-SELECT tupleElement(t2, 1) FROM t_tuple_element;
-EXPLAIN SYNTAX SELECT tupleElement(t2, 1) FROM t_tuple_element;
 DROP TABLE t_tuple_element;
 WITH (1, 2) AS t SELECT t.1, t.2;
 EXPLAIN SYNTAX WITH (1, 2) AS t SELECT t.1, t.2;
 WITH (1, 2)::Tuple(a UInt32, b UInt32) AS t SELECT t.1, tupleElement(t, 'b');
-EXPLAIN SYNTAX WITH (1, 2)::Tuple(a UInt32, b UInt32) AS t SELECT t.1, tupleElement(t, 'b');

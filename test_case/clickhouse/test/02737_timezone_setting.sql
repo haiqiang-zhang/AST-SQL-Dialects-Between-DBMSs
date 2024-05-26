@@ -8,8 +8,6 @@ SELECT toDateTime64('2002-12-12 23:23:23.123', 3) AS dt64, toString(dt64) SETTIN
 CREATE TABLE test_tz_setting (d DateTime('UTC')) Engine=Memory AS SELECT toDateTime('2000-01-01 00:00:00');
 INSERT INTO test_tz_setting VALUES ('2000-01-01 01:00:00');
 INSERT INTO test_tz_setting VALUES (toDateTime('2000-01-02 02:00:00'));
--- Test parsing in WHERE filter, shall have the same logic as insert
 SELECT d FROM test_tz_setting WHERE d == '2000-01-01 01:00:00';
 SELECT d FROM test_tz_setting WHERE d == toDateTime('2000-01-01 02:00:00');
--- Cleanup table
 DROP TABLE test_tz_setting SYNC;

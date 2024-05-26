@@ -1,0 +1,13 @@
+create table A as select 1 as "X", 2 as "Y";
+create table B as select 1 as "X", 3 as "Z";
+DROP TABLE "A";
+DROP TABLE "B";
+create table A as select 1 as "X", 2 as "Y";
+create table B as select 1 as X, 3 as "Z";
+DROP TABLE "A";
+DROP TABLE "B";
+create table A as select 1 as "hello", 2 as x;
+create table B as select 1 as "HELLO", 3 as x2;
+create table C as select 1 as "hEllO", 4 as x3;
+create table D as select 1 as "HElLo", 5 as x4;
+create table E as select 1 as "heLLo", 6 as x5;

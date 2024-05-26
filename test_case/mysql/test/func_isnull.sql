@@ -31,10 +31,6 @@ select * from t3 left join
 (t2 outr2 join t2 outr join t1)
 on (outr.pk = t3.pk) and (t1.col_int_key = t3.pk) and isnull(t1.col_date_key)
 and (outr2.pk <> t3.pk);
-select * from t3 join
-(t2 outr2 join t2 outr join t1)
-on (outr.pk = t3.pk) and (t1.col_int_key = t3.pk) and isnull(t1.col_date_key)
-and (outr2.pk <> t3.pk);
 delete from t3;
 INSERT INTO t3 VALUES(3);
 select * from t3, t1 where t1.col_date_key is null;

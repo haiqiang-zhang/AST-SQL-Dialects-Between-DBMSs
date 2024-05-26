@@ -1,0 +1,7 @@
+PRAGMA recursive_triggers = 1;
+CREATE TABLE t1(a);
+CREATE INDEX i1 ON t1(a);
+INSERT INTO t1(a) VALUES(0),(2),(3),(8),(9);
+CREATE TABLE t2(b);
+CREATE TABLE t3(c);
+INSERT INTO t3 VALUES(2);

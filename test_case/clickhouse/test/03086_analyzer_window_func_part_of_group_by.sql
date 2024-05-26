@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer=1;
 SELECT
     ver,
     max(ver) OVER () AS ver_max

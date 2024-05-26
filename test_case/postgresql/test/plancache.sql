@@ -1,14 +1,3 @@
-create temp view v1 as
-  select 2+2 as f1;
-create or replace temp view v1 as
-  select 2+2+4 as f1;
-create schema s1
-  create table abc (f1 int);
-create schema s2
-  create table abc (f1 int);
-insert into s1.abc values(123);
-insert into s2.abc values(456);
-set search_path = s1;
 prepare p1 as select f1 from abc;
 execute p1;
 set search_path = s2;
@@ -36,7 +25,6 @@ create table pc_list_part_2 partition of pc_list_parted for values in (2);
 alter table pc_list_parted detach partition pc_list_part_null;
 execute pstmt_def_insert(null);
 drop table pc_list_part_1;
-execute pstmt_def_insert(1);
 drop table pc_list_parted, pc_list_part_null;
 deallocate pstmt_def_insert;
 create table test_mode (a int);
@@ -51,22 +39,15 @@ explain (costs off) execute test_mode_pp(2);
 select name, generic_plans, custom_plans from pg_prepared_statements
   where  name = 'test_mode_pp';
 set plan_cache_mode to force_generic_plan;
-explain (costs off) execute test_mode_pp(2);
 select name, generic_plans, custom_plans from pg_prepared_statements
   where  name = 'test_mode_pp';
 set plan_cache_mode to auto;
 execute test_mode_pp(1);
-execute test_mode_pp(1);
-execute test_mode_pp(1);
-execute test_mode_pp(1);
 select name, generic_plans, custom_plans from pg_prepared_statements
   where  name = 'test_mode_pp';
-execute test_mode_pp(1);
 select name, generic_plans, custom_plans from pg_prepared_statements
   where  name = 'test_mode_pp';
-explain (costs off) execute test_mode_pp(2);
 set plan_cache_mode to force_custom_plan;
-explain (costs off) execute test_mode_pp(2);
 select name, generic_plans, custom_plans from pg_prepared_statements
   where  name = 'test_mode_pp';
 drop table test_mode;

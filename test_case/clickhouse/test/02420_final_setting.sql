@@ -4,7 +4,6 @@ insert into replacing_mt values ('abc');
 insert into replacing_mt values ('abc');
 select count() from replacing_mt;
 set final = 1;
-select count() from replacing_mt;
 create table if not exists lhs (x String) engine=ReplacingMergeTree() ORDER BY x;
 create table if not exists rhs (x String) engine=ReplacingMergeTree() ORDER BY x;
 insert into lhs values ('abc');
@@ -12,18 +11,14 @@ insert into lhs values ('abc');
 insert into rhs values ('abc');
 insert into rhs values ('abc');
 set final = 0;
-select count() from lhs inner join rhs on lhs.x = rhs.x;
 set final = 1;
-select count() from lhs inner join rhs on lhs.x = rhs.x;
 set final = 1;
 create table if not exists regular_mt_table (x String) engine=MergeTree() ORDER BY x;
 insert into regular_mt_table values ('abc');
 insert into regular_mt_table values ('abc');
-select count() from regular_mt_table;
 create materialized VIEW mv_regular_mt_table TO regular_mt_table AS SELECT * FROM regular_mt_table;
 create view nv_regular_mt_table AS SELECT * FROM mv_regular_mt_table;
 set final=1;
-select count() from nv_regular_mt_table;
 create table if not exists left_table (id UInt64, val_left String) engine=ReplacingMergeTree() ORDER BY id;
 create table if not exists middle_table (id UInt64, val_middle String) engine=MergeTree() ORDER BY id;
 create table if not exists right_table (id UInt64, val_right String) engine=ReplacingMergeTree() ORDER BY id;
@@ -35,8 +30,6 @@ insert into middle_table values (1,'b');
 insert into right_table values (1,'a');
 insert into right_table values (1,'b');
 insert into right_table values (1,'c');
--- 1 c a c
--- 1 c b c
 select left_table.id,val_left, val_middle, val_right from left_table
                                                               inner join middle_table on left_table.id = middle_table.id
                                                               inner join right_table on middle_table.id = right_table.id
@@ -81,5 +74,4 @@ insert into table_to_merge_b values (2,'b');
 insert into table_to_merge_c values (3,'a');
 insert into table_to_merge_c values (3,'b');
 insert into table_to_merge_c values (3,'c');
--- 1 c, 2 a, 2 b, 3 c
 SELECT * FROM merge_table ORDER BY id, val;

@@ -1,10 +1,3 @@
-CREATE TEMP TABLE t1(a, b);
-CREATE INDEX i1 ON t1(a, b);
-PRAGMA temp.integrity_check;
-CREATE TEMP TABLE t2(a, b);
-INSERT INTO t2 VALUES(1, 2);
-BEGIN;
-INSERT INTO t2 VALUES(3, 4);
 SELECT * FROM t2;
 SELECT * FROM t2;
 SELECT count(*) FROM t1;
@@ -18,7 +11,6 @@ BEGIN;
 DELETE FROM t1 WHERE rowid%2;
 PRAGMA incremental_vacuum(4);
 PRAGMA integrity_check;
-SELECT count(*) FROM t1;
 PRAGMA integrity_check;
 PRAGMA page_size;
 PRAGMA cache_size = 15;

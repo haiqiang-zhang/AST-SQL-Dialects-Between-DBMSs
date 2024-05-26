@@ -1,1 +1,0 @@
-CREATE TEMPORARY TABLE test_00645 (d DateTime) ENGINE = Memory;

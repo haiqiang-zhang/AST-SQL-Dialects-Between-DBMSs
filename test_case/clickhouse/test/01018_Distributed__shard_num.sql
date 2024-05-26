@@ -1,18 +1,3 @@
--- make the order static
-SET max_threads = 1;
-SET distributed_foreground_insert = 1;
-DROP TABLE IF EXISTS mem1;
-DROP TABLE IF EXISTS mem2;
-DROP TABLE IF EXISTS mem3;
-DROP TABLE IF EXISTS dist_1;
-DROP TABLE IF EXISTS dist_2;
-DROP TABLE IF EXISTS dist_3;
-CREATE TABLE mem1 (key Int) Engine=Memory();
-INSERT INTO mem1 VALUES (10);
-CREATE TABLE mem2 (key Int) Engine=Memory();
-INSERT INTO mem2 VALUES (100);
-CREATE TABLE mem3 (key Int, _shard_num String) Engine=Memory();
-INSERT INTO mem3 VALUES (100, 'foo');
 SELECT 'dist_1';
 SELECT 'dist_2';
 SELECT 'JOIN system.clusters';

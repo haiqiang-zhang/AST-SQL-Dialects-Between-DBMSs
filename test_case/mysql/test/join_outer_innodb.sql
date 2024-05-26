@@ -1,7 +1,5 @@
 SELECT COUNT(*) FROM t2 LEFT JOIN t1 ON t2.fkey = t1.id 
   WHERE t1.name LIKE 'A%';
-SELECT COUNT(*) FROM t2 LEFT JOIN t1 ON t2.fkey = t1.id 
-  WHERE t1.name LIKE 'A%' OR FALSE;
 DROP TABLE t1,t2;
 CREATE TABLE t1 (
   col_int INT,

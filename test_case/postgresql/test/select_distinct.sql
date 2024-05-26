@@ -1,6 +1,3 @@
-SET work_mem='64kB';
-SET enable_hashagg=FALSE;
-SET jit_above_cost=0;
 EXPLAIN (costs off)
 SELECT DISTINCT g%1000 FROM generate_series(0,9999) g;
 CREATE TABLE distinct_group_1 AS

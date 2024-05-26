@@ -1,4 +1,3 @@
-ALTER TABLE cool_table ADD COLUMN IF NOT EXISTS `n.lc2` Array(LowCardinality(String));
 SELECT n.lc1, n.lc2 FROM cool_table ORDER BY id;
 DROP TABLE IF EXISTS cool_table;
 CREATE TABLE IF NOT EXISTS cool_table

@@ -1,5 +1,3 @@
-CREATE INDEX i1 ON t1(a, b);
-CREATE INDEX i2 ON t1(b, a);
 REINDEX;
 REINDEX nocase;
 REINDEX binary;
@@ -27,7 +25,6 @@ ATTACH 'test.db2' AS aux;
 CREATE TABLE t2(x);
 REINDEX;
 REINDEX t1;
-REINDEX aux.t1;
 REINDEX t2;
 CREATE TABLE collA(x);
 REINDEX collA;

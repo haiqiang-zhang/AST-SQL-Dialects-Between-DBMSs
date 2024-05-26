@@ -1,4 +1,3 @@
-SET replication_alter_partitions_sync = 2;
 SELECT '====== remove column comment ======';
 SELECT '====== remove column codec ======';
 SELECT '====== remove column default ======';

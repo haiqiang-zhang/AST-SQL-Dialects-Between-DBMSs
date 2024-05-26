@@ -1,4 +1,3 @@
-set log_queries=1;
 select '01231_log_queries_min_type/QUERY_START';
 system flush logs;
 set log_queries_min_type='EXCEPTION_BEFORE_START';

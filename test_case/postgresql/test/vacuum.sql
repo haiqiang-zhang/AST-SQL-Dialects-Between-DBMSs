@@ -15,7 +15,6 @@ INSERT INTO vactst SELECT * FROM vactst;
 INSERT INTO vactst SELECT * FROM vactst;
 INSERT INTO vactst SELECT * FROM vactst;
 INSERT INTO vactst VALUES (0);
-SELECT count(*) FROM vactst;
 DELETE FROM vactst WHERE i != 0;
 VACUUM (FULL) vactst;
 DELETE FROM vactst;

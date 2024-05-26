@@ -1,4 +1,3 @@
-set allow_experimental_analyzer = 1;
 WITH
     -- Input
     44100 AS sample_frequency

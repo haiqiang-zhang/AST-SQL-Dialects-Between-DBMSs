@@ -1,8 +1,4 @@
 SELECT json_valid( CAST('{"a":1}' AS BLOB) );
-SELECT json_valid( CAST('{"a":1}' AS BLOB), 1);
-SELECT json_valid( CAST('{"a":1}' AS BLOB), 2);
-SELECT json_valid( CAST('{"a":1}' AS BLOB), 4);
-SELECT json_valid( CAST('{"a":1}' AS BLOB), 8);
 SELECT CAST('{"a":123}' AS blob) -> 'a';
 SELECT CAST('{"a":123}' AS blob) ->> 'a';
 SELECT json_extract(CAST('{"a":123}' AS blob), '$.a');

@@ -1,4 +1,3 @@
-set optimize_use_projections = 1, use_index_for_in_with_subqueries = 0;
 select sum(j), avg(k) from x where i in (select number from numbers(4));
 select j, k from x where i in (select number from numbers(4));
 drop table x;

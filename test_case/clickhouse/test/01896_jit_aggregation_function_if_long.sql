@@ -1,5 +1,3 @@
-SET compile_aggregate_expressions = 1;
-SET min_count_to_compile_aggregate_expression = 0;
 SELECT 'Test unsigned integer values';
 DROP TABLE IF EXISTS test_table_unsigned_values;
 CREATE TABLE test_table_unsigned_values
@@ -36,13 +34,6 @@ CREATE TABLE test_table_signed_values
     predicate_value UInt8
 ) ENGINE=TinyLog;
 INSERT INTO test_table_signed_values SELECT number % 3, number, number, number, number, if(number % 2 == 0, 1, 0) FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    sumIf(value1, predicate_value),
-    sumIf(value2, predicate_value),
-    sumIf(value3, predicate_value),
-    sumIf(value4, predicate_value)
-FROM test_table_signed_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_signed_values;
 SELECT 'Test float values';
 DROP TABLE IF EXISTS test_table_float_values;
@@ -56,11 +47,6 @@ CREATE TABLE test_table_float_values
     predicate_value UInt8
 ) ENGINE=TinyLog;
 INSERT INTO test_table_float_values SELECT number % 3, number, number, if(number % 2 == 0, 1, 0) FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    sumIf(value1, predicate_value),
-    sumIf(value2, predicate_value)
-FROM test_table_float_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_float_values;
 SELECT 'Test nullable unsigned integer values';
 DROP TABLE IF EXISTS test_table_nullable_unsigned_values;
@@ -76,13 +62,6 @@ CREATE TABLE test_table_nullable_unsigned_values
     predicate_value UInt8
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_unsigned_values SELECT number % 3, number, number, number, number, if(number % 2 == 0, 1, 0)  FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    sumIf(value1, predicate_value),
-    sumIf(value2, predicate_value),
-    sumIf(value3, predicate_value),
-    sumIf(value4, predicate_value)
-FROM test_table_nullable_unsigned_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_unsigned_values;
 SELECT 'Test nullable signed integer values';
 DROP TABLE IF EXISTS test_table_nullable_signed_values;
@@ -98,13 +77,6 @@ CREATE TABLE test_table_nullable_signed_values
     predicate_value UInt8
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_signed_values SELECT number % 3, number, number, number, number, if(number % 2 == 0, 1, 0) FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    sumIf(value1, predicate_value),
-    sumIf(value2, predicate_value),
-    sumIf(value3, predicate_value),
-    sumIf(value4, predicate_value)
-FROM test_table_nullable_signed_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_signed_values;
 SELECT 'Test nullable float values';
 DROP TABLE IF EXISTS test_table_nullable_float_values;
@@ -118,11 +90,6 @@ CREATE TABLE test_table_nullable_float_values
     predicate_value UInt8
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_float_values SELECT number % 3, number, number, if(number % 2 == 0, 1, 0) FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    sumIf(value1, predicate_value),
-    sumIf(value2, predicate_value)
-FROM test_table_nullable_float_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_float_values;
 SELECT 'Test null specifics';
 DROP TABLE IF EXISTS test_table_null_specifics;
@@ -139,12 +106,6 @@ CREATE TABLE test_table_null_specifics
 INSERT INTO test_table_null_specifics VALUES (0, 1, 1, NULL, 1);
 INSERT INTO test_table_null_specifics VALUES (0, 2, NULL, NULL, 1);
 INSERT INTO test_table_null_specifics VALUES (0, 3, 3, NULL, 1);
-SELECT
-    id,
-    sumIf(value1, predicate_value),
-    sumIf(value2, predicate_value),
-    sumIf(value3, predicate_value)
-FROM test_table_null_specifics GROUP BY id ORDER BY id;
 DROP TABLE IF EXISTS test_table_null_specifics;
 SELECT 'Test null variadic';
 DROP TABLE IF EXISTS test_table_null_specifics;

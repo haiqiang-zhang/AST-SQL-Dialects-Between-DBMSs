@@ -1,0 +1,2 @@
+SELECT * FROM integers ORDER BY 1;
+SELECT * FROM integers ORDER BY 1;

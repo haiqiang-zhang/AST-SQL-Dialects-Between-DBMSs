@@ -1,4 +1,3 @@
-SET enable_optimize_predicate_expression = 0;
 SELECT * FROM (
     SELECT a, t1.val as val1, t2.val as val2
     FROM t t1

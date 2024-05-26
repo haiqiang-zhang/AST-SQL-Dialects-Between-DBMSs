@@ -1,11 +1,6 @@
 select release_lock("lock_bug26141_sync") into @a;
 select get_lock("lock_bug26141_wait", 1000) into @a;
-select get_lock("lock_bug26141_wait", 0);
-select get_lock("lock_bug26141_sync", /* must not be priorly locked */ 0);
-select get_lock("lock_bug26141_sync", 1000);
 update t1 set c=3 where c=1;
-select release_lock("lock_bug26141_sync");
-select release_lock("lock_bug26141_wait");
 select * from t1;
 select * from t2;
 select * from t3;

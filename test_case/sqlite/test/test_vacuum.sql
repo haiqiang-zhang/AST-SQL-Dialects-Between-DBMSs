@@ -1,16 +1,3 @@
-BEGIN;
-CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c);
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-INSERT INTO t1 SELECT NULL, b||'-'||rowid, c||'-'||rowid FROM t1;
-CREATE INDEX i1 ON t1(b,c);
-CREATE UNIQUE INDEX i2 ON t1(c,a);
-CREATE TABLE t2 AS SELECT * FROM t1;
-DROP TABLE t2;
 SELECT substr(name,1,3) FROM sqlite_master;
 VACUUM;
 BEGIN;
@@ -30,11 +17,7 @@ VACUUM;
 BEGIN;
 CREATE TABLE t6 AS SELECT * FROM t1;
 CREATE TABLE t7 AS SELECT * FROM t1;
--- The "SELECT * FROM sqlite_master" statement ensures that this test
-    -- works when shared-cache is enabled. If shared-cache is enabled, then
-    -- db3 shares a cache with db2 (but not db - it was opened as 
-    -- "./test.db").
-    SELECT * FROM sqlite_master;
+SELECT * FROM sqlite_master;
 SELECT * FROM t7 LIMIT 1;
 VACUUM;
 INSERT INTO t7 VALUES(1234567890,'hello','world');
@@ -45,7 +28,6 @@ INSERT INTO t7 SELECT * FROM t6;
 SELECT count(*) FROM t7;
 PRAGMA integrity_check;
 DELETE FROM t7;
-SELECT count(*) FROM t7;
 PRAGMA integrity_check;
 PRAGMA empty_result_callbacks=on;
 VACUUM;
@@ -68,7 +50,6 @@ select * from "abc abc";
 DELETE FROM "abc abc";
 INSERT INTO "abc abc" VALUES(X'00112233', NULL, NULL);
 VACUUM;
-select count(*) from "abc abc" WHERE a = X'00112233';
 VACUUM;
 CREATE TABLE t2(t);
 DROP TABLE t2;

@@ -1,7 +1,3 @@
-SET allow_experimental_object_type = 1;
-DROP TABLE IF EXISTS t_json;
-CREATE TABLE t_json(id UInt64, data Object('JSON'))
-ENGINE = MergeTree ORDER BY tuple();
 SYSTEM STOP MERGES t_json;
 SELECT name, column, type
 FROM system.parts_columns

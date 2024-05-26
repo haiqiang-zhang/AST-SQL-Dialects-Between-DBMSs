@@ -1,4 +1,3 @@
-SET log_queries=1;
 SELECT 1;
 SYSTEM FLUSH LOGS;
 SELECT 1 /* QUERY_GROUP_ID:main_dashboard_top_query */;

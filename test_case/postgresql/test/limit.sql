@@ -1,5 +1,3 @@
-begin;
-rollback;
 SELECT
   (SELECT n
      FROM (VALUES (1)) AS x,

@@ -1,5 +1,3 @@
-CREATE INDEX i1 ON t1(b);
-CREATE VIEW v2 AS SELECT 15,22;
 SELECT type, name, tbl_name, '|' FROM sqlite_master;
 PRAGMA writable_schema=on;
 UPDATE sqlite_master SET tbl_name=NULL WHERE name='t1';

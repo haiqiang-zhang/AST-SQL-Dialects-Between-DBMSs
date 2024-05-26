@@ -1,4 +1,3 @@
-DELETE FROM test_apply_deleted_mask WHERE id % 2 = 0;
 SELECT 'Normal SELECT does not see deleted rows';
 SELECT *, _row_exists FROM test_apply_deleted_mask;
 SELECT 'With the setting disabled the deleted rows are visible';

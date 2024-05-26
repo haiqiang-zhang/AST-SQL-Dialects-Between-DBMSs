@@ -1,4 +1,3 @@
-ALTER TABLE rename_table RENAME COLUMN value1 TO old_value1, RENAME COLUMN value2 TO value1;
 SHOW CREATE TABLE rename_table;
 INSERT INTO rename_table VALUES (4, 5, 6);
 ALTER TABLE rename_table RENAME COLUMN old_value1 TO v1, RENAME COLUMN value1 TO v2, RENAME COLUMN key to k;

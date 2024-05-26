@@ -1,7 +1,2 @@
 SELECT count() FROM uuid WHERE id =  '00000000-0000-03f8-9cb8-cb1b82fb3900';
-SELECT count() FROM uuid WHERE id != '00000000-0000-03f8-9cb8-cb1b82fb3900';
-SELECT count() FROM uuid WHERE id <  '00000000-0000-03f8-9cb8-cb1b82fb3900';
-SELECT count() FROM uuid WHERE id >  '00000000-0000-03f8-9cb8-cb1b82fb3900';
-SELECT count() FROM uuid WHERE id <= '00000000-0000-03f8-9cb8-cb1b82fb3900';
-SELECT count() FROM uuid WHERE id >= '00000000-0000-03f8-9cb8-cb1b82fb3900';
 DROP TABLE uuid;

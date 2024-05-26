@@ -1,1 +1,0 @@
-SET optimize_skip_unused_shards=1, optimize_skip_unused_shards_rewrite_in=1;

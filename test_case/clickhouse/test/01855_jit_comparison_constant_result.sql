@@ -1,5 +1,3 @@
-SET compile_expressions = 1;
-SET min_count_to_compile_expression = 0;
 SELECT 'ComparisionOperator column with same column';
 DROP TABLE IF EXISTS test_table;
 CREATE TABLE test_table (a UInt64) ENGINE = MergeTree() ORDER BY tuple();

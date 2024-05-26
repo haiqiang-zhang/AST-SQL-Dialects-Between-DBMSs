@@ -1,5 +1,3 @@
-delete from t1 where a=4;
-insert into t1 values (NULL,5),(NULL,6);
 select * from t1;
 delete from t1 where a=6;
 ALTER TABLE t1 add c int;

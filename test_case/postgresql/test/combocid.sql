@@ -1,17 +1,3 @@
-CREATE TEMP TABLE combocidtest (foobar int);
-BEGIN;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest SELECT 1 LIMIT 0;
-INSERT INTO combocidtest VALUES (1);
-INSERT INTO combocidtest VALUES (2);
 SELECT ctid,cmin,* FROM combocidtest;
 SAVEPOINT s1;
 UPDATE combocidtest SET foobar = foobar + 10;

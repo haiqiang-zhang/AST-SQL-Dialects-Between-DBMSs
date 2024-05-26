@@ -41,7 +41,5 @@ SELECT @@session.session_track_schema;
 SELECT @@global.session_track_system_variables;
 SELECT @@session.session_track_system_variables;
 SELECT @@session.session_track_system_variables;
-CREATE TABLE test.t(i INT);
-DROP TABLE test.t;
 SELECT @@session.session_track_state_change;
 SELECT @@session.session_track_state_change;

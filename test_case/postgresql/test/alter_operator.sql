@@ -1,5 +1,3 @@
-CREATE FUNCTION alter_op_test_fn(boolean, boolean)
-RETURNS boolean AS $$ SELECT NULL::BOOLEAN; $$ LANGUAGE sql IMMUTABLE;
 SELECT oprrest, oprjoin FROM pg_operator WHERE oprname = '==='
   AND oprleft = 'boolean'::regtype AND oprright = 'boolean'::regtype;
 SELECT oprrest, oprjoin FROM pg_operator WHERE oprname = '==='

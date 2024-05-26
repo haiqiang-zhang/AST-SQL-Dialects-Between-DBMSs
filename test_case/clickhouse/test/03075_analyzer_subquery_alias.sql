@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer=1;
 SELECT
     sum(q0.a2) AS a1,
     sum(q0.a1) AS a9

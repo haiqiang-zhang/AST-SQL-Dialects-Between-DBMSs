@@ -1,9 +1,3 @@
-CREATE VIEW dual(dummy) AS VALUES('x');
-INSERT INTO t3(id,w) VALUES(2,'two'),(3,'three'),(6,'six'),(7,'seven');
-INSERT INTO t4(id,x) VALUES(2,'alice'),(4,'bob'),(6,'cindy'),(8,'dave');
-INSERT INTO t5(id,y) VALUES(1,'red'),(2,'orange'),(3,'yellow'),(4,'green'),
-                               (5,'blue');
-INSERT INTO t6(id,z) VALUES(3,333),(4,444),(5,555),(0,1000),(9,999);
 SELECT *, t4.id, t5.id, t6.id
       FROM t4 NATURAL LEFT JOIN t5 NATURAL LEFT JOIN t6
      ORDER BY 1;
@@ -104,20 +98,6 @@ SELECT *
                t4 FULL JOIN (
                    t5 FULL JOIN t6 USING(id)
                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 RIGHT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 LEFT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
            ) AS j1 ON j1.id=t3.id
      ORDER BY coalesce(t3.id,j1.id);
 WITH t56(id,y,z) AS (SELECT * FROM t5 FULL JOIN t6 USING(id) LIMIT 50)
@@ -227,27 +207,6 @@ SELECT *
                 ) USING(id)
            ) USING(id)
     ORDER BY 1;
-SELECT *
-      FROM t3 FULL JOIN (
-               t4 FULL JOIN (
-                   t5 FULL JOIN t6 USING(id)
-               ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 RIGHT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 LEFT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
 WITH t56(id,y,z) AS (SELECT * FROM t5 FULL JOIN t6 USING(id) LIMIT 50)
     SELECT id,x,y,z FROM t4 JOIN t56 USING(id)
     ORDER BY 1;
@@ -364,27 +323,6 @@ SELECT *
                 ) USING(id)
            ) USING(id)
     ORDER BY 1;
-SELECT *
-      FROM t3 FULL JOIN (
-               t4 FULL JOIN (
-                   t5 FULL JOIN t6 USING(id)
-               ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 RIGHT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 LEFT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
 WITH t56(id,y,z) AS (SELECT * FROM t5 FULL JOIN t6 USING(id) LIMIT 50)
     SELECT id,x,y,z FROM t4 JOIN t56 USING(id)
     ORDER BY 1;
@@ -508,27 +446,6 @@ SELECT *
                 ) USING(id)
            ) USING(id)
     ORDER BY 1;
-SELECT *
-      FROM t3 FULL JOIN (
-               t4 FULL JOIN (
-                   t5 FULL JOIN t6 USING(id)
-               ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 RIGHT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 LEFT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
 WITH t56(id,y,z) AS (SELECT * FROM t5 FULL JOIN t6 USING(id) LIMIT 50)
     SELECT id,x,y,z FROM t4 JOIN t56 USING(id)
     ORDER BY 1;
@@ -636,27 +553,6 @@ SELECT *
                 ) USING(id)
            ) USING(id)
     ORDER BY 1;
-SELECT *
-      FROM t3 FULL JOIN (
-               t4 FULL JOIN (
-                   t5 FULL JOIN t6 USING(id)
-               ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 RIGHT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
-SELECT *
-      FROM t3 FULL JOIN (
-                t4 LEFT JOIN (
-                    t5 FULL JOIN t6 USING(id)
-                ) USING(id)
-           ) AS j1 ON j1.id=t3.id
-     ORDER BY coalesce(t3.id,j1.id);
 WITH t56(id,y,z) AS (SELECT * FROM t5 FULL JOIN t6 USING(id) LIMIT 50)
     SELECT id,x,y,z FROM t4 JOIN t56 USING(id)
     ORDER BY 1;

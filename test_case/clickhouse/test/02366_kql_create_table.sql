@@ -1,3 +1,4 @@
+Select '-- test create table --';
 Select * from kql(Customers|project FirstName) limit 1;
 DROP TABLE IF EXISTS kql_table1;
 CREATE TABLE kql_table1 ENGINE = Memory AS select *, now() as new_column From kql(Customers | project LastName | filter LastName=='Diaz');

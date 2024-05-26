@@ -1,4 +1,3 @@
-CREATE INDEX t1a1 ON t1(substr(a,1,12));
 SELECT b, c, '|' FROM t1 WHERE substr(a,1,12)=='and_the_Word' ORDER BY b, c;
 EXPLAIN QUERY PLAN
   SELECT b, c, '|' FROM t1 WHERE substr(a,1,12)=='and_the_Word' ORDER BY b, c;
@@ -32,9 +31,6 @@ CREATE INDEX t1alen ON t1(length(a));
 SELECT length(a) FROM t1 ORDER BY length(a);
 EXPLAIN QUERY PLAN
   SELECT length(a) FROM t1 ORDER BY length(a);
-SELECT length(a) FROM t1 ORDER BY length(a) DESC;
-EXPLAIN QUERY PLAN
-  SELECT length(a) FROM t1 ORDER BY length(a) DESC;
 DROP TABLE t1;
 CREATE TABLE t1(id ANY PRIMARY KEY, a,b,c) WITHOUT ROWID;
 INSERT INTO t1(id,a,b,c)
@@ -55,7 +51,6 @@ CREATE INDEX t1ba ON t1(b,substr(a,2,3),c);
 SELECT c FROM t1 WHERE b=1 AND substr(a,2,3)='nd_' ORDER BY c;
 EXPLAIN QUERY PLAN
   SELECT c FROM t1 WHERE b=1 AND substr(a,2,3)='nd_' ORDER BY c;
-SELECT id, substr(a,b,3), '|' FROM t1 ORDER BY 2;
 CREATE INDEX t1abx ON t1(substr(a,b,3));
 SELECT id FROM t1 WHERE substr(a,b,3)<='and' ORDER BY +id;
 EXPLAIN QUERY PLAN
@@ -81,10 +76,7 @@ WITH RECURSIVE
   INSERT INTO cnt(x) SELECT x FROM c;
 INSERT INTO t5(a) SELECT printf('abc%03dxyz',x) FROM cnt;
 CREATE INDEX t5ax ON t5( substr(a,4,3) );
--- The use of the "k" alias in the WHERE clause is technically
-  -- illegal, but SQLite allows it for historical reasons.  In this
-  -- test and the next, verify that "k" can be used by the t5ax index
-  SELECT substr(a,4,3) AS k FROM cnt, t5 WHERE k=printf('%03d',x);
+SELECT substr(a,4,3) AS k FROM cnt, t5 WHERE k=printf('%03d',x);
 EXPLAIN QUERY PLAN
   SELECT substr(a,4,3) AS k FROM cnt, t5 WHERE k=printf('%03d',x);
 DROP TABLE IF EXISTS t4;
@@ -139,11 +131,8 @@ DROP TABLE IF EXISTS t1;
 CREATE TABLE t1(a);
 INSERT INTO t1 VALUES(NULL),(1);
 SELECT '1:', typeof(a), a FROM t1 WHERE a<10;
-SELECT '2:', typeof(a), a FROM t1 WHERE a+0<10;
 CREATE INDEX t1x1 ON t1(a);
 CREATE INDEX t1x2 ON t1(a+0);
-SELECT '3:', typeof(a), a FROM t1 WHERE a<10;
-SELECT '4:', typeof(a), a FROM t1 WHERE a+0<10;
 CREATE TABLE t10(a int, b int, c int, d int);
 INSERT INTO t10(a, b, c, d) VALUES(0, 0, 2, 2);
 INSERT INTO t10(a, b, c, d) VALUES(0, 0, 0, 0);
@@ -162,8 +151,7 @@ CREATE INDEX t1300bexpr ON t1300( substr(b,4) );
 SELECT a FROM t1300 WHERE substr(b,4)='ess' COLLATE nocase ORDER BY +a;
 CREATE TABLE t1400(x TEXT);
 CREATE INDEX t1400x ON t1400(1);
--- Index on a constant
-  SELECT 1 IN (SELECT 2) FROM t1400;
+SELECT 1 IN (SELECT 2) FROM t1400;
 INSERT INTO t1400 VALUES('a'),('b');
 SELECT 1 IN (SELECT 2) FROM t1400;
 SELECT 1 IN (SELECT 2 UNION ALL SELECT 1) FROM t1400;
@@ -174,8 +162,7 @@ CREATE TABLE t1500(a INT PRIMARY KEY, b INT UNIQUE);
 CREATE INDEX t1500ab ON t1500(a*b);
 INSERT INTO t1500(a,b) VALUES(1,2);
 REPLACE INTO t1500(a,b) VALUES(1,3);
--- formerly caused assertion fault
-  SELECT * FROM t1500;
+SELECT * FROM t1500;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t1 (a INTEGER, b);
 CREATE INDEX idx1 ON t1 (lower(a));
@@ -202,8 +189,6 @@ INSERT INTO t1(x) VALUES(2);
 SELECT +x FROM t1 WHERE x=2;
 SELECT * FROM t1;
 SELECT * FROM t1;
-/* Query AA */;
-/* Query BB */;
 DROP TABLE t1;
 CREATE TABLE t1(a INT, b TEXT, c INT, d INT);
 INSERT INTO t1(a,b,c,d) VALUES

@@ -1,4 +1,3 @@
-create view v1 as select * from t1 where a != 0 with check option;
 select * from t1;
 select * from v1;
 delete from t1;

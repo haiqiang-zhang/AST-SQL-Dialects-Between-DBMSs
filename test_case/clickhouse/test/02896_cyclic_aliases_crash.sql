@@ -1,4 +1,3 @@
-SET max_ast_depth = 10_000_000;
 SELECT
     val,
     val + 1 as prev,

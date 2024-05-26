@@ -1,5 +1,3 @@
-CREATE TEMPORARY TABLE tt_m (tt_m INT) ENGINE=MyISAM;
-CREATE TEMPORARY TABLE tt_i (tt_i INT) ENGINE=InnoDB;
 SELECT * FROM t_m, t_i, tt_m, tt_i;
 SELECT * FROM tt_m, tt_i;
 DROP TABLES IF EXISTS t_m, t_i, tt_m, tt_i, t_no_such_table, t_no_such_table_either;

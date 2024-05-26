@@ -1,0 +1,12 @@
+ATTACH DATABASE ':memory:' AS db1;
+CREATE TABLE hello(i INTEGER);
+CREATE TABLE db1.test(a INTEGER);
+CREATE SCHEMA db1.myschema;
+CREATE TABLE db1.myschema.blablabla(i INTEGER);
+USE db1;
+SELECT * FROM test;
+SELECT * FROM myschema.blablabla;
+USE db1.myschema;
+SELECT * FROM blablabla;
+SELECT * FROM test;
+SELECT * FROM db1.main.test;

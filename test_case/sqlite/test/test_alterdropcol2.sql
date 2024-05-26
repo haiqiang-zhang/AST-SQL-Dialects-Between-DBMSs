@@ -1,4 +1,3 @@
-ALTER TABLE t1 DROP c;
 SELECT * FROM t1;
 SELECT sql FROM sqlite_schema;
 CREATE TABLE x1(a PRIMARY KEY, b, c);

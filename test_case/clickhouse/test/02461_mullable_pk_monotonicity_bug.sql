@@ -1,5 +1,3 @@
-set allow_suspicious_low_cardinality_types=1;
-set max_rows_to_read = 2;
 SELECT x + 1 FROM tab where plus(x, 1) <= 2 order by x;
 SELECT x + 1 FROM tab where plus(x, 1::Nullable(UInt8)) <= 2 order by x;
 SELECT x + 1 FROM tab where plus(x, 1::LowCardinality(UInt8)) <= 2 order by x;

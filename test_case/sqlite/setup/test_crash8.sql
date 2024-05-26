@@ -1,0 +1,18 @@
+PRAGMA auto_vacuum=OFF;
+CREATE TABLE t1(a, b);
+CREATE INDEX i1 ON t1(a, b);
+CREATE TABLE t2(a, b);
+CREATE TABLE t3(a, b);
+CREATE TABLE t4(a, b);
+CREATE TABLE t5(a, b);
+CREATE TABLE t6(a, b);
+CREATE TABLE t7(a, b);
+CREATE TABLE t8(a, b);
+CREATE TABLE t9(a, b);
+CREATE TABLE t10(a, b);
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+PRAGMA synchronous = off;
+BEGIN;
+DELETE FROM t1;

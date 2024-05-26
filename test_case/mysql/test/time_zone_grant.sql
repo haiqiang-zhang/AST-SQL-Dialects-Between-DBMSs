@@ -1,12 +1,6 @@
-drop view if exists v1;
-create table t1 (a int, b datetime);
-create table t2 (c int, d datetime);
 select convert_tz('2004-10-21 19:00:00', 'Europe/Moscow', 'UTC');
-select convert_tz(b, 'Europe/Moscow', 'UTC') from t1;
 update t1, t2 set t1.b = convert_tz('2004-10-21 19:00:00', 'Europe/Moscow', 'UTC')
               where t1.a = t2.c and t2.d = (select max(d) from t2);
-select convert_tz('2004-11-31 12:00:00', 'Europe/Moscow', 'UTC');
-select convert_tz(b, 'Europe/Moscow', 'UTC') from t1;
 update t1, t2 set t1.b = convert_tz('2004-11-30 12:00:00', 'Europe/Moscow', 'UTC')
               where t1.a = t2.c and t2.d = (select max(d) from t2);
 drop table t1, t2;

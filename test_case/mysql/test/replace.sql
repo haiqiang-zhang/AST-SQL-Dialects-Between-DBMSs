@@ -1,7 +1,3 @@
-alter table t1 engine=heap;
-drop table t1;
-create table t1 (a tinyint not null auto_increment primary key, b char(20) default "default_value");
-insert into t1 values (126,"first"),(63, "middle"),(0,"last");
 select * from t1;
 drop table t1;
 CREATE TABLE t1 (f1 INT);

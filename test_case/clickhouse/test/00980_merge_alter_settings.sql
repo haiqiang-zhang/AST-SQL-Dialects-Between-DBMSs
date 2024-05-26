@@ -1,3 +1,4 @@
+SHOW CREATE TABLE table_for_alter;
 ALTER TABLE table_for_alter MODIFY SETTING  parts_to_throw_insert = 1, parts_to_delay_insert = 1;
 SHOW CREATE TABLE table_for_alter;
 INSERT INTO table_for_alter VALUES (1, '1');

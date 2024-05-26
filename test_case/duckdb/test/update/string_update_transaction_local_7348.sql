@@ -1,0 +1,2 @@
+FROM t1;
+FROM t1;

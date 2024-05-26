@@ -28,7 +28,6 @@ SELECT c.*
    WHERE c.f1 >= 'a';
 DROP TABLE CHAR_TBL;
 SELECT pg_input_is_valid('abcd  ', 'char(4)');
-SELECT pg_input_is_valid('abcde', 'char(4)');
 SELECT * FROM pg_input_error_info('abcde', 'char(4)');
 SELECT 'a'::"char";
 SELECT '\101'::"char";

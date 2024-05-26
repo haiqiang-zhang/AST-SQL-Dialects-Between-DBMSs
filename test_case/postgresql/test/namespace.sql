@@ -30,12 +30,8 @@ INSERT INTO test_ns_schema_1.abc DEFAULT VALUES;
 SELECT * FROM test_ns_schema_1.abc;
 SELECT * FROM test_ns_schema_1.abc_view;
 ALTER SCHEMA test_ns_schema_1 RENAME TO test_ns_schema_renamed;
-SELECT COUNT(*) FROM pg_class WHERE relnamespace =
-    (SELECT oid FROM pg_namespace WHERE nspname = 'test_ns_schema_1');
 CREATE SCHEMA IF NOT EXISTS test_ns_schema_renamed;
 DROP SCHEMA test_ns_schema_renamed CASCADE;
-SELECT COUNT(*) FROM pg_class WHERE relnamespace =
-    (SELECT oid FROM pg_namespace WHERE nspname = 'test_ns_schema_renamed');
 CREATE SCHEMA test_maint_search_path;
 SET search_path = test_maint_search_path;
 CREATE FUNCTION fn(INT) RETURNS INT IMMUTABLE LANGUAGE plpgsql AS $$

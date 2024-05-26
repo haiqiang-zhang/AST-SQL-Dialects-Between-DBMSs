@@ -1,4 +1,3 @@
-set optimize_respect_aliases = 1;
 SELECT 'test-partition-prune';
 SELECT COUNT() = 10 FROM test_table WHERE day = '2020-01-01' SETTINGS max_rows_to_read = 10;
 SELECT t = '2020-01-03' FROM (SELECT day AS t FROM test_table WHERE t = '2020-01-03' GROUP BY t SETTINGS max_rows_to_read = 10);
@@ -54,7 +53,6 @@ EXPLAIN description = 0 SELECT toDate(timestamp) AS s FROM test_table ORDER BY t
 SELECT 'optimize_aggregation_in_order';
 EXPLAIN description = 0 SELECT day, count() AS s FROM test_table GROUP BY day SETTINGS optimize_aggregation_in_order = 0;
 EXPLAIN description = 0 SELECT day, count() AS s FROM test_table GROUP BY day SETTINGS optimize_aggregation_in_order = 1;
-EXPLAIN description = 0 SELECT toDate(timestamp), count() AS s FROM test_table GROUP BY toDate(timestamp) SETTINGS optimize_aggregation_in_order = 1;
 DROP TABLE test_table;
 SELECT 'second-index';
 DROP TABLE IF EXISTS test_index;

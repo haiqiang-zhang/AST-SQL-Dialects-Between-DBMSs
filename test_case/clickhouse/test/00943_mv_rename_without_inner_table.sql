@@ -1,5 +1,3 @@
-CREATE MATERIALIZED VIEW original_mv TO dst AS SELECT * FROM src;
-INSERT INTO src VALUES (1), (2);
 SELECT * FROM original_mv ORDER BY x;
 RENAME TABLE original_mv TO new_mv;
 INSERT INTO src VALUES (3);

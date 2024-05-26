@@ -1,4 +1,3 @@
-SET max_block_size=900;
 OPTIMIZE TABLE adaptive_table FINAL;
 SELECT marks FROM system.parts WHERE table = 'adaptive_table' and database=currentDatabase() and active;
 SET enable_filesystem_cache = 0;

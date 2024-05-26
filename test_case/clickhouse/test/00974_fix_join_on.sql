@@ -1,4 +1,3 @@
-set enable_optimize_predicate_expression = 0;
 select * from t1 join t2 on a = c;
 select * from t1 join t2 on c = a;
 select t1.a, t2.c from t1 join t2 on a = c;

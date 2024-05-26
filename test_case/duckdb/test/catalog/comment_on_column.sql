@@ -1,0 +1,10 @@
+COMMENT ON COLUMN test_table.test_table_column IS 'very gezellige column';
+CREATE VIEW test_view AS SELECT test_table_column as test_view_column FROM test_table;
+COMMENT ON COLUMN test_view.test_view_column IS 'very gezellige view column';
+select comment from duckdb_columns() where column_name='test_table_column';
+select comment from duckdb_columns() where column_name='test_table_column';
+select comment from duckdb_columns() where column_name='test_table_column';
+select comment from duckdb_columns() where column_name='test_view_column';
+select comment from duckdb_columns() where column_name='test_view_column';
+select comment from duckdb_columns() where column_name='test_view_column';
+SELECT database_name, table_name, column_name, comment FROM duckdb_columns() where internal is false;

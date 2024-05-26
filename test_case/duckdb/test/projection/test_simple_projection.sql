@@ -1,0 +1,10 @@
+SELECT i, j FROM a;
+SELECT * FROM a;
+INSERT INTO a VALUES (42, 84);
+SELECT * FROM a;
+SELECT x, y FROM a i1(x, y);
+SELECT a, b FROM test;
+SELECT a + 2, b FROM test WHERE a = 11;
+SELECT a + 2, b FROM test WHERE a = 12;
+SELECT cast(a AS VARCHAR) FROM test;
+SELECT cast(cast(a AS VARCHAR) as INTEGER) FROM test;

@@ -1,1 +1,0 @@
-DROP DATABASE mysqldump_long_query_time;

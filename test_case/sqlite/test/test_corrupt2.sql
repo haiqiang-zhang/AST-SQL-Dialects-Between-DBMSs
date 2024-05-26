@@ -1,6 +1,3 @@
-PRAGMA auto_vacuum=0;
-PRAGMA page_size=1024;
-CREATE TABLE abc(a, b, c);
 SELECT * FROM sqlite_master;
 SELECT * FROM sqlite_master;
 PRAGMA quick_check;

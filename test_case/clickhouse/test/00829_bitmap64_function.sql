@@ -34,8 +34,6 @@ ALL LEFT JOIN
 ) js2
 USING city_id;
 SELECT count(*) FROM bitmap_test WHERE bitmapHasAny((SELECT groupBitmapState(uid) FROM bitmap_test WHERE pickup_date = '2019-01-01'), bitmapBuild([uid]));
-SELECT count(*) FROM bitmap_test WHERE bitmapHasAny(bitmapBuild([uid]), (SELECT groupBitmapState(uid) FROM bitmap_test WHERE pickup_date = '2019-01-01'));
-SELECT count(*) FROM bitmap_test WHERE 0 = bitmapHasAny((SELECT groupBitmapState(uid) FROM bitmap_test WHERE pickup_date = '2019-01-01'), bitmapBuild([uid]));
 SELECT bitmapToArray(bitmapAnd(groupBitmapState(uid), bitmapBuild(CAST([4294967296, 4294967297, 4294967298], 'Array(UInt64)')))) FROM bitmap_test GROUP BY city_id ORDER BY city_id;
 DROP TABLE bitmap_state_test;
 DROP TABLE bitmap_test;

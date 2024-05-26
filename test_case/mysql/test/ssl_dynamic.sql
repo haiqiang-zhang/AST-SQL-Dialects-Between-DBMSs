@@ -6,8 +6,6 @@ SELECT @must_be_present;
 SELECT COUNT(*) FROM performance_schema.session_status
 WHERE VARIABLE_NAME = 'Current_tls_ca' AND VARIABLE_VALUE = @orig_ssl_ca;
 SELECT @@global.ssl_ca;
-SELECT COUNT(*) FROM performance_schema.session_status
-WHERE VARIABLE_NAME = 'Current_tls_ca' AND VARIABLE_VALUE = 'gizmo';
 SELECT VARIABLE_NAME FROM performance_schema.session_status WHERE
   VARIABLE_NAME IN
   ('Current_tls_ca', 'Current_tls_capath', 'Current_tls_cert',

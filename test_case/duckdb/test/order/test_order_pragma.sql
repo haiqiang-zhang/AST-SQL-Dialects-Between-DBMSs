@@ -1,0 +1,2 @@
+SELECT a FROM test ORDER BY a;
+SELECT a FROM test ORDER BY a;

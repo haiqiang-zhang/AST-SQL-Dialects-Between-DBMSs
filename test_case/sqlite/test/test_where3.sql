@@ -1,6 +1,3 @@
-CREATE INDEX t2i1 ON t2(p);
-INSERT INTO t3 VALUES(999,'nine');
-CREATE INDEX t3i1 ON t3(x);
 SELECT * FROM t1, t2 LEFT JOIN t3 ON q=x WHERE p=2 AND a=q;
 CREATE TABLE parent1(parent1key, child1key, Child2key, child3key);
 CREATE TABLE child1 ( child1key NVARCHAR, value NVARCHAR );

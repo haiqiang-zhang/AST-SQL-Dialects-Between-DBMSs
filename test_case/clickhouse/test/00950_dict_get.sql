@@ -1,4 +1,3 @@
--- Must use `system` database and these tables - they're configured in tests/*_dictionary.xml
 use system;
 drop table if exists ints;
 drop table if exists strings;

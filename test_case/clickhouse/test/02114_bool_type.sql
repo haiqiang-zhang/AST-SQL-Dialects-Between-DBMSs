@@ -1,3 +1,5 @@
+SHOW CREATE TABLE bool_test;
+INSERT INTO bool_test (value,f) VALUES (false, 'test'), (true , 'test'), (0, 'test'), (1, 'test'), (FALSE, 'test'), (TRUE, 'test');
 SELECT toUInt64(value),f FROM bool_test;
 SELECT value,f FROM bool_test where value > 0;
 set bool_true_representation='True';

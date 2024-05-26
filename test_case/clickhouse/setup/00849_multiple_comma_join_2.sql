@@ -1,0 +1,12 @@
+SET enable_optimize_predicate_expression = 0;
+SET convert_query_to_cnf = 0;
+SET cross_to_inner_join_rewrite = 1;
+DROP TABLE IF EXISTS t1;
+DROP TABLE IF EXISTS t2;
+DROP TABLE IF EXISTS t3;
+DROP TABLE IF EXISTS t4;
+CREATE TABLE t1 (a UInt32, b Nullable(Int32)) ENGINE = Memory;
+CREATE TABLE t2 (a UInt32, b Nullable(Int32)) ENGINE = Memory;
+CREATE TABLE t3 (a UInt32, b Nullable(Int32)) ENGINE = Memory;
+CREATE TABLE t4 (a UInt32, b Nullable(Int32)) ENGINE = Memory;
+SET allow_experimental_analyzer = 0;

@@ -1,0 +1,2 @@
+SELECT count(*) FROM table1;
+DELETE FROM table1 RETURNING a;

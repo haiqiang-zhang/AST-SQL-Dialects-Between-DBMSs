@@ -1,4 +1,3 @@
-SET join_use_nulls = 1;
 SELECT * FROM
 (
     SELECT number, ['left'] as ar, number AS left_number FROM system.numbers LIMIT 2

@@ -1,5 +1,4 @@
 select hex(@a);
-select hex(@a);
 select @a, @b;
 select @a;
 select @a;

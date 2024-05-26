@@ -1,12 +1,4 @@
-create temporary table tmp (s String);
-insert into tmp values ('src_table_1'), ('src_table_3');
 select count(), sum(n) from merge(currentDatabase(), 'src_table');
-select count(), sum(n) from merge(currentDatabase(), 'src_table') where _table in ('src_table_2', 'src_table_3');
-select count(), sum(n) from merge(currentDatabase(), 'src_table') where _table in ('src_table_2', 'src_table_3') and n % 20 = 0;
-select count(), sum(n) from merge(currentDatabase(), 'src_table') where _table in set;
-select count(), sum(n) from merge(currentDatabase(), 'src_table') where _table in tmp;
-select count(), sum(n) from merge(currentDatabase(), 'src_table') where _table in set and n % 2 = 0;
-select count(), sum(n) from merge(currentDatabase(), 'src_table') where n % 2 = 0 and _table in tmp;
 drop table src_table_1;
 drop table src_table_2;
 drop table src_table_3;

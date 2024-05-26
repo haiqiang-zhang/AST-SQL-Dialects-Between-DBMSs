@@ -8,7 +8,7 @@ tester_role = "tester"
 config_root = {
     'host': 'localhost',
     'port': 5432,
-    'user': 'root',
+    'user': 'larryzhang',
     'password': '123456',
     'database': 'postgres'
 }

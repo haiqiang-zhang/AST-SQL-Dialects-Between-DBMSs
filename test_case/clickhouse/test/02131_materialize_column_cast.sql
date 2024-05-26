@@ -1,5 +1,3 @@
-ALTER TABLE t_materialize_column ADD COLUMN s LowCardinality(String) DEFAULT toString(i);
-ALTER TABLE t_materialize_column MATERIALIZE COLUMN s SETTINGS mutations_sync = 2;
 SELECT name, column, type FROM system.parts_columns
 WHERE table = 't_materialize_column' AND database = currentDatabase() AND active
 ORDER BY name, column;

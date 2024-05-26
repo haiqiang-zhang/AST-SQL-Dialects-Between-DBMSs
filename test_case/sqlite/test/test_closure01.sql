@@ -1,5 +1,3 @@
-BEGIN;
-CREATE TABLE t1(x INTEGER PRIMARY KEY, y INTEGER);
 WITH RECURSIVE
     cnt(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM cnt LIMIT 131072)
   INSERT INTO t1(x, y) SELECT i, nullif(i,1)/2 FROM cnt;
@@ -39,15 +37,6 @@ WITH RECURSIVE
        WHERE above.depth<3
     )
   SELECT id FROM above WHERE depth=3;
-WITH RECURSIVE
-    below(id,depth) AS (
-      VALUES(1,0)
-      UNION ALL
-      SELECT t1.x, below.depth+1
-        FROM t1 JOIN below ON t1.y=below.id
-       WHERE below.depth<4
-    )
-  SELECT count(*), depth FROM below GROUP BY depth ORDER BY 1;
 WITH RECURSIVE
     below(id,depth) AS (
       VALUES(1,0)

@@ -1,0 +1,10 @@
+SET send_logs_level = 'fatal';
+DROP TABLE IF EXISTS test_local_1;
+DROP TABLE IF EXISTS test_local_2;
+DROP TABLE IF EXISTS test_distributed_1;
+DROP TABLE IF EXISTS test_distributed_2;
+set allow_deprecated_syntax_for_merge_tree=1;
+CREATE TABLE test_local_1 (date Date, value UInt32) ENGINE = MergeTree(date, date, 8192);
+CREATE TABLE test_local_2 (date Date, value UInt32) ENGINE = MergeTree(date, date, 8192);
+INSERT INTO test_local_1 VALUES ('2018-08-01',100);
+INSERT INTO test_local_2 VALUES ('2018-08-01',200);

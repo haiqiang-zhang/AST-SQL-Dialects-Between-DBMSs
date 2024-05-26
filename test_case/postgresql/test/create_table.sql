@@ -1,5 +1,3 @@
-CREATE UNLOGGED TABLE unlogged1 (a int primary key);
-CREATE TEMPORARY TABLE unlogged2 (a int primary key);
 SELECT relname, relkind, relpersistence FROM pg_class WHERE relname ~ '^unlogged\d' ORDER BY relname;
 REINDEX INDEX unlogged1_pkey;
 REINDEX INDEX unlogged2_pkey;

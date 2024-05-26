@@ -1,9 +1,3 @@
-CREATE VIEW testView AS 
-SELECT
- A as ALow, -- like account
- B
-FROM
-   testTable;
 SELECT CAST(ALow, 'String') AS AStr
 FROM testView
 GROUP BY AStr ORDER BY AStr;

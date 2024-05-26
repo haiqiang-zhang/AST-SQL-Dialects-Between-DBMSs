@@ -1,12 +1,5 @@
 select *, toTypeName(id), toTypeName(name) from t1;
-select *, toTypeName(id), toTypeName(name) from t2;
-select *, toTypeName(id), toTypeName(name) from t3;
-select *, toTypeName(id), toTypeName(name) from t4;
 SET join_use_nulls = 1;
-select *, toTypeName(id), toTypeName(name) from t1;
-select *, toTypeName(id), toTypeName(name) from t2;
-select *, toTypeName(id), toTypeName(name) from t3;
-select *, toTypeName(id), toTypeName(name) from t4;
 DROP TABLE t1;
 DROP TABLE t2;
 DROP TABLE t3;

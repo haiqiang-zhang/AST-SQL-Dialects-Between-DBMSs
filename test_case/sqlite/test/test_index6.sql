@@ -1,8 +1,5 @@
-CREATE INDEX t1a ON t1(a) WHERE a IS NOT NULL;
-CREATE INDEX t1b ON t1(b) WHERE b>10;
 SELECT count(a), count(b) FROM t1;
 PRAGMA integrity_check;
-SELECT count(*) FROM t1;
 CREATE INDEX bad1 ON t1(a,b) WHERE a NOT LIKE 'abc%';
 DROP INDEX IF EXISTS bad1;
 ANALYZE;
@@ -37,7 +34,6 @@ PRAGMA integrity_check;
 CREATE TABLE t2(a,b);
 UPDATE t2 SET a=NULL WHERE b%2==0;
 CREATE INDEX t2a1 ON t2(a) WHERE a IS NOT NULL;
-SELECT count(*) FROM t2 WHERE a IS NOT NULL;
 EXPLAIN QUERY PLAN
     SELECT * FROM t2 WHERE a=5;
 EXPLAIN QUERY PLAN
@@ -63,14 +59,11 @@ UPDATE t3 SET a=999 WHERE b%5!=0;
 CREATE UNIQUE INDEX t3a ON t3(a) WHERE a<>999;
 INSERT INTO t3(a,b) VALUES(150, 'test1');
 INSERT INTO t3(a,b) VALUES(999, 'test1'), (999, 'test2');
-SELECT count(*) FROM t3 WHERE a=999;
 PRAGMA integrity_check;
 VACUUM;
 PRAGMA integrity_check;
 CREATE INDEX t3b ON t3(b) WHERE xyzzy.t3.b BETWEEN 5 AND 10;
-/* ^^^^^-- ignored */
-  ANALYZE;
-SELECT count(*) FROM t3 WHERE t3.b BETWEEN 5 AND 10;
+ANALYZE;
 SELECT stat+0 FROM sqlite_stat1 WHERE idx='t3b';
 CREATE TABLE t6(a,b);
 CREATE UNIQUE INDEX t6ab ON t1(a,b);

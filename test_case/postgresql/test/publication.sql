@@ -1,6 +1,3 @@
-SET client_min_messages = 'ERROR';
-CREATE PUBLICATION testpub_default;
-RESET client_min_messages;
 COMMENT ON PUBLICATION testpub_default IS 'test publication';
 SELECT obj_description(p.oid, 'pg_publication') FROM pg_publication p;
 SET client_min_messages = 'ERROR';
@@ -186,21 +183,18 @@ ALTER PUBLICATION testpub_fortable ADD TABLE testpub_tbl5 (b, c);
 ALTER PUBLICATION testpub_fortable DROP TABLE testpub_tbl5;
 ALTER PUBLICATION testpub_fortable ADD TABLE testpub_tbl5 (a, c);
 ALTER PUBLICATION testpub_fortable_insert ADD TABLE testpub_tbl5 (b, c);
-/* not all replica identities are good enough */
 CREATE UNIQUE INDEX testpub_tbl5_b_key ON testpub_tbl5 (b, c);
 ALTER TABLE testpub_tbl5 ALTER b SET NOT NULL, ALTER c SET NOT NULL;
 ALTER TABLE testpub_tbl5 REPLICA IDENTITY USING INDEX testpub_tbl5_b_key;
 ALTER PUBLICATION testpub_fortable DROP TABLE testpub_tbl5;
 ALTER TABLE testpub_tbl5 REPLICA IDENTITY USING INDEX testpub_tbl5_b_key;
 ALTER PUBLICATION testpub_fortable ADD TABLE testpub_tbl5 (a, c);
-/* But if upd/del are not published, it works OK */
 SET client_min_messages = 'ERROR';
 CREATE PUBLICATION testpub_table_ins WITH (publish = 'insert, truncate');
 RESET client_min_messages;
 ALTER PUBLICATION testpub_table_ins ADD TABLE testpub_tbl5 (a);
 CREATE TABLE testpub_tbl5d (a int PRIMARY KEY DEFERRABLE);
 ALTER PUBLICATION testpub_fortable ADD TABLE testpub_tbl5d;
-/* but works fine with FULL replica identity */
 ALTER TABLE testpub_tbl5d REPLICA IDENTITY FULL;
 UPDATE testpub_tbl5d SET a = 1;
 DROP TABLE testpub_tbl5d;

@@ -1,5 +1,3 @@
-SET join_algorithm = 'prefer_partial_merge';
-SET any_join_distinct_right_table_keys = 1;
 SELECT 't join none using';
 SELECT * FROM t1 ANY LEFT JOIN t0 USING (x) ORDER BY x;
 SELECT '-';

@@ -1,0 +1,6 @@
+SET optimize_on_insert = 0;
+SET send_logs_level = 'fatal';
+DROP TABLE IF EXISTS old_style;
+set allow_deprecated_syntax_for_merge_tree=1;
+DROP TABLE IF EXISTS summing_r1;
+DROP TABLE IF EXISTS summing_r2;

@@ -1,4 +1,3 @@
-ALTER TABLE p1 RENAME TO p2;
 SELECT sql FROM sqlite_master WHERE name LIKE 'c%';
 PRAGMA legacy_alter_table = 1;
 ALTER TABLE p2 RENAME TO p3;

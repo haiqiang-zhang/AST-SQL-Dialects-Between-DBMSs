@@ -1,15 +1,3 @@
-SET allow_experimental_analyzer=1;
-INSERT INTO loans VALUES (1, 'AAA');
-INSERT INTO loans VALUES (1, 'AAA');
-INSERT INTO loans VALUES (1, 'AAA');
-INSERT INTO loans VALUES (1, 'AAA');
-INSERT INTO loans VALUES (1, 'AAA');
-INSERT INTO loans VALUES (1, 'BBB');
-INSERT INTO loans VALUES (1, 'BBB');
-INSERT INTO loans VALUES (1, 'BBB');
-INSERT INTO loans VALUES (1, 'BBB');
-INSERT INTO loans VALUES (1, 'BBB');
-INSERT INTO loans VALUES (1, 'BBB');
 with block_0 as (
   select * from loans
 ),

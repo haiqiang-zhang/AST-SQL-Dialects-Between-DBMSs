@@ -1,1 +1,0 @@
-set allow_suspicious_fixed_string_types=1;

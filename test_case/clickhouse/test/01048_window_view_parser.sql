@@ -1,13 +1,3 @@
-SET send_logs_level = 'fatal';
-SET allow_experimental_analyzer = 0;
-SET allow_experimental_window_view = 1;
-DROP DATABASE IF EXISTS test_01048;
-set allow_deprecated_database_ordinary=1;
-CREATE DATABASE test_01048 ENGINE=Ordinary;
-DROP TABLE IF EXISTS test_01048.mt;
-DROP TABLE IF EXISTS test_01048.mt_2;
-CREATE TABLE test_01048.mt(a Int32, b Int32, timestamp DateTime) ENGINE=MergeTree ORDER BY tuple();
-CREATE TABLE test_01048.mt_2(a Int32, b Int32, timestamp DateTime) ENGINE=MergeTree ORDER BY tuple();
 SELECT '---TUMBLE---';
 SELECT '||---WINDOW COLUMN NAME---';
 DROP TABLE IF EXISTS test_01048.wv;

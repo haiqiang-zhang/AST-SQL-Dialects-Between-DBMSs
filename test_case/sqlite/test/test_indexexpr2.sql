@@ -1,4 +1,3 @@
-CREATE INDEX i1 ON t1(b || 'x');
 SELECT 'TWOX' == (b || 'x') FROM t1 WHERE (b || 'x')>'onex';
 SELECT 'TWOX' == (b || 'x') COLLATE nocase  FROM t1 WHERE (b || 'x')>'onex';
 CREATE INDEX i2 ON t1(a+1);
@@ -13,7 +12,6 @@ INSERT INTO t2 VALUES('.abcd');
 INSERT INTO t2 VALUES('.defg');
 INSERT INTO t2 VALUES('.DEF');
 SELECT x FROM t2 ORDER BY substr(x, 2) COLLATE nocase;
-SELECT x FROM t2 ORDER BY substr(x, 2) COLLATE nocase;
 CREATE TABLE t3(x);
 CREATE INDEX i3 ON t3(json_extract(x, '$.a'), json_extract(x, '$.b'));
 CREATE TABLE t4(a, b);
@@ -21,22 +19,13 @@ INSERT INTO t4 VALUES('.ABC', 1);
 INSERT INTO t4 VALUES('.abc', 2);
 INSERT INTO t4 VALUES('.ABC', 3);
 INSERT INTO t4 VALUES('.abc', 4);
-SELECT * FROM t4 
-  WHERE substr(a, 2) = 'abc' COLLATE NOCASE
-  ORDER BY substr(a, 2), b;
 CREATE INDEX i4 ON t4( substr(a, 2) COLLATE NOCASE, b );
-SELECT * FROM t4 
-  WHERE substr(a, 2) = 'abc' COLLATE NOCASE
-  ORDER BY substr(a, 2), b;
 DROP INDEX i4;
 UPDATE t4 SET a = printf('%s%d',a,b);
 SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE nocase;
-SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE binary;
 CREATE INDEX i4 ON t4( Substr(a,-2) COLLATE nocase );
-SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE nocase;
 EXPLAIN QUERY PLAN
   SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE nocase;
-SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE binary;
 CREATE TABLE t5(a INTEGER, b INTEGER);
 INSERT INTO t5 VALUES(2, 4), (3, 9);
 SELECT * FROM t5 WHERE abs(a)=2 or abs(b)=9;

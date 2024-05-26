@@ -1,11 +1,5 @@
 SELECT latin1_f FROM t1 ORDER BY latin1_f, hex(latin1_f);
-SELECT latin1_f FROM t1 ORDER BY latin1_f COLLATE latin1_swedish_ci, hex(latin1_f);
-SELECT latin1_f FROM t1 ORDER BY latin1_f COLLATE latin1_german2_ci, hex(latin1_f);
-SELECT latin1_f FROM t1 ORDER BY latin1_f COLLATE latin1_general_ci, hex(latin1_f);
 SELECT latin1_f FROM t1 ORDER BY latin1_f COLLATE latin1_bin;
-SELECT latin1_f COLLATE latin1_swedish_ci AS latin1_f_as FROM t1 ORDER BY latin1_f_as, hex(latin1_f_as);
-SELECT latin1_f COLLATE latin1_german2_ci AS latin1_f_as FROM t1 ORDER BY latin1_f_as, hex(latin1_f_as);
-SELECT latin1_f COLLATE latin1_general_ci AS latin1_f_as FROM t1 ORDER BY latin1_f_as, hex(latin1_f_as);
 SELECT latin1_f COLLATE latin1_bin        AS latin1_f_as FROM t1 ORDER BY latin1_f_as;
 SELECT latin1_f,count(*) FROM t1 GROUP BY latin1_f ORDER BY latin1_f;
 SELECT DISTINCT latin1_f                           FROM t1;
@@ -16,7 +10,6 @@ SELECT DISTINCT latin1_f COLLATE latin1_bin        FROM t1;
 ALTER TABLE t1 CHANGE latin1_f 
 latin1_f CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin;
 ALTER TABLE t1 CHARACTER SET latin1 COLLATE latin1_bin;
-SELECT charset(_latin1 'a'),collation(_latin1 'a'),coercibility('a'),'a'='A';
 SELECT charset(_latin1 'a'),collation(_latin1 'a'),coercibility('a'),'a'='A';
 DROP TABLE t1;
 CREATE TABLE t1 

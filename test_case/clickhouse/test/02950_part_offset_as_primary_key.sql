@@ -1,7 +1,3 @@
-SET merge_tree_read_split_ranges_into_intersecting_and_non_intersecting_injection_probability = 0.0;
-drop table if exists a;
-create table a (i int) engine MergeTree order by i settings index_granularity = 2;
-insert into a select -number from numbers(5);
 select i from a where _part_offset >= 5 order by i settings max_bytes_to_read = 1;
 select i from a where _part_offset = 0 order by i settings max_rows_to_read = 2;
 select i from a where _part_offset = 1 order by i settings max_rows_to_read = 2;

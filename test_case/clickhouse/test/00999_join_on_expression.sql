@@ -1,4 +1,3 @@
-set join_use_nulls = 0;
 select X.id, Y.id from X right join Y on X.id = Y.id order by X.id, Y.id;
 select '-';
 select X.id, Y.id from X full join Y on Y.id = X.id order by X.id, Y.id;

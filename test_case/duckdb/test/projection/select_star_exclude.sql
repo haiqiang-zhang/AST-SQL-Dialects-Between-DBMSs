@@ -1,0 +1,13 @@
+SELECT * EXCLUDE i FROM integers;
+SELECT * EXCLUDE (i, j) FROM integers;
+SELECT * EXCLUDE (j) FROM integers;
+SELECT * EXCLUDE (j) FROM integers;
+SELECT * EXCLUDE ("J") FROM integers;
+SELECT integers.* EXCLUDE (i) FROM integers;
+SELECT integers.* EXCLUDE (i, j) FROM integers;
+SELECT integers.* EXCLUDE (j) FROM integers;
+SELECT integers.* EXCLUDE (i, j), * EXCLUDE (i, j), * EXCLUDE (i, k) FROM integers;
+SELECT * EXCLUDE (i, j) FROM integers i1, integers i2;
+SELECT i1.* EXCLUDE (i, j), i2.* EXCLUDE (i, j, k) FROM integers i1, integers i2;
+SELECT i1.* EXCLUDE (i, j), i2.* EXCLUDE (k) FROM integers i1, integers i2;
+SELECT * EXCLUDE (i) FROM integers i1 JOIN integers i2 USING (i);

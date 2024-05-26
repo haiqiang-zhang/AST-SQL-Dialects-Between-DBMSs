@@ -1,5 +1,3 @@
-DROP DATABASE IF EXISTS database_for_dict;
-CREATE DATABASE database_for_dict;
 use database_for_dict;
 CREATE TABLE date_table
 (

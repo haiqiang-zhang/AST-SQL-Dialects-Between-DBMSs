@@ -1,5 +1,3 @@
-BEGIN;
-INSERT INTO t1 VALUES(3, 4);
 SELECT * FROM t1;
 SELECT * FROM t1;
 CREATE TABLE t2(a, b);
@@ -52,4 +50,3 @@ SELECT * FROM t1;
 PRAGMA integrity_check;
 PRAGMA integrity_check;
 SELECT count(*) FROM t1;
-SELECT count(*) FROM t2;

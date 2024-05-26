@@ -1,0 +1,10 @@
+PRAGMA cache_size = 2000;
+PRAGMA page_size = 1024;
+PRAGMA auto_vacuum = off;
+PRAGMA synchronous = normal;
+PRAGMA journal_mode = WAL;
+PRAGMA wal_autocheckpoint = 0;
+BEGIN;
+CREATE TABLE t1(x);
+PRAGMA cache_size = 10;
+PRAGMA integrity_check;

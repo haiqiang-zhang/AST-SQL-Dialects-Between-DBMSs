@@ -1,0 +1,13 @@
+(VALUES (1, 3), (2, 4));
+SELECT * FROM (VALUES (NULL, NULL), (3, 4), (3, 7)) v1;
+SELECT * FROM (VALUES (1, 2, 3), (1, 2, 3)) v1;
+SELECT * FROM (VALUES (1 + 1, 2, 3), (1 + 3, 2, 3)) v1;
+SELECT * FROM (VALUES ((SELECT 42), 2, 3), (1 + 3,2,3)) v1;
+SELECT * FROM (VALUES ((SELECT MIN(a) FROM test), 2, 3), ((SELECT MAX(b) FROM test), 2, 3)) v1;
+SELECT * FROM (VALUES (DATE '1992-09-20', 3), (NULL, NULL)) v1;
+SELECT * FROM (VALUES (NULL, NULL)) v1;
+SELECT * FROM (VALUES (NULL, NULL), (3, 4)) v1;
+SELECT * FROM (VALUES (3), ('42')) v1;
+SELECT typeof(x) FROM (VALUES (DATE '1992-01-01'), ('1992-01-01')) v1(x) LIMIT 1;
+SELECT * FROM (VALUES (NULL), ('hello')) v1;
+SELECT * FROM varchars ORDER BY 1;

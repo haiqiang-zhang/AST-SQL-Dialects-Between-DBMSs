@@ -1,0 +1,10 @@
+SELECT * FROM INFORMATION_SCHEMA.SCHEMATA;
+SELECT * FROM information_schema.schemata;
+CREATE SCHEMA scheme;
+CREATE TABLE scheme.integers (i INTEGER);
+CREATE TEMPORARY TABLE reals (f FLOAT PRIMARY KEY, dec DECIMAL(16, 4), h HUGEINT, b BIGINT, t TINYINT, d DOUBLE NOT NULL);
+CREATE VIEW scheme.vintegers AS SELECT * FROM scheme.integers;
+DROP SCHEMA scheme CASCADE;
+SELECT * FROM information_schema.referential_constraints;
+SELECT * FROM information_schema.key_column_usage;
+SELECT * FROM information_schema.table_constraints;

@@ -1,5 +1,3 @@
-SET join_use_nulls = 0;
-SET any_join_distinct_right_table_keys = 0;
 SELECT 'any left';
 SELECT * FROM t1 ANY LEFT JOIN any_left_join j USING(x) ORDER BY x, str, s;
 SELECT 'any inner';

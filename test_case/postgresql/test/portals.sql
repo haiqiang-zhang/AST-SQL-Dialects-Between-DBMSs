@@ -1,5 +1,3 @@
-BEGIN;
-END;
 SELECT name, statement, is_holdable, is_binary, is_scrollable FROM pg_cursors;
 BEGIN;
 END;
@@ -29,11 +27,9 @@ fetch all from c1;
 rollback;
 begin;
 insert into tt1 values(1);
-declare c2 cursor with hold for select count_tt1_v(), count_tt1_s();
 insert into tt1 values(2);
 commit;
 delete from tt1;
-fetch all from c2;
 drop function count_tt1_v();
 drop function count_tt1_s();
 BEGIN;

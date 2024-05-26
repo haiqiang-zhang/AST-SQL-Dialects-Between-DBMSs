@@ -1,20 +1,3 @@
-drop view if exists v1;
-drop procedure if exists p1;
-drop procedure if exists p2;
-drop function if exists f1;
-drop function if exists f2;
-create table t1 (
-	id   char(16) not null default '',
-        data int not null
-) engine=myisam;
-create table t2 (
-	s   char(16),
-        i   int,
-	d   double
-) engine=myisam;
-drop procedure if exists foo42;
-create procedure foo42()
-  insert into test.t1 values ("foo", 42);
 select * from t1;
 delete from t1;
 drop procedure foo42;
@@ -142,18 +125,8 @@ select 'reachable code a2';
 select 'unreachable code b2';
 drop function if exists pi;
 select pi(), pi ();
-select pi(), pi ();
 create database nowhere;
 drop database nowhere;
-select database(), database ();
-select current_user(), current_user ();
-select sha2("aaa", 0), sha2 ("aaa", 0);
-select database(), database ();
-select current_user(), current_user ();
-select sha2("aaa", 0), sha2 ("aaa", 0);
-select database(), database ();
-select current_user(), current_user ();
-select sha2("aaa", 0), sha2 ("aaa", 0);
 select database(), database ();
 select current_user(), current_user ();
 select sha2("aaa", 0), sha2 ("aaa", 0);
@@ -183,7 +156,6 @@ CREATE TABLE t2 (a int auto_increment primary key, b int) engine=innodb;
 select count(t_1.a),count(t_2.a) from t1 as t_1, t2 as t_2 /* must be 0,0 */;
 insert into t2 values (1,1),(2,2),(3,3);
 select * from t2 /* must return 1,-1 ... */;
-select count(*) from t1 /* must be 3 */;
 drop table t1,t2;
 CREATE TABLE t1 (a INT);
 INSERT INTO t1 VALUES (1),(2);
@@ -199,7 +171,6 @@ drop database if exists mysqltest_db1;
 drop table if exists test.t1;
 create database mysqltest_db1;
 drop database mysqltest_db1;
-create table test.t1 (id int);
 drop procedure if exists proc_25411_a;
 drop procedure if exists proc_25411_b;
 drop procedure if exists proc_25411_c;
@@ -249,11 +220,6 @@ CREATE TABLE t1 (
 );
 INSERT INTO t1 (id, barcode) VALUES (1, 12345678);
 INSERT INTO t1 (id, barcode) VALUES (2, 12345679);
-CREATE TABLE test.t2 (
-   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-   barcode BIGINT(11) UNSIGNED ZEROFILL NOT NULL,
-   PRIMARY KEY  (id)
-);
 DROP TABLE t1;
 DROP TABLE IF EXISTS t1;
 DROP FUNCTION IF EXISTS f1;
@@ -337,7 +303,6 @@ DROP PROCEDURE IF EXISTS p1;
 DROP PROCEDURE IF EXISTS p2;
 DROP PROCEDURE IF EXISTS p3;
 DROP PROCEDURE IF EXISTS p4;
-SELECT CAST('10x' as UNSIGNED INTEGER);
 DROP FUNCTION IF EXISTS f1;
 DROP FUNCTION IF EXISTS f2;
 DROP FUNCTION IF EXISTS f3;
@@ -479,7 +444,6 @@ CREATE TABLE t2 ( a INT );
 DROP TABLE t1, t2;
 CREATE TABLE t1 ( a INT );
 PREPARE stmt FROM 'CREATE TABLE t2 AS SELECT ? FROM t1';
-CREATE DATABASE db1;
 DROP DATABASE db1;
 CREATE PROCEDURE p1(IN a INT, INOUT b INT, OUT c INT) select 1;
 SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 'f1';
@@ -514,14 +478,12 @@ drop table t1;
 CREATE PROCEDURE p1(i INT) BEGIN END;
 DROP PROCEDURE p1;
 SELECT GET_LOCK('Bug44521', 0);
-SELECT GET_LOCK('Bug44521', 100);
 SELECT 2;
 SELECT count(*) = 1 FROM information_schema.processlist
   WHERE state = "User lock" AND info = "SELECT GET_LOCK('Bug44521', 100)";
 SELECT RELEASE_LOCK('Bug44521');
 CREATE TABLE t1(a int);
 INSERT INTO t1 VALUES (1);
-SELECT GET_LOCK('Bug47736', 0);
 SELECT count(*) = 1 FROM information_schema.processlist
   WHERE state = "User lock" AND info = "SELECT * FROM v1";
 DROP TABLE t1;
@@ -534,14 +496,8 @@ CREATE TABLE t3 (a INT);
 INSERT INTO t1 VALUES (1, 2);
 SELECT COUNT(*) = 1 FROM information_schema.processlist
   WHERE user = 'event_scheduler' AND command = 'Daemon';
-SELECT GET_LOCK('e1_lock', 60);
-SELECT GET_LOCK('e1_lock', 60);
-SELECT RELEASE_LOCK('e1_lock');
 INSERT INTO t2 SELECT * FROM t1;
-SELECT RELEASE_LOCK('e1_lock');
-SELECT GET_LOCK('e1_lock', 60);
 ALTER TABLE t1 ADD COLUMN (c INT);
-SELECT RELEASE_LOCK('e1_lock');
 DROP TABLE t1, t2, t3;
 CREATE DATABASE test1;
 CREATE TABLE test1.t1 (

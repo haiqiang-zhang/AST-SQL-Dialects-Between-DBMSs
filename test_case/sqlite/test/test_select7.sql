@@ -1,8 +1,3 @@
-create temp table t1(x);
-insert into t1 values('amx');
-insert into t1 values('anx');
-insert into t1 values('amy');
-insert into t1 values('bmy');
 select * from t1 where x like 'a__'
         intersect select * from t1 where x like '_m_'
         intersect select * from t1 where x like '__x';
@@ -47,10 +42,8 @@ INSERT INTO t4 VALUES( 2.0 );
 INSERT INTO t4 VALUES( 3.0 );
 SELECT (CASE WHEN a=0 THEN 'zero' ELSE a/2 END) AS t FROM t4 GROUP BY t;
 SELECT a=0, typeof(a) FROM t4;
-SELECT a=0, typeof(a) FROM t4 GROUP BY a;
 CREATE TABLE t5(a TEXT, b INT);
 INSERT INTO t5 VALUES(123, 456);
-SELECT typeof(a), a FROM t5 GROUP BY a HAVING a<b;
 CREATE TABLE t01(x, y);
 CREATE TABLE t02(x, y);
 CREATE VIEW v0 as SELECT x, y FROM t01 UNION SELECT x FROM t02;

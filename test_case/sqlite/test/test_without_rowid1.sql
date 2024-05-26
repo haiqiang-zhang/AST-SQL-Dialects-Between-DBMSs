@@ -1,8 +1,3 @@
-CREATE INDEX t1bd ON t1(b, d);
-INSERT INTO t1 VALUES('journal','sherman','ammonia','helena');
-INSERT INTO t1 VALUES('dynamic','juliet','flipper','command');
-INSERT INTO t1 VALUES('journal','sherman','gamma','patriot');
-INSERT INTO t1 VALUES('arctic','sleep','ammonia','helena');
 SELECT *, '|' FROM t1 ORDER BY c, a;
 PRAGMA integrity_check;
 SELECT name, key FROM pragma_index_xinfo('t1');
@@ -31,18 +26,15 @@ INSERT INTO t4 VALUES('abc', 'def');
 SELECT * FROM t4;
 UPDATE t4 SET a = 'ABC';
 SELECT * FROM t4;
-SELECT name, coll, key FROM pragma_index_xinfo('t4');
 DROP TABLE t4;
 CREATE TABLE t4 (b, a COLLATE nocase PRIMARY KEY) WITHOUT ROWID;
 INSERT INTO t4(a, b) VALUES('abc', 'def');
 SELECT * FROM t4;
 UPDATE t4 SET a = 'ABC', b = 'xyz';
 SELECT * FROM t4;
-SELECT name, coll, key FROM pragma_index_xinfo('t4');
 CREATE TABLE t5 (a, b, PRIMARY KEY(b, a)) WITHOUT ROWID;
 INSERT INTO t5(a, b) VALUES('abc', 'def');
 UPDATE t5 SET a='abc', b='def';
-SELECT name, coll, key FROM pragma_index_xinfo('t5');
 CREATE TABLE t6 (
     a COLLATE nocase, b, c UNIQUE, PRIMARY KEY(b, a)
   ) WITHOUT ROWID;
@@ -50,7 +42,6 @@ INSERT INTO t6(a, b, c) VALUES('abc', 'def', 'ghi');
 UPDATE t6 SET a='ABC', c='ghi';
 SELECT * FROM t6 ORDER BY b, a;
 SELECT * FROM t6 ORDER BY c;
-SELECT name, coll, key FROM pragma_index_xinfo('t6');
 CREATE TABLE t2(a, b, PRIMARY KEY(a)) WITHOUT ROWID;
 CREATE UNIQUE INDEX i2 ON t2(b);
 INSERT INTO t2 VALUES('three', 'two');
@@ -86,21 +77,8 @@ WITH r(x) AS (
   )
   INSERT INTO t46 SELECT x / 20, x % 20, x % 10, x FROM r;
 SELECT count(*) FROM t46 WHERE c = 5 AND a = 1;
-SELECT count(*) FROM t46 WHERE c = 4 AND a < 3;
-SELECT count(*) FROM t46 WHERE c = 2 AND a >= 3;
-SELECT count(*) FROM t46 WHERE c = 2 AND a = 1 AND b<10;
-SELECT count(*) FROM t46 WHERE c = 0 AND a = 0 AND b>5;
 CREATE INDEX i46 ON t46(c);
-SELECT count(*) FROM t46 WHERE c = 5 AND a = 1;
 EXPLAIN QUERY PLAN SELECT count(*) FROM t46 WHERE c = 5 AND a = 1;
-SELECT count(*) FROM t46 WHERE c = 4 AND a < 3;
-EXPLAIN QUERY PLAN SELECT count(*) FROM t46 WHERE c = 4 AND a < 3;
-SELECT count(*) FROM t46 WHERE c = 2 AND a >= 3;
-EXPLAIN QUERY PLAN SELECT count(*) FROM t46 WHERE c = 2 AND a >= 3;
-SELECT count(*) FROM t46 WHERE c = 2 AND a = 1 AND b<10;
-EXPLAIN QUERY PLAN SELECT count(*) FROM t46 WHERE c = 2 AND a = 1 AND b<10;
-SELECT count(*) FROM t46 WHERE c = 0 AND a = 0 AND b>5;
-EXPLAIN QUERY PLAN SELECT count(*) FROM t46 WHERE c = 0 AND a = 0 AND b>5;
 CREATE TABLE t47(a, b UNIQUE PRIMARY KEY) WITHOUT ROWID;
 CREATE INDEX i47 ON t47(a);
 INSERT INTO t47 VALUES(1, 2);

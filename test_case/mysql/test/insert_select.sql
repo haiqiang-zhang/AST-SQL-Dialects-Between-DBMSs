@@ -1,4 +1,3 @@
-insert ignore into t2 (payoutID) SELECT payoutID+10 FROM t1;
 select * from t2;
 drop table t1,t2;
 create table t1 (a int not null);
@@ -79,7 +78,6 @@ SELECT COUNT(*) FROM t1;
 SELECT min(t2.f1) FROM t1, t2 where t2.f2 = 'SIR' GROUP BY t1.f1;
 INSERT INTO t1 (f2)
   SELECT min(t2.f1) FROM t1, t2 where t2.f2 = 'SIR' GROUP BY t1.f1;
-SELECT COUNT(*) FROM t1;
 SELECT * FROM t1;
 DROP TABLE t1, t2;
 CREATE TABLE t1 (x int, y int);
@@ -148,10 +146,6 @@ INSERT INTO t1 (a) VALUES(x'616263AC646566');
 INSERT INTO t1 (a) VALUES('\'(),-.');
 INSERT INTO t1 (a) VALUES(x'FFA5A4ABACA9');
 SELECT *, HEX(a) FROM t1;
-SELECT *, HEX(a) FROM t1 WHERE a = 'abc-def';
-SELECT *, HEX(a) FROM t1 WHERE a = x'616263AC646566';
-SELECT *, HEX(a) FROM t1 WHERE a = '\'(),-.';
-SELECT *, HEX(a) FROM t1 WHERE a = x'FFA5A4ABACA9';
 DROP TABLE t1;
 CREATE TABLE t1(id INTEGER PRIMARY KEY);
 CREATE TABLE t2(id INTEGER PRIMARY KEY);

@@ -1,9 +1,3 @@
-CREATE VIEW t1 AS 
-    SELECT a, b FROM t1_a   UNION ALL
-    SELECT c, d FROM t1_b   UNION ALL
-    SELECT e, f FROM t1_c;
-CREATE TABLE i1(x);
-INSERT INTO i1 VALUES(2), (5), (6), (1);
 SELECT a, b FROM (
     SELECT a, b FROM t1_a   UNION ALL
     SELECT c, d FROM t1_b   UNION ALL

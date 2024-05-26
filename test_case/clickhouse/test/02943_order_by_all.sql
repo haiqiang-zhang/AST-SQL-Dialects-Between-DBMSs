@@ -38,15 +38,11 @@ SELECT '  -- columns';
 SET allow_experimental_analyzer = 0;
 SELECT a, b, all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SELECT a FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
-SELECT * FROM order_by_all ORDER BY all;
 SELECT * FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SET allow_experimental_analyzer = 1;
 SELECT a, b, all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SELECT a FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SELECT * FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
--- (*) These queries show the expected behavior for analyzer. Unfortunately, it is not implemented that way yet,
--- which is not wrong but a bit unintuitive (some may say a landmine). Keeping the queries for now for reference.
-
 SELECT '  -- column aliases';
 SET allow_experimental_analyzer = 0;
 SELECT a, b AS all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;

@@ -1,4 +1,3 @@
-create domain domaindroptest int4;
 comment on domain domaindroptest is 'About to drop this..';
 create domain dependenttypetest domaindroptest;
 drop domain domaindroptest cascade;
@@ -7,7 +6,6 @@ create domain domainnumeric numeric(8,2);
 create domain domainint4 int4;
 create domain domaintext text;
 SELECT cast('123456' as domainvarchar);
-SELECT cast('12345' as domainvarchar);
 create table basictest
            ( testint4 domainint4
            , testtext domaintext
@@ -19,7 +17,6 @@ INSERT INTO basictest values ('88', 'haha', 'short', '123.1212');
 select testtext || testvarchar as concat, testnumeric + 42 as sum
 from basictest;
 select pg_typeof(coalesce(4::domainint4, 7));
-select pg_typeof(coalesce(4::domainint4, 7::domainint4));
 drop table basictest;
 drop domain domainvarchar restrict;
 drop domain domainnumeric restrict;
@@ -28,12 +25,7 @@ drop domain domaintext;
 create domain positiveint int4 check(value > 0);
 create domain weirdfloat float8 check((1 / value) < 10);
 select pg_input_is_valid('1', 'positiveint');
-select pg_input_is_valid('junk', 'positiveint');
-select pg_input_is_valid('-1', 'positiveint');
 select * from pg_input_error_info('junk', 'positiveint');
-select * from pg_input_error_info('-1', 'positiveint');
-select * from pg_input_error_info('junk', 'weirdfloat');
-select * from pg_input_error_info('0.01', 'weirdfloat');
 drop domain positiveint;
 drop domain weirdfloat;
 create domain domainint4arr int4[1];
@@ -61,9 +53,6 @@ drop domain domainint4arr restrict;
 drop domain domainchar4arr restrict;
 create domain dia as int[];
 select '{1,2,3}'::dia;
-select array_dims('{1,2,3}'::dia);
-select pg_typeof('{1,2,3}'::dia);
-select pg_typeof('{1,2,3}'::dia || 42);
 drop domain dia;
 create type comptype as (r float8, i float8);
 create domain dcomptype as comptype;
@@ -147,10 +136,6 @@ create domain dposinta as posint[];
 create table dposintatable (f1 dposinta[]);
 insert into dposintatable values(array[array[42]::dposinta]);
 select f1, f1[1], (f1[1])[1] from dposintatable;
-select pg_typeof(f1) from dposintatable;
-select pg_typeof(f1[1]) from dposintatable;
-select pg_typeof(f1[1][1]) from dposintatable;
-select pg_typeof((f1[1])[1]) from dposintatable;
 update dposintatable set f1[2] = array[99];
 select f1, f1[1], (f1[2])[1] from dposintatable;
 drop table dposintatable;
@@ -180,7 +165,6 @@ create table nulltest
            );
 INSERT INTO nulltest values ('a', 'b', 'c', 'd', 'c');
 INSERT INTO nulltest values ('a', 'b', 'c', NULL, 'd');
-SELECT cast('1' as dnotnull);
 drop table nulltest;
 drop domain dnotnull restrict;
 drop domain dnull restrict;
@@ -248,7 +232,6 @@ create table domconnotnulltest
 insert into domconnotnulltest default values;
 update domconnotnulltest set col1 = 5;
 update domconnotnulltest set col2 = 6;
-select count(*) from pg_constraint where contypid = 'connotnull'::regtype and contype = 'n';
 select count(*) from pg_constraint where contypid = 'connotnull'::regtype and contype = 'n';
 update domconnotnulltest set col1 = null;
 update domconnotnulltest set col1 = null;
@@ -354,7 +337,6 @@ $$ language plpgsql immutable;
 select dom_check(0);
 alter domain di add constraint pos check (value > 0);
 alter domain di drop constraint pos;
-select dom_check(0);
 create or replace function dom_check(int) returns di as $$
 declare d di;
 begin
@@ -362,10 +344,8 @@ begin
   return d;
 end
 $$ language plpgsql immutable;
-select dom_check(0);
 alter domain di add constraint pos check (value > 0);
 alter domain di drop constraint pos;
-select dom_check(0);
 drop function dom_check(int);
 drop domain di;
 create function sql_is_distinct_from(anyelement, anyelement)

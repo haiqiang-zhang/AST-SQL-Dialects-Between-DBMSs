@@ -1,18 +1,10 @@
-SET session_timezone = 'Europe/Amsterdam';
 SELECT '-- negative tests';
 SELECT '-- UInt32 and Int32 arguments, both const and non-const';
 SELECT 719527 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s));
-SELECT 719528 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s));
-SELECT 719529 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s));
-SELECT 785062 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s));
-SELECT 785063 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s));
-SELECT 785064 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s));
 SELECT 693961 AS u, toInt32(u) AS s, fromDaysSinceYearZero32(u), fromDaysSinceYearZero32(materialize(u)), fromDaysSinceYearZero32(s), fromDaysSinceYearZero32(materialize(s));
-SELECT 693962 AS u, toInt32(u) AS s, fromDaysSinceYearZero32(u), fromDaysSinceYearZero32(materialize(u)), fromDaysSinceYearZero32(s), fromDaysSinceYearZero32(materialize(s));
 SELECT '-- integer types != (U)Int32';
 SELECT toUInt64(719529) AS u, toInt64(719529) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero32(u), fromDaysSinceYearZero(s), fromDaysSinceYearZero32(s);
 SELECT '-- NULL handling';
-SELECT fromDaysSinceYearZero(NULL), fromDaysSinceYearZero32(NULL);
 SELECT '-- ubsan bugs';
 SELECT '-- Alias';
 SELECT FROM_DAYS(1);

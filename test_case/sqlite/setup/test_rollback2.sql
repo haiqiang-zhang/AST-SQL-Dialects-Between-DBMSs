@@ -1,0 +1,2 @@
+CREATE TABLE t1(i, h);
+CREATE INDEX i1 ON t1(h);

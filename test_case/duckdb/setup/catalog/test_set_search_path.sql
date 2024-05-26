@@ -1,0 +1,10 @@
+CREATE TABLE main_table(i INTEGER);
+CREATE SCHEMA test;
+CREATE TABLE test.test_table(i INTEGER);
+CREATE SCHEMA test2;
+CREATE TABLE test2.bye(i INTEGER);
+CREATE TABLE test2.test2_table(i INTEGER);
+CREATE SCHEMA test3;
+CREATE SCHEMA test4;
+CREATE SCHEMA test5;
+CREATE TABLE test5.test5_table(i INTEGER);

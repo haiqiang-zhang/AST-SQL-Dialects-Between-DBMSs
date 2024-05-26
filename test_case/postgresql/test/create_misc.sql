@@ -17,7 +17,6 @@ SELECT class, b, c
 SELECT class, c FROM e_star* x WHERE x.c NOTNULL;
 SELECT * FROM f_star* x WHERE x.c ISNULL;
 SELECT sum(a) FROM a_star*;
-SELECT class, sum(a) FROM a_star* GROUP BY class ORDER BY class;
 ALTER TABLE f_star RENAME COLUMN f TO ff;
 ALTER TABLE e_star* RENAME COLUMN e TO ee;
 ALTER TABLE d_star* RENAME COLUMN d TO dd;

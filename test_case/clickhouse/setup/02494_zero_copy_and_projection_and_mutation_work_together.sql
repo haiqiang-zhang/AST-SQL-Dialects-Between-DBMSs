@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS wikistat1;
+DROP TABLE IF EXISTS wikistat2;

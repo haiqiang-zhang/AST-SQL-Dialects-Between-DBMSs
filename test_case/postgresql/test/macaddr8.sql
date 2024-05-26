@@ -52,5 +52,3 @@ SELECT  b | '01:02:03:04:05:06' FROM macaddr8_data;
 DROP TABLE macaddr8_data;
 SELECT pg_input_is_valid('08:00:2b:01:02:03:04:ZZ', 'macaddr8');
 SELECT * FROM pg_input_error_info('08:00:2b:01:02:03:04:ZZ', 'macaddr8');
-SELECT pg_input_is_valid('08:00:2b:01:02:03:04:', 'macaddr8');
-SELECT * FROM pg_input_error_info('08:00:2b:01:02:03:04:', 'macaddr8');

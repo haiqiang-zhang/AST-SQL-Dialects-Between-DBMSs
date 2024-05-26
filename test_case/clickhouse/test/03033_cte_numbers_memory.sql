@@ -1,4 +1,3 @@
-SET allow_experimental_analyzer=1;
 WITH
 (SELECT number FROM system.numbers LIMIT 1) as w1,
 (SELECT number FROM system.numbers LIMIT 1) as w2,

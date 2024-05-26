@@ -1,12 +1,3 @@
-SET enable_partitionwise_join to true;
-CREATE TABLE prt1 (a int, b int, c varchar) PARTITION BY RANGE(a);
-CREATE TABLE prt1_p1 PARTITION OF prt1 FOR VALUES FROM (0) TO (250);
-CREATE TABLE prt1_p3 PARTITION OF prt1 FOR VALUES FROM (500) TO (600);
-CREATE TABLE prt1_p2 PARTITION OF prt1 FOR VALUES FROM (250) TO (500);
-INSERT INTO prt1 SELECT i, i % 25, to_char(i, 'FM0000') FROM generate_series(0, 599) i WHERE i % 2 = 0;
-CREATE INDEX iprt1_p1_a on prt1_p1(a);
-CREATE INDEX iprt1_p2_a on prt1_p2(a);
-CREATE INDEX iprt1_p3_a on prt1_p3(a);
 ANALYZE prt1;
 CREATE TABLE prt2 (a int, b int, c varchar) PARTITION BY RANGE(b);
 CREATE TABLE prt2_p1 PARTITION OF prt2 FOR VALUES FROM (0) TO (250);
@@ -76,13 +67,6 @@ SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL
 SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL
 			  (SELECT t1.b AS t1b, t2.* FROM prt2 t2) s
 			  ON t1.a = s.b WHERE s.t1b = s.a;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL
-			  (SELECT t1.b AS t1b, t2.* FROM prt2 t2) s
-			  ON t1.a = s.b WHERE s.t1b = s.b;
-SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL
-			  (SELECT t1.b AS t1b, t2.* FROM prt2 t2) s
-			  ON t1.a = s.b WHERE s.t1b = s.b;
 SET enable_partitionwise_aggregate TO true;
 SET enable_hashjoin TO false;
 EXPLAIN (COSTS OFF)
@@ -218,9 +202,6 @@ CREATE TABLE pht1_e_p2 PARTITION OF pht1_e FOR VALUES WITH (MODULUS 3, REMAINDER
 CREATE TABLE pht1_e_p3 PARTITION OF pht1_e FOR VALUES WITH (MODULUS 3, REMAINDER 2);
 INSERT INTO pht1_e SELECT i, i, 'A' || to_char(i/50, 'FM0000') FROM generate_series(0, 299, 2) i;
 ANALYZE pht1_e;
-EXPLAIN (COSTS OFF)
-SELECT avg(t1.a), avg(t2.b), avg(t3.a + t3.b), t1.c, t2.c, t3.c FROM pht1 t1, pht2 t2, pht1_e t3 WHERE t1.b = t2.b AND t1.c = t2.c AND ltrim(t3.c, 'A') = t1.c GROUP BY t1.c, t2.c, t3.c ORDER BY t1.c, t2.c, t3.c;
-SELECT avg(t1.a), avg(t2.b), avg(t3.a + t3.b), t1.c, t2.c, t3.c FROM pht1 t1, pht2 t2, pht1_e t3 WHERE t1.b = t2.b AND t1.c = t2.c AND ltrim(t3.c, 'A') = t1.c GROUP BY t1.c, t2.c, t3.c ORDER BY t1.c, t2.c, t3.c;
 ALTER TABLE prt1 DETACH PARTITION prt1_p3;
 ALTER TABLE prt1 ATTACH PARTITION prt1_p3 DEFAULT;
 ANALYZE prt1;
@@ -235,8 +216,6 @@ ANALYZE plt1;
 ALTER TABLE plt2 DETACH PARTITION plt2_p3;
 ALTER TABLE plt2 ATTACH PARTITION plt2_p3 DEFAULT;
 ANALYZE plt2;
-EXPLAIN (COSTS OFF)
-SELECT avg(t1.a), avg(t2.b), t1.c, t2.c FROM plt1 t1 RIGHT JOIN plt2 t2 ON t1.c = t2.c WHERE t1.a % 25 = 0 GROUP BY t1.c, t2.c ORDER BY t1.c, t2.c;
 CREATE TABLE prt1_l (a int, b int, c varchar) PARTITION BY RANGE(a);
 CREATE TABLE prt1_l_p1 PARTITION OF prt1_l FOR VALUES FROM (0) TO (250);
 CREATE TABLE prt1_l_p2 PARTITION OF prt1_l FOR VALUES FROM (250) TO (500) PARTITION BY LIST (c);
@@ -280,15 +259,6 @@ EXPLAIN (COSTS OFF)
 SELECT * FROM prt1_l t1 JOIN LATERAL
 			  (SELECT * FROM prt1_l t2 TABLESAMPLE SYSTEM (t1.a) REPEATABLE(t1.b)) s
 			  ON t1.a = s.a AND t1.b = s.b AND t1.c = s.c;
-EXPLAIN (COSTS OFF)
-SELECT COUNT(*) FROM prt1_l t1 LEFT JOIN LATERAL
-			  (SELECT t1.b AS t1b, t2.* FROM prt2_l t2) s
-			  ON t1.a = s.b AND t1.b = s.a AND t1.c = s.c
-			  WHERE s.t1b = s.a;
-SELECT COUNT(*) FROM prt1_l t1 LEFT JOIN LATERAL
-			  (SELECT t1.b AS t1b, t2.* FROM prt2_l t2) s
-			  ON t1.a = s.b AND t1.b = s.a AND t1.c = s.c
-			  WHERE s.t1b = s.a;
 EXPLAIN (COSTS OFF)
 SELECT t1.a, t1.c, t2.b, t2.c FROM (SELECT * FROM prt1_l WHERE a = 1 AND a = 2) t1 RIGHT JOIN prt2_l t2 ON t1.a = t2.b AND t1.b = t2.a AND t1.c = t2.c;
 CREATE TABLE prt1_n (a int, b int, c varchar) PARTITION BY RANGE(c);

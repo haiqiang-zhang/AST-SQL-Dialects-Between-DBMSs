@@ -1,0 +1,5 @@
+PRAGMA page_size = 1024;
+CREATE TABLE t1(x, y, z);
+CREATE TABLE t2(x);
+BEGIN;
+DELETE FROM t1;

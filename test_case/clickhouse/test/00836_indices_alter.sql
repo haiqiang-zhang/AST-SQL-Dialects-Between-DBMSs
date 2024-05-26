@@ -1,6 +1,3 @@
-ALTER TABLE minmax_idx ADD INDEX idx1 u64 * i32 TYPE minmax GRANULARITY 10;
-ALTER TABLE minmax_idx ADD INDEX idx2 u64 + i32 TYPE minmax GRANULARITY 10;
-ALTER TABLE minmax_idx ADD INDEX idx3 (u64 - i32) TYPE minmax GRANULARITY 10 AFTER idx1;
 SHOW CREATE TABLE minmax_idx;
 SELECT * FROM minmax_idx WHERE u64 * i32 = 2;
 INSERT INTO minmax_idx VALUES (1, 2);

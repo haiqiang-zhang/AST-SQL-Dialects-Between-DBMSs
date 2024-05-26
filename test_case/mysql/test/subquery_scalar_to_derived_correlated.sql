@@ -30,9 +30,6 @@ FROM t1;
 SELECT SUM(a),
        a, (SELECT MIN(a) FROM t2 WHERE a = COUNT(*))
 FROM t1 GROUP BY a;
-SELECT SUM(a),
-       a, (SELECT MIN(a) FROM t2 WHERE a = AVG(t1.a))
-FROM t1 GROUP BY a;
 INSERT INTO t2 VALUES (2);
 SELECT * FROM t1 WHERE (SELECT COUNT(a) FROM t2 WHERE t2.a = t1.a) > 0;
 SELECT * FROM t1 WHERE (SELECT COUNT(a) FROM t3 WHERE t3.a = t1.a GROUP BY b) > 0;
@@ -90,24 +87,6 @@ DROP TABLE t1, t2, t3;
 CREATE TABLE t1 (a INT, b INT, c INT DEFAULT 0);
 INSERT INTO t1 (a, b) VALUES (3,3), (2,2), (3,3), (2,2), (3,3), (4,4);
 CREATE TABLE t2 SELECT DISTINCT * FROM t1;
-SELECT t1.a, SUM(t1.b)
-FROM t1
-WHERE t1.a = (SELECT t2.a
-              FROM t2
-              WHERE t2.a > (SELECT t1.b FROM DUAL) AND t1.a=t2.a)
-GROUP BY t1.a ORDER BY t1.a LIMIT 30;
-SELECT t1.a, SUM(t1.b)
-FROM t1
-WHERE t1.a = (SELECT t2.a
-              FROM t2
-              WHERE t2.a > (SELECT SUM(t1.b) FROM DUAL) AND t1.a=t2.a)
-GROUP BY t1.a ORDER BY t1.a LIMIT 30;
-SELECT t1.a, SUM(t1.b)
-FROM t1
-WHERE t1.a = (SELECT SUM(t2.b)
-              FROM t2
-              WHERE t2.a > 4 ORDER BY t1.b)
-GROUP BY t1.a ORDER BY t1.a LIMIT 30;
 DROP TABLES t1, t2;
 CREATE TABLE t1 (
   id INTEGER NOT NULL ,

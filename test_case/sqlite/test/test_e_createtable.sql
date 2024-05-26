@@ -1,588 +1,3 @@
-PRAGMA foreign_keys = OFF;
-CREATE TABLE t1(c1 one);
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 one two);
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 one two three);
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 one two three four);
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 one two three four(14));
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 one two three four(14, 22));
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 var(+14, -22.3));
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-CREATE TABLE t1(c1 var(1.0e10));
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-PRAGMA foreign_keys = OFF;
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text PRIMARY KEY);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text PRIMARY KEY ASC);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text PRIMARY KEY DESC);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT cons PRIMARY KEY DESC);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text NOT NULL);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT nm NOT NULL);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text NULL);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT nm NULL);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text UNIQUE);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT un UNIQUE);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CHECK(c1!=0));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT chk CHECK(c1!=0));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text DEFAULT 1);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text DEFAULT -1);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text DEFAULT +1);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text DEFAULT -45.8e22);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text DEFAULT (1+1));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT "1 2" DEFAULT (1+1));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text COLLATE nocase);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 text CONSTRAINT 'a x' COLLATE nocase);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 REFERENCES t2);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 CONSTRAINT abc REFERENCES t2);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 
-      PRIMARY KEY NOT NULL UNIQUE CHECK(c1 IS 'ten') DEFAULT 123 REFERENCES t1
-    );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1 
-      REFERENCES t1 DEFAULT 123 CHECK(c1 IS 'ten') UNIQUE NOT NULL PRIMARY KEY 
-    );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, PRIMARY KEY(c1));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, PRIMARY KEY(c1, c2));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, PRIMARY KEY(c1, c2) ON CONFLICT IGNORE);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, UNIQUE(c1));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, UNIQUE(c1, c2));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, UNIQUE(c1, c2) ON CONFLICT IGNORE);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, CHECK(c1 IS NOT c2));
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-CREATE TABLE t1(c1, c2, FOREIGN KEY(c1) REFERENCES t2);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-CREATE TABLE t1(
-           col1,
-           col2 TEXT,
-           col3 INTEGER UNIQUE,
-           col4 VARCHAR(10, 10) PRIMARY KEY,
-           "name with spaces" REFERENCES t1
-         );
-PRAGMA foreign_keys = OFF;
-DROP table "t1";
-PRAGMA foreign_keys = OFF;
-CREATE TABLE t2(a, b, c);
-CREATE TABLE t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMP TABLE t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMPORARY TABLE t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TABLE IF NOT EXISTS t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMP TABLE IF NOT EXISTS t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMPORARY TABLE IF NOT EXISTS t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TABLE main.t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMP TABLE temp.t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMPORARY TABLE temp.t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TABLE IF NOT EXISTS main.t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMP TABLE IF NOT EXISTS temp.t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMPORARY TABLE IF NOT EXISTS temp.t1(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TABLE t1 AS SELECT * FROM t2;
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TEMP TABLE t1 AS SELECT c, b, a FROM t2;
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-CREATE TABLE t1 AS SELECT count(*), max(b), min(a) FROM t2;
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t1";
-CREATE TABLE t2(a, b, c);
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH FULL 
-    ON DELETE SET NULL ON UPDATE RESTRICT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) 
-    ON DELETE RESTRICT ON UPDATE SET NULL MATCH FULL 
-    NOT DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH PARTIAL 
-    ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH PARTIAL 
-    ON DELETE RESTRICT ON UPDATE SET DEFAULT 
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH PARTIAL 
-    ON DELETE RESTRICT ON UPDATE RESTRICT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH PARTIAL 
-    ON DELETE NO ACTION ON UPDATE SET DEFAULT NOT DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH SIMPLE 
-    ON DELETE SET NULL ON UPDATE CASCADE NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH SIMPLE 
-    ON DELETE SET DEFAULT ON UPDATE SET NULL DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH SIMPLE 
-    ON DELETE SET DEFAULT  NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH SIMPLE 
-    ON DELETE RESTRICT ON UPDATE SET DEFAULT NOT DEFERRABLE INITIALLY DEFERRED
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH SIMPLE 
-    ON DELETE RESTRICT ON UPDATE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH SIMPLE 
-    ON DELETE NO ACTION ON UPDATE SET DEFAULT NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH STICK 
-    ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) MATCH STICK 
-    ON UPDATE SET NULL NOT DEFERRABLE INITIALLY DEFERRED
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x)
-    ON DELETE SET NULL ON UPDATE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) ON DELETE RESTRICT ON UPDATE NO ACTION NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2(x) NOT DEFERRABLE INITIALLY DEFERRED
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH FULL 
-    ON DELETE SET NULL ON UPDATE SET NULL DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH FULL 
-    ON DELETE SET NULL ON UPDATE SET DEFAULT NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH FULL ON DELETE SET DEFAULT ON UPDATE SET NULL 
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH FULL 
-    ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH PARTIAL 
-    ON DELETE SET NULL ON UPDATE RESTRICT NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH PARTIAL 
-    ON DELETE SET NULL ON UPDATE NO ACTION DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH PARTIAL ON DELETE CASCADE ON UPDATE SET DEFAULT 
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH PARTIAL NOT DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH SIMPLE 
-    ON DELETE SET DEFAULT ON UPDATE CASCADE DEFERRABLE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH STICK 
-    ON DELETE SET NULL ON UPDATE NO ACTION DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH STICK 
-    ON DELETE NO ACTION ON UPDATE SET DEFAULT NOT DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 MATCH STICK 
-    ON UPDATE SET DEFAULT DEFERRABLE INITIALLY IMMEDIATE
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-CREATE TABLE t1(a 
-    REFERENCES t2 
-    ON DELETE RESTRICT ON UPDATE NO ACTION DEFERRABLE INITIALLY DEFERRED
-  );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
-DROP table "t1";
-CREATE TABLE t2(x PRIMARY KEY, y);
-CREATE TABLE t3(i, j, UNIQUE(i, j) );
-PRAGMA foreign_keys = OFF;
-DROP table "t2";
-DROP table "t3";
 ATTACH 'test.db2' AS auxa;
 ATTACH 'test.db3' AS auxb;
 CREATE TABLE sqlit_abc(a, b, c);
@@ -607,7 +22,6 @@ DROP table "xyz";
 CREATE TABLE main.abc(a, b, c);
 CREATE TABLE main.t1(a, b, c);
 CREATE TABLE temp.tmp(a, b, c);
-CREATE TABLE auxb.tbl(x, y);
 CREATE TABLE auxb.t1(k, v);
 CREATE TABLE auxa.next(c, d);
 PRAGMA foreign_keys = OFF;
@@ -688,19 +102,15 @@ PRAGMA foreign_keys = OFF;
 DROP table "t1";
 DROP table "tr1";
 DROP table "tr2";
-DROP table "t2";
 DROP table "tr1";
 DROP table "tr2";
 CREATE TABLE t1(a, b);
 CREATE TABLE t2(a, b);
 SELECT * FROM t1;
 SELECT * FROM t2;
-SELECT * FROM t3;
 SELECT * FROM t4;
 DROP TABLE t1;
 SELECT * FROM t1;
-DROP TABLE t3;
-SELECT * FROM t3;
 SELECT name FROM sqlite_master;
 SELECT name FROM auxa.sqlite_master;
 DROP TABLE t2;
@@ -777,11 +187,9 @@ SELECT min(rowid), count(rowid)==max(rowid) FROM x1;
 CREATE TABLE x2 AS SELECT * FROM t1 ORDER BY x DESC;
 SELECT * FROM t1 ORDER BY x DESC;
 SELECT * FROM x2 ORDER BY rowid;
-SELECT min(rowid), count(rowid)==max(rowid) FROM x2;
 CREATE TABLE x3 AS SELECT * FROM t1 ORDER BY x ASC;
 SELECT * FROM t1 ORDER BY x ASC;
 SELECT * FROM x3 ORDER BY rowid;
-SELECT min(rowid), count(rowid)==max(rowid) FROM x3;
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 DROP table "x1";
@@ -799,24 +207,16 @@ DELETE FROM t2;
 INSERT INTO t1 VALUES(15,   '22.0', '14');
 SELECT quote(x), quote(y), quote(z) FROM t1 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t1 VALUES(22.0, 22.0, 22.0);
-SELECT quote(x), quote(y), quote(z) FROM t1 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t2 VALUES(15,   '22.0', '14');
-SELECT quote(a), quote(b), quote(c) FROM t2 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t2 VALUES(22.0, 22.0, 22.0);
-SELECT quote(a), quote(b), quote(c) FROM t2 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t3 VALUES('15', '22.0');
-SELECT quote(o), quote(t) FROM t3 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t3 VALUES(15, 22.0);
-SELECT quote(o), quote(t) FROM t3 ORDER BY rowid DESC LIMIT 1;
 DELETE FROM t1;
 INSERT INTO t1(x, y) VALUES('abc', 'xyz');
-SELECT quote(x), quote(y), quote(z) FROM t1;
 DELETE FROM t1;
 INSERT INTO t1(x, z) VALUES('abc', 'xyz');
-SELECT quote(x), quote(y), quote(z) FROM t1;
 DELETE FROM t1;
 INSERT INTO t1 DEFAULT VALUES;
-SELECT quote(x), quote(y), quote(z) FROM t1;
 DELETE FROM t1;
 CREATE TABLE t4(
     a DEFAULT NULL,
@@ -836,21 +236,9 @@ DROP TABLE t5;
 CREATE TABLE t5(x DEFAULT ( 1 IN (1, 2, 3) ));
 DROP TABLE t5;
 INSERT INTO t4 DEFAULT VALUES;
-SELECT quote(a), quote(b), quote(c), quote(d), quote(e), quote(f), 
-         quote(g), quote(h), quote(i), quote(j), quote(k)
-  FROM t4 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t4(a, b, c) VALUES(1, 2, 3);
-SELECT quote(a), quote(b), quote(c), quote(d), quote(e), quote(f), 
-         quote(g), quote(h), quote(i), quote(j), quote(k)
-  FROM t4 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t4(k, j, i) VALUES(1, 2, 3);
-SELECT quote(a), quote(b), quote(c), quote(d), quote(e), quote(f), 
-         quote(g), quote(h), quote(i), quote(j), quote(k)
-  FROM t4 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t4(a,b,c,d,e,f,g,h,i,j,k) VALUES(1,2,3,4,5,6,7,8,9,10,11);
-SELECT quote(a), quote(b), quote(c), quote(d), quote(e), quote(f), 
-         quote(g), quote(h), quote(i), quote(j), quote(k)
-  FROM t4 ORDER BY rowid DESC LIMIT 1;
 CREATE TABLE t5(
     a DEFAULT NULL,  
     b DEFAULT 'text value',  
@@ -859,24 +247,17 @@ CREATE TABLE t5(
     e DEFAULT 394507
   );
 INSERT INTO t5 DEFAULT VALUES;
-SELECT quote(a), quote(b), quote(c), quote(d), quote(e) FROM t5;
 CREATE TABLE t6(a DEFAULT ( nextint() ), b DEFAULT ( nextint() ));
-SELECT quote(a), quote(b) FROM t6;
-SELECT quote(a), quote(b) FROM t6;
-SELECT quote(a), quote(b) FROM t6;
 CREATE TABLE t7(
     a DEFAULT CURRENT_TIME, 
     b DEFAULT CURRENT_DATE, 
     c DEFAULT CURRENT_TIMESTAMP
   );
 INSERT INTO t7 DEFAULT VALUES;
-SELECT quote(a), quote(b), quote(c) FROM t7;
 INSERT INTO t7(b, c) VALUES('x', 'y');
-SELECT a, b, c FROM t7 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t7(c, a) VALUES('x', 'y');
 SELECT a, b, c FROM t7 ORDER BY rowid DESC LIMIT 1;
 INSERT INTO t7(a, b) VALUES('x', 'y');
-SELECT a, b, c FROM t7 ORDER BY rowid DESC LIMIT 1;
 CREATE TABLE t8(a COLLATE nocase, b COLLATE rtrim, c COLLATE binary, d);
 INSERT INTO t8 VALUES('abc',   'abc',   'abc',   'abc');
 INSERT INTO t8 VALUES('abc  ', 'abc  ', 'abc  ', 'abc  ');
@@ -905,8 +286,6 @@ CREATE TABLE t2(a PRIMARY KEY, b, c);
 CREATE TABLE t3(a, b, c, PRIMARY KEY(a));
 CREATE TABLE t4(a, b, c, PRIMARY KEY(c,b,a));
 CREATE TABLE t6(a, b);
---ok;
---Error, no PRIMARY KEY;
 CREATE TABLE t5(a, b INTEGER PRIMARY KEY, c);
 DROP TABLE t5;
 CREATE TABLE t5(a PRIMARY KEY, b, c);
@@ -958,9 +337,6 @@ INSERT INTO t2 VALUES(X'ABCDEF', NULL);
 INSERT INTO t2 VALUES(NULL, NULL);
 INSERT INTO t2 VALUES(NULL, NULL);
 SELECT count(*) FROM t1 WHERE x IS NULL;
-SELECT count(*) FROM t2 WHERE x IS NULL;
-SELECT count(*) FROM t2 WHERE y IS NULL;
-SELECT count(*) FROM t2 WHERE x IS NULL AND y IS NULL;
 CREATE TABLE t3(s, u INTEGER PRIMARY KEY, v);
 INSERT INTO t3 VALUES(1, NULL, 2);
 INSERT INTO t3 VALUES('x', NULL, 'y');
@@ -1004,23 +380,18 @@ DROP table "t2";
 DROP table "t3";
 DROP table "t4";
 CREATE TABLE t1(a TEXT PRIMARY KEY, b);
-SELECT count(*) FROM sqlite_master WHERE type='index';
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 CREATE TABLE t1(a INTEGER PRIMARY KEY, b);
-SELECT count(*) FROM sqlite_master WHERE type='index';
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 CREATE TABLE t1(a TEXT UNIQUE, b);
-SELECT count(*) FROM sqlite_master WHERE type='index';
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 CREATE TABLE t1(a PRIMARY KEY, b TEXT UNIQUE);
-SELECT count(*) FROM sqlite_master WHERE type='index';
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 CREATE TABLE t1(a PRIMARY KEY, b, c, UNIQUE(c, b));
-SELECT count(*) FROM sqlite_master WHERE type='index';
 PRAGMA foreign_keys = OFF;
 DROP table "t1";
 CREATE TABLE t1(a, b PRIMARY KEY);
@@ -1248,9 +619,6 @@ INSERT INTO t7 VALUES('2.0');
 INSERT INTO t8 VALUES('2.0');
 INSERT INTO t9 VALUES('2.0');
 SELECT typeof(pk), pk FROM t6;
-SELECT typeof(pk), pk FROM t7;
-SELECT typeof(pk), pk FROM t8;
-SELECT typeof(pk), pk FROM t9;
 CREATE TABLE t(x INTEGER PRIMARY KEY ASC, y, z);
 DROP TABLE t;
 CREATE TABLE t(x INTEGER, y, z, PRIMARY KEY(x ASC));
@@ -1305,38 +673,24 @@ DROP table "t11";
 CREATE TABLE t12(x INTEGER PRIMARY KEY, y);
 INSERT INTO t12 VALUES(5, 'five');
 UPDATE t12 SET x = 4;
-SELECT typeof(x), x FROM t12;
 UPDATE t12 SET x = 10.0;
-SELECT typeof(x), x FROM t12;
 UPDATE t12 SET x = '12.0';
-SELECT typeof(x), x FROM t12;
 UPDATE t12 SET x = '-15.0';
-SELECT typeof(x), x FROM t12;
 DELETE FROM t12;
 DELETE FROM t12;
 INSERT INTO t12(x) VALUES(4);
-SELECT typeof(x), x FROM t12;
 DELETE FROM t12;
 INSERT INTO t12(x) VALUES(10.0);
-SELECT typeof(x), x FROM t12;
 DELETE FROM t12;
 INSERT INTO t12(x) VALUES('12.0');
-SELECT typeof(x), x FROM t12;
 DELETE FROM t12;
 INSERT INTO t12(x) VALUES('4e3');
-SELECT typeof(x), x FROM t12;
 DELETE FROM t12;
 INSERT INTO t12(x) VALUES('-14.0');
-SELECT typeof(x), x FROM t12;
 DELETE FROM t12;
 DELETE FROM t12;
 INSERT INTO t12 DEFAULT VALUES;
-SELECT typeof(x), x FROM t12 WHERE y IS (SELECT max(y) FROM t12);
 INSERT INTO t12(y)   VALUES(5);
-SELECT typeof(x), x FROM t12 WHERE y IS (SELECT max(y) FROM t12);
 INSERT INTO t12(x,y) VALUES(NULL, 10);
-SELECT typeof(x), x FROM t12 WHERE y IS (SELECT max(y) FROM t12);
 INSERT INTO t12(x,y) SELECT NULL, 15 FROM t12;
-SELECT typeof(x), x FROM t12 WHERE y IS (SELECT max(y) FROM t12);
 INSERT INTO t12(y) SELECT 20 FROM t12 LIMIT 3;
-SELECT typeof(x), x FROM t12 WHERE y IS (SELECT max(y) FROM t12);

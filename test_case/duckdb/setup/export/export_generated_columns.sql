@@ -1,0 +1,6 @@
+BEGIN TRANSACTION;
+CREATE TABLE tbl (
+	x INTEGER,
+	gen_x AS (x + 5)
+);
+INSERT INTO tbl VALUES(5);

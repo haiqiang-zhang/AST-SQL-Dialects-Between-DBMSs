@@ -1,4 +1,3 @@
-SET max_block_size = 65409;
 SELECT 'TESTING MODIFY SMALLER BYTES';
 DROP TABLE IF EXISTS memory;
 CREATE TABLE memory (i UInt32) ENGINE = Memory SETTINGS min_bytes_to_keep = 8192, max_bytes_to_keep = 32768;

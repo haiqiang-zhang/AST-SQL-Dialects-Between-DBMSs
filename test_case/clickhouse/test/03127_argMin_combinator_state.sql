@@ -12,9 +12,3 @@ INSERT INTO argmax_comb
     FROM numbers(100)
     GROUP BY id;
 SELECT avgArgMaxMerge(state) FROM argmax_comb;
-SELECT
-    id,
-    avgArgMaxMerge(state)
-FROM argmax_comb
-GROUP BY id
-ORDER BY id ASC;

@@ -1,7 +1,3 @@
-set prefer_localhost_replica = 1;
-drop table if exists null_01293;
-drop table if exists dist_01293;
-create table null_01293 (key Int) engine=Null();
 select * from system.distribution_queue where database = currentDatabase();
 select 'INSERT';
 system stop distributed sends dist_01293;

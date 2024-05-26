@@ -30,7 +30,4 @@ CREATE TABLE t1 (
   PRIMARY KEY (pk)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 INSERT INTO t1 VALUES (1,1);
-SELECT ((table1.col_int) * (table1.col_int)) AS field2 FROM (t1 AS table1)
-  WHERE (table1.col_int != 1 OR table1.pk) GROUP BY field2 WITH ROLLUP
-  HAVING (field2 <> 239 ) ORDER BY GROUPING(field2);
 DROP TABLE t1;

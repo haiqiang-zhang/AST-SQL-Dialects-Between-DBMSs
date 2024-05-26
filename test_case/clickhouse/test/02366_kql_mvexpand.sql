@@ -1,4 +1,3 @@
-set dialect='kusto';
 print '-- mv-expand --';
 print '-- mv_expand_test_table | mv-expand c --';
 mv_expand_test_table | mv-expand c;

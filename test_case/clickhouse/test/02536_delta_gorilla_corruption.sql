@@ -1,6 +1,3 @@
--- no-asan: the flaky check complains that the test sometimes runs > 60 sec on asan builds
-
-set allow_suspicious_codecs=1;
 select 'Original bug: the same query executed multiple times yielded different results.';
 select 'For unclear reasons this happened only in Release builds, not in Debug builds.';
 drop table if exists bug_delta_gorilla;
@@ -9,12 +6,6 @@ create table bug_delta_gorilla
 engine = MergeTree
 order by tuple() SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi'
 as (select 0 from numbers(30000000));
-select count(*)
-from bug_delta_gorilla
-where 0 <> value_bug;
-select count(*)
-from bug_delta_gorilla
-where 0 <> value_bug;
 select count(*)
 from bug_delta_gorilla
 where 0 <> value_bug;

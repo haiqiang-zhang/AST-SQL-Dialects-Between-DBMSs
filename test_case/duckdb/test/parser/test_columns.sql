@@ -1,0 +1,10 @@
+SELECT COLUMNS(*) FROM integers;
+SELECT MIN(COLUMNS(*)), MAX(COLUMNS(*)) FROM integers;
+SELECT MIN(COLUMNS(* EXCLUDE (j))), MAX(COLUMNS(* EXCLUDE (i))) FROM integers;
+SELECT MIN(COLUMNS(* REPLACE (i+j AS i))) FROM integers;
+SELECT COLUMNS(*) + 1 FROM integers;
+SELECT COLUMNS(*) + COLUMNS(*) FROM integers;
+SELECT id, MIN(COLUMNS('index[0-9]')) FROM grouped_table GROUP BY all ORDER BY ALL;
+SELECT id, MIN(COLUMNS('[0-9]')) FROM grouped_table GROUP BY all ORDER BY ALL;
+SELECT * FROM grouped_table ORDER BY COLUMNS('index[0-9]');
+SELECT * FROM grouped_table ORDER BY COLUMNS(*);

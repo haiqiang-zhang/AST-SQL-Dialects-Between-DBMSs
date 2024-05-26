@@ -1,4 +1,3 @@
-SET send_logs_level = 'fatal';
 SELECT '-- negative tests';
 SELECT '-- test mysql compatibility setting';
 SELECT locate('abcabc', 'ca');

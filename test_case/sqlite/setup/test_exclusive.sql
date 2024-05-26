@@ -1,0 +1,16 @@
+pragma locking_mode;
+pragma main.locking_mode;
+pragma temp.locking_mode;
+pragma locking_mode = exclusive;
+pragma locking_mode;
+pragma main.locking_mode;
+pragma temp.locking_mode;
+pragma locking_mode = normal;
+pragma locking_mode;
+pragma main.locking_mode;
+pragma temp.locking_mode;
+pragma locking_mode = invalid;
+pragma locking_mode;
+pragma main.locking_mode;
+pragma temp.locking_mode;
+pragma locking_mode = exclusive;

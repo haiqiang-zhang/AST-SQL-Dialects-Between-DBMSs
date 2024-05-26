@@ -1,6 +1,4 @@
 SELECT a, sum(b) FROM t1 GROUP BY a HAVING a=2;
-SELECT a, sum(b) FROM t1 GROUP BY a HAVING a=2 AND sum(b)>10;
-SELECT a, sum(b) FROM t1 GROUP BY a HAVING sum(b)>12;
 SELECT x,y FROM (
     SELECT a AS x, sum(b) AS y FROM t1 
     GROUP BY a

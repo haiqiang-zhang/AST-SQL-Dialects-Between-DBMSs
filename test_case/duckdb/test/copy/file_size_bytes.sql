@@ -1,0 +1,16 @@
+SELECT COUNT(*) FROM read_csv_auto('__TEST_DIR__/file_size_bytes_csv1/*.csv');
+SELECT count(*) FROM glob('__TEST_DIR__/file_size_bytes_csv1/*.csv');
+SELECT COUNT(*) FROM read_csv_auto('__TEST_DIR__/file_size_bytes_csv2/*.csv');
+SELECT count(*) FROM glob('__TEST_DIR__/file_size_bytes_csv2/*.csv');
+SELECT COUNT(*) FROM read_json_auto('__TEST_DIR__/file_size_bytes_json/*.json');
+SELECT count(*) FROM glob('__TEST_DIR__/file_size_bytes_json/*.json');
+SELECT COUNT(*) FROM read_parquet('__TEST_DIR__/file_size_bytes_parquet/*.parquet');
+SELECT count(*) FROM glob('__TEST_DIR__/file_size_bytes_parquet/*.parquet');
+SELECT COUNT(*) FROM read_csv_auto('__TEST_DIR__/file_size_bytes_csv3/*.csv');
+SELECT count(*) FROM glob('__TEST_DIR__/file_size_bytes_csv3/*.csv');
+SELECT COUNT(*) FROM read_csv_auto('__TEST_DIR__/file_size_bytes_csv4/*.csv');
+SELECT count(*) BETWEEN 3 AND 5 FROM glob('__TEST_DIR__/file_size_bytes_csv4/*.csv');
+SELECT COUNT(*) FROM read_csv_auto('__TEST_DIR__/file_size_bytes_csv5/*.csv');
+SELECT count(*) FROM glob('__TEST_DIR__/file_size_bytes_csv5/*.csv');
+SELECT COUNT(*) FROM read_csv_auto('__TEST_DIR__/file_size_bytes_csv6/*.csv');
+SELECT count(*) BETWEEN 6 AND 10 FROM glob('__TEST_DIR__/file_size_bytes_csv6/*.csv');

@@ -1,0 +1,2 @@
+CREATE TABLE test AS FROM range(250000) t(i);
+DELETE FROM test WHERE i < 150000;

@@ -1,0 +1,11 @@
+PIVOT Cities ON Country, Name IN ('xx') USING SUM(Population);
+SET pivot_filter_threshold=0;
+CREATE TABLE PivotedCities AS PIVOT Cities ON Year USING SUM(Population);
+PIVOT Cities ON (Country, Name) IN ('xx') USING SUM(Population);
+PIVOT Cities ON Year USING SUM(Population) GROUP BY country ORDER BY country desc;
+PIVOT Cities ON Year USING SUM(Population) GROUP BY country ORDER BY country desc LIMIT 1;
+PIVOT Cities ON Year USING SUM(Population) GROUP BY country ORDER BY country LIMIT 1;
+PIVOT Cities ON Year USING SUM(Population) GROUP BY country ORDER BY country LIMIT 1 OFFSET 1;
+PIVOT Cities ON Year USING SUM(Population) GROUP BY country ORDER BY ALL;
+UNPIVOT PivotedCities ON 2000, 2010, 2020 ORDER BY ALL LIMIT 1;
+UNPIVOT PivotedCities ON 2000, 2010, 2020 ORDER BY 1 LIMIT 1 OFFSET 1;

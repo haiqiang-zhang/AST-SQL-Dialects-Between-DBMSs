@@ -1,0 +1,4 @@
+CREATE TABLE t1(a,b);
+CREATE TABLE log(x UNIQUE, y);
+INSERT INTO t1 VALUES('hello','world');
+INSERT INTO t1 VALUES(5,10);

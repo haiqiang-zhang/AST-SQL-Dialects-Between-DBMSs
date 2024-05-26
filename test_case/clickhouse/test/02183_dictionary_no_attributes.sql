@@ -10,8 +10,6 @@ SOURCE(CLICKHOUSE(TABLE '02183_dictionary_test_table'))
 LIFETIME(0);
 SELECT 'FlatDictionary';
 SELECT dictHas('02183_flat_dictionary', 0);
-SELECT dictHas('02183_flat_dictionary', 1);
-SELECT dictHas('02183_flat_dictionary', 2);
 SELECT * FROM 02183_flat_dictionary;
 DROP DICTIONARY 02183_flat_dictionary;
 DROP DICTIONARY IF EXISTS 02183_hashed_dictionary;
@@ -24,9 +22,6 @@ LAYOUT(HASHED())
 SOURCE(CLICKHOUSE(TABLE '02183_dictionary_test_table'))
 LIFETIME(0);
 SELECT 'HashedDictionary';
-SELECT dictHas('02183_hashed_dictionary', 0);
-SELECT dictHas('02183_hashed_dictionary', 1);
-SELECT dictHas('02183_hashed_dictionary', 2);
 SELECT * FROM 02183_hashed_dictionary;
 DROP DICTIONARY 02183_hashed_dictionary;
 DROP DICTIONARY IF EXISTS 02183_hashed_array_dictionary;
@@ -39,9 +34,6 @@ LAYOUT(HASHED_ARRAY())
 SOURCE(CLICKHOUSE(TABLE '02183_dictionary_test_table'))
 LIFETIME(0);
 SELECT 'HashedArrayDictionary';
-SELECT dictHas('02183_hashed_array_dictionary', 0);
-SELECT dictHas('02183_hashed_array_dictionary', 1);
-SELECT dictHas('02183_hashed_array_dictionary', 2);
 SELECT * FROM 02183_hashed_array_dictionary;
 DROP DICTIONARY 02183_hashed_array_dictionary;
 DROP DICTIONARY IF EXISTS 02183_cache_dictionary;
@@ -54,9 +46,6 @@ LAYOUT(CACHE(SIZE_IN_CELLS 10))
 SOURCE(CLICKHOUSE(TABLE '02183_dictionary_test_table'))
 LIFETIME(0);
 SELECT 'CacheDictionary';
-SELECT dictHas('02183_cache_dictionary', 0);
-SELECT dictHas('02183_cache_dictionary', 1);
-SELECT dictHas('02183_cache_dictionary', 2);
 SELECT * FROM 02183_cache_dictionary;
 DROP DICTIONARY 02183_cache_dictionary;
 DROP DICTIONARY IF EXISTS 02183_direct_dictionary;
@@ -69,9 +58,6 @@ LAYOUT(HASHED())
 SOURCE(CLICKHOUSE(TABLE '02183_dictionary_test_table'))
 LIFETIME(0);
 SELECT 'DirectDictionary';
-SELECT dictHas('02183_direct_dictionary', 0);
-SELECT dictHas('02183_direct_dictionary', 1);
-SELECT dictHas('02183_direct_dictionary', 2);
 SELECT * FROM 02183_direct_dictionary;
 DROP DICTIONARY 02183_direct_dictionary;
 DROP TABLE 02183_dictionary_test_table;
@@ -91,8 +77,6 @@ SOURCE(CLICKHOUSE(TABLE 'ip_trie_dictionary_source_table'))
 LAYOUT(IP_TRIE())
 LIFETIME(0);
 SELECT 'IPTrieDictionary';
-SELECT dictHas('02183_ip_trie_dictionary', tuple(IPv4StringToNum('127.0.0.0')));
-SELECT dictHas('02183_ip_trie_dictionary', tuple(IPv4StringToNum('127.0.0.1')));
 SELECT * FROM 02183_ip_trie_dictionary;
 DROP DICTIONARY 02183_ip_trie_dictionary;
 DROP TABLE ip_trie_dictionary_source_table;
@@ -112,8 +96,6 @@ SOURCE(CLICKHOUSE(TABLE '02183_polygon_dictionary_source_table'))
 LAYOUT(POLYGON(store_polygon_key_column 1))
 LIFETIME(0);
 SELECT 'PolygonDictionary';
-SELECT dictHas('02183_polygon_dictionary', tuple(0.5, 0.5));
-SELECT dictHas('02183_polygon_dictionary', tuple(1.5, 1.5));
 SELECT * FROM 02183_polygon_dictionary;
 DROP DICTIONARY 02183_polygon_dictionary;
 DROP TABLE 02183_polygon_dictionary_source_table;
@@ -140,7 +122,5 @@ RANGE(MIN start MAX end)
 LIFETIME(0);
 SELECT 'RangeHashedDictionary';
 SELECT * FROM 02183_range_dictionary;
-SELECT dictHas('02183_range_dictionary', 0, 0);
-SELECT dictHas('02183_range_dictionary', 0, 2);
 DROP DICTIONARY 02183_range_dictionary;
 DROP TABLE 02183_range_dictionary_source_table;

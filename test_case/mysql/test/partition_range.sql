@@ -333,7 +333,6 @@ INSERT INTO t1 VALUES (1, 'testing partitions', '1995-07-17'),
 (6, 'testing partitions','2000-08-19'),
 (8, 'testing partitions','2000-09-01');
 SELECT COUNT(*) FROM t1 WHERE c3 BETWEEN '1996-12-31' AND '2000-12-31';
-SELECT COUNT(*) FROM t1 WHERE c3 < '2000-12-31';
 DROP TABLE t1;
 create table t1 (a bigint unsigned)
 partition by range (a)
@@ -583,5 +582,4 @@ INSERT INTO t1 SELECT a + 20, b + 20 FROM t1;
 INSERT INTO t1 SELECT a + 40, b + 40 FROM t1;
 INSERT INTO t2 SELECT * FROM t1;
 SELECT a, MAX(b) FROM t1 WHERE a IN (10, 100) GROUP BY a;
-SELECT a, MAX(b) FROM t2 WHERE a IN (10, 100) GROUP BY a;
 DROP TABLE t1, t2;

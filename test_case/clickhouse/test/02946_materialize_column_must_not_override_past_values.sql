@@ -1,5 +1,3 @@
-SET mutations_sync = 2;
-DROP TABLE IF EXISTS tab;
 SELECT 'DEFAULT expressions';
 SELECT '-- Compact parts';
 CREATE TABLE tab (id Int64, dflt Int64 DEFAULT 54321) ENGINE MergeTree ORDER BY id;

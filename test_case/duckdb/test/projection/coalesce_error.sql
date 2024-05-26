@@ -1,0 +1,2 @@
+SELECT COALESCE(1, 'hello'::INT);
+SELECT COALESCE(a, b::INT) FROM vals;

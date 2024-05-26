@@ -6,10 +6,8 @@ INSERT INTO t1(c) VALUES(x'313233'), (NULL);
 SELECT typeof(c), c FROM t1;
 DELETE FROM t1;
 INSERT INTO t1(d) VALUES('xyz'),(4),(5.5),(NULL);
-SELECT typeof(d), d FROM t1;
 DELETE FROM t1;
 INSERT INTO t1(e) VALUES(1),(2.5),('3'),('4.5'),(6.0),(NULL);
-SELECT typeof(e), e FROM t1;
 DROP TABLE IF EXISTS t4;
 CREATE TABLE t4(
       a INT AS (b*2) VIRTUAL,

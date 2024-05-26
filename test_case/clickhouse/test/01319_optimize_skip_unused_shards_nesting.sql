@@ -1,8 +1,0 @@
-set optimize_skip_unused_shards=1;
-set force_optimize_skip_unused_shards=1;
-set force_optimize_skip_unused_shards_nesting=2;
-set optimize_skip_unused_shards_nesting=2;
-set force_optimize_skip_unused_shards_nesting=1;
-set force_optimize_skip_unused_shards_nesting=2;
-set optimize_skip_unused_shards_nesting=1;
-drop table data_01319;

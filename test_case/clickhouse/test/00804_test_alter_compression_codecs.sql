@@ -1,11 +1,3 @@
-SET send_logs_level = 'fatal';
-DROP TABLE IF EXISTS alter_compression_codec;
-CREATE TABLE alter_compression_codec (
-    somedate Date CODEC(LZ4),
-    id UInt64 CODEC(NONE)
-) ENGINE = MergeTree() PARTITION BY somedate ORDER BY id;
-INSERT INTO alter_compression_codec VALUES('2018-01-01', 1);
-INSERT INTO alter_compression_codec VALUES('2018-01-01', 2);
 SELECT * FROM alter_compression_codec ORDER BY id;
 ALTER TABLE alter_compression_codec ADD COLUMN alter_column String DEFAULT 'default_value' CODEC(ZSTD);
 SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'alter_compression_codec' AND name = 'alter_column';
@@ -40,6 +32,5 @@ DROP TABLE IF EXISTS store_of_hash_00804;
 CREATE TABLE store_of_hash_00804 (hash UInt64) ENGINE = Memory();
 SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'large_alter_table_00804' AND name = 'data';
 SELECT COUNT(hash) FROM store_of_hash_00804;
-SELECT COUNT(DISTINCT hash) FROM store_of_hash_00804;
 DROP TABLE IF EXISTS large_alter_table_00804;
 DROP TABLE IF EXISTS store_of_hash_00804;

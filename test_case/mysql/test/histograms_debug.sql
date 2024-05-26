@@ -7,24 +7,14 @@ WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 't1';
 DROP TABLE t1;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-SELECT COUNT(*) FROM information_schema.TABLES
-WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 't1';
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-SELECT COUNT(*) FROM information_schema.COLUMNS
-WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 't1' AND COLUMN_NAME = 'col2';
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-SELECT COUNT(*) FROM information_schema.COLUMNS
-WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 't1' AND COLUMN_NAME = 'col2';
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-SELECT COUNT(*) FROM information_schema.TABLES
-WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 't1';
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
-SELECT COUNT(*) FROM information_schema.TABLES
-WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 't1';
 CREATE TABLE t1 (col1 DOUBLE);
 INSERT INTO t1 SELECT RAND(1);
 INSERT INTO t1 SELECT RAND(2) FROM t1;

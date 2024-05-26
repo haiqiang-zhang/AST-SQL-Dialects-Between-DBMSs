@@ -22,11 +22,6 @@ INSERT INTO vec1 VALUES (1, [3, 4]), (2, [2]), (3, [3, 3, 3]), (4, NULL), (5, ra
 INSERT INTO vec1f VALUES (1, [3, 4]), (2, [2]), (3, [3, 3, 3]), (4, NULL), (5, range(7, 27)), (6, range(3, 103));
 INSERT INTO vec1d VALUES (1, [3, 4]), (2, [2]), (3, [3, 3, 3]), (4, NULL), (5, range(7, 27)), (6, range(3, 103));
 SELECT id, L1Norm(v), L2Norm(v), L2SquaredNorm(v), LpNorm(v, 2.7), LinfNorm(v) FROM vec1;
-SELECT id, L1Norm(materialize([5., 6.])) FROM vec1;
-SELECT id, L1Norm(v), L2Norm(v), L2SquaredNorm(v), LpNorm(v, 2.7), LinfNorm(v) FROM vec1f;
-SELECT id, L1Norm(materialize([5., 6.])) FROM vec1f;
-SELECT id, L1Norm(v), L2Norm(v), L2SquaredNorm(v), LpNorm(v, 2.7), LinfNorm(v) FROM vec1d;
-SELECT id, L1Norm(materialize([5., 6.])) FROM vec1d;
 DROP TABLE vec1;
 DROP TABLE vec1f;
 DROP TABLE vec1d;

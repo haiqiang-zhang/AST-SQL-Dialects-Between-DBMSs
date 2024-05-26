@@ -8,4 +8,3 @@ INSERT INTO t1 VALUES(json_insert('{}','$.a\',111,'$."b\\"',222));
 INSERT INTO t1 VALUES(jsonb_insert('{}','$.a\',111,'$."b\\"',222));
 SELECT x->'$.a\', x->'$.a\\', x->'$."a\\"', x->'$."b\\"' FROM t1;
 SELECT json_patch('{"a\x62c":123}','{"ab\x63":456}') ->> 'abc';
-SELECT * FROM json_tree('{"\u0017":1}','$."\x17"');

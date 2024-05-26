@@ -1,13 +1,3 @@
-delete from t1 where (a & 1);
-drop table t1;
-create table t1 (a int not null auto_increment, b int not null, primary key (a), index(b));
-insert into t1 (b) values (1),(2),(2),(2),(2);
-drop table t1;
-create table t1 (a int not null, b int not null, c int not null, primary key (a),key(b)) engine=myisam;
-insert into t1 values (3,3,3),(1,1,1),(2,2,2),(4,4,4);
-drop table t1;
-CREATE TABLE t1 (a INT);
-INSERT INTO  t1 VALUES (1), (2), (3);
 LOCK TABLES t1 WRITE;
 INSERT INTO  t1 VALUES (1), (2), (3);
 DROP TABLE t1;
@@ -233,9 +223,7 @@ drop table t1;
 create table t1 ( a text collate latin1_swedish_ci not null, key a (a(20)));
 insert into t1 values ('aaa   '),('aaa'),('aa');
 select concat(a,'.') from t1 where a='aaa';
-select concat(a,'.') from t1 where binary a='aaa';
 update t1 set a='bbb' where a='aaa';
-select concat(a,'.') from t1;
 drop table t1;
 create table t1(a text not null, b text not null, c text not null, index (a(10),b(10),c(10)));
 insert into t1 values('807780', '477', '165');
@@ -251,19 +239,13 @@ SELECT * FROM t1;
 DROP TABLE t1;
 create table t1 (a blob);
 insert into t1 values('a '),('a');
-select concat(a,'.') from t1 where a='a';
-select concat(a,'.') from t1 where a='a ';
 alter table t1 add key(a(2));
-select concat(a,'.') from t1 where a='a';
-select concat(a,'.') from t1 where a='a ';
 drop table t1;
 create table t1 (a int not null auto_increment primary key, b text not null, unique b (b(20)));
 insert into t1 (b) values ('a'),('b'),('c');
-select concat(b,'.') from t1;
 update t1 set b='b\b' where a=2;
 select * from t1;
 delete from t1 where b='b';
-select a,concat(b,'.') from t1;
 drop table t1;
 create table t1 (a int not null);
 create table t2 (a int not null, primary key (a));
@@ -374,15 +356,12 @@ insert into t1 (id2, t) values
 (10, 'abc'), (10, 'abc'), (10, 'abc'),
 (20, 'abc'), (20, 'abc'), (20, 'def'),
 (10, 'abc'), (10, 'abc');
-select count(*)   from t1 where id2 = 10;
-select count(id1) from t1 where id2 = 10;
 drop table t1;
 CREATE TABLE t1(a TINYINT, KEY(a)) ENGINE=MyISAM;
 INSERT INTO t1 VALUES(1);
 SELECT MAX(a) FROM t1 IGNORE INDEX(a);
 ALTER TABLE t1 DISABLE KEYS;
 SELECT MAX(a) FROM t1;
-SELECT MAX(a) FROM t1 IGNORE INDEX(a);
 DROP TABLE t1;
 CREATE TABLE t1(a CHAR(9), b VARCHAR(7)) ENGINE=MyISAM;
 INSERT INTO t1(a) VALUES('xxxxxxxxx'),('xxxxxxxxx');
@@ -597,9 +576,6 @@ INSERT INTO t1 VALUES
   (' B'), (' B'), (' B'), (' B');
 SELECT DISTINCT COUNT(*) FROM t1 WHERE c1 = '';
 SELECT DISTINCT length(c1), c1 FROM t1 WHERE c1 = '';
-SELECT DISTINCT COUNT(*) FROM t1 IGNORE INDEX (c1) WHERE c1 = '';
-SELECT DISTINCT length(c1), c1 FROM t1 IGNORE INDEX (c1) WHERE c1 = '';
-SELECT DISTINCT length(c1), c1 FROM t1 ORDER BY c1;
 DROP TABLE t1;
 drop table if exists t1;
 create table t1 (a int);
@@ -703,16 +679,12 @@ CREATE TABLE t1 (
   c2 VARCHAR(1)
 ) ENGINE=MyISAM;
 INSERT INTO t1 VALUES(REPEAT("a",128), 'b');
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(130),
   c2 VARCHAR(1)
 ) ENGINE=MyISAM;
 INSERT INTO t1 VALUES(REPEAT("a",128), 'b');
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(130),
@@ -722,8 +694,6 @@ INSERT INTO t1 VALUES(REPEAT("a",128), 'b');
 INSERT INTO t1 VALUES('b', 'b');
 INSERT INTO t1 VALUES('c', 'b');
 DELETE FROM t1 WHERE c1='b';
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(130),
@@ -732,25 +702,19 @@ CREATE TABLE t1 (
 ) ENGINE=MyISAM;
 INSERT INTO t1 VALUES ('a', 'b');
 UPDATE t1 SET c1=REPEAT("a",128) LIMIT 90;
-SELECT COUNT(*) FROM t1;
 ALTER TABLE t1 ENGINE=MyISAM;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(50),
   c2 VARCHAR(1)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8mb3;
 INSERT INTO t1 VALUES(REPEAT(_utf8mb3 x'e0ae85',43), 'b');
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(50),
   c2 VARCHAR(1)
 ) ENGINE=MyISAM DEFAULT CHARSET utf8mb3;
 INSERT INTO t1 VALUES(REPEAT(_utf8mb3 x'e0ae85',43), 'b');
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(50),
@@ -760,8 +724,6 @@ INSERT INTO t1 VALUES(REPEAT(_utf8mb3 x'e0ae85',43), 'b');
 INSERT INTO t1 VALUES('b', 'b');
 INSERT INTO t1 VALUES('c', 'b');
 DELETE FROM t1 WHERE c1='b';
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 CHAR(50),
@@ -770,9 +732,7 @@ CREATE TABLE t1 (
 ) ENGINE=MyISAM DEFAULT CHARSET utf8mb3;
 INSERT INTO t1 VALUES ('a', 'b');
 UPDATE t1 SET c1=REPEAT(_utf8mb3 x'e0ae85',43) LIMIT 90;
-SELECT COUNT(*) FROM t1;
 ALTER TABLE t1 ENGINE=MyISAM;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 CREATE TABLE t1 (
   c1 VARCHAR(10) NOT NULL,
@@ -900,10 +860,7 @@ INSERT INTO t1 (col1, col1_id) VALUES
 SELECT col1, hex(col1), col1_id, count(*) from t1
   WHERE col1= '5cm' GROUP BY hex(col1), col1_id;
 UPDATE t1 SET col1_id= 1414 WHERE col1= '5cm';
-SELECT count(*) FROM t1 WHERE col1= '5cm';
-SELECT count(*) FROM t1 WHERE col1_id= 1414;
 DELETE FROM t1 WHERE col1= '5cm';
-SELECT count(*) FROM t1 WHERE col1= '5cm';
 DROP TABLE t1;
 CREATE TABLE t1 (
   col1 VARCHAR(255) DEFAULT NULL,
@@ -929,11 +886,6 @@ INSERT INTO t1 (col1, col1_dummy, col1_id, col1_id_dummy)
   WHERE col1 <> '5cm';
 INSERT INTO t1 (col1, col1_dummy, col1_id, col1_id_dummy) VALUES
   ('5cm ', '5cm ',  10000, 100), ('5cm ', '5cm ', 10000, 100);
-SELECT col1, hex(col1), col1_id, count(*) from t1 WHERE col1= '5cm'
-  GROUP BY hex(col1), col1_id;
 UPDATE t1 SET col1_id= 1414 WHERE col1= '5cm' AND col1_dummy= '5cm';
-SELECT count(*) FROM t1 WHERE col1= '5cm';
-SELECT count(*) FROM t1 WHERE col1_id= 1414;
 DELETE FROM t1 WHERE col1= '5cm' AND col1_dummy= '5cm';
-SELECT count(*) FROM t1 WHERE col1= '5cm';
 DROP TABLE t1;

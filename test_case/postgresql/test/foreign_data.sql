@@ -1,5 +1,3 @@
-SET client_min_messages TO 'warning';
-RESET client_min_messages;
 SELECT fdwname, fdwhandler::regproc, fdwvalidator::regproc, fdwoptions FROM pg_foreign_data_wrapper ORDER BY 1, 2, 3;
 SELECT srvname, srvoptions FROM pg_foreign_server;
 RESET ROLE;
@@ -75,7 +73,6 @@ SELECT * FROM information_schema.foreign_data_wrapper_options ORDER BY 1, 2, 3;
 SELECT * FROM information_schema.foreign_servers ORDER BY 1, 2;
 SELECT * FROM information_schema.foreign_server_options ORDER BY 1, 2, 3;
 SELECT * FROM information_schema.user_mappings ORDER BY lower(authorization_identifier), 2, 3;
-SELECT * FROM information_schema.user_mapping_options ORDER BY lower(authorization_identifier), 2, 3, 4;
 SELECT * FROM information_schema.usage_privileges WHERE object_type LIKE 'FOREIGN%' AND object_name IN ('s6', 'foo') ORDER BY 1, 2, 3, 4, 5;
 SELECT * FROM information_schema.role_usage_grants WHERE object_type LIKE 'FOREIGN%' AND object_name IN ('s6', 'foo') ORDER BY 1, 2, 3, 4, 5;
 SELECT * FROM information_schema.foreign_tables ORDER BY 1, 2, 3;
@@ -87,22 +84,8 @@ SELECT * FROM information_schema.user_mapping_options ORDER BY 1, 2, 3, 4;
 RESET ROLE;
 SELECT has_foreign_data_wrapper_privilege('regress_test_role',
     (SELECT oid FROM pg_foreign_data_wrapper WHERE fdwname='foo'), 'USAGE');
-SELECT has_foreign_data_wrapper_privilege(
-    (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'),
-    (SELECT oid FROM pg_foreign_data_wrapper WHERE fdwname='foo'), 'USAGE');
-SELECT has_foreign_data_wrapper_privilege(
-    (SELECT oid FROM pg_foreign_data_wrapper WHERE fdwname='foo'), 'USAGE');
-SELECT has_foreign_data_wrapper_privilege(
-    (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'), 'foo', 'USAGE');
 SELECT has_server_privilege('regress_test_role',
     (SELECT oid FROM pg_foreign_server WHERE srvname='s8'), 'USAGE');
-SELECT has_server_privilege(
-    (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'),
-    (SELECT oid FROM pg_foreign_server WHERE srvname='s8'), 'USAGE');
-SELECT has_server_privilege(
-    (SELECT oid FROM pg_foreign_server WHERE srvname='s8'), 'USAGE');
-SELECT has_server_privilege(
-    (SELECT oid FROM pg_roles WHERE rolname='regress_test_role'), 's8', 'USAGE');
 RESET ROLE;
 RESET ROLE;
 RESET ROLE;

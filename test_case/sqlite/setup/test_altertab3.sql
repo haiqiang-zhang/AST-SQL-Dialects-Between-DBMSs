@@ -1,0 +1,2 @@
+CREATE TABLE t1(a, b);
+ALTER TABLE t1 RENAME a TO aaa;

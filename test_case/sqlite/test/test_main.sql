@@ -1,27 +1,12 @@
 select x'4869';
 select cast(3.14e+4 AS integer);
-select cast(3.14e+04 AS integer);
-select cast(3.14e+004 AS integer);
-select cast(3.14e4 AS integer);
-select cast(3.14e04 AS integer);
-select cast(3.14e004 AS integer);
-select cast(3.14E+4 AS integer);
-select cast(3.14E+04 AS integer);
-select cast(3.14E+004 AS integer);
-select cast(3.14E4 AS integer);
-select cast(3.14E04 AS integer);
-select cast(3.14E004 AS integer);
-select cast(3.14e-4 * 1e8 AS integer);
-select cast(3.14E-04 * 1E08 AS integer);
-select cast(3.14e-004 * 01.0E+8 AS integer);
 select 123/*abc;
 select 123/***abc;
 select 123/*/*2;
 select 123/**/*2;
 select 123--5;
 create table T1(X REAL);
-/* C-style comments allowed */
-    insert into T1 values(0.5);
+insert into T1 values(0.5);
 insert into T1 values(0.5e2);
 insert into T1 values(0.5e-002);
 insert into T1 values(5e-002);

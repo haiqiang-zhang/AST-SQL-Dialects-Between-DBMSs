@@ -1,0 +1,10 @@
+ATTACH DATABASE ':memory:' AS database;
+BEGIN TRANSACTION;
+CREATE TABLE database.integers(i INTEGER);
+ROLLBACK;
+CREATE TABLE database.integers(i INTEGER);
+CREATE TABLE integers(i INTEGER);
+INSERT INTO database.integers SELECT * FROM range(10);
+BEGIN TRANSACTION;
+INSERT INTO integers SELECT * FROM range(10);
+ROLLBACK;

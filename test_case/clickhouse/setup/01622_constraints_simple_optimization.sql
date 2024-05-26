@@ -1,0 +1,16 @@
+DROP TABLE IF EXISTS constraint_test_assumption;
+DROP TABLE IF EXISTS constraint_test_transitivity;
+DROP TABLE IF EXISTS constraint_test_transitivity2;
+DROP TABLE IF EXISTS constraint_test_transitivity3;
+DROP TABLE IF EXISTS constraint_test_constants_repl;
+DROP TABLE IF EXISTS constraint_test_constants;
+SET convert_query_to_cnf = 1;
+SET optimize_using_constraints = 1;
+SET optimize_move_to_prewhere = 1;
+SET optimize_substitute_columns = 1;
+SET optimize_append_index = 1;
+CREATE TABLE constraint_test_assumption (URL String, a Int32, CONSTRAINT c1 ASSUME domainWithoutWWW(URL) = 'bigmir.net', CONSTRAINT c2 ASSUME URL > 'zzz' AND startsWith(URL, 'test') = True) ENGINE = TinyLog;
+INSERT INTO constraint_test_assumption (URL, a) VALUES ('1', 1);
+INSERT INTO constraint_test_assumption (URL, a) VALUES ('2', 2);
+INSERT INTO constraint_test_assumption (URL, a) VALUES ('bigmir.net', 3);
+INSERT INTO constraint_test_assumption (URL, a) VALUES ('3', 4);

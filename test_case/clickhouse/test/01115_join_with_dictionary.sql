@@ -1,25 +1,3 @@
-DROP DICTIONARY IF EXISTS dict_flat;
-DROP DICTIONARY IF EXISTS dict_hashed;
-DROP DICTIONARY IF EXISTS dict_complex_cache;
-CREATE TABLE t1 (key UInt64, a UInt8, b String, c Float64) ENGINE = MergeTree() ORDER BY key;
-INSERT INTO t1 SELECT number, number, toString(number), number from numbers(4);
-CREATE DICTIONARY dict_flat (key UInt64 DEFAULT 0, a UInt8 DEFAULT 42, b String DEFAULT 'x', c Float64 DEFAULT 42.0)
-PRIMARY KEY key
-SOURCE(CLICKHOUSE(TABLE 't1'))
-LIFETIME(MIN 1 MAX 10)
-LAYOUT(FLAT());
-CREATE DICTIONARY dict_hashed (key UInt64 DEFAULT 0, a UInt8 DEFAULT 42, b String DEFAULT 'x', c Float64 DEFAULT 42.0)
-PRIMARY KEY key
-SOURCE(CLICKHOUSE(TABLE 't1'))
-LIFETIME(MIN 1 MAX 10)
-LAYOUT(HASHED());
-CREATE DICTIONARY dict_complex_cache (key UInt64 DEFAULT 0, a UInt8 DEFAULT 42, b String DEFAULT 'x', c Float64 DEFAULT 42.0)
-PRIMARY KEY key, b
-SOURCE(CLICKHOUSE(TABLE 't1'))
-LIFETIME(MIN 1 MAX 10)
-LAYOUT(COMPLEX_KEY_CACHE(SIZE_IN_CELLS 1));
-SET join_use_nulls = 0;
-SET join_algorithm = 'direct';
 SELECT 'flat: left on';
 SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_flat d ON s1.key = d.key ORDER BY s1.key;
 SELECT 'flat: left';

@@ -1,0 +1,3 @@
+CREATE SCHEMA test123;
+CREATE TABLE test123.t1(a int);
+DROP SCHEMA test123;

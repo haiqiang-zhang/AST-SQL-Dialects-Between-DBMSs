@@ -1,4 +1,3 @@
-set dialect='kusto';
 print '-- test String Functions --';
 print '-- Customers |where Education contains \'degree\'';
 Customers |where Education contains 'degree' | order by LastName;

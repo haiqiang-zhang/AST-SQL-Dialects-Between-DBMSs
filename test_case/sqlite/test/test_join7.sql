@@ -1,8 +1,3 @@
-CREATE INDEX t1a ON t1(a);
-CREATE TABLE t2(c INT, d INT);
-INSERT INTO t2 VALUES(3,33),(4,44),(5,55);
-CREATE INDEX t2c ON t2(c);
-CREATE VIEW dual(dummy) AS VALUES('x');
 SELECT b, d FROM t1 FULL OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT a, c FROM t1 FULL OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT * FROM t1 FULL OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -17,14 +12,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
      ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
@@ -67,16 +54,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -116,16 +93,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -165,16 +132,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -214,16 +171,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -262,16 +209,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -310,16 +247,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -359,16 +286,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -411,16 +328,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
@@ -459,16 +366,6 @@ SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
 SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c
      WHERE b>0 OR b IS NULL
      ORDER BY +b;
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND b>3 WHERE c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 AND c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c WHERE b>3 OR c>4
-     ORDER BY coalesce(b,c,0);
-SELECT t1.*, t2.* FROM t2 FULL OUTER JOIN t1 ON b=c AND (b>3 OR c>4)
-     ORDER BY coalesce(b,c,0);
 SELECT * FROM t1 RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;
 SELECT t1.*, t2.* FROM t2 LEFT OUTER JOIN t1 ON b=c ORDER BY +b;
 SELECT * FROM dual JOIN t1 ON true RIGHT OUTER JOIN t2 ON b=c ORDER BY +b;

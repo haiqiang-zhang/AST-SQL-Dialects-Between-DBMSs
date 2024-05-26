@@ -1,4 +1,3 @@
-insert ignore into t1 select 1 on duplicate key update a=2;
 select * from t1;
 insert ignore into t1 select a from t1 as t2 on duplicate key update a=t1.a+1;
 select * from t1;
@@ -26,11 +25,9 @@ INSERT IGNORE INTO t1 (f1) VALUES ("test2")
 SELECT * FROM t1;
 INSERT IGNORE INTO t1 (f1) VALUES ("test2")
         ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);
-SELECT LAST_INSERT_ID();
 SELECT * FROM t1;
 INSERT IGNORE INTO t1 (f1) VALUES ("test3")
         ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);
-SELECT LAST_INSERT_ID();
 SELECT * FROM t1;
 DROP TABLE t1;
 CREATE TABLE `t1` (
@@ -39,10 +36,8 @@ CREATE TABLE `t1` (
 );
 INSERT IGNORE INTO t1 (f1) VALUES ("test1")
         ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);
-SELECT LAST_INSERT_ID();
 SELECT * FROM t1;
 INSERT IGNORE INTO t1 (f1) VALUES ("test1"),("test4")
         ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);
-SELECT LAST_INSERT_ID();
 SELECT * FROM t1;
 DROP TABLE t1;

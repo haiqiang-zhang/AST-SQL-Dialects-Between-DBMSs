@@ -1,5 +1,3 @@
-DROP DATABASE IF EXISTS dict_db_01254;
-CREATE DATABASE dict_db_01254;
 USE dict_db_01254;
 CREATE TABLE dict_data (key UInt64, val UInt64) Engine=Memory();
 CREATE DICTIONARY dict

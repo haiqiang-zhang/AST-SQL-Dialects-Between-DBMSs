@@ -1,0 +1,12 @@
+PRAGMA trusted_schema=OFF;
+PRAGMA trusted_schema=ON;
+PRAGMA trusted_schema=OFF;
+PRAGMA trusted_schema=ON;
+PRAGMA trusted_schema=Off;
+PRAGMA trusted_schema=On;
+PRAGMA trusted_schema=off;
+PRAGMA trusted_schema=OFF;
+CREATE TABLE t3(a,b DEFAULT(f2(25)));
+PRAGMA trusted_schema=Off;
+INSERT INTO t3(a,b) VALUES(1,2);
+CREATE TEMP TABLE temp3(a, b DEFAULT(f3(31)));

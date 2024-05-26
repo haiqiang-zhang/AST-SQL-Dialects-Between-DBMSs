@@ -1,0 +1,14 @@
+PREPARE v1 AS SELECT ?.split(' ')[1].lower();
+SELECT v.lower() FROM varchars;
+SELECT (v).lower() FROM varchars;
+SELECT varchars.v.lower() FROM varchars;
+SELECT v.lower().upper() FROM varchars;
+SELECT v.lower()[:3] FROM varchars;
+SELECT v.lower()[:3] FROM varchars;
+SELECT v.split(' ') FROM varchars;
+SELECT v.split(' ').apply(x -> x.lower()) FROM varchars;
+SELECT v.split(' ').apply(x -> x.lower()).filter(x -> x[1] == 'h') FROM varchars;
+SELECT v.split(' ').length() FROM varchars;
+SELECT v.split(' ').aggregate('count') FROM varchars;
+SELECT v.split(' ').aggregate('min') FROM varchars;
+EXECUTE v1('Hello World');

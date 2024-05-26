@@ -336,8 +336,6 @@ INSERT INTO t7(a) VALUES(1);
 SELECT typeof(a), typeof(b), typeof(c), typeof(d),
            typeof(e), typeof(f), typeof(g), typeof(h)
     FROM t7 LIMIT 1;
-SELECT typeof(a+b), typeof(a||b), typeof(c+d), typeof(c||d)
-    FROM t7 LIMIT 1;
 CREATE TABLE t8 AS SELECT b, h, a as i, (SELECT f FROM t7) as j FROM t7;
 SELECT sql FROM sqlite_master WHERE tbl_name = 't8';
 CREATE TABLE tablet8(
@@ -348,13 +346,9 @@ CREATE TABLE tablet8(
     );
 SELECT * FROM tablet8;
 INSERT INTO tablet8(a) VALUES(1);
-SELECT tm, dt, dttm FROM tablet8 WHERE a=1;
 INSERT INTO tablet8(a) VALUES(2);
-SELECT tm, dt, dttm FROM tablet8 WHERE a=2;
 INSERT INTO tablet8(a) VALUES(3);
-SELECT tm, dt, dttm FROM tablet8 WHERE a=3;
 INSERT INTO tablet8(a) VALUES(4);
-SELECT tm, dt, dttm FROM tablet8 WHERE a=4;
 ATTACH 'test2.db' as aux;
 BEGIN;
 CREATE TABLE tbl0 (a, b, c);

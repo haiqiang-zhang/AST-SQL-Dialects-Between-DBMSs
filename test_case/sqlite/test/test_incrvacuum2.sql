@@ -1,14 +1,5 @@
-PRAGMA page_size=1024;
-PRAGMA auto_vacuum=incremental;
-CREATE TABLE t1(x);
-INSERT INTO t1 VALUES(zeroblob(30000));
-DELETE FROM t1;
-PRAGMA incremental_vacuum(1);
-PRAGMA incremental_vacuum(5);
-PRAGMA incremental_vacuum(1000);
 ATTACH DATABASE 'test2.db' AS aux;
 PRAGMA aux.auto_vacuum=incremental;
-DELETE FROM t2;
 DELETE FROM t1;
 PRAGMA aux.incremental_vacuum(1);
 PRAGMA aux.incremental_vacuum(5);

@@ -1,7 +1,3 @@
--- Tag no-replicated-database: Fails due to additional replicas or shards
-
-SET insert_keeper_fault_injection_probability=0;
-DROP TABLE IF EXISTS partitioned_table SYNC;
 SYSTEM STOP MERGES partitioned_table;
 SELECT '~~~~source parts~~~~~';
 SELECT partition_id, name FROM system.parts WHERE table = 'partitioned_table' AND database = currentDatabase() and active ORDER BY name;

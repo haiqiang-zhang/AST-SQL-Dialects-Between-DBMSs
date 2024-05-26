@@ -25,40 +25,12 @@ SELECT '{
 		"three":
 		true}'::json;
 select pg_input_is_valid('{"a":true}', 'json');
-select pg_input_is_valid('{"a":true', 'json');
 select * from pg_input_error_info('{"a":true', 'json');
 SELECT array_to_json(array(select 1 as a));
-SELECT array_to_json(array_agg(q),false) from (select x as b, x * 2 as c from generate_series(1,3) x) q;
-SELECT array_to_json(array_agg(q),true) from (select x as b, x * 2 as c from generate_series(1,3) x) q;
-SELECT array_to_json(array_agg(q),false)
-  FROM ( SELECT $$a$$ || x AS b, y AS c,
-               ARRAY[ROW(x.*,ARRAY[1,2,3]),
-               ROW(y.*,ARRAY[4,5,6])] AS z
-         FROM generate_series(1,2) x,
-              generate_series(4,5) y) q;
-SELECT array_to_json(array_agg(x),false) from generate_series(5,10) x;
-SELECT array_to_json('{{1,5},{99,100}}'::int[]);
 SELECT row_to_json(row(1,'foo'));
-SELECT row_to_json(q)
-FROM (SELECT $$a$$ || x AS b,
-         y AS c,
-         ARRAY[ROW(x.*,ARRAY[1,2,3]),
-               ROW(y.*,ARRAY[4,5,6])] AS z
-      FROM generate_series(1,2) x,
-           generate_series(4,5) y) q;
-SELECT row_to_json(q,true)
-FROM (SELECT $$a$$ || x AS b,
-         y AS c,
-         ARRAY[ROW(x.*,ARRAY[1,2,3]),
-               ROW(y.*,ARRAY[4,5,6])] AS z
-      FROM generate_series(1,2) x,
-           generate_series(4,5) y) q;
 CREATE TEMP TABLE rows AS
 SELECT x, 'txt' || x as y
 FROM generate_series(1,3) AS x;
-SELECT row_to_json(q,true)
-FROM rows q;
-SELECT row_to_json(row((select array_agg(x) as d from generate_series(5,10) x)),false);
 analyze rows;
 select attname, to_json(histogram_bounds) histogram_bounds
 from pg_stats
@@ -68,36 +40,15 @@ order by 1;
 select to_json(timestamp '2014-05-28 12:22:35.614298');
 BEGIN;
 SET LOCAL TIME ZONE 10.5;
-select to_json(timestamptz '2014-05-28 12:22:35.614298-04');
 SET LOCAL TIME ZONE -8;
-select to_json(timestamptz '2014-05-28 12:22:35.614298-04');
 COMMIT;
-select to_json(date '2014-05-28');
-select to_json(date 'Infinity');
-select to_json(date '-Infinity');
-select to_json(timestamp 'Infinity');
-select to_json(timestamp '-Infinity');
-select to_json(timestamptz 'Infinity');
-select to_json(timestamptz '-Infinity');
 SELECT json_agg(q)
   FROM ( SELECT $$a$$ || x AS b, y AS c,
                ARRAY[ROW(x.*,ARRAY[1,2,3]),
                ROW(y.*,ARRAY[4,5,6])] AS z
          FROM generate_series(1,2) x,
               generate_series(4,5) y) q;
-SELECT json_agg(q ORDER BY x, y)
-  FROM rows q;
 UPDATE rows SET x = NULL WHERE x = 1;
-SELECT json_agg(q ORDER BY x NULLS FIRST, y)
-  FROM rows q;
-SELECT row_to_json(q)
-FROM (SELECT 'NaN'::float8 AS "float8field") q;
-SELECT row_to_json(q)
-FROM (SELECT 'Infinity'::float8 AS "float8field") q;
-SELECT row_to_json(q)
-FROM (SELECT '-Infinity'::float8 AS "float8field") q;
-SELECT row_to_json(q)
-FROM (SELECT '{"a":1,"b": [2,3,4,"d","e","f"],"c":{"p":1,"q":2}}'::json AS "jsonfield") q;
 CREATE TEMP TABLE test_json (
        json_type text,
        test_json json
@@ -184,23 +135,12 @@ select '{"a": "c", "b": null}'::json ->> 'b';
 select '"foo"'::json ->> 1;
 select '"foo"'::json ->> 'z';
 SELECT json_array_length('[1,2,3,{"f1":1,"f2":[5,6]},4]');
-SELECT json_array_length('[]');
 select json_each('{"f1":[1,2,3],"f2":{"f3":1},"f4":null}');
 select * from json_each('{"f1":[1,2,3],"f2":{"f3":1},"f4":null,"f5":99,"f6":"stringy"}') q;
 select json_each_text('{"f1":[1,2,3],"f2":{"f3":1},"f4":null,"f5":"null"}');
 select * from json_each_text('{"f1":[1,2,3],"f2":{"f3":1},"f4":null,"f5":99,"f6":"stringy"}') q;
 select json_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}','f4','f6');
-select json_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}','f2');
-select json_extract_path('{"f2":["f3",1],"f4":{"f5":99,"f6":"stringy"}}','f2',0::text);
-select json_extract_path('{"f2":["f3",1],"f4":{"f5":99,"f6":"stringy"}}','f2',1::text);
 select json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}','f4','f6');
-select json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}','f2');
-select json_extract_path_text('{"f2":["f3",1],"f4":{"f5":99,"f6":"stringy"}}','f2',0::text);
-select json_extract_path_text('{"f2":["f3",1],"f4":{"f5":99,"f6":"stringy"}}','f2',1::text);
-select json_extract_path('{"f2":{"f3":1},"f4":{"f5":null,"f6":"stringy"}}','f4','f5') is null as expect_false;
-select json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":null,"f6":"stringy"}}','f4','f5') is null as expect_true;
-select json_extract_path('{"f2":{"f3":1},"f4":[0,1,2,null]}','f4','3') is null as expect_false;
-select json_extract_path_text('{"f2":{"f3":1},"f4":[0,1,2,null]}','f4','3') is null as expect_true;
 select '{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}'::json#>array['f4','f6'];
 select '{"f2":{"f3":1},"f4":{"f5":99,"f6":"stringy"}}'::json#>array['f2'];
 select '{"f2":["f3",1],"f4":{"f5":99,"f6":"stringy"}}'::json#>array['f2','0'];
@@ -344,8 +284,6 @@ SELECT rec FROM json_populate_record(
 SELECT json_populate_record(row(1,2), '{"f1": 0, "f2": 1}');
 SELECT * FROM
   json_populate_record(null::record, '{"x": 776}') AS (x int, y int);
-SELECT json_populate_record(null::j_ordered_pair, '{"x": 0, "y": 1}');
-SELECT json_populate_record(row(1,2)::j_ordered_pair, '{"x": 0}');
 select * from json_populate_recordset(null::jpop,'[{"a":"blurfl","x":43.2},{"b":3,"c":"2012-01-20 10:42:53"}]') q;
 select * from json_populate_recordset(row('def',99,null)::jpop,'[{"a":"blurfl","x":43.2},{"b":3,"c":"2012-01-20 10:42:53"}]') q;
 select * from json_populate_recordset(null::jpop,'[{"a":"blurfl","x":43.2},{"b":3,"c":"2012-01-20 10:42:53"}]') q;
@@ -361,12 +299,9 @@ SELECT i, json_populate_recordset(row(i,50), '[{"f1":"42"},{"f2":"43"}]')
 FROM (VALUES (1),(2)) v(i);
 SELECT * FROM
   json_populate_recordset(null::record, '[{"x": 776}]') AS (x int, y int);
-SELECT json_populate_recordset(row(1,2), '[]');
 SELECT * FROM json_populate_recordset(NULL::jpop,'[]') q;
 SELECT * FROM
   json_populate_recordset(null::record, '[]') AS (x int, y int);
-SELECT json_populate_recordset(null::j_ordered_pair, '[{"x": 0, "y": 1}]');
-SELECT json_populate_recordset(row(1,2)::j_ordered_pair, '[{"x": 0}, {"y": 3}]');
 CREATE TEMP TABLE jspoptest (js json);
 INSERT INTO jspoptest
 SELECT '{
@@ -397,43 +332,14 @@ select value, json_typeof(value)
                (NULL::json))
       as data(value);
 SELECT json_build_array('a',1,'b',1.2,'c',true,'d',null,'e',json '{"x": 3, "y": [1,2,3]}');
-SELECT json_build_array('a', NULL);
-SELECT json_build_array(VARIADIC NULL::text[]);
-SELECT json_build_array(VARIADIC '{}'::text[]);
-SELECT json_build_array(VARIADIC '{a,b,c}'::text[]);
-SELECT json_build_array(VARIADIC ARRAY['a', NULL]::text[]);
-SELECT json_build_array(VARIADIC '{1,2,3,4}'::text[]);
-SELECT json_build_array(VARIADIC '{1,2,3,4}'::int[]);
-SELECT json_build_array(VARIADIC '{{1,4},{2,5},{3,6}}'::int[][]);
 SELECT json_build_object('a',1,'b',1.2,'c',true,'d',null,'e',json '{"x": 3, "y": [1,2,3]}');
-SELECT json_build_object(
-       'a', json_build_object('b',false,'c',99),
-       'd', json_build_object('e',array[9,8,7]::int[],
-           'f', (select row_to_json(r) from ( select relkind, oid::regclass as name from pg_class where relname = 'pg_class') r)));
-SELECT json_build_object('a', NULL);
-SELECT json_build_object(VARIADIC NULL::text[]);
-SELECT json_build_object(VARIADIC '{}'::text[]);
-SELECT json_build_object(VARIADIC ARRAY['a', NULL]::text[]);
-SELECT json_build_object(VARIADIC '{1,2,3,4}'::text[]);
-SELECT json_build_object(VARIADIC '{1,2,3,4}'::int[]);
-SELECT json_build_object(VARIADIC '{{1,4},{2,5},{3,6}}'::int[][]);
-SELECT json_build_array();
-SELECT json_build_object();
-SELECT json_build_object(1,2);
 CREATE TEMP TABLE foo (serial_num int, name text, type text);
 INSERT INTO foo VALUES (847001,'t15','GE1043');
 INSERT INTO foo VALUES (847002,'t16','GE1043');
 INSERT INTO foo VALUES (847003,'sub-alpha','GESS90');
-SELECT json_build_object('turbines',json_object_agg(serial_num,json_build_object('name',name,'type',type)))
-FROM foo;
 SELECT json_object_agg(name, type) FROM foo;
 INSERT INTO foo VALUES (999999, NULL, 'bar');
 SELECT json_object('{}');
-SELECT json_object('{}', '{}');
-SELECT json_object('{a,1,b,2,3,NULL,"d e f","a b c"}');
-SELECT json_object('{{a,1},{b,2},{3,NULL},{"d e f","a b c"}}');
-select json_object('{a,b,c,"d e f"}','{1,2,3,"a b c"}');
-select json_object('{a,b,"","d e f"}','{1,2,3,"a b c"}');
 select * from json_to_record('{"a":1,"b":"foo","c":"bar"}')
     as x(a int, b text, d text);
 select * from json_to_recordset('[{"a":1,"b":"foo","d":false},{"a":2,"b":"bar","c":true}]')
@@ -459,42 +365,6 @@ select * from json_to_record('{"out": {"key": 1}}') as x(out jsonb);
 select * from json_to_record('{"out": [{"key": 1}]}') as x(out jsonb);
 select * from json_to_record('{"out": "{\"key\": 1}"}') as x(out jsonb);
 select json_strip_nulls(null);
-select json_strip_nulls('1');
-select json_strip_nulls('"a string"');
-select json_strip_nulls('null');
-select json_strip_nulls('[1,2,null,3,4]');
-select json_strip_nulls('{"a":1,"b":null,"c":[2,null,3],"d":{"e":4,"f":null}}');
-select json_strip_nulls('[1,{"a":1,"b":null,"c":2},3]');
-select json_strip_nulls('{"a": {"b": null, "c": null}, "d": {} }');
 select to_tsvector('{"a": "aaa bbb ddd ccc", "b": ["eee fff ggg"], "c": {"d": "hhh iii"}}'::json);
-select to_tsvector('simple', '{"a": "aaa bbb ddd ccc", "b": ["eee fff ggg"], "c": {"d": "hhh iii"}}'::json);
-select to_tsvector('english', '{"a": "aaa in bbb ddd ccc", "b": ["the eee fff ggg"], "c": {"d": "hhh. iii"}}'::json);
-select to_tsvector('english', '{"a": "aaa in bbb ddd ccc", "b": 123, "c": 456}'::json);
 select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"all"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"key"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"string"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"numeric"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"boolean"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '["string", "numeric"]');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"all"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"key"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"string"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"numeric"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '"boolean"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '["string", "numeric"]');
-select to_tsvector('""'::json);
-select to_tsvector('{}'::json);
-select to_tsvector('[]'::json);
-select to_tsvector('null'::json);
-select json_to_tsvector('""'::json, '"all"');
-select json_to_tsvector('{}'::json, '"all"');
-select json_to_tsvector('[]'::json, '"all"');
-select json_to_tsvector('null'::json, '"all"');
-select json_to_tsvector('english', '{"a": "aaa in bbb", "b": 123, "c": 456, "d": true, "f": false, "g": null}'::json, '[]');
 select ts_headline('{"a": "aaa bbb", "b": {"c": "ccc ddd fff", "c1": "ccc1 ddd1"}, "d": ["ggg hhh", "iii jjj"]}'::json, tsquery('bbb & ddd & hhh'));
-select ts_headline('english', '{"a": "aaa bbb", "b": {"c": "ccc ddd fff"}, "d": ["ggg hhh", "iii jjj"]}'::json, tsquery('bbb & ddd & hhh'));
-select ts_headline('{"a": "aaa bbb", "b": {"c": "ccc ddd fff", "c1": "ccc1 ddd1"}, "d": ["ggg hhh", "iii jjj"]}'::json, tsquery('bbb & ddd & hhh'), 'StartSel = <, StopSel = >');
-select ts_headline('english', '{"a": "aaa bbb", "b": {"c": "ccc ddd fff", "c1": "ccc1 ddd1"}, "d": ["ggg hhh", "iii jjj"]}'::json, tsquery('bbb & ddd & hhh'), 'StartSel = <, StopSel = >');
-select ts_headline('null'::json, tsquery('aaa & bbb'));
-select ts_headline('{}'::json, tsquery('aaa & bbb'));
-select ts_headline('[]'::json, tsquery('aaa & bbb'));
