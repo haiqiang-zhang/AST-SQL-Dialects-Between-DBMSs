@@ -1,5 +1,3 @@
-
--- The matching of actual/expected results relies on the fact that the output of SHOW COLUMNS is sorted.
 DROP TABLE IF EXISTS tab;
 CREATE TABLE tab
 (

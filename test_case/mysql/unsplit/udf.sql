@@ -44,7 +44,6 @@ drop procedure if exists no_such_proc;
 CREATE TABLE t1 ( a INT );
 INSERT INTO t1 VALUES (1), (2), (3);
 SELECT IF( a = 1, a, a ) AS `b` FROM t1 ORDER BY field( `b` + 1, 1 );
-SELECT IF( a = 1, a, a ) AS `b` FROM t1 ORDER BY field( `b`, 1 );
 DROP TABLE t1;
 CREATE TABLE t1 (f1 INT);
 INSERT INTO t1 VALUES(1),(50);

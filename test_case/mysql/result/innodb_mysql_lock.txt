@@ -1,0 +1,60 @@
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.innodb_trx   WHERE trx_query = 'INSERT INTO t1 VALUES (1)' AND   trx_operation_state = 'inserting' AND   trx_state = 'LOCK WAIT'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE info = "DROP TABLE t1" and    state = "Waiting for table metadata lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c4 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock" AND info = "SELECT * FROM v1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock" AND         info = "ALTER VIEW v1 AS SELECT 2 FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 12345)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 12345)]
++--------------------+

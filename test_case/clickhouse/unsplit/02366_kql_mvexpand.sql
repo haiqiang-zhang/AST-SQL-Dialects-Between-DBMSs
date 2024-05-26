@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS mv_expand_test_table;
 CREATE TABLE mv_expand_test_table
 (    

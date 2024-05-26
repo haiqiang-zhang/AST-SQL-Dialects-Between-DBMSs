@@ -1,0 +1,105 @@
+--Query--
+SELECT '===test insert==='
+--Result--
+[('===test insert===',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM mt_with_pk WHERE x > toDateTime('2018-10-01 23:57:57')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT sum(marks) FROM system.parts WHERE table = 'mt_with_pk' AND database = currentDatabase() AND active=1 AND database = currentDatabase()
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT '===test merge==='
+--Result--
+[('===test merge===',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_with_pk FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '===test alter==='
+--Result--
+[('===test alter===',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_with_pk FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '===test mutation==='
+--Result--
+[('===test mutation===',)]
++--------------------+
+--Query--
+SELECT distinct(y) FROM mt_with_pk
+--Result--
+[(['q', 'q', 'q'],)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_with_pk FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '===test skip_idx==='
+--Result--
+[('===test skip_idx===',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_with_pk FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '===test alter attach==='
+--Result--
+[('===test alter attach===',)]
++--------------------+
+--Query--
+SELECT * FROM alter_attach ORDER BY x
+--Result--
+[(1, 1, ''), (2, 1, ''), (3, 1, ''), (4, 2, 'Hello'), (5, 2, 'World')]
++--------------------+
+--Query--
+SELECT * FROM alter_attach ORDER BY x
+--Result--
+[(1, 1), (2, 1), (3, 1), (4, 2), (5, 2), (6, 3), (7, 3)]
++--------------------+
+--Query--
+SELECT '===test alter update==='
+--Result--
+[('===test alter update===',)]
++--------------------+
+--Query--
+SELECT e FROM alter_update_00806 ORDER BY d
+--Result--
+[('foo',), ('foo',)]
++--------------------+
+--Query--
+SELECT '===test no pk==='
+--Result--
+[('===test no pk===',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_without_pk FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '===test a lot of marks==='
+--Result--
+[('===test a lot of marks===',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_with_small_granularity FINAL
+--Result--
+[]
++--------------------+

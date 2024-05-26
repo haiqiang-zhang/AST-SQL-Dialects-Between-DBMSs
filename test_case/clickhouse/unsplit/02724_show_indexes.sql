@@ -1,5 +1,3 @@
-
--- The matching of actual/expected results relies on the fact that the output of SHOW INDEX is sorted.
 DROP TABLE IF EXISTS tbl;
 CREATE TABLE tbl
 (

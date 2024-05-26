@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[('2017-07-20', 'one')]
++--------------------+
+--Query--
+SELECT x, y FROM t2 ORDER BY x
+--Result--
+[(1, '2017-07-20'), (2, 'xyzzy')]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<1000)     INSERT INTO t3(a,b) SELECT x, julianday('2017-07-01')+x FROM c
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t3    WHERE typeof(b)='real'      AND datetime(b) BETWEEN '2017-07-04' AND '2017-07-08'
+--Result--
+[(3, 0, 0, 'SEARCH t3 USING INDEX t3b1 (<expr>>? AND <expr><?)')]
++--------------------+
+--Query--
+SELECT a FROM t3    WHERE typeof(b)='real'      AND datetime(b) BETWEEN '2017-07-04' AND '2017-07-08'   ORDER BY a
+--Result--
+[(3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<1000)     INSERT INTO t4(a,b) SELECT x, julianday('2017-07-01')+x FROM c
+--Result--
+[]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<5)     INSERT INTO t5(y,m) SELECT julianday('2017-07-01')+c.x, mods.x FROM c, mods
+--Result--
+[]
++--------------------+

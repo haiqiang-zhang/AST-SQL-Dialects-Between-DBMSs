@@ -64,24 +64,9 @@ EXPLAIN (VERBOSE, COSTS OFF) UPDATE update_test t   SET (a, b) = (SELECT b, a FR
 [('Update on public.update_test t',), ('  ->  Result',), ('        Output: $1, $2, (SubPlan 1 (returns $1,$2)), t.ctid',), ('        One-Time Filter: (CURRENT_USER = SESSION_USER)',), ('        ->  Seq Scan on public.update_test t',), ('              Output: t.a, t.ctid',), ('        SubPlan 1 (returns $1,$2)',), ('          ->  Seq Scan on public.update_test s',), ('                Output: s.b, s.a',), ('                Filter: (s.a = t.a)',)]
 +--------------------+
 --Query--
-SELECT a, b, char_length(c) FROM update_test
---Result--
-[(None, None, None), (100, 21, None), (12, 41, 10000), (12, 42, 10000)]
-+--------------------+
---Query--
 WITH aaa AS (SELECT 1 AS a, 'Foo' AS b) INSERT INTO upsert_test   VALUES (1, 'Bar') ON CONFLICT(a)   DO UPDATE SET (b, a) = (SELECT b, a FROM aaa) RETURNING *
 --Result--
 [(1, 'Foo')]
-+--------------------+
---Query--
-WITH aaa AS (SELECT 1 AS a, 'Foo' AS b) INSERT INTO upsert_test   VALUES (1, 'Bar') ON CONFLICT(a)   DO UPDATE SET (b, a) = (SELECT b, a FROM aaa) RETURNING *
---Result--
-[(1, 'Foo')]
-+--------------------+
---Query--
-WITH aaa AS (SELECT 1 AS ctea, ' Foo' AS cteb) INSERT INTO upsert_test   VALUES (1, 'Bar'), (2, 'Baz') ON CONFLICT(a)   DO UPDATE SET (b, a) = (SELECT upsert_test.b||cteb, upsert_test.a FROM aaa) RETURNING *
---Result--
-[(1, 'Foo Foo'), (2, 'Zoo Foo')]
 +--------------------+
 --Query--
 EXPLAIN (costs off) UPDATE range_parted set c = c - 50 WHERE c > 97

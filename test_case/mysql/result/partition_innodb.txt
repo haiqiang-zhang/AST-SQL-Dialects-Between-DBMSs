@@ -1,0 +1,220 @@
+--Query--
+SELECT 1 FROM t1 WHERE a > (SELECT LAST_INSERT_ID() FROM t1 LIMIT 0) ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT PARTITION_NAME, TABLE_ROWS FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = 't1' AND TABLE_SCHEMA = 'test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM t1 p where c3 in (SELECT c3 FROM t1 t WHERE t.c3 < TIMESTAMP'2011-04-26 19:19:44'  AND t.c3 > TIMESTAMP'2011-04-26 19:18:44')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist WHERE INFO like 'ALTER TABLE t1%REORGANIZE PARTITION hour_003, hour_004%' AND STATE = 'Waiting for table metadata lock'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE
+--Result--
+[(1, 'Lachlan', datetime.date(2009, 9, 13)), (2, 'Clint', datetime.date(2009, 9, 13)), (3, 'John', datetime.date(2009, 9, 14)), (4, 'Dave', datetime.date(2009, 9, 14)), (5, 'Jeremy', datetime.date(2009, 9, 15)), (6, 'Scott', datetime.date(2009, 9, 15)), (7, 'Jeff', datetime.date(2009, 9, 16)), (8, 'Joe', datetime.date(2009, 9, 16))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE id = 7
+--Result--
+[(7, 'Mattias', datetime.date(2009, 9, 16))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 'Lachlan', datetime.date(2009, 9, 13)), (2, 'Clint', datetime.date(2009, 9, 13)), (3, 'John', datetime.date(2009, 9, 14)), (4, 'Dave', datetime.date(2009, 9, 14))]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b = 0 ORDER BY a ASC
+--Result--
+[(0,), (2,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b = 0 ORDER BY a DESC
+--Result--
+[(4,), (2,), (0,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b = 0 ORDER BY a ASC
+--Result--
+[(0,), (2,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b = 0 ORDER BY a DESC
+--Result--
+[(4,), (2,), (0,)]
++--------------------+
+--Query--
+SELECT right(a,1) FROM t1 WHERE b = repeat('0',257) ORDER BY a ASC
+--Result--
+[('1',), ('2',), ('3',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE first_name='Andy' OR last_name='Jake'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE
+--Result--
+[(1, datetime.date(2001, 1, 1)), (2, datetime.date(2002, 2, 2)), (3, datetime.date(2003, 3, 3))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.date(2001, 1, 1)), (2, datetime.date(2002, 2, 2)), (3, datetime.date(2003, 3, 3))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE i1 = ( SELECT i1 FROM t1 WHERE f1=0 LIMIT 1 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (0, 1)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '92' AND c = '0.73'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '1224'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=3 OR b=4
+--Result--
+[(3, 3, 3), (4, 4, 4)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a = 1 and b = 1 and c = 'b') OR (a > 2) ORDER BY a DESC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE dttm > '2017-01-19' ORDER BY id DESC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2018, 4, 25, 10, 18), '1'), (2, datetime.datetime(2018, 4, 25, 10, 18, 1), '2'), (3, datetime.datetime(2018, 4, 25, 10, 18, 2), '3')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2018, 4, 25, 10, 18), '11'), (2, datetime.datetime(2018, 4, 25, 10, 18, 1), '22'), (3, datetime.datetime(2018, 4, 25, 10, 18, 2), '3')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`PRIMARY`)
+--Result--
+[('4', '4'), ('3', '3'), ('2', '2'), ('1', '4'), ('1', '3'), ('1', '2'), ('1', '1'), ('0', '1'), ('0', '0'), ('55', '55'), ('55', '54'), ('54', '54')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`ab_asc`)
+--Result--
+[('0', '0'), ('0', '1'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('2', '2'), ('3', '3'), ('4', '4'), ('54', '54'), ('55', '54'), ('55', '55')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`a_asc_b_desc`)
+--Result--
+[('0', '1'), ('0', '0'), ('1', '4'), ('1', '3'), ('1', '2'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('54', '54'), ('55', '55'), ('55', '54')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`a_desc_b_asc`)
+--Result--
+[('4', '4'), ('3', '3'), ('2', '2'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('0', '0'), ('0', '1'), ('55', '54'), ('55', '55'), ('54', '54')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC, b DESC
+--Result--
+[('55', '55'), ('55', '54'), ('54', '54'), ('4', '4'), ('3', '3'), ('2', '2'), ('1', '4'), ('1', '3'), ('1', '2'), ('1', '1'), ('0', '1'), ('0', '0')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a, b
+--Result--
+[('0', '0'), ('0', '1'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('2', '2'), ('3', '3'), ('4', '4'), ('54', '54'), ('55', '54'), ('55', '55')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a, b DESC
+--Result--
+[('0', '1'), ('0', '0'), ('1', '4'), ('1', '3'), ('1', '2'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('54', '54'), ('55', '55'), ('55', '54')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC, b
+--Result--
+[('55', '54'), ('55', '55'), ('54', '54'), ('4', '4'), ('3', '3'), ('2', '2'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('0', '0'), ('0', '1')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`PRIMARY`) ORDER BY a, b
+--Result--
+[('0', '0'), ('0', '1'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('2', '2'), ('3', '3'), ('4', '4'), ('54', '54'), ('55', '54'), ('55', '55')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`PRIMARY`) ORDER BY a DESC, b
+--Result--
+[('55', '54'), ('55', '55'), ('54', '54'), ('4', '4'), ('3', '3'), ('2', '2'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('0', '0'), ('0', '1')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`PRIMARY`) ORDER BY a, b DESC
+--Result--
+[('0', '1'), ('0', '0'), ('1', '4'), ('1', '3'), ('1', '2'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('54', '54'), ('55', '55'), ('55', '54')]
++--------------------+
+--Query--
+SELECT * FROM t1 FORCE INDEX (`PRIMARY`) ORDER BY a DESC, b
+--Result--
+[('55', '54'), ('55', '55'), ('54', '54'), ('4', '4'), ('3', '3'), ('2', '2'), ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('0', '0'), ('0', '1')]
++--------------------+

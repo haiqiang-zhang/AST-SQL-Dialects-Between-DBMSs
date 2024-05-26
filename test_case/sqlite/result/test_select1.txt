@@ -1,0 +1,675 @@
+--Query--
+SELECT f1 FROM test1
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT f2 FROM test1
+--Result--
+[(22,)]
++--------------------+
+--Query--
+SELECT f2, f1 FROM test1
+--Result--
+[(22, 11)]
++--------------------+
+--Query--
+SELECT f1, f2 FROM test1
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT * FROM test1
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT *, * FROM test1
+--Result--
+[(11, 22, 11, 22)]
++--------------------+
+--Query--
+SELECT *, min(f1,f2), max(f1,f2) FROM test1
+--Result--
+[(11, 22, 11, 22)]
++--------------------+
+--Query--
+SELECT 'one', *, 'two', * FROM test1
+--Result--
+[('one', 11, 22, 'two', 11, 22)]
++--------------------+
+--Query--
+SELECT * FROM test1, test2
+--Result--
+[(11, 22, 1.1, 2.2)]
++--------------------+
+--Query--
+SELECT *, 'hi' FROM test1, test2
+--Result--
+[(11, 22, 1.1, 2.2, 'hi')]
++--------------------+
+--Query--
+SELECT 'one', *, 'two', * FROM test1, test2
+--Result--
+[('one', 11, 22, 1.1, 2.2, 'two', 11, 22, 1.1, 2.2)]
++--------------------+
+--Query--
+SELECT test1.f1, test2.r1 FROM test1, test2
+--Result--
+[(11, 1.1)]
++--------------------+
+--Query--
+SELECT test1.f1, test2.r1 FROM test2, test1
+--Result--
+[(11, 1.1)]
++--------------------+
+--Query--
+SELECT * FROM test2, test1
+--Result--
+[(1.1, 2.2, 11, 22)]
++--------------------+
+--Query--
+SELECT * FROM test1 AS a, test1 AS b
+--Result--
+[(11, 22, 11, 22)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[('abc', None), (None, 'xyz'), (11, 22), (33, 44)]
++--------------------+
+--Query--
+SELECT count(f1) FROM test1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT Count() FROM test1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM test1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT COUNT(*)+1 FROM test1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT Min(f1) FROM test1
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT MIN(f1,f2) FROM test1
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT coalesce(min(a),'xyzzy') FROM t3
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT min(coalesce(a,'xyzzy')) FROM t3
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT Max(f1) FROM test1
+--Result--
+[(33,)]
++--------------------+
+--Query--
+SELECT max(f1,f2) FROM test1
+--Result--
+[(22,), (44,)]
++--------------------+
+--Query--
+SELECT MAX(f1,f2)+1 FROM test1
+--Result--
+[(23,), (45,)]
++--------------------+
+--Query--
+SELECT MAX(f1)+1 FROM test1
+--Result--
+[(34,)]
++--------------------+
+--Query--
+SELECT Sum(f1) FROM test1
+--Result--
+[(44,)]
++--------------------+
+--Query--
+SELECT SUM(f1)+1 FROM test1
+--Result--
+[(45,)]
++--------------------+
+--Query--
+SELECT sum(a) FROM t3
+--Result--
+[(44.0,)]
++--------------------+
+--Query--
+SELECT SUM(min(f1,f2)) FROM test1
+--Result--
+[(44,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE f1<11
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE f1<=11
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE f1=11
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE f1>=11
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE f1>11
+--Result--
+[(33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE f1!=11
+--Result--
+[(33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE min(f1,f2)!=11
+--Result--
+[(33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE max(f1,f2)!=11
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 ORDER BY f1
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 ORDER BY -f1
+--Result--
+[(33,), (11,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 ORDER BY 8.4
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 ORDER BY '8.4'
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY 1
+--Result--
+[(1, 10), (2, 9)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY 2
+--Result--
+[(2, 9), (1, 10)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY +2
+--Result--
+[(2, 9), (1, 10)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY 2, 1 DESC
+--Result--
+[(2, 9), (3, 10), (1, 10)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY 1 DESC, b
+--Result--
+[(3, 10), (2, 9), (1, 10)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY b DESC, 1
+--Result--
+[(1, 10), (3, 10), (2, 9)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 ORDER BY f2
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 ORDER BY f2
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 as 'f1' FROM test1 ORDER BY f2
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT * FROM test1 WHERE f1==11
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM test1 WHERE f1==11
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT * FROM test1 WHERE f1==11
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM test1 WHERE f1==11
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT f1 as xyzzy FROM test1 ORDER BY f2
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 as "xyzzy" FROM test1 ORDER BY f2
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 as 'xyzzy ' FROM test1 ORDER BY f2
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1+F2 as xyzzy FROM test1 ORDER BY f2
+--Result--
+[(33,), (77,)]
++--------------------+
+--Query--
+SELECT f1+F2 FROM test1 ORDER BY f2
+--Result--
+[(33,), (77,)]
++--------------------+
+--Query--
+SELECT test1.f1+F2 FROM test1 ORDER BY f2
+--Result--
+[(33,), (77,)]
++--------------------+
+--Query--
+SELECT test1.f1+F2 FROM test1 ORDER BY f2
+--Result--
+[(33,), (77,)]
++--------------------+
+--Query--
+SELECT test1.f1+F2, t1 FROM test1, test2           ORDER BY f2
+--Result--
+[(33, 'abc'), (77, 'abc')]
++--------------------+
+--Query--
+SELECT A.f1, t1 FROM test1 as A, test2           ORDER BY f2
+--Result--
+[(11, 'abc'), (33, 'abc')]
++--------------------+
+--Query--
+SELECT A.f1, B.f1 FROM test1 as A, test1 as B           ORDER BY A.f1, B.f1
+--Result--
+[(11, 11), (11, 33), (33, 11), (33, 33)]
++--------------------+
+--Query--
+SELECT A.f1, B.f1 FROM test1 as A, test1 as B           ORDER BY A.f1, B.f1
+--Result--
+[(11, 11), (11, 33), (33, 11), (33, 33)]
++--------------------+
+--Query--
+SELECT test1 . f1, test1 . f2 FROM test1 LIMIT 1
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT test1 . f1, test1 . f2 FROM test1 LIMIT 1
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT 123.45
+--Result--
+[(123.45,)]
++--------------------+
+--Query--
+SELECT * FROM test1 a, test1 b LIMIT 1
+--Result--
+[(11, 22, 11, 22)]
++--------------------+
+--Query--
+SELECT * FROM test1 a, (select 5, 6) LIMIT 1
+--Result--
+[(11, 22, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM test1 a, (select 5 AS x, 6 AS y) AS b LIMIT 1
+--Result--
+[(11, 22, 5, 6)]
++--------------------+
+--Query--
+SELECT a.f1, b.f2 FROM test1 a, test1 b LIMIT 1
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT f1, t1 FROM test1, test2 LIMIT 1
+--Result--
+[(11, 'abc')]
++--------------------+
+--Query--
+SELECT a.f1, b.f2 FROM test1 a, test1 b LIMIT 1
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT f1, t1 FROM test1, test2 LIMIT 1
+--Result--
+[(11, 'abc')]
++--------------------+
+--Query--
+SELECT a.f1, b.f1 FROM test1 a, test1 b LIMIT 1
+--Result--
+[(11, 11)]
++--------------------+
+--Query--
+SELECT f1, t1 FROM test1, test2 LIMIT 1
+--Result--
+[(11, 'abc')]
++--------------------+
+--Query--
+SELECT a.f1, b.f1 FROM test1 a, test1 b LIMIT 1
+--Result--
+[(11, 11)]
++--------------------+
+--Query--
+SELECT f1, t1 FROM test1, test2 LIMIT 1
+--Result--
+[(11, 'abc')]
++--------------------+
+--Query--
+SELECT f1 FROM test1 UNION SELECT f2 FROM test1     ORDER BY f2
+--Result--
+[(11,), (22,), (33,), (44,)]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE b IN          (SELECT b FROM t6 WHERE a<='b' UNION SELECT '3' AS x                  ORDER BY 1 LIMIT 1)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE b IN          (SELECT b FROM t6 WHERE a<='b' UNION SELECT '3' AS x                  ORDER BY 1 DESC LIMIT 1)
+--Result--
+[('d',)]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE b IN          (SELECT b FROM t6 WHERE a<='b' UNION SELECT '3' AS x                  ORDER BY b LIMIT 2)      ORDER BY a
+--Result--
+[('a',), ('b',)]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE b IN          (SELECT b FROM t6 WHERE a<='b' UNION SELECT '3' AS x                  ORDER BY x DESC LIMIT 2)      ORDER BY a
+--Result--
+[('b',), ('d',)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE 4.3+2.4 OR 1 ORDER BY f1
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE ('x' || f1) BETWEEN 'x10' AND 'x20'     ORDER BY f1
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT f1 FROM test1 WHERE 5-3==2     ORDER BY f1
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 AS x FROM test1 ORDER BY x
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT f1 AS x FROM test1 ORDER BY -x
+--Result--
+[(33,), (11,)]
++--------------------+
+--Query--
+SELECT f1-23 AS x FROM test1 ORDER BY abs(x)
+--Result--
+[(10,), (-12,)]
++--------------------+
+--Query--
+SELECT f1-22 AS x, f2-22 as y FROM test1
+--Result--
+[(-11, 0), (11, 22)]
++--------------------+
+--Query--
+SELECT f1-22 AS x, f2-22 as y FROM test1 WHERE x>0 AND y<50
+--Result--
+[(11, 22)]
++--------------------+
+--Query--
+SELECT f1 COLLATE nocase AS x FROM test1 ORDER BY x
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT * FROM t3, t4
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t3, t4
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t3, t4
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT t3.*, t4.b FROM t3, t4
+--Result--
+[(1, 2, 4)]
++--------------------+
+--Query--
+SELECT "t3".*, t4.b FROM t3, t4
+--Result--
+[(1, 2, 4)]
++--------------------+
+--Query--
+SELECT t3.*, t4.b FROM t3, t4
+--Result--
+[(1, 2, 4)]
++--------------------+
+--Query--
+SELECT x.*, y.b FROM t3 AS x, t4 AS y
+--Result--
+[(1, 2, 4)]
++--------------------+
+--Query--
+SELECT t3.b, t4.* FROM t3, t4
+--Result--
+[(2, 3, 4)]
++--------------------+
+--Query--
+SELECT t3.b, t4.* FROM t3, t4
+--Result--
+[(2, 3, 4)]
++--------------------+
+--Query--
+SELECT x.b, y.* FROM t3 AS x, t4 AS y
+--Result--
+[(2, 3, 4)]
++--------------------+
+--Query--
+SELECT t3.* FROM t3, (SELECT max(a), max(b) FROM t4)
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT t3.* FROM (SELECT max(a), max(b) FROM t4), t3
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t3, (SELECT max(a), max(b) FROM t4) AS 'tx'
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT y.*, t3.* FROM t3, (SELECT max(a), max(b) FROM t4) AS y
+--Result--
+[(3, 4, 1, 2)]
++--------------------+
+--Query--
+SELECT y.* FROM t3 as y, t4 as z
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT 1+2+3
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT 1,'hello',2
+--Result--
+[(1, 'hello', 2)]
++--------------------+
+--Query--
+SELECT 1 AS 'a','hello' AS 'b',2 AS 'c'
+--Result--
+[(1, 'hello', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 UNION SELECT 3 AS 'a', 4 ORDER BY a
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT 3, 4 UNION SELECT * FROM t3
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a=(SELECT 1)
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a=(SELECT 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM (         SELECT a AS x, b AS y FROM t3 UNION SELECT a,b FROM t4 ORDER BY a,b       ) ORDER BY x
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT z.x FROM (         SELECT a AS x,b AS y FROM t3 UNION SELECT a, b FROM t4 ORDER BY a,b       ) AS 'z' ORDER BY x
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE rowid>10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE rowid=10
+--Result--
+[('index', 'sqlite_autoindex_abc_1', 'abc', 11, None)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE rowid<10
+--Result--
+[('table', 'test1', 'test1', 2, 'CREATE TABLE test1(f1 int, f2 int)'), ('table', 't3', 't3', 3, 'CREATE TABLE t3(a,b)'), ('table', 't4', 't4', 4, 'CREATE TABLE t4(a,b)'), ('table', 'tkt2526', 'tkt2526', 5, 'CREATE TABLE tkt2526(a,b,c PRIMARY KEY)'), ('index', 'sqlite_autoindex_tkt2526_1', 'tkt2526', 6, None), ('table', 't5', 't5', 7, 'CREATE TABLE t5(a,b)'), ('table', 'test2', 'test2', 8, 'CREATE TABLE test2(t1 text, t2 text)'), ('table', 't6', 't6', 9, 'CREATE TABLE t6(a TEXT, b TEXT)'), ('table', 'abc', 'abc', 10, 'CREATE TABLE abc(a, b, c, PRIMARY KEY(a, b))')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE rowid<=10
+--Result--
+[('table', 'test1', 'test1', 2, 'CREATE TABLE test1(f1 int, f2 int)'), ('table', 't3', 't3', 3, 'CREATE TABLE t3(a,b)'), ('table', 't4', 't4', 4, 'CREATE TABLE t4(a,b)'), ('table', 'tkt2526', 'tkt2526', 5, 'CREATE TABLE tkt2526(a,b,c PRIMARY KEY)'), ('index', 'sqlite_autoindex_tkt2526_1', 'tkt2526', 6, None), ('table', 't5', 't5', 7, 'CREATE TABLE t5(a,b)'), ('table', 'test2', 'test2', 8, 'CREATE TABLE test2(t1 text, t2 text)'), ('table', 't6', 't6', 9, 'CREATE TABLE t6(a TEXT, b TEXT)'), ('table', 'abc', 'abc', 10, 'CREATE TABLE abc(a, b, c, PRIMARY KEY(a, b))'), ('index', 'sqlite_autoindex_abc_1', 'abc', 11, None)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE rowid>=10
+--Result--
+[('index', 'sqlite_autoindex_abc_1', 'abc', 11, None)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'test1', 'test1', 2, 'CREATE TABLE test1(f1 int, f2 int)'), ('table', 't3', 't3', 3, 'CREATE TABLE t3(a,b)'), ('table', 't4', 't4', 4, 'CREATE TABLE t4(a,b)'), ('table', 'tkt2526', 'tkt2526', 5, 'CREATE TABLE tkt2526(a,b,c PRIMARY KEY)'), ('index', 'sqlite_autoindex_tkt2526_1', 'tkt2526', 6, None), ('table', 't5', 't5', 7, 'CREATE TABLE t5(a,b)'), ('table', 'test2', 'test2', 8, 'CREATE TABLE test2(t1 text, t2 text)'), ('table', 't6', 't6', 9, 'CREATE TABLE t6(a TEXT, b TEXT)'), ('table', 'abc', 'abc', 10, 'CREATE TABLE abc(a, b, c, PRIMARY KEY(a, b))'), ('index', 'sqlite_autoindex_abc_1', 'abc', 11, None)]
++--------------------+
+--Query--
+SELECT 10 IN (SELECT rowid FROM sqlite_master)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 2 IN (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1,(SELECT * FROM t2 WHERE y=2 ORDER BY y,z)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,(SELECT * FROM t2 WHERE y=2 ORDER BY y,z LIMIT 4)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,(SELECT * FROM t2 WHERE y=2          UNION ALL SELECT * FROM t2 WHERE y=3 ORDER BY y,z LIMIT 4)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT x FROM t2, t1 WHERE x BETWEEN c AND null OR x AND   x IN ((SELECT x FROM (SELECT x FROM t2, t1    WHERE x BETWEEN (SELECT x FROM (SELECT x COLLATE rtrim    FROM t2, t1 WHERE x BETWEEN c AND null   OR x AND x IN (c)), t1 WHERE x BETWEEN c AND null   OR x AND x IN (c)) AND null   OR NOT EXISTS(SELECT -4.81 FROM t1, t2 WHERE x BETWEEN c AND null   OR x AND x IN ((SELECT x FROM (SELECT x FROM t2, t1   WHERE x BETWEEN (SELECT x FROM (SELECT x BETWEEN c AND null   OR x AND x IN (c)), t1 WHERE x BETWEEN c AND null   OR x AND x IN (c)) AND null   OR x AND x IN (c)), t1 WHERE x BETWEEN c AND null   OR x AND x IN (c)))) AND x IN (c)   ), t1 WHERE x BETWEEN c AND null   OR x AND x IN (c)))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t2, t1 WHERE x BETWEEN c AND (c+1) OR x AND   x IN ((SELECT x FROM (SELECT x FROM t2, t1    WHERE x BETWEEN (SELECT x FROM (SELECT x COLLATE rtrim    FROM t2, t1 WHERE x BETWEEN c AND (c+1)   OR x AND x IN (c)), t1 WHERE x BETWEEN c AND (c+1)   OR x AND x IN (c)) AND (c+1)   OR NOT EXISTS(SELECT -4.81 FROM t1, t2 WHERE x BETWEEN c AND (c+1)   OR x AND x IN ((SELECT x FROM (SELECT x FROM t2, t1   WHERE x BETWEEN (SELECT x FROM (SELECT x BETWEEN c AND (c+1)   OR x AND x IN (c)), t1 WHERE x BETWEEN c AND (c+1)   OR x AND x IN (c)) AND (c+1)   OR x AND x IN (c)), t1 WHERE x BETWEEN c AND (c+1)   OR x AND x IN (c)))) AND x IN (c)   ), t1 WHERE x BETWEEN c AND (c+1)   OR x AND x IN (c)))
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE (     SELECT 2 FROM t2 WHERE (       SELECT 3 FROM (         SELECT x FROM t2 WHERE x=c OR x=(SELECT x FROM (VALUES(0)))       ) WHERE x>c OR x=c     )   )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1, t2 WHERE (     SELECT 3 FROM (       SELECT x FROM t2 WHERE x=c OR x=(SELECT x FROM (VALUES(0)))     ) WHERE x>c OR x=c   )
+--Result--
+[(1,)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+export database '__TEST_DIR__/test_export' (FORMAT JSON)
+--Result--
+[]
++--------------------+
+--Query--
+import database '__TEST_DIR__/test_export'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+COPY text TO '__TEST_DIR__/text.json' (ARRAY)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+COPY text from '__TEST_DIR__/text.json' (ARRAY)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from text
+--Result--
+[('bla',)]
++--------------------+
+--Query--
+select * from text
+--Result--
+[('bla',)]
++--------------------+
+--Query--
+select * from '__TEST_DIR__/text.json'
+--Result--
+[('bla',)]
++--------------------+

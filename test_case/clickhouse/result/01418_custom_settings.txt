@@ -1,0 +1,65 @@
+--Query--
+SELECT '--- assigning ---'
+--Result--
+[('--- assigning ---',)]
++--------------------+
+--Query--
+SELECT name, value FROM system.settings WHERE name LIKE 'custom_%' ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--- modifying ---'
+--Result--
+[('--- modifying ---',)]
++--------------------+
+--Query--
+SELECT name, value FROM system.settings WHERE name LIKE 'custom_%' ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--- undefined setting ---'
+--Result--
+[('--- undefined setting ---',)]
++--------------------+
+--Query--
+SELECT '--- wrong prefix ---'
+--Result--
+[('--- wrong prefix ---',)]
++--------------------+
+--Query--
+SELECT '--- using query context ---'
+--Result--
+[('--- using query context ---',)]
++--------------------+
+--Query--
+SELECT name, value FROM system.settings WHERE name = 'custom_e'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT() FROM system.settings WHERE name = 'custom_f'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--- compound identifier ---'
+--Result--
+[('--- compound identifier ---',)]
++--------------------+
+--Query--
+SELECT name, value FROM system.settings WHERE name = 'custom_compound.identifier.v1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--- null type ---'
+--Result--
+[('--- null type ---',)]
++--------------------+
+--Query--
+SELECT name, value FROM system.settings WHERE name = 'custom_null'
+--Result--
+[]
++--------------------+

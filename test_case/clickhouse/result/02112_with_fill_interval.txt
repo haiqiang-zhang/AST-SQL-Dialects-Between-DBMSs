@@ -1,0 +1,90 @@
+--Query--
+SELECT '1 DAY'
+--Result--
+[('1 DAY',)]
++--------------------+
+--Query--
+SELECT d, count() FROM with_fill_date GROUP BY d ORDER BY d WITH FILL STEP INTERVAL 1 DAY LIMIT 5
+--Result--
+[(datetime.date(2020, 2, 5), 1), (datetime.date(2020, 2, 6), 0), (datetime.date(2020, 2, 7), 0), (datetime.date(2020, 2, 8), 0), (datetime.date(2020, 2, 9), 0)]
++--------------------+
+--Query--
+SELECT '1 WEEK'
+--Result--
+[('1 WEEK',)]
++--------------------+
+--Query--
+SELECT '1 MONTH'
+--Result--
+[('1 MONTH',)]
++--------------------+
+--Query--
+SELECT '3 MONTH'
+--Result--
+[('3 MONTH',)]
++--------------------+
+--Query--
+SELECT toStartOfMonth(d) as d, count() FROM with_fill_date GROUP BY d ORDER BY d WITH FILL     FROM toDate('2020-01-01')     TO toDate('2021-01-01')     STEP INTERVAL 3 MONTH
+--Result--
+[(datetime.date(2020, 1, 1), 0), (datetime.date(2020, 2, 1), 2), (datetime.date(2020, 3, 1), 1), (datetime.date(2020, 4, 1), 0), (datetime.date(2020, 6, 1), 1), (datetime.date(2020, 7, 1), 0), (datetime.date(2020, 10, 1), 0)]
++--------------------+
+--Query--
+SELECT '1 DAY'
+--Result--
+[('1 DAY',)]
++--------------------+
+--Query--
+SELECT '1 WEEK'
+--Result--
+[('1 WEEK',)]
++--------------------+
+--Query--
+SELECT '1 MONTH'
+--Result--
+[('1 MONTH',)]
++--------------------+
+--Query--
+SELECT '3 MONTH'
+--Result--
+[('3 MONTH',)]
++--------------------+
+--Query--
+SELECT '15 MINUTE'
+--Result--
+[('15 MINUTE',)]
++--------------------+
+--Query--
+SELECT '6 HOUR'
+--Result--
+[('6 HOUR',)]
++--------------------+
+--Query--
+SELECT '10 DAY'
+--Result--
+[('10 DAY',)]
++--------------------+
+--Query--
+SELECT '15 MINUTE'
+--Result--
+[('15 MINUTE',)]
++--------------------+
+--Query--
+SELECT '6 HOUR'
+--Result--
+[('6 HOUR',)]
++--------------------+
+--Query--
+SELECT '10 DAY'
+--Result--
+[('10 DAY',)]
++--------------------+
+--Query--
+SELECT '1 MONTH'
+--Result--
+[('1 MONTH',)]
++--------------------+
+--Query--
+SELECT d FROM (SELECT toDate(1) AS d) ORDER BY d DESC WITH FILL FROM toDate(3) TO toDate(0) STEP INTERVAL -1 DAY
+--Result--
+[(datetime.date(1970, 1, 4),), (datetime.date(1970, 1, 3),), (datetime.date(1970, 1, 2),)]
++--------------------+

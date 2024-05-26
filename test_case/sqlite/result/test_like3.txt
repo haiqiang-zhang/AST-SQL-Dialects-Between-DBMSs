@@ -1,0 +1,100 @@
+--Query--
+SELECT a, b FROM t1 WHERE b LIKE 'aB%' ORDER BY +a
+--Result--
+[(1, 'abc'), (2, 'ABX'), (4, b'abc'), (5, b'ABX')]
++--------------------+
+--Query--
+SELECT a, b FROM t1 WHERE +b LIKE 'aB%' ORDER BY +a
+--Result--
+[(1, 'abc'), (2, 'ABX'), (4, b'abc'), (5, b'ABX')]
++--------------------+
+--Query--
+SELECT a, b FROM t2 WHERE b GLOB 'ab*' ORDER BY +a
+--Result--
+[(1, 'abc'), (4, b'abc')]
++--------------------+
+--Query--
+SELECT a, b FROM t2 WHERE +b GLOB 'ab*' ORDER BY +a
+--Result--
+[(1, 'abc'), (4, b'abc')]
++--------------------+
+--Query--
+SELECT a, b FROM t2 WHERE b>=x'6162' AND b GLOB 'ab*'
+--Result--
+[(4, b'abc')]
++--------------------+
+--Query--
+SELECT a, b FROM t2 WHERE +b>=x'6162' AND +b GLOB 'ab*'
+--Result--
+[(4, b'abc')]
++--------------------+
+--Query--
+SELECT a, b FROM t2 WHERE b GLOB 'ab*' AND b>=x'6162'
+--Result--
+[(4, b'abc')]
++--------------------+
+--Query--
+SELECT a, b FROM t2 WHERE +b GLOB 'ab*' AND +b>=x'6162'
+--Result--
+[(4, b'abc')]
++--------------------+
+--Query--
+SELECT quote(x) FROM t3 WHERE x LIKE 'ab%' ORDER BY x
+--Result--
+[("'abc'",), ("'abd'",), ("'abe'",), ("X'616263'",), ("X'616264'",), ("X'616265'",)]
++--------------------+
+--Query--
+SELECT x FROM t5a WHERE x LIKE '/%'
+--Result--
+[('/abc',)]
++--------------------+
+--Query--
+SELECT x FROM t5a WHERE x LIKE '/a%'
+--Result--
+[('/abc',)]
++--------------------+
+--Query--
+SELECT x FROM t5a WHERE x LIKE '^12%' ESCAPE '^'
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x FROM t5a WHERE x LIKE '^-2%' ESCAPE '^'
+--Result--
+[(-234,)]
++--------------------+
+--Query--
+SELECT x FROM t5b WHERE x GLOB '/*'
+--Result--
+[('/abc',)]
++--------------------+
+--Query--
+SELECT x FROM t5b WHERE x GLOB '/a*'
+--Result--
+[('/abc',)]
++--------------------+
+--Query--
+SELECT * FROM t5c WHERE (c0 LIKE '+/')
+--Result--
+[('+/',)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE t0.c0 LIKE './'
+--Result--
+[('./',)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE t0.c0 LIKE '.1%'
+--Result--
+[('.1%',)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE t0.c0 GLOB '-*'
+--Result--
+[(-1,)]
++--------------------+
+--Query--
+SELECT t0.c0 GLOB '-*' FROM t0
+--Result--
+[(1,)]
++--------------------+

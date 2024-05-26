@@ -1,0 +1,390 @@
+--Query--
+SELECT name FROM sqlite_master     WHERE type='index' AND tbl_name='t1'
+--Result--
+[('sqlite_autoindex_t1_1',)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master       WHERE type='index' AND tbl_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1
+--Result--
+[(5, 5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1
+--Result--
+[(5, 5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1
+--Result--
+[(5, 5, 'hello', 'world'), (6, 6, 'second', 'entry')]
++--------------------+
+--Query--
+SELECT b FROM t1 ORDER BY b
+--Result--
+[('hello',), ('one',), ('second',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(4, 'one', 'two'), (5, 'hello', 'world'), (6, 'second', 'entry')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a==4
+--Result--
+[(4, 'one', 'two')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT * FROM t1 WHERE a==4
+--Result--
+[(2, 0, 0, 'SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(-3, 'y', 'z'), (4, 'one', 'two'), (5, 'hello', 'world'), (6, 'second', 'entry')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=='y'
+--Result--
+[(-3, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=='y' AND rowid<0
+--Result--
+[(-3, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=='y' AND rowid<0 AND rowid>=-20
+--Result--
+[(-3, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b>='y'
+--Result--
+[(-3, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b>='y' AND rowid<10
+--Result--
+[(-3, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=='y'
+--Result--
+[(8, 'y', 'z')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1
+--Result--
+[(4, 4, 'one', 'two'), (5, 5, 'hello', 'world'), (6, 6, 'second', 'entry'), (8, 8, 'y', 'z')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1 WHERE b<'second'
+--Result--
+[(5, 5, 'hello', 'world'), (4, 4, 'one', 'two')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1 WHERE 'second'>b
+--Result--
+[(5, 5, 'hello', 'world'), (4, 4, 'one', 'two')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1 WHERE 8>rowid AND 'second'>b
+--Result--
+[(4, 4, 'one', 'two'), (5, 5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1 WHERE 8>rowid AND 'second'>b AND 0<rowid
+--Result--
+[(4, 4, 'one', 'two'), (5, 5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1 WHERE b>'a'
+--Result--
+[(5, 5, 'hello', 'world'), (4, 4, 'one', 'two'), (6, 6, 'second', 'entry'), (8, 8, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b>'a'
+--Result--
+[(5, 'hello', 'world'), (6, 'second', 'entry'), (8, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b>'a'
+--Result--
+[(5, 'hello', 'world'), (6, 'second', 'entry'), (-4, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(-4, 'y', 'z'), (5, 'hello', 'world'), (6, 'second', 'entry')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=5
+--Result--
+[(5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a>4 AND a<6
+--Result--
+[(5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b>='hello' AND b<'hello2'
+--Result--
+[(5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c=='world'
+--Result--
+[(5, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c=='world'
+--Result--
+[(5, 'hello', 'world'), (11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c=='world' AND a>7
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 7<a
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 11=rowid
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 11=rowid AND b=='hello'
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 11=rowid AND b=='hello' AND c IS NOT NULL
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE rowid==11
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE oid==11 AND b=='hello'
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a==11 AND b=='hello' AND c IS NOT NULL
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 8<rowid
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 8<rowid AND 11>=oid
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 11<=_rowid_ AND 12>=a
+--Result--
+[(11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 0>=_rowid_
+--Result--
+[(-4, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a<0
+--Result--
+[(-4, 'y', 'z')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a<0 AND a>10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=0
+--Result--
+[(0, 'zero', 'entry')]
++--------------------+
+--Query--
+SELECT rowid, a FROM t1 ORDER BY rowid
+--Result--
+[(-4, -4), (0, 0), (5, 5), (6, 6), (11, 11)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a>=20
+--Result--
+[(20, 'b-20', 'c-20'), (21, 'b-21', 'c-21'), (22, 'b-22', 'c-22')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=='hello'
+--Result--
+[(5, 'hello', 'world'), (11, 'hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=='b-21'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a>=20
+--Result--
+[(20, 'b-20', 'c-20'), (22, 'b-22', 'c-22')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE rowid>=30
+--Result--
+[(30, 'new', 'row')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE rowid>20
+--Result--
+[(22, 'b-22', 'c-22'), (30, 'new', 'row')]
++--------------------+
+--Query--
+SELECT rowid FROM t2
+--Result--
+[(-4,), (0,), (5,), (6,), (11,), (20,), (22,), (30,)]
++--------------------+
+--Query--
+SELECT x FROM t2
+--Result--
+[(-4,), (0,), (5,), (6,), (11,), (20,), (22,), (30,)]
++--------------------+
+--Query--
+SELECT rowid, a, c FROM t1 WHERE c=='www'
+--Result--
+[(5, 5, 'www'), (11, 11, 'www')]
++--------------------+
+--Query--
+SELECT * from t2
+--Result--
+[(1, 1, 2)]
++--------------------+
+--Query--
+SELECT * from t2 WHERE x=2
+--Result--
+[(2, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 1, 2), (2, 2, 3), (3, 2, 1), (4, 3, 2)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a=2.0+3.0
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a=2.0+3.5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a>2
+--Result--
+[(3, 3, '3')]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a>'2'
+--Result--
+[(3, 3, '3')]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a<'2'
+--Result--
+[(1, 1, 'one')]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a<c
+--Result--
+[(1, 1, 'one')]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a=c
+--Result--
+[(2, 2, '2'), (3, 3, '3')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a>2147483648
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a>=2147483648
+--Result--
+[('big-2',)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a>2147483648
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a>=2147483647
+--Result--
+[('big-1',), ('big-2',)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a<2147483648
+--Result--
+[('y',), ('zero',), (2,), ('hello',), ('second',), ('hello',), ('b-20',), ('b-22',), ('new',), (3,), ('big-1',)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a<12345678901
+--Result--
+[('y',), ('zero',), (2,), ('hello',), ('second',), ('hello',), ('b-20',), ('b-22',), ('new',), (3,), ('big-1',), ('big-2',)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a>12345678901
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t17
+--Result--
+[(248, 'giraffe')]
++--------------------+
+--Query--
+SELECT * FROM t17
+--Result--
+[(248, 'giraffe')]
++--------------------+
+--Query--
+SELECT * FROM t17 ORDER BY +x
+--Result--
+[(123, 'elephant'), (248, 'ostrich')]
++--------------------+

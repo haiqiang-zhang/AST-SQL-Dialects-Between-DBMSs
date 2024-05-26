@@ -14,11 +14,9 @@ hex(convert(@u using big5)) c from t1 order by a;
 alter table t1 convert to character set utf8mb3;
 select hex(a) from t1 where a = _big5 0xF9DC;
 drop table t1;
-select hex(convert(_big5 0xC84041 using ucs2));
 create table t1 (a blob);
 insert into t1 values (0xEE00);
 delete from t1;
-select hex(a) from t1;
 drop table t1;
 CREATE TABLE t1 (b VARCHAR(2));
 INSERT INTO t1 VALUES ('0'),('1'),('2'),('3'),('4'),('5'),('6'),('7');
@@ -34,14 +32,4 @@ ORDER BY head, tail;
 DROP TEMPORARY TABLE head, tail;
 SELECT COUNT(*) FROM t1;
 UPDATE IGNORE t1 SET a=unhex(code) ORDER BY code;
-SELECT COUNT(*) FROM t1 WHERE a<>'';
-SELECT code, hex(a), hex(upper(a)), hex(lower(a))
-FROM t1
-WHERE hex(a)<>hex(upper(a)) OR hex(a)<>hex(lower(a));
-SELECT code, HEX(a) FROM t1
-WHERE HEX(CAST(LOWER(a) AS CHAR CHARACTER SET utf8mb3)) <>
-      HEX(LOWER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code;
-SELECT code, HEX(a) FROM t1
-WHERE HEX(CAST(UPPER(a) AS CHAR CHARACTER SET utf8mb3)) <>
-      HEX(UPPER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code;
 DROP TABLE t1;

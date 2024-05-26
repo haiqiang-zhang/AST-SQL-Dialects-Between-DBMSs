@@ -1,5 +1,3 @@
-
-
 set use_page_cache_for_disks_without_file_cache = 1;
 set page_cache_inject_eviction = 0;
 set enable_filesystem_cache = 0;

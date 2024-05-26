@@ -8,9 +8,7 @@ select if(u=1,binary st,st) s from t1 order by s;
 select if(u=1,st,binary st) s from t1 where st like "%a%" order by s;
 select nullif(u, 1) from t1;
 drop table t1;
-select nullif(1,'test');
 select NULLIF(NULL,NULL), NULLIF(NULL,1), NULLIF(NULL,1.0), NULLIF(NULL,"test");
-select NULLIF(1,NULL), NULLIF(1.0, NULL), NULLIF("test", NULL);
 create table t1 (num  double(12,2));
 insert into t1 values (144.54);
 select sum(if(num is null,0.00,num)) from t1;
@@ -22,7 +20,6 @@ drop table t1;
 create table t1 (a int);
 insert t1 values (1),(2);
 drop table t1;
-SELECT NULLIF(5,5) IS NULL, NULLIF(5,5) IS NOT NULL;
 CREATE TABLE `t1` (
   `id` int(11) NOT NULL ,
   `date` int(10) default NULL,
@@ -34,8 +31,6 @@ SELECT id, IF(date IS NULL, '-', FROM_UNIXTIME(date, '%d-%m-%Y')) AS date_ord, t
 DROP TABLE t1;
 CREATE TABLE t1 (a CHAR(10));
 INSERT INTO t1 VALUES ('aaa'), (NULL), (''), ('bbb');
-SELECT a, NULLIF(a,'') FROM t1;
-SELECT a, NULLIF(a,'') FROM t1 WHERE NULLIF(a,'') IS NULL;
 DROP TABLE t1;
 create table t1 (f1 int, f2 int);
 insert into t1 values(1,1),(0,0);
@@ -84,10 +79,6 @@ CREATE TABLE t1 (a LONGBLOB, b DOUBLE);
 INSERT INTO t1 VALUES (NULL, 0), (NULL, 1);
 SELECT IF(b, (SELECT a FROM t1 LIMIT 1), b) c FROM t1 GROUP BY c;
 DROP TABLE t1;
-SELECT if(0, (SELECT min('hello')), NULL);
-SELECT if(1, (SELECT min('hello')), NULL);
-SELECT if(0, NULL, (SELECT min('hello')));
-SELECT if(1, NULL, (SELECT min('hello')));
 CREATE TABLE t1(c1 INT);
 INSERT INTO t1 VALUES(1);
 UPDATE t1 SET c1 = 2 WHERE IF(true, '2015-01-01', '2015-01-01') IS NOT NULL;
@@ -121,12 +112,7 @@ FROM
     test_grid_dtl_1 d USING (unq_id)
 ORDER BY 1;
 DROP TABLE test_grids_1, test_grid_dtl_1;
-SELECT NULLIF(1,2);
 SELECT JSON_ARRAYAGG(NULLIF(1,2));
-SELECT JSON_ARRAYAGG(CASE WHEN 1 = 2 THEN NULL ELSE 1 END);
-SELECT NULLIF(true,false);
-SELECT JSON_ARRAYAGG(NULLIF(true,false));
-SELECT JSON_ARRAYAGG(CASE WHEN true = false THEN NULL ELSE true END);
 CREATE TABLE t (t_date DATETIME NULL);
 PREPARE ps FROM 'INSERT INTO t SET t_date = NULLIF(?, '''')';
 DEALLOCATE PREPARE ps;
@@ -134,5 +120,4 @@ DROP TABLE t;
 SELECT AVG(NULLIF(YEAR('2001-01-01'),10));
 CREATE TABLE t1(y YEAR);
 INSERT INTO t1 VALUES(2001);
-SELECT AVG(NULLIF(y, 10)) FROM t1;
 DROP TABLE t1;

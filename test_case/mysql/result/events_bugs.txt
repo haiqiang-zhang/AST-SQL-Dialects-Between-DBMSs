@@ -1,0 +1,240 @@
+--Query--
+select * from performance_schema.global_variables where variable_name like 'event_scheduler'
+--Result--
+[('event_scheduler', 'ON')]
++--------------------+
+--Query--
+select get_lock('test_bug16407', 60)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) > 0 from information_schema.processlist   where state = 'User lock' and info = 'select get_lock(\'test_bug16407\', 60)'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select /*1*/ user, host, db, info from information_schema.processlist where state = 'User lock' and info = 'select get_lock(\'test_bug16407\', 60)'
+--Result--
+[]
++--------------------+
+--Query--
+select release_lock('test_bug16407')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where state = 'User lock' and info = 'select get_lock(\'test_bug16407\', 60)'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.processlist
+--Result--
+[(218, 'tester', 'localhost:56036', 'test_db', 'Query', 0, 'executing', 'SELECT * FROM information_schema.processlist'), (5, 'event_scheduler', 'localhost', None, 'Daemon', 0, 'Waiting for next activation', None)]
++--------------------+
+--Query--
+select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name
+--Result--
+[]
++--------------------+
+--Query--
+select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name
+--Result--
+[]
++--------------------+
+--Query--
+select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 3 from information_schema.processlist   where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select /*2*/ user, host, db, info from information_schema.processlist where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 0   from information_schema.processlist   where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.processlist
+--Result--
+[(218, 'tester', 'localhost:56036', 'test_db', 'Query', 0, 'executing', 'SELECT * FROM information_schema.processlist'), (5, 'event_scheduler', 'localhost', None, 'Daemon', 0, 'Waiting for next activation', None)]
++--------------------+
+--Query--
+select /*3*/ user, host, db, info from information_schema.processlist where state = 'User lock' and info = 'select get_lock(\'ee_16407_2\', 60)'
+--Result--
+[]
++--------------------+
+--Query--
+select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 2 from information_schema.processlist   where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select /*4*/ user, host, db, info from information_schema.processlist where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select /*5*/ user, host, db, info from information_schema.processlist where state = 'User lock' and info = 'select get_lock(\'ee_16407_5\', 60)'
+--Result--
+[]
++--------------------+
+--Query--
+select event_schema, event_name, sql_mode from information_schema.events order by event_schema, event_name
+--Result--
+[]
++--------------------+
+--Query--
+select database()
+--Result--
+[('test_db',)]
++--------------------+
+--Query--
+select event_schema, event_name, definer, event_type, status from information_schema.events
+--Result--
+[('test_db', 'mysqltest_user1', 'tester@localhost', 'RECURRING', 'ENABLED')]
++--------------------+
+--Query--
+select 123
+--Result--
+[(123,)]
++--------------------+
+--Query--
+select event_name, event_definition, interval_value, interval_field from information_schema.events order by event_name
+--Result--
+[('mysqltest_user1', 'select 42', '10', 'SECOND')]
++--------------------+
+--Query--
+select group_concat(interval_value order by interval_value) = '1,1,1,8'   from information_schema.events
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select event_name, event_definition, interval_value, interval_field from information_schema.events order by event_name
+--Result--
+[('mysqltest_user1', 'select 42', '10', 'SECOND')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT event_name, definer FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 'tester@localhost'), ('e1', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.EVENTS ORDER BY event_name
+--Result--
+[('def', 'test_db', 'e1', 'tester@localhost', 'SYSTEM', 'SQL', 'SELECT 1', 'RECURRING', None, '1', 'DAY', {'ERROR_FOR_DIVISION_BY_ZERO', 'ONLY_FULL_GROUP_BY', 'NO_ZERO_DATE', 'NO_ENGINE_SUBSTITUTION', 'STRICT_TRANS_TABLES', 'NO_ZERO_IN_DATE'}, datetime.datetime(2006, 1, 1, 0, 0), None, 'ENABLED', 'NOT PRESERVE', datetime.datetime(2024, 5, 26, 3, 19, 48), datetime.datetime(2024, 5, 26, 3, 19, 48), None, '', 1, 'utf8mb4', 'utf8mb4_0900_ai_ci', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'e2', 'tester@localhost', 'SYSTEM', 'SQL', 'SELECT 1', 'RECURRING', None, '1', 'DAY', {'ERROR_FOR_DIVISION_BY_ZERO', 'ONLY_FULL_GROUP_BY', 'NO_ZERO_DATE', 'NO_ENGINE_SUBSTITUTION', 'STRICT_TRANS_TABLES', 'NO_ZERO_IN_DATE'}, datetime.datetime(2006, 1, 1, 0, 0), None, 'ENABLED', 'NOT PRESERVE', datetime.datetime(2024, 5, 26, 3, 19, 48), datetime.datetime(2024, 5, 26, 3, 19, 48), None, '', 1, 'utf8mb4', 'utf8mb4_0900_ai_ci', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'e3', 'tester@localhost', 'SYSTEM', 'SQL', 'SELECT 1', 'RECURRING', None, '1', 'DAY', {'ERROR_FOR_DIVISION_BY_ZERO', 'ONLY_FULL_GROUP_BY', 'NO_ZERO_DATE', 'NO_ENGINE_SUBSTITUTION', 'STRICT_TRANS_TABLES', 'NO_ZERO_IN_DATE'}, datetime.datetime(2006, 1, 1, 0, 0), None, 'ENABLED', 'NOT PRESERVE', datetime.datetime(2024, 5, 26, 3, 19, 48), datetime.datetime(2024, 5, 26, 3, 19, 48), None, '', 1, 'utf8mb4', 'utf8mb4_0900_ai_ci', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'mysqltest_user1', 'tester@localhost', 'SYSTEM', 'SQL', 'select 42', 'RECURRING', None, '10', 'SECOND', {'ERROR_FOR_DIVISION_BY_ZERO', 'ONLY_FULL_GROUP_BY', 'NO_ZERO_DATE', 'NO_ENGINE_SUBSTITUTION', 'STRICT_TRANS_TABLES', 'NO_ZERO_IN_DATE'}, datetime.datetime(2024, 5, 26, 3, 19, 48), None, 'ENABLED', 'NOT PRESERVE', datetime.datetime(2024, 5, 26, 3, 19, 48), datetime.datetime(2024, 5, 26, 3, 19, 48), datetime.datetime(2024, 5, 26, 3, 19, 48), '', 1, 'utf8mb4', 'utf8mb4_0900_ai_ci', 'utf8mb4_0900_ai_ci')]
++--------------------+
+--Query--
+SELECT   event_name,   last_executed IS NULL,   definer FROM INFORMATION_SCHEMA.EVENTS WHERE event_schema = 'events_test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0   FROM INFORMATION_SCHEMA.EVENTS   WHERE event_schema = 'events_test' AND event_name = 'e1'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT last_executed IS NOT NULL   FROM INFORMATION_SCHEMA.EVENTS   WHERE event_schema = 'events_test' AND event_name = 'e2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT   event_name,   last_executed IS NULL,   definer FROM INFORMATION_SCHEMA.EVENTS WHERE event_schema = 'events_test'
+--Result--
+[]
++--------------------+
+--Query--
+select @@sql_mode into @full_mode
+--Result--
+[]
++--------------------+
+--Query--
+select event_name from information_schema.events where event_name = 'e1' and sql_mode = @full_mode
+--Result--
+[('e1',)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.server_id
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT event_name, originator FROM INFORMATION_SCHEMA.EVENTS
+--Result--
+[('mysqltest_user1', 1), ('ev1', 1)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM table_bug12546938
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT SLEEP(3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT last_executed IS NOT NULL   FROM INFORMATION_SCHEMA.EVENTS WHERE event_name = 'my_event'
+--Result--
+[(0,)]
++--------------------+

@@ -1,0 +1,40 @@
+--Query--
+SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT dictGetUInt64('dict_db_02179.dict', 'val', toUInt64(0))
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'SYSTEM RELOAD DICTIONARIES ON CLUSTER test_shard_localhost'
+--Result--
+[('SYSTEM RELOAD DICTIONARIES ON CLUSTER test_shard_localhost',)]
++--------------------+
+--Query--
+SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'CREATE DATABASE'
+--Result--
+[('CREATE DATABASE',)]
++--------------------+
+--Query--
+SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict'
+--Result--
+[(1,)]
++--------------------+

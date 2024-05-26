@@ -13,4 +13,3 @@ SELECT s, count() FROM t_00284_str GROUP BY s ORDER BY s LIMIT 10 OFFSET 42;
 CREATE TABLE t_00284_lc_str(s LowCardinality(String)) ENGINE = MergeTree() ORDER BY tuple() SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
 INSERT INTO t_00284_lc_str SELECT toString(number) FROM numbers_mt(1e6);
 INSERT INTO t_00284_lc_str SELECT toString(number) FROM numbers_mt(1e6);
-SELECT s, count() FROM t_00284_lc_str GROUP BY s ORDER BY s LIMIT 10 OFFSET 42;

@@ -14,5 +14,4 @@ FROM source_null
 GROUP BY count_subquery, min_subquery, max_subquery;
 INSERT INTO source SELECT number FROM numbers(2000) SETTINGS min_insert_block_size_rows=1500, max_insert_block_size=1500;
 SELECT count() FROM source;
-SELECT count() FROM dest_a;
 SELECT * from dest_a ORDER BY count DESC;

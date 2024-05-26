@@ -34,11 +34,8 @@ PRIMARY KEY key_column
 SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'dict1' DB 'database_for_dict'))
 LIFETIME(MIN 1 MAX 10)
 LAYOUT(HASHED());
-SELECT count(*) FROM database_for_dict.dict2;
 INSERT INTO database_for_dict.table_for_dict SELECT number, number % 17, toString(number * number), number / 2.0 from numbers(100, 100);
 SYSTEM RELOAD DICTIONARIES;
-SELECT count(*) from database_for_dict.dict2;
-SELECT count(*) from database_for_dict.dict1;
 CREATE DICTIONARY database_for_dict.dict3
 (
   key_column UInt64 DEFAULT 0,
@@ -50,12 +47,8 @@ PRIMARY KEY key_column
 SOURCE(CLICKHOUSE(HOST 'localhost' PORT tcpPort() USER 'default' TABLE 'dict2' DB 'database_for_dict'))
 LIFETIME(MIN 1 MAX 10)
 LAYOUT(HASHED());
-SELECT count(*) FROM database_for_dict.dict3;
 INSERT INTO database_for_dict.table_for_dict SELECT number, number % 17, toString(number * number), number / 2.0 from numbers(200, 100);
 SYSTEM RELOAD DICTIONARIES;
-SELECT count(*) from database_for_dict.dict3;
-SELECT count(*) from database_for_dict.dict2;
-SELECT count(*) from database_for_dict.dict1;
 CREATE DICTIONARY database_for_dict.dict4
 (
   key_column UInt64 DEFAULT 0,

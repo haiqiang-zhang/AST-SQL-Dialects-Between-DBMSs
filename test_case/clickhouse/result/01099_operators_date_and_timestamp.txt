@@ -1,0 +1,45 @@
+--Query--
+select interval 1 second, interval 1 minute, interval 1 hour
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+select interval 1 day, interval 1 week, interval 1 month
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+select date '2001-09-29'
+--Result--
+[(datetime.date(2001, 9, 29),)]
++--------------------+
+--Query--
+select (date '2001-09-29' + interval 7 day) x, toTypeName(x)
+--Result--
+[(datetime.date(2001, 10, 6), 'Date')]
++--------------------+
+--Query--
+select timestamp '2001-09-28 01:00:00' + interval 23 hour
+--Result--
+[(datetime.datetime(2001, 9, 29, 0, 0),)]
++--------------------+
+--Query--
+select timestamp '2001-09-28 23:00:00' - interval 23 hour
+--Result--
+[(datetime.datetime(2001, 9, 28, 0, 0),)]
++--------------------+
+--Query--
+select -interval 23 hour
+--Result--
+[(-23,)]
++--------------------+
+--Query--
+select interval 1 day + interval 1 hour
+--Result--
+[((1, 1),)]
++--------------------+
+--Query--
+select interval '1 day' - interval '1 hour'
+--Result--
+[((1, -1),)]
++--------------------+

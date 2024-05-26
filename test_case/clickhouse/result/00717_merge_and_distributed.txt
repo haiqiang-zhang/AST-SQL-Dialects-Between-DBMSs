@@ -1,0 +1,40 @@
+--Query--
+SELECT '--------------Single Local------------'
+--Result--
+[('--------------Single Local------------',)]
++--------------------+
+--Query--
+SELECT * FROM merge(currentDatabase(), 'test_local_1')
+--Result--
+[(datetime.date(2018, 8, 1), 100)]
++--------------------+
+--Query--
+SELECT sum(value), _table FROM merge(currentDatabase(), 'test_local_1') GROUP BY _table ORDER BY _table
+--Result--
+[(100, 'test_local_1')]
++--------------------+
+--Query--
+SELECT '--------------Single Distributed------------'
+--Result--
+[('--------------Single Distributed------------',)]
++--------------------+
+--Query--
+SELECT '--------------Local Merge Local------------'
+--Result--
+[('--------------Local Merge Local------------',)]
++--------------------+
+--Query--
+SELECT '--------------Local Merge Distributed------------'
+--Result--
+[('--------------Local Merge Distributed------------',)]
++--------------------+
+--Query--
+SELECT '--------------Distributed Merge Distributed------------'
+--Result--
+[('--------------Distributed Merge Distributed------------',)]
++--------------------+
+--Query--
+SELECT '--------------Implicit type conversion------------'
+--Result--
+[('--------------Implicit type conversion------------',)]
++--------------------+

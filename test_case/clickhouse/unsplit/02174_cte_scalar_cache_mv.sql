@@ -47,10 +47,6 @@ SETTINGS
     min_insert_block_size_rows_for_materialized_views=5,
     max_block_size=5,
     max_threads=1;
-SELECT k, l, m, n, count()
-FROM t2
-GROUP BY k, l, m, n
-ORDER BY k, l, m, n;
 SYSTEM FLUSH LOGS;
 DROP TABLE mv1;
 set allow_experimental_analyzer = 0;

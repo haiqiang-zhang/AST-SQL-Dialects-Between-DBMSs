@@ -1,0 +1,85 @@
+--Query--
+select 2 || 3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 or 3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(2,3)
+--Result--
+[('23',)]
++--------------------+
+--Query--
+select 2 || 3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 or 3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select collation(cast('a' as char(2))), collation(cast('a' as char(2) binary))
+--Result--
+[('utf8mb4_0900_ai_ci', 'utf8mb4_bin')]
++--------------------+
+--Query--
+select @@character_set_client
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+select @@character_set_client
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+select @@character_set_client
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+select @@character_set_client
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+select convert("123" using binary)
+--Result--
+[(b'123',)]
++--------------------+
+--Query--
+select char(123 using binary)
+--Result--
+[(b'{',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(b'xyz',)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLESPACES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.tablespaces
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLES JOIN INFORMATION_SCHEMA.TABLESPACES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLESPACES)
+--Result--
+[]
++--------------------+

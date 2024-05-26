@@ -1,0 +1,135 @@
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC
+--Result--
+[(1.0,), (2.0,), (4.0,), (7.0,), (8.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC NULLS FIRST
+--Result--
+[(None,), (None,), (nan,), (nan,), (nan,), (1.0,), (2.0,), (4.0,), (7.0,), (8.0,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC NULLS LAST
+--Result--
+[(1.0,), (2.0,), (4.0,), (7.0,), (8.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC
+--Result--
+[(8.0,), (7.0,), (4.0,), (2.0,), (1.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS FIRST
+--Result--
+[(None,), (None,), (nan,), (nan,), (nan,), (8.0,), (7.0,), (4.0,), (2.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS LAST
+--Result--
+[(8.0,), (7.0,), (4.0,), (2.0,), (1.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x ASC, y ASC
+--Result--
+[(1, 1.0), (2, 2.0), (3, nan), (4, 4.0), (6, nan), (7, 7.0), (8, 8.0), (9, nan), (None, 5.0), (None, nan)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x ASC, y ASC NULLS FIRST
+--Result--
+[(1, 1.0), (2, 2.0), (3, nan), (4, 4.0), (6, nan), (7, 7.0), (8, 8.0), (9, nan), (None, nan), (None, 5.0)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS FIRST, y ASC NULLS FIRST
+--Result--
+[(None, nan), (None, 5.0), (9, nan), (8, 8.0), (7, 7.0), (6, nan), (4, 4.0), (3, nan), (2, 2.0), (1, 1.0)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC
+--Result--
+[(1.0,), (2.0,), (4.0,), (7.0,), (8.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC NULLS FIRST
+--Result--
+[(None,), (None,), (nan,), (nan,), (nan,), (1.0,), (2.0,), (4.0,), (7.0,), (8.0,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC NULLS LAST
+--Result--
+[(1.0,), (2.0,), (4.0,), (7.0,), (8.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC
+--Result--
+[(8.0,), (7.0,), (4.0,), (2.0,), (1.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS FIRST
+--Result--
+[(None,), (None,), (nan,), (nan,), (nan,), (8.0,), (7.0,), (4.0,), (2.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS LAST
+--Result--
+[(8.0,), (7.0,), (4.0,), (2.0,), (1.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x ASC, y ASC
+--Result--
+[(1, 1.0), (2, 2.0), (3, nan), (4, 4.0), (6, nan), (7, 7.0), (8, 8.0), (9, nan), (None, 5.0), (None, nan)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x ASC, y ASC NULLS FIRST
+--Result--
+[(1, 1.0), (2, 2.0), (3, nan), (4, 4.0), (6, nan), (7, 7.0), (8, 8.0), (9, nan), (None, nan), (None, 5.0)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS FIRST, y ASC NULLS FIRST
+--Result--
+[(None, nan), (None, 5.0), (9, nan), (8, 8.0), (7, 7.0), (6, nan), (4, 4.0), (3, nan), (2, 2.0), (1, 1.0)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC
+--Result--
+[(1.0,), (2.0,), (4.0,), (7.0,), (8.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC NULLS FIRST
+--Result--
+[(None,), (None,), (nan,), (nan,), (nan,), (1.0,), (2.0,), (4.0,), (7.0,), (8.0,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x ASC NULLS LAST
+--Result--
+[(1.0,), (2.0,), (4.0,), (7.0,), (8.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC
+--Result--
+[(8.0,), (7.0,), (4.0,), (2.0,), (1.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS FIRST
+--Result--
+[(None,), (None,), (nan,), (nan,), (nan,), (8.0,), (7.0,), (4.0,), (2.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT number % 5 = 0 ? NULL : (number % 3 = 0 ? nan : toFloat64(number)) AS x FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS LAST
+--Result--
+[(8.0,), (7.0,), (4.0,), (2.0,), (1.0,), (nan,), (nan,), (nan,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x ASC, y ASC
+--Result--
+[(1, 1.0), (2, 2.0), (3, nan), (4, 4.0), (6, nan), (7, 7.0), (8, 8.0), (9, nan), (None, 5.0), (None, nan)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x ASC, y ASC NULLS FIRST
+--Result--
+[(1, 1.0), (2, 2.0), (3, nan), (4, 4.0), (6, nan), (7, 7.0), (8, 8.0), (9, nan), (None, nan), (None, 5.0)]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT number % 5 = 0 ? NULL : number AS x, number % 3 = 0 ? nan : toFloat64(number) AS y FROM system.numbers LIMIT 10) ORDER BY x DESC NULLS FIRST, y ASC NULLS FIRST
+--Result--
+[(None, nan), (None, 5.0), (9, nan), (8, 8.0), (7, 7.0), (6, nan), (4, 4.0), (3, nan), (2, 2.0), (1, 1.0)]
++--------------------+

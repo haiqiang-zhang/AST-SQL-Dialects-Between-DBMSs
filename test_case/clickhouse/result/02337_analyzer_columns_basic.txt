@@ -1,0 +1,200 @@
+--Query--
+SELECT 'Empty from section'
+--Result--
+[('Empty from section',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT dummy)
+--Result--
+[('dummy', 'UInt8', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT one.dummy)
+--Result--
+[('dummy', 'UInt8', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT one.dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT system.one.dummy)
+--Result--
+[('dummy', 'UInt8', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT system.one.dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'Table access without table name qualification'
+--Result--
+[('Table access without table name qualification',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT id FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT id FROM test_table
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value FROM test_table)
+--Result--
+[('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value FROM test_table
+--Result--
+[('Value',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT id, value FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT id, value FROM test_table
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+SELECT 'Table access with table name qualification'
+--Result--
+[('Table access with table name qualification',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT test_table.id FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT test_table.id FROM test_table
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT test_table.value FROM test_table)
+--Result--
+[('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT test_table.value FROM test_table
+--Result--
+[('Value',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT test_table.id, test_table.value FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT test_table.id, test_table.value FROM test_table
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT test.id, test.value FROM test_table AS test)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT test.id, test.value FROM test_table AS test
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+SELECT 'Table access with database and table name qualification'
+--Result--
+[('Table access with database and table name qualification',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT test_table.id, test_table.value FROM 02337_db.test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT test_table.id, test_table.value FROM 02337_db.test_table
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT 02337_db.test_table.id, 02337_db.test_table.value FROM 02337_db.test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT 02337_db.test_table.id, 02337_db.test_table.value FROM 02337_db.test_table
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT test_table.id, test_table.value FROM 02337_db.test_table AS test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT test_table.id, test_table.value FROM 02337_db.test_table AS test_table
+--Result--
+[(0, 'Value')]
++--------------------+

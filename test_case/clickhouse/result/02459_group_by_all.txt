@@ -1,0 +1,15 @@
+--Query--
+select a, count(b) from group_by_all group by all order by a
+--Result--
+[('abc1', 1), ('abc2', 1), ('abc3', 1), ('abc4', 1)]
++--------------------+
+--Query--
+select substring(a, 1, 3), count(b) from group_by_all group by all
+--Result--
+[('abc', 4)]
++--------------------+
+--Query--
+select substring(a, 1, 3), substring(substring(a, 1, 2), 1, count(b)) from group_by_all group by all
+--Result--
+[('abc', 'ab')]
++--------------------+

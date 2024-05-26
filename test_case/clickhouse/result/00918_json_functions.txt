@@ -1,0 +1,290 @@
+--Query--
+SELECT '--allow_simdjson=1--'
+--Result--
+[('--allow_simdjson=1--',)]
++--------------------+
+--Query--
+SELECT '--JSONLength--'
+--Result--
+[('--JSONLength--',)]
++--------------------+
+--Query--
+SELECT JSONLength('{"a": "hello", "b": [-100, 200.0, 300]}')
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT '--JSONHas--'
+--Result--
+[('--JSONHas--',)]
++--------------------+
+--Query--
+SELECT JSONHas('{"a": "hello", "b": [-100, 200.0, 300]}', 'a')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '--isValidJSON--'
+--Result--
+[('--isValidJSON--',)]
++--------------------+
+--Query--
+SELECT isValidJSON('{"a": "hello", "b": [-100, 200.0, 300]}')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '--JSONKey--'
+--Result--
+[('--JSONKey--',)]
++--------------------+
+--Query--
+SELECT JSONKey('{"a": "hello", "b": [-100, 200.0, 300]}', 1)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT '--JSONType--'
+--Result--
+[('--JSONType--',)]
++--------------------+
+--Query--
+SELECT JSONType('{"a": "hello", "b": [-100, 200.0, 300]}')
+--Result--
+[('Object',)]
++--------------------+
+--Query--
+SELECT '--JSONExtract<numeric>--'
+--Result--
+[('--JSONExtract<numeric>--',)]
++--------------------+
+--Query--
+SELECT JSONExtractInt('{"a": "hello", "b": [-100, 200.0, 300]}', 'b', 1)
+--Result--
+[(-100,)]
++--------------------+
+--Query--
+SELECT JSONExtractFloat('{"a": "hello", "b": [-100, 200.0, 300]}', 'b', 2)
+--Result--
+[(200.0,)]
++--------------------+
+--Query--
+SELECT JSONExtractUInt('{"a": "hello", "b": [-100, 200.0, 300]}', 'b', -1)
+--Result--
+[(300,)]
++--------------------+
+--Query--
+SELECT JSONExtractBool('{"passed": true}', 'passed')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '--JSONExtractString--'
+--Result--
+[('--JSONExtractString--',)]
++--------------------+
+--Query--
+SELECT JSONExtractString('{"a": "hello", "b": [-100, 200.0, 300]}', 'a')
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT '--JSONExtract (generic)--'
+--Result--
+[('--JSONExtract (generic)--',)]
++--------------------+
+--Query--
+SELECT JSONExtract('{"a": "hello", "b": [-100, 200.0, 300]}', 'Tuple(String, Array(Float64))')
+--Result--
+[(('hello', [-100.0, 200.0, 300.0]),)]
++--------------------+
+--Query--
+SELECT JSONExtract('{"a":123456.123456}', 'a', 'Decimal(20, 4)') as a, toTypeName(a)
+--Result--
+[(123456.1234, 'Decimal(20, 4)')]
++--------------------+
+--Query--
+SELECT toDecimal64(123456789012345.12, 4), JSONExtract('{"a":123456789012345.12}', 'a', 'Decimal(30, 4)')
+--Result--
+[(123456789012345.11, 123456789012345.11)]
++--------------------+
+--Query--
+SELECT toDecimal128(1234567890.12345678901234567890, 20), JSONExtract('{"a":1234567890.12345678901234567890, "b":"test"}', 'Tuple(a Decimal(35,20), b LowCardinality(String))')
+--Result--
+[(1234567890.1234567, (1234567890.1234567, 'test'))]
++--------------------+
+--Query--
+SELECT toDecimal256(1234567890.123456789012345678901234567890, 30), JSONExtract('{"a":1234567890.12345678901234567890, "b":"test"}', 'Tuple(a Decimal(45,30), b LowCardinality(String))')
+--Result--
+[(1234567890.1234567, (1234567890.1234567, 'test'))]
++--------------------+
+--Query--
+SELECT '--JSONExtractKeysAndValues--'
+--Result--
+[('--JSONExtractKeysAndValues--',)]
++--------------------+
+--Query--
+SELECT JSONExtractKeysAndValues('{"a": "hello", "b": [-100, 200.0, 300]}', 'String')
+--Result--
+[([('a', 'hello'), ('b', '[-100,200,300]')],)]
++--------------------+
+--Query--
+SELECT '--JSONExtractRaw--'
+--Result--
+[('--JSONExtractRaw--',)]
++--------------------+
+--Query--
+SELECT JSONExtractRaw('{"a": "hello", "b": [-100, 200.0, 300]}')
+--Result--
+[('{"a":"hello","b":[-100,200,300]}',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractArrayRaw--'
+--Result--
+[('--JSONExtractArrayRaw--',)]
++--------------------+
+--Query--
+SELECT JSONExtractArrayRaw('')
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT '--JSONExtractKeysAndValuesRaw--'
+--Result--
+[('--JSONExtractKeysAndValuesRaw--',)]
++--------------------+
+--Query--
+SELECT JSONExtractKeysAndValuesRaw('{"a": "hello", "b": [-100, 200.0, 300]}', 'a')
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT '--const/non-const mixed--'
+--Result--
+[('--const/non-const mixed--',)]
++--------------------+
+--Query--
+SELECT '--show error: type should be const string'
+--Result--
+[('--show error: type should be const string',)]
++--------------------+
+--Query--
+SELECT '--show error: key of map type should be String'
+--Result--
+[('--show error: key of map type should be String',)]
++--------------------+
+--Query--
+SELECT '--allow_simdjson=0--'
+--Result--
+[('--allow_simdjson=0--',)]
++--------------------+
+--Query--
+SELECT '--JSONLength--'
+--Result--
+[('--JSONLength--',)]
++--------------------+
+--Query--
+SELECT '--JSONHas--'
+--Result--
+[('--JSONHas--',)]
++--------------------+
+--Query--
+SELECT '--isValidJSON--'
+--Result--
+[('--isValidJSON--',)]
++--------------------+
+--Query--
+SELECT '--JSONKey--'
+--Result--
+[('--JSONKey--',)]
++--------------------+
+--Query--
+SELECT '--JSONType--'
+--Result--
+[('--JSONType--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtract<numeric>--'
+--Result--
+[('--JSONExtract<numeric>--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractString--'
+--Result--
+[('--JSONExtractString--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtract (generic)--'
+--Result--
+[('--JSONExtract (generic)--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractKeysAndValues--'
+--Result--
+[('--JSONExtractKeysAndValues--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractRaw--'
+--Result--
+[('--JSONExtractRaw--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractArrayRaw--'
+--Result--
+[('--JSONExtractArrayRaw--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractKeysAndValuesRaw--'
+--Result--
+[('--JSONExtractKeysAndValuesRaw--',)]
++--------------------+
+--Query--
+SELECT '--JSONExtractKeys--'
+--Result--
+[('--JSONExtractKeys--',)]
++--------------------+
+--Query--
+SELECT JSONExtractKeys('{"a": "hello", "b": [-100, 200.0, 300]}')
+--Result--
+[(['a', 'b'],)]
++--------------------+
+--Query--
+SELECT '--const/non-const mixed--'
+--Result--
+[('--const/non-const mixed--',)]
++--------------------+
+--Query--
+SELECT '--show error: type should be const string'
+--Result--
+[('--show error: type should be const string',)]
++--------------------+
+--Query--
+SELECT '--show error: index type should be integer'
+--Result--
+[('--show error: index type should be integer',)]
++--------------------+
+--Query--
+SELECT '--show error: key of map type should be String'
+--Result--
+[('--show error: key of map type should be String',)]
++--------------------+
+--Query--
+SELECT JSONExtract(materialize('{"string_value":"Hello"}'), materialize('string_value'), 'LowCardinality(Nullable(String))') AS x
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT JSONExtract(materialize(toLowCardinality('{"string_value":"Hello"}')), materialize('string_value'), 'LowCardinality(Nullable(String))') AS x
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT JSONExtract(materialize('{"string_value":"Hello"}'), materialize(toLowCardinality('string_value')), 'LowCardinality(Nullable(String))') AS x
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT JSONExtract(materialize(toLowCardinality('{"string_value":"Hello"}')), materialize(toLowCardinality('string_value')), 'LowCardinality(Nullable(String))') AS x
+--Result--
+[('Hello',)]
++--------------------+

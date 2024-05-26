@@ -1,0 +1,15 @@
+--Query--
+WITH 'test' AS u SELECT count() FROM ev WHERE a IN (SELECT a FROM idx) SETTINGS enable_global_with_statement = 1
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT count() FROM ev WHERE a IN (SELECT a FROM idx) SETTINGS enable_global_with_statement = 1
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

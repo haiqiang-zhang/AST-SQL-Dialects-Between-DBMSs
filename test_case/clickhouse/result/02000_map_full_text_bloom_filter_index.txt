@@ -1,0 +1,520 @@
+--Query--
+SELECT 'Map full text bloom filter tokenbf mapKeys'
+--Result--
+[('Map full text bloom filter tokenbf mapKeys',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_keys_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_keys_tokenbf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_keys_tokenbf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_keys_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map fixed full text bloom filter tokenbf mapKeys'
+--Result--
+[('Map fixed full text bloom filter tokenbf mapKeys',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map_fixed['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_fixed_keys_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map_fixed['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_fixed_keys_tokenbf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map_fixed['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map_fixed['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_fixed_keys_tokenbf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map_fixed['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_fixed_keys_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_keys_test WHERE map_fixed['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map full text bloom filter tokenbf mapValues'
+--Result--
+[('Map full text bloom filter tokenbf mapValues',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_values_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_values_tokenbf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_values_tokenbf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_values_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map fixed full text bloom filter tokenbf mapKeys'
+--Result--
+[('Map fixed full text bloom filter tokenbf mapKeys',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map_fixed['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_fixed_values_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map_fixed['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_fixed_values_tokenbf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map_fixed['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map_fixed['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_fixed_values_tokenbf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map_fixed['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_fixed_values_tokenbf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_tokenbf_map_values_test WHERE map_fixed['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map full text bloom filter ngrambf mapKeys'
+--Result--
+[('Map full text bloom filter ngrambf mapKeys',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_keys_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_keys_ngrambf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_keys_ngrambf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_keys_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map fixed full text bloom filter ngrambf mapKeys'
+--Result--
+[('Map fixed full text bloom filter ngrambf mapKeys',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map_fixed['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_fixed_keys_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map_fixed['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_fixed_keys_ngrambf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map_fixed['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map_fixed['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_fixed_keys_ngrambf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map_fixed['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_fixed_keys_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_keys_test WHERE map_fixed['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map full text bloom filter ngrambf mapValues'
+--Result--
+[('Map full text bloom filter ngrambf mapValues',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_values_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_values_ngrambf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_values_ngrambf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_values_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map['K3'] != ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map fixed full text bloom filter ngrambf mapKeys'
+--Result--
+[('Map fixed full text bloom filter ngrambf mapKeys',)]
++--------------------+
+--Query--
+SELECT 'Equals with existing key'
+--Result--
+[('Equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map_fixed['K0'] = 'V0' SETTINGS force_data_skipping_indices='map_fixed_values_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'})]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key'
+--Result--
+[('Equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map_fixed['K2'] = 'V2' SETTINGS force_data_skipping_indices='map_fixed_values_ngrambf'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Equals with non existing key and default value'
+--Result--
+[('Equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map_fixed['K3'] = ''
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with existing key'
+--Result--
+[('Not equals with existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map_fixed['K0'] != 'V0' SETTINGS force_data_skipping_indices='map_fixed_values_ngrambf'
+--Result--
+[(1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key'
+--Result--
+[('Not equals with non existing key',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map_fixed['K2'] != 'V2' SETTINGS force_data_skipping_indices='map_fixed_values_ngrambf'
+--Result--
+[(0, {'K0': 'V0'}, {'K0': 'V0'}), (1, {'K1': 'V1'}, {'K1': 'V1'})]
++--------------------+
+--Query--
+SELECT 'Not equals with non existing key and default value'
+--Result--
+[('Not equals with non existing key and default value',)]
++--------------------+
+--Query--
+SELECT * FROM bf_ngrambf_map_values_test WHERE map_fixed['K3'] != ''
+--Result--
+[]
++--------------------+

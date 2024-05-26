@@ -1,0 +1,120 @@
+--Query--
+select current_user()
+--Result--
+[('tester@localhost',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 'I can change it!')]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT LEFT(CURRENT_USER(),INSTR(CURRENT_USER(),'@')-1) INTO @u
+--Result--
+[]
++--------------------+
+--Query--
+SELECT MID(CURRENT_USER(),INSTR(CURRENT_USER(),'@')+1)  INTO @h
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(30,), (40,), (100,), (200,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(30,), (40,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(30,), (40,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (30,), (40,)]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+LOCK TABLES t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM t3 ORDER BY a
+--Result--
+[(1, 111), (2, 222), (3, 333)]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'SELECT * FROM t1 ORDER BY a'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt2 FROM 'SELECT * FROM t2 ORDER BY a'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt1
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt2
+--Result--
+[]
++--------------------+

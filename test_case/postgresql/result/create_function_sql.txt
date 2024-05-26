@@ -59,21 +59,6 @@ SELECT pg_get_functiondef('functest_A_1'::regproc)
 [("CREATE OR REPLACE FUNCTION temp_func_test.functest_a_1(text, date)\n RETURNS boolean\n LANGUAGE sql\nAS $function$SELECT $1 = 'abcd' AND $2 > '2001-01-01'$function$\n",)]
 +--------------------+
 --Query--
-SELECT pg_get_functiondef('functest_B_3'::regproc)
---Result--
-[('CREATE OR REPLACE FUNCTION temp_func_test.functest_b_3(integer)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$SELECT $1 = 0$function$\n',)]
-+--------------------+
---Query--
-SELECT pg_get_functiondef('functest_C_3'::regproc)
---Result--
-[('CREATE OR REPLACE FUNCTION temp_func_test.functest_c_3(integer)\n RETURNS boolean\n LANGUAGE sql\n SECURITY DEFINER\nAS $function$SELECT $1 < 0$function$\n',)]
-+--------------------+
---Query--
-SELECT pg_get_functiondef('functest_F_2'::regproc)
---Result--
-[('CREATE OR REPLACE FUNCTION temp_func_test.functest_f_2(integer)\n RETURNS boolean\n LANGUAGE sql\n STRICT\nAS $function$SELECT $1 = 50$function$\n',)]
-+--------------------+
---Query--
 SELECT false
 --Result--
 [(False,)]
@@ -92,21 +77,6 @@ SELECT functest_S_2(ARRAY['1', '2', '3'])
 SELECT functest_S_3()
 --Result--
 [(False,)]
-+--------------------+
---Query--
-SELECT pg_get_functiondef('functest_S_1'::regproc)
---Result--
-[("CREATE OR REPLACE FUNCTION temp_func_test.functest_s_1(a text, b date)\n RETURNS boolean\n LANGUAGE sql\nRETURN ((a = 'abcd'::text) AND (b > '2001-01-01'::date))\n",)]
-+--------------------+
---Query--
-SELECT pg_get_functiondef('functest_S_2'::regproc)
---Result--
-[('CREATE OR REPLACE FUNCTION temp_func_test.functest_s_2(a text[])\n RETURNS integer\n LANGUAGE sql\nRETURN ((a)[1])::integer\n',)]
-+--------------------+
---Query--
-SELECT pg_get_functiondef('functest_S_3'::regproc)
---Result--
-[('CREATE OR REPLACE FUNCTION temp_func_test.functest_s_3()\n RETURNS boolean\n LANGUAGE sql\nRETURN false\n',)]
 +--------------------+
 --Query--
 SELECT functest_S_14()

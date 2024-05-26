@@ -1,0 +1,25 @@
+--Query--
+SELECT {num:UInt64}, {str:String}, {date:DateTime}, {map:Map(UUID, Array(Float32))}
+--Result--
+[(42, 'hello', datetime.datetime(2022, 8, 4, 18, 30, 53), {UUID('2b95a497-3a5d-49af-bf85-15763318cde7'): [1.2000000476837158, 3.4000000953674316]})]
++--------------------+
+--Query--
+SELECT toTypeName({num:UInt64}), toTypeName({str:String}), toTypeName({date:DateTime}), toTypeName({map:Map(UUID, Array(Float32))})
+--Result--
+[('UInt64', 'String', 'DateTime', 'Map(UUID, Array(Float32))')]
++--------------------+
+--Query--
+SELECT {col:Identifier} FROM {db:Identifier}.{tbl:Identifier} LIMIT 1 OFFSET 5
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT {arr_arr_arr: Array(Array(Array(String)))}, toTypeName({arr_arr_arr: Array(Array(Array(String)))})
+--Result--
+[([[['a', 'b', 'c'], ['d', 'e', 'f']], [['g', 'h', 'i'], ['j', 'k', 'l']]], 'Array(Array(Array(String)))')]
++--------------------+
+--Query--
+SELECT {tuple_tuple_tuple: Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))}, toTypeName({tuple_tuple_tuple: Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))})
+--Result--
+[((((1, 'a', UUID('2b95a497-3a5d-49af-bf85-15763318cde7'), 3.140000104904175),),), 'Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))')]
++--------------------+

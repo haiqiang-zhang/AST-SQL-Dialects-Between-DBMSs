@@ -1,0 +1,1290 @@
+--Query--
+SELECT i, j, SUM(i+j) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t
+--Result--
+[(1, 1, 2.0), (1, 4, 7.0), (1, 2, 10.0), (1, 4, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) foo FROM t
+--Result--
+[(1, 1, 2.0), (1, 4, 7.0), (1, 2, 10.0), (1, 4, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo
+--Result--
+[(1, 1, 2.0), (1, 4, 7.0), (1, 2, 10.0), (1, 4, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo DESC
+--Result--
+[(1, 4, 15.0), (1, 2, 10.0), (1, 4, 7.0), (1, 1, 2.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY NULL DESC
+--Result--
+[(1, 1, 2.0), (1, 4, 7.0), (1, 2, 10.0), (1, 4, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo DESC LIMIT 3
+--Result--
+[(1, 4, 15.0), (1, 2, 10.0), (1, 4, 7.0)]
++--------------------+
+--Query--
+SELECT i, SUM(i) OVER (ORDER BY i ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING) FROM t1 LIMIT 3
+--Result--
+[(1, 6.0), (2, 10.0), (3, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ORDER BY j ROWS UNBOUNDED PRECEDING) foo FROM t
+--Result--
+[(1, 1, 2.0), (1, 2, 5.0), (1, 4, 10.0), (1, 4, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ORDER BY j ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo
+--Result--
+[(1, 1, 2.0), (1, 2, 5.0), (1, 4, 10.0), (1, 4, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ORDER BY j ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo DESC
+--Result--
+[(1, 4, 15.0), (1, 4, 10.0), (1, 2, 5.0), (1, 1, 2.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ORDER BY j DESC ROWS UNBOUNDED PRECEDING) foo FROM t
+--Result--
+[(1, 4, 5.0), (1, 4, 10.0), (1, 2, 13.0), (1, 1, 15.0)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(1, 4, 5.0), (1, 4, 10.0), (1, 2, 13.0), (1, 1, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ORDER BY j DESC ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo
+--Result--
+[(1, 4, 5.0), (1, 4, 10.0), (1, 2, 13.0), (1, 1, 15.0)]
++--------------------+
+--Query--
+SELECT i, j, SUM(i+j) OVER (ORDER BY j DESC ROWS UNBOUNDED PRECEDING) foo FROM t ORDER BY foo DESC
+--Result--
+[(1, 1, 15.0), (1, 2, 13.0), (1, 4, 10.0), (1, 4, 5.0)]
++--------------------+
+--Query--
+SELECT k, SUM(k) OVER (ROWS UNBOUNDED PRECEDING) wf FROM t
+--Result--
+[(1, 1.0), (1, 2.0), (1, 3.0), (1, 4.0), (2, 6.0), (2, 8.0), (2, 10.0), (2, 12.0), (3, 15.0), (3, 18.0), (3, 21.0), (3, 24.0), (4, 28.0), (4, 32.0), (4, 36.0), (4, 40.0)]
++--------------------+
+--Query--
+SELECT k, MIN(i), SUM(j), SUM(k) OVER (ROWS UNBOUNDED PRECEDING) wf FROM t GROUP BY (k)
+--Result--
+[(1, 1, 11.0, 1.0), (2, 1, 11.0, 3.0), (3, 1, 11.0, 6.0), (4, 1, 11.0, 10.0)]
++--------------------+
+--Query--
+SELECT k, GROUP_CONCAT(j ORDER BY j), SUM(k) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t GROUP BY (k)
+--Result--
+[(1, '1,2,4,4', 1.0), (2, '1,2,4,4', 3.0), (3, '1,2,4,4', 6.0), (4, '1,2,4,4', 10.0)]
++--------------------+
+--Query--
+SELECT k, AVG(DISTINCT j), SUM(k) OVER (ROWS UNBOUNDED PRECEDING) foo FROM t GROUP BY (k)
+--Result--
+[(1, 2.3333, 1.0), (2, 2.3333, 3.0), (3, 2.3333, 6.0), (4, 2.3333, 10.0)]
++--------------------+
+--Query--
+SELECT sex, AVG(id), ROW_NUMBER() OVER w FROM t1     GROUP BY sex     WINDOW w AS () ORDER BY sex DESC
+--Result--
+[('M', 3.0, 1), ('F', 3.0, 2), (None, 10.5, 3)]
++--------------------+
+--Query--
+SELECT sex, AVG(id), SUM(AVG(id)) OVER w FROM t1     GROUP BY sex     WINDOW w AS (ROWS UNBOUNDED PRECEDING) ORDER BY sex DESC
+--Result--
+[('M', 3.0, 3.0), ('F', 3.0, 6.0), (None, 10.5, 16.5)]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, AVG(id), ROW_NUMBER() OVER w FROM t1     GROUP BY sex HAVING sex='M' OR sex IS NULL     WINDOW w AS () ORDER BY sex DESC"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sex, AVG(id), NTILE(2) OVER w FROM t1     GROUP BY sex     WINDOW w AS (ORDER BY sex) ORDER BY sex DESC
+--Result--
+[('M', 3.0, 2), ('F', 3.0, 1), (None, 10.5, 1)]
++--------------------+
+--Query--
+SELECT sex, AVG(id), SUM(AVG(id)) OVER w, NTILE(2) OVER w FROM t1     GROUP BY sex     WINDOW w AS (ORDER BY sex ROWS UNBOUNDED PRECEDING) ORDER BY sex DESC
+--Result--
+[('M', 3.0, 16.5, 2), ('F', 3.0, 13.5, 1), (None, 10.5, 10.5, 1)]
++--------------------+
+--Query--
+SELECT sex, NTILE(2) OVER w, SUM(ASCII(sex)) OVER w s FROM t1    HAVING sex=(SELECT c FROM ss LIMIT 1)    WINDOW w AS (ORDER BY sex ROWS UNBOUNDED PRECEDING)
+--Result--
+[('M', 1, 77.0), ('M', 2, 154.0)]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, AVG(id), SUM(AVG(id)) OVER w, NTILE(2) OVER w FROM t1     GROUP BY sex HAVING sex=(SELECT c FROM ss LIMIT 1) OR sex='F' OR sex IS NULL     WINDOW w AS (ORDER BY sex ROWS UNBOUNDED PRECEDING) ORDER BY sex DESC"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sex, AVG(id) FROM t1    GROUP BY sex WITH ROLLUP    HAVING (sex='M' OR sex IS NULL) AND AVG(id)=3.0    ORDER BY GROUPING(sex), sex
+--Result--
+[('M', 3.0)]
++--------------------+
+--Query--
+SELECT id, FIRST_VALUE(id) OVER w first, LAST_VALUE(id) OVER w last, sex FROM t1    WINDOW w AS (PARTITION BY sex                 ORDER BY id ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(10, 11, 11, None), (11, None, None, None), (2, 3, 4, 'F'), (3, 4, 4, 'F'), (4, None, None, 'F'), (1, 5, 5, 'M'), (5, None, None, 'M')]
++--------------------+
+--Query--
+SELECT (SELECT SUM(t_b.a) OVER () FROM t_b WHERE t_b.a = t_a.a) aa, b FROM t_a GROUP BY aa, b
+--Result--
+[(4.0, 40), (1.0, 10), (2.0, 20), (3.0, 30)]
++--------------------+
+--Query--
+SELECT sex, COUNT(id) OVER (ORDER BY id RANGE BETWEEN 1 PRECEDING and 2 PRECEDING) FROM t1
+--Result--
+[('M', 0), ('F', 0), ('F', 0), ('F', 0), ('M', 0), (None, 0), (None, 0)]
++--------------------+
+--Query--
+SELECT t, FIRST_VALUE(t) OVER (ORDER BY t ) FROM t_time
+--Result--
+[(datetime.timedelta(seconds=45000), datetime.timedelta(seconds=45000))]
++--------------------+
+--Query--
+SELECT ADDTIME(FIRST_VALUE(time'18:00:00') OVER (ORDER BY NULL), '01:00:00')
+--Result--
+[(datetime.timedelta(seconds=68400),)]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, COUNT(id) OVER (ORDER BY id ROWS BETWEEN ? PRECEDING and ? PRECEDING) FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, COUNT(id) OVER (ORDER BY id ROWS BETWEEN ? FOLLOWING and ? FOLLOWING) FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, COUNT(id) OVER (ORDER BY id ROWS BETWEEN ? FOLLOWING and ? FOLLOWING) FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, COUNT(id) OVER (ORDER BY id ROWS ? PRECEDING) FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, COUNT(id) OVER (ORDER BY id RANGE ? PRECEDING) FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT sex, COUNT(id) OVER (ORDER BY id ROWS BETWEEN CURRENT ROW AND ? FOLLOWING) FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT t, FIRST_VALUE(t) OVER (ORDER BY t RANGE INTERVAL ? HOUR PRECEDING) FROM t_time"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT t, FIRST_VALUE(t) OVER (ORDER BY t RANGE BETWEEN INTERVAL ? HOUR PRECEDING AND INTERVAL ? HOUR PRECEDING) FROM t_time"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT t, FIRST_VALUE(t) OVER (ORDER BY t RANGE BETWEEN INTERVAL ? HOUR PRECEDING AND INTERVAL ? HOUR_MINUTE PRECEDING) FROM t_time"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT RANK() OVER (ORDER BY user_id) r FROM t2
+--Result--
+[(1,), (1,), (3,), (4,), (5,), (5,), (7,)]
++--------------------+
+--Query--
+SELECT DENSE_RANK() OVER (ORDER BY user_id) r FROM t2
+--Result--
+[(1,), (1,), (2,), (3,), (4,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT PERCENT_RANK() OVER (ORDER BY user_id) r FROM t2
+--Result--
+[(0.0,), (0.0,), (0.3333333333333333,), (0.5,), (0.6666666666666666,), (0.6666666666666666,), (1.0,)]
++--------------------+
+--Query--
+SELECT CUME_DIST() OVER (ORDER BY user_id) cd FROM t2
+--Result--
+[(0.2857142857142857,), (0.2857142857142857,), (0.42857142857142855,), (0.5714285714285714,), (0.8571428571428571,), (0.8571428571428571,), (1.0,)]
++--------------------+
+--Query--
+SELECT RANK() OVER () r FROM t2
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT DENSE_RANK() OVER () r FROM t2
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT PERCENT_RANK() OVER () r FROM t2
+--Result--
+[(0.0,), (0.0,), (0.0,), (0.0,), (0.0,), (0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT CUME_DIST() OVER () cd FROM t2
+--Result--
+[(1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT sex, SUM(DISTINCT id) AS uids FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex ORDER BY uids
+--Result--
+[('M', 6.0), ('F', 9.0)]
++--------------------+
+--Query--
+SELECT id, sex, RANK() OVER (ORDER BY sex) FROM t1 ORDER BY id
+--Result--
+[(1, 'M', 4), (2, 'F', 1), (3, 'F', 1), (4, 'F', 1), (5, 'M', 4)]
++--------------------+
+--Query--
+SELECT id, sex, DENSE_RANK() OVER (ORDER BY sex) FROM t1 ORDER BY id
+--Result--
+[(1, 'M', 2), (2, 'F', 1), (3, 'F', 1), (4, 'F', 1), (5, 'M', 2)]
++--------------------+
+--Query--
+SELECT id, sex, PERCENT_RANK() OVER (ORDER BY sex) FROM t1 ORDER BY id
+--Result--
+[(1, 'M', 0.75), (2, 'F', 0.0), (3, 'F', 0.0), (4, 'F', 0.0), (5, 'M', 0.75)]
++--------------------+
+--Query--
+SELECT id, sex, CUME_DIST() OVER (ORDER BY sex) FROM t1 ORDER BY id
+--Result--
+[(1, 'M', 1.0), (2, 'F', 0.6), (3, 'F', 0.6), (4, 'F', 0.6), (5, 'M', 1.0)]
++--------------------+
+--Query--
+SELECT sex, RANK() OVER (ORDER BY sex DESC) `rank`, AVG(DISTINCT id) AS uids FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex ORDER BY sex
+--Result--
+[('F', 2, 3.0), ('M', 1, 3.0)]
++--------------------+
+--Query--
+SELECT sex, PERCENT_RANK() OVER (ORDER BY sex DESC) `rank`, AVG(DISTINCT id) AS uids FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex ORDER BY sex
+--Result--
+[('F', 1.0, 3.0), ('M', 0.0, 3.0)]
++--------------------+
+--Query--
+SELECT sex, CUME_DIST() OVER (ORDER BY sex DESC) `cume_dist`, AVG(DISTINCT id) AS uids FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex ORDER BY sex
+--Result--
+[('F', 1.0, 3.0), ('M', 0.5, 3.0)]
++--------------------+
+--Query--
+SELECT  sex, AVG(id) AS uids, RANK() OVER w `rank` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(id))
+--Result--
+[('M', 2.3333, 1), ('F', 3.25, 2)]
++--------------------+
+--Query--
+SELECT  sex, AVG(id) AS uids, PERCENT_RANK() OVER w `p_rank` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(id))
+--Result--
+[('M', 2.3333, 0.0), ('F', 3.25, 1.0)]
++--------------------+
+--Query--
+SELECT  sex, AVG(id) AS uids, CUME_DIST() OVER w `c_dist` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(id))
+--Result--
+[('M', 2.3333, 0.5), ('F', 3.25, 1.0)]
++--------------------+
+--Query--
+SELECT  sex, AVG(DISTINCT id) AS uids, RANK() OVER w `rank` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(DISTINCT id) DESC) ORDER BY sex
+--Result--
+[('F', 3.0, 1), ('M', 3.0, 1)]
++--------------------+
+--Query--
+SELECT  sex, AVG(DISTINCT id) AS uids, PERCENT_RANK() OVER w `p_rank` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(DISTINCT id) DESC) ORDER BY sex
+--Result--
+[('F', 3.0, 0.0), ('M', 3.0, 0.0)]
++--------------------+
+--Query--
+SELECT  sex, AVG(DISTINCT id) AS uids, CUME_DIST() OVER w `c_dist` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(DISTINCT id) DESC) ORDER BY sex
+--Result--
+[('F', 3.0, 1.0), ('M', 3.0, 1.0)]
++--------------------+
+--Query--
+SELECT  sex, AVG(id) AS uids, RANK() OVER w `rank` FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(id) DESC)    ORDER BY `rank` DESC
+--Result--
+[('M', 2.3333, 2), ('F', 3.25, 1)]
++--------------------+
+--Query--
+SELECT  sex, AVG(id) AS uids, PERCENT_RANK() OVER w `p_rank`, CUME_DIST() OVER w `c_dist`    FROM t1 u, t2    WHERE t2.user_id = u.id GROUP BY sex    WINDOW w AS (ORDER BY AVG(id) DESC)    ORDER BY `p_rank` DESC
+--Result--
+[('M', 2.3333, 1.0, 1.0), ('F', 3.25, 0.0, 0.5)]
++--------------------+
+--Query--
+SELECT id, sex, RANK() OVER w, DENSE_RANK() OVER w FROM t1    WINDOW w AS (ORDER BY sex) ORDER BY id
+--Result--
+[(1, 'M', 6, 3), (2, 'F', 3, 2), (3, 'F', 3, 2), (4, 'F', 3, 2), (5, 'M', 6, 3), (10, None, 1, 1), (11, None, 1, 1)]
++--------------------+
+--Query--
+SELECT id, sex, PERCENT_RANK() OVER w, CUME_DIST() OVER w FROM t1    WINDOW w AS (ORDER BY sex) ORDER BY id
+--Result--
+[(1, 'M', 0.8333333333333334, 1.0), (2, 'F', 0.3333333333333333, 0.7142857142857143), (3, 'F', 0.3333333333333333, 0.7142857142857143), (4, 'F', 0.3333333333333333, 0.7142857142857143), (5, 'M', 0.8333333333333334, 1.0), (10, None, 0.0, 0.2857142857142857), (11, None, 0.0, 0.2857142857142857)]
++--------------------+
+--Query--
+SELECT sex, AVG(id), RANK() OVER (ORDER BY AVG(id) DESC) FROM t1 GROUP BY sex ORDER BY sex
+--Result--
+[(None, 10.5, 1), ('F', 3.0, 2), ('M', 3.0, 2)]
++--------------------+
+--Query--
+SELECT AVG(id), PERCENT_RANK() OVER (ORDER BY AVG(id)) FROM t1
+--Result--
+[(5.1429, 0.0)]
++--------------------+
+--Query--
+SELECT AVG(id), CUME_DIST() OVER (ORDER BY AVG(id)) FROM t1
+--Result--
+[(5.1429, 1.0)]
++--------------------+
+--Query--
+SELECT sex, id, SUM(id) OVER w summ, RANK() OVER w `rank` FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id ASC ROWS UNBOUNDED PRECEDING)
+--Result--
+[(None, 10, 10.0, 1), (None, 11, 21.0, 2), ('F', 2, 2.0, 1), ('F', 3, 5.0, 2), ('F', 4, 9.0, 3), ('M', 1, 1.0, 1), ('M', 5, 6.0, 2)]
++--------------------+
+--Query--
+SELECT sex, id, SUM(id) OVER w summ, PERCENT_RANK() OVER w `p_rank`,        CUME_DIST() OVER w `c_dist` FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id ASC ROWS UNBOUNDED PRECEDING)
+--Result--
+[(None, 10, 10.0, 0.0, 0.5), (None, 11, 21.0, 1.0, 1.0), ('F', 2, 2.0, 0.0, 0.3333333333333333), ('F', 3, 5.0, 0.5, 0.6666666666666666), ('F', 4, 9.0, 1.0, 1.0), ('M', 1, 1.0, 0.0, 0.5), ('M', 5, 6.0, 1.0, 1.0)]
++--------------------+
+--Query--
+SELECT sex, id, SUM(id) OVER w summ, RANK() OVER w `rank` FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id ASC ROWS UNBOUNDED PRECEDING) ORDER BY summ
+--Result--
+[('M', 1, 1.0, 1), ('F', 2, 2.0, 1), ('F', 3, 5.0, 2), ('M', 5, 6.0, 2), ('F', 4, 9.0, 3), (None, 10, 10.0, 1), (None, 11, 21.0, 2)]
++--------------------+
+--Query--
+SELECT sex, id, SUM(id) OVER w summ, PERCENT_RANK() OVER w `p_rank`,        CUME_DIST() OVER w `c_dist` FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id ASC ROWS UNBOUNDED PRECEDING) ORDER BY summ
+--Result--
+[('M', 1, 1.0, 0.0, 0.5), ('F', 2, 2.0, 0.0, 0.3333333333333333), ('F', 3, 5.0, 0.5, 0.6666666666666666), ('M', 5, 6.0, 1.0, 1.0), ('F', 4, 9.0, 1.0, 1.0), (None, 10, 10.0, 0.0, 0.5), (None, 11, 21.0, 1.0, 1.0)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT  RANK() OVER (ORDER BY d) AS `rank`, d, date FROM t) alias ORDER BY `rank`, d, date
+--Result--
+[(1, 3.0, datetime.date(2002, 6, 9)), (2, 5.0, datetime.date(2015, 8, 1)), (3, 10.4, datetime.date(2002, 6, 9)), (3, 10.4, datetime.date(2002, 6, 10)), (5, 20.5, datetime.date(2002, 6, 9)), (6, 40.2, datetime.date(2002, 6, 9)), (6, 40.2, datetime.date(2015, 8, 1))]
++--------------------+
+--Query--
+SELECT * FROM (SELECT  PERCENT_RANK() OVER (ORDER BY d) AS `p_rank`, d, date FROM t) alias ORDER BY `p_rank`, d, date
+--Result--
+[(0.0, 3.0, datetime.date(2002, 6, 9)), (0.16666666666666666, 5.0, datetime.date(2015, 8, 1)), (0.3333333333333333, 10.4, datetime.date(2002, 6, 9)), (0.3333333333333333, 10.4, datetime.date(2002, 6, 10)), (0.6666666666666666, 20.5, datetime.date(2002, 6, 9)), (0.8333333333333334, 40.2, datetime.date(2002, 6, 9)), (0.8333333333333334, 40.2, datetime.date(2015, 8, 1))]
++--------------------+
+--Query--
+SELECT * FROM (SELECT  CUME_DIST() OVER (ORDER BY d) AS `c_dist`, d, date FROM t) alias ORDER BY `c_dist`, d, date
+--Result--
+[(0.14285714285714285, 3.0, datetime.date(2002, 6, 9)), (0.2857142857142857, 5.0, datetime.date(2015, 8, 1)), (0.5714285714285714, 10.4, datetime.date(2002, 6, 9)), (0.5714285714285714, 10.4, datetime.date(2002, 6, 10)), (0.7142857142857143, 20.5, datetime.date(2002, 6, 9)), (1.0, 40.2, datetime.date(2002, 6, 9)), (1.0, 40.2, datetime.date(2015, 8, 1))]
++--------------------+
+--Query--
+SELECT * FROM (SELECT RANK() OVER (ORDER BY date) AS `rank`, date, d FROM t) alias ORDER BY `rank`, d DESC
+--Result--
+[(1, datetime.date(2002, 6, 9), 40.2), (1, datetime.date(2002, 6, 9), 20.5), (1, datetime.date(2002, 6, 9), 10.4), (1, datetime.date(2002, 6, 9), 3.0), (5, datetime.date(2002, 6, 10), 10.4), (6, datetime.date(2015, 8, 1), 40.2), (6, datetime.date(2015, 8, 1), 5.0)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT PERCENT_RANK() OVER (ORDER BY date) AS `p_rank`, date, d FROM t) alias ORDER BY `p_rank`, d DESC
+--Result--
+[(0.0, datetime.date(2002, 6, 9), 40.2), (0.0, datetime.date(2002, 6, 9), 20.5), (0.0, datetime.date(2002, 6, 9), 10.4), (0.0, datetime.date(2002, 6, 9), 3.0), (0.6666666666666666, datetime.date(2002, 6, 10), 10.4), (0.8333333333333334, datetime.date(2015, 8, 1), 40.2), (0.8333333333333334, datetime.date(2015, 8, 1), 5.0)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT CUME_DIST() OVER (ORDER BY date) AS `c_dist`, date, d FROM t) alias ORDER BY `c_dist`, d DESC
+--Result--
+[(0.5714285714285714, datetime.date(2002, 6, 9), 40.2), (0.5714285714285714, datetime.date(2002, 6, 9), 20.5), (0.5714285714285714, datetime.date(2002, 6, 9), 10.4), (0.5714285714285714, datetime.date(2002, 6, 9), 3.0), (0.7142857142857143, datetime.date(2002, 6, 10), 10.4), (1.0, datetime.date(2015, 8, 1), 40.2), (1.0, datetime.date(2015, 8, 1), 5.0)]
++--------------------+
+--Query--
+SELECT  SUM(id) OVER (PARTITION BY sex ORDER BY id ROWS UNBOUNDED PRECEDING) summ, sex FROM t1
+--Result--
+[(10.0, None), (21.0, None), (2.0, 'F'), (5.0, 'F'), (9.0, 'F'), (1.0, 'M'), (6.0, 'M')]
++--------------------+
+--Query--
+SELECT t3_id, SUM(t3_id) OVER w,               CUME_DIST() OVER w,               LEAD(t3_id, 2) OVER w `lead2`,               NTH_VALUE(t3_id, 3) OVER w `nth`,               k FROM t3        WINDOW w AS (PARTITION BY k ORDER BY t3_id)
+--Result--
+[(0, 0.0, 0.2, 2, None, 0), (0, 0.0, 0.2, 2, None, 0), (2, 4.0, 0.4, 4, 2, 0), (2, 4.0, 0.4, 4, 2, 0), (4, 12.0, 0.6, 6, 2, 0), (4, 12.0, 0.6, 6, 2, 0), (6, 24.0, 0.8, 8, 2, 0), (6, 24.0, 0.8, 8, 2, 0), (8, 40.0, 1.0, None, 2, 0), (8, 40.0, 1.0, None, 2, 0), (1, 2.0, 0.2, 3, None, 1), (1, 2.0, 0.2, 3, None, 1), (3, 8.0, 0.4, 5, 3, 1), (3, 8.0, 0.4, 5, 3, 1), (5, 18.0, 0.6, 7, 3, 1), (5, 18.0, 0.6, 7, 3, 1), (7, 32.0, 0.8, 9, 3, 1), (7, 32.0, 0.8, 9, 3, 1), (9, 50.0, 1.0, None, 3, 1), (9, 50.0, 1.0, None, 3, 1)]
++--------------------+
+--Query--
+SELECT t3_id, LAST_VALUE(t3_id) OVER w, k FROM t3        WINDOW w AS (PARTITION BY k ORDER BY t3_id RANGE UNBOUNDED PRECEDING)
+--Result--
+[(0, 0, 0), (0, 0, 0), (2, 2, 0), (2, 2, 0), (4, 4, 0), (4, 4, 0), (6, 6, 0), (6, 6, 0), (8, 8, 0), (8, 8, 0), (1, 1, 1), (1, 1, 1), (3, 3, 1), (3, 3, 1), (5, 5, 1), (5, 5, 1), (7, 7, 1), (7, 7, 1), (9, 9, 1), (9, 9, 1)]
++--------------------+
+--Query--
+SELECT user_id, ROW_NUMBER() OVER (PARTITION BY user_id) FROM t2 t1
+--Result--
+[(1, 1), (1, 2), (2, 1), (3, 1), (4, 1), (4, 2), (5, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE t1.id=t2.user_id
+--Result--
+[(1, 'M', 1, datetime.date(2002, 6, 9)), (2, 'F', 2, datetime.date(2002, 6, 9)), (1, 'M', 1, datetime.date(2002, 6, 9)), (3, 'F', 3, datetime.date(2002, 6, 9)), (4, 'F', 4, datetime.date(2002, 6, 9)), (4, 'F', 4, datetime.date(2002, 6, 9)), (5, 'M', 5, datetime.date(2002, 6, 9))]
++--------------------+
+--Query--
+SELECT sex, id, date, ROW_NUMBER() OVER w AS row_no, RANK() OVER w AS `rank` FROM t1,t2        WHERE t1.id=t2.user_id        WINDOW w AS (PARTITION BY id ORDER BY sex)
+--Result--
+[('M', 1, datetime.date(2002, 6, 9), 1, 1), ('M', 1, datetime.date(2002, 6, 9), 2, 1), ('F', 2, datetime.date(2002, 6, 9), 1, 1), ('F', 3, datetime.date(2002, 6, 9), 1, 1), ('F', 4, datetime.date(2002, 6, 9), 1, 1), ('F', 4, datetime.date(2002, 6, 9), 2, 1), ('M', 5, datetime.date(2002, 6, 9), 1, 1)]
++--------------------+
+--Query--
+SELECT sex, id, date, ROW_NUMBER() OVER w AS row_no, RANK() OVER w AS `rank` FROM t1,t2        WHERE t1.id=t2.user_id        WINDOW w AS (PARTITION BY date ORDER BY id)
+--Result--
+[('M', 1, datetime.date(2002, 6, 9), 1, 1), ('M', 1, datetime.date(2002, 6, 9), 2, 1), ('F', 2, datetime.date(2002, 6, 9), 3, 3), ('F', 3, datetime.date(2002, 6, 9), 4, 4), ('F', 4, datetime.date(2002, 6, 9), 5, 5), ('F', 4, datetime.date(2002, 6, 9), 6, 5), ('M', 5, datetime.date(2002, 6, 9), 7, 7)]
++--------------------+
+--Query--
+SELECT CONCAT(ROW_NUMBER() OVER (), 1)
+--Result--
+[('11',)]
++--------------------+
+--Query--
+SELECT  date,id, RANK() OVER w AS `rank` FROM t1,t2 WINDOW w AS (PARTITION BY date ORDER BY id)
+--Result--
+[(datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43)]
++--------------------+
+--Query--
+SELECT * from (SELECT  date,id, RANK() OVER w AS `rank` FROM t1,t2 WINDOW w AS (PARTITION BY date ORDER BY id)) t
+--Result--
+[(datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 1, 1), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 2, 8), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 3, 15), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 4, 22), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 5, 29), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 10, 36), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43), (datetime.date(2002, 6, 9), 11, 43)]
++--------------------+
+--Query--
+SELECT * from (SELECT  date,id, PERCENT_RANK() OVER w AS `p_rank`, CUME_DIST() OVER w as `c_dist` FROM t1,t2 WINDOW w AS (PARTITION BY date ORDER BY id)) t
+--Result--
+[(datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 1, 0.0, 0.14285714285714285), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 2, 0.14583333333333334, 0.2857142857142857), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 3, 0.2916666666666667, 0.42857142857142855), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 4, 0.4375, 0.5714285714285714), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 5, 0.5833333333333334, 0.7142857142857143), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 10, 0.7291666666666666, 0.8571428571428571), (datetime.date(2002, 6, 9), 11, 0.875, 1.0), (datetime.date(2002, 6, 9), 11, 0.875, 1.0), (datetime.date(2002, 6, 9), 11, 0.875, 1.0), (datetime.date(2002, 6, 9), 11, 0.875, 1.0), (datetime.date(2002, 6, 9), 11, 0.875, 1.0), (datetime.date(2002, 6, 9), 11, 0.875, 1.0), (datetime.date(2002, 6, 9), 11, 0.875, 1.0)]
++--------------------+
+--Query--
+SELECT t1.*, RANK() OVER (ORDER BY sex), SUM(id) OVER (ORDER BY sex,id ROWS UNBOUNDED PRECEDING) FROM t1
+--Result--
+[(10, None, 1, 10.0), (11, None, 1, 21.0), (2, 'F', 3, 23.0), (3, 'F', 3, 26.0), (4, 'F', 3, 30.0), (1, 'M', 6, 31.0), (5, 'M', 6, 36.0)]
++--------------------+
+--Query--
+SELECT t1.*, PERCENT_RANK() OVER (ORDER BY sex), SUM(id) OVER (ORDER BY sex,id ROWS UNBOUNDED PRECEDING) FROM t1
+--Result--
+[(10, None, 0.0, 10.0), (11, None, 0.0, 21.0), (2, 'F', 0.3333333333333333, 23.0), (3, 'F', 0.3333333333333333, 26.0), (4, 'F', 0.3333333333333333, 30.0), (1, 'M', 0.8333333333333334, 31.0), (5, 'M', 0.8333333333333334, 36.0)]
++--------------------+
+--Query--
+SELECT * from (SELECT t1.*, SUM(id) OVER (ROWS UNBOUNDED PRECEDING), RANK() OVER (ORDER BY sex) FROM t1) alias ORDER BY id
+--Result--
+[(1, 'M', 1.0, 6), (2, 'F', 3.0, 3), (3, 'F', 6.0, 3), (4, 'F', 10.0, 3), (5, 'M', 15.0, 6), (10, None, 25.0, 1), (11, None, 36.0, 1)]
++--------------------+
+--Query--
+SELECT * from (SELECT t1.*, SUM(id) OVER (ROWS UNBOUNDED PRECEDING), PERCENT_RANK() OVER (ORDER BY sex) FROM t1) alias ORDER BY id
+--Result--
+[(1, 'M', 1.0, 0.8333333333333334), (2, 'F', 3.0, 0.3333333333333333), (3, 'F', 6.0, 0.3333333333333333), (4, 'F', 10.0, 0.3333333333333333), (5, 'M', 15.0, 0.8333333333333334), (10, None, 25.0, 0.0), (11, None, 36.0, 0.0)]
++--------------------+
+--Query--
+SELECT * from (SELECT t1.*, SUM(id) OVER (ROWS UNBOUNDED PRECEDING), CUME_DIST() OVER (ORDER BY sex) FROM t1) alias ORDER BY id
+--Result--
+[(1, 'M', 1.0, 1.0), (2, 'F', 3.0, 0.7142857142857143), (3, 'F', 6.0, 0.7142857142857143), (4, 'F', 10.0, 0.7142857142857143), (5, 'M', 15.0, 1.0), (10, None, 25.0, 0.2857142857142857), (11, None, 36.0, 0.2857142857142857)]
++--------------------+
+--Query--
+SELECT t1.*, SUM(id) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING),              RANK() OVER (ORDER BY sex,id),              ROW_NUMBER() OVER (ORDER BY sex,id)              FROM t1
+--Result--
+[(10, None, 25.0, 1, 1), (11, None, 36.0, 2, 2), (2, 'F', 3.0, 3, 3), (3, 'F', 6.0, 4, 4), (4, 'F', 10.0, 5, 5), (1, 'M', 1.0, 6, 6), (5, 'M', 15.0, 7, 7)]
++--------------------+
+--Query--
+SELECT t1.*, SUM(id) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING),              PERCENT_RANK() OVER (ORDER BY sex,id),              CUME_DIST() OVER (ORDER BY sex,id),              ROW_NUMBER() OVER (ORDER BY sex,id)              FROM t1
+--Result--
+[(10, None, 25.0, 0.0, 0.14285714285714285, 1), (11, None, 36.0, 0.16666666666666666, 0.2857142857142857, 2), (2, 'F', 3.0, 0.3333333333333333, 0.42857142857142855, 3), (3, 'F', 6.0, 0.5, 0.5714285714285714, 4), (4, 'F', 10.0, 0.6666666666666666, 0.7142857142857143, 5), (1, 'M', 1.0, 0.8333333333333334, 0.8571428571428571, 6), (5, 'M', 15.0, 1.0, 1.0, 7)]
++--------------------+
+--Query--
+SELECT t.*, SUM(id + r00 + r01) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING) AS s FROM (    SELECT t1.*,        RANK() OVER (ORDER BY sex, id) AS r00,        RANK() OVER (ORDER BY sex, id DESC) AS r01,        RANK() OVER (ORDER BY sex, id DESC) AS r02,        RANK() OVER (PARTITION BY id ORDER BY sex) AS r03,        RANK() OVER (ORDER BY sex,id) AS r04,        RANK() OVER (ORDER BY sex,id) AS r05,        RANK() OVER (ORDER BY sex, id) AS r06,        RANK() OVER (ORDER BY sex, id) AS r07,        RANK() OVER (ORDER BY sex, id) AS r08,        RANK() OVER (ORDER BY sex, id) AS r09,        RANK() OVER (ORDER BY sex, id) AS r10,        RANK() OVER (ORDER BY sex, id) AS r11,        RANK() OVER (ORDER BY sex, id) AS r12,        RANK() OVER (ORDER BY sex, id) AS r13,        RANK() OVER (ORDER BY sex, id) AS r14        FROM t1) t
+--Result--
+[(1, 'M', 6, 7, 7, 1, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 14.0), (2, 'F', 3, 5, 5, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 24.0), (3, 'F', 4, 4, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 35.0), (4, 'F', 5, 3, 3, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 47.0), (5, 'M', 7, 6, 6, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 65.0), (10, None, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 78.0), (11, None, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 92.0)]
++--------------------+
+--Query--
+SELECT t.*, SUM(id + r00 + r01) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING) AS s FROM (    SELECT t1.*,        RANK() OVER (ORDER BY sex, id) AS r00,        RANK() OVER (ORDER BY sex DESC, id) AS r01,        RANK() OVER (ORDER BY sex, id DESC) AS r02,        RANK() OVER (PARTITION BY id ORDER BY sex) AS r03,        RANK() OVER (ORDER BY sex, id) AS r04,        RANK() OVER (ORDER BY sex, id) AS r05,        RANK() OVER (ORDER BY sex, id) AS r06,        RANK() OVER (ORDER BY sex, id) AS r07,        RANK() OVER (ORDER BY sex, id) AS r08,        RANK() OVER (ORDER BY sex, id) AS r09,        RANK() OVER (ORDER BY sex, id) AS r10,        RANK() OVER (ORDER BY sex, id) AS r11,        RANK() OVER (ORDER BY sex, id) AS r12,        RANK() OVER (ORDER BY sex, id) AS r13,        RANK() OVER (ORDER BY sex, id) AS r14        FROM t1 LIMIT 4) t
+--Result--
+[(3, 'F', 4, 4, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 11.0), (4, 'F', 5, 5, 3, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 25.0), (10, None, 1, 6, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 42.0), (11, None, 2, 7, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 62.0)]
++--------------------+
+--Query--
+SELECT t.*, SUM(id + r00 + r01) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING) AS s FROM (    SELECT t1.*,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r00,        PERCENT_RANK() OVER (ORDER BY sex DESC, id) AS r01,        PERCENT_RANK() OVER (ORDER BY sex, id DESC) AS r02,        PERCENT_RANK() OVER (PARTITION BY id ORDER BY sex) AS r03,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r04,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r05,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r06,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r07,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r08,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r09,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r10,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r11,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r12,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r13,        PERCENT_RANK() OVER (ORDER BY sex, id) AS r14        FROM t1) t
+--Result--
+[(1, 'M', 0.8333333333333334, 0.0, 1.0, 0.0, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 0.8333333333333334, 1.8333333333333335), (2, 'F', 0.3333333333333333, 0.3333333333333333, 0.6666666666666666, 0.0, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 0.3333333333333333, 4.5), (3, 'F', 0.5, 0.5, 0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 8.5), (4, 'F', 0.6666666666666666, 0.6666666666666666, 0.3333333333333333, 0.0, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 13.833333333333334), (5, 'M', 1.0, 0.16666666666666666, 0.8333333333333334, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 20.0), (10, None, 0.0, 0.8333333333333334, 0.16666666666666666, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 30.833333333333336), (11, None, 0.16666666666666666, 1.0, 0.0, 0.0, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 0.16666666666666666, 43.0)]
++--------------------+
+--Query--
+SELECT t.*, SUM(id + r00 + r01) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING) AS s FROM (    SELECT t1.*,        CUME_DIST() OVER (ORDER BY sex, id) AS r00,        CUME_DIST() OVER (ORDER BY sex DESC, id) AS r01,        CUME_DIST() OVER (ORDER BY sex, id DESC) AS r02,        CUME_DIST() OVER (PARTITION BY id ORDER BY sex) AS r03,        CUME_DIST() OVER (ORDER BY sex, id) AS r04,        CUME_DIST() OVER (ORDER BY sex, id) AS r05,        CUME_DIST() OVER (ORDER BY sex, id) AS r06,        CUME_DIST() OVER (ORDER BY sex, id) AS r07,        CUME_DIST() OVER (ORDER BY sex, id) AS r08,        CUME_DIST() OVER (ORDER BY sex, id) AS r09,        CUME_DIST() OVER (ORDER BY sex, id) AS r10,        CUME_DIST() OVER (ORDER BY sex, id) AS r11,        CUME_DIST() OVER (ORDER BY sex, id) AS r12,        CUME_DIST() OVER (ORDER BY sex, id) AS r13,        CUME_DIST() OVER (ORDER BY sex, id) AS r14        FROM t1) t
+--Result--
+[(1, 'M', 0.8571428571428571, 0.14285714285714285, 1.0, 1.0, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 0.8571428571428571, 2.0), (2, 'F', 0.42857142857142855, 0.42857142857142855, 0.7142857142857143, 1.0, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 0.42857142857142855, 4.857142857142857), (3, 'F', 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 1.0, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 0.5714285714285714, 9.0), (4, 'F', 0.7142857142857143, 0.7142857142857143, 0.42857142857142855, 1.0, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 0.7142857142857143, 14.428571428571429), (5, 'M', 1.0, 0.2857142857142857, 0.8571428571428571, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 20.714285714285715), (10, None, 0.14285714285714285, 0.8571428571428571, 0.2857142857142857, 1.0, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 31.714285714285715), (11, None, 0.2857142857142857, 1.0, 0.14285714285714285, 1.0, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 0.2857142857142857, 44.0)]
++--------------------+
+--Query--
+SELECT t.*, SUM(id + r00 + r01) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING) AS s FROM (    SELECT t1.*,        RANK() OVER w00 AS r00,        RANK() OVER w01 AS r01,        RANK() OVER w02 AS r02,        RANK() OVER w03 AS r03,        RANK() OVER w04 AS r04,        RANK() OVER w05 AS r05,        RANK() OVER w06 AS r06,        RANK() OVER w07 AS r07,        RANK() OVER w08 AS r08,        RANK() OVER w09 AS r09,        RANK() OVER w10 AS r10,        RANK() OVER w11 AS r11,        RANK() OVER w12 AS r12,        RANK() OVER w13 AS r13,        RANK() OVER w14 AS r14        FROM t1        WINDOW w00 AS (ORDER BY sex),               w01 AS (ORDER BY sex DESC),               w02 AS (ORDER BY sex, id DESC),               w03 AS (PARTITION BY id ORDER BY sex),               w04 AS (ORDER BY sex),               w05 AS (ORDER BY sex),               w06 AS (ORDER BY sex),               w07 AS (ORDER BY sex),               w08 AS (ORDER BY sex),               w09 AS (ORDER BY sex),               w10 AS (ORDER BY sex),               w11 AS (ORDER BY sex),               w12 AS (ORDER BY sex),               w13 AS (ORDER BY sex),               w14 AS (ORDER BY sex)) t
+--Result--
+[(1, 'M', 6, 1, 7, 1, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8.0), (2, 'F', 3, 3, 5, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 16.0), (3, 'F', 3, 3, 4, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 25.0), (4, 'F', 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 35.0), (5, 'M', 6, 1, 6, 1, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 47.0), (10, None, 1, 6, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 64.0), (11, None, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 82.0)]
++--------------------+
+--Query--
+SELECT SUM(id) OVER w * 2, AVG(id) OVER w, COUNT(id) OVER w FROM t1        WINDOW w AS (PARTITION BY sex)
+--Result--
+[(42.0, 10.5, 2), (42.0, 10.5, 2), (18.0, 3.0, 3), (18.0, 3.0, 3), (18.0, 3.0, 3), (12.0, 3.0, 2), (12.0, 3.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM ( SELECT id, SUM(id) OVER w, COUNT(*) OVER w, sex FROM t1        WINDOW w AS (PARTITION BY sex)        ) alias ORDER BY id
+--Result--
+[(1, 6.0, 2, 'M'), (2, 9.0, 3, 'F'), (3, 9.0, 3, 'F'), (4, 9.0, 3, 'F'), (5, 6.0, 2, 'M'), (10, 21.0, 2, None), (11, 21.0, 2, None)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(10, None, None), (11, 10.0, None), (2, None, 'F'), (3, 2.0, 'F'), (4, 5.0, 'F'), (1, None, 'M'), (5, 1.0, 'M')]
++--------------------+
+--Query--
+SELECT SUM(id) OVER w, COUNT(*) OVER w FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id                     ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(11.0, 1), (None, 0), (7.0, 2), (4.0, 1), (None, 0), (5.0, 1), (None, 0)]
++--------------------+
+--Query--
+PREPARE s FROM   'SELECT id, NTILE(?) OVER w FROM t1 WINDOW w AS (ORDER BY id)'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT id, ROW_NUMBER() OVER w, NTILE(4) OVER w, SUM(id) OVER w FROM t1     WINDOW w AS (ORDER BY id ROWS 1 PRECEDING)
+--Result--
+[(1, 1, 1, 1.0), (2, 2, 1, 3.0), (3, 3, 2, 5.0), (4, 4, 2, 7.0), (5, 5, 3, 9.0), (10, 6, 3, 15.0), (11, 7, 4, 21.0)]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT id, NTILE(?) OVER w FROM t1 WINDOW w AS (ORDER BY id)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (ROW_NUMBER() OVER w1 * 5 - 1) DIV (COUNT(*) OVER w2) + 1 AS cnt     FROM t1 WINDOW w1 AS (ORDER BY id ASC),                    w2 AS ()
+--Result--
+[(1,), (2,), (3,), (3,), (4,), (5,), (5,)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER w, id, SUM(id) OVER w, sex FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+--Result--
+[(1, 10, 21.0, None), (2, 11, 21.0, None), (1, 2, 9.0, 'F'), (2, 3, 9.0, 'F'), (3, 4, 9.0, 'F'), (1, 1, 6.0, 'M'), (2, 5, 6.0, 'M')]
++--------------------+
+--Query--
+SELECT id, sex, SUM(id) OVER w,                 ROW_NUMBER() OVER w,                 CUME_DIST() OVER w  FROM t1        WINDOW w AS (PARTITION BY sex ORDER BY id ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING)
+--Result--
+[(10, None, None, 1, 0.6666666666666666), (10, None, 10.0, 2, 0.6666666666666666), (11, None, 20.0, 3, 1.0), (2, 'F', None, 1, 0.3333333333333333), (3, 'F', 2.0, 2, 0.6666666666666666), (4, 'F', 5.0, 3, 1.0), (1, 'M', None, 1, 0.5), (5, 'M', 1.0, 2, 1.0)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(None, None), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (10, 10), (10, 10), (11, 11)]
++--------------------+
+--Query--
+SELECT id, FIRST_VALUE(id) OVER w, CUME_DIST() OVER w FROM td1 WINDOW w AS (ORDER BY id ROWS  BETWEEN 2 FOLLOWING AND 3 FOLLOWING)
+--Result--
+[(None, 2.0, 0.1111111111111111), (1.0, 3.0, 0.2222222222222222), (2.0, 4.0, 0.3333333333333333), (3.0, 5.0, 0.4444444444444444), (4.0, 10.0, 0.5555555555555556), (5.0, 10.0, 0.6666666666666666), (10.0, 11.0, 0.8888888888888888), (10.0, None, 0.8888888888888888), (11.0, None, 1.0)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(datetime.date(2002, 6, 9), datetime.date(2002, 6, 9)), (datetime.date(2002, 6, 9), datetime.date(2002, 6, 9)), (datetime.date(2002, 6, 9), datetime.date(2002, 6, 9)), (datetime.date(2002, 6, 9), datetime.date(2002, 6, 9)), (datetime.date(2002, 6, 10), datetime.date(2002, 6, 10)), (datetime.date(2015, 8, 1), datetime.date(2015, 8, 1)), (datetime.date(2015, 8, 1), datetime.date(2015, 8, 1))]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(datetime.date(2002, 6, 9), None), (datetime.date(2002, 6, 9), None), (datetime.date(2002, 6, 9), None), (datetime.date(2002, 6, 9), None), (datetime.date(2002, 6, 10), None), (datetime.date(2015, 8, 1), None), (datetime.date(2015, 8, 1), None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 'M'), (2, 'F'), (3, 'F'), (4, 'F'), (5, 'M'), (10, None), (11, None), (10, None), (None, 'M')]
++--------------------+
+--Query--
+SELECT CAST(SUM(j) OVER () AS JSON) FROM tj
+--Result--
+[('18.14',), ('18.14',), ('18.14',), ('18.14',), ('18.14',), ('18.14',), ('18.14',), ('18.14',)]
++--------------------+
+--Query--
+SELECT DISTINCT i,NTILE(3) OVER (ORDER BY i), SUM(i) OVER (), COUNT(*) OVER () FROM tj ORDER BY NTILE(3) OVER (ORDER BY i)
+--Result--
+[(7, 1, 56.0, 8), (7, 2, 56.0, 8), (7, 3, 56.0, 8)]
++--------------------+
+--Query--
+SELECT * FROM tj2
+--Result--
+[('1', 1), ('2', 0), ('3', 1), ('4', 2), ('5', 0), (None, None), ('3.14', 1), ('[1, 2, 3]', 2)]
++--------------------+
+--Query--
+SELECT          COUNT(*) OVER (), MOD(SUM(i),2) FROM tj2 GROUP BY i
+--Result--
+[(4, 1.0), (4, 0.0), (4, 0.0), (4, None)]
++--------------------+
+--Query--
+SELECT i, SUM(i) OVER (), MOD(SUM(i),2) FROM tj2 GROUP BY i
+--Result--
+[(1, 3.0, 1.0), (0, 3.0, 0.0), (2, 3.0, 0.0), (None, 3.0, None)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT i, j, ROW_NUMBER() OVER (ORDER BY j) FROM tj UNION SELECT i, j, ROW_NUMBER() OVER (ORDER BY j) FROM tj) alias
+--Result--
+[(None, None, 1), (7, '1', 2), (9, '2', 3), (10, '3', 4), (10, '3.14', 5), (11, '4', 6), (12, '5', 7), (8, '[1, 2, 3]', 8)]
++--------------------+
+--Query--
+SELECT i, NTH_VALUE(i,3) OVER (ORDER BY i) FROM tj UNION ALL SELECT i, NTH_VALUE(i, 3) OVER (ORDER BY i) FROM tj
+--Result--
+[(None, None), (7, None), (8, 8), (9, 8), (10, 8), (10, 8), (11, 8), (12, 8), (None, None), (7, None), (8, 8), (9, 8), (10, 8), (10, 8), (11, 8), (12, 8)]
++--------------------+
+--Query--
+SELECT i, LEAD(i,3) OVER (ORDER BY i) FROM tj UNION ALL SELECT i, LEAD(i, 3) OVER (ORDER BY i) FROM tj
+--Result--
+[(None, 9), (7, 10), (8, 10), (9, 11), (10, 12), (10, None), (11, None), (12, None), (None, 9), (7, 10), (8, 10), (9, 11), (10, 12), (10, None), (11, None), (12, None)]
++--------------------+
+--Query--
+SELECT j, JSON_TYPE(j), SUM(j) OVER (ORDER BY j ROWS 3 PRECEDING) FROM tj
+--Result--
+[(None, None, None), ('1', 'INTEGER', 1.0), ('2', 'INTEGER', 3.0), ('3', 'INTEGER', 6.0), ('4', 'INTEGER', 10.0), ('5', 'INTEGER', 14.0)]
++--------------------+
+--Query--
+SELECT b, COUNT(*) OVER (ORDER BY b RANGE BETWEEN 1 FOLLOWING AND  100 FOLLOWING) bb FROM t5
+--Result--
+[(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1), (7, 0)]
++--------------------+
+--Query--
+SELECT t, COUNT(*) OVER (ORDER BY t RANGE   BETWEEN INTERVAL 1 HOUR PRECEDING AND INTERVAL '2:2' MINUTE_SECOND FOLLOWING) AS cnt FROM t6
+--Result--
+[(datetime.timedelta(seconds=1800), 2), (datetime.timedelta(seconds=1860), 2), (datetime.timedelta(seconds=5400), 3), (datetime.timedelta(seconds=16200), 1), (datetime.timedelta(seconds=23400), 1), (datetime.timedelta(seconds=45000), 1), (datetime.timedelta(seconds=48600), 2), (datetime.timedelta(seconds=55800), 1), (datetime.timedelta(seconds=66600), 1), (datetime.timedelta(seconds=73800), 1), (datetime.timedelta(seconds=77400), 2), (datetime.timedelta(seconds=81000), 2)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(12, 1, 2), (12, 2, 2), (12, 3, 3), (12, 4, 4), (12, 5, 5), (12, 6, 6), (12, 7, 7), (12, 8, 8), (12, 9, 9), (12, 10, 10), (12, 11, 11), (12, 12, 12)]
++--------------------+
+--Query--
+SELECT id, AVG(id) OVER (PARTITION BY id) summ FROM t1
+--Result--
+[(None, None), (1, 1.0), (2, 2.0), (3, 3.0), (4, 4.0), (5, 5.0), (10, 10.0), (10, 10.0), (11, 11.0)]
++--------------------+
+--Query--
+SELECT     AVG(id) OVER (PARTITION BY id) summ FROM t1
+--Result--
+[(None,), (1.0,), (2.0,), (3.0,), (4.0,), (5.0,), (10.0,), (10.0,), (11.0,)]
++--------------------+
+--Query--
+SELECT id, AVG(id) OVER (PARTITION BY id) summ,            AVG(id) OVER (PARTITION BY id) summ2 FROM t1
+--Result--
+[(None, None, None), (1, 1.0, 1.0), (2, 2.0, 2.0), (3, 3.0, 3.0), (4, 4.0, 4.0), (5, 5.0, 5.0), (10, 10.0, 10.0), (10, 10.0, 10.0), (11, 11.0, 11.0)]
++--------------------+
+--Query--
+SELECT     AVG(id) OVER (PARTITION BY id) summ,            AVG(id) OVER (PARTITION BY id) summ2 FROM t1
+--Result--
+[(None, None), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0), (5.0, 5.0), (10.0, 10.0), (10.0, 10.0), (11.0, 11.0)]
++--------------------+
+--Query--
+SELECT COUNT(id) OVER w, id, AVG(id) OVER w, SUM(id) OVER w, FIRST_VALUE(id) OVER w FROM t1   WINDOW w AS (ORDER BY id RANGE 1 PRECEDING)
+--Result--
+[(0, None, None, None, None), (0, None, None, None, None), (1, 1, 1.0, 1.0, 1), (2, 2, 1.5, 3.0, 1), (2, 3, 2.5, 5.0, 2), (2, 4, 3.5, 7.0, 3), (2, 5, 4.5, 9.0, 4), (2, 10, 10.0, 20.0, 10), (2, 10, 10.0, 20.0, 10), (3, 11, 10.3333, 31.0, 10)]
++--------------------+
+--Query--
+SELECT id, count(id) over w, count(*) over w, FIRST_VALUE(id) OVER w FROM t1   WINDOW w AS (ORDER BY id ASC  RANGE BETWEEN 2 PRECEDING AND 1 PRECEDING)
+--Result--
+[(None, 0, 2, None), (None, 0, 2, None), (1, 0, 0, None), (2, 1, 1, 1), (3, 2, 2, 1), (4, 2, 2, 2), (5, 2, 2, 3), (10, 0, 0, None), (10, 0, 0, None), (11, 2, 2, 10)]
++--------------------+
+--Query--
+SELECT *, RANK() OVER (ORDER BY i,j,k) AS O_IJK,           RANK() OVER (ORDER BY j) AS O_J,           RANK() OVER (ORDER BY k,j) AS O_KJ FROM t ORDER BY i,j,k
+--Result--
+[(1, 1, 1, 1, 1, 1), (1, 1, 2, 2, 1, 6), (1, 1, 2, 2, 1, 6), (1, 2, 1, 4, 7, 4), (1, 2, 2, 5, 7, 9), (2, 1, 1, 6, 1, 1), (2, 1, 1, 6, 1, 1), (2, 1, 2, 8, 1, 6), (2, 2, 1, 9, 7, 4), (2, 2, 2, 10, 7, 9)]
++--------------------+
+--Query--
+SELECT *, ABS(ROW_NUMBER() OVER (ORDER BY s1,s2))  - ROW_NUMBER() OVER (ORDER BY s1,s2) AS X FROM t1
+--Result--
+[(None, None, 0), (None, 'a', 0), (-1, '', 0), (1, None, 0), (1, 'a', 0), (2, 'b', 0)]
++--------------------+
+--Query--
+SELECT * FROM (   SELECT *,DENSE_RANK() OVER (ORDER BY s2 DESC),            DENSE_RANK() OVER (ORDER BY s2) FROM t1            ) alias ORDER BY s1,s2
+--Result--
+[(None, None, 4, 1), (None, 'a', 2, 3), (-1, '', 3, 2), (1, None, 4, 1), (1, 'a', 2, 3), (2, 'b', 1, 4)]
++--------------------+
+--Query--
+SELECT * FROM (   SELECT *, SUM(s1) OVER (ORDER BY s1) FROM t1 ORDER BY s1          ) alias ORDER BY s1,s2
+--Result--
+[(None, None, None), (None, 'a', None), (-1, '', -1.0), (1, None, 1.0), (1, 'a', 1.0), (2, 'b', 3.0)]
++--------------------+
+--Query--
+SELECT *, RANK() OVER (ORDER BY a DESC,b,c) AS `rank` FROM t ORDER BY `rank`
+--Result--
+[(2, 1, 1, 1), (2, 1, 2, 2), (2, 1, 3, 3), (2, 2, 1, 4), (2, 2, 2, 5), (2, 2, 3, 6), (2, 3, 1, 7), (2, 3, 2, 8), (2, 3, 3, 9), (1, 1, 1, 10), (1, 1, 2, 11), (1, 1, 3, 12), (1, 2, 1, 13), (1, 2, 2, 14), (1, 2, 3, 15), (1, 3, 1, 16), (1, 3, 2, 17), (1, 3, 3, 18)]
++--------------------+
+--Query--
+SELECT * FROM (   SELECT a,b,c, RANK() OVER (ORDER BY 1*1) FROM t   ) alias ORDER BY a,b,c
+--Result--
+[(1, 1, 1, 1), (1, 1, 2, 1), (1, 1, 3, 1), (1, 2, 1, 1), (1, 2, 2, 1), (1, 2, 3, 1), (1, 3, 1, 1), (1, 3, 2, 1), (1, 3, 3, 1), (2, 1, 1, 1), (2, 1, 2, 1), (2, 1, 3, 1), (2, 2, 1, 1), (2, 2, 2, 1), (2, 2, 3, 1), (2, 3, 1, 1), (2, 3, 2, 1), (2, 3, 3, 1)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT count(*) OVER (), sum(c) OVER () AS sum1, a from t) as alias
+--Result--
+[(18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 1), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2), (18, 36.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT count(*) OVER () + sum(c) OVER () AS sum1, a from t) as alias
+--Result--
+[(54.0, 1), (54.0, 1), (54.0, 1), (54.0, 1), (54.0, 1), (54.0, 1), (54.0, 1), (54.0, 1), (54.0, 1), (54.0, 2), (54.0, 2), (54.0, 2), (54.0, 2), (54.0, 2), (54.0, 2), (54.0, 2), (54.0, 2), (54.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT SUM(b) OVER (), a FROM t) AS alias
+--Result--
+[(36.0, 1), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT SUM(b) OVER (), b FROM t) AS alias
+--Result--
+[(36.0, 1), (36.0, 1), (36.0, 1), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 3), (36.0, 3), (36.0, 3), (36.0, 1), (36.0, 1), (36.0, 1), (36.0, 2), (36.0, 2), (36.0, 2), (36.0, 3), (36.0, 3), (36.0, 3)]
++--------------------+
+--Query--
+SELECT last_value(b) OVER (ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) FROM ta
+--Result--
+[(3,), (3,), (3,), (3,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT id, AVG(id) over w `avg`, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt FROM t1 WINDOW w as (ORDER BY id RANGE BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(None, None, None, 1), (1, 2.5, 5.0, 2), (2, 3.5, 7.0, 2), (3, 4.5, 9.0, 2), (4, 5.0, 5.0, 1), (5, None, None, 0), (10, 11.0, 11.0, 1), (10, 11.0, 11.0, 1), (11, None, None, 0)]
++--------------------+
+--Query--
+SELECT d, AVG(d) over w `avg`, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt FROM t1 WINDOW w as (ORDER BY d RANGE BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(None, None, None, 1), (1.0, 2.5, 5.0, 2), (2.0, 3.5, 7.0, 2), (3.0, 4.5, 9.0, 2), (4.0, 5.0, 5.0, 1), (5.0, None, None, 0), (10.0, 11.0, 11.0, 1), (10.0, 11.0, 11.0, 1), (11.0, None, None, 0)]
++--------------------+
+--Query--
+SELECT i FROM t1 WHERE i IN ( SELECT CAST(  SUM(i) OVER (ROWS CURRENT ROW) AS UNSIGNED) FROM t1)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT i FROM t1 WHERE i IN ( SELECT CAST(0+SUM(i) OVER (ROWS CURRENT ROW) AS UNSIGNED) FROM t1)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT a, RANK() OVER (ORDER BY a) rank_asc, RANK() OVER (ORDER BY a desc) rank_desc, RANK() OVER (ORDER BY a) + RANK() OVER (ORDER BY a desc) rank_asc_desc FROM t1
+--Result--
+[(5, 5, 1, 6), (4, 4, 2, 6), (3, 3, 3, 6), (2, 2, 4, 6), (1, 1, 5, 6)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER () OVER (), COUNT(*) FROM t WHERE a < 5
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+SELECT 1+SUM(SUM(i)) OVER W FROM t1 GROUP BY i WINDOW w AS (PARTITION BY i ORDER BY i)   ORDER BY 1+SUM(SUM(i)) OVER w
+--Result--
+[(2.0,), (3.0,), (4.0,), (5.0,), (11.0,), (41.0,), (61.0,), (81.0,), (81.0,), (91.0,), (121.0,), (121.0,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a IN (SELECT ROW_NUMBER() OVER () FROM t)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a IN (SELECT ROW_NUMBER() OVER () + 1 FROM t)
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = SOME(SELECT ROW_NUMBER() OVER () + 1 FROM t)
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = ANY(SELECT ROW_NUMBER() OVER () + 1 FROM t)
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a <> ALL(SELECT ROW_NUMBER() OVER () + 1 FROM t)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a >= ALL(SELECT ROW_NUMBER() OVER () + 1 FROM t)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a >= SOME(SELECT ROW_NUMBER() OVER () + 1 FROM t)
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT * from t WHERE EXISTS(SELECT ROW_NUMBER() OVER () FROM t)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t upper     WHERE EXISTS(SELECT rn FROM (SELECT ROW_NUMBER() OVER () AS rn FROM t) ta                  WHERE rn > upper.a)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT (SELECT ROW_NUMBER() OVER (ORDER BY upper.j) FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT (SELECT ROW_NUMBER() OVER (PARTITION BY upper.j) FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT (SELECT ROW_NUMBER() OVER (PARTITION BY upper.j)         FROM t1 LIMIT 1 OFFSET 1)     FROM t1 AS upper
+--Result--
+[(2,), (2,)]
++--------------------+
+--Query--
+SELECT (SELECT FIRST_VALUE(j) OVER (ORDER BY upper.j) FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT (SELECT FIRST_VALUE(j) OVER (ORDER BY upper.j DESC) FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT (SELECT FIRST_VALUE(upper.j) OVER (ORDER BY upper.j DESC)         FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT (SELECT LAST_VALUE(j) OVER (ORDER BY upper.j) FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(2,), (2,)]
++--------------------+
+--Query--
+SELECT (SELECT LAST_VALUE(j) OVER (ORDER BY upper.j DESC) FROM t1 LIMIT 1)     FROM t1 AS upper
+--Result--
+[(2,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS upper     WHERE (SELECT FIRST_VALUE(upper.j) OVER (ORDER BY upper.j)            FROM t1 LIMIT 1) = 1
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS upper     WHERE (SELECT FIRST_VALUE(upper.j) OVER (ORDER BY upper.j)            FROM t1 LIMIT 1) = 2
+--Result--
+[(2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS upper ORDER BY (0 + (SELECT FIRST_VALUE(upper.j) OVER (ORDER BY upper.j)                                          FROM t1 LIMIT 1))
+--Result--
+[(1, 1, 1), (2, 2, 2)]
++--------------------+
+--Query--
+SELECT i, SUBSTR(c,1,2), SUM(i) OVER (PARTITION BY SUBSTR(c,1,2)) `sum` FROM t
+--Result--
+[(1, 'ab', 1.0), (2, 'ak', 2.0), (4, 'be', 4.0), (3, 'br', 3.0)]
++--------------------+
+--Query--
+select I, substr(c,1,2), SUM(i) OVER (PARTITION BY SUBSTR(c,1,1)) `sum` FROM t
+--Result--
+[(1, 'ab', 3.0), (2, 'ak', 3.0), (3, 'br', 7.0), (4, 'be', 7.0)]
++--------------------+
+--Query--
+SELECT (SELECT SUM(a) OVER ())  FROM t
+--Result--
+[(5.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT (SELECT SUM(a) OVER () FROM t LIMIT 1)  FROM t
+--Result--
+[(6.0,), (6.0,)]
++--------------------+
+--Query--
+SELECT (SELECT SUM(a) OVER () FROM t2 LIMIT 1)  FROM t
+--Result--
+[(10.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT SUM(a) OVER () AS c FROM t ORDER BY c
+--Result--
+[(5.0,), (5.0,)]
++--------------------+
+--Query--
+SELECT SUM(c/d), LAST_VALUE(SUM(c/d)) OVER (ORDER BY a)  FROM t GROUP BY a,b
+--Result--
+[(1.0, 1.0), (2.0, 2.0), (3.0, 3.0)]
++--------------------+
+--Query--
+SELECT 1+FIRST_VALUE(SUM(c/d)) OVER (ORDER BY a)  FROM t GROUP BY a,b
+--Result--
+[(2.0,), (2.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER () rn,        1+FIRST_VALUE(SUM(c/d)) OVER (ORDER BY a) plus_fv,        1+LAST_VALUE(SUM(c/d)) OVER (ORDER BY a) plus_lv FROM t GROUP BY a,b
+--Result--
+[(1, 2.0, 2.0), (2, 2.0, 3.0), (3, 2.0, 4.0)]
++--------------------+
+--Query--
+SELECT sex, id, PERCENT_RANK() OVER w, CUME_DIST() OVER w, SUM(d) OVER w    FROM t1 WINDOW w AS (PARTITION BY sex ORDER BY id DESC ROWS                         BETWEEN 1 PRECEDING AND CURRENT ROW)
+--Result--
+[(None, 11, 0.0, 0.5, 11.0), (None, 10, 1.0, 1.0, 21.0), ('F', 4, 0.0, 0.3333333333333333, 4.0), ('F', 3, 0.5, 0.6666666666666666, 7.0), ('F', 2, 1.0, 1.0, 5.0), ('M', 5, 0.0, 0.5, 5.0), ('M', 1, 1.0, 1.0, 6.0)]
++--------------------+
+--Query--
+PREPARE p from 'SELECT sex, PERCENT_RANK() OVER (ORDER BY AVG(id) DESC)                 FROM t1 GROUP BY sex ORDER BY sex'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT    MIN(alias1.col_date) OVER () FV,    DENSE_RANK() OVER (ORDER BY alias2.col_date                       RANGE UNBOUNDED PRECEDING) DR,    RANK() OVER (ORDER BY alias1.col_date                 RANGE BETWEEN INTERVAL 1 WEEK PRECEDING AND CURRENT ROW) R    FROM (t AS alias1, t AS alias2)
+--Result--
+[(datetime.date(2017, 1, 10), 1, 1), (datetime.date(2017, 1, 10), 2, 1), (datetime.date(2017, 1, 10), 1, 3), (datetime.date(2017, 1, 10), 2, 3)]
++--------------------+
+--Query--
+SELECT t1.a, t2.a FROM t1 LEFT JOIN t2 ON 0
+--Result--
+[(1, None), (1, None), (2, None), (2, None)]
++--------------------+
+--Query--
+SELECT SUM(MAX(id)) OVER (ORDER BY MAX(id)) AS ss FROM t1
+--Result--
+[(3.0,)]
++--------------------+
+--Query--
+SELECT dt, FIRST_VALUE(dt) OVER w1 fv,            CAST(FIRST_VALUE(ge) OVER w1 AS JSON) ge FROM test WHERE `pk` = 2 WINDOW w1 AS ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER (ORDER BY AVG(a)) AS rn FROM t ORDER BY rn
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 UNION  (SELECT ROW_NUMBER() OVER ( ORDER BY b ) AS rn    FROM t ORDER BY b)
+--Result--
+[(1.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT alias1 . col_varchar_10_latin1 AS field1, NTH_VALUE(alias2.col_int, 4) OVER ( ORDER BY alias1.col_varchar_10_utf8 ASC ) AS field2 FROM  ( SELECT * FROM  H  ) AS  alias1  LEFT  JOIN ( SELECT * FROM  G  ) AS alias2 ON  alias1 . pk =  alias2 . pk WHERE  alias1 . pk = 1
+--Result--
+[('so', None)]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT RANK() OVER ( PARTITION BY pk ORDER BY col_int, col_varchar, pk) AS rnk, CUME_DIST() OVER ( PARTITION BY col_int ORDER BY pk ) AS c_dist FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM " SELECT ROW_NUMBER() OVER ( ORDER BY d ) AS rn FROM t1 WINDOW  w1 AS ( ORDER BY d ),         w2 AS ( ORDER BY a RANGE 5 PRECEDING )"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT  ROW_NUMBER() OVER ( ORDER BY a ) AS f1,    RANK() OVER ( ORDER BY c ) AS f2,    LEAD(c) OVER ( ORDER BY a ROWS UNBOUNDED PRECEDING ) AS f7    FROM t
+--Result--
+[(1, 1, 1), (2, 1, 1), (3, 1, 1), (4, 1, 1), (5, 1, None)]
++--------------------+
+--Query--
+SELECT RANK() OVER w1 AS rnk FROM t    WINDOW w1 AS (ORDER BY AVG(a))    ORDER BY b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER ( ORDER BY t1.a ) AS rn FROM t1, t2 WHERE t1.a = 1 GROUP BY t1.a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a AS field1, ROW_NUMBER() OVER () AS field2 FROM t     HAVING field1 >= 2
+--Result--
+[(2, 1), (3, 2)]
++--------------------+
+--Query--
+SELECT a AS field1, ROW_NUMBER() OVER () AS field2 FROM t     HAVING field1 >= 2 ORDER BY field1
+--Result--
+[(2, 1), (3, 2)]
++--------------------+
+--Query--
+SELECT DISTINCT MAX( table2.`col_varchar_255_utf8` ) AS max1 ,                 MIN( table1.`col_date` ) AS min1 ,                 AVG( table2.`col_int` ) AS avg1 ,                 MAX( table1.`col_varchar_255_utf8_2` ) AS max2 ,                 table2.`col_varchar_255_utf8`  ,                 FIRST_VALUE( table1. `col_varchar_255_utf8` )  OVER (ORDER BY MAX( table2.`col_varchar_255_utf8` ),                                                                               MIN( table1.`col_date` ),                                                                               AVG( table2.`col_int` ),                                                                               MAX( table1.`col_varchar_255_utf8_2` ),                                                                               table2.`col_varchar_255_utf8` ) AS 1st_val     FROM  C AS table1 LEFT JOIN           B AS table2 ON  table1.`col_int_2` < table2.`col_int_2`     GROUP BY  table2.`col_varchar_255_utf8`,  table1.`col_varchar_255_utf8`
+--Result--
+[]
++--------------------+
+--Query--
+SELECT  LAG(b) OVER () AS wf_lag,         ROW_NUMBER() OVER () AS wf_rn         FROM t         WHERE b LIKE ('_') AND a=2
+--Result--
+[(None, 1)]
++--------------------+
+--Query--
+SELECT LEAD(t2.col1, 5)  OVER ( ORDER BY t1.col_int DESC ) as lead1 , t1.pk, LEAD(t1.pk, 4) OVER ( PARTITION BY t1.col_int ORDER BY t1.col_int  ) as lead2 FROM  t1 RIGHT JOIN t2 ON t1.pk=t2.pk WHERE  t2.pk IS NOT NULL
+--Result--
+[(None, 1, None)]
++--------------------+
+--Query--
+SELECT  RANK() OVER ( ORDER BY a ) + 1 AS rank_expr FROM t1, t2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT a, b, LEAD (b, 1) OVER (ORDER BY a,b ASC) AS c FROM t1 a ORDER BY a, b, c
+--Result--
+[(1, 10.0, 11.0), (1, 11.0, 5.0), (2, 5.0, 15.0), (2, 15.0, 12.0), (2, 15.0, 15.0), (4, 12.0, 2.0), (5, 2.0, 7.0), (5, 7.0, 9.0), (5, 9.0, 8.0), (6, 8.0, 187.0), (6, 187.0, 10.0), (7, 10.0, 12.0), (8, 12.0, 14.0), (9, 14.0, 12.0), (10, 12.0, 9.0), (10, 12.0, 12.0), (11, 9.0, 10.0), (12, 10.0, 3.0), (13, 3.0, 13.0), (13, 13.0, 3.0), (14, 3.0, 5.0), (14, 5.0, 5.0), (14, 5.0, 240.0), (14, 240.0, 11.0), (15, 11.0, 13.0), (15, 13.0, 14.0), (15, 14.0, 4.0), (48, 4.0, 4.0), (50, 4.0, 2.0), (166, 2.0, None)]
++--------------------+
+--Query--
+SELECT a, b, LEAD (b, 1) OVER (PARTITION BY NULL ORDER BY a,b ASC) AS c FROM t1 a ORDER BY a, b, c
+--Result--
+[(1, 10.0, 11.0), (1, 11.0, 5.0), (2, 5.0, 15.0), (2, 15.0, 12.0), (2, 15.0, 15.0), (4, 12.0, 2.0), (5, 2.0, 7.0), (5, 7.0, 9.0), (5, 9.0, 8.0), (6, 8.0, 187.0), (6, 187.0, 10.0), (7, 10.0, 12.0), (8, 12.0, 14.0), (9, 14.0, 12.0), (10, 12.0, 9.0), (10, 12.0, 12.0), (11, 9.0, 10.0), (12, 10.0, 3.0), (13, 3.0, 13.0), (13, 13.0, 3.0), (14, 3.0, 5.0), (14, 5.0, 5.0), (14, 5.0, 240.0), (14, 240.0, 11.0), (15, 11.0, 13.0), (15, 13.0, 14.0), (15, 14.0, 4.0), (48, 4.0, 4.0), (50, 4.0, 2.0), (166, 2.0, None)]
++--------------------+
+--Query--
+SELECT  MAX( col_varchar_key  )  AS field1  FROM CC  AS alias1  HAVING field1 <>  5
+--Result--
+[('z',)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[('z',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT b, RANK() OVER (ORDER BY b) AS c FROM t GROUP BY a,b) s1 UNION               (SELECT b, MAX(a) AS c FROM t GROUP BY a,b ) ORDER BY b
+--Result--
+[(1, 1.0), (2, 2.0), (2, 1.0), (3, 3.0), (3, 2.0), (4, 4.0), (4, 2.0), (5, 5.0), (5, 2.0), (6, 6.0), (6, 2.0), (7, 7.0), (7, 3.0), (8, 8.0), (8, 4.0), (11, 9.0), (11, 3.0)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER (ORDER BY t2.col_int) AS rn,        COUNT(DISTINCT t1.col_int) AS cnt,        SUM(DISTINCT t1.col_int) AS `sum`    FROM t1 LEFT JOIN t2 ON t1.pk = t2.pk WHERE t1.pk IN (1)    GROUP BY t1.pk
+--Result--
+[(1, 1, 88.0)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER () AS rn,        COUNT(DISTINCT t1.col_int) AS cnt,        SUM(DISTINCT t1.col_int) AS `sum`    FROM t1 LEFT JOIN t2 ON t1.pk = t2.pk WHERE t1.pk IN (1)    GROUP BY t1.pk
+--Result--
+[(1, 1, 88.0)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER (),        FIRST_VALUE(SUM(DISTINCT t1.col_int)) OVER (ORDER BY t1.pk),        FIRST_VALUE(SUM(DISTINCT t1.col_int) + 1) OVER (ORDER BY t1.pk),        SUM(DISTINCT t1.col_int),        RANK() OVER (ORDER BY t1.pk)    FROM t1 LEFT JOIN t2 ON t1.pk = t2.pk WHERE t1.pk IN (1)    GROUP BY t1.pk
+--Result--
+[(1, 88.0, 89.0, 88.0, 1)]
++--------------------+
+--Query--
+SELECT STDDEV_SAMP(a) OVER ( ORDER BY a ROWS CURRENT ROW ) AS std_dev_samp FROM t
+--Result--
+[(None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT STDDEV_SAMP(a) FROM t
+--Result--
+[(3.9157800414902435,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(3.9157800414902435,)]
++--------------------+
+--Query--
+SELECT RANK() OVER ( ORDER BY MIN( t2 . c1 ) + MAX( t1 . c2 )  ) AS rnk    FROM t1 RIGHT OUTER JOIN t2 ON t1.c1 = t2.c2    ORDER BY rnk
+--Result--
+[(1,)]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT  AVG(c2)  OVER ( ) AS res FROM  te2"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT    PERCENT_RANK() OVER ( PARTITION BY  alias1 . `col_int`,                                        alias2 . `col_int`,                                        alias1 . `col_int_key`,                                        alias1 . `col_varchar_10_utf8_key`                          ORDER BY  alias1 . `col_varchar_255_utf8_key`,                                    alias1 . `col_varchar_10_latin1_gckey`,                                    alias2 . `col_varchar_255_utf8_gckey`,                                    alias1 . `pk`                          ROWS 430 PRECEDING  ) AS pr    FROM  A AS alias1  RIGHT OUTER JOIN             B AS alias2             LEFT  JOIN             AA AS alias3             ON  alias2 . `col_int_key` =  alias3 . `pk`          ON  alias1 . `pk` =  alias2 . `col_int_gckey`    WHERE  alias2 . `pk` > 5 AND alias2 . `pk` <= ( 5 + 5 )       AND alias2 . `pk` > 5 AND alias2 . `pk` <= ( 5 + 2 )       AND alias3 . `pk`  IN (5, 0)       AND alias3 . `pk` >= 5       AND alias3 . `pk` < ( 8 + 4 )       AND alias1 . `col_int` >= 5       AND alias1 . `col_int` <= ( 4 + 0 )       OR  alias2 . `col_int` != 5       OR  alias3 . `col_int` <> 7       OR  alias3 . `col_int` >= 5       AND alias3 . `col_int` < ( 5 + 2 )    ORDER BY pr  LIMIT 1000 OFFSET 4
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM  "SELECT AVG(col_int_key) OVER () FROM t WHERE pk=3 GROUP BY col_int_key"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT AVG(12) OVER () FROM dual"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 0 & (SUM(1) OVER w) FROM (select 1) as dt  WINDOW w as ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 & (SUM(1) OVER w) FROM (select 1) as dt  WINDOW w as ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RANK() OVER ( ORDER BY a ) AS rnk FROM t GROUP BY a
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,), (11,), (12,), (13,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM twf WHERE rnk IN (SELECT RANK() OVER ( ORDER BY a ) AS rnk FROM t  GROUP BY a)
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,), (11,), (12,), (13,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM twf WHERE rnk NOT IN (SELECT RANK() OVER ( ORDER BY a ) AS rnk FROM t  GROUP BY a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT department_id, salary,        RANK() OVER w AS rnk,        DENSE_RANK() OVER w AS dense,        NTILE(4) over w AS ntil,        CUME_DIST() OVER w AS cume,        PERCENT_RANK() over w AS `%rnk`   FROM employee   WINDOW w AS (PARTITION BY department_id                ORDER BY salary DESC)   ORDER BY department_id, salary DESC, ntil
+--Result--
+[(None, 75000, 1, 1, 1, 1.0, 0.0), (10, 100000, 1, 1, 1, 0.2, 0.0), (10, 70000, 2, 2, 1, 0.4, 0.25), (10, 60000, 3, 3, 2, 0.8, 0.5), (10, 60000, 3, 3, 3, 0.8, 0.5), (10, None, 5, 4, 4, 1.0, 1.0), (20, 80000, 1, 1, 1, 0.3333333333333333, 0.0), (20, 65000, 2, 2, 2, 1.0, 0.5), (20, 65000, 2, 2, 3, 1.0, 0.5), (30, 300000, 1, 1, 1, 0.5, 0.0), (30, 70000, 2, 2, 2, 1.0, 1.0)]
++--------------------+
+--Query--
+SELECT department_id, salary,        RANK() OVER w AS rnk,        DENSE_RANK() OVER w AS dense,        NTILE(4) over w AS ntil,        CUME_DIST() OVER w AS cume,        PERCENT_RANK() over w AS `%rnk`   FROM employee   WINDOW w AS (ORDER BY salary DESC)   ORDER BY salary DESC, department_id, ntil
+--Result--
+[(30, 300000, 1, 1, 1, 0.09090909090909091, 0.0), (10, 100000, 2, 2, 1, 0.18181818181818182, 0.1), (20, 80000, 3, 3, 1, 0.2727272727272727, 0.2), (None, 75000, 4, 4, 2, 0.36363636363636365, 0.3), (10, 70000, 5, 5, 2, 0.5454545454545454, 0.4), (30, 70000, 5, 5, 2, 0.5454545454545454, 0.4), (20, 65000, 7, 6, 3, 0.7272727272727273, 0.6), (20, 65000, 7, 6, 3, 0.7272727272727273, 0.6), (10, 60000, 9, 7, 3, 0.9090909090909091, 0.8), (10, 60000, 9, 7, 4, 0.9090909090909091, 0.8), (10, None, 11, 8, 4, 1.0, 1.0)]
++--------------------+
+--Query--
+SELECT ISNULL(COS(RANK() OVER())) FROM t
+--Result--
+[(0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT MIN(table2.pk) + table2.col_int AS part_expr,        DENSE_RANK() OVER (PARTITION BY MIN(table2.pk) + table2.col_int                           ORDER BY  table1.col_int_key) AS field1   FROM  t1 AS table1 LEFT JOIN t1 AS table2         ON table1.pk = table2.col_int   GROUP BY table2.col_int, table1.col_int_key
+--Result--
+[(None, 1), (None, 2), (None, 3), (None, 4), (None, 5), (None, 6), (None, 7), (None, 8), (None, 9), (None, 10), (None, 11), (None, 12), (None, 13), (None, 14), (None, 15), (None, 16), (None, 17), (None, 18), (5, 1), (9, 1), (9, 2), (13, 1), (22, 1), (22, 2), (24, 1), (24, 2), (28, 1)]
++--------------------+
+--Query--
+SELECT  MAX( alias1 .col_int )  AS field1  FROM view_E  AS alias1  LEFT JOIN C  AS alias2  ON alias1 .col_int  = alias2 .pk  WHERE alias1 .pk IN (  5  )  HAVING field1  <=  6
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT MAX( alias1.col_int) AS field1 FROM view_E AS alias1                  LEFT JOIN C                                       AS alias2                  ON alias1 .col_int  = alias2 .pk                  WHERE alias1 .pk IN (5)  HAVING field1  <=  6) s1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT MAX( alias1.col_int) AS field1 FROM view_E AS alias1                  LEFT JOIN C                                       AS alias2                  ON alias1 .col_int  = alias2 .pk                  WHERE alias1 .pk IN (5)  HAVING MAX(alias1 .col_int) <=  6) s1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT b,d,LAST_VALUE(b) OVER(ORDER BY d RANGE BETWEEN 1 FOLLOWING AND                               UNBOUNDED FOLLOWING) FROM t
+--Result--
+[('1', -1, None), ('1', -1, None)]
++--------------------+
+--Query--
+PREPARE stmt FROM "SELECT w, SUM(w) OVER (ROWS 3.14 PRECEDING) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM "SELECT w, SUM(w) OVER (ROWS ? PRECEDING) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT LEAD(a,1) OVER() FROM t GROUP BY a WITH ROLLUP
+--Result--
+[(2,), (3,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM     (SELECT LEAD(i) OVER w AS a, i AS b FROM t1      WINDOW w AS      (ORDER BY i ROWS CURRENT ROW)) AS t WHERE a = b
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT MONTH(date), SUM(sale),        AVG(SUM(sale)) OVER w AS sliding_avg FROM sales GROUP BY MONTH(date) WINDOW w AS (ORDER BY MONTH(date)              RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING) ORDER BY AVG(SUM(sale)) OVER (ORDER BY MONTH(date)                               RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING),          MONTH(date)
+--Result--
+[(3, 600.0, 600.0), (7, 1200.0, 683.3333), (4, 600.0, 700.0), (5, 900.0, 700.0), (8, 250.0, 725.0), (6, 600.0, 900.0)]
++--------------------+
+--Query--
+SELECT FROM_UNIXTIME(LAG('',99)OVER(ROWS UNBOUNDED PRECEDING),'%I %l %I')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ((NTILE(70)OVER())<<(FROM_UNIXTIME(LEAD('',67) RESPECT NULLS                                       OVER(),SHA(''))))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT FIRST_VALUE( alias1.pk ) OVER        (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 FOLLOWING) AS field1    FROM  t1 AS alias1 RIGHT JOIN t2 AS alias2          ON  alias1.pk = alias2.col_int_key
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT FIRST_VALUE( alias1.pk ) OVER        (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 FOLLOWING) AS field1    FROM  t1 AS alias1 RIGHT JOIN t2 AS alias2          ON  alias1.pk > alias2.col_int_key
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER () AS `row#`,        FIRST_VALUE( alias1.pk ) OVER        (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 FOLLOWING) AS field1    FROM  t1 AS alias1 RIGHT JOIN t2 AS alias2          ON  alias1.pk = alias2.col_int_key
+--Result--
+[(1, None), (2, None), (3, None), (4, None), (5, None), (6, None)]
++--------------------+
+--Query--
+SELECT ((MAKETIME(((QUARTER('| !*c>*{/'))<=>                (FIRST_VALUE(JSON_OBJECTAGG('key4',0x067c13d0d0d7d8c8d768aef7)                     )OVER())),'9236-05-27',0xe2a7d4))^(0x1109))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT JSON_LENGTH(FIRST_VALUE(JSON_OBJECTAGG('key2','*B'))OVER())
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a, b,        LAST_VALUE(a) OVER (ORDER BY b,a) AS `last` FROM t
+--Result--
+[(1, 1, 1), (2, 1, 2), (3, 2, 3), (4, 2, 4), (5, 3, 5), (6, 3, 6)]
++--------------------+
+--Query--
+SELECT a, b,        LAST_VALUE(a) OVER (ORDER BY b,a                            RANGE BETWEEN UNBOUNDED PRECEDING AND                                  CURRENT ROW) AS `last`   FROM t
+--Result--
+[(1, 1, 1), (2, 1, 2), (3, 2, 3), (4, 2, 4), (5, 3, 5), (6, 3, 6)]
++--------------------+
+--Query--
+SELECT a, b, COUNT(a) OVER w AS cnt,        COUNT(*) OVER w AS `cnt(*)`,        FIRST_VALUE(a) OVER w AS first,        LAST_VALUE (a) OVER w AS last   FROM t WINDOW w AS (ORDER BY b,a DESC)
+--Result--
+[(2, None, 1, 1, 2, 2), (None, None, 1, 2, 2, None), (2, 1, 2, 3, 2, 2), (1, 1, 4, 5, 2, 1), (1, 1, 4, 5, 2, 1), (4, 2, 6, 7, 2, 4), (4, 2, 6, 7, 2, 4), (3, 2, 7, 8, 2, 3), (None, 2, 7, 9, 2, None), (6, 3, 8, 10, 2, 6), (5, 3, 9, 11, 2, 5)]
++--------------------+
+--Query--
+SELECT a, b, COUNT(a) OVER w AS cnt,        COUNT(*) OVER w AS `cnt(*)`,        FIRST_VALUE(a) OVER w AS first,        LAST_VALUE (a) OVER w AS last   FROM t WINDOW w AS (ORDER BY b,a DESC                       RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+--Result--
+[(2, None, 1, 1, 2, 2), (None, None, 1, 2, 2, None), (2, 1, 2, 3, 2, 2), (1, 1, 4, 5, 2, 1), (1, 1, 4, 5, 2, 1), (4, 2, 6, 7, 2, 4), (4, 2, 6, 7, 2, 4), (3, 2, 7, 8, 2, 3), (None, 2, 7, 9, 2, None), (6, 3, 8, 10, 2, 6), (5, 3, 9, 11, 2, 5)]
++--------------------+
+--Query--
+SELECT a, b, COUNT(a) OVER w AS cnt,        COUNT(*) OVER w AS `cnt(*)`,        FIRST_VALUE(a) OVER w AS first,        LAST_VALUE (a) OVER w AS last   FROM t WINDOW w AS (ORDER BY b,a DESC                       RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
+--Result--
+[(2, None, 9, 11, 2, 5), (None, None, 8, 10, None, 5), (2, 1, 8, 9, 2, 5), (1, 1, 7, 8, 1, 5), (1, 1, 7, 8, 1, 5), (4, 2, 5, 6, 4, 5), (4, 2, 5, 6, 4, 5), (3, 2, 3, 4, 3, 5), (None, 2, 2, 3, None, 5), (6, 3, 2, 2, 6, 5), (5, 3, 1, 1, 5, 5)]
++--------------------+
+--Query--
+SELECT IFNULL((JSON_TYPE(@c)),(FIRST_VALUE(@b)OVER()))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT PERCENT_RANK() OVER(),        LAG(1,35,1) OVER w2 FROM t WINDOW w1 AS (ROWS UNBOUNDED PRECEDING),        w2 AS (ROWS BETWEEN 18446744073709551615 FOLLOWING AND 1 FOLLOWING)
+--Result--
+[(0.0, 1), (0.0, 1), (0.0, 1), (0.0, 1)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'DO NTILE(?) OVER()'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'DO LAG(1, ?) OVER()'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'DO LEAD(1, ?) OVER()'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT c2, c3, c4, SUM(c1) OVER (PARTITION BY c2) AS wcol FROM t1)o WHERE c2=10
+--Result--
+[(10, 't1', 't1', 10.0)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT c2, c3, c4, SUM(c1) OVER (PARTITION BY c2) AS wcol FROM t1)o WHERE c2=10
+--Result--
+[(10, 't1', 't1', 10.0)]
++--------------------+
+--Query--
+SELECT (3.14 DIV (   FIRST_VALUE(     FROM_DAYS(2486378174430980553)   )   OVER()   ) )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (3.14 DIV (   NTH_VALUE(     FROM_DAYS(2486378174430980553), 1   )   OVER()   ) )
+--Result--
+[(None,)]
++--------------------+

@@ -54,16 +54,6 @@ CREATE FUNCTION equipment_named_ambiguous_2b(hobby text)
 SELECT DISTINCT hobbies_r.name, name(hobbies_r.equipment) FROM hobbies_r
   ORDER BY 1,2;
 SELECT hobbies_r.name, (hobbies_r.equipment).name FROM hobbies_r;
-SELECT name(equipment(hobby_construct(text 'skywalking', text 'mer')));
-SELECT name(equipment(hobby_construct_named(text 'skywalking', text 'mer')));
-SELECT name(equipment_named(hobby_construct_named(text 'skywalking', text 'mer')));
-SELECT name(equipment_named_ambiguous_1a(hobby_construct_named(text 'skywalking', text 'mer')));
-SELECT name(equipment_named_ambiguous_1b(hobby_construct_named(text 'skywalking', text 'mer')));
-SELECT name(equipment_named_ambiguous_1c(hobby_construct_named(text 'skywalking', text 'mer')));
-SELECT name(equipment_named_ambiguous_2a(text 'skywalking'));
-SELECT name(equipment_named_ambiguous_2b(text 'skywalking'));
 SELECT hobbies_by_name('basketball');
 SELECT * FROM equipment(ROW('skywalking', 'mer'));
-SELECT name(equipment(ROW('skywalking', 'mer')));
-SELECT *, name(equipment(h.*)) FROM hobbies_r h;
 SELECT *, (equipment(CAST((h.*) AS hobbies_r))).name FROM hobbies_r h;

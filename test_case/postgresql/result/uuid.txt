@@ -29,52 +29,12 @@ SELECT COUNT(*) FROM guid1 WHERE guid_field = '3f3e3c3b-3a30-3938-3736-353433a23
 [(1,)]
 +--------------------+
 --Query--
-SELECT COUNT(*) FROM guid1 WHERE guid_field <> '11111111111111111111111111111111'
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM guid1 WHERE guid_field < '22222222-2222-2222-2222-222222222222'
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM guid1 WHERE guid_field <= '22222222-2222-2222-2222-222222222222'
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM guid1 WHERE guid_field > '22222222-2222-2222-2222-222222222222'
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM guid1 WHERE guid_field >= '22222222-2222-2222-2222-222222222222'
---Result--
-[(2,)]
-+--------------------+
---Query--
 SELECT count(*) FROM pg_class WHERE relkind='i' AND relname LIKE 'guid%'
 --Result--
 [(3,)]
 +--------------------+
 --Query--
-SELECT COUNT(*) FROM guid1 g1 INNER JOIN guid2 g2 ON g1.guid_field = g2.guid_field
---Result--
-[(3,)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM guid1 g1 LEFT JOIN guid2 g2 ON g1.guid_field = g2.guid_field WHERE g2.guid_field IS NULL
---Result--
-[(1,)]
-+--------------------+
---Query--
 TRUNCATE guid1
 --Result--
 []
-+--------------------+
---Query--
-SELECT count(DISTINCT guid_field) FROM guid1
---Result--
-[(2,)]
 +--------------------+

@@ -1,0 +1,20 @@
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT length(entries.bytes) FROM system.asynchronous_inserts WHERE database = currentDatabase() AND table = 't_async_insert_skip_settings' ORDER BY first_update
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM FLUSH ASYNC INSERT QUEUE
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

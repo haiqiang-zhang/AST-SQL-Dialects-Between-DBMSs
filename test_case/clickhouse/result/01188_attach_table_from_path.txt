@@ -1,0 +1,55 @@
+--Query--
+attach table file from '01188_attach/file' (s String, n UInt8) engine=File(TSV)
+--Result--
+[]
++--------------------+
+--Query--
+select * from file
+--Result--
+[('file', 42)]
++--------------------+
+--Query--
+detach table file
+--Result--
+[]
++--------------------+
+--Query--
+attach table file
+--Result--
+[]
++--------------------+
+--Query--
+select * from file
+--Result--
+[('file', 42)]
++--------------------+
+--Query--
+attach table mt from '01188_attach/file' (n UInt8, s String) engine=MergeTree order by n
+--Result--
+[]
++--------------------+
+--Query--
+select * from mt
+--Result--
+[]
++--------------------+
+--Query--
+select * from mt
+--Result--
+[(42, 'mt')]
++--------------------+
+--Query--
+detach table mt
+--Result--
+[]
++--------------------+
+--Query--
+attach table mt
+--Result--
+[]
++--------------------+
+--Query--
+select * from mt
+--Result--
+[(42, 'mt')]
++--------------------+

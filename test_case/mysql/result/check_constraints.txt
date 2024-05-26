@@ -1,0 +1,375 @@
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '((`f1` + `f2`) > 10)'), ('def', 'test_db', 't1_chk_2', '(`f1` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't2_cc1', '((`f1` + sqrt(`f2`)) > 6174)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='t1'
+--Result--
+[('def', 'test_db', 'PRIMARY', 'test_db', 't1', 'PRIMARY KEY', 'YES'), ('def', 'test_db', 't1_chk_1', 'test_db', 't1', 'CHECK', 'YES'), ('def', 'test_db', 't2_cc1', 'test_db', 't1', 'CHECK', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (2, None), (101, 1), (102, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (2, None), (101, 1), (102, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (2, 2), (101, 2), (102, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, None), (2, None), (101, None), (102, None)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 1), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 1), (2, None), (3, 20)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 1), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 1), (2, None), (3, 20)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 4)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '(`f1` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='t1'
+--Result--
+[('def', 'test_db', 't1_chk_1', 'test_db', 't1', 'CHECK', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 'ck1', '(`f1` < 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 'ck1', '(`f1` < 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 'ck1', '(`f1` < 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 'ck1', '(`f1` < 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)'), ('def', 'test_db', 't1_f4_chk', '(`f4` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS ORDER BY CONSTRAINT_NAME
+--Result--
+[('def', 'test_db', 'ck', '(`f1` > 10)'), ('def', 'test_db', 'ck1', '(`f1` < 10)'), ('def', 'test_db', 't1_chk_1', '(`f2` < 10)'), ('def', 'test_db', 't1_chk_2', '(`f3` < 10)'), ('def', 'test_db', 't1_chk_3', '(`f1` > 10)'), ('def', 'test_db', 't1_f4_chk', '(`f4` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (15, 20)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 'pageview', '{"os": "Mac", "name": "Chrome"}')]
++--------------------+
+--Query--
+SELECT * FROM student
+--Result--
+[(1, 'j001', 'name1', 'name1@oracle.com', 6000, 'usa')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '(`c2` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='t1'
+--Result--
+[('def', 'test_db', 't1_chk_1', 'test_db', 't1', 'CHECK', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '(`c2` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='t1'
+--Result--
+[('def', 'test_db', 't1_chk_1', 'test_db', 't1', 'CHECK', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '(`c2` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='t1'
+--Result--
+[('def', 'test_db', 't1_chk_1', 'test_db', 't1', 'CHECK', 'YES')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
+--Result--
+[('def', 'test_db', 't1_chk_1', '(`c2` < 10)')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='t2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM parent
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM child
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 20)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 20), (1, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (1, 1), (1, 5)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 20), (1, 20), (1, 20)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (1, 1), (1, 5)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 20), (1, 20), (1, 20)]
++--------------------+
+--Query--
+SELECT HEX(c1), c2, c3, c4, c5, c6, c7, c8, c9, c10, c11 FROM t1
+--Result--
+[('7F', 0, 5, 5, 5, 11, 11, 10.2, 10.2, 10.2, None)]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'INSERT INTO t1 VALUES(1)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt2 FROM 'INSERT INTO t1 VALUES(20)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.date(1960, 1, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(30, 'aaa')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(60, 'aaa')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(60, 'aaa')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 5)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1, 5)]
++--------------------+
+--Query--
+SELECT * FROM tst
+--Result--
+[(1, 10, 20)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[]
++--------------------+

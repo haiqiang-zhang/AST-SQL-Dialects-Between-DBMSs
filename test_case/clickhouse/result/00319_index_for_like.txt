@@ -1,0 +1,85 @@
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, World%'
+--Result--
+[('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, World %'
+--Result--
+[('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, World 1%'
+--Result--
+[('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, World 2%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, Worle%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, Wor%'
+--Result--
+[('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello%'
+--Result--
+[('Hello',), ('Hello 1',), ('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello %'
+--Result--
+[('Hello 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello,%'
+--Result--
+[('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'H%'
+--Result--
+[('Hello',), ('Hello 1',), ('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Good%'
+--Result--
+[('Goodbye',), ('Goodbye 1',), ('Goodbye, World',), ('Goodbye, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE '%'
+--Result--
+[('Goodbye',), ('Goodbye 1',), ('Goodbye, World',), ('Goodbye, World 1',), ('Hello',), ('Hello 1',), ('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE '%Hello%'
+--Result--
+[('Hello',), ('Hello 1',), ('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE '%Hello'
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, World% %'
+--Result--
+[('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, Worl_%'
+--Result--
+[('Hello, World',), ('Hello, World 1',)]
++--------------------+
+--Query--
+SELECT s FROM index_for_like WHERE s LIKE 'Hello, Worl\\_%'
+--Result--
+[]
++--------------------+

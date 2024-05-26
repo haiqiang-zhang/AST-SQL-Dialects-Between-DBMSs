@@ -1,0 +1,20 @@
+--Query--
+SELECT finalizeAggregation(initializeAggregation('uniqExactState', toNullable('foo')))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT toTypeName(initializeAggregation('uniqExactState', toNullable('foo')))
+--Result--
+[('AggregateFunction(uniqExact, Nullable(String))',)]
++--------------------+
+--Query--
+SELECT initializeAggregation('uniqExactState', toNullable('foo')) = arrayReduce('uniqExactState', [toNullable('foo')])
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT initializeAggregation('uniqExactState', toNullable(123)) = arrayReduce('uniqExactState', [toNullable(123)])
+--Result--
+[(1,)]
++--------------------+

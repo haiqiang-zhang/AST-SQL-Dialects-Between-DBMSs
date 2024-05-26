@@ -1,0 +1,135 @@
+--Query--
+SHOW CREATE TABLE table_02184
+--Result--
+[('CREATE TABLE test.table_02184\n(\n    `x` UInt8\n)\nENGINE = Log',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_02184
+--Result--
+[('CREATE TABLE test.table_02184\n(\n    `x` UInt8\n)\nENGINE = MergeTree\nPRIMARY KEY x\nORDER BY x\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE test_optimize_exception
+--Result--
+[('CREATE TABLE test.test_optimize_exception\n(\n    `date` Date\n)\nENGINE = MergeTree\nPARTITION BY toYYYYMM(date)\nORDER BY date\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_02184
+--Result--
+[('CREATE TABLE test.table_02184\n(\n    `x` UInt8\n)\nENGINE = MergeTree\nORDER BY x\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_02184
+--Result--
+[('CREATE TABLE test.table_02184\n(\n    `x` UInt8\n)\nENGINE = MergeTree\nPRIMARY KEY x\nORDER BY x\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE numbers1
+--Result--
+[('CREATE TABLE test.numbers1\n(\n    `number` UInt64\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SELECT avg(number) FROM numbers1
+--Result--
+[(4.5,)]
++--------------------+
+--Query--
+SELECT sum(number) FROM numbers2
+--Result--
+[(45,)]
++--------------------+
+--Query--
+SHOW CREATE TABLE numbers2
+--Result--
+[('CREATE TABLE test.numbers2\n(\n    `number` UInt64\n)\nENGINE = MergeTree\nORDER BY intHash32(number)\nSAMPLE BY intHash32(number)\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE numbers3
+--Result--
+[('CREATE TABLE test.numbers3\n(\n    `number` UInt64\n)\nENGINE = Log',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE test_view_filtered
+--Result--
+[("CREATE MATERIALIZED VIEW test.test_view_filtered\n(\n    `EventDate` Date,\n    `CounterID` UInt32\n)\nENGINE = Memory\nAS SELECT\n    CounterID,\n    EventDate\nFROM test.test_table\nWHERE EventDate < '2013-01-01'",)]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[(datetime.date(2014, 1, 2), 0, 0, datetime.datetime(1969, 12, 31, 16, 0, tzinfo=<DstTzInfo 'America/Los_Angeles' PST-1 day, 16:00:00 STD>), datetime.datetime(2014, 1, 2, 3, 4, 6, tzinfo=<UTC>))]
++--------------------+
+--Query--
+SELECT * FROM test_view
+--Result--
+[(1, datetime.datetime(2014, 1, 1, 19, 4, 6, tzinfo=<DstTzInfo 'America/Los_Angeles' PST-1 day, 16:00:00 STD>))]
++--------------------+
+--Query--
+SELECT * FROM test_view_filtered
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE t1
+--Result--
+[("CREATE TABLE test.t1\n(\n    `Rows` UInt64,\n    `MaxHitTime` DateTime('UTC')\n)\nENGINE = MergeTree\nORDER BY Rows\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE t2
+--Result--
+[("CREATE TABLE test.t2\n(\n    `Rows` UInt64,\n    `MaxHitTime` DateTime('UTC')\n)\nENGINE = Memory",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE mt
+--Result--
+[("CREATE TABLE test.mt\n(\n    `a` UInt64,\n    `b` Nullable(String),\n    INDEX b_index b TYPE set(123) GRANULARITY 1\n)\nENGINE = MergeTree\nPRIMARY KEY (a, coalesce(b, 'test'))\nORDER BY (a, coalesce(b, 'test'))\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE mt2
+--Result--
+[("CREATE TABLE test.mt2\n(\n    `a` UInt64,\n    `b` Nullable(String),\n    INDEX b_index b TYPE set(123) GRANULARITY 1\n)\nENGINE = MergeTree\nPRIMARY KEY (a, coalesce(b, 'test'))\nORDER BY (a, coalesce(b, 'test'))\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+SHOW CREATE TEMPORARY TABLE tmp
+--Result--
+[('CREATE TEMPORARY TABLE tmp\n(\n    `n` Int32\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE mt
+--Result--
+[('CREATE TABLE test.mt\n(\n    `n` UInt8\n)\nENGINE = MergeTree\nORDER BY n\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE mem
+--Result--
+[('CREATE TABLE test.mem\n(\n    `n` UInt8\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE val
+--Result--
+[("CREATE TABLE test.val\n(\n    `n` Int32\n) AS values('n int', 1, 2)",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE val2
+--Result--
+[("CREATE TABLE test.val2\n(\n    `n` Int32\n) AS values('n int', 1, 2)",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE log
+--Result--
+[('CREATE TABLE test.log\n(\n    `n` Int32\n)\nENGINE = Log',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE kek
+--Result--
+[('CREATE TABLE test.kek\n(\n    `n` Int32\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE lol
+--Result--
+[('CREATE TABLE test.lol\n(\n    `n` Int32\n)\nENGINE = MergeTree\nORDER BY n\nSETTINGS min_bytes_for_wide_part = 123, index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TEMPORARY TABLE tmp_log
+--Result--
+[('CREATE TEMPORARY TABLE tmp_log\n(\n    `n` Int32\n)\nENGINE = Log',)]
++--------------------+

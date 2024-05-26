@@ -1,0 +1,75 @@
+--Query--
+SELECT name, status FROM system.dictionaries WHERE database='test_01191'
+--Result--
+[('dict', 'NOT_LOADED')]
++--------------------+
+--Query--
+SELECT name, engine FROM system.tables WHERE database='test_01191' ORDER BY name
+--Result--
+[('_', 'Memory'), ('dict', 'Dictionary'), ('t', 'Memory')]
++--------------------+
+--Query--
+EXCHANGE TABLES test_01191.t AND test_01191.dict
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, status FROM system.dictionaries WHERE database='test_01191'
+--Result--
+[('t', 'NOT_LOADED')]
++--------------------+
+--Query--
+SELECT name, engine FROM system.tables WHERE database='test_01191' ORDER BY name
+--Result--
+[('_', 'Memory'), ('dict', 'Memory'), ('t', 'Dictionary')]
++--------------------+
+--Query--
+SELECT dictGet(test_01191.t, 's', toUInt64(42))
+--Result--
+[('test',)]
++--------------------+
+--Query--
+EXCHANGE TABLES test_01191.dict AND test_01191.t
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DICTIONARY test_01191.dict TO dummy_db.dict1
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DICTIONARY dummy_db.dict1 TO test_01191.dict
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DICTIONARY test_01191.dict TO test_01191.dict1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, status FROM system.dictionaries WHERE database='test_01191'
+--Result--
+[('dict1', 'LOADED')]
++--------------------+
+--Query--
+SELECT name, engine FROM system.tables WHERE database='test_01191' ORDER BY name
+--Result--
+[('_', 'Memory'), ('dict1', 'Dictionary')]
++--------------------+
+--Query--
+RENAME DICTIONARY test_01191.dict1 TO test_01191.dict2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, status FROM system.dictionaries WHERE database='test_01191'
+--Result--
+[('dict2', 'LOADED')]
++--------------------+
+--Query--
+SELECT name, engine FROM system.tables WHERE database='test_01191' ORDER BY name
+--Result--
+[('_', 'Memory'), ('dict2', 'Dictionary')]
++--------------------+

@@ -1,0 +1,45 @@
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 WHERE d=b
+--Result--
+[(4, 0, 0, 'SCAN t1'), (6, 0, 0, 'SEARCH t2 USING INDEX t2d (d=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 WHERE d>b AND x=y
+--Result--
+[(3, 0, 0, 'SCAN t1'), (7, 0, 0, 'BLOOM FILTER ON t2 (y=?)'), (18, 0, 0, 'SEARCH t2 USING AUTOMATIC COVERING INDEX (y=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 WHERE d<b AND x=y
+--Result--
+[(3, 0, 0, 'SCAN t1'), (7, 0, 0, 'BLOOM FILTER ON t2 (y=?)'), (18, 0, 0, 'SEARCH t2 USING AUTOMATIC COVERING INDEX (y=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 WHERE d IS NULL AND x=y
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING INDEX t2d (d=?)'), (11, 0, 0, 'BLOOM FILTER ON t1 (x=?)'), (22, 0, 0, 'SEARCH t1 USING AUTOMATIC COVERING INDEX (x=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 WHERE d IN (5,b) AND x=y
+--Result--
+[(3, 0, 0, 'SCAN t1'), (7, 0, 0, 'BLOOM FILTER ON t2 (y=?)'), (18, 0, 0, 'SEARCH t2 USING AUTOMATIC COVERING INDEX (y=?)')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+

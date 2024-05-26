@@ -1,0 +1,345 @@
+--Query--
+select json_extract(trace,"$.steps[*].join_optimization.steps[*].refine_plan") from information_schema.optimizer_trace
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where  (select count(*) from (select * from (select * from t1 t2     where 2=(select 2 from (select t1.a) dt1))dt3)dt4)
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+select * from t1 where  (select count(*) from (select * from (select * from t1 t2     where 2=(select 2 from (select 42) dt1))dt3)dt4)
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+select (select dt.a from   (select t1.a as a, t2.a as b from t2) dt where dt.b=t1.a) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (select dt.b from   (select t2.a as b from t2 where t1.a=t2.a) dt) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (select dt.b from   (select sum(t2.a) as b from t2 group by t1.a) dt) as subq from t1
+--Result--
+[(3.0,), (3.0,)]
++--------------------+
+--Query--
+select (select dt.b from   (select sum(t2.a) as b from t2 having t1.a=sum(t2.a)-1) dt) as subq from t1
+--Result--
+[(None,), (3.0,)]
++--------------------+
+--Query--
+select (select dt.b from   (select sum(t2.a) as b from t2 having t1.a=sum(t2.a)-2) dt) as subq from t1
+--Result--
+[(3.0,), (None,)]
++--------------------+
+--Query--
+select (select dt.b from   (select t2.a as b from t2 order by if(t1.a=1,t2.a,-t2.a) limit 1) dt) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (select dt.b from   (select t2.a, sum(t1.a*10+t2.a) over (order by if(t1.a=1,t2.a,-t2.a)) as b    from t2) dt where dt.a=1) as subq from t1
+--Result--
+[(11.0,), (43.0,)]
++--------------------+
+--Query--
+select (with dt as (select t1.a as a, t2.a as b from t2)  select dt2.a from dt dt1, dt dt2 where dt1.b=t1.a and dt2.b=dt1.b) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select   (with recursive dt as     (select t1.a as a union select a+1 from dt where a<10)    select dt1.a from dt dt1 where dt1.a=t1.a   ) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select   (with recursive dt as     (select t1.a as a union select a+1 from dt where a<10)    select concat(count(*), ' - ', avg(dt.a)) from dt   ) as subq from t1
+--Result--
+[('10 - 5.5000',), ('9 - 6.0000',)]
++--------------------+
+--Query--
+select   (with recursive dt as     (select t1.a as a union all select a+1 from dt where a<10)    select concat(count(*), ' - ', avg(dt.a)) from dt   ) as subq from t1
+--Result--
+[('10 - 5.5000',), ('9 - 6.0000',)]
++--------------------+
+--Query--
+select (with dt as (select t1.a as a, t2.a as b from t2)  select dt2.a from dt dt1, dt dt2 where dt1.b=t1.a and dt2.b=dt1.b) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (with dt as (select t1.a as a from t2 limit 1) select * from dt dt1 where dt1.a=(select * from dt as dt2)) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (with dt as (select t2.a as a from t2 having t1.a=t2.a limit 1) select * from dt dt1 where dt1.a=(select * from dt as dt2)) as subq from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (select * from (select t1.a) cte) from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select (with cte as (select t1.a) select * from cte) from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select * from t1 where a not in (select dt.f+1 from (select t2.a as f from t2) dt)
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+select * from t1 where a not in (select dt.f+1 from (select 0*t1.a+t2.a as f from t2) dt)
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+select t1.a, dt.a from t1, lateral (select t1.a+t2.a as a from t2) dt
+--Result--
+[(2, 3), (1, 2), (2, 4), (1, 3)]
++--------------------+
+--Query--
+select t1.a, dt.a from t1, lateral (select t2.a as a from t2 having t1.a) dt
+--Result--
+[(1, 1), (1, 2), (2, 1), (2, 2)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[(2, 3), (1, 2), (2, 4), (1, 3)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 GROUP BY t1.a  HAVING t1.a IN (SELECT t3.a FROM t1 AS t3 WHERE t3.b IN (SELECT b FROM t2, lateral (select t1.a) dt))
+--Result--
+[]
++--------------------+
+--Query--
+select vq1.b,dt.b from v1 vq1, lateral (select vq1.b) dt
+--Result--
+[(None, None), (None, None)]
++--------------------+
+--Query--
+select b from v1 vq1, lateral (select count(*) from v1 vq2 having vq1.b = 3) dt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT  * FROM t1 AS ta, lateral (select 1 WHERE ta.a IN (SELECT b FROM t2 AS tb                WHERE tb.b >= SOME(SELECT SUM(tc.a) as sg FROM t1 as tc                                   GROUP BY tc.b                                   HAVING ta.a=tc.b))) dt
+--Result--
+[]
++--------------------+
+--Query--
+select (select dt.a from   (select 1 as a, t2.a as b from t2 having t1.a) dt where dt.b=t1.a) as subq from t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select (select dt.a from   (select 1 as a, 3 as b from t2 having t1.a) dt where dt.b=t1.a) as subq from t1
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+select (select f from (select max(t1.a) as f) as dt) as g from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select (select f from lateral (select max(t1.a) as f) as dt) as g from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select t1.a, f from t1, lateral (select max(t1.a) as f) as dt
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+select * from t1, lateral (with qn as (select t1.a) select (select max(a) from qn)) as dt
+--Result--
+[(1, None, 1), (2, None, 2)]
++--------------------+
+--Query--
+select (select * from (select * from (select t1.a from t2) as dt limit 1) dt2) from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select a from t1 where a in (select a from (select t1.a) dt)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select min(a),max(a) from t3 where a in (select /*+ no_merge() */ a from (select t3.a from t1) dt)
+--Result--
+[(1, 20)]
++--------------------+
+--Query--
+select * from t1, lateral (select * from (select * from (select t1.a from t2) as dt limit 1) dt2) dt3
+--Result--
+[(1, None, 1), (2, None, 2)]
++--------------------+
+--Query--
+select * from t1 as t0, lateral (select dt3.* from t1, lateral (select * from (select * from (select t0.a from t2) as dt limit 1) dt2) dt3) dt4
+--Result--
+[(1, None, 1), (1, None, 1), (2, None, 2), (2, None, 2)]
++--------------------+
+--Query--
+select /*+ no_merge() */ * from t1 as t0, lateral (select dt3.* from t1, lateral (select * from (select * from (select t0.a from t2) as dt limit 1) dt2) dt3) dt4
+--Result--
+[(1, None, 1), (1, None, 1), (2, None, 2), (2, None, 2)]
++--------------------+
+--Query--
+select * from t1, lateral (select * from (select 42) t1, (select t1.a) dt2) dt3
+--Result--
+[(1, None, 42, 1), (2, None, 42, 2)]
++--------------------+
+--Query--
+select a from t1 where a in (select /*+ no_semijoin() */ a from (select t1.a) dt)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select a from t1 where a in (with cte as (select t1.a)                              select /*+ no_semijoin() */ a from cte)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select straight_join * from t1, t2, lateral (select t1.a) as dt
+--Result--
+[(1, None, 1, None, 1), (1, None, 2, None, 1), (2, None, 1, None, 2), (2, None, 2, None, 2)]
++--------------------+
+--Query--
+select straight_join * from t1, lateral (select t1.a) as dt, t2
+--Result--
+[(2, None, 2, 1, None), (1, None, 1, 1, None), (2, None, 2, 2, None), (1, None, 1, 2, None)]
++--------------------+
+--Query--
+select straight_join * from t2, t1, lateral (select t1.a) as dt
+--Result--
+[(2, None, 1, None, 1), (1, None, 1, None, 1), (2, None, 2, None, 2), (1, None, 2, None, 2)]
++--------------------+
+--Query--
+select * from t1, t2, lateral (select t1.a) as dt
+--Result--
+[(1, None, 1, None, 1), (1, None, 2, None, 1), (2, None, 1, None, 2), (2, None, 2, None, 2)]
++--------------------+
+--Query--
+select * from t1, lateral (select t1.a) as dt, t2
+--Result--
+[(2, None, 2, 1, None), (1, None, 1, 1, None), (2, None, 2, 2, None), (1, None, 1, 2, None)]
++--------------------+
+--Query--
+select * from t2, t1, lateral (select t1.a) as dt
+--Result--
+[(2, None, 1, None, 1), (1, None, 1, None, 1), (2, None, 2, None, 2), (1, None, 2, None, 2)]
++--------------------+
+--Query--
+select * from t1, lateral (select t1.a from t2 as t3, t2 as t4) as dt, t2
+--Result--
+[(2, None, 2, 1, None), (1, None, 1, 1, None), (2, None, 2, 1, None), (1, None, 1, 1, None), (2, None, 2, 1, None), (1, None, 1, 1, None), (2, None, 2, 1, None), (1, None, 1, 1, None), (2, None, 2, 2, None), (1, None, 1, 2, None), (2, None, 2, 2, None), (1, None, 1, 2, None), (2, None, 2, 2, None), (1, None, 1, 2, None), (2, None, 2, 2, None), (1, None, 1, 2, None)]
++--------------------+
+--Query--
+select trace from information_schema.optimizer_trace
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3, lateral (select t3.a+1) as dt
+--Result--
+[(3, 4)]
++--------------------+
+--Query--
+select * from t2, t1, lateral (select t1.a) as dt,                       lateral (select t2.a) as dt2
+--Result--
+[(1, None, 1, None, 1, 1), (1, None, 2, None, 2, 1), (2, None, 1, None, 1, 2), (2, None, 2, None, 2, 2)]
++--------------------+
+--Query--
+select * from t2, t1, lateral (select t1.a) as dt,                       lateral (select t1.a+1) as dt2
+--Result--
+[(2, None, 1, None, 1, 2), (1, None, 1, None, 1, 2), (2, None, 2, None, 2, 3), (1, None, 2, None, 2, 3)]
++--------------------+
+--Query--
+select * from t2, t1, lateral (select t1.a+t2.a) as dt
+--Result--
+[(1, None, 1, None, 2), (1, None, 2, None, 3), (2, None, 1, None, 3), (2, None, 2, None, 4)]
++--------------------+
+--Query--
+SELECT * FROM t11 LEFT JOIN t12 force index (idx) ON t12.t12b = t11.t11b JOIN LATERAL (SELECT t12a) dt
+--Result--
+[(99, None, None, None, None), (99, 3, None, None, None), (99, 0, 100, 0, 100), (99, 0, 999, 0, 999)]
++--------------------+
+--Query--
+select * from t1, lateral (select t3.b from t3 where t3.a=t1.a) dt  where dt.b=t1.a+9
+--Result--
+[(1, None, 10), (2, None, 11)]
++--------------------+
+--Query--
+SELECT * FROM t1, LATERAL ( SELECT MAX(1) FROM t2 GROUP BY t1.f1 ) AS l1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT STD(0) FROM t2, LATERAL ( SELECT f1 FROM t1 GROUP BY f2,f1 ) AS d1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT table1.col_varchar_key AS field1,        table2.col_time_gckey AS field2 FROM t2 AS table1 STRAIGHT_JOIN t1 AS table2      ON table2.col_varchar_key = table1.col_varchar_key WHERE table2.col_int_key IN    (WITH qn AS     (SELECT sq1_t1.col_int AS sq1_field1      FROM t2 AS sq1_t1      WHERE sq1_t1.col_varchar_key = table2.col_varchar OR            EXISTS (WITH qn1 AS                    (SELECT c_sq1_t1.col_int_key AS c_sq1_field1                     FROM t1 AS c_sq1_t1                     WHERE c_sq1_t1.col_varchar_key > sq1_t1.col_varchar OR                           c_sq1_t1.col_int <> c_sq1_t1.pk                    )                    SELECT * FROM qn1                   )     )     SELECT * FROM qn    ) AND    EXISTS (WITH qn AS            (SELECT sq2_t1.col_varchar AS sq2_field1             FROM t1 AS sq2_t1 STRAIGHT_JOIN                    t2 AS sq2_t2 INNER JOIN t1 AS sq2_t3                    ON sq2_t3.col_varchar = sq2_t2.col_varchar_key                  ON sq2_t3.col_int = sq2_t2.pk            )            SELECT * FROM qn           ) AND       table2.col_varchar_key <> 'j'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT /*+ no_merge() */  outr.pk AS x FROM ( SELECT * FROM  t1  ) AS  outr WHERE outr.col_int_key  IN ( SELECT /*+ no_merge() no_semijoin() */ 2   FROM (SELECT 1 AS x FROM t1 AS  innr WHERE outr.col_date_key ) AS   qn ) ORDER BY outr.col_datetime
+--Result--
+[]
++--------------------+
+--Query--
+SELECT /*+ no_merge() */  outr.pk AS x FROM ( SELECT * FROM  t1  ) AS  outr WHERE outr.col_int_key  IN ( SELECT /*+ no_merge() no_semijoin() */ id   FROM JSON_TABLE( IF(outr.col_date_key<>NOW(),                       '[{"a":"3"},{"a":2},{"b":1},{"a":0}]',                       '') ,                    '$[*]' columns (id for ordinality,                                    jpath varchar(100) path '$.a',                                    jexst int exists path '$.b')   ) AS                                    qn ) ORDER BY outr.col_datetime
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN LATERAL (   SELECT GROUP_CONCAT(t.id) AS c FROM t2 t WHERE (t.id = t1.id) ) d0 ON (1)
+--Result--
+[(10, None), (20, '20,20'), (30, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN LATERAL (SELECT a+t1.a from t2 GROUP BY a) AS dt
+--Result--
+[(1, 1, 1, 50, None), (1, 1, 1, 50, 2), (2, 1, 3, 4, None), (2, 1, 3, 4, 3), (1, 2, 3, 40, None), (1, 2, 3, 40, 2)]
++--------------------+
+--Query--
+SELECT *   FROM t1   LEFT JOIN (     t3, LATERAL (       SELECT * FROM t2 WHERE table_id = t3.id     ) l1   ) ON TRUE
+--Result--
+[(1, 363, 363)]
++--------------------+
+--Query--
+SELECT *   FROM     t1     LEFT JOIN (       t1 AS t2       LEFT JOIN t1 AS t3 ON TRUE     ) ON TRUE,     LATERAL (       SELECT SUM(t1.a), t2.a FROM t1     ) AS d1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS tbl1        LEFT JOIN t1 AS tbl3 ON FALSE WHERE tbl1.id NOT IN             (SELECT id FROM t1 AS tbl2 JOIN LATERAL                     (SELECT 1 FROM t2 WHERE id = tbl2.id LIMIT 10) AS d1)
+--Result--
+[(364, None)]
++--------------------+
+--Query--
+SELECT /*+ JOIN_PREFIX(tbl1, tbl2) */ * FROM t1 AS tbl1        LEFT JOIN t1 AS tbl3 ON FALSE WHERE tbl1.id NOT IN             (SELECT id FROM t1 AS tbl2 JOIN LATERAL                     (SELECT 1 FROM t2 WHERE id = tbl2.id LIMIT 10) AS d1)
+--Result--
+[(364, None)]
++--------------------+
+--Query--
+SELECT t3.b FROM   t AS t1,   t AS t2,   LATERAL (SELECT DISTINCT * FROM t WHERE t2.x <> 0) AS t3 WHERE t1.x = t2.x AND t2.x = t3.x ORDER BY t3.x
+--Result--
+[(b'one',), (b'two',)]
++--------------------+

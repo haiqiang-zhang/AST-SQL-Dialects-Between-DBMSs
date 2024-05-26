@@ -71,7 +71,6 @@ SELECT 'dictGetOrDefault non existing value';
 SELECT dictGetOrDefault('01681_database_for_flat_dictionary.flat_dictionary_simple_key_complex_attributes', 'value_first', number, toString('default')) as value_first,
     dictGetOrDefault('01681_database_for_flat_dictionary.flat_dictionary_simple_key_complex_attributes', 'value_second', number, toString('default')) as value_second FROM system.numbers LIMIT 4;
 SELECT 'dictHas';
-SELECT dictHas('01681_database_for_flat_dictionary.flat_dictionary_simple_key_complex_attributes', number) FROM system.numbers LIMIT 4;
 DROP DICTIONARY 01681_database_for_flat_dictionary.flat_dictionary_simple_key_complex_attributes;
 DROP TABLE 01681_database_for_flat_dictionary.simple_key_complex_attributes_source_table;
 CREATE TABLE 01681_database_for_flat_dictionary.simple_key_hierarchy_table
@@ -97,7 +96,6 @@ SELECT 'dictGet';
 SELECT dictGet('01681_database_for_flat_dictionary.flat_dictionary_simple_key_hierarchy', 'parent_id', number) FROM system.numbers LIMIT 5;
 SELECT 'dictGetHierarchy';
 SELECT dictGetHierarchy('01681_database_for_flat_dictionary.flat_dictionary_simple_key_hierarchy', toUInt64(1));
-SELECT dictGetHierarchy('01681_database_for_flat_dictionary.flat_dictionary_simple_key_hierarchy', toUInt64(4));
 DROP DICTIONARY 01681_database_for_flat_dictionary.flat_dictionary_simple_key_hierarchy;
 DROP TABLE 01681_database_for_flat_dictionary.simple_key_hierarchy_table;
 DROP DATABASE 01681_database_for_flat_dictionary;

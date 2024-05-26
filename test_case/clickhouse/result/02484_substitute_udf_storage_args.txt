@@ -1,0 +1,15 @@
+--Query--
+SHOW CREATE TABLE 02484_substitute_udf
+--Result--
+[('CREATE TABLE test.`02484_substitute_udf`\n(\n    `id` UInt32,\n    `dt` DateTime,\n    `number` UInt32\n)\nENGINE = MergeTree\nPARTITION BY id + 2\nORDER BY id + 1\nSAMPLE BY id + 1\nTTL dt + toIntervalMonth(3)\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE 02484_substitute_udf
+--Result--
+[('CREATE TABLE test.`02484_substitute_udf`\n(\n    `id` UInt32,\n    `dt` DateTime,\n    `number` UInt32,\n    `id2` UInt64\n)\nENGINE = MergeTree\nPARTITION BY id + 2\nPRIMARY KEY id + 1\nORDER BY (id + 1, id2 + 3)\nSAMPLE BY id + 1\nTTL dt + toIntervalMonth(3)\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE 02484_substitute_udf
+--Result--
+[('CREATE TABLE test.`02484_substitute_udf`\n(\n    `id` UInt32,\n    `dt` DateTime,\n    `number` UInt32,\n    `id2` UInt64\n)\nENGINE = MergeTree\nPARTITION BY id + 2\nPRIMARY KEY id + 1\nORDER BY (id + 1, id2 + 3)\nSAMPLE BY id + 1\nTTL dt + toIntervalDay(3)\nSETTINGS index_granularity = 8192',)]
++--------------------+

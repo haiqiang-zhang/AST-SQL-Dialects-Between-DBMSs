@@ -1,0 +1,15 @@
+--Query--
+WITH number * 2 AS square_number SELECT number, square_number FROM numbers_indexed WHERE number = 999
+--Result--
+[(999, 1998)]
++--------------------+
+--Query--
+SELECT * FROM squares WHERE number = 999
+--Result--
+[(999, 1998)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT number, square_number FROM ( WITH number * 2 AS square_number SELECT number, square_number FROM numbers_indexed) AS squares WHERE number = 999
+--Result--
+[('SELECT',), ('    number,',), ('    square_number',), ('FROM',), ('(',), ('    WITH number * 2 AS square_number',), ('    SELECT',), ('        number,',), ('        square_number',), ('    FROM numbers_indexed',), ('    WHERE number = 999',), (') AS squares',), ('WHERE number = 999',)]
++--------------------+

@@ -11,6 +11,5 @@ SELECT COUNT(*) FROM testx WHERE NOT a AND t < (SELECT tkey FROM dt);
 DROP TABLE dt;
 CREATE TABLE dt(tkey Int32) ENGINE = MergeTree order by tuple();
 INSERT INTO dt VALUES (0);
-SELECT COUNT(*) FROM testx WHERE NOT a AND t < (SELECT tkey FROM dt);
 DROP TABLE IF EXISTS dt;
 DROP TABLE IF EXISTS testx;

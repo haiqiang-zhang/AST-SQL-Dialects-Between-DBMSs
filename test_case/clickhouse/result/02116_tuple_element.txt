@@ -1,0 +1,45 @@
+--Query--
+SELECT t1.1 FROM t_tuple_element
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT t1.1 FROM t_tuple_element
+--Result--
+[('SELECT `t1.a`',), ('FROM t_tuple_element',)]
++--------------------+
+--Query--
+SELECT tupleElement(t1, 2) FROM t_tuple_element
+--Result--
+[('a',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT tupleElement(t1, 2) FROM t_tuple_element
+--Result--
+[('SELECT `t1.s`',), ('FROM t_tuple_element',)]
++--------------------+
+--Query--
+SELECT t2.1 FROM t_tuple_element
+--Result--
+[(2,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT t2.1 FROM t_tuple_element
+--Result--
+[('SELECT `t2.1`',), ('FROM t_tuple_element',)]
++--------------------+
+--Query--
+WITH (1, 2) AS t SELECT t.1, t.2
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX WITH (1, 2) AS t SELECT t.1, t.2
+--Result--
+[('WITH (1, 2) AS t',), ('SELECT',), ('    t.1,',), ('    t.2',)]
++--------------------+
+--Query--
+WITH (1, 2)::Tuple(a UInt32, b UInt32) AS t SELECT t.1, tupleElement(t, 'b')
+--Result--
+[(1, 2)]
++--------------------+

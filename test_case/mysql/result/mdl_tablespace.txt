@@ -1,0 +1,160 @@
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'ALTER TABLESPACE%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 2 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE '%TABLESPACE%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'ALTER TABLESPACE%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'ALTER TABLESPACE%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 2 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'DROP TABLESPACE%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'DROP TABLESPACE%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t3 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'DROP TABLESPACE%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'DROP TABLESPACE%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'ALTER TABLESPACE%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 FROM information_schema.processlist     WHERE state LIKE 'Waiting for tablespace metadata lock' AND           info LIKE 'ALTER TABLESPACE%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES test1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES part1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

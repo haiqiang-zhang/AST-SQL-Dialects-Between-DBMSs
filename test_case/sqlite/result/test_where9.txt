@@ -1,0 +1,30 @@
+--Query--
+ANALYZE t5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE x='y' AND (b=913 OR c=27027) ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE x='n' AND (b=913 OR c=27027) ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE (x='y' OR y='y') AND b=913 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t6 WHERE (x='y' OR y='y') AND c=27027 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 JOIN t1 USING(a)    WHERE (a=1)       OR (a=2 AND (SELECT 4 FROM t2,(SELECT 5 FROM t1 ORDER BY a) WHERE a))
+--Result--
+[]
++--------------------+

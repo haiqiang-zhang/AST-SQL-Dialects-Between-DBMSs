@@ -9,13 +9,7 @@ FROM
     FROM numbers(10)
 );
 SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(number) as t FROM numbers(0));
-SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(number::Nullable(UInt8)) as t FROM numbers(0));
-SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(number::LowCardinality(Nullable(UInt8))) as t FROM numbers(0)) settings allow_suspicious_low_cardinality_types=1;
 SELECT first_value_respect_nullsOrNullMerge(t) FROM (Select first_value_respect_nullsOrNullState(number) as t FROM numbers(0));
-SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(dummy) as t FROM system.one);
-SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(dummy::Nullable(UInt8)) as t FROM system.one);
-SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(NULL) as t FROM system.one);
-SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(NULL::Nullable(UInt8)) as t FROM system.one);
 SELECT
     anyLastIf(n, cond) RESPECT NULLS,
     anyLastIf(nullable_n, cond) RESPECT NULLS

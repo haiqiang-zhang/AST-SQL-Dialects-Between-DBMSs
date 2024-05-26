@@ -1,0 +1,15 @@
+--Query--
+SELECT * FROM (     SELECT number, ['left'] as ar, number AS left_number FROM system.numbers LIMIT 2 ) js1 FULL JOIN (     SELECT number, ['right'] as ar, number AS right_number FROM system.numbers LIMIT 1, 2 ) js2 USING (number) ORDER BY number
+--Result--
+[(0, ['left'], 0, [], None), (1, ['left'], 1, ['right'], 1), (2, [], None, ['right'], 2)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT ['left'] as ar, number AS left_number FROM system.numbers LIMIT 2 ) js1 FULL JOIN (     SELECT ['right'] as ar, number AS right_number FROM system.numbers LIMIT 1, 2 ) js2 ON left_number = right_number ORDER BY left_number
+--Result--
+[(['left'], 0, [], None), (['left'], 1, ['right'], 1), ([], None, ['right'], 2)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT ['left'] as ar, 42 AS left_number ) js1 FULL JOIN (     SELECT ['right'] as ar, 42 AS right_number ) js2 USING(ar) ORDER BY left_number
+--Result--
+[(['left'], 42, None), (['right'], None, 42)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+SELECT UUIDNumToString(toFixedString(unhex('0123456789ABCDEF0123456789ABCDEF' AS hex) AS bytes, 16) AS uuid_binary) AS uuid_string, hex(UUIDStringToNum(uuid_string)) = hex AS test1, UUIDStringToNum(uuid_string) = bytes AS test2
+--Result--
+[('01234567-89ab-cdef-0123-456789abcdef', 1, 1)]
++--------------------+
+--Query--
+SELECT UUIDNumToString(toFixedString(unhex(materialize('0123456789ABCDEF0123456789ABCDEF') AS hex) AS bytes, 16) AS uuid_binary) AS uuid_string, hex(UUIDStringToNum(uuid_string)) = hex AS test1, UUIDStringToNum(uuid_string) = bytes AS test2
+--Result--
+[('01234567-89ab-cdef-0123-456789abcdef', 1, 1)]
++--------------------+
+--Query--
+SELECT hex(UUIDStringToNum('01234567-89ab-cdef-0123-456789abcdef'))
+--Result--
+[('0123456789ABCDEF0123456789ABCDEF',)]
++--------------------+
+--Query--
+SELECT '01234567-89ab-cdef-0123-456789abcdef' AS str, UUIDNumToString(UUIDStringToNum(str)), UUIDNumToString(UUIDStringToNum(toFixedString(str, 36)))
+--Result--
+[('01234567-89ab-cdef-0123-456789abcdef', '01234567-89ab-cdef-0123-456789abcdef', '01234567-89ab-cdef-0123-456789abcdef')]
++--------------------+
+--Query--
+SELECT toString(toUUID('3f1ed72e-f7fe-4459-9cbe-95fe9298f845'))
+--Result--
+[('3f1ed72e-f7fe-4459-9cbe-95fe9298f845',)]
++--------------------+
+--Query--
+with generateUUIDv4() as uuid,     identity(lower(hex(reverse(reinterpretAsString(uuid))))) as str,     reinterpretAsUUID(reverse(unhex(str))) as uuid2 select uuid = uuid2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select '-- UUID variants --'
+--Result--
+[('-- UUID variants --',)]
++--------------------+

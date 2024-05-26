@@ -1,0 +1,15 @@
+--Query--
+SYSTEM STOP MERGES t_json
+--Result--
+[]
++--------------------+
+--Query--
+SELECT toTypeName(obj) FROM t_json LIMIT 1
+--Result--
+[('Tuple(\n    foo Int8,\n    k1 Int8,\n    k2 Int8)',)]
++--------------------+
+--Query--
+SELECT count() FROM t_json WHERE obj.foo != 0
+--Result--
+[(1,)]
++--------------------+

@@ -1,11 +1,6 @@
 drop table if exists simple_agg_groupArrayLastArray;
 select groupArrayLast(1)(number+1) from numbers(5);
-select groupArrayLast(3)(number+1) from numbers(5);
-select groupArrayLast(3)(number+1) from numbers(10);
-select groupArrayLast(3)((number+1)::String) from numbers(5);
-select groupArrayLast(3)((number+1)::String) from numbers(10);
 select groupArrayLastArray(3)([1,2,3,4,5,6]);
-select groupArrayLastArray(3)(['1','2','3','4','5','6']);
 create table simple_agg_groupArrayLastArray (key Int, value SimpleAggregateFunction(groupArrayLastArray(5), Array(UInt64))) engine=AggregatingMergeTree() order by key;
 insert into simple_agg_groupArrayLastArray values (1, [1,2,3]), (1, [4,5,6]), (2, [4,5,6]), (2, [1,2,3]);
 select * from simple_agg_groupArrayLastArray order by key, value;

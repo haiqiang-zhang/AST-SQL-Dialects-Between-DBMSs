@@ -18,7 +18,6 @@ SELECT 'SYSTEM RELOAD DICTIONARIES ON CLUSTER test_shard_localhost';
 SET distributed_ddl_output_mode='throw';
 SET distributed_ddl_output_mode='none';
 SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict';
-SELECT dictGetUInt64('dict_db_02179.dict', 'val', toUInt64(1));
 SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_02179' AND name = 'dict';
 SELECT 'CREATE DATABASE';
 DROP DATABASE IF EXISTS empty_db_02179;

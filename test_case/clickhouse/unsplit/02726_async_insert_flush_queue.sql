@@ -7,6 +7,4 @@ SET async_insert_busy_timeout_max_ms = 10000000;
 INSERT INTO t_async_inserts_flush VALUES (1) (2);
 SELECT count() FROM t_async_inserts_flush;
 SYSTEM FLUSH ASYNC INSERT QUEUE;
-SELECT count() FROM system.asynchronous_inserts;
-SELECT count() FROM t_async_inserts_flush;
 DROP TABLE t_async_inserts_flush;

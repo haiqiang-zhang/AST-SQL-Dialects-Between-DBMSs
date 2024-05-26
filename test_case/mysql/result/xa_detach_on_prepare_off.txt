@@ -1,0 +1,70 @@
+--Query--
+select * from t1
+--Result--
+[(10,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(10,), (20,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(10,), (20,), (30,), (40,)]
++--------------------+
+--Query--
+select count(*) from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT @@autocommit
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT a FROM t2 WHERE a=1 FOR SHARE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.innodb_trx   WHERE trx_query = 'SELECT a FROM t1 WHERE a=1 FOR UPDATE' AND   trx_operation_state = 'starting index read' AND   trx_state = 'LOCK WAIT'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a FROM t2 WHERE a=1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+

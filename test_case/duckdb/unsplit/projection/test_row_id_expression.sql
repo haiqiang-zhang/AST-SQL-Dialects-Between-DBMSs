@@ -11,7 +11,6 @@ SELECT SUM(rowid), MIN(rowid), MAX(rowid), COUNT(rowid), FIRST(rowid) FROM a;
 SELECT SUM(rowid), MIN(rowid), MAX(rowid), COUNT(rowid), LAST(rowid) FROM a;
 SELECT COUNT(*) FROM a;
 SELECT SUM(rowid), MIN(rowid), MAX(rowid), COUNT(rowid), FIRST(rowid), LAST(rowid) FROM a GROUP BY i;
-SELECT SUM(i) FROM a GROUP BY rowid;
 SELECT * FROM a, a a2 WHERE a.rowid=a2.rowid;
 SELECT * FROM a, a a2 WHERE a.rowid<>a2.rowid;
 SELECT * FROM a, a a2 WHERE a.rowid>=a2.rowid;

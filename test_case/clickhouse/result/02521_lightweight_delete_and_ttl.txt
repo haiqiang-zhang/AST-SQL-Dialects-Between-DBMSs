@@ -1,0 +1,20 @@
+--Query--
+OPTIMIZE TABLE lwd_test_02521 FINAL SETTINGS mutations_sync = 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Rows in parts', SUM(rows) FROM system.parts WHERE database = currentDatabase() AND table = 'lwd_test_02521' AND active
+--Result--
+[('Rows in parts', 100000)]
++--------------------+
+--Query--
+SELECT 'Count', count() FROM lwd_test_02521
+--Result--
+[('Count', 100000)]
++--------------------+
+--Query--
+OPTIMIZE TABLE lwd_test_02521 FINAL SETTINGS mutations_sync = 1
+--Result--
+[]
++--------------------+

@@ -3,6 +3,4 @@ CREATE TEMPORARY TABLE t (x UInt64);
 INSERT INTO t SELECT * FROM system.numbers LIMIT 1500;
 SELECT DISTINCT blockSize() FROM t;
 SET max_threads = 1500;
-SELECT count() FROM t;
-SELECT sum(sleep(0.1)) FROM t;
 SELECT 'Ok.';

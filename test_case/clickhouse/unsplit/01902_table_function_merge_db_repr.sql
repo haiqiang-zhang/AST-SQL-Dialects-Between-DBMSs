@@ -31,7 +31,6 @@ CREATE TABLE 01902_db.t_merge1 as 01902_db.t ENGINE=Merge('01902_db', '^t$');
 SELECT 'SELECT _database, _table, n FROM 01902_db.t_merge1 ORDER BY _database, _table, n';
 SELECT _database, _table, n FROM 01902_db.t_merge1 ORDER BY _database, _table, n;
 SELECT 'SELECT _database, _table, n FROM merge(01902_db, ^t$) ORDER BY _database, _table, n';
-SELECT _database, _table, n FROM merge('01902_db', '^t$') ORDER BY _database, _table, n;
 USE 01902_db1;
 SELECT 'CREATE TABLE t_merge_1 as 01902_db.t ENGINE=Merge(currentDatabase(), ^t)';
 CREATE TABLE 01902_db.t_merge_1 as 01902_db.t ENGINE=Merge(currentDatabase(), '^t');
@@ -40,7 +39,6 @@ SELECT _database, _table, n FROM 01902_db.t_merge_1 ORDER BY _database, _table, 
 SELECT 'SHOW CREATE TABLE 01902_db.t_merge_1';
 SHOW CREATE TABLE 01902_db.t_merge_1;
 SELECT 'SELECT _database, _table, n FROM merge(currentDatabase(), ^t) ORDER BY _database, _table, n';
-SELECT _database, _table, n FROM merge(currentDatabase(), '^t') ORDER BY _database, _table, n;
 CREATE TABLE 01902_db.t4 (n Date) ENGINE=MergeTree ORDER BY n;
 INSERT INTO 01902_db.t4   SELECT * FROM numbers(10);
 DROP DATABASE 01902_db;

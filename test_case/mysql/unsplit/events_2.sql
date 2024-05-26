@@ -12,13 +12,10 @@ select /*1*/ user, host, db, command, state, info
   order by info;
 select release_lock("test_lock1");
 select count(*) from information_schema.events;
-select get_lock("test_lock2", 20);
 select /*2*/ user, host, db, command, state, info
   from information_schema.processlist
   where (info like "select get_lock%" OR user='event_scheduler')
   order by info;
-select release_lock("test_lock2");
-select get_lock("test_lock2_1", 20);
 select /*3*/ user, host, db, command, state, info
   from information_schema.processlist
   where (info like "select get_lock%" OR user='event_scheduler')
@@ -27,7 +24,6 @@ select /*4*/ user, host, db, command, state, info
   from information_schema.processlist
   where (info like "select get_lock%" OR user='event_scheduler')
   order by info;
-select release_lock("test_lock2_1");
 select count(*) = 0 from information_schema.processlist
   where db='events_test' and command = 'Connect' and user=current_user();
 create table t_16 (s1 int);
@@ -65,32 +61,14 @@ create event event_35981 on schedule every 6 month on completion preserve
 disable
 do
   select 1;
-select  count(*) from information_schema.events
-where   event_schema = database() and event_name = 'event_35981' and
-        on_completion = 'PRESERVE';
 alter   event event_35981 enable;
-select  count(*) from information_schema.events
-where   event_schema = database() and event_name = 'event_35981' and
-        on_completion = 'PRESERVE';
 alter   event event_35981 on completion not preserve;
-select  count(*) from information_schema.events
-where   event_schema = database() and event_name = 'event_35981' and
-        on_completion = 'NOT PRESERVE';
 alter   event event_35981 disable;
-select  count(*) from information_schema.events
-where   event_schema = database() and event_name = 'event_35981' and
-        on_completion = 'NOT PRESERVE';
 alter   event event_35981 on completion preserve;
-select  count(*) from information_schema.events
-where   event_schema = database() and event_name = 'event_35981' and
-        on_completion = 'PRESERVE';
 drop event event_35981;
 create event event_35981 on schedule every 6 month disable
 do
   select 1;
-select  count(*) from information_schema.events
-where   event_schema = database() and event_name = 'event_35981' and
-        on_completion = 'NOT PRESERVE';
 drop event event_35981;
 create event event_35981 on schedule every 1 hour starts current_timestamp
   on completion not preserve

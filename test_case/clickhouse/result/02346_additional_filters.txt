@@ -1,0 +1,250 @@
+--Query--
+select * from table_1
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd')]
++--------------------+
+--Query--
+select * from table_1 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1, 'a'), (3, 'ccc'), (4, 'dddd')]
++--------------------+
+--Query--
+select * from table_1 settings additional_table_filters={'table_1' : 'x != 2 and x != 3'}
+--Result--
+[(1, 'a'), (4, 'dddd')]
++--------------------+
+--Query--
+select x from table_1 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,), (3,), (4,)]
++--------------------+
+--Query--
+select y from table_1 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[('a',), ('ccc',), ('dddd',)]
++--------------------+
+--Query--
+select * from table_1 where x != 3 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1, 'a'), (4, 'dddd')]
++--------------------+
+--Query--
+select * from table_1 prewhere x != 4 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1, 'a'), (3, 'ccc')]
++--------------------+
+--Query--
+select * from table_1 prewhere x != 4 where x != 3 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1, 'a')]
++--------------------+
+--Query--
+select x from table_1 where x != 3 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,), (4,)]
++--------------------+
+--Query--
+select x from table_1 prewhere x != 4 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+select x from table_1 prewhere x != 4 where x != 3 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select y from table_1 where x != 3 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[('a',), ('dddd',)]
++--------------------+
+--Query--
+select y from table_1 prewhere x != 4 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[('a',), ('ccc',)]
++--------------------+
+--Query--
+select y from table_1 prewhere x != 4 where x != 3 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select x from table_1 where x != 2 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,), (3,), (4,)]
++--------------------+
+--Query--
+select x from table_1 prewhere x != 2 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,), (3,), (4,)]
++--------------------+
+--Query--
+select x from table_1 prewhere x != 2 where x != 2 settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1,), (3,), (4,)]
++--------------------+
+--Query--
+select * from system.numbers limit 5
+--Result--
+[(0,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+select * from system.numbers as t limit 5 settings additional_table_filters={'t' : 'number % 2 != 0'}
+--Result--
+[(1,), (3,), (5,), (7,), (9,)]
++--------------------+
+--Query--
+select * from system.numbers limit 5 settings additional_table_filters={'system.numbers' : 'number != 3'}
+--Result--
+[(0,), (1,), (2,), (4,), (5,)]
++--------------------+
+--Query--
+select * from system.numbers limit 5 settings additional_table_filters={'system.numbers':'number != 3','table_1':'x!=2'}
+--Result--
+[(0,), (1,), (2,), (4,), (5,)]
++--------------------+
+--Query--
+select * from (select number from system.numbers limit 5 union all select x from table_1) order by number settings additional_table_filters={'system.numbers':'number != 3','table_1':'x!=2'}
+--Result--
+[(0,), (1,), (1,), (2,), (3,), (4,), (4,), (5,)]
++--------------------+
+--Query--
+select number, x, y from (select number from system.numbers limit 5) f any left join (select x, y from table_1) s on f.number = s.x settings additional_table_filters={'system.numbers' : 'number != 3', 'table_1' : 'x != 2'}
+--Result--
+[(0, 0, ''), (1, 1, 'a'), (2, 0, ''), (4, 4, 'dddd'), (5, 0, '')]
++--------------------+
+--Query--
+select b + 1 as c from (select a + 1 as b from (select x + 1 as a from table_1)) settings additional_table_filters={'table_1' : 'x != 2 and x != 3'}
+--Result--
+[(4,), (7,)]
++--------------------+
+--Query--
+select * from v_numbers
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+select * from v_numbers settings additional_table_filters={'system.numbers' : 'number != 3'}
+--Result--
+[(1,), (2,), (3,), (5,), (6,)]
++--------------------+
+--Query--
+select * from v_numbers settings additional_table_filters={'v_numbers' : 'x != 3'}
+--Result--
+[(1,), (2,), (4,), (5,)]
++--------------------+
+--Query--
+select * from v_numbers settings additional_table_filters={'system.numbers' : 'number != 3', 'v_numbers' : 'x != 3'}
+--Result--
+[(1,), (2,), (5,), (6,)]
++--------------------+
+--Query--
+select * from mv_table
+--Result--
+[(4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from mv_table settings additional_table_filters={'mv_table' : 'x != 5'}
+--Result--
+[(4, 'dddd'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from mv_table settings additional_table_filters={'table_1' : 'x != 5'}
+--Result--
+[(4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from mv_table settings additional_table_filters={'table_2' : 'x != 5'}
+--Result--
+[(4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x settings additional_table_filters={'table_1' : 'x != 2'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'table_2' : 'x != 5'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'table_1' : 'x != 2', 'table_2' : 'x != 5'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'table_1' : 'x != 4'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'table_2' : 'x != 4'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'table_1' : 'x != 4', 'table_2' : 'x != 4'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (4, 'dddd'), (4, 'dddd'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'m_table' : 'x != 4'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from m_table order by x  settings additional_table_filters={'m_table' : 'x != 4', 'table_1' : 'x != 2', 'table_2' : 'x != 5'}
+--Result--
+[(1, 'a'), (2, 'bb'), (3, 'ccc'), (5, 'eeeee'), (6, 'ffffff'), (7, 'ggggggg')]
++--------------------+
+--Query--
+select * from table_1 settings additional_result_filter='x != 2'
+--Result--
+[(1, 'a'), (3, 'ccc'), (4, 'dddd')]
++--------------------+
+--Query--
+select *, x != 2 from table_1 settings additional_result_filter='x != 2'
+--Result--
+[(1, 'a', 1), (3, 'ccc', 1), (4, 'dddd', 1)]
++--------------------+
+--Query--
+select * from table_1 where x != 1 settings additional_result_filter='x != 2'
+--Result--
+[(3, 'ccc'), (4, 'dddd')]
++--------------------+
+--Query--
+select * from table_1 where x != 1 settings additional_result_filter='x != 2 and x != 3'
+--Result--
+[(4, 'dddd')]
++--------------------+
+--Query--
+select * from table_1 prewhere x != 3 where x != 1 settings additional_result_filter='x != 2'
+--Result--
+[(4, 'dddd')]
++--------------------+
+--Query--
+select * from table_1 limit 3 settings additional_result_filter='x != 2'
+--Result--
+[(1, 'a'), (3, 'ccc')]
++--------------------+
+--Query--
+select x + 1 from table_1 settings additional_result_filter='`plus(x, 1)` != 2'
+--Result--
+[(3,), (4,), (5,)]
++--------------------+
+--Query--
+select * from (select x + 1 as a, y from table_1 union all select x as a, y from table_1) order by a, y settings additional_result_filter='a = 3'
+--Result--
+[(3, 'bb'), (3, 'ccc')]
++--------------------+
+--Query--
+select * from (select x + 1 as a, y from table_1 union all select x as a, y from table_1) order by a, y settings additional_result_filter='a != 3'
+--Result--
+[(1, 'a'), (2, 'a'), (2, 'bb'), (4, 'ccc'), (4, 'dddd'), (5, 'dddd')]
++--------------------+

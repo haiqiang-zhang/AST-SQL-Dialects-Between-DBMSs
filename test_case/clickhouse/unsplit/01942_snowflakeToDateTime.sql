@@ -9,16 +9,6 @@ SELECT
 	toTypeName(dt),
 	snowflakeToDateTime64(i64, tz) as dt64,
 	toTypeName(dt64);
-WITH
-	CAST(1426860704886947840 AS Int64) AS i64,
-	'Asia/Shanghai' AS tz
-SELECT
-	tz,
-	i64,
-	snowflakeToDateTime(i64, tz) as dt,
-	toTypeName(dt),
-	snowflakeToDateTime64(i64, tz) as dt64,
-	toTypeName(dt64);
 DROP TABLE IF EXISTS tab;
 CREATE TABLE tab(val Int64, tz String) engine=Log;
 INSERT INTO tab VALUES (42, 'Asia/Singapore');

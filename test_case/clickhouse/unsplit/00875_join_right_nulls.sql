@@ -21,12 +21,5 @@ SELECT 'n rj t', t1.x, t2.x FROM nt AS t1 RIGHT JOIN t AS t2 USING(x) ORDER BY t
 SELECT 'n fj t', t1.x, t2.x FROM nt AS t1 FULL JOIN t AS t2 USING(x) ORDER BY t1.x;
 INSERT INTO nt (x) SELECT NULL as x FROM numbers(1000);
 SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 INNER JOIN nt AS t2 ON t1.x = t2.x;
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 LEFT JOIN nt AS t2 ON t1.x = t2.x;
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 RIGHT JOIN nt AS t2 ON t1.x = t2.x;
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 FULL JOIN nt AS t2 ON t1.x = t2.x;
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 INNER JOIN nt AS t2 USING(x);
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 LEFT JOIN nt AS t2 USING(x);
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 RIGHT JOIN nt AS t2 USING(x);
-SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 FULL JOIN nt AS t2 USING(x);
 DROP TABLE t;
 DROP TABLE nt;

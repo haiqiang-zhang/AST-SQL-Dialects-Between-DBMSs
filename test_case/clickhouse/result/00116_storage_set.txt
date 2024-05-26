@@ -1,0 +1,70 @@
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set
+--Result--
+[]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s NOT IN set
+--Result--
+[('Hello',), ('test',), ('World',), ('world',), ('abc',), ('xyz',)]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set
+--Result--
+[('Hello',), ('World',)]
++--------------------+
+--Query--
+RENAME TABLE set TO set2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set2
+--Result--
+[('Hello',), ('World',)]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set2
+--Result--
+[('Hello',), ('World',)]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set2
+--Result--
+[('Hello',), ('World',), ('abc',)]
++--------------------+
+--Query--
+DETACH TABLE set2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE set2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set2
+--Result--
+[('Hello',), ('World',), ('abc',)]
++--------------------+
+--Query--
+RENAME TABLE set2 TO set
+--Result--
+[]
++--------------------+
+--Query--
+SELECT arrayJoin(['Hello', 'test', 'World', 'world', 'abc', 'xyz']) AS s WHERE s IN set
+--Result--
+[('Hello',), ('World',), ('abc',)]
++--------------------+
+--Query--
+SELECT * FROM tab PREWHERE x IN (set) WHERE x IN (set) LIMIT 1 settings allow_experimental_analyzer=0
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT * FROM tab PREWHERE x IN (set) WHERE x IN (set) LIMIT 1 settings allow_experimental_analyzer=1
+--Result--
+[('Hello',)]
++--------------------+

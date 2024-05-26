@@ -1,0 +1,45 @@
+--Query--
+optimize table xp final
+--Result--
+[]
++--------------------+
+--Query--
+select * from xp where i in [0, 1]
+--Result--
+[(0, 2), (1, 3)]
++--------------------+
+--Query--
+select * from xp where i global in [0, 1]
+--Result--
+[(0, 2), (1, 3)]
++--------------------+
+--Query--
+select * from xp where i in (select * from numbers(2))
+--Result--
+[(0, 2), (1, 3)]
++--------------------+
+--Query--
+select * from xp where i global in (select * from numbers(2))
+--Result--
+[(0, 2), (1, 3)]
++--------------------+
+--Query--
+select * from xp where i in (select * from numbers(2))
+--Result--
+[(0, 2), (1, 3)]
++--------------------+
+--Query--
+select * from xp where i global in (select * from numbers(2))
+--Result--
+[(0, 2), (1, 3)]
++--------------------+
+--Query--
+select * from xp where i in (null)
+--Result--
+[(None, 100)]
++--------------------+
+--Query--
+select * from xp where i global in (null)
+--Result--
+[(None, 100)]
++--------------------+

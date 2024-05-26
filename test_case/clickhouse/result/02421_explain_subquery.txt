@@ -1,0 +1,80 @@
+--Query--
+SELECT count() > 3 FROM (EXPLAIN PIPELINE header = 1 SELECT * FROM system.numbers ORDER BY number DESC) WHERE explain LIKE '%Header: number UInt64%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 0 FROM (EXPLAIN PLAN SELECT * FROM system.numbers ORDER BY number DESC) WHERE explain ILIKE '%Sort%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 0 FROM (EXPLAIN SELECT * FROM system.numbers ORDER BY number DESC) WHERE explain ILIKE '%Sort%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 0 FROM (EXPLAIN CURRENT TRANSACTION)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() == 1 FROM (EXPLAIN SYNTAX SELECT number FROM system.numbers ORDER BY number DESC) WHERE explain ILIKE 'SELECT%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT trim(explain) == 'Asterisk' FROM (EXPLAIN AST SELECT * FROM system.numbers LIMIT 10) WHERE explain LIKE '%Asterisk%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (EXPLAIN SYNTAX oneline = 1 SELECT 1) == 'SELECT 1'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT rows > 1000 FROM (EXPLAIN ESTIMATE SELECT sum(a) FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() == 1 FROM (EXPLAIN ESTIMATE SELECT sum(a) FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 3 FROM (EXPLAIN PIPELINE header = 1 SELECT * FROM system.numbers ORDER BY number DESC) WHERE explain LIKE '%Header: \_\_table1.number UInt64%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 0 FROM (EXPLAIN PLAN SELECT * FROM system.numbers ORDER BY number DESC) WHERE explain ILIKE '%Sort%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 0 FROM (EXPLAIN SELECT * FROM system.numbers ORDER BY number DESC) WHERE explain ILIKE '%Sort%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() > 0 FROM (EXPLAIN CURRENT TRANSACTION)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() == 1 FROM (EXPLAIN SYNTAX SELECT number FROM system.numbers ORDER BY number DESC) WHERE explain ILIKE 'SELECT%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT trim(explain) == 'Asterisk' FROM (EXPLAIN AST SELECT * FROM system.numbers LIMIT 10) WHERE explain LIKE '%Asterisk%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (EXPLAIN SYNTAX oneline = 1 SELECT 1) == 'SELECT 1 FROM system.one'
+--Result--
+[(1,)]
++--------------------+

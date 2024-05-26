@@ -1,0 +1,240 @@
+--Query--
+select 'inner'
+--Result--
+[('inner',)]
++--------------------+
+--Query--
+select X.*, Y.* from X inner join Y on X.id = Y.id order by X.id, X.x_a, X.x_b, Y.id, Y.y_a, Y.y_b
+--Result--
+[(1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'inner subs'
+--Result--
+[('inner subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s inner join (select * from Y) as j on s.id = j.id order by s.id, s.x_a, s.x_b, j.id, j.y_a, j.y_b
+--Result--
+[(1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'inner expr'
+--Result--
+[('inner expr',)]
++--------------------+
+--Query--
+select X.*, Y.* from X inner join Y on (X.id + 1) = (Y.id + 1) order by X.id, X.x_a, X.x_b, Y.id, Y.y_a, Y.y_b
+--Result--
+[(1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'left'
+--Result--
+[('left',)]
++--------------------+
+--Query--
+select X.*, Y.* from X left join Y on X.id = Y.id order by X.id, X.x_a, X.x_b, Y.id, Y.y_a, Y.y_b
+--Result--
+[(1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'left subs'
+--Result--
+[('left subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s left join (select * from Y) as j on s.id = j.id order by s.id, s.x_a, s.x_b, j.id, j.y_a, j.y_b
+--Result--
+[(1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'left expr'
+--Result--
+[('left expr',)]
++--------------------+
+--Query--
+select X.*, Y.* from X left join Y on (X.id + 1) = (Y.id + 1) order by X.id, X.x_a, X.x_b, Y.id, Y.y_a, Y.y_b
+--Result--
+[(1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'right'
+--Result--
+[('right',)]
++--------------------+
+--Query--
+select X.*, Y.* from X right join Y on X.id = Y.id order by X.id, X.x_a, X.x_b, Y.id, Y.y_a, Y.y_b
+--Result--
+[(0, '', None, 6, 'r7', 'nr7'), (0, '', None, 7, 'r8', 'nr8'), (1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'right subs'
+--Result--
+[('right subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s right join (select * from Y) as j on s.id = j.id order by s.id, s.x_a, s.x_b, j.id, j.y_a, j.y_b
+--Result--
+[(0, '', None, 6, 'r7', 'nr7'), (0, '', None, 7, 'r8', 'nr8'), (1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'full'
+--Result--
+[('full',)]
++--------------------+
+--Query--
+select X.*, Y.* from X full join Y on X.id = Y.id order by X.id, X.x_a, X.x_b, Y.id, Y.y_a, Y.y_b
+--Result--
+[(0, '', None, 6, 'r7', 'nr7'), (0, '', None, 7, 'r8', 'nr8'), (1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'full subs'
+--Result--
+[('full subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s full join (select * from Y) as j on s.id = j.id order by s.id, s.x_a, s.x_b, j.id, j.y_a, j.y_b
+--Result--
+[(0, '', None, 6, 'r7', 'nr7'), (0, '', None, 7, 'r8', 'nr8'), (1, 'l1', 1, 1, 'r1', None), (1, 'l1', 1, 1, 'r2', None), (2, 'l2', 2, 2, 'r3', None), (2, 'l3', 3, 2, 'r3', None), (3, 'l4', 4, 3, 'r4', None), (3, 'l4', 4, 3, 'r5', None), (4, 'l5', None, 4, 'r6', 'nr6'), (4, 'l6', None, 4, 'r6', 'nr6'), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'self inner'
+--Result--
+[('self inner',)]
++--------------------+
+--Query--
+select X.*, s.* from X inner join (select * from X) as s on X.id = s.id order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l2', 2, 2, 'l3', 3), (2, 'l3', 3, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4), (4, 'l5', None, 4, 'l5', None), (4, 'l5', None, 4, 'l6', None), (4, 'l6', None, 4, 'l5', None), (4, 'l6', None, 4, 'l6', None), (5, 'l7', None, 5, 'l7', None), (8, 'l8', None, 8, 'l8', None), (9, 'l9', None, 9, 'l9', None)]
++--------------------+
+--Query--
+select 'self inner nullable'
+--Result--
+[('self inner nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X inner join (select * from X) as s on X.x_b = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4)]
++--------------------+
+--Query--
+select 'self inner nullable vs not nullable'
+--Result--
+[('self inner nullable vs not nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X inner join (select * from X) as s on X.id = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l2', 2), (3, 'l4', 4, 2, 'l3', 3), (4, 'l5', None, 3, 'l4', 4), (4, 'l6', None, 3, 'l4', 4)]
++--------------------+
+--Query--
+select 'self inner nullable vs not nullable 2'
+--Result--
+[('self inner nullable vs not nullable 2',)]
++--------------------+
+--Query--
+select Y.*, s.* from Y inner join (select * from Y) as s on concat('n', Y.y_a) = s.y_b order by Y.id, Y.y_a, Y.y_b, s.id, s.y_a, s.y_b
+--Result--
+[(4, 'r6', 'nr6', 4, 'r6', 'nr6'), (6, 'r7', 'nr7', 6, 'r7', 'nr7'), (7, 'r8', 'nr8', 7, 'r8', 'nr8'), (9, 'r9', 'nr9', 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'self left'
+--Result--
+[('self left',)]
++--------------------+
+--Query--
+select X.*, s.* from X left join (select * from X) as s on X.id = s.id order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l2', 2, 2, 'l3', 3), (2, 'l3', 3, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4), (4, 'l5', None, 4, 'l5', None), (4, 'l5', None, 4, 'l6', None), (4, 'l6', None, 4, 'l5', None), (4, 'l6', None, 4, 'l6', None), (5, 'l7', None, 5, 'l7', None), (8, 'l8', None, 8, 'l8', None), (9, 'l9', None, 9, 'l9', None)]
++--------------------+
+--Query--
+select 'self left nullable'
+--Result--
+[('self left nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X left join (select * from X) as s on X.x_b = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4), (4, 'l5', None, 0, '', None), (4, 'l6', None, 0, '', None), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 0, '', None)]
++--------------------+
+--Query--
+select 'self left nullable vs not nullable'
+--Result--
+[('self left nullable vs not nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X left join (select * from X) as s on X.id = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l2', 2), (3, 'l4', 4, 2, 'l3', 3), (4, 'l5', None, 3, 'l4', 4), (4, 'l6', None, 3, 'l4', 4), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 0, '', None)]
++--------------------+
+--Query--
+select 'self left nullable vs not nullable 2'
+--Result--
+[('self left nullable vs not nullable 2',)]
++--------------------+
+--Query--
+select Y.*, s.* from Y left join (select * from Y) as s on concat('n', Y.y_a) = s.y_b order by Y.id, Y.y_a, Y.y_b, s.id, s.y_a, s.y_b
+--Result--
+[(1, 'r1', None, 0, '', None), (1, 'r2', None, 0, '', None), (2, 'r3', None, 0, '', None), (3, 'r4', None, 0, '', None), (3, 'r5', None, 0, '', None), (4, 'r6', 'nr6', 4, 'r6', 'nr6'), (6, 'r7', 'nr7', 6, 'r7', 'nr7'), (7, 'r8', 'nr8', 7, 'r8', 'nr8'), (9, 'r9', 'nr9', 9, 'r9', 'nr9')]
++--------------------+
+--Query--
+select 'self right'
+--Result--
+[('self right',)]
++--------------------+
+--Query--
+select X.*, s.* from X right join (select * from X) as s on X.id = s.id order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l2', 2, 2, 'l3', 3), (2, 'l3', 3, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4), (4, 'l5', None, 4, 'l5', None), (4, 'l5', None, 4, 'l6', None), (4, 'l6', None, 4, 'l5', None), (4, 'l6', None, 4, 'l6', None), (5, 'l7', None, 5, 'l7', None), (8, 'l8', None, 8, 'l8', None), (9, 'l9', None, 9, 'l9', None)]
++--------------------+
+--Query--
+select 'self right nullable'
+--Result--
+[('self right nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X right join (select * from X) as s on X.x_b = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(0, '', None, 4, 'l5', None), (0, '', None, 4, 'l6', None), (0, '', None, 5, 'l7', None), (0, '', None, 8, 'l8', None), (0, '', None, 9, 'l9', None), (1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4)]
++--------------------+
+--Query--
+select 'self right nullable vs not nullable'
+--Result--
+[('self right nullable vs not nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X right join (select * from X) as s on X.id = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(0, '', None, 4, 'l5', None), (0, '', None, 4, 'l6', None), (0, '', None, 5, 'l7', None), (0, '', None, 8, 'l8', None), (0, '', None, 9, 'l9', None), (1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l2', 2), (3, 'l4', 4, 2, 'l3', 3), (4, 'l5', None, 3, 'l4', 4), (4, 'l6', None, 3, 'l4', 4)]
++--------------------+
+--Query--
+select 'self full'
+--Result--
+[('self full',)]
++--------------------+
+--Query--
+select X.*, s.* from X full join (select * from X) as s on X.id = s.id order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l2', 2, 2, 'l3', 3), (2, 'l3', 3, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4), (4, 'l5', None, 4, 'l5', None), (4, 'l5', None, 4, 'l6', None), (4, 'l6', None, 4, 'l5', None), (4, 'l6', None, 4, 'l6', None), (5, 'l7', None, 5, 'l7', None), (8, 'l8', None, 8, 'l8', None), (9, 'l9', None, 9, 'l9', None)]
++--------------------+
+--Query--
+select 'self full nullable'
+--Result--
+[('self full nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X full join (select * from X) as s on X.x_b = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(0, '', None, 4, 'l5', None), (0, '', None, 4, 'l6', None), (0, '', None, 5, 'l7', None), (0, '', None, 8, 'l8', None), (0, '', None, 9, 'l9', None), (1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l3', 3), (3, 'l4', 4, 3, 'l4', 4), (4, 'l5', None, 0, '', None), (4, 'l6', None, 0, '', None), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 0, '', None)]
++--------------------+
+--Query--
+select 'self full nullable vs not nullable'
+--Result--
+[('self full nullable vs not nullable',)]
++--------------------+
+--Query--
+select X.*, s.* from X full join (select * from X) as s on X.id = s.x_b order by X.id, X.x_a, X.x_b, s.id, s.x_a, s.x_b
+--Result--
+[(0, '', None, 4, 'l5', None), (0, '', None, 4, 'l6', None), (0, '', None, 5, 'l7', None), (0, '', None, 8, 'l8', None), (0, '', None, 9, 'l9', None), (1, 'l1', 1, 1, 'l1', 1), (2, 'l2', 2, 2, 'l2', 2), (2, 'l3', 3, 2, 'l2', 2), (3, 'l4', 4, 2, 'l3', 3), (4, 'l5', None, 3, 'l4', 4), (4, 'l6', None, 3, 'l4', 4), (5, 'l7', None, 0, '', None), (8, 'l8', None, 0, '', None), (9, 'l9', None, 0, '', None)]
++--------------------+

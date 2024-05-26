@@ -1,0 +1,70 @@
+--Query--
+select 'test flush on replace'
+--Result--
+[('test flush on replace',)]
++--------------------+
+--Query--
+system stop distributed sends dist
+--Result--
+[]
++--------------------+
+--Query--
+system stop distributed sends buf
+--Result--
+[]
++--------------------+
+--Query--
+replace table buf (n int) engine=Buffer(currentDatabase(), dist, 1, 10, 100, 10, 100, 1000, 1000)
+--Result--
+[]
++--------------------+
+--Query--
+system stop distributed sends dist
+--Result--
+[]
++--------------------+
+--Query--
+replace table buf (n int) engine=Null
+--Result--
+[]
++--------------------+
+--Query--
+select * from t order by n
+--Result--
+[]
++--------------------+
+--Query--
+select 'exception on create and fill'
+--Result--
+[('exception on create and fill',)]
++--------------------+
+--Query--
+select count() from system.tables where database=currentDatabase() and name='join'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from numbers(10) as t any join join on t.number=join.n order by n
+--Result--
+[]
++--------------------+
+--Query--
+select * from numbers(10) as t any join join on t.number=join.n order by n
+--Result--
+[]
++--------------------+
+--Query--
+replace table join engine=Join(ANY, INNER, n) as select * from t
+--Result--
+[]
++--------------------+
+--Query--
+select * from numbers(10) as t any join join on t.number=join.n order by n
+--Result--
+[(4, 4, 's4')]
++--------------------+
+--Query--
+select name from system.tables where database=currentDatabase() order by name
+--Result--
+[('buf',), ('join',), ('t',)]
++--------------------+

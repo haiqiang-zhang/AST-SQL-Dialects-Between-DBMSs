@@ -1,0 +1,25 @@
+--Query--
+SELECT COUNT(DISTINCT c1) FROM t1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select c1,count(distinct i2) from t1 group by c1
+--Result--
+[('A', 30), ('B', 30), ('C', 30), ('D', 30), ('E', 30), ('F', 30)]
++--------------------+
+--Query--
+SELECT  t1.col_int   FROM t1, t3   WHERE  t3.col_varchar_key IN (      SELECT t2.col_varchar_key FROM t2 WHERE t2.pk > t1.col_int   )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1   JOIN t2 ON t1.a = t2.b WHERE t2.b IN (   SELECT t3.b   FROM t3 JOIN t4 ON t3.pk = t4.pk )
+--Result--
+[(2, 2), (2, 2)]
++--------------------+
+--Query--
+SELECT SUM(t1.col_int)   FROM t1, t2 WHERE t2.j IN (   SELECT t3.j FROM t2 JOIN t2 AS t3 ON t2.pk <> t3.pk ) AND t1.col_varchar_key=''
+--Result--
+[(None,)]
++--------------------+

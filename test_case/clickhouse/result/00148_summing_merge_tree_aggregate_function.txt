@@ -1,0 +1,70 @@
+--Query--
+select count() from summing_merge_tree_aggregate_function
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+
+--Query--
+select     k, sum(c),     uniqMerge(u), uniqExactMerge(ue) from summing_merge_tree_aggregate_function group by k
+--Result--
+[(1, 6, 3, 3)]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+
+--Query--
+select k, sum(c), topKMerge(2)(x) from summing_merge_tree_aggregate_function group by k
+--Result--
+[(1, 6, [3, 2])]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+
+--Query--
+select k, sum(c), topKWeightedMerge(2)(x) from summing_merge_tree_aggregate_function group by k
+--Result--
+[(1, 6, [3, 2])]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+
+--Query--
+select k, avgMerge(x) from summing_merge_tree_aggregate_function group by k
+--Result--
+[(1, 0.5)]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+
+--Query--
+select k, round(quantileMerge(0.1)(x), 1) from summing_merge_tree_aggregate_function group by k
+--Result--
+[(1, 0.1)]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+
+--Query--
+select k, sum(c), uniqMerge(u) from summing_merge_tree_aggregate_function group by k order by k
+--Result--
+[(0, 333333, 53), (1, 333333, 53), (2, 333333, 53)]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+

@@ -1,0 +1,10 @@
+--Query--
+SELECT number, ip, ip % number FROM (SELECT number, toIPv4('1.2.3.4') as ip FROM numbers(10, 20))
+--Result--
+[(10, IPv4Address('1.2.3.4'), 0), (11, IPv4Address('1.2.3.4'), 3), (12, IPv4Address('1.2.3.4'), 4), (13, IPv4Address('1.2.3.4'), 12), (14, IPv4Address('1.2.3.4'), 0), (15, IPv4Address('1.2.3.4'), 10), (16, IPv4Address('1.2.3.4'), 4), (17, IPv4Address('1.2.3.4'), 10), (18, IPv4Address('1.2.3.4'), 4), (19, IPv4Address('1.2.3.4'), 10), (20, IPv4Address('1.2.3.4'), 0), (21, IPv4Address('1.2.3.4'), 7), (22, IPv4Address('1.2.3.4'), 14), (23, IPv4Address('1.2.3.4'), 12), (24, IPv4Address('1.2.3.4'), 4), (25, IPv4Address('1.2.3.4'), 10), (26, IPv4Address('1.2.3.4'), 12), (27, IPv4Address('1.2.3.4'), 13), (28, IPv4Address('1.2.3.4'), 0), (29, IPv4Address('1.2.3.4'), 1)]
++--------------------+
+--Query--
+SELECT number, ip, number % ip FROM (SELECT number, toIPv4OrNull('0.0.0.3') as ip FROM numbers(10, 20))
+--Result--
+[(10, IPv4Address('0.0.0.3'), 1), (11, IPv4Address('0.0.0.3'), 2), (12, IPv4Address('0.0.0.3'), 0), (13, IPv4Address('0.0.0.3'), 1), (14, IPv4Address('0.0.0.3'), 2), (15, IPv4Address('0.0.0.3'), 0), (16, IPv4Address('0.0.0.3'), 1), (17, IPv4Address('0.0.0.3'), 2), (18, IPv4Address('0.0.0.3'), 0), (19, IPv4Address('0.0.0.3'), 1), (20, IPv4Address('0.0.0.3'), 2), (21, IPv4Address('0.0.0.3'), 0), (22, IPv4Address('0.0.0.3'), 1), (23, IPv4Address('0.0.0.3'), 2), (24, IPv4Address('0.0.0.3'), 0), (25, IPv4Address('0.0.0.3'), 1), (26, IPv4Address('0.0.0.3'), 2), (27, IPv4Address('0.0.0.3'), 0), (28, IPv4Address('0.0.0.3'), 1), (29, IPv4Address('0.0.0.3'), 2)]
++--------------------+

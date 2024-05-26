@@ -1,0 +1,75 @@
+--Query--
+SHOW CREATE TABLE ipv4_test
+--Result--
+[('CREATE TABLE test.ipv4_test\n(\n    `ipv4_` IPv4\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SELECT ipv4_, hex(ipv4_) FROM ipv4_test ORDER BY ipv4_
+--Result--
+[(IPv4Address('0.0.0.0'), '00'), (IPv4Address('8.8.8.8'), '08080808'), (IPv4Address('127.0.0.1'), '7F000001'), (IPv4Address('192.168.0.91'), 'C0A8005B'), (IPv4Address('255.255.255.255'), 'FFFFFFFF')]
++--------------------+
+--Query--
+SELECT '< 127.0.0.1', ipv4_ FROM ipv4_test     WHERE ipv4_ < toIPv4('127.0.0.1')     ORDER BY ipv4_
+--Result--
+[('< 127.0.0.1', IPv4Address('0.0.0.0')), ('< 127.0.0.1', IPv4Address('8.8.8.8'))]
++--------------------+
+--Query--
+SELECT '> 127.0.0.1', ipv4_ FROM ipv4_test     WHERE ipv4_ > toIPv4('127.0.0.1')     ORDER BY ipv4_
+--Result--
+[('> 127.0.0.1', IPv4Address('192.168.0.91')), ('> 127.0.0.1', IPv4Address('255.255.255.255'))]
++--------------------+
+--Query--
+SELECT '= 127.0.0.1', ipv4_ FROM ipv4_test     WHERE ipv4_ = toIPv4('127.0.0.1')     ORDER BY ipv4_
+--Result--
+[('= 127.0.0.1', IPv4Address('127.0.0.1'))]
++--------------------+
+--Query--
+select 'euqality of IPv4-mapped IPv6 value and IPv4 promoted to IPv6 with function:', toIPv6('::ffff:127.0.0.1') = IPv4ToIPv6(toIPv4('127.0.0.1'))
+--Result--
+[('euqality of IPv4-mapped IPv6 value and IPv4 promoted to IPv6 with function:', 1)]
++--------------------+
+--Query--
+SHOW CREATE TABLE ipv6_test
+--Result--
+[('CREATE TABLE test.ipv6_test\n(\n    `ipv6_` IPv6\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SELECT '< 127.0.0.1', ipv6_ FROM ipv6_test     WHERE ipv6_ < IPv4ToIPv6(toIPv4('127.0.0.1'))     ORDER BY ipv6_
+--Result--
+[('< 127.0.0.1', IPv6Address('::')), ('< 127.0.0.1', IPv6Address('::')), ('< 127.0.0.1', IPv6Address('::ffff:808:808'))]
++--------------------+
+--Query--
+SELECT '> 127.0.0.1', ipv6_ FROM ipv6_test     WHERE ipv6_ > IPv4ToIPv6(toIPv4('127.0.0.1'))     ORDER BY ipv6_
+--Result--
+[('> 127.0.0.1', IPv6Address('::ffff:c1fc:110a')), ('> 127.0.0.1', IPv6Address('2001:db8:ac10:fe01:feed:babe:cafe:f00d')), ('> 127.0.0.1', IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))]
++--------------------+
+--Query--
+SELECT '= 127.0.0.1', ipv6_ FROM ipv6_test     WHERE ipv6_ = IPv4ToIPv6(toIPv4('127.0.0.1'))     ORDER BY ipv6_
+--Result--
+[('= 127.0.0.1', IPv6Address('::ffff:7f00:1'))]
++--------------------+
+--Query--
+SELECT '0.0.0.0 is ipv4 string:                                 ', isIPv4String('0.0.0.0')
+--Result--
+[('0.0.0.0 is ipv4 string:                                 ', 1)]
++--------------------+
+--Query--
+SELECT '0.0.0.0 is ipv6 string:                                 ', isIPv6String('0.0.0.0')
+--Result--
+[('0.0.0.0 is ipv6 string:                                 ', 0)]
++--------------------+
+--Query--
+SELECT toIPv6('0.0.0.0')
+--Result--
+[(IPv6Address('::ffff:0:0'),)]
++--------------------+
+--Query--
+SELECT cutIPv6(IPv6StringToNum('127.0.0.1'), 0, 0)
+--Result--
+[('::ffff:127.0.0.1',)]
++--------------------+
+--Query--
+SELECT toIPv6('127.0.0.' || toString(number)) FROM numbers(13)
+--Result--
+[(IPv6Address('::ffff:7f00:0'),), (IPv6Address('::ffff:7f00:1'),), (IPv6Address('::ffff:7f00:2'),), (IPv6Address('::ffff:7f00:3'),), (IPv6Address('::ffff:7f00:4'),), (IPv6Address('::ffff:7f00:5'),), (IPv6Address('::ffff:7f00:6'),), (IPv6Address('::ffff:7f00:7'),), (IPv6Address('::ffff:7f00:8'),), (IPv6Address('::ffff:7f00:9'),), (IPv6Address('::ffff:7f00:a'),), (IPv6Address('::ffff:7f00:b'),), (IPv6Address('::ffff:7f00:c'),)]
++--------------------+

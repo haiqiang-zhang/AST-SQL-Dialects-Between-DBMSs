@@ -1,0 +1,20 @@
+--Query--
+SELECT number, 'Hello' AS k FROM (SELECT number FROM system.numbers LIMIT 1000000) ORDER BY number LIMIT 999990, 100 SETTINGS max_bytes_before_external_sort = 1000000
+--Result--
+[(999990, 'Hello'), (999991, 'Hello'), (999992, 'Hello'), (999993, 'Hello'), (999994, 'Hello'), (999995, 'Hello'), (999996, 'Hello'), (999997, 'Hello'), (999998, 'Hello'), (999999, 'Hello')]
++--------------------+
+--Query--
+SELECT number, 'Hello' AS k FROM (SELECT number FROM system.numbers LIMIT 1000000) ORDER BY number, k LIMIT 999990, 100 SETTINGS max_bytes_before_external_sort = 1000000
+--Result--
+[(999990, 'Hello'), (999991, 'Hello'), (999992, 'Hello'), (999993, 'Hello'), (999994, 'Hello'), (999995, 'Hello'), (999996, 'Hello'), (999997, 'Hello'), (999998, 'Hello'), (999999, 'Hello')]
++--------------------+
+--Query--
+SELECT number, 'Hello' AS k FROM (SELECT number FROM system.numbers LIMIT 1000000) ORDER BY k, number, k LIMIT 999990, 100 SETTINGS max_bytes_before_external_sort = 1000000
+--Result--
+[(999990, 'Hello'), (999991, 'Hello'), (999992, 'Hello'), (999993, 'Hello'), (999994, 'Hello'), (999995, 'Hello'), (999996, 'Hello'), (999997, 'Hello'), (999998, 'Hello'), (999999, 'Hello')]
++--------------------+
+--Query--
+SELECT number, 'Hello' AS k FROM (SELECT number FROM system.numbers LIMIT 1000000) ORDER BY number, k, number LIMIT 999990, 100 SETTINGS max_bytes_before_external_sort = 1000000
+--Result--
+[(999990, 'Hello'), (999991, 'Hello'), (999992, 'Hello'), (999993, 'Hello'), (999994, 'Hello'), (999995, 'Hello'), (999996, 'Hello'), (999997, 'Hello'), (999998, 'Hello'), (999999, 'Hello')]
++--------------------+

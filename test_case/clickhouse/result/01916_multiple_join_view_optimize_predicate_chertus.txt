@@ -1,0 +1,15 @@
+--Query--
+SELECT * FROM a ANY LEFT OUTER JOIN j USING id ORDER BY a.id, a.val SETTINGS enable_optimize_predicate_expression = 1
+--Result--
+[(1, 1, 0), (2, 2, 2), (3, 3, 0)]
++--------------------+
+--Query--
+SELECT * FROM a ANY LEFT OUTER JOIN j USING id ORDER BY a.id, a.val SETTINGS enable_optimize_predicate_expression = 0
+--Result--
+[(1, 1, 0), (2, 2, 2), (3, 3, 0)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 0 id, 1 val) _ JOIN j USING id
+--Result--
+[]
++--------------------+

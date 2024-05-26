@@ -1,0 +1,5 @@
+--Query--
+SELECT k % 7 AS k2, finalizeAggregation(uniqMergeState(state)), uniqMerge(state) FROM (SELECT k, uniqState(x) AS state FROM (SELECT number % 11 AS k, intDiv(number, 7)  AS x FROM system.numbers LIMIT 100) GROUP BY k) GROUP BY k2 ORDER BY k2
+--Result--
+[(0, 15, 15), (1, 14, 14), (2, 14, 14), (3, 15, 15), (4, 9, 9), (5, 9, 9), (6, 9, 9)]
++--------------------+

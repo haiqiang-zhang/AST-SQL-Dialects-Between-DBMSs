@@ -25,5 +25,3 @@ INSERT INTO attach_transaction.integers VALUES (84);
 DETACH attach_transaction;
 COMMIT;
 ATTACH '__TEST_DIR__/attach_transaction.db';
-SELECT * FROM attach_transaction.integers;
-SELECT * FROM attach_transaction.integers ORDER BY 1;

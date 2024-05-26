@@ -1,0 +1,30 @@
+--Query--
+prepare v1 as select $1[1]
+--Result--
+[]
++--------------------+
+--Query--
+select case when true then {'a': 42} end.a
+--Result--
+[(42,)]
++--------------------+
+--Query--
+select [42][1]
+--Result--
+[(42,)]
++--------------------+
+--Query--
+select array[42][1]
+--Result--
+[(42,)]
++--------------------+
+--Query--
+select [a for a in [42, 84]][1]
+--Result--
+[(42,)]
++--------------------+
+--Query--
+execute v1([42])
+--Result--
+[(42,)]
++--------------------+

@@ -6,5 +6,4 @@ drop table test;
 drop table if exists test_null_filter;
 create table test_null_filter(key UInt64, value UInt32) engine MergeTree order by key SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
 insert into test_null_filter select number, number from numbers(10000000);
-select count() from test_null_filter where key = null and value > 0 settings force_primary_key = 1;
 drop table test_null_filter;

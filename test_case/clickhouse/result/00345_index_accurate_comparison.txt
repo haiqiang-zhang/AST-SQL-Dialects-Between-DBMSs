@@ -1,0 +1,30 @@
+--Query--
+select * from index where key = 1
+--Result--
+[(1, '1', datetime.date(2016, 7, 7))]
++--------------------+
+--Query--
+select * from index where key = -1
+--Result--
+[(-1, '-1', datetime.date(2016, 7, 7))]
++--------------------+
+--Query--
+OPTIMIZE TABLE index
+--Result--
+[]
++--------------------+
+--Query--
+select * from index where key = 1
+--Result--
+[(1, '1', datetime.date(2016, 7, 7))]
++--------------------+
+--Query--
+select * from index where key = -1
+--Result--
+[(-1, '-1', datetime.date(2016, 7, 7))]
++--------------------+
+--Query--
+select * from index where key < -0.5
+--Result--
+[(-1, '-1', datetime.date(2016, 7, 7))]
++--------------------+

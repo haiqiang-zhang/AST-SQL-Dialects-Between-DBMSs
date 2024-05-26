@@ -1,0 +1,25 @@
+--Query--
+SELECT tumbleStart(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' WEEK, 'US/Samoa')
+--Result--
+[(datetime.date(2020, 1, 6),)]
++--------------------+
+--Query--
+SELECT toDateTime(tumbleStart(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' WEEK, 'US/Samoa'), 'US/Samoa')
+--Result--
+[(datetime.datetime(2020, 1, 6, 0, 0, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT tumbleEnd(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' WEEK, 'US/Samoa')
+--Result--
+[(datetime.date(2020, 1, 13),)]
++--------------------+
+--Query--
+SELECT hopStart(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' WEEK, INTERVAL '3' WEEK, 'US/Samoa')
+--Result--
+[(datetime.date(2019, 12, 23),)]
++--------------------+
+--Query--
+SELECT hopEnd(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' WEEK, INTERVAL '3' WEEK, 'US/Samoa')
+--Result--
+[(datetime.date(2020, 1, 13),)]
++--------------------+

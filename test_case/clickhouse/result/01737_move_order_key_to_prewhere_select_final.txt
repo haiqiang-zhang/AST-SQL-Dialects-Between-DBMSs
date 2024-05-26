@@ -1,0 +1,20 @@
+--Query--
+select 'optimize_move_to_prewhere_if_final = 1'
+--Result--
+[('optimize_move_to_prewhere_if_final = 1',)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(explain, '__table1\.|_UInt8|_UInt16', '') FROM (EXPLAIN actions=1 SELECT * FROM prewhere_move_select_final WHERE x > 100) WHERE explain LIKE '%Prewhere%'
+--Result--
+[('    Prewhere info',), ('      Prewhere filter',), ('      Prewhere filter column: greater(x, 100) (removed)',)]
++--------------------+
+--Query--
+SELECT * FROM (EXPLAIN actions=1 SELECT * FROM prewhere_move_select_final FINAL WHERE z > 400) WHERE explain LIKE '%Prewhere filter'
+--Result--
+[]
++--------------------+
+--Query--
+select 'optimize_move_to_prewhere_if_final = 0'
+--Result--
+[('optimize_move_to_prewhere_if_final = 0',)]
++--------------------+

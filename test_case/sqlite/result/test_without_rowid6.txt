@@ -1,0 +1,75 @@
+--Query--
+WITH RECURSIVE     c(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM c WHERE i<1000)   INSERT INTO t1(a,b,c,d,e) SELECT i, i+1000, printf('x%dy',i), 0, 0 FROM c
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, key FROM pragma_index_xinfo('t1')
+--Result--
+[('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 0)]
++--------------------+
+--Query--
+SELECT c FROM t1 WHERE a=123
+--Result--
+[('x123y',)]
++--------------------+
+--Query--
+SELECT c FROM t1 WHERE b=1123
+--Result--
+[('x123y',)]
++--------------------+
+--Query--
+SELECT c FROM t1 ORDER BY a DESC LIMIT 5
+--Result--
+[('x1000y',), ('x999y',), ('x998y',), ('x997y',), ('x996y',)]
++--------------------+
+--Query--
+SELECT c FROM t1 ORDER BY b LIMIT 5
+--Result--
+[('x1y',), ('x2y',), ('x3y',), ('x4y',), ('x5y',)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(4,), (1,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING PRIMARY KEY (b>?)')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(4,), (1,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING PRIMARY KEY (b>?)')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(4,), (1,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING PRIMARY KEY (b>?)')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(4,), (1,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b>3 ORDER BY b
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING PRIMARY KEY (b>?)')]
++--------------------+

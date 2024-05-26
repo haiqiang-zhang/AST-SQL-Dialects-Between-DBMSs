@@ -1,0 +1,10 @@
+--Query--
+select visitor_id,max(ts) as mts from t1 group by visitor_id having mts < DATE_SUB(NOW(),INTERVAL 3 MONTH)
+--Result--
+[(48985536, datetime.datetime(2000, 3, 19, 1, 39, 32)), (173865424, datetime.datetime(2000, 3, 18, 23, 36, 15)), (357917728, datetime.datetime(2000, 3, 19, 14, 50, 27)), (465931136, datetime.datetime(2000, 3, 18, 16, 9, 53)), (1092858576, datetime.datetime(2000, 3, 19, 1, 34, 45))]
++--------------------+
+--Query--
+select visitor_id,max(ts) as mts from t1 group by visitor_id having DATE_ADD(mts,INTERVAL 3 MONTH) < NOW()
+--Result--
+[(48985536, datetime.datetime(2000, 3, 19, 1, 39, 32)), (173865424, datetime.datetime(2000, 3, 18, 23, 36, 15)), (357917728, datetime.datetime(2000, 3, 19, 14, 50, 27)), (465931136, datetime.datetime(2000, 3, 18, 16, 9, 53)), (1092858576, datetime.datetime(2000, 3, 19, 1, 34, 45))]
++--------------------+

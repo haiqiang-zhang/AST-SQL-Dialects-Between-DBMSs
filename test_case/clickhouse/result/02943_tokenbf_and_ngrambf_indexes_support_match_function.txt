@@ -1,0 +1,100 @@
+--Query--
+SELECT * FROM tokenbf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id
+--Result--
+[(1, 'Hello ClickHouse'), (2, 'Hello World')]
++--------------------+
+--Query--
+SELECT * FROM ngrambf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id
+--Result--
+[(1, 'Hello ClickHouse'), (2, 'Hello World')]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes=1     SELECT * FROM tokenbf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 0
+--Result--
+[('            Granules: 6/6',), ('            Granules: 2/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes=1     SELECT * FROM tokenbf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 1
+--Result--
+[('            Granules: 6/6',), ('            Granules: 2/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes=1     SELECT * FROM ngrambf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 0
+--Result--
+[('            Granules: 6/6',), ('            Granules: 2/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes=1     SELECT * FROM ngrambf_tab WHERE match(str, 'Hello (ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 1
+--Result--
+[('            Granules: 6/6',), ('            Granules: 2/6',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM tokenbf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id
+--Result--
+[(1, 'Hello ClickHouse'), (2, 'Hello World'), (6, 'World Champion')]
++--------------------+
+--Query--
+SELECT * FROM ngrambf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id
+--Result--
+[(1, 'Hello ClickHouse'), (2, 'Hello World'), (6, 'World Champion')]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM tokenbf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 0
+--Result--
+[('            Granules: 6/6',), ('            Granules: 3/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM tokenbf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 1
+--Result--
+[('            Granules: 6/6',), ('            Granules: 3/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM ngrambf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 0
+--Result--
+[('            Granules: 6/6',), ('            Granules: 3/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM ngrambf_tab WHERE match(str, '.*(ClickHouse|World)') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 1
+--Result--
+[('            Granules: 6/6',), ('            Granules: 3/6',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM tokenbf_tab WHERE match(str, 'OLAP.*') ORDER BY id
+--Result--
+[(5, 'OLAP Database')]
++--------------------+
+--Query--
+SELECT * FROM ngrambf_tab WHERE match(str, 'OLAP.*') ORDER BY id
+--Result--
+[(5, 'OLAP Database')]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM tokenbf_tab WHERE match(str, 'OLAP (.*?)*') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 0
+--Result--
+[('            Granules: 6/6',), ('            Granules: 1/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM tokenbf_tab WHERE match(str, 'OLAP (.*?)*') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 1
+--Result--
+[('            Granules: 6/6',), ('            Granules: 1/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM ngrambf_tab WHERE match(str, 'OLAP (.*?)*') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 0
+--Result--
+[('            Granules: 6/6',), ('            Granules: 1/6',)]
++--------------------+
+--Query--
+SELECT * FROM (     EXPLAIN PLAN indexes = 1     SELECT * FROM ngrambf_tab WHERE match(str, 'OLAP (.*?)*') ORDER BY id ) WHERE     explain LIKE '%Granules: %' SETTINGS   allow_experimental_analyzer = 1
+--Result--
+[('            Granules: 6/6',), ('            Granules: 1/6',)]
++--------------------+

@@ -1,0 +1,20 @@
+--Query--
+select length(hex(generateUUIDv4()))
+--Result--
+[(32,)]
++--------------------+
+--Query--
+with generateUUIDv4() as uuid,     replace(toString(uuid), '-', '') as str1,     lower(hex(uuid)) as str2 select str1 = str2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select lower(hex(toUUID('00000000-80e7-46f8-0000-9d773a2fd319')))
+--Result--
+[('0000000080e746f800009d773a2fd319',)]
++--------------------+
+--Query--
+select bin(toUUID('00000000-80e7-46f8-0000-9d773a2fd319'))
+--Result--
+[('00000000000000000000000000000000100000001110011101000110111110000000000000000000100111010111011100111010001011111101001100011001',)]
++--------------------+

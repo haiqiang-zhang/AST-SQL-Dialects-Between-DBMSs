@@ -1,0 +1,100 @@
+--Query--
+SELECT FROM_UNIXTIME(VARIABLE_VALUE/1000000)   INTO @pfs_errlog_latest   FROM performance_schema.global_status  WHERE VARIABLE_NAME LIKE "Error_log_latest_write"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT definer,event_name   FROM information_schema.events  WHERE event_schema='mysql'    AND event_name='event31633859'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@global.offline_mode
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.super_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.event_scheduler
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@global.offline_mode
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.super_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.event_scheduler
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@global.offline_mode
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.super_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK INSTANCE FOR BACKUP
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 INTO @rows_before
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @rows_before > 0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT SLEEP(2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @rows_after - @rows_before
+--Result--
+[(None,)]
++--------------------+
+--Query--
+UNLOCK INSTANCE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@global.event_scheduler
+--Result--
+[('ON',)]
++--------------------+

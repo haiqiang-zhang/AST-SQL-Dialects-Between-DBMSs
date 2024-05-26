@@ -784,29 +784,9 @@ explain (analyze, costs off, summary off, timing off) execute ab_q1 (2, 2, 3)
 [('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 6',), ('  ->  Seq Scan on ab_a2_b1 ab_1 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a2_b2 ab_2 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a2_b3 ab_3 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',)]
 +--------------------+
 --Query--
-explain (analyze, costs off, summary off, timing off) execute ab_q1 (1, 2, 3)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 3',), ('  ->  Seq Scan on ab_a1_b1 ab_1 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a1_b2 ab_2 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a1_b3 ab_3 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a2_b1 ab_4 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a2_b2 ab_5 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',), ('  ->  Seq Scan on ab_a2_b3 ab_6 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b <= $3))',)]
-+--------------------+
---Query--
 deallocate ab_q1
 --Result--
 []
-+--------------------+
---Query--
-prepare ab_q1 (int, int) as select a from ab where a between $1 and $2 and b < 3
---Result--
-[]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off) execute ab_q1 (2, 2)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 4',), ('  ->  Seq Scan on ab_a2_b1 ab_1 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b < 3))',), ('  ->  Seq Scan on ab_a2_b2 ab_2 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b < 3))',)]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off) execute ab_q1 (2, 4)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 2',), ('  ->  Seq Scan on ab_a2_b1 ab_1 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b < 3))',), ('  ->  Seq Scan on ab_a2_b2 ab_2 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b < 3))',), ('  ->  Seq Scan on ab_a3_b1 ab_3 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b < 3))',), ('  ->  Seq Scan on ab_a3_b2 ab_4 (actual rows=0 loops=1)',), ('        Filter: ((a >= $1) AND (a <= $2) AND (b < 3))',)]
 +--------------------+
 --Query--
 prepare ab_q2 (int, int) as select a from ab where a between $1 and $2 and b < (select 3)
@@ -892,11 +872,6 @@ explain (analyze, costs off, summary off, timing off) execute ab_q6(1)
 execute ab_q6(100)
 --Result--
 [('xy_1', 100, -10)]
-+--------------------+
---Query--
-deallocate ab_q1
---Result--
-[]
 +--------------------+
 --Query--
 deallocate ab_q2
@@ -1044,34 +1019,9 @@ explain (analyze, costs off, summary off, timing off)  execute q1 (1,1)
 [('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 1',), ('  ->  Seq Scan on listp_1_1 listp_1 (actual rows=0 loops=1)',), ('        Filter: (b = ANY (ARRAY[$1, $2]))',)]
 +--------------------+
 --Query--
-explain (analyze, costs off, summary off, timing off)  execute q1 (2,2)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 1',), ('  ->  Seq Scan on listp_2_1 listp_1 (actual rows=0 loops=1)',), ('        Filter: (b = ANY (ARRAY[$1, $2]))',)]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off)  execute q1 (0,0)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 2',)]
-+--------------------+
---Query--
 deallocate q1
 --Result--
 []
-+--------------------+
---Query--
-prepare q1 (int,int,int,int) as select * from listp where b in($1,$2) and $3 <> b and $4 <> b
---Result--
-[]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off)  execute q1 (1,2,2,0)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 1',), ('  ->  Seq Scan on listp_1_1 listp_1 (actual rows=0 loops=1)',), ('        Filter: ((b = ANY (ARRAY[$1, $2])) AND ($3 <> b) AND ($4 <> b))',)]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off)  execute q1 (1,2,2,1)
---Result--
-[('Append (actual rows=0 loops=1)',), ('  Subplans Removed: 2',)]
 +--------------------+
 --Query--
 explain (analyze, costs off, summary off, timing off) select * from listp where a = (select null::int)
@@ -1182,26 +1132,6 @@ explain (analyze, costs off, summary off, timing off) execute mt_q1(15)
 execute mt_q1(15)
 --Result--
 [(15,), (25,)]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off) execute mt_q1(25)
---Result--
-[('Merge Append (actual rows=1 loops=1)',), ('  Sort Key: ma_test.b',), ('  Subplans Removed: 2',), ('  ->  Index Scan using ma_test_p3_b_idx on ma_test_p3 ma_test_1 (actual rows=1 loops=1)',), ('        Filter: ((a >= $1) AND ((a % 10) = 5))',), ('        Rows Removed by Filter: 9',)]
-+--------------------+
---Query--
-execute mt_q1(25)
---Result--
-[(25,)]
-+--------------------+
---Query--
-explain (analyze, costs off, summary off, timing off) execute mt_q1(35)
---Result--
-[('Merge Append (actual rows=0 loops=1)',), ('  Sort Key: ma_test.b',), ('  Subplans Removed: 3',)]
-+--------------------+
---Query--
-execute mt_q1(35)
---Result--
-[]
 +--------------------+
 --Query--
 deallocate mt_q1
@@ -1457,9 +1387,4 @@ explain (costs off) select * from rp_prefix_test3 where a >= 1 and b >= 1 and b 
 select   'explain (costs off) select tableoid::regclass,* from hp_prefix_test where ' ||   string_agg(c.colname || case when g.s & (1 << c.colpos) = 0 then ' is null' else ' = ' || (colpos+1)::text end, ' and ' order by c.colpos) from (values('a',0),('b',1),('c',2),('d',3)) c(colname, colpos), generate_Series(0,15) g(s) group by g.s order by g.s
 --Result--
 [('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c is null and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c is null and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c is null and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c is null and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c = 3 and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c = 3 and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c = 3 and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c = 3 and d is null',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c is null and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c is null and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c is null and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c is null and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c = 3 and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c = 3 and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c = 3 and d = 4',), ('explain (costs off) select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c = 3 and d = 4',)]
-+--------------------+
---Query--
-select   'select tableoid::regclass,* from hp_prefix_test where ' ||   string_agg(c.colname || case when g.s & (1 << c.colpos) = 0 then ' is null' else ' = ' || (colpos+1)::text end, ' and ' order by c.colpos) from (values('a',0),('b',1),('c',2),('d',3)) c(colname, colpos), generate_Series(0,15) g(s) group by g.s order by g.s
---Result--
-[('select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c is null and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c is null and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c is null and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c is null and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c = 3 and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c = 3 and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c = 3 and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c = 3 and d is null',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c is null and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c is null and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c is null and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c is null and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b is null and c = 3 and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b is null and c = 3 and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a is null and b = 2 and c = 3 and d = 4',), ('select tableoid::regclass,* from hp_prefix_test where a = 1 and b = 2 and c = 3 and d = 4',)]
 +--------------------+

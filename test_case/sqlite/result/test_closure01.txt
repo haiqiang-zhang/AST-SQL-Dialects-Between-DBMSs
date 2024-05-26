@@ -1,0 +1,30 @@
+--Query--
+WITH RECURSIVE     cnt(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM cnt LIMIT 131072)   INSERT INTO t1(x, y) SELECT i, nullif(i,1)/2 FROM cnt
+--Result--
+[]
++--------------------+
+--Query--
+WITH RECURSIVE     below(id,depth) AS (       VALUES(1,0)        UNION ALL       SELECT t1.x, below.depth+1         FROM t1 JOIN below on t1.y=below.id     )   SELECT count(*), depth FROM below GROUP BY depth ORDER BY 1
+--Result--
+[(1, 0), (1, 17), (2, 1), (4, 2), (8, 3), (16, 4), (32, 5), (64, 6), (128, 7), (256, 8), (512, 9), (1024, 10), (2048, 11), (4096, 12), (8192, 13), (16384, 14), (32768, 15), (65536, 16)]
++--------------------+
+--Query--
+WITH RECURSIVE     below(id,depth) AS (       VALUES(32768,0)        UNION ALL       SELECT t1.x, below.depth+1         FROM t1 JOIN below on t1.y=below.id        WHERE below.depth<2     )   SELECT id, depth FROM below ORDER BY id
+--Result--
+[(32768, 0), (65536, 1), (65537, 1), (131072, 2)]
++--------------------+
+--Query--
+WITH RECURSIVE     below(id,depth) AS (       VALUES(16384,0)        UNION ALL       SELECT t1.x, below.depth+1         FROM t1 JOIN below on t1.y=below.id        WHERE below.depth<2     )   SELECT id, depth FROM below ORDER BY id
+--Result--
+[(16384, 0), (32768, 1), (32769, 1), (65536, 2), (65537, 2), (65538, 2), (65539, 2)]
++--------------------+
+--Query--
+WITH RECURSIVE     above(id,depth) AS (       VALUES(16384,0)       UNION ALL       SELECT t1.y, above.depth+1         FROM t1 JOIN above ON t1.x=above.id        WHERE above.depth<3     )   SELECT id FROM above WHERE depth=3
+--Result--
+[(2048,)]
++--------------------+
+--Query--
+WITH RECURSIVE     below(id,depth) AS (       VALUES(1,0)       UNION ALL       SELECT t1.x, below.depth+1         FROM t1 JOIN below ON t1.y=below.id        WHERE below.depth<5     )   SELECT count(*), min(id), max(id) FROM below WHERE depth=5
+--Result--
+[(32, 32, 63)]
++--------------------+

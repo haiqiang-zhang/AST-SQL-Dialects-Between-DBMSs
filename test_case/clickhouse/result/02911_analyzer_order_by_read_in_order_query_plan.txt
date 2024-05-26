@@ -1,0 +1,215 @@
+--Query--
+select * from tab order by (a + b) * c
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (1, 1, 1, 1), (1, 1, 1, 1), (2, 2, 2, 2), (2, 2, 2, 2), (3, 3, 3, 3), (3, 3, 3, 3), (4, 4, 4, 4), (4, 4, 4, 4)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',)]
++--------------------+
+--Query--
+select * from tab order by (a + b) * c desc
+--Result--
+[(4, 4, 4, 4), (4, 4, 4, 4), (3, 3, 3, 3), (3, 3, 3, 3), (2, 2, 2, 2), (2, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 1), (0, 0, 0, 0), (0, 0, 0, 0)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC',)]
++--------------------+
+--Query--
+select * from tab order by (a + b) * c, sin(a / b)
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (1, 1, 1, 1), (1, 1, 1, 1), (2, 2, 2, 2), (2, 2, 2, 2), (3, 3, 3, 3), (3, 3, 3, 3), (4, 4, 4, 4), (4, 4, 4, 4)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c, sin(a / b)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc, sin(a / b) desc) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, sin(divide(__table1.a, __table1.b)) DESC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, sin(divide(__table1.a, __table1.b)) DESC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc, sin(a / b)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, sin(divide(__table1.a, __table1.b)) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c, sin(a / b) desc) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) DESC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by sin(a / b), (a + b) * c) where explain ilike '%sort description%'
+--Result--
+[('  Sort description: sin(divide(__table1.a, __table1.b)) ASC, multiply(plus(__table1.a, __table1.b), __table1.c) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab where (a + b) * c = 8 order by sin(a / b)) where explain ilike '%sort description%'
+--Result--
+[('  Prefix sort description: sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: sin(divide(__table1.a, __table1.b)) ASC',)]
++--------------------+
+--Query--
+select * from tab where d + 1 = 2 order by (d + 1) * 4, (a + b) * c
+--Result--
+[(1, 1, 1, 1), (1, 1, 1, 1)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab where d + 1 = 2 order by (d + 1) * 4, (a + b) * c) where explain ilike '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.d, 1_UInt8), 4_UInt8) ASC, multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('  Result sort description: multiply(plus(__table1.d, 1_UInt8), 4_UInt8) ASC, multiply(plus(__table1.a, __table1.b), __table1.c) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab where d + 1 = 3 and (a + b) = 4 and c = 2 order by (d + 1) * 4, sin(a / b)) where explain ilike '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.d, 1_UInt8), 4_UInt8) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: multiply(plus(__table1.d, 1_UInt8), 4_UInt8) ASC, sin(divide(__table1.a, __table1.b)) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab where (a + b) * c = 8 order by sin(b / a)) where explain ilike '%sort description%'
+--Result--
+[('  Sort description: sin(divide(__table1.b, __table1.a)) ASC',)]
++--------------------+
+--Query--
+select * from tab order by intDiv((a + b) * c, 2)
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (1, 1, 1, 1), (1, 1, 1, 1), (2, 2, 2, 2), (2, 2, 2, 2), (3, 3, 3, 3), (3, 3, 3, 3), (4, 4, 4, 4), (4, 4, 4, 4)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by intDiv((a + b) * c, 2)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: intDiv(multiply(plus(__table1.a, __table1.b), __table1.c), 2_UInt8) ASC',), ('  Result sort description: intDiv(multiply(plus(__table1.a, __table1.b), __table1.c), 2_UInt8) ASC',)]
++--------------------+
+--Query--
+select * from tab order by intDiv((a + b) * c, 2), sin(a / b)
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (1, 1, 1, 1), (1, 1, 1, 1), (2, 2, 2, 2), (2, 2, 2, 2), (3, 3, 3, 3), (3, 3, 3, 3), (4, 4, 4, 4), (4, 4, 4, 4)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by intDiv((a + b) * c, 2), sin(a / b)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: intDiv(multiply(plus(__table1.a, __table1.b), __table1.c), 2_UInt8) ASC',), ('  Result sort description: intDiv(multiply(plus(__table1.a, __table1.b), __table1.c), 2_UInt8) ASC, sin(divide(__table1.a, __table1.b)) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c, intDiv(sin(a / b), 2)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, intDiv(sin(divide(__table1.a, __table1.b)), 2_UInt8) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, intDiv(sin(divide(__table1.a, __table1.b)), 2_UInt8) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc , intDiv(sin(a / b), 2)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, intDiv(sin(divide(__table1.a, __table1.b)), 2_UInt8) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c, intDiv(sin(a / b), 2) desc) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, intDiv(sin(divide(__table1.a, __table1.b)), 2_UInt8) DESC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc, intDiv(sin(a / b), 2) desc) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, intDiv(sin(divide(__table1.a, __table1.b)), 2_UInt8) DESC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, intDiv(sin(divide(__table1.a, __table1.b)), 2_UInt8) DESC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc, intDiv(sin(a / b), -2)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, intDiv(sin(divide(__table1.a, __table1.b)), -2_Int8) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, intDiv(sin(divide(__table1.a, __table1.b)), -2_Int8) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c desc, intDiv(intDiv(sin(a / b), -2), -3)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) DESC, intDiv(intDiv(sin(divide(__table1.a, __table1.b)), -2_Int8), -3_Int8) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab order by (a + b) * c, intDiv(intDiv(sin(a / b), -2), -3)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, intDiv(intDiv(sin(divide(__table1.a, __table1.b)), -2_Int8), -3_Int8) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, intDiv(intDiv(sin(divide(__table1.a, __table1.b)), -2_Int8), -3_Int8) ASC',)]
++--------------------+
+--Query--
+select * from (select *, a + b as x from tab) order by x * c
+--Result--
+[(0, 0, 0, 0, 0), (0, 0, 0, 0, 0), (1, 1, 1, 1, 2), (1, 1, 1, 1, 2), (2, 2, 2, 2, 4), (2, 2, 2, 2, 4), (3, 3, 3, 3, 6), (3, 3, 3, 3, 6), (4, 4, 4, 4, 8), (4, 4, 4, 4, 8)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select *, a + b as x from tab) order by x * c) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(__table1.x, __table1.c) ASC',), ('  Result sort description: multiply(__table1.x, __table1.c) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select *, a + b as x, a / b as y from tab) order by x * c, sin(y)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(__table1.x, __table1.c) ASC, sin(__table1.y) ASC',), ('  Result sort description: multiply(__table1.x, __table1.c) ASC, sin(__table1.y) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select *, a / b as y from (select *, a + b as x from tab)) order by x * c, sin(y)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: multiply(__table1.x, __table1.c) ASC, sin(__table1.y) ASC',), ('  Result sort description: multiply(__table1.x, __table1.c) ASC, sin(__table1.y) ASC',)]
++--------------------+
+--Query--
+select * from tab2 order by toTimeZone(toTimezone(x, 'UTC'), 'CET'), intDiv(intDiv(y, -2), -3)
+--Result--
+[(datetime.datetime(2020, 2, 2, 0, 0), 0, 0), (datetime.datetime(2020, 2, 2, 0, 0), 0, 0), (datetime.datetime(2020, 2, 3, 0, 0), 1, 1), (datetime.datetime(2020, 2, 3, 0, 0), 1, 1), (datetime.datetime(2020, 2, 4, 0, 0), 2, 2), (datetime.datetime(2020, 2, 4, 0, 0), 2, 2), (datetime.datetime(2020, 2, 5, 0, 0), 3, 3), (datetime.datetime(2020, 2, 5, 0, 0), 3, 3)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab2 order by toTimeZone(toTimezone(x, 'UTC'), 'CET'), intDiv(intDiv(y, -2), -3)) where explain like '%sort description%'
+--Result--
+[("  Prefix sort description: toTimezone(toTimezone(__table1.x, 'UTC'_String), 'CET'_String) ASC, intDiv(intDiv(__table1.y, -2_Int8), -3_Int8) ASC",), ("  Result sort description: toTimezone(toTimezone(__table1.x, 'UTC'_String), 'CET'_String) ASC, intDiv(intDiv(__table1.y, -2_Int8), -3_Int8) ASC",)]
++--------------------+
+--Query--
+select * from tab2 order by toStartOfDay(x), intDiv(intDiv(y, -2), -3)
+--Result--
+[(datetime.datetime(2020, 2, 2, 0, 0), 0, 0), (datetime.datetime(2020, 2, 2, 0, 0), 0, 0), (datetime.datetime(2020, 2, 3, 0, 0), 1, 1), (datetime.datetime(2020, 2, 3, 0, 0), 1, 1), (datetime.datetime(2020, 2, 4, 0, 0), 2, 2), (datetime.datetime(2020, 2, 4, 0, 0), 2, 2), (datetime.datetime(2020, 2, 5, 0, 0), 3, 3), (datetime.datetime(2020, 2, 5, 0, 0), 3, 3)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab2 order by toStartOfDay(x), intDiv(intDiv(y, -2), -3)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: toStartOfDay(__table1.x) ASC',), ('  Result sort description: toStartOfDay(__table1.x) ASC, intDiv(intDiv(__table1.y, -2_Int8), -3_Int8) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from tab2 where toTimezone(x, 'CET') = '2020-02-03 01:00:00' order by intDiv(intDiv(y, -2), -3)) where explain like '%sort description%'
+--Result--
+[('  Prefix sort description: intDiv(intDiv(__table1.y, -2_Int8), -3_Int8) ASC',), ('  Result sort description: intDiv(intDiv(__table1.y, -2_Int8), -3_Int8) ASC',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab3) order by (a + b) * c, sin(a / b)) where explain like '%sort description%' or explain like '%ReadType%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('        ReadType: InOrder',), ('        ReadType: InOrder',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab where (a + b) * c = 8 union all select * from tab3 where (a + b) * c = 18) order by sin(a / b)) where explain like '%sort description%' or explain like '%ReadType%'
+--Result--
+[('  Prefix sort description: sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: sin(divide(__table1.a, __table1.b)) ASC',), ('          ReadType: InOrder',), ('          ReadType: InOrder',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab where (a + b) * c = 8 union all select * from tab4) order by sin(a / b)) where explain like '%sort description%' or explain like '%ReadType%'
+--Result--
+[('  Prefix sort description: sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: sin(divide(__table1.a, __table1.b)) ASC',), ('          ReadType: InOrder',), ('        ReadType: InOrder',)]
++--------------------+
+--Query--
+select * from (select * from tab union all select * from tab5) order by (a + b) * c
+--Result--
+[(0, 0, 0, 0), (0, 0, 0, 0), (0, 0, 0, 0), (0, 0, 0, 0), (1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 1, 1), (2, 2, 2, 2), (2, 2, 2, 2), (2, 2, 2, 2), (2, 2, 2, 2), (3, 3, 3, 3), (3, 3, 3, 3), (3, 3, 3, 3), (3, 3, 3, 3), (4, 4, 4, 4), (4, 4, 4, 4), (4, 4, 4, 4), (4, 4, 4, 4)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5) order by (a + b) * c) where explain like '%sort description%' or explain like '%ReadType%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('        ReadType: InOrder',), ('        ReadType: InOrder',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5) order by (a + b) * c, sin(a / b)) where explain like '%sort description%' or explain like '%ReadType%'
+--Result--
+[('  Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('  Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('        ReadType: InOrder',), ('      Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('      Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('          ReadType: InOrder',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5) order by (a + b) * c, sin(a / b) limit 3) where explain ilike '%sort description%' or explain like '%ReadType%' or explain like '%Limit%'
+--Result--
+[('  Limit (preliminary LIMIT (without OFFSET))',), ('  Limit 3',), ('    Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('    Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('    Limit 3',), ('          ReadType: InOrder',), ('        Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('        Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('            ReadType: InOrder',)]
++--------------------+
+--Query--
+select * from (explain plan actions = 1 select * from (select * from tab union all select * from tab5 union all select * from tab4) order by (a + b) * c, sin(a / b), d limit 3) where explain ilike '%sort description%' or explain like '%ReadType%' or explain like '%Limit%'
+--Result--
+[('  Limit (preliminary LIMIT (without OFFSET))',), ('  Limit 3',), ('    Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('    Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC, __table1.d ASC',), ('    Limit 3',), ('          ReadType: InOrder',), ('        Prefix sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC',), ('        Result sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC',), ('            ReadType: InOrder',), ('        Sort description: multiply(plus(__table1.a, __table1.b), __table1.c) ASC, sin(divide(__table1.a, __table1.b)) ASC, __table1.d ASC',), ('        Limit 3',), ('            ReadType: Default',)]
++--------------------+

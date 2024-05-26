@@ -1,0 +1,80 @@
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1a (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1b (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=2
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1cd (c=?)')]
++--------------------+
+--Query--
+ANALYZE t1a
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1a (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1b (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=2
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1cd (c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=123 AND b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1b (b=?)')]
++--------------------+
+--Query--
+ANALYZE t1cd
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1a (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1b (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=2
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1cd (c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=123 AND b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1b (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=123 AND b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1cd (c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=123 AND c=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1cd (c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=123 AND d=123 AND b=123
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1cd (c=? AND d=?)')]
++--------------------+

@@ -1,0 +1,40 @@
+--Query--
+SYSTEM STOP MERGES test
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM START MERGES test
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL SETTINGS optimize_throw_if_noop=1
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM STOP MERGES test
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM START MERGES test
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL SETTINGS optimize_throw_if_noop=1
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM STOP MERGES test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(), round(avg(bytes), -6) FROM system.parts WHERE database = currentDatabase() AND table = 'test' AND active
+--Result--
+[(4, 8000000.0)]
++--------------------+

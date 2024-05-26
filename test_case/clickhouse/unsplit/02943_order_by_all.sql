@@ -51,8 +51,6 @@ SET allow_experimental_analyzer = 1;
 SELECT a, b, all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SELECT a FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
 SELECT * FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;
-
-
 SELECT '  -- column aliases';
 SET allow_experimental_analyzer = 0;
 SELECT a, b AS all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false;

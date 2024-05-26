@@ -1,0 +1,110 @@
+--Query--
+select unix_timestamp(utc_timestamp())-unix_timestamp(current_timestamp())
+--Result--
+[(-7200,)]
++--------------------+
+--Query--
+select unix_timestamp(utc_timestamp())-unix_timestamp(current_timestamp())
+--Result--
+[(-7200,)]
++--------------------+
+--Query--
+select unix_timestamp(utc_timestamp())-unix_timestamp(current_timestamp())
+--Result--
+[(-7200,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1046473200, datetime.datetime(2003, 3, 1, 0, 0)), (1051740000, datetime.datetime(2003, 5, 1, 0, 0)), (1067122800, datetime.datetime(2003, 10, 26, 1, 0)), (1067130000, datetime.datetime(2003, 10, 26, 2, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59)), (1067137200, datetime.datetime(2003, 10, 26, 4, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59))]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1046473200, datetime.datetime(2003, 3, 1, 0, 0)), (1051740000, datetime.datetime(2003, 5, 1, 0, 0)), (1067122800, datetime.datetime(2003, 10, 26, 1, 0)), (1067130000, datetime.datetime(2003, 10, 26, 2, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59)), (1067137200, datetime.datetime(2003, 10, 26, 4, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59))]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1046473200, datetime.datetime(2003, 3, 1, 0, 0)), (1051740000, datetime.datetime(2003, 5, 1, 0, 0)), (1067122800, datetime.datetime(2003, 10, 26, 1, 0)), (1067130000, datetime.datetime(2003, 10, 26, 2, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59)), (1067137200, datetime.datetime(2003, 10, 26, 4, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59))]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1046473200, datetime.datetime(2003, 3, 1, 0, 0)), (1051740000, datetime.datetime(2003, 5, 1, 0, 0)), (1067122800, datetime.datetime(2003, 10, 26, 1, 0)), (1067130000, datetime.datetime(2003, 10, 26, 2, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59)), (1067137200, datetime.datetime(2003, 10, 26, 4, 0)), (1067133599, datetime.datetime(2003, 10, 26, 2, 59, 59)), (362800799, datetime.datetime(1981, 7, 1, 3, 59, 59)), (362800800, datetime.datetime(1981, 7, 1, 4, 0))]
++--------------------+
+--Query--
+select from_unixtime(362793609)
+--Result--
+[(datetime.datetime(1981, 7, 1, 2, 0, 9),)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select convert_tz(now(),'UTC', 'Universal') = now()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select convert_tz(now(),'utc', 'UTC') = now()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select convert_tz('1917-11-07 12:00:00', 'MET', 'UTC')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(datetime.datetime(2006, 4, 19, 16, 30), None)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONVERT_TZ(NOW(), 'UTC', 'Europe/Moscow') IS NULL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, UNIX_TIMESTAMP(a), b FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT FROM_UNIXTIME(0)
+--Result--
+[(datetime.datetime(1970, 1, 1, 1, 0),)]
++--------------------+

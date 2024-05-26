@@ -1,0 +1,55 @@
+--Query--
+DESCRIBE (SELECT 1 + 1)
+--Result--
+[('plus(1, 1)', 'UInt16', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT 1 + 1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT dummy + dummy)
+--Result--
+[('plus(dummy, dummy)', 'UInt16', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT dummy + dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT id + length(value) FROM test_table)
+--Result--
+[('plus(id, length(value))', 'UInt64', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT id + length(value) FROM test_table
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT concat(concat(toString(id), '_'), (value)) FROM test_table)
+--Result--
+[("concat(concat(toString(id), '_'), value)", 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT concat(concat(toString(id), '_'), (value)) FROM test_table
+--Result--
+[('0_Value',)]
++--------------------+

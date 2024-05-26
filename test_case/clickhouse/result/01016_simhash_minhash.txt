@@ -1,0 +1,175 @@
+--Query--
+SELECT ngramSimHash('')
+--Result--
+[(18446744073709551615,)]
++--------------------+
+--Query--
+SELECT ngramSimHashCaseInsensitive('what a cute cat.')
+--Result--
+[(130877626,)]
++--------------------+
+--Query--
+SELECT ngramSimHashUTF8('what a cute cat.')
+--Result--
+[(2414681787,)]
++--------------------+
+--Query--
+SELECT ngramSimHashCaseInsensitiveUTF8('what a cute cat.')
+--Result--
+[(2414681787,)]
++--------------------+
+--Query--
+SELECT wordShingleSimHash('what a cute cat.')
+--Result--
+[(3795742796,)]
++--------------------+
+--Query--
+SELECT wordShingleSimHashCaseInsensitive('what a cute cat.')
+--Result--
+[(3795742796,)]
++--------------------+
+--Query--
+SELECT wordShingleSimHashUTF8('what a cute cat.')
+--Result--
+[(3795742796,)]
++--------------------+
+--Query--
+SELECT wordShingleSimHashCaseInsensitiveUTF8('what a cute cat.')
+--Result--
+[(3795742796,)]
++--------------------+
+--Query--
+SELECT ngramMinHash('')
+--Result--
+[((10693559443859979498, 10693559443859979498),)]
++--------------------+
+--Query--
+SELECT ngramMinHashCaseInsensitive('what a cute cat.')
+--Result--
+[((12862934800683464900, 12912608544812513109),)]
++--------------------+
+--Query--
+SELECT ngramMinHashUTF8('what a cute cat.')
+--Result--
+[((5701637312405877447, 12912608544812513109),)]
++--------------------+
+--Query--
+SELECT ngramMinHashCaseInsensitiveUTF8('what a cute cat.')
+--Result--
+[((5701637312405877447, 12912608544812513109),)]
++--------------------+
+--Query--
+SELECT wordShingleMinHash('what a cute cat.')
+--Result--
+[((17357047205102710216, 17357047205102710216),)]
++--------------------+
+--Query--
+SELECT wordShingleMinHashCaseInsensitive('what a cute cat.')
+--Result--
+[((17357047205102710216, 17357047205102710216),)]
++--------------------+
+--Query--
+SELECT wordShingleMinHashUTF8('what a cute cat.')
+--Result--
+[((17357047205102710216, 17357047205102710216),)]
++--------------------+
+--Query--
+SELECT wordShingleMinHashCaseInsensitiveUTF8('what a cute cat.')
+--Result--
+[((17357047205102710216, 17357047205102710216),)]
++--------------------+
+--Query--
+TRUNCATE TABLE defaults
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'uniqExact', uniqExact(s) FROM defaults
+--Result--
+[('uniqExact', 6)]
++--------------------+
+--Query--
+SELECT 'ngramSimHash'
+--Result--
+[('ngramSimHash',)]
++--------------------+
+--Query--
+SELECT arrayStringConcat(groupArray(s), '\n:::::::\n'), count(), ngramSimHash(s) as h FROM defaults GROUP BY h ORDER BY h
+--Result--
+[('ClickHouse makes full use of all available hardware to process each request as quickly as possible. Peak performance for a single query is over 2 terabytes per second (using columns after decompression only). In a distributed setup, reads are automatically balanced across healthy replicas to avoid increased latency.\nClickHouse supports asynchronous multi-master replication and can be deployed across multiple data centers. All nodes are equal to avoid a single point of failure. Downtime for one site or the entire data center will not affect the read / write availability of the system.\nClickHouse is simple and works out of the box. It simplifies all processing of your data: it loads all your structured data into the system and immediately becomes available for building reports. The SQL dialect allows you to express the desired result without resorting to any of the non-standard APIs found in some alternative systems.\n:::::::\nClickHouse makes full use of all available hardware to process each request as quickly as possible. Peak performance for a single query is over 2 terabytes per second (using columns after decompression only). In a distributed setup, reads are automatically balanced across healthy replicas to avoid increased latency.\nClickHouse supports asynchronous multi-master replication and can be deployed across multiple data centers. All nodes are equal to avoid a single point of failure. Downtime for one site or the entire data center will not affect the read / write availability of the system.\nClickHouse is simple and works out of the box. It simplifies all processing of your data: it loads all structured data into the system and immediately becomes available for building reports. The SQL dialect allows you to express the desired result without resorting to any of the non-standard APIs found in some alternative systems.', 2, 676648743), ('ClickHouse makes full use of all available hardware to process each request as quickly as possible. Peak performance for a single query is over 2 terabytes per second (using columns only after unpacking). In a distributed setup, reads are automatically balanced across healthy replicas to avoid increased latency.\nClickHouse supports asynchronous multi-master replication and can be deployed across multiple data centers. All nodes are equal to avoid a single point of failure. Downtime for one site or the entire data center will not affect the read / write availability of the system.\nClickHouse is simple and works out of the box. It simplifies all the processing of your data: it loads all of your structured data into the system, and it is immediately available for building reports. The SQL dialect allows you to express the desired result without resorting to any of the non-standard APIs found in some alternative systems.', 1, 1012193063), ("ClickHouse makes full use of all available hardware to process every request as quickly as possible. Peak performance for a single query is over 2 terabytes per second (only used columns after unpacking). In a distributed setup, reads are automatically balanced across healthy replicas to avoid increased latency.\nClickHouse supports asynchronous multi-master replication and can be deployed across multiple data centers. All nodes are equal to avoid single points of failure. Downtime for one site or the entire data center will not affect the system's read and write availability.\nClickHouse is simple and works out of the box. It simplifies all the processing of your data: it loads all your structured data into the system, and they immediately become available for building reports. The SQL dialect allows you to express the desired result without resorting to any non-standard APIs that can be found in some alternative systems.", 1, 2857686823), ("ClickHouse makes full use of all available hardware to process each request as quickly as possible. Peak performance for a single query is over 2 terabytes per second (used columns only after unpacking). In a distributed setup, reads are automatically balanced across healthy replicas to avoid increased latency.\nClickHouse supports asynchronous multi-master replication and can be deployed across multiple data centers. All nodes are equal to avoid a single point of failure. Downtime for one site or the entire data center will not affect the system's read / write availability.\nClickHouse is simple and works out of the box. It simplifies all the processing of your data: it loads all your structured data into the system, and they are immediately available for building reports. The SQL dialect allows you to express the desired result without resorting to any of the non-standard APIs found in some alternative systems.", 1, 3092567843), ('ClickHouse uses all available hardware to its full potential to process each query as fast as possible. Peak processing performance for a single query stands at more than 2 terabytes per second (after decompression, only used columns). In distributed setup reads are automatically balanced among healthy replicas to avoid increasing latency.\nClickHouse supports multi-master asynchronous replication and can be deployed across multiple datacenters. All nodes are equal, which allows avoiding having single points of failure. Downtime of a single node or the whole datacenter wont affect the systems availability for both reads and writes.\nClickHouse is simple and works out-of-the-box. It streamlines all your data processing: ingest all your structured data into the system and it becomes instantly available for building reports. SQL dialect allows expressing the desired result without involving any custom non-standard API that could be found in some alternative systems.', 1, 3906262823)]
++--------------------+
+--Query--
+SELECT 'ngramSimHashCaseInsensitive'
+--Result--
+[('ngramSimHashCaseInsensitive',)]
++--------------------+
+--Query--
+SELECT 'ngramSimHashUTF8'
+--Result--
+[('ngramSimHashUTF8',)]
++--------------------+
+--Query--
+SELECT 'ngramSimHashCaseInsensitiveUTF8'
+--Result--
+[('ngramSimHashCaseInsensitiveUTF8',)]
++--------------------+
+--Query--
+SELECT 'wordShingleSimHash'
+--Result--
+[('wordShingleSimHash',)]
++--------------------+
+--Query--
+SELECT 'wordShingleSimHashCaseInsensitive'
+--Result--
+[('wordShingleSimHashCaseInsensitive',)]
++--------------------+
+--Query--
+SELECT 'wordShingleSimHashUTF8'
+--Result--
+[('wordShingleSimHashUTF8',)]
++--------------------+
+--Query--
+SELECT 'wordShingleSimHashCaseInsensitiveUTF8'
+--Result--
+[('wordShingleSimHashCaseInsensitiveUTF8',)]
++--------------------+
+--Query--
+SELECT 'ngramMinHash'
+--Result--
+[('ngramMinHash',)]
++--------------------+
+--Query--
+SELECT 'ngramMinHashCaseInsensitive'
+--Result--
+[('ngramMinHashCaseInsensitive',)]
++--------------------+
+--Query--
+SELECT 'ngramMinHashUTF8'
+--Result--
+[('ngramMinHashUTF8',)]
++--------------------+
+--Query--
+SELECT 'ngramMinHashCaseInsensitiveUTF8'
+--Result--
+[('ngramMinHashCaseInsensitiveUTF8',)]
++--------------------+
+--Query--
+SELECT 'wordShingleMinHash'
+--Result--
+[('wordShingleMinHash',)]
++--------------------+
+--Query--
+SELECT 'wordShingleMinHashCaseInsensitive'
+--Result--
+[('wordShingleMinHashCaseInsensitive',)]
++--------------------+
+--Query--
+SELECT 'wordShingleMinHashUTF8'
+--Result--
+[('wordShingleMinHashUTF8',)]
++--------------------+
+--Query--
+SELECT 'wordShingleMinHashCaseInsensitiveUTF8'
+--Result--
+[('wordShingleMinHashCaseInsensitiveUTF8',)]
++--------------------+

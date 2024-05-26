@@ -40,7 +40,5 @@ SOURCE(CLICKHOUSE(TABLE 'dictionary_source_table'))
 LAYOUT(RANGE_HASHED())
 RANGE(MIN start MAX end)
 LIFETIME(0);
-SELECT dictGet('range_hashed_dictionary', 'value', 0, toUInt64(4));
-SELECT dictGetOrDefault('range_hashed_dictionary', 'value', 1, toUInt64(6), 'DefaultValue');
 DROP DICTIONARY range_hashed_dictionary;
 DROP TABLE dictionary_source_table;

@@ -1,0 +1,5 @@
+--Query--
+select a, b, ntile(3) over (partition by a order by b rows between unbounded preceding and unbounded following) from(select intDiv(number,10) as a, number%10 as b from numbers(20))
+--Result--
+[(0, 0, 1), (0, 1, 1), (0, 2, 1), (0, 3, 1), (0, 4, 2), (0, 5, 2), (0, 6, 2), (0, 7, 3), (0, 8, 3), (0, 9, 3), (1, 0, 1), (1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 2), (1, 5, 2), (1, 6, 2), (1, 7, 3), (1, 8, 3), (1, 9, 3)]
++--------------------+

@@ -9,16 +9,6 @@ SELECT depname, empno, salary, rank() OVER (PARTITION BY depname ORDER BY salary
 [('develop', 7, 4200, 1), ('develop', 9, 4500, 2), ('develop', 11, 5200, 3), ('develop', 10, 5200, 3), ('develop', 8, 6000, 5), ('personnel', 5, 3500, 1), ('personnel', 2, 3900, 2), ('sales', 3, 4800, 1), ('sales', 4, 4800, 1), ('sales', 1, 5000, 3)]
 +--------------------+
 --Query--
-SELECT depname, empno, salary, sum(salary) OVER w FROM empsalary WINDOW w AS (PARTITION BY depname)
---Result--
-[('develop', 11, 5200, 25100), ('develop', 7, 4200, 25100), ('develop', 9, 4500, 25100), ('develop', 8, 6000, 25100), ('develop', 10, 5200, 25100), ('personnel', 5, 3500, 7400), ('personnel', 2, 3900, 7400), ('sales', 3, 4800, 14600), ('sales', 1, 5000, 14600), ('sales', 4, 4800, 14600)]
-+--------------------+
---Query--
-SELECT depname, empno, salary, rank() OVER w FROM empsalary WINDOW w AS (PARTITION BY depname ORDER BY salary) ORDER BY rank() OVER w
---Result--
-[('develop', 7, 4200, 1), ('personnel', 5, 3500, 1), ('sales', 3, 4800, 1), ('sales', 4, 4800, 1), ('personnel', 2, 3900, 2), ('develop', 9, 4500, 2), ('sales', 1, 5000, 3), ('develop', 11, 5200, 3), ('develop', 10, 5200, 3), ('develop', 8, 6000, 5)]
-+--------------------+
---Query--
 SELECT sum(salary), 	row_number() OVER (ORDER BY depname), 	sum(sum(salary)) OVER (ORDER BY depname DESC) FROM empsalary GROUP BY depname
 --Result--
 [(25100, 1, 47100.0), (7400, 2, 22000.0), (14600, 3, 14600.0)]
@@ -59,19 +49,14 @@ SELECT * FROM v_window
 [(1, 2), (2, 4), (3, 6), (4, 8), (5, 10), (6, 12), (7, 14), (8, 16), (9, 18), (10, 9)]
 +--------------------+
 --Query--
-SELECT pg_get_viewdef('v_window')
---Result--
-[(' SELECT i,\n    sum(i) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING EXCLUDE CURRENT ROW) AS sum_rows\n   FROM generate_series(1, 10) i(i);',)]
-+--------------------+
---Query--
 SELECT * FROM v_window
 --Result--
 [(1, 2), (2, 4), (3, 6), (4, 8), (5, 10), (6, 12), (7, 14), (8, 16), (9, 18), (10, 9)]
 +--------------------+
 --Query--
-SELECT pg_get_viewdef('v_window')
+SELECT * FROM v_window
 --Result--
-[(' SELECT i,\n    sum(i) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING EXCLUDE GROUP) AS sum_rows\n   FROM generate_series(1, 10) i(i);',)]
+[(1, 3), (2, 6), (3, 9), (4, 12), (5, 15), (6, 18), (7, 21), (8, 24), (9, 27), (10, 19)]
 +--------------------+
 --Query--
 SELECT * FROM v_window
@@ -79,64 +64,9 @@ SELECT * FROM v_window
 [(1, 3), (2, 6), (3, 9), (4, 12), (5, 15), (6, 18), (7, 21), (8, 24), (9, 27), (10, 19)]
 +--------------------+
 --Query--
-SELECT pg_get_viewdef('v_window')
---Result--
-[(' SELECT i,\n    sum(i) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING EXCLUDE TIES) AS sum_rows\n   FROM generate_series(1, 10) i(i);',)]
-+--------------------+
---Query--
 SELECT * FROM v_window
 --Result--
 [(1, 3), (2, 6), (3, 9), (4, 12), (5, 15), (6, 18), (7, 21), (8, 24), (9, 27), (10, 19)]
-+--------------------+
---Query--
-SELECT pg_get_viewdef('v_window')
---Result--
-[(' SELECT i,\n    sum(i) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS sum_rows\n   FROM generate_series(1, 10) i(i);',)]
-+--------------------+
---Query--
-SELECT * FROM v_window
---Result--
-[(1, 3), (2, 6), (3, 9), (4, 12), (5, 15), (6, 18), (7, 21), (8, 24), (9, 27), (10, 19)]
-+--------------------+
---Query--
-SELECT pg_get_viewdef('v_window')
---Result--
-[(' SELECT i,\n    sum(i) OVER (ORDER BY i GROUPS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS sum_rows\n   FROM generate_series(1, 10) i(i);',)]
-+--------------------+
---Query--
-SELECT pg_get_viewdef('v_window')
---Result--
-[(" SELECT i,\n    min(i) OVER (ORDER BY i RANGE BETWEEN '1 day'::interval PRECEDING AND '10 days'::interval FOLLOWING) AS min_i\n   FROM generate_series(now(), (now() + '100 days'::interval), '01:00:00'::interval) i(i);",)]
-+--------------------+
---Query--
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following), 	salary, enroll_date from empsalary
---Result--
-[(34900, 5000, datetime.date(2006, 10, 1)), (34900, 6000, datetime.date(2006, 10, 1)), (38400, 3900, datetime.date(2006, 12, 23)), (47100, 4800, datetime.date(2007, 8, 1)), (47100, 5200, datetime.date(2007, 8, 1)), (47100, 4800, datetime.date(2007, 8, 8)), (47100, 5200, datetime.date(2007, 8, 15)), (36100, 3500, datetime.date(2007, 12, 10)), (32200, 4500, datetime.date(2008, 1, 1)), (32200, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select sum(salary) over (order by enroll_date desc range between '1 year'::interval preceding and '1 year'::interval following), 	salary, enroll_date from empsalary
---Result--
-[(32200, 4200, datetime.date(2008, 1, 1)), (32200, 4500, datetime.date(2008, 1, 1)), (36100, 3500, datetime.date(2007, 12, 10)), (47100, 5200, datetime.date(2007, 8, 15)), (47100, 4800, datetime.date(2007, 8, 8)), (47100, 4800, datetime.date(2007, 8, 1)), (47100, 5200, datetime.date(2007, 8, 1)), (38400, 3900, datetime.date(2006, 12, 23)), (34900, 5000, datetime.date(2006, 10, 1)), (34900, 6000, datetime.date(2006, 10, 1))]
-+--------------------+
---Query--
-select sum(salary) over (order by enroll_date desc range between '1 year'::interval following and '1 year'::interval following), 	salary, enroll_date from empsalary
---Result--
-[(None, 4200, datetime.date(2008, 1, 1)), (None, 4500, datetime.date(2008, 1, 1)), (None, 3500, datetime.date(2007, 12, 10)), (None, 5200, datetime.date(2007, 8, 15)), (None, 4800, datetime.date(2007, 8, 8)), (None, 4800, datetime.date(2007, 8, 1)), (None, 5200, datetime.date(2007, 8, 1)), (None, 3900, datetime.date(2006, 12, 23)), (None, 5000, datetime.date(2006, 10, 1)), (None, 6000, datetime.date(2006, 10, 1))]
-+--------------------+
---Query--
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following 	exclude current row), salary, enroll_date from empsalary
---Result--
-[(29900, 5000, datetime.date(2006, 10, 1)), (28900, 6000, datetime.date(2006, 10, 1)), (34500, 3900, datetime.date(2006, 12, 23)), (42300, 4800, datetime.date(2007, 8, 1)), (41900, 5200, datetime.date(2007, 8, 1)), (42300, 4800, datetime.date(2007, 8, 8)), (41900, 5200, datetime.date(2007, 8, 15)), (32600, 3500, datetime.date(2007, 12, 10)), (27700, 4500, datetime.date(2008, 1, 1)), (28000, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following 	exclude group), salary, enroll_date from empsalary
---Result--
-[(23900, 5000, datetime.date(2006, 10, 1)), (23900, 6000, datetime.date(2006, 10, 1)), (34500, 3900, datetime.date(2006, 12, 23)), (37100, 4800, datetime.date(2007, 8, 1)), (37100, 5200, datetime.date(2007, 8, 1)), (42300, 4800, datetime.date(2007, 8, 8)), (41900, 5200, datetime.date(2007, 8, 15)), (32600, 3500, datetime.date(2007, 12, 10)), (23500, 4500, datetime.date(2008, 1, 1)), (23500, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select sum(salary) over (order by enroll_date range between '1 year'::interval preceding and '1 year'::interval following 	exclude ties), salary, enroll_date from empsalary
---Result--
-[(28900, 5000, datetime.date(2006, 10, 1)), (29900, 6000, datetime.date(2006, 10, 1)), (38400, 3900, datetime.date(2006, 12, 23)), (41900, 4800, datetime.date(2007, 8, 1)), (42300, 5200, datetime.date(2007, 8, 1)), (47100, 4800, datetime.date(2007, 8, 8)), (47100, 5200, datetime.date(2007, 8, 15)), (36100, 3500, datetime.date(2007, 12, 10)), (28000, 4500, datetime.date(2008, 1, 1)), (27700, 4200, datetime.date(2008, 1, 1))]
 +--------------------+
 --Query--
 select first_value(salary) over(order by salary range between 1000 preceding and 1000 following), 	lead(salary) over(order by salary range between 1000 preceding and 1000 following), 	nth_value(salary, 1) over(order by salary range between 1000 preceding and 1000 following), 	salary from empsalary
@@ -149,34 +79,9 @@ select last_value(salary) over(order by salary range between 1000 preceding and 
 [(4500, None, 3500), (4800, 3500, 3900), (5200, 3900, 4200), (5200, 4200, 4500), (5200, 4500, 4800), (5200, 4800, 4800), (6000, 4800, 5000), (6000, 5000, 5200), (6000, 5200, 5200), (6000, 5200, 6000)]
 +--------------------+
 --Query--
-select first_value(salary) over(order by salary range between 1000 following and 3000 following 	exclude current row), 	lead(salary) over(order by salary range between 1000 following and 3000 following exclude ties), 	nth_value(salary, 1) over(order by salary range between 1000 following and 3000 following 	exclude ties), 	salary from empsalary
---Result--
-[(4500, 3900, 4500, 3500), (5000, 4200, 5000, 3900), (5200, 4500, 5200, 4200), (6000, 4800, 6000, 4500), (6000, 4800, 6000, 4800), (6000, 5000, 6000, 4800), (6000, 5200, 6000, 5000), (None, 5200, None, 5200), (None, 6000, None, 5200), (None, None, None, 6000)]
-+--------------------+
---Query--
-select last_value(salary) over(order by salary range between 1000 following and 3000 following 	exclude group), 	lag(salary) over(order by salary range between 1000 following and 3000 following exclude group), 	salary from empsalary
---Result--
-[(6000, None, 3500), (6000, 3500, 3900), (6000, 3900, 4200), (6000, 4200, 4500), (6000, 4500, 4800), (6000, 4800, 4800), (6000, 4800, 5000), (None, 5000, 5200), (None, 5200, 5200), (None, 5200, 6000)]
-+--------------------+
---Query--
 select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude ties), 	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following), 	salary, enroll_date from empsalary
 --Result--
 [(5000, 5200, 5000, datetime.date(2006, 10, 1)), (6000, 5200, 6000, datetime.date(2006, 10, 1)), (5000, 3500, 3900, datetime.date(2006, 12, 23)), (5000, 4200, 4800, datetime.date(2007, 8, 1)), (5000, 4200, 5200, datetime.date(2007, 8, 1)), (5000, 4200, 4800, datetime.date(2007, 8, 8)), (5000, 4200, 5200, datetime.date(2007, 8, 15)), (5000, 4200, 3500, datetime.date(2007, 12, 10)), (5000, 4200, 4500, datetime.date(2008, 1, 1)), (5000, 4200, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude ties), 	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude ties), 	salary, enroll_date from empsalary
---Result--
-[(5000, 5200, 5000, datetime.date(2006, 10, 1)), (6000, 5200, 6000, datetime.date(2006, 10, 1)), (5000, 3500, 3900, datetime.date(2006, 12, 23)), (5000, 4200, 4800, datetime.date(2007, 8, 1)), (5000, 4200, 5200, datetime.date(2007, 8, 1)), (5000, 4200, 4800, datetime.date(2007, 8, 8)), (5000, 4200, 5200, datetime.date(2007, 8, 15)), (5000, 4200, 3500, datetime.date(2007, 12, 10)), (5000, 4500, 4500, datetime.date(2008, 1, 1)), (5000, 4200, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude group), 	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude group), 	salary, enroll_date from empsalary
---Result--
-[(3900, 5200, 5000, datetime.date(2006, 10, 1)), (3900, 5200, 6000, datetime.date(2006, 10, 1)), (5000, 3500, 3900, datetime.date(2006, 12, 23)), (5000, 4200, 4800, datetime.date(2007, 8, 1)), (5000, 4200, 5200, datetime.date(2007, 8, 1)), (5000, 4200, 4800, datetime.date(2007, 8, 8)), (5000, 4200, 5200, datetime.date(2007, 8, 15)), (5000, 4200, 3500, datetime.date(2007, 12, 10)), (5000, 3500, 4500, datetime.date(2008, 1, 1)), (5000, 3500, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select first_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude current row), 	last_value(salary) over(order by enroll_date range between unbounded preceding and '1 year'::interval following 	exclude current row), 	salary, enroll_date from empsalary
---Result--
-[(6000, 5200, 5000, datetime.date(2006, 10, 1)), (5000, 5200, 6000, datetime.date(2006, 10, 1)), (5000, 3500, 3900, datetime.date(2006, 12, 23)), (5000, 4200, 4800, datetime.date(2007, 8, 1)), (5000, 4200, 5200, datetime.date(2007, 8, 1)), (5000, 4200, 4800, datetime.date(2007, 8, 8)), (5000, 4200, 5200, datetime.date(2007, 8, 15)), (5000, 4200, 3500, datetime.date(2007, 12, 10)), (5000, 4200, 4500, datetime.date(2008, 1, 1)), (5000, 4500, 4200, datetime.date(2008, 1, 1))]
 +--------------------+
 --Query--
 select x, y,        first_value(y) over w,        last_value(y) over w from   (select x, x as y from generate_series(1,5) as x    union all select null, 42    union all select null, 43) ss window w as   (order by x asc nulls first range between 2 preceding and 2 following)
@@ -184,219 +89,9 @@ select x, y,        first_value(y) over w,        last_value(y) over w from   (s
 [(None, 42, 42, 43), (None, 43, 42, 43), (1, 1, 1, 3), (2, 2, 1, 4), (3, 3, 1, 5), (4, 4, 2, 5), (5, 5, 3, 5)]
 +--------------------+
 --Query--
-select x, y,        first_value(y) over w,        last_value(y) over w from   (select x, x as y from generate_series(1,5) as x    union all select null, 42    union all select null, 43) ss window w as   (order by x asc nulls last range between 2 preceding and 2 following)
---Result--
-[(1, 1, 1, 3), (2, 2, 1, 4), (3, 3, 1, 5), (4, 4, 2, 5), (5, 5, 3, 5), (None, 42, 42, 43), (None, 43, 42, 43)]
-+--------------------+
---Query--
-select x, y,        first_value(y) over w,        last_value(y) over w from   (select x, x as y from generate_series(1,5) as x    union all select null, 42    union all select null, 43) ss window w as   (order by x desc nulls first range between 2 preceding and 2 following)
---Result--
-[(None, 43, 43, 42), (None, 42, 43, 42), (5, 5, 5, 3), (4, 4, 5, 2), (3, 3, 5, 1), (2, 2, 4, 1), (1, 1, 3, 1)]
-+--------------------+
---Query--
-select x, y,        first_value(y) over w,        last_value(y) over w from   (select x, x as y from generate_series(1,5) as x    union all select null, 42    union all select null, 43) ss window w as   (order by x desc nulls last range between 2 preceding and 2 following)
---Result--
-[(5, 5, 5, 3), (4, 4, 5, 2), (3, 3, 5, 1), (2, 2, 4, 1), (1, 1, 3, 1), (None, 42, 42, 43), (None, 43, 42, 43)]
-+--------------------+
---Query--
 select x, last_value(x) over (order by x::smallint range between current row and 2147450884 following) from generate_series(32764, 32766) x
 --Result--
 [(32764, 32766), (32765, 32766), (32766, 32766)]
-+--------------------+
---Query--
-select x, last_value(x) over (order by x::smallint desc range between current row and 2147450885 following) from generate_series(-32766, -32764) x
---Result--
-[(-32764, -32766), (-32765, -32766), (-32766, -32766)]
-+--------------------+
---Query--
-select x, last_value(x) over (order by x range between current row and 4 following) from generate_series(2147483644, 2147483646) x
---Result--
-[(2147483644, 2147483646), (2147483645, 2147483646), (2147483646, 2147483646)]
-+--------------------+
---Query--
-select x, last_value(x) over (order by x desc range between current row and 5 following) from generate_series(-2147483646, -2147483644) x
---Result--
-[(-2147483644, -2147483646), (-2147483645, -2147483646), (-2147483646, -2147483646)]
-+--------------------+
---Query--
-select x, last_value(x) over (order by x range between current row and 4 following) from generate_series(9223372036854775804, 9223372036854775806) x
---Result--
-[(9223372036854775804, 9223372036854775806), (9223372036854775805, 9223372036854775806), (9223372036854775806, 9223372036854775806)]
-+--------------------+
---Query--
-select x, last_value(x) over (order by x desc range between current row and 5 following) from generate_series(-9223372036854775806, -9223372036854775804) x
---Result--
-[(-9223372036854775804, -9223372036854775806), (-9223372036854775805, -9223372036854775806), (-9223372036854775806, -9223372036854775806)]
-+--------------------+
---Query--
-select id, f_float4, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float4 range between              1 preceding and 1 following)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 1, 1), (2, -1.0, 2, 3), (3, 0.0, 2, 3), (4, 1.1, 4, 6), (5, 1.12, 4, 6), (6, 2.0, 4, 6), (7, 100.0, 7, 7), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float4, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float4 range between              1 preceding and 1.1::float4 following)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 1, 1), (2, -1.0, 2, 3), (3, 0.0, 2, 4), (4, 1.1, 4, 6), (5, 1.12, 4, 6), (6, 2.0, 4, 6), (7, 100.0, 7, 7), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float4, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float4 range between              'inf' preceding and 'inf' following)
---Result--
-[(0, -inf, 0, 8), (1, -3.0, 0, 8), (2, -1.0, 0, 8), (3, 0.0, 0, 8), (4, 1.1, 0, 8), (5, 1.12, 0, 8), (6, 2.0, 0, 8), (7, 100.0, 0, 8), (8, inf, 0, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float4, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float4 range between              'inf' preceding and 'inf' preceding)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 0, 0), (2, -1.0, 0, 0), (3, 0.0, 0, 0), (4, 1.1, 0, 0), (5, 1.12, 0, 0), (6, 2.0, 0, 0), (7, 100.0, 0, 0), (8, inf, 0, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float4, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float4 range between              'inf' following and 'inf' following)
---Result--
-[(0, -inf, 0, 8), (1, -3.0, 8, 8), (2, -1.0, 8, 8), (3, 0.0, 8, 8), (4, 1.1, 8, 8), (5, 1.12, 8, 8), (6, 2.0, 8, 8), (7, 100.0, 8, 8), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float8, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float8 range between              1 preceding and 1 following)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 1, 1), (2, -1.0, 2, 3), (3, 0.0, 2, 3), (4, 1.1, 4, 6), (5, 1.12, 4, 6), (6, 2.0, 4, 6), (7, 100.0, 7, 7), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float8, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float8 range between              1 preceding and 1.1::float8 following)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 1, 1), (2, -1.0, 2, 3), (3, 0.0, 2, 4), (4, 1.1, 4, 6), (5, 1.12, 4, 6), (6, 2.0, 4, 6), (7, 100.0, 7, 7), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float8, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float8 range between              'inf' preceding and 'inf' following)
---Result--
-[(0, -inf, 0, 8), (1, -3.0, 0, 8), (2, -1.0, 0, 8), (3, 0.0, 0, 8), (4, 1.1, 0, 8), (5, 1.12, 0, 8), (6, 2.0, 0, 8), (7, 100.0, 0, 8), (8, inf, 0, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float8, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float8 range between              'inf' preceding and 'inf' preceding)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 0, 0), (2, -1.0, 0, 0), (3, 0.0, 0, 0), (4, 1.1, 0, 0), (5, 1.12, 0, 0), (6, 2.0, 0, 0), (7, 100.0, 0, 0), (8, inf, 0, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_float8, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_float8 range between              'inf' following and 'inf' following)
---Result--
-[(0, -inf, 0, 8), (1, -3.0, 8, 8), (2, -1.0, 8, 8), (3, 0.0, 8, 8), (4, 1.1, 8, 8), (5, 1.12, 8, 8), (6, 2.0, 8, 8), (7, 100.0, 8, 8), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_numeric, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_numeric range between              1 preceding and 1 following)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 1, 1), (2, -1.0, 2, 3), (3, 0.0, 2, 3), (4, 1.1, 4, 6), (5, 1.12, 4, 6), (6, 2.0, 4, 6), (7, 100.0, 7, 7), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_numeric, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_numeric range between              1 preceding and 1.1::numeric following)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 1, 1), (2, -1.0, 2, 3), (3, 0.0, 2, 4), (4, 1.1, 4, 6), (5, 1.12, 4, 6), (6, 2.0, 4, 6), (7, 100.0, 7, 7), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_numeric, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_numeric range between              'inf' preceding and 'inf' following)
---Result--
-[(0, -inf, 0, 8), (1, -3.0, 0, 8), (2, -1.0, 0, 8), (3, 0.0, 0, 8), (4, 1.1, 0, 8), (5, 1.12, 0, 8), (6, 2.0, 0, 8), (7, 100.0, 0, 8), (8, inf, 0, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_numeric, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_numeric range between              'inf' preceding and 'inf' preceding)
---Result--
-[(0, -inf, 0, 0), (1, -3.0, 0, 0), (2, -1.0, 0, 0), (3, 0.0, 0, 0), (4, 1.1, 0, 0), (5, 1.12, 0, 0), (6, 2.0, 0, 0), (7, 100.0, 0, 0), (8, inf, 0, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_numeric, first_value(id) over w, last_value(id) over w from numerics window w as (order by f_numeric range between              'inf' following and 'inf' following)
---Result--
-[(0, -inf, 0, 8), (1, -3.0, 8, 8), (2, -1.0, 8, 8), (3, 0.0, 8, 8), (4, 1.1, 8, 8), (5, 1.12, 8, 8), (6, 2.0, 8, 8), (7, 100.0, 8, 8), (8, inf, 8, 8), (9, nan, 9, 9)]
-+--------------------+
---Query--
-select id, f_time, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_time range between              '70 min'::interval preceding and '2 hours'::interval following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_time, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_time desc range between              '70 min' preceding and '2 hours' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_time, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_time desc range between              '-70 min' preceding and '2 hours' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timetz, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timetz range between              '70 min'::interval preceding and '2 hours'::interval following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timetz, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timetz desc range between              '70 min' preceding and '2 hours' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timetz, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timetz desc range between              '70 min' preceding and '-2 hours' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_interval, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_interval range between              '1 year'::interval preceding and '1 year'::interval following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_interval, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_interval desc range between              '1 year' preceding and '1 year' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_interval, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_interval desc range between              '-1 year' preceding and '1 year' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timestamptz, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timestamptz range between              '1 year'::interval preceding and '1 year'::interval following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timestamptz, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timestamptz desc range between              '1 year' preceding and '1 year' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timestamptz, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timestamptz desc range between              '1 year' preceding and '-1 year' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timestamp, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timestamp range between              '1 year'::interval preceding and '1 year'::interval following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timestamp, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timestamp desc range between              '1 year' preceding and '1 year' following)
---Result--
-[]
-+--------------------+
---Query--
-select id, f_timestamp, first_value(id) over w, last_value(id) over w from datetimes window w as (order by f_timestamp desc range between              '-1 year' preceding and '1 year' following)
---Result--
-[]
-+--------------------+
---Query--
-select first_value(salary) over(order by enroll_date groups between 1 preceding and 1 following), 	lead(salary) over(order by enroll_date groups between 1 preceding and 1 following), 	nth_value(salary, 1) over(order by enroll_date groups between 1 preceding and 1 following), 	salary, enroll_date from empsalary
---Result--
-[(5000, 6000, 5000, 5000, datetime.date(2006, 10, 1)), (5000, 3900, 5000, 6000, datetime.date(2006, 10, 1)), (5000, 4800, 5000, 3900, datetime.date(2006, 12, 23)), (3900, 5200, 3900, 4800, datetime.date(2007, 8, 1)), (3900, 4800, 3900, 5200, datetime.date(2007, 8, 1)), (4800, 5200, 4800, 4800, datetime.date(2007, 8, 8)), (4800, 3500, 4800, 5200, datetime.date(2007, 8, 15)), (5200, 4500, 5200, 3500, datetime.date(2007, 12, 10)), (3500, 4200, 3500, 4500, datetime.date(2008, 1, 1)), (3500, None, 3500, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select last_value(salary) over(order by enroll_date groups between 1 preceding and 1 following), 	lag(salary) over(order by enroll_date groups between 1 preceding and 1 following), 	salary, enroll_date from empsalary
---Result--
-[(3900, None, 5000, datetime.date(2006, 10, 1)), (3900, 5000, 6000, datetime.date(2006, 10, 1)), (5200, 6000, 3900, datetime.date(2006, 12, 23)), (4800, 3900, 4800, datetime.date(2007, 8, 1)), (4800, 4800, 5200, datetime.date(2007, 8, 1)), (5200, 5200, 4800, datetime.date(2007, 8, 8)), (3500, 4800, 5200, datetime.date(2007, 8, 15)), (4200, 5200, 3500, datetime.date(2007, 12, 10)), (4200, 3500, 4500, datetime.date(2008, 1, 1)), (4200, 4500, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select first_value(salary) over(order by enroll_date groups between 1 following and 3 following 	exclude current row), 	lead(salary) over(order by enroll_date groups between 1 following and 3 following exclude ties), 	nth_value(salary, 1) over(order by enroll_date groups between 1 following and 3 following 	exclude ties), 	salary, enroll_date from empsalary
---Result--
-[(3900, 6000, 3900, 5000, datetime.date(2006, 10, 1)), (3900, 3900, 3900, 6000, datetime.date(2006, 10, 1)), (4800, 4800, 4800, 3900, datetime.date(2006, 12, 23)), (4800, 5200, 4800, 4800, datetime.date(2007, 8, 1)), (4800, 4800, 4800, 5200, datetime.date(2007, 8, 1)), (5200, 5200, 5200, 4800, datetime.date(2007, 8, 8)), (3500, 3500, 3500, 5200, datetime.date(2007, 8, 15)), (4500, 4500, 4500, 3500, datetime.date(2007, 12, 10)), (None, 4200, None, 4500, datetime.date(2008, 1, 1)), (None, None, None, 4200, datetime.date(2008, 1, 1))]
-+--------------------+
---Query--
-select last_value(salary) over(order by enroll_date groups between 1 following and 3 following 	exclude group), 	lag(salary) over(order by enroll_date groups between 1 following and 3 following exclude group), 	salary, enroll_date from empsalary
---Result--
-[(4800, None, 5000, datetime.date(2006, 10, 1)), (4800, 5000, 6000, datetime.date(2006, 10, 1)), (5200, 6000, 3900, datetime.date(2006, 12, 23)), (3500, 3900, 4800, datetime.date(2007, 8, 1)), (3500, 4800, 5200, datetime.date(2007, 8, 1)), (4200, 5200, 4800, datetime.date(2007, 8, 8)), (4200, 4800, 5200, datetime.date(2007, 8, 15)), (4200, 5200, 3500, datetime.date(2007, 12, 10)), (None, 3500, 4500, datetime.date(2008, 1, 1)), (None, 4500, 4200, datetime.date(2008, 1, 1))]
 +--------------------+
 --Query--
 WITH cte (x) AS (         SELECT * FROM generate_series(1, 35, 2) ) SELECT x, (sum(x) over w) FROM cte WINDOW w AS (ORDER BY x rows between 1 preceding and 1 following)
@@ -432,51 +127,6 @@ WITH cte (x) AS (         select 1 union all select 1 union all select 1 union a
 explain (costs off) select f1, sum(f1) over (partition by f1 order by f2                          range between 1 preceding and 1 following) from t1 where f1 = f2
 --Result--
 [('WindowAgg',), ('  ->  Sort',), ('        Sort Key: f1',), ('        ->  Seq Scan on t1',), ('              Filter: (f1 = f2)',)]
-+--------------------+
---Query--
-select f1, sum(f1) over (partition by f1 order by f2                          range between 1 preceding and 1 following) from t1 where f1 = f2
---Result--
-[(1, 1), (2, 2)]
-+--------------------+
---Query--
-select f1, sum(f1) over (partition by f1, f1 order by f2                          range between 2 preceding and 1 preceding) from t1 where f1 = f2
---Result--
-[(1, None), (2, None)]
-+--------------------+
---Query--
-select f1, sum(f1) over (partition by f1, f2 order by f2                          range between 1 following and 2 following) from t1 where f1 = f2
---Result--
-[(1, None), (2, None)]
-+--------------------+
---Query--
-explain (costs off) select f1, sum(f1) over (partition by f1 order by f2                          groups between 1 preceding and 1 following) from t1 where f1 = f2
---Result--
-[('WindowAgg',), ('  ->  Sort',), ('        Sort Key: f1',), ('        ->  Seq Scan on t1',), ('              Filter: (f1 = f2)',)]
-+--------------------+
---Query--
-select f1, sum(f1) over (partition by f1 order by f2                          groups between 1 preceding and 1 following) from t1 where f1 = f2
---Result--
-[(1, 1), (2, 2)]
-+--------------------+
---Query--
-select f1, sum(f1) over (partition by f1, f1 order by f2                          groups between 2 preceding and 1 preceding) from t1 where f1 = f2
---Result--
-[(1, None), (2, None)]
-+--------------------+
---Query--
-select f1, sum(f1) over (partition by f1, f2 order by f2                          groups between 1 following and 2 following) from t1 where f1 = f2
---Result--
-[(1, None), (2, None)]
-+--------------------+
---Query--
-SELECT rank() OVER (ORDER BY length('abc'))
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT sum(salary), row_number() OVER (ORDER BY depname), sum(     sum(salary) FILTER (WHERE enroll_date > '2007-01-01') ) FILTER (WHERE depname <> 'sales') OVER (ORDER BY depname DESC) AS "filtered_sum",     depname FROM empsalary GROUP BY depname
---Result--
-[(25100, 1, 22600.0, 'develop'), (7400, 2, 3500.0, 'personnel'), (14600, 3, None, 'sales')]
 +--------------------+
 --Query--
 EXPLAIN (COSTS OFF) SELECT     empno,     depname,     row_number() OVER (PARTITION BY depname ORDER BY enroll_date) rn,     rank() OVER (PARTITION BY depname ORDER BY enroll_date ROWS BETWEEN                  UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) rnk,     dense_rank() OVER (PARTITION BY depname ORDER BY enroll_date RANGE BETWEEN                        CURRENT ROW AND CURRENT ROW) drnk,     ntile(10) OVER (PARTITION BY depname ORDER BY enroll_date RANGE BETWEEN                     CURRENT ROW AND UNBOUNDED FOLLOWING) nt,     percent_rank() OVER (PARTITION BY depname ORDER BY enroll_date ROWS BETWEEN                          CURRENT ROW AND UNBOUNDED FOLLOWING) pr,     cume_dist() OVER (PARTITION BY depname ORDER BY enroll_date RANGE BETWEEN                       CURRENT ROW AND UNBOUNDED FOLLOWING) cd FROM empsalary
@@ -719,54 +369,9 @@ SELECT i,AVG(v::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED 
 [(1, 1.5), (2, 2.0), (3, None), (4, None)]
 +--------------------+
 --Query--
-SELECT i,AVG(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 1.5), (2, 2.0), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,AVG(v::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 1.5), (2, 2.0), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,AVG(v::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1.5),(2,2.5),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 2.0), (2, 2.5), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,AVG(v::interval) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,'1 sec'),(2,'2 sec'),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, datetime.timedelta(seconds=1, microseconds=500000)), (2, datetime.timedelta(seconds=2)), (3, None), (4, None)]
-+--------------------+
---Query--
 SELECT i,SUM(v::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
 --Result--
 [(1, 3), (2, 2), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 3), (2, 2), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 3.0), (2, 2.0), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::money) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,'1.10'),(2,'2.20'),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, '$3.30'), (2, '$2.20'), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::interval) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,'1 sec'),(2,'2 sec'),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, datetime.timedelta(seconds=3)), (2, datetime.timedelta(seconds=2)), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1.1),(2,2.2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 3.3), (2, 2.2), (3, None), (4, None)]
 +--------------------+
 --Query--
 SELECT SUM(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1.01),(2,2),(3,3)) v(i,n)
@@ -779,27 +384,7 @@ SELECT i,COUNT(v) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOW
 [(1, 2), (2, 1), (3, 0), (4, 0)]
 +--------------------+
 --Query--
-SELECT i,COUNT(*) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 4), (2, 3), (3, 2), (4, 1)]
-+--------------------+
---Query--
 SELECT VAR_POP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(21704.0,), (13868.75,), (11266.666666666668,), (4225.0,), (0.0,)]
-+--------------------+
---Query--
-SELECT VAR_POP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(21704.0,), (13868.75,), (11266.666666666668,), (4225.0,), (0.0,)]
-+--------------------+
---Query--
-SELECT VAR_POP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(21704.0,), (13868.75,), (11266.666666666668,), (4225.0,), (0.0,)]
-+--------------------+
---Query--
-SELECT VAR_POP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
 --Result--
 [(21704.0,), (13868.75,), (11266.666666666668,), (4225.0,), (0.0,)]
 +--------------------+
@@ -809,37 +394,7 @@ SELECT VAR_SAMP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUND
 [(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
 +--------------------+
 --Query--
-SELECT VAR_SAMP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
-+--------------------+
---Query--
-SELECT VAR_SAMP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
-+--------------------+
---Query--
-SELECT VAR_SAMP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
-+--------------------+
---Query--
 SELECT VARIANCE(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
-+--------------------+
---Query--
-SELECT VARIANCE(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
-+--------------------+
---Query--
-SELECT VARIANCE(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
-+--------------------+
---Query--
-SELECT VARIANCE(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
 --Result--
 [(27130.0,), (18491.666666666668,), (16900.0,), (8450.0,), (None,)]
 +--------------------+
@@ -849,37 +404,7 @@ SELECT STDDEV_POP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOU
 [(147.322774885623,), (147.322774885623,), (117.765657133139,), (106.144555520604,), (65.0,), (0.0,)]
 +--------------------+
 --Query--
-SELECT STDDEV_POP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
---Result--
-[(147.322774885623,), (147.322774885623,), (117.765657133139,), (106.144555520604,), (65.0,), (0.0,)]
-+--------------------+
---Query--
-SELECT STDDEV_POP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
---Result--
-[(147.322774885623,), (147.322774885623,), (117.765657133139,), (106.144555520604,), (65.0,), (0.0,)]
-+--------------------+
---Query--
-SELECT STDDEV_POP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
---Result--
-[(147.322774885623,), (147.322774885623,), (117.765657133139,), (106.144555520604,), (65.0,), (0.0,)]
-+--------------------+
---Query--
 SELECT STDDEV_SAMP(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
---Result--
-[(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT STDDEV_SAMP(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
---Result--
-[(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT STDDEV_SAMP(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
---Result--
-[(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT STDDEV_SAMP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(1,NULL),(2,600),(3,470),(4,170),(5,430),(6,300)) r(i,n)
 --Result--
 [(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
 +--------------------+
@@ -887,36 +412,6 @@ SELECT STDDEV_SAMP(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNB
 SELECT STDDEV(n::bigint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
 --Result--
 [(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT STDDEV(n::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT STDDEV(n::smallint) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT STDDEV(n::numeric) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)   FROM (VALUES(0,NULL),(1,600),(2,470),(3,170),(4,430),(5,300)) r(i,n)
---Result--
-[(164.711869639076,), (164.711869639076,), (135.984067694222,), (130.0,), (91.92388155425118,), (None,)]
-+--------------------+
---Query--
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND CURRENT ROW)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 1), (2, 2), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,NULL),(4,NULL)) t(i,v)
---Result--
-[(1, 3), (2, 2), (3, None), (4, None)]
-+--------------------+
---Query--
-SELECT i,SUM(v::int) OVER (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING)   FROM (VALUES(1,1),(2,2),(3,3),(4,4)) t(i,v)
---Result--
-[(1, 3), (2, 6), (3, 9), (4, 7)]
 +--------------------+
 --Query--
 SELECT a, b,        SUM(b) OVER(ORDER BY A ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) FROM (VALUES(1,1::numeric),(2,2),(3,'NaN'),(4,3),(5,4)) t(a,b)

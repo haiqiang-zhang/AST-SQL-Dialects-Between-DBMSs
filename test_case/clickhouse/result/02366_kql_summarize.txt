@@ -1,0 +1,55 @@
+--Query--
+--     'Angel', 'Stewart', 'Professional', 'Partial College', 46,  --     'Apple', '', 'Skilled Manual', 'Bachelors', 28,  --     dynamic(null), 'why', 'Professional', 'Partial College', 38 -- ]  DROP TABLE IF EXISTS Customers
+--Result--
+[]
++--------------------+
+--Query--
+Customers | summarize count(), min(Age), max(Age), avg(Age), sum(Age)
+--Result--
+[(12, 25, 46, 32.416666666666664, 389)]
++--------------------+
+--Query--
+Customers | summarize countif(Age>40) by Occupation | order by Occupation
+--Result--
+[('Skilled Manual', 0), ('Professional', 2), ('Management abcd defg', 0)]
++--------------------+
+--Query--
+Customers | summarize MyMax = maxif(Age, Age<40) by Occupation | order by Occupation
+--Result--
+[('Skilled Manual', 36), ('Professional', 38), ('Management abcd defg', 33)]
++--------------------+
+--Query--
+Customers | summarize MyMin = minif(Age, Age<40) by Occupation | order by Occupation
+--Result--
+[('Skilled Manual', 26), ('Professional', 25), ('Management abcd defg', 33)]
++--------------------+
+--Query--
+Customers | summarize MyAvg = avgif(Age, Age<40) by Occupation | order by Occupation
+--Result--
+[('Skilled Manual', 30.2), ('Professional', 29.25), ('Management abcd defg', 33.0)]
++--------------------+
+--Query--
+Customers | summarize MySum = sumif(Age, Age<40) by Occupation | order by Occupation
+--Result--
+[('Skilled Manual', 151), ('Professional', 117), ('Management abcd defg', 33)]
++--------------------+
+--Query--
+Customers | summarize dcount(Education)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+Customers | summarize dcountif(Education, Occupation=='Professional')
+--Result--
+[(2,)]
++--------------------+
+--Query--
+Customers | summarize count_ = count() by bin(Age, 10) | order by count_ asc
+--Result--
+[(40, 2), (30, 4), (20, 6)]
++--------------------+
+--Query--
+Customers | summarize job_count = count() by Occupation | where job_count > 0 | order by Occupation
+--Result--
+[('Skilled Manual', 5), ('Professional', 6), ('Management abcd defg', 1)]
++--------------------+

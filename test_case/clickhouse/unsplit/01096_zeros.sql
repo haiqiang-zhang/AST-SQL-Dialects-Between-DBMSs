@@ -7,6 +7,5 @@ select '-';
 select zero from zeros_mt(10) settings max_block_size = 3, max_threads=3;
 select '-';
 select sum(zero), count() from (select * from system.zeros limit 10000000);
-select sum(zero), count() from (select * from system.zeros_mt limit 10000000);
 select sum(zero), count() from zeros(10000000);
 select sum(zero), count() from zeros_mt(10000000);

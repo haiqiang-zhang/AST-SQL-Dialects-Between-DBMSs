@@ -1,0 +1,35 @@
+--Query--
+system stop replicated sends rmt1
+--Result--
+[]
++--------------------+
+--Query--
+system stop merges rmt2
+--Result--
+[]
++--------------------+
+--Query--
+select type, new_part_name from system.replication_queue where database=currentDatabase() and table='rmt2' order by new_part_name
+--Result--
+[]
++--------------------+
+--Query--
+system start replicated sends rmt1
+--Result--
+[]
++--------------------+
+--Query--
+select type, new_part_name from system.replication_queue where database=currentDatabase() and table='rmt2' order by new_part_name
+--Result--
+[]
++--------------------+
+--Query--
+select type, new_part_name from system.replication_queue where database=currentDatabase() and table='rmt2' order by new_part_name
+--Result--
+[]
++--------------------+
+--Query--
+system start merges rmt2
+--Result--
+[]
++--------------------+

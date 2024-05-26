@@ -1,0 +1,135 @@
+--Query--
+SELECT DISTINCT a FROM t1 FULL JOIN t2 ON true WHERE (b ISNULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT a FROM t1 FULL JOIN t2 ON true
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT a FROM t1 FULL JOIN t2 ON true WHERE (b ISNULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT DISTINCT a FROM t1 FULL JOIN t2 ON true
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 'value!' FROM r3 FULL JOIN r4 ON (y=x)
+--Result--
+[('value!',)]
++--------------------+
+--Query--
+SELECT 'value!' FROM r3 FULL JOIN r4 ON (y=x) WHERE +y=55
+--Result--
+[('value!',)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (0) RIGHT OUTER JOIN t3
+--Result--
+[(None, None, 't3val')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (0) FULL OUTER JOIN t3
+--Result--
+[(None, None, 't3val')]
++--------------------+
+--Query--
+SELECT * FROM t3 LEFT JOIN t2 ON (0)
+--Result--
+[('t3val', None)]
++--------------------+
+--Query--
+SELECT * FROM t0 RIGHT JOIN t1 INNER JOIN t2 ON (0) RIGHT JOIN t3
+--Result--
+[(None, None, None, 't3val')]
++--------------------+
+--Query--
+SELECT * FROM t0 RIGHT JOIN t1 INNER JOIN t2 ON (0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CASE WHEN t2.b THEN 0 ELSE 1 END FROM t1 LEFT JOIN t2 ON true
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON true WHERE CASE WHEN t2.b THEN 0 ELSE 1 END
+--Result--
+[(3, None)]
++--------------------+
+--Query--
+SELECT t2.rowid FROM t1 JOIN (t2 JOIN t3)
+--Result--
+[(1,), (1,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT x3.oid FROM x1 JOIN (x2 JOIN x3 ON c='c')
+--Result--
+[(43,)]
++--------------------+
+--Query--
+SELECT x3.rowid FROM x1 JOIN (x2 JOIN x3 ON c='c')
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT x4.oid FROM x1 JOIN (x2 JOIN x4 ON c='c')
+--Result--
+[('forty three',)]
++--------------------+
+--Query--
+SELECT * FROM x1 NATURAL JOIN x2
+--Result--
+[(1000, 'thousand', 'c', 'd')]
++--------------------+
+--Query--
+SELECT rowid FROM x1 JOIN (x2 JOIN wo2)
+--Result--
+[('myrowid',)]
++--------------------+
+--Query--
+SELECT _rowid_ FROM wo1 JOIN (wo3 JOIN x3)
+--Result--
+[('world',)]
++--------------------+
+--Query--
+SELECT oid FROM wo1 JOIN (wo3 JOIN x3)
+--Result--
+[(43,)]
++--------------------+
+--Query--
+SELECT oid FROM wo2 JOIN (wo3 JOIN x3)
+--Result--
+[(43,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM rt0 LEFT JOIN rt3 JOIN v6 ON ((CASE v6.c0 WHEN rt0.c4 THEN rt3.c3 END) NOT BETWEEN (rt0.c4) AND (NULL)) WHERE (rt0.c1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a FROM t2 NATURAL RIGHT JOIN t1
+--Result--
+[(3,), (3,)]
++--------------------+
+--Query--
+SELECT a FROM t2 NATURAL RIGHT JOIN t1
+--Result--
+[(3,), (3,)]
++--------------------+

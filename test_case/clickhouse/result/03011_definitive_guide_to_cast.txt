@@ -1,0 +1,135 @@
+--Query--
+SELECT CAST(123 AS String)
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT CAST(x AS UInt8) AS y, toTypeName(y) FROM VALUES('x Nullable(String)', ('123'), ('NULL'))
+--Result--
+[(123, 'Nullable(UInt8)'), (None, 'Nullable(UInt8)')]
++--------------------+
+--Query--
+SELECT arrayJoin(CAST($$['Hello', 'wo\'rld\\']$$ AS Array(String))) AS x, CAST($$wo\'rld\\$$ AS FixedString(9)) AS y
+--Result--
+[('Hello', "wo\\'rld\\\\"), ("wo'rld\\", "wo\\'rld\\\\")]
++--------------------+
+--Query--
+SELECT cast(123 AS String)
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT Cast(123 AS String)
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT CasT(123, 'String')
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT 123::String
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT 1.1::Decimal(30, 20)
+--Result--
+[(1.1,)]
++--------------------+
+--Query--
+SELECT [1.1, 2.3]::Array(Decimal(30, 20))
+--Result--
+[([1.1, 2.3],)]
++--------------------+
+--Query--
+SELECT [1.1, 2.3 + 0]::Array(Decimal(30, 20))
+--Result--
+[([1.1, 2.3],)]
++--------------------+
+--Query--
+SELECT -1::String
+--Result--
+[('-1',)]
++--------------------+
+--Query--
+SELECT accurateCastOrNull(1.123456789, 'Float32')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT accurateCastOrDefault(-1, 'UInt64', 0::UInt64)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+-- `toIntervalSecond`, `toIntervalMinute`, `toIntervalHour`, -- `toIntervalDay`, `toIntervalWeek`, `toIntervalMonth`, `toIntervalQuarter`, `toIntervalYear`  -- These functions work under the same rules as the CAST operator and can be thought as elementary implementation parts of that operator. They allow implementation-defined overflow while converting between numeric types.  SELECT toUInt8(-1)
+--Result--
+[(255,)]
++--------------------+
+--Query--
+SELECT toFloat64(123)
+--Result--
+[(123.0,)]
++--------------------+
+--Query--
+SELECT toDecimal32('123.456', 2)
+--Result--
+[(123.45,)]
++--------------------+
+--Query--
+SELECT toDateTime('2024-04-25 01:02:03', 'Europe/Amsterdam')
+--Result--
+[(datetime.datetime(2024, 4, 25, 1, 2, 3, tzinfo=<DstTzInfo 'Europe/Amsterdam' CEST+2:00:00 DST>),)]
++--------------------+
+--Query--
+SELECT toDateTime64('2024-04-25 01:02:03', 6, 'Europe/Amsterdam')
+--Result--
+[(datetime.datetime(2024, 4, 25, 1, 2, 3, tzinfo=<DstTzInfo 'Europe/Amsterdam' CEST+2:00:00 DST>),)]
++--------------------+
+--Query--
+SELECT toString(1710612085::DateTime, 'America/Los_Angeles')
+--Result--
+[('2024-03-16 11:01:25',)]
++--------------------+
+--Query--
+SELECT toUInt8OrNull('123'), toUInt8OrNull('-123'), toUInt8OrNull('1234'), toUInt8OrNull(' 123')
+--Result--
+[(123, None, None, None)]
++--------------------+
+--Query--
+SELECT toUInt8OrZero('123'), toUInt8OrZero('-123'), toUInt8OrZero('1234'), toUInt8OrZero(' 123')
+--Result--
+[(123, 0, 0, 0)]
++--------------------+
+--Query--
+SELECT toUInt8OrDefault('123', 10), toUInt8OrDefault('-123', 10), toUInt8OrDefault('1234', 10), toUInt8OrDefault(' 123', 10)
+--Result--
+[(123, 10, 10, 10)]
++--------------------+
+--Query--
+SELECT DATE '2024-04-25', TIMESTAMP '2024-01-01 02:03:04', INTERVAL 1 MINUTE, INTERVAL '12 hour'
+--Result--
+[(datetime.date(2024, 4, 25), datetime.datetime(2024, 1, 1, 2, 3, 4), 1, 12)]
++--------------------+
+--Query--
+SELECT DATE('2024-04-25'), TIMESTAMP('2024-01-01 02:03:04'), FROM_UNIXTIME(1234567890)
+--Result--
+[(datetime.date(2024, 4, 25), datetime.datetime(2024, 1, 1, 2, 3, 4), datetime.datetime(2009, 2, 14, 0, 31, 30))]
++--------------------+
+--Query--
+SELECT date '2024-04-25', timeSTAMP('2024-01-01 02:03:04'), From_Unixtime(1234567890)
+--Result--
+[(datetime.date(2024, 4, 25), datetime.datetime(2024, 1, 1, 2, 3, 4), datetime.datetime(2009, 2, 14, 0, 31, 30))]
++--------------------+
+--Query--
+SELECT parseDateTimeBestEffort('25 Apr 1986 1pm')
+--Result--
+[(datetime.datetime(1986, 4, 25, 13, 0),)]
++--------------------+
+--Query--
+SELECT toDayOfMonth(toDateTime(1234567890))
+--Result--
+[(14,)]
++--------------------+

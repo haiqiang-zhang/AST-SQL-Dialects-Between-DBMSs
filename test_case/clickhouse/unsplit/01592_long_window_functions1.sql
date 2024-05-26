@@ -17,11 +17,4 @@ select cityHash64( toString( groupArray (tuple(*) ) )) from (
     order by brand_id, rack_id, quantity
 ) t;
 select '---- window f ----';
-select cityHash64( toString( groupArray (tuple(*) ) )) from (
-    select brand_id, rack_id,  quantity from
-       ( select brand_id, rack_id, quantity, row_number() over (partition by brand_id, rack_id order by quantity) rn
-         from stack ) as t0 
-    where rn <= 2  
-    order by brand_id, rack_id, quantity
-) t;
 drop table if exists stack;

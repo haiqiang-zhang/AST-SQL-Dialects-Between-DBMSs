@@ -1,0 +1,30 @@
+--Query--
+select s, arr1, map1 from arrays_test array join arr1, map1 settings enable_unaligned_array_join = 1
+--Result--
+[('Hello', 1, (1, '1')), ('Hello', 2, (2, '2')), ('World', 3, (3, '3')), ('World', 4, (4, '4')), ('World', 5, (5, '5'))]
++--------------------+
+--Query--
+select s, arr1, map1 from arrays_test left array join arr1, map1 settings enable_unaligned_array_join = 1
+--Result--
+[('Hello', 1, (1, '1')), ('Hello', 2, (2, '2')), ('World', 3, (3, '3')), ('World', 4, (4, '4')), ('World', 5, (5, '5')), ('Goodbye', 0, (0, ''))]
++--------------------+
+--Query--
+select s, map1 from arrays_test array join map1
+--Result--
+[('Hello', (1, '1')), ('Hello', (2, '2')), ('World', (3, '3')), ('World', (4, '4')), ('World', (5, '5'))]
++--------------------+
+--Query--
+select s, map1 from arrays_test left array join map1
+--Result--
+[('Hello', (1, '1')), ('Hello', (2, '2')), ('World', (3, '3')), ('World', (4, '4')), ('World', (5, '5')), ('Goodbye', (0, ''))]
++--------------------+
+--Query--
+select s, map1, map2 from arrays_test array join map1, map2 settings enable_unaligned_array_join = 1
+--Result--
+[('Hello', (1, '1'), (1, '1')), ('Hello', (2, '2'), (0, '')), ('World', (3, '3'), (3, '3')), ('World', (4, '4'), (4, '4')), ('World', (5, '5'), (0, ''))]
++--------------------+
+--Query--
+select s, map1, map2 from arrays_test left array join map1, map2 settings enable_unaligned_array_join = 1
+--Result--
+[('Hello', (1, '1'), (1, '1')), ('Hello', (2, '2'), (0, '')), ('World', (3, '3'), (3, '3')), ('World', (4, '4'), (4, '4')), ('World', (5, '5'), (0, '')), ('Goodbye', (0, ''), (0, ''))]
++--------------------+

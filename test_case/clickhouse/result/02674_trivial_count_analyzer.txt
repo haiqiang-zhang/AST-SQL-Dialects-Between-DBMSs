@@ -1,0 +1,20 @@
+--Query--
+select count() from m3
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select trimBoth(explain) from (explain select count() from m3) where explain like '%ReadFromPreparedSource (Optimized trivial count)%'
+--Result--
+[('ReadFromPreparedSource (Optimized trivial count)',)]
++--------------------+
+--Query--
+select count() + 1 from m3
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SYSTEM STOP MERGES replacing_m3
+--Result--
+[]
++--------------------+

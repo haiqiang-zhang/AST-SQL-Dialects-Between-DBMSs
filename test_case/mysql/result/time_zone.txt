@@ -1,0 +1,385 @@
+--Query--
+select @a:=FROM_UNIXTIME(1)
+--Result--
+[('1970-01-01 01:00:01',)]
++--------------------+
+--Query--
+select unix_timestamp(@a)
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT ts,from_unixtime(ts) FROM t1
+--Result--
+[(1035673200, datetime.datetime(2002, 10, 27, 1, 0)), (1035680400, datetime.datetime(2002, 10, 27, 2, 0)), (1035684000, datetime.datetime(2002, 10, 27, 3, 0)), (1035680400, datetime.datetime(2002, 10, 27, 2, 0)), (1035673200, datetime.datetime(2002, 10, 27, 1, 0)), (1035680400, datetime.datetime(2002, 10, 27, 2, 0)), (1048986000, datetime.datetime(2003, 3, 30, 3, 0)), (1048986000, datetime.datetime(2003, 3, 30, 3, 0)), (1048989599, datetime.datetime(2003, 3, 30, 3, 59, 59)), (1048989601, datetime.datetime(2003, 3, 30, 4, 0, 1))]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1
+--Result--
+[(datetime.datetime(2019, 10, 27, 0, 47, 42),), (datetime.datetime(2019, 10, 27, 1, 47, 42),)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 GROUP BY c1
+--Result--
+[(2,), (2,)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.1+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 100000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.01+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 10000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.001+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 1000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.0001+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 100),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.00001+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.000001+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 1),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.0000001+05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.1-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10, 100000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.01-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10, 10000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.001-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10, 1000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.0001-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10, 100),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.00001-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.000001-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10, 1),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2015-01-01 10:10:10.0000001-05:30'
+--Result--
+[(datetime.datetime(2015, 1, 1, 16, 40, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2001-01-01 00:00:00+02:00'
+--Result--
+[(datetime.datetime(2000, 12, 31, 23, 0),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP( '2001-01-01 00:00:00+02:00' )
+--Result--
+[(datetime.datetime(2000, 12, 31, 23, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1995, 5, 4, 20, 30),)]
++--------------------+
+--Query--
+PREPARE stmt1 FROM "INSERT INTO t1( a ) VALUES ( ? )"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2014, 12, 31, 21, 10, 10)), (4, datetime.datetime(2015, 1, 2, 1, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2014, 12, 31, 21, 10, 10)), (4, datetime.datetime(2015, 1, 2, 1, 10, 10)), (5, datetime.datetime(2015, 1, 1, 10, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2014, 12, 31, 21, 10, 10)), (4, datetime.datetime(2015, 1, 2, 1, 10, 10)), (5, datetime.datetime(2015, 1, 1, 10, 10, 10)), (6, datetime.datetime(2015, 1, 1, 9, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2014, 12, 31, 21, 10, 10)), (4, datetime.datetime(2015, 1, 2, 1, 10, 10)), (5, datetime.datetime(2015, 1, 1, 10, 10, 10)), (6, datetime.datetime(2015, 1, 1, 9, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 10:10:10+03:30'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 10:10:10+02:00'
+--Result--
+[(6, datetime.datetime(2015, 1, 1, 9, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 10:10:10+05:30'
+--Result--
+[(2, datetime.datetime(2015, 1, 1, 5, 40, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2014, 12, 31, 21, 10, 10)), (4, datetime.datetime(2015, 1, 2, 1, 10, 10)), (5, datetime.datetime(2015, 1, 1, 10, 10, 10)), (6, datetime.datetime(2015, 1, 1, 9, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 10:10:10+03:30'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 10:10:10+02:00'
+--Result--
+[(6, datetime.datetime(2015, 1, 1, 9, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 10:10:10+05:30'
+--Result--
+[(2, datetime.datetime(2015, 1, 1, 5, 40, 10))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 05:40:10.1'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 100000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 05:40:10.01'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 10000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 05:40:10.001'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 1000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 05:40:10.0001'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 100),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 05:40:10.00001'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 10),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = '2015-01-01 05:40:10.000001'
+--Result--
+[(datetime.datetime(2015, 1, 1, 5, 40, 10, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.datetime(1995, 5, 4, 20, 30),)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2015, 1, 1, 11, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2015, 1, 1, 11, 10, 10)), (4, datetime.datetime(2015, 1, 1, 8, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2015, 1, 1, 11, 10, 10)), (4, datetime.datetime(2015, 1, 1, 8, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 10:10:10+03:30'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 10:10:10+02:00'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 10:10:10+05:30'
+--Result--
+[(2, datetime.datetime(2015, 1, 1, 5, 40, 10))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, datetime.datetime(2015, 1, 1, 10, 10, 10)), (2, datetime.datetime(2015, 1, 1, 5, 40, 10)), (3, datetime.datetime(2015, 1, 1, 11, 10, 10)), (4, datetime.datetime(2015, 1, 1, 8, 10, 10))]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 10:10:10+03:30'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 10:10:10+02:00'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 10:10:10+05:30'
+--Result--
+[(2, datetime.datetime(2015, 1, 1, 5, 40, 10))]
++--------------------+
+--Query--
+SELECT ADDTIME( '2001-01-01 00:00:00+02:00', '2001-01-01 00:00:00+02:00' )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT CAST( '2001-01-01 00:00:00+02:00' AS DATETIME )
+--Result--
+[(datetime.datetime(2000, 12, 31, 23, 0),)]
++--------------------+
+--Query--
+SELECT CONVERT_TZ( '2015-01-01 10:10:10','+00:00','+05:00' )
+--Result--
+[(datetime.datetime(2015, 1, 1, 15, 10, 10),)]
++--------------------+
+--Query--
+SELECT TO_DAYS( '2001-01-01 00:00:00+07:00' )
+--Result--
+[(730850,)]
++--------------------+
+--Query--
+SELECT DATEDIFF( '2007-12-31 23:59:59+02:00', '2007-12-30  00:00:00' )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT TIMEDIFF( '2000:01:01 00:00:00+02:00',                  '2000:01:01 00:00:00.000001+01:00' )
+--Result--
+[(datetime.timedelta(days=-1, seconds=82799, microseconds=999999),)]
++--------------------+
+--Query--
+SELECT DATE_ADD( '2000-12-31 23:59:59+02:00', INTERVAL 1 SECOND )
+--Result--
+[('2000-12-31 23:00:00',)]
++--------------------+
+--Query--
+SELECT DATE_SUB( '2000-12-31 23:59:59+02:00', INTERVAL 1 SECOND )
+--Result--
+[('2000-12-31 22:59:58',)]
++--------------------+
+--Query--
+SELECT DATE_FORMAT( '2009-10-10 23:59:59+02:00', '%W %M %Y' )
+--Result--
+[('Saturday October 2009',)]
++--------------------+
+--Query--
+SELECT TIME( '2003-12-31 23:59:59+02:00' )
+--Result--
+[(datetime.timedelta(seconds=82799),)]
++--------------------+
+--Query--
+SELECT TIMESTAMPADD(MINUTE, 1, '2003-01-02 23:59:59+02:00' )
+--Result--
+[('2003-01-02 23:00:59',)]
++--------------------+
+--Query--
+SELECT TIMESTAMPDIFF(MONTH, '2003-02-01 23:59:59+02:00', '2003-05-01' )
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT TO_SECONDS( '2009-11-29 23:59:59+02:00' )
+--Result--
+[(63426754799,)]
++--------------------+
+--Query--
+SELECT UNIX_TIMESTAMP( '2015-11-13 23:59:59+02:00' )
+--Result--
+[(1447451999,)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2001-01-01 00:00:00+02:00'
+--Result--
+[(datetime.datetime(2000, 12, 31, 23, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 04:40:10.1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 04:40:10.01'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 04:40:10.001'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 04:40:10.0001'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 04:40:10.00001'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a = '2015-01-01 04:40:10.000001'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2038, 1, 19, 4, 14, 7),), (datetime.datetime(2038, 1, 19, 4, 14, 7),), (datetime.datetime(1970, 1, 1, 2, 0),), (datetime.datetime(1970, 1, 1, 1, 0, 1),), (datetime.datetime(1970, 1, 1, 1, 0, 1),), (datetime.datetime(2038, 1, 19, 3, 14, 8),)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.datetime(2038, 1, 19, 4, 14, 7),), (datetime.datetime(2038, 1, 19, 4, 14, 7, 1),), (datetime.datetime(2038, 1, 19, 4, 14, 7, 999999),), (datetime.datetime(1970, 1, 1, 2, 0),), (datetime.datetime(1970, 1, 1, 1, 0, 1),)]
++--------------------+

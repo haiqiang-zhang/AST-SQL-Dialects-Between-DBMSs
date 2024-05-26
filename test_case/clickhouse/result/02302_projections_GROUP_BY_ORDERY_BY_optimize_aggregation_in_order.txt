@@ -1,0 +1,10 @@
+--Query--
+select x + y, sum(x - y) as s from test_agg_proj_02302 group by x + y order by s desc limit 5 settings optimize_aggregation_in_order=0, optimize_read_in_order=0
+--Result--
+[(15, 480), (14, 450), (13, 420), (12, 390), (11, 360)]
++--------------------+
+--Query--
+select x + y, sum(x - y) as s from test_agg_proj_02302 group by x + y order by s desc limit 5 settings optimize_aggregation_in_order=1, optimize_read_in_order=1
+--Result--
+[(15, 480), (14, 450), (13, 420), (12, 390), (11, 360)]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+SHOW CREATE TABLE bool_test
+--Result--
+[('CREATE TABLE test.bool_test\n(\n    `value` Bool,\n    `f` String\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SELECT toUInt64(value),f FROM bool_test
+--Result--
+[(0, 'test'), (1, 'test'), (0, 'test'), (1, 'test'), (0, 'test'), (1, 'test')]
++--------------------+
+--Query--
+SELECT value,f FROM bool_test where value > 0
+--Result--
+[(True, 'test'), (True, 'test'), (True, 'test')]
++--------------------+

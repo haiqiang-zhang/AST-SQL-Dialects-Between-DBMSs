@@ -1,0 +1,25 @@
+--Query--
+PREPARE p FROM '(SELECT * FROM t LIMIT 3) LIMIT ?'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM '(SELECT * FROM t LIMIT ?) LIMIT 3'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN         ( SELECT a FROM t1 UNION DISTINCT           SELECT a FROM t1 ORDER BY (SELECT a) ) UNION DISTINCT     SELECT * FROM t1     ORDER BY (SELECT a)
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e')]
++--------------------+
+--Query--
+SELECT FOUND_ROWS()
+--Result--
+[(6,)]
++--------------------+

@@ -1,0 +1,165 @@
+--Query--
+SELECT '-- no modifiers'
+--Result--
+[('-- no modifiers',)]
++--------------------+
+--Query--
+SELECT a, b FROM order_by_all ORDER BY ALL
+--Result--
+[('A', 2), ('B', 3), ('C', None), ('D', 1)]
++--------------------+
+--Query--
+SELECT b, a FROM order_by_all ORDER BY ALL
+--Result--
+[(1, 'D'), (2, 'A'), (3, 'B'), (None, 'C')]
++--------------------+
+--Query--
+SELECT a, b FROM order_by_all ORDER BY ALL
+--Result--
+[('A', 2), ('B', 3), ('C', None), ('D', 1)]
++--------------------+
+--Query--
+SELECT b, a FROM order_by_all ORDER BY ALL
+--Result--
+[(1, 'D'), (2, 'A'), (3, 'B'), (None, 'C')]
++--------------------+
+--Query--
+SELECT '-- with ASC/DESC modifiers'
+--Result--
+[('-- with ASC/DESC modifiers',)]
++--------------------+
+--Query--
+SELECT a, b FROM order_by_all ORDER BY ALL ASC
+--Result--
+[('A', 2), ('B', 3), ('C', None), ('D', 1)]
++--------------------+
+--Query--
+SELECT a, b FROM order_by_all ORDER BY ALL DESC
+--Result--
+[('D', 1), ('C', None), ('B', 3), ('A', 2)]
++--------------------+
+--Query--
+SELECT a, b FROM order_by_all ORDER BY ALL ASC
+--Result--
+[('A', 2), ('B', 3), ('C', None), ('D', 1)]
++--------------------+
+--Query--
+SELECT a, b FROM order_by_all ORDER BY ALL DESC
+--Result--
+[('D', 1), ('C', None), ('B', 3), ('A', 2)]
++--------------------+
+--Query--
+SELECT '-- with NULLS FIRST/LAST modifiers'
+--Result--
+[('-- with NULLS FIRST/LAST modifiers',)]
++--------------------+
+--Query--
+SELECT b, a FROM order_by_all ORDER BY ALL NULLS FIRST
+--Result--
+[(None, 'C'), (1, 'D'), (2, 'A'), (3, 'B')]
++--------------------+
+--Query--
+SELECT b, a FROM order_by_all ORDER BY ALL NULLS LAST
+--Result--
+[(1, 'D'), (2, 'A'), (3, 'B'), (None, 'C')]
++--------------------+
+--Query--
+SELECT b, a FROM order_by_all ORDER BY ALL NULLS FIRST
+--Result--
+[(None, 'C'), (1, 'D'), (2, 'A'), (3, 'B')]
++--------------------+
+--Query--
+SELECT b, a FROM order_by_all ORDER BY ALL NULLS LAST
+--Result--
+[(1, 'D'), (2, 'A'), (3, 'B'), (None, 'C')]
++--------------------+
+--Query--
+SELECT '-- SELECT *'
+--Result--
+[('-- SELECT *',)]
++--------------------+
+--Query--
+SELECT * FROM order_by_all ORDER BY all
+--Result--
+[('A', 2), ('B', 3), ('C', None), ('D', 1)]
++--------------------+
+--Query--
+SELECT * FROM order_by_all ORDER BY all
+--Result--
+[('A', 2), ('B', 3), ('C', None), ('D', 1)]
++--------------------+
+--Query--
+SELECT '-- the trouble starts when "order by all is all" is ambiguous'
+--Result--
+[('-- the trouble starts when "order by all is all" is ambiguous',)]
++--------------------+
+--Query--
+SELECT '  -- columns'
+--Result--
+[('  -- columns',)]
++--------------------+
+--Query--
+SELECT a, b, all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('B', 3, 10), ('D', 1, 20), ('A', 2, 30), ('C', None, 40)]
++--------------------+
+--Query--
+SELECT a FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('B',), ('D',), ('A',), ('C',)]
++--------------------+
+--Query--
+SELECT * FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('B', 3, 10), ('D', 1, 20), ('A', 2, 30), ('C', None, 40)]
++--------------------+
+--Query--
+SELECT a, b, all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('B', 3, 10), ('D', 1, 20), ('A', 2, 30), ('C', None, 40)]
++--------------------+
+--Query--
+SELECT a FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('B',), ('D',), ('A',), ('C',)]
++--------------------+
+--Query--
+SELECT * FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('B', 3, 10), ('D', 1, 20), ('A', 2, 30), ('C', None, 40)]
++--------------------+
+--Query--
+SELECT '  -- column aliases'
+--Result--
+[('  -- column aliases',)]
++--------------------+
+--Query--
+SELECT a, b AS all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('D', 1), ('A', 2), ('B', 3), ('C', None)]
++--------------------+
+--Query--
+SELECT a, b AS all FROM order_by_all ORDER BY all SETTINGS enable_order_by_all = false
+--Result--
+[('D', 1), ('A', 2), ('B', 3), ('C', None)]
++--------------------+
+--Query--
+SELECT '  -- expressions'
+--Result--
+[('  -- expressions',)]
++--------------------+
+--Query--
+SELECT '  -- ORDER BY ALL loses its special meaning when used in conjunction with other columns'
+--Result--
+[('  -- ORDER BY ALL loses its special meaning when used in conjunction with other columns',)]
++--------------------+
+--Query--
+SELECT a, b, all FROM order_by_all ORDER BY all, a
+--Result--
+[('B', 3, 10), ('D', 1, 20), ('A', 2, 30), ('C', None, 40)]
++--------------------+
+--Query--
+SELECT a, b, all FROM order_by_all ORDER BY all, a
+--Result--
+[('B', 3, 10), ('D', 1, 20), ('A', 2, 30), ('C', None, 40)]
++--------------------+

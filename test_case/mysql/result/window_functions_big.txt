@@ -1,0 +1,15 @@
+--Query--
+SELECT * from cpy ORDER BY d DESC LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from cpy ORDER BY d DESC LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT outr1.col_varchar AS f1, outr2.col_varchar AS f2     FROM `C` AS outr1 LEFT JOIN `E` AS outr2     ON (outr1.col_int_key = outr2.col_int_key)     WHERE outr1.col_varchar_key !=          (SELECT LEAD(innr1.pk, 5) OVER () AS y           FROM `DD` AS innr2 LEFT OUTER JOIN `DD` AS innr1           ON (innr2.col_date <> innr1.col_date_key)           WHERE innr1.col_int < 5 XOR outr2.col_date IS NULL           LIMIT 1)
+--Result--
+[]
++--------------------+

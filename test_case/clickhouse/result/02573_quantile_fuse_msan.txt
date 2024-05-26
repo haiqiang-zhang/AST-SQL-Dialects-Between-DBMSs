@@ -1,0 +1,10 @@
+--Query--
+SELECT quantile(0.1)(d), quantile(0.5)(d) FROM datetime
+--Result--
+[(datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>))]
++--------------------+
+--Query--
+SELECT max(cityHash64(*)) > 0 FROM (SELECT quantile(0.1)(d), quantile(0.5)(d) FROM datetime)
+--Result--
+[(1,)]
++--------------------+

@@ -1,0 +1,110 @@
+--Query--
+SELECT 1 AS y FROM t1, t2 ORDER BY y
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x AS y FROM t3 ORDER BY y
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY y
+--Result--
+[(33,), (11,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY yy
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY 1
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT 2 AS y FROM t1, t2 ORDER BY y COLLATE nocase
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT x AS y FROM t3 ORDER BY y COLLATE nocase
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY y COLLATE nocase
+--Result--
+[(33,), (11,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY yy COLLATE nocase
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY 1 COLLATE nocase
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT x AS y FROM t3 ORDER BY +y
+--Result--
+[(33,), (11,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY +y
+--Result--
+[(33,), (11,)]
++--------------------+
+--Query--
+SELECT x AS yy FROM t3 ORDER BY +yy
+--Result--
+[(11,), (33,)]
++--------------------+
+--Query--
+SELECT '1', substr(m,2) AS m FROM t4 ORDER BY m
+--Result--
+[('1', 'x'), ('1', 'y'), ('1', 'z')]
++--------------------+
+--Query--
+SELECT '2', substr(m,2) AS m FROM t4 ORDER BY m COLLATE binary
+--Result--
+[('2', 'x'), ('2', 'y'), ('2', 'z')]
++--------------------+
+--Query--
+SELECT '3', substr(m,2) AS m FROM t4 ORDER BY lower(m)
+--Result--
+[('3', 'z'), ('3', 'y'), ('3', 'x')]
++--------------------+
+--Query--
+SELECT count(*), substr(m,2,1) AS m FROM t5 GROUP BY m ORDER BY 1, 2
+--Result--
+[(1, 'x'), (1, 'x'), (1, 'y')]
++--------------------+
+--Query--
+SELECT count(*), substr(m,2,1) AS mx FROM t5    GROUP BY substr(m,2,1) ORDER BY 1, 2
+--Result--
+[(1, 'y'), (2, 'x')]
++--------------------+
+--Query--
+SELECT min(name) FROM t61 GROUP BY lower(name)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(),        NULLIF(name,'abc') AS name     FROM t63    GROUP BY lower(name)
+--Result--
+[(1, None), (1, None)]
++--------------------+
+--Query--
+SELECT 2 AS x WHERE (SELECT x AS y WHERE 3>y)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 2 AS x WHERE (SELECT x AS y WHERE 1>y)
+--Result--
+[]
++--------------------+

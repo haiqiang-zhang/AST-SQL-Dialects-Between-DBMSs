@@ -1,0 +1,435 @@
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)')]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6), (1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM def
+--Result--
+[('IV', 'V', 'VI'), ('VII', 'VIII', 'IX')]
++--------------------+
+--Query--
+SELECT * FROM def
+--Result--
+[('IV', 'V', 'VI'), ('VII', 'VIII', 'IX')]
++--------------------+
+--Query--
+SELECT * FROM def
+--Result--
+[('IV', 'V', 'VI'), ('VII', 'VIII', 'IX')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None)]
++--------------------+
+--Query--
+SELECT max(i) FROM seq
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM seq
+--Result--
+[(1, 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'), (2, 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS test2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'test.db:'||name FROM sqlite_master        UNION ALL       SELECT 'test2.db:'||name FROM test2.sqlite_master
+--Result--
+[('test.db:abc',), ('test.db:def',), ('test.db:seq',), ('test.db:sqlite_autoindex_seq_1',), ('test.db:ghi',), ('test2.db:sqlite_stat1',), ('test2.db:Table2',), ('test2.db:idx_col1_unique',), ('test2.db:idx_col23_unique',), ('test2.db:idx_col2',), ('test2.db:ab',), ('test2.db:t3',), ('test2.db:files',), ('test2.db:def',), ('test2.db:x',), ('test2.db:t1',), ('test2.db:abc',), ('test2.db:t2',), ('test2.db:ghi',)]
++--------------------+
+--Query--
+SELECT 'test2.db:'||name FROM sqlite_master        UNION ALL       SELECT 'test.db:'||name FROM test.sqlite_master
+--Result--
+[('test2.db:abc',), ('test2.db:def',), ('test2.db:seq',), ('test2.db:sqlite_autoindex_seq_1',), ('test2.db:ghi',)]
++--------------------+
+--Query--
+ATTACH 'test1.db' AS test1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test3.db' AS test3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master UNION ALL SELECT * FROM test1.sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b)')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t2
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't1', 't1', 8, 'CREATE TABLE t1(a, b)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't1', 't1', 8, 'CREATE TABLE t1(a, b)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)')]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master
+--Result--
+[('table', 'sqlite_stat1', 'sqlite_stat1', 2, 'CREATE TABLE sqlite_stat1(tbl,idx,stat)'), ('table', 'Table2', 'Table2', 3, 'CREATE TABLE Table2(col1 INTEGER, col2 INTEGER, col3 INTEGER, col4)'), ('index', 'idx_col1_unique', 'Table2', 4, 'CREATE UNIQUE INDEX idx_col1_unique ON Table2 (col1)'), ('index', 'idx_col23_unique', 'Table2', 5, 'CREATE UNIQUE INDEX idx_col23_unique ON Table2 (col2, col3)'), ('index', 'idx_col2', 'Table2', 6, 'CREATE INDEX idx_col2 ON Table2 (col2)'), ('table', 'ab', 'ab', 7, 'CREATE TABLE ab(a, b)'), ('table', 't3', 't3', 8, 'CREATE TABLE t3(a INTEGER PRIMARY KEY, b)'), ('table', 'files', 'files', 9, 'CREATE TABLE files(name, text)'), ('table', 'def', 'def', 10, 'CREATE TABLE def(d, e, f)'), ('table', 'x', 'x', 11, 'CREATE TABLE x ( n integer )'), ('table', 'abc', 'abc', 13, 'CREATE TABLE abc(a, b, c)'), ('table', 't2', 't2', 14, 'CREATE TABLE t2(x, y)'), ('table', 'ghi', 'ghi', 15, 'CREATE TABLE ghi(g, h, i)')]
++--------------------+
+--Query--
+SELECT * FROM abc_mirror
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM abc_mirror
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM ab
+--Result--
+[('Chiang Mai', 100000), ('Bangkok', 8000000)]
++--------------------+
+--Query--
+SELECT * FROM ab
+--Result--
+[('Chiang Mai', 100000), ('Bangkok', 8000000)]
++--------------------+
+--Query--
+SELECT * FROM de
+--Result--
+[('Ubon', 120000), ('Khon Kaen', 200000), ('Pataya', 30000)]
++--------------------+
+--Query--
+SELECT * FROM de
+--Result--
+[('Ubon', 120000), ('Khon Kaen', 200000), ('Pataya', 30000)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6), (1, 2, 3), ('i', 'ii', 'iii'), ('iv', 'v', 'vi'), (1, 2, 3), (4, 5, 6), (1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM abc2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM abc2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test3.db' AS aux3
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test4.db' AS aux4
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test5.db' AS aux5
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux2
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux3
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux4
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test3.db' AS aux3
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test4.db' AS aux4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM        aux2.sqlite_master,        aux3.sqlite_master,        aux4.sqlite_master,        aux5.sqlite_master
+--Result--
+[(104,)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master
+--Result--
+[('abc',), ('def',), ('seq',), ('sqlite_autoindex_seq_1',), ('ghi',), ('jkl',), ('t1',), ('t2',), ('abc_mirror',), ('ab',), ('sqlite_autoindex_ab_1',), ('de',), ('sqlite_autoindex_de_1',), ('abc2',), ('db1',), ('db2',), ('db3',), ('db4',), ('db5',), ('db6',), ('db7',), ('db8',), ('db9',), ('db10',), ('db11',), ('db12',), ('db13',), ('db14',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)'), ('table', 'abc_mirror', 'abc_mirror', 10, 'CREATE TABLE abc_mirror(a, b, c)'), ('table', 'ab', 'ab', 11, 'CREATE TABLE ab(a PRIMARY KEY, b)'), ('index', 'sqlite_autoindex_ab_1', 'ab', 12, None), ('table', 'de', 'de', 13, 'CREATE TABLE de(d PRIMARY KEY, e)'), ('index', 'sqlite_autoindex_de_1', 'de', 14, None), ('table', 'abc2', 'abc2', 15, 'CREATE TABLE abc2(a, b, c)'), ('table', 'db1', 'db1', 16, 'CREATE TABLE db1(a, b, c)'), ('table', 'db2', 'db2', 17, 'CREATE TABLE db2(a, b, c)'), ('table', 'db3', 'db3', 18, 'CREATE TABLE db3(a, b, c)'), ('table', 'db4', 'db4', 19, 'CREATE TABLE db4(a, b, c)'), ('table', 'db5', 'db5', 20, 'CREATE TABLE db5(a, b, c)'), ('table', 'db6', 'db6', 21, 'CREATE TABLE db6(a, b, c)'), ('table', 'db7', 'db7', 22, 'CREATE TABLE db7(a, b, c)'), ('table', 'db8', 'db8', 23, 'CREATE TABLE db8(a, b, c)'), ('table', 'db9', 'db9', 24, 'CREATE TABLE db9(a, b, c)'), ('table', 'db10', 'db10', 25, 'CREATE TABLE db10(a, b, c)'), ('table', 'db11', 'db11', 26, 'CREATE TABLE db11(a, b, c)'), ('table', 'db12', 'db12', 27, 'CREATE TABLE db12(a, b, c)'), ('table', 'db13', 'db13', 28, 'CREATE TABLE db13(a, b, c)'), ('table', 'db14', 'db14', 29, 'CREATE TABLE db14(a, b, c)'), ('view', 'v1', 'v1', 0, 'CREATE VIEW v1 AS SELECT * FROM t1'), ('view', 'v2', 'v2', 0, 'CREATE VIEW v2 AS SELECT * FROM t1, v1 \n                      WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)'), ('table', 'abc_mirror', 'abc_mirror', 10, 'CREATE TABLE abc_mirror(a, b, c)'), ('table', 'ab', 'ab', 11, 'CREATE TABLE ab(a PRIMARY KEY, b)'), ('index', 'sqlite_autoindex_ab_1', 'ab', 12, None), ('table', 'de', 'de', 13, 'CREATE TABLE de(d PRIMARY KEY, e)'), ('index', 'sqlite_autoindex_de_1', 'de', 14, None), ('table', 'abc2', 'abc2', 15, 'CREATE TABLE abc2(a, b, c)'), ('table', 'db1', 'db1', 16, 'CREATE TABLE db1(a, b, c)'), ('table', 'db2', 'db2', 17, 'CREATE TABLE db2(a, b, c)'), ('table', 'db3', 'db3', 18, 'CREATE TABLE db3(a, b, c)'), ('table', 'db4', 'db4', 19, 'CREATE TABLE db4(a, b, c)'), ('table', 'db5', 'db5', 20, 'CREATE TABLE db5(a, b, c)'), ('table', 'db6', 'db6', 21, 'CREATE TABLE db6(a, b, c)'), ('table', 'db7', 'db7', 22, 'CREATE TABLE db7(a, b, c)'), ('table', 'db8', 'db8', 23, 'CREATE TABLE db8(a, b, c)'), ('table', 'db9', 'db9', 24, 'CREATE TABLE db9(a, b, c)'), ('table', 'db10', 'db10', 25, 'CREATE TABLE db10(a, b, c)'), ('table', 'db11', 'db11', 26, 'CREATE TABLE db11(a, b, c)'), ('table', 'db12', 'db12', 27, 'CREATE TABLE db12(a, b, c)'), ('table', 'db13', 'db13', 28, 'CREATE TABLE db13(a, b, c)'), ('table', 'db14', 'db14', 29, 'CREATE TABLE db14(a, b, c)'), ('view', 'v1', 'v1', 0, 'CREATE VIEW v1 AS SELECT * FROM t1'), ('view', 'v2', 'v2', 0, 'CREATE VIEW v2 AS SELECT * FROM t1, v1 \n                      WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b')]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6), (1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM def
+--Result--
+[('IV', 'V', 'VI'), ('VII', 'VIII', 'IX'), ('X', 'XI', 'XII'), ('I', 'II', 'III'), ('IV', 'V', 'VI'), ('IV', 'V', 'VI'), ('VII', 'VIII', 'IX')]
++--------------------+
+--Query--
+SELECT * FROM def
+--Result--
+[('IV', 'V', 'VI'), ('VII', 'VIII', 'IX'), ('X', 'XI', 'XII'), ('I', 'II', 'III'), ('IV', 'V', 'VI'), ('IV', 'V', 'VI'), ('VII', 'VIII', 'IX')]
++--------------------+
+--Query--
+SELECT * FROM def
+--Result--
+[('IV', 'V', 'VI'), ('VII', 'VIII', 'IX'), ('X', 'XI', 'XII'), ('I', 'II', 'III'), ('IV', 'V', 'VI'), ('IV', 'V', 'VI'), ('VII', 'VIII', 'IX')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)'), ('table', 'abc_mirror', 'abc_mirror', 10, 'CREATE TABLE abc_mirror(a, b, c)'), ('table', 'ab', 'ab', 11, 'CREATE TABLE ab(a PRIMARY KEY, b)'), ('index', 'sqlite_autoindex_ab_1', 'ab', 12, None), ('table', 'de', 'de', 13, 'CREATE TABLE de(d PRIMARY KEY, e)'), ('index', 'sqlite_autoindex_de_1', 'de', 14, None), ('table', 'abc2', 'abc2', 15, 'CREATE TABLE abc2(a, b, c)'), ('table', 'db1', 'db1', 16, 'CREATE TABLE db1(a, b, c)'), ('table', 'db2', 'db2', 17, 'CREATE TABLE db2(a, b, c)'), ('table', 'db3', 'db3', 18, 'CREATE TABLE db3(a, b, c)'), ('table', 'db4', 'db4', 19, 'CREATE TABLE db4(a, b, c)'), ('table', 'db5', 'db5', 20, 'CREATE TABLE db5(a, b, c)'), ('table', 'db6', 'db6', 21, 'CREATE TABLE db6(a, b, c)'), ('table', 'db7', 'db7', 22, 'CREATE TABLE db7(a, b, c)'), ('table', 'db8', 'db8', 23, 'CREATE TABLE db8(a, b, c)'), ('table', 'db9', 'db9', 24, 'CREATE TABLE db9(a, b, c)'), ('table', 'db10', 'db10', 25, 'CREATE TABLE db10(a, b, c)'), ('table', 'db11', 'db11', 26, 'CREATE TABLE db11(a, b, c)'), ('table', 'db12', 'db12', 27, 'CREATE TABLE db12(a, b, c)'), ('table', 'db13', 'db13', 28, 'CREATE TABLE db13(a, b, c)'), ('table', 'db14', 'db14', 29, 'CREATE TABLE db14(a, b, c)'), ('view', 'v1', 'v1', 0, 'CREATE VIEW v1 AS SELECT * FROM t1'), ('view', 'v2', 'v2', 0, 'CREATE VIEW v2 AS SELECT * FROM t1, v1 \n                      WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b')]
++--------------------+
+--Query--
+SELECT * FROM seq
+--Result--
+[(1, 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'), (2, 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')]
++--------------------+
+--Query--
+SELECT 'test.db:'||name FROM sqlite_master        UNION ALL       SELECT 'test2.db:'||name FROM test2.sqlite_master
+--Result--
+[('test.db:abc',), ('test.db:def',), ('test.db:seq',), ('test.db:sqlite_autoindex_seq_1',), ('test.db:ghi',), ('test.db:jkl',), ('test.db:t2',), ('test.db:abc_mirror',), ('test.db:ab',), ('test.db:sqlite_autoindex_ab_1',), ('test.db:de',), ('test.db:sqlite_autoindex_de_1',), ('test.db:abc2',), ('test.db:db1',), ('test.db:db2',), ('test.db:db3',), ('test.db:db4',), ('test.db:db5',), ('test.db:db6',), ('test.db:db7',), ('test.db:db8',), ('test.db:db9',), ('test.db:db10',), ('test.db:db11',), ('test.db:db12',), ('test.db:db13',), ('test.db:db14',), ('test.db:v1',), ('test.db:v2',), ('test2.db:sqlite_stat1',), ('test2.db:Table2',), ('test2.db:idx_col1_unique',), ('test2.db:idx_col23_unique',), ('test2.db:idx_col2',), ('test2.db:ab',), ('test2.db:t3',), ('test2.db:files',), ('test2.db:def',), ('test2.db:x',), ('test2.db:abc',), ('test2.db:t2',), ('test2.db:ghi',)]
++--------------------+
+--Query--
+SELECT 'test2.db:'||name FROM sqlite_master        UNION ALL       SELECT 'test.db:'||name FROM test.sqlite_master
+--Result--
+[('test2.db:abc',), ('test2.db:def',), ('test2.db:seq',), ('test2.db:sqlite_autoindex_seq_1',), ('test2.db:ghi',), ('test2.db:jkl',), ('test2.db:t2',), ('test2.db:abc_mirror',), ('test2.db:ab',), ('test2.db:sqlite_autoindex_ab_1',), ('test2.db:de',), ('test2.db:sqlite_autoindex_de_1',), ('test2.db:abc2',), ('test2.db:db1',), ('test2.db:db2',), ('test2.db:db3',), ('test2.db:db4',), ('test2.db:db5',), ('test2.db:db6',), ('test2.db:db7',), ('test2.db:db8',), ('test2.db:db9',), ('test2.db:db10',), ('test2.db:db11',), ('test2.db:db12',), ('test2.db:db13',), ('test2.db:db14',), ('test2.db:v1',), ('test2.db:v2',)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master UNION ALL SELECT * FROM test1.sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)'), ('table', 'abc_mirror', 'abc_mirror', 10, 'CREATE TABLE abc_mirror(a, b, c)'), ('table', 'ab', 'ab', 11, 'CREATE TABLE ab(a PRIMARY KEY, b)'), ('index', 'sqlite_autoindex_ab_1', 'ab', 12, None), ('table', 'de', 'de', 13, 'CREATE TABLE de(d PRIMARY KEY, e)'), ('index', 'sqlite_autoindex_de_1', 'de', 14, None), ('table', 'abc2', 'abc2', 15, 'CREATE TABLE abc2(a, b, c)'), ('table', 'db1', 'db1', 16, 'CREATE TABLE db1(a, b, c)'), ('table', 'db2', 'db2', 17, 'CREATE TABLE db2(a, b, c)'), ('table', 'db3', 'db3', 18, 'CREATE TABLE db3(a, b, c)'), ('table', 'db4', 'db4', 19, 'CREATE TABLE db4(a, b, c)'), ('table', 'db5', 'db5', 20, 'CREATE TABLE db5(a, b, c)'), ('table', 'db6', 'db6', 21, 'CREATE TABLE db6(a, b, c)'), ('table', 'db7', 'db7', 22, 'CREATE TABLE db7(a, b, c)'), ('table', 'db8', 'db8', 23, 'CREATE TABLE db8(a, b, c)'), ('table', 'db9', 'db9', 24, 'CREATE TABLE db9(a, b, c)'), ('table', 'db10', 'db10', 25, 'CREATE TABLE db10(a, b, c)'), ('table', 'db11', 'db11', 26, 'CREATE TABLE db11(a, b, c)'), ('table', 'db12', 'db12', 27, 'CREATE TABLE db12(a, b, c)'), ('table', 'db13', 'db13', 28, 'CREATE TABLE db13(a, b, c)'), ('table', 'db14', 'db14', 29, 'CREATE TABLE db14(a, b, c)'), ('view', 'v2', 'v2', 0, 'CREATE VIEW v2 AS SELECT * FROM t1, v1 \n                      WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b'), ('view', 'v1', 'v1', 0, 'CREATE VIEW v1 AS SELECT * FROM t1')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t2
+--Result--
+[(1, 2), (3, 4), (5, 6), (1, 2), (7, 8), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)'), ('table', 'abc_mirror', 'abc_mirror', 10, 'CREATE TABLE abc_mirror(a, b, c)'), ('table', 'ab', 'ab', 11, 'CREATE TABLE ab(a PRIMARY KEY, b)'), ('index', 'sqlite_autoindex_ab_1', 'ab', 12, None), ('table', 'de', 'de', 13, 'CREATE TABLE de(d PRIMARY KEY, e)'), ('index', 'sqlite_autoindex_de_1', 'de', 14, None), ('table', 'abc2', 'abc2', 15, 'CREATE TABLE abc2(a, b, c)'), ('table', 'db1', 'db1', 16, 'CREATE TABLE db1(a, b, c)'), ('table', 'db2', 'db2', 17, 'CREATE TABLE db2(a, b, c)'), ('table', 'db3', 'db3', 18, 'CREATE TABLE db3(a, b, c)'), ('table', 'db4', 'db4', 19, 'CREATE TABLE db4(a, b, c)'), ('table', 'db5', 'db5', 20, 'CREATE TABLE db5(a, b, c)'), ('table', 'db6', 'db6', 21, 'CREATE TABLE db6(a, b, c)'), ('table', 'db7', 'db7', 22, 'CREATE TABLE db7(a, b, c)'), ('table', 'db8', 'db8', 23, 'CREATE TABLE db8(a, b, c)'), ('table', 'db9', 'db9', 24, 'CREATE TABLE db9(a, b, c)'), ('table', 'db10', 'db10', 25, 'CREATE TABLE db10(a, b, c)'), ('table', 'db11', 'db11', 26, 'CREATE TABLE db11(a, b, c)'), ('table', 'db12', 'db12', 27, 'CREATE TABLE db12(a, b, c)'), ('table', 'db13', 'db13', 28, 'CREATE TABLE db13(a, b, c)'), ('table', 'db14', 'db14', 29, 'CREATE TABLE db14(a, b, c)'), ('view', 'v2', 'v2', 0, 'CREATE VIEW v2 AS SELECT * FROM t1, v1 \n                      WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b'), ('table', 't1', 't1', 8, 'CREATE TABLE t1(a, b)')]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 'abc', 'abc', 2, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 3, 'CREATE TABLE def(d, e, f)'), ('table', 'seq', 'seq', 4, 'CREATE TABLE seq(i PRIMARY KEY, x)'), ('index', 'sqlite_autoindex_seq_1', 'seq', 5, None), ('table', 'ghi', 'ghi', 6, 'CREATE TABLE ghi(g, h, i)'), ('table', 'jkl', 'jkl', 7, 'CREATE TABLE jkl(j, k, l)'), ('table', 't2', 't2', 9, 'CREATE TABLE t2(a, b)'), ('table', 'abc_mirror', 'abc_mirror', 10, 'CREATE TABLE abc_mirror(a, b, c)'), ('table', 'ab', 'ab', 11, 'CREATE TABLE ab(a PRIMARY KEY, b)'), ('index', 'sqlite_autoindex_ab_1', 'ab', 12, None), ('table', 'de', 'de', 13, 'CREATE TABLE de(d PRIMARY KEY, e)'), ('index', 'sqlite_autoindex_de_1', 'de', 14, None), ('table', 'abc2', 'abc2', 15, 'CREATE TABLE abc2(a, b, c)'), ('table', 'db1', 'db1', 16, 'CREATE TABLE db1(a, b, c)'), ('table', 'db2', 'db2', 17, 'CREATE TABLE db2(a, b, c)'), ('table', 'db3', 'db3', 18, 'CREATE TABLE db3(a, b, c)'), ('table', 'db4', 'db4', 19, 'CREATE TABLE db4(a, b, c)'), ('table', 'db5', 'db5', 20, 'CREATE TABLE db5(a, b, c)'), ('table', 'db6', 'db6', 21, 'CREATE TABLE db6(a, b, c)'), ('table', 'db7', 'db7', 22, 'CREATE TABLE db7(a, b, c)'), ('table', 'db8', 'db8', 23, 'CREATE TABLE db8(a, b, c)'), ('table', 'db9', 'db9', 24, 'CREATE TABLE db9(a, b, c)'), ('table', 'db10', 'db10', 25, 'CREATE TABLE db10(a, b, c)'), ('table', 'db11', 'db11', 26, 'CREATE TABLE db11(a, b, c)'), ('table', 'db12', 'db12', 27, 'CREATE TABLE db12(a, b, c)'), ('table', 'db13', 'db13', 28, 'CREATE TABLE db13(a, b, c)'), ('table', 'db14', 'db14', 29, 'CREATE TABLE db14(a, b, c)'), ('view', 'v2', 'v2', 0, 'CREATE VIEW v2 AS SELECT * FROM t1, v1 \n                      WHERE t1.c=v1.c GROUP BY t1.a ORDER BY v1.b'), ('table', 't1', 't1', 8, 'CREATE TABLE t1(a, b)')]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master
+--Result--
+[('table', 'sqlite_stat1', 'sqlite_stat1', 2, 'CREATE TABLE sqlite_stat1(tbl,idx,stat)'), ('table', 'Table2', 'Table2', 3, 'CREATE TABLE Table2(col1 INTEGER, col2 INTEGER, col3 INTEGER, col4)'), ('index', 'idx_col1_unique', 'Table2', 4, 'CREATE UNIQUE INDEX idx_col1_unique ON Table2 (col1)'), ('index', 'idx_col23_unique', 'Table2', 5, 'CREATE UNIQUE INDEX idx_col23_unique ON Table2 (col2, col3)'), ('index', 'idx_col2', 'Table2', 6, 'CREATE INDEX idx_col2 ON Table2 (col2)'), ('table', 'ab', 'ab', 7, 'CREATE TABLE ab(a, b)'), ('table', 't3', 't3', 8, 'CREATE TABLE t3(a INTEGER PRIMARY KEY, b)'), ('table', 'files', 'files', 9, 'CREATE TABLE files(name, text)'), ('table', 'def', 'def', 10, 'CREATE TABLE def(d, e, f)'), ('table', 'x', 'x', 11, 'CREATE TABLE x ( n integer )'), ('table', 'abc', 'abc', 13, 'CREATE TABLE abc(a, b, c)'), ('table', 't2', 't2', 14, 'CREATE TABLE t2(x, y)'), ('table', 'ghi', 'ghi', 15, 'CREATE TABLE ghi(g, h, i)')]
++--------------------+
+--Query--
+SELECT * FROM abc_mirror
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM abc_mirror
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM ab
+--Result--
+[('Chiang Mai', 100000), ('Bangkok', 8000000)]
++--------------------+
+--Query--
+SELECT * FROM ab
+--Result--
+[('Chiang Mai', 100000), ('Bangkok', 8000000)]
++--------------------+
+--Query--
+SELECT * FROM de
+--Result--
+[('Ubon', 120000), ('Khon Kaen', 200000), ('Pataya', 30000)]
++--------------------+
+--Query--
+SELECT * FROM de
+--Result--
+[('Ubon', 120000), ('Khon Kaen', 200000), ('Pataya', 30000)]
++--------------------+
+--Query--
+SELECT * FROM abc
+--Result--
+[(1, 2, 3), (4, 5, 6), (1, 2, 3), ('i', 'ii', 'iii'), ('iv', 'v', 'vi'), (1, 2, 3), (4, 5, 6), (1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM abc2
+--Result--
+[(1, 2, 3), (4, 5, 6), (7, 8, 9)]
++--------------------+
+--Query--
+SELECT * FROM abc2
+--Result--
+[(1, 2, 3), (4, 5, 6), (7, 8, 9), (1, 2, 3)]
++--------------------+
+--Query--
+DETACH aux2
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux3
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux4
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test3.db' AS aux3
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test4.db' AS aux4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master
+--Result--
+[('abc',), ('def',), ('seq',), ('sqlite_autoindex_seq_1',), ('ghi',), ('jkl',), ('t2',), ('abc_mirror',), ('ab',), ('sqlite_autoindex_ab_1',), ('de',), ('sqlite_autoindex_de_1',), ('abc2',), ('db1',), ('db2',), ('db3',), ('db4',), ('db5',), ('db6',), ('db7',), ('db8',), ('db9',), ('db10',), ('db11',), ('db12',), ('db13',), ('db14',), ('v2',), ('t1',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+

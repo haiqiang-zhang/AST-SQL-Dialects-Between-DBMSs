@@ -1,0 +1,10 @@
+--Query--
+WITH     arraySlice(arrayReverseSort(x -> (x.2, x.1), arrayZip(untuple(sumMap(([k], [1]))))), 1, 5) AS topKExact,     arraySlice(arrayReverseSort(x -> (x.2, x.1), arrayZip(untuple(sumMap(([k], [w]))))), 1, 5) AS topKWeightedExact SELECT     topKExact,     topKWeightedExact,     topK(3, 2, 'counts')(k) AS topK_counts,     topKWeighted(3, 2, 'counts')(k, w) AS topKWeighted_counts,     approx_top_count(3, 6)(k) AS approx_top_count,     approx_top_k(3, 6)(k) AS approx_top_k,     approx_top_sum(3, 6)(k, w) AS approx_top_sum FROM (     SELECT         concat(countDigits(number * number), '_', intDiv((number % 10), 7)) AS k,         number AS w     FROM numbers(1000) )
+--Result--
+[([('6_0', 476), ('6_1', 207), ('5_0', 154), ('5_1', 63), ('4_0', 47)], [('6_0', 313208), ('6_1', 136206), ('5_0', 32032), ('5_1', 13104), ('4_0', 3026)], [('6_0', 476, 5), ('6_1', 207, 15), ('5_0', 154, 2)], [('6_0', 313208, 0), ('6_1', 136206, 0), ('5_0', 32032, 0)], [('6_0', 476, 5), ('6_1', 207, 15), ('5_0', 154, 2)], [('6_0', 476, 5), ('6_1', 207, 15), ('5_0', 154, 2)], [('6_0', 313208, 0), ('6_1', 136206, 0), ('5_0', 32032, 0)])]
++--------------------+
+--Query--
+SELECT topKMerge(4, 2, 'counts')(state) FROM ( SELECT topKState(4, 2, 'counts')(countDigits(number * number)) AS state FROM numbers(1000))
+--Result--
+[([(6, 683, 0), (5, 217, 0), (4, 68, 0), (3, 22, 0)],)]
++--------------------+

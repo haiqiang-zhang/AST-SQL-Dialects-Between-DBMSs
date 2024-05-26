@@ -1,0 +1,135 @@
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select '# byteSize'
+--Result--
+[('# byteSize',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for numbers #0'
+--Result--
+[('byteSize for numbers #0',)]
++--------------------+
+--Query--
+select key, toTypeName(u8), byteSize(u8), toTypeName(u16), byteSize(u16), toTypeName(u32), byteSize(u32), toTypeName(u64), byteSize(u64), toTypeName(u256), byteSize(u256) from test_byte_size_number0 order by key
+--Result--
+[(1, 'UInt8', 1, 'UInt16', 2, 'UInt32', 4, 'UInt64', 8, 'UInt256', 32), (2, 'UInt8', 1, 'UInt16', 2, 'UInt32', 4, 'UInt64', 8, 'UInt256', 32)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for numbers #1'
+--Result--
+[('byteSize for numbers #1',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for constants'
+--Result--
+[('byteSize for constants',)]
++--------------------+
+--Query--
+select 0x1, byteSize(0x1), 0x100, byteSize(0x100), 0x10000, byteSize(0x10000), 0x100000000, byteSize(0x100000000), 0.5, byteSize(0.5), 1e-10, byteSize(1e-10)
+--Result--
+[(1, 1, 256, 2, 65536, 4, 4294967296, 8, 0.5, 8, 1e-10, 8)]
++--------------------+
+--Query--
+select toDate('2020-01-01'), byteSize(toDate('2020-01-01')), toDateTime('2020-01-01 01:02:03'), byteSize(toDateTime('2020-01-01 01:02:03')), toDateTime64('2020-01-01 01:02:03',3), byteSize(toDateTime64('2020-01-01 01:02:03',3))
+--Result--
+[(datetime.date(2020, 1, 1), 2, datetime.datetime(2020, 1, 1, 1, 2, 3), 4, datetime.datetime(2020, 1, 1, 1, 2, 3), 8)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for strings'
+--Result--
+[('byteSize for strings',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for simple array'
+--Result--
+[('byteSize for simple array',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for int array of arrays'
+--Result--
+[('byteSize for int array of arrays',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for string array of arrays'
+--Result--
+[('byteSize for string array of arrays',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for others: Nullable, Tuple, LowCardinality'
+--Result--
+[('byteSize for others: Nullable, Tuple, LowCardinality',)]
++--------------------+
+--Query--
+select 'constants:', NULL, byteSize(NULL), tuple(0x10000, NULL), byteSize(tuple(0x10000, NULL)), tuple(0x10000, toNullable('a')), byteSize(tuple(0x10000, toNullable('a')))
+--Result--
+[('constants:', None, 1, (65536, None), 5, (65536, 'a'), 15)]
++--------------------+
+--Query--
+select 'constants:', toLowCardinality('abced'),toTypeName(toLowCardinality('abced')), byteSize(toLowCardinality('abced'))
+--Result--
+[('constants:', 'abced', 'LowCardinality(String)', 14)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'byteSize for complex fields'
+--Result--
+[('byteSize for complex fields',)]
++--------------------+
+--Query--
+select 'constants:', [tuple(NULL, []), tuple(toNullable(toFixedString('a',4)), []), tuple(toNullable(toFixedString('a',4)), [tuple(NULL, 'a')]), tuple(toNullable(toFixedString('a',4)), [tuple(NULL, 'a'), tuple(NULL, 'a')])]
+--Result--
+[('constants:', [(None, []), ('a', []), ('a', [(None, 'a')]), ('a', [(None, 'a'), (None, 'a')])])]
++--------------------+
+--Query--
+select 'constants:', toTypeName([tuple(NULL, []), tuple(toNullable(toFixedString('a',4)), []), tuple(toNullable(toFixedString('a',4)), [tuple(NULL, 'a')]), tuple(toNullable(toFixedString('a',4)), [tuple(NULL, 'a'), tuple(NULL, 'a')])])
+--Result--
+[('constants:', 'Array(Tuple(Nullable(FixedString(4)), Array(Tuple(Nullable(Nothing), String))))')]
++--------------------+

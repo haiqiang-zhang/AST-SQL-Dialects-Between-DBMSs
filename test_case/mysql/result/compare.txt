@@ -1,0 +1,150 @@
+--Query--
+select * from t1 where id=000000000001
+--Result--
+[('000000000001',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('000000000001',)]
++--------------------+
+--Query--
+SELECT 'a' = 'a '
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a\0' < 'a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a\0' < 'a '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'a\t' < 'a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a\t' < 'a '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT hex(a),STRCMP(a,'a'), STRCMP(a,'a ') FROM t1
+--Result--
+[('61', 0, 0), ('6100', -1, -1), ('6109', -1, -1), ('61', 0, 0)]
++--------------------+
+--Query--
+SELECT CHAR(31) = '', '' = CHAR(31)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT CHAR(30) = '', '' = CHAR(30)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+select * from t1 where a=b
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a=b and b=0x01
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONCAT(b,c), CONCAT(b,c) = '0101' FROM t1
+--Result--
+[('0102', 0), ('0101', 1), ('0202', 0)]
++--------------------+
+--Query--
+SELECT b,c FROM t1 WHERE b = 1 AND CONCAT(b,c) = '0101'
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT a,    (SELECT COUNT(*) FROM t1     WHERE b = t2.a AND CONCAT(b,c) = CONCAT('0',t2.a,'01')) x  FROM t2 ORDER BY a
+--Result--
+[(1, 1), (2, 0)]
++--------------------+
+--Query--
+SELECT a,    (SELECT COUNT(*) FROM t1     WHERE b = t2.a AND CONCAT(b,c) = CONCAT('0',t2.a,'01')) x  FROM t2 ORDER BY a
+--Result--
+[(1, 1), (2, 0)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE t1.a IN (1, t1.a) AND t1.a=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ROW('1', '1') > ROW(a, '1') FROM t1
+--Result--
+[(0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT ROW(a, '1') > ROW('1', '1') FROM t1
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE firstname = 'john'
+--Result--
+[('john', 'doe'), ('John', 'Doe')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE firstname = 'john' COLLATE utf8mb4_0900_ai_ci
+--Result--
+[('john', 'doe'), ('John', 'Doe')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE firstname = 'john' COLLATE utf8mb4_0900_as_cs
+--Result--
+[('john', 'doe')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE firstname = 'john' COLLATE utf8mb4_0900_ai_ci AND       firstname = 'john' COLLATE utf8mb4_0900_as_cs
+--Result--
+[('john', 'doe')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE firstname = 'john' COLLATE utf8mb4_0900_as_cs AND       firstname = 'john' COLLATE utf8mb4_0900_ai_ci
+--Result--
+[('john', 'doe')]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT @maxint
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a < @maxint
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a < 18446744073709551615
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE 0 < 18446744073709551615
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE 0 < @maxint
+--Result--
+[]
++--------------------+

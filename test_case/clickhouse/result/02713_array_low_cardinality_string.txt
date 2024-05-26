@@ -1,0 +1,20 @@
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT table, name, type FROM system.data_skipping_indices WHERE database = currentDatabase() AND table = 'tab'
+--Result--
+[('tab', 'idx', 'bloom_filter')]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description = 0 SELECT * FROM tab WHERE has(foo, 'b')
+--Result--
+[('Expression',), ('  Filter',), ('    ReadFromMergeTree',), ('    Indexes:',), ('      Skip',), ('        Name: idx',), ('        Description: bloom_filter GRANULARITY 1',), ('        Parts: 1/1',), ('        Granules: 1/1',)]
++--------------------+

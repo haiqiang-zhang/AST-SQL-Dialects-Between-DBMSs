@@ -1,0 +1,2140 @@
+--Query--
+SELECT count(*) FROM t1 , t2 ON (t1.a=t2.a)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT 1, 2, 3
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT a, b, a||b FROM t1
+--Result--
+[('a', 'one', 'aone'), ('b', 'two', 'btwo'), ('c', 'three', 'cthree')]
++--------------------+
+--Query--
+SELECT DISTINCT a, b, a||b FROM t1
+--Result--
+[('a', 'one', 'aone'), ('b', 'two', 'btwo'), ('c', 'three', 'cthree')]
++--------------------+
+--Query--
+SELECT ALL a, b, a||b FROM t1
+--Result--
+[('a', 'one', 'aone'), ('b', 'two', 'btwo'), ('c', 'three', 'cthree')]
++--------------------+
+--Query--
+SELECT 1, 2, 3 WHERE 1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT 1, 2, 3 WHERE 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1, 2, 3 WHERE NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 WHERE 1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 WHERE 1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT a, b, a||b FROM t1 WHERE a!='x'
+--Result--
+[('a', 'one', 'aone'), ('b', 'two', 'btwo'), ('c', 'three', 'cthree')]
++--------------------+
+--Query--
+SELECT a, b, a||b FROM t1 WHERE a=='x'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT a, b, a||b FROM t1 WHERE a!='x'
+--Result--
+[('a', 'one', 'aone'), ('b', 'two', 'btwo'), ('c', 'three', 'cthree')]
++--------------------+
+--Query--
+SELECT ALL a, b, a||b FROM t1 WHERE a=='x'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1, 2, 3 GROUP BY 2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT 1, 2, 3 GROUP BY 2 HAVING count(*)=1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT 1, 2, 3 GROUP BY 2 HAVING count(*)>1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 GROUP BY 2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 GROUP BY 2 HAVING count(*)=1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 GROUP BY 2 HAVING count(*)>1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 GROUP BY 2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 GROUP BY 2 HAVING count(*)=1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 GROUP BY 2 HAVING count(*)>1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*), max(a) FROM t1 GROUP BY b
+--Result--
+[(1, 'a'), (1, 'c'), (1, 'b')]
++--------------------+
+--Query--
+SELECT 1, 2, 3 WHERE 1 GROUP BY 2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT 1, 2, 3 WHERE 0 GROUP BY 2 HAVING count(*)=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1, 2, 3 WHERE 0 GROUP BY 2 HAVING count(*)>1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 WHERE 0 GROUP BY 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 WHERE 1 GROUP BY 2 HAVING count(*)=1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT 1, 2, 3 WHERE NULL GROUP BY 2 HAVING count(*)>1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 WHERE 1 GROUP BY 2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 WHERE 0 GROUP BY 2 HAVING count(*)=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ALL 1, 2, 3 WHERE 'abc' GROUP BY 2 HAVING count(*)>1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three')]
++--------------------+
+--Query--
+SELECT t1.* FROM t1
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three')]
++--------------------+
+--Query--
+SELECT 'x'||a||'x' FROM t1
+--Result--
+[('xax',), ('xbx',), ('xcx',)]
++--------------------+
+--Query--
+SELECT 'x'||a||'x' alias FROM t1
+--Result--
+[('xax',), ('xbx',), ('xcx',)]
++--------------------+
+--Query--
+SELECT 'x'||a||'x' AS alias FROM t1
+--Result--
+[('xax',), ('xbx',), ('xcx',)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1,t2
+--Result--
+[(1,), (1,), (1,), (2,), (2,), (2,), (3,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1,t2,t3
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (2,), (2,), (2,), (2,), (2,), (2,), (3,), (3,), (3,), (3,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 JOIN t2
+--Result--
+[(1,), (1,), (1,), (2,), (2,), (2,), (3,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 JOIN t2 JOIN t3
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (2,), (2,), (2,), (2,), (2,), (2,), (3,), (3,), (3,), (3,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 NATURAL JOIN t3
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 NATURAL LEFT OUTER JOIN t3
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 NATURAL LEFT JOIN t3
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 NATURAL INNER JOIN t3
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 NATURAL CROSS JOIN t3
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 JOIN t3
+--Result--
+[(1,), (1,), (2,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 LEFT OUTER JOIN t3
+--Result--
+[(1,), (1,), (2,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 LEFT JOIN t3
+--Result--
+[(1,), (1,), (2,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 INNER JOIN t3
+--Result--
+[(1,), (1,), (2,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT t1.rowid FROM t1 CROSS JOIN t3
+--Result--
+[(1,), (1,), (2,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 UNION ALL SELECT rowid+2 FROM t4
+--Result--
+[(1,), (2,), (3,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 UNION     SELECT rowid+2 FROM t4
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 INTERSECT SELECT rowid+2 FROM t4
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 EXCEPT    SELECT rowid+2 FROM t4
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT b||a FROM t1 ORDER BY b||a
+--Result--
+[('onea',), ('threec',), ('twob',)]
++--------------------+
+--Query--
+SELECT b||a FROM t1 ORDER BY (b||a) COLLATE nocase
+--Result--
+[('onea',), ('threec',), ('twob',)]
++--------------------+
+--Query--
+SELECT b||a FROM t1 ORDER BY (b||a) ASC
+--Result--
+[('onea',), ('threec',), ('twob',)]
++--------------------+
+--Query--
+SELECT b||a FROM t1 ORDER BY (b||a) DESC
+--Result--
+[('twob',), ('threec',), ('onea',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY b
+--Result--
+[('a', 'one'), ('c', 'three'), ('b', 'two')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY b, a
+--Result--
+[('a', 'one'), ('c', 'three'), ('b', 'two')]
++--------------------+
+--Query--
+SELECT * FROM t1 LIMIT 10
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1 LIMIT 10 OFFSET 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 LIMIT 10, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a LIMIT 10
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY b LIMIT 10 OFFSET 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a,b LIMIT 10, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three'), ('one', 'a'), ('three', 'c'), ('two', 'b')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 ORDER BY b
+--Result--
+[('one', 'a'), ('two', 'b'), ('three', 'c'), ('a', 'one'), ('c', 'three'), ('b', 'two')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 ORDER BY b, a
+--Result--
+[('one', 'a'), ('two', 'b'), ('three', 'c'), ('a', 'one'), ('c', 'three'), ('b', 'two')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 LIMIT 10
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three'), ('one', 'a'), ('three', 'c'), ('two', 'b')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 LIMIT 10 OFFSET 5
+--Result--
+[('two', 'b')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 LIMIT 10, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 ORDER BY a LIMIT 10
+--Result--
+[('a', 'one'), ('b', 'two'), ('c', 'three'), ('one', 'a'), ('three', 'c'), ('two', 'b')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 ORDER BY b LIMIT 10 OFFSET 5
+--Result--
+[('b', 'two')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT b, a FROM t1 ORDER BY a,b LIMIT 10, 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'abc'
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT 'abc' WHERE NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT quote(x), quote(y) FROM xx
+--Result--
+[("'IiJlsIPepMuAhU'", "X'10B00B897A15BAA02E3F98DCE8F2'"), ('NULL', '-16.87'), ('-17.89', "'linguistically'")]
++--------------------+
+--Query--
+SELECT sum(x), sum(y) FROM xx
+--Result--
+[(-17.89, -16.87)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2, t3
+--Result--
+[('a', 'one', 'a', 'I', 'a', 1), ('a', 'one', 'a', 'I', 'b', 2), ('a', 'one', 'b', 'II', 'a', 1), ('a', 'one', 'b', 'II', 'b', 2), ('a', 'one', 'c', 'III', 'a', 1), ('a', 'one', 'c', 'III', 'b', 2), ('b', 'two', 'a', 'I', 'a', 1), ('b', 'two', 'a', 'I', 'b', 2), ('b', 'two', 'b', 'II', 'a', 1), ('b', 'two', 'b', 'II', 'b', 2), ('b', 'two', 'c', 'III', 'a', 1), ('b', 'two', 'c', 'III', 'b', 2), ('c', 'three', 'a', 'I', 'a', 1), ('c', 'three', 'a', 'I', 'b', 2), ('c', 'three', 'b', 'II', 'a', 1), ('c', 'three', 'b', 'II', 'b', 2), ('c', 'three', 'c', 'III', 'a', 1), ('c', 'three', 'c', 'III', 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM x1 , x2 LIMIT 1
+--Result--
+[(24, 'converging', -60.06, None, None)]
++--------------------+
+--Query--
+SELECT * FROM x1 CROSS JOIN x2 LIMIT 1
+--Result--
+[(24, 'converging', -60.06, None, None)]
++--------------------+
+--Query--
+SELECT * FROM x1 INNER JOIN x2 LIMIT 1
+--Result--
+[(24, 'converging', -60.06, None, None)]
++--------------------+
+--Query--
+SELECT * FROM x2 , x1 LIMIT 1
+--Result--
+[(-60.06, None, None, 24, 'converging')]
++--------------------+
+--Query--
+SELECT * FROM x2 CROSS JOIN x1 LIMIT 1
+--Result--
+[(-60.06, None, None, 24, 'converging')]
++--------------------+
+--Query--
+SELECT * FROM x2 INNER JOIN x1 LIMIT 1
+--Result--
+[(-60.06, None, None, 24, 'converging')]
++--------------------+
+--Query--
+SELECT * FROM x3 , x2 LIMIT 1
+--Result--
+[(-39.24, None, 'encompass', -1, -60.06, None, None)]
++--------------------+
+--Query--
+SELECT * FROM x3 CROSS JOIN x2 LIMIT 1
+--Result--
+[(-39.24, None, 'encompass', -1, -60.06, None, None)]
++--------------------+
+--Query--
+SELECT * FROM x3 INNER JOIN x2 LIMIT 1
+--Result--
+[(-39.24, None, 'encompass', -1, -60.06, None, None)]
++--------------------+
+--Query--
+SELECT * FROM x2 , x3 LIMIT 1
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1)]
++--------------------+
+--Query--
+SELECT * FROM x2 CROSS JOIN x3 LIMIT 1
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1)]
++--------------------+
+--Query--
+SELECT * FROM x2 INNER JOIN x3 LIMIT 1
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1)]
++--------------------+
+--Query--
+SELECT * FROM x2 , x3 ORDER BY +c, +f
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1), (-60.06, None, None, 'alerting', None, -93.79, None), (-60.06, None, None, 'coldest', -96, 'dramatists', 82.3), (-60.06, None, None, 'conducting', -87.24, 37.56, None), (-60.06, None, None, 'presenting', 51, 'reformation', 'dignified'), (-58, None, 1.21, -39.24, None, 'encompass', -1), (-58, None, 1.21, 'alerting', None, -93.79, None), (-58, None, 1.21, 'coldest', -96, 'dramatists', 82.3), (-58, None, 1.21, 'conducting', -87.24, 37.56, None), (-58, None, 1.21, 'presenting', 51, 'reformation', 'dignified')]
++--------------------+
+--Query--
+SELECT * FROM x2 CROSS JOIN x3 ORDER BY +c, +f
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1), (-60.06, None, None, 'alerting', None, -93.79, None), (-60.06, None, None, 'coldest', -96, 'dramatists', 82.3), (-60.06, None, None, 'conducting', -87.24, 37.56, None), (-60.06, None, None, 'presenting', 51, 'reformation', 'dignified'), (-58, None, 1.21, -39.24, None, 'encompass', -1), (-58, None, 1.21, 'alerting', None, -93.79, None), (-58, None, 1.21, 'coldest', -96, 'dramatists', 82.3), (-58, None, 1.21, 'conducting', -87.24, 37.56, None), (-58, None, 1.21, 'presenting', 51, 'reformation', 'dignified')]
++--------------------+
+--Query--
+SELECT * FROM x2 INNER JOIN x3 ORDER BY +c, +f
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1), (-60.06, None, None, 'alerting', None, -93.79, None), (-60.06, None, None, 'coldest', -96, 'dramatists', 82.3), (-60.06, None, None, 'conducting', -87.24, 37.56, None), (-60.06, None, None, 'presenting', 51, 'reformation', 'dignified'), (-58, None, 1.21, -39.24, None, 'encompass', -1), (-58, None, 1.21, 'alerting', None, -93.79, None), (-58, None, 1.21, 'coldest', -96, 'dramatists', 82.3), (-58, None, 1.21, 'conducting', -87.24, 37.56, None), (-58, None, 1.21, 'presenting', 51, 'reformation', 'dignified')]
++--------------------+
+--Query--
+SELECT * FROM x1, x2
+--Result--
+[(24, 'converging', -60.06, None, None), (24, 'converging', -58, None, 1.21), (None, b'\xcbq', -60.06, None, None), (None, b'\xcbq', -58, None, 1.21), ('blonds', 'proprietary', -60.06, None, None), ('blonds', 'proprietary', -58, None, 1.21)]
++--------------------+
+--Query--
+SELECT * FROM x2 JOIN x3
+--Result--
+[(-60.06, None, None, -39.24, None, 'encompass', -1), (-60.06, None, None, 'presenting', 51, 'reformation', 'dignified'), (-60.06, None, None, 'conducting', -87.24, 37.56, None), (-60.06, None, None, 'coldest', -96, 'dramatists', 82.3), (-60.06, None, None, 'alerting', None, -93.79, None), (-58, None, 1.21, -39.24, None, 'encompass', -1), (-58, None, 1.21, 'presenting', 51, 'reformation', 'dignified'), (-58, None, 1.21, 'conducting', -87.24, 37.56, None), (-58, None, 1.21, 'coldest', -96, 'dramatists', 82.3), (-58, None, 1.21, 'alerting', None, -93.79, None)]
++--------------------+
+--Query--
+SELECT * FROM x3 CROSS JOIN x1
+--Result--
+[(-39.24, None, 'encompass', -1, 24, 'converging'), (-39.24, None, 'encompass', -1, None, b'\xcbq'), (-39.24, None, 'encompass', -1, 'blonds', 'proprietary'), ('presenting', 51, 'reformation', 'dignified', 24, 'converging'), ('presenting', 51, 'reformation', 'dignified', None, b'\xcbq'), ('presenting', 51, 'reformation', 'dignified', 'blonds', 'proprietary'), ('conducting', -87.24, 37.56, None, 24, 'converging'), ('conducting', -87.24, 37.56, None, None, b'\xcbq'), ('conducting', -87.24, 37.56, None, 'blonds', 'proprietary'), ('coldest', -96, 'dramatists', 82.3, 24, 'converging'), ('coldest', -96, 'dramatists', 82.3, None, b'\xcbq'), ('coldest', -96, 'dramatists', 82.3, 'blonds', 'proprietary'), ('alerting', None, -93.79, None, 24, 'converging'), ('alerting', None, -93.79, None, None, b'\xcbq'), ('alerting', None, -93.79, None, 'blonds', 'proprietary')]
++--------------------+
+--Query--
+SELECT * FROM x3 INNER JOIN x3 AS x4
+--Result--
+[(-39.24, None, 'encompass', -1, -39.24, None, 'encompass', -1), (-39.24, None, 'encompass', -1, 'presenting', 51, 'reformation', 'dignified'), (-39.24, None, 'encompass', -1, 'conducting', -87.24, 37.56, None), (-39.24, None, 'encompass', -1, 'coldest', -96, 'dramatists', 82.3), (-39.24, None, 'encompass', -1, 'alerting', None, -93.79, None), ('presenting', 51, 'reformation', 'dignified', -39.24, None, 'encompass', -1), ('presenting', 51, 'reformation', 'dignified', 'presenting', 51, 'reformation', 'dignified'), ('presenting', 51, 'reformation', 'dignified', 'conducting', -87.24, 37.56, None), ('presenting', 51, 'reformation', 'dignified', 'coldest', -96, 'dramatists', 82.3), ('presenting', 51, 'reformation', 'dignified', 'alerting', None, -93.79, None), ('conducting', -87.24, 37.56, None, -39.24, None, 'encompass', -1), ('conducting', -87.24, 37.56, None, 'presenting', 51, 'reformation', 'dignified'), ('conducting', -87.24, 37.56, None, 'conducting', -87.24, 37.56, None), ('conducting', -87.24, 37.56, None, 'coldest', -96, 'dramatists', 82.3), ('conducting', -87.24, 37.56, None, 'alerting', None, -93.79, None), ('coldest', -96, 'dramatists', 82.3, -39.24, None, 'encompass', -1), ('coldest', -96, 'dramatists', 82.3, 'presenting', 51, 'reformation', 'dignified'), ('coldest', -96, 'dramatists', 82.3, 'conducting', -87.24, 37.56, None), ('coldest', -96, 'dramatists', 82.3, 'coldest', -96, 'dramatists', 82.3), ('coldest', -96, 'dramatists', 82.3, 'alerting', None, -93.79, None), ('alerting', None, -93.79, None, -39.24, None, 'encompass', -1), ('alerting', None, -93.79, None, 'presenting', 51, 'reformation', 'dignified'), ('alerting', None, -93.79, None, 'conducting', -87.24, 37.56, None), ('alerting', None, -93.79, None, 'coldest', -96, 'dramatists', 82.3), ('alerting', None, -93.79, None, 'alerting', None, -93.79, None)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 AS x, t1 AS y
+--Result--
+[('a', 'one', 'a', 'one'), ('a', 'one', 'b', 'two'), ('a', 'one', 'c', 'three'), ('b', 'two', 'a', 'one'), ('b', 'two', 'b', 'two'), ('b', 'two', 'c', 'three'), ('c', 'three', 'a', 'one'), ('c', 'three', 'b', 'two'), ('c', 'three', 'c', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 AS y CROSS JOIN t1 AS x
+--Result--
+[('a', 'one', 'a', 'one'), ('a', 'one', 'b', 'two'), ('a', 'one', 'c', 'three'), ('b', 'two', 'a', 'one'), ('b', 'two', 'b', 'two'), ('b', 'two', 'c', 'three'), ('c', 'three', 'a', 'one'), ('c', 'three', 'b', 'two'), ('c', 'three', 'c', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 AS y INNER JOIN t1 AS x
+--Result--
+[('a', 'one', 'a', 'one'), ('a', 'one', 'b', 'two'), ('a', 'one', 'c', 'three'), ('b', 'two', 'a', 'one'), ('b', 'two', 'b', 'two'), ('b', 'two', 'c', 'three'), ('c', 'three', 'a', 'one'), ('c', 'three', 'b', 'two'), ('c', 'three', 'c', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON (1)
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON (1)
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (1)
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON (0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON (0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON (NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON (NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON ('abc')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON ('abc')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON ('abc')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON ('1ab')
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON ('1ab')
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON ('1ab')
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON (0.9)
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON (0.9)
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (0.9)
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON ('0.9')
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON ('0.9')
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON ('0.9')
+--Result--
+[('a', 'one', 'a', 'I'), ('a', 'one', 'b', 'II'), ('a', 'one', 'c', 'III'), ('b', 'two', 'a', 'I'), ('b', 'two', 'b', 'II'), ('b', 'two', 'c', 'III'), ('c', 'three', 'a', 'I'), ('c', 'three', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON (0.0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON (0.0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (0.0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.b, t2.b FROM t1 , t2 ON (t1.a = t2.a)
+--Result--
+[('one', 'I'), ('two', 'II'), ('three', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b FROM t1 CROSS JOIN t2 ON (t1.a = t2.a)
+--Result--
+[('one', 'I'), ('two', 'II'), ('three', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b FROM t1 INNER JOIN t2 ON (t1.a = t2.a)
+--Result--
+[('one', 'I'), ('two', 'II'), ('three', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b FROM t1 , t2 ON (t1.a = 'a')
+--Result--
+[('one', 'I'), ('one', 'II'), ('one', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b FROM t1 CROSS JOIN t2 ON (t1.a = 'a')
+--Result--
+[('one', 'I'), ('one', 'II'), ('one', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b FROM t1 INNER JOIN t2 ON (t1.a = 'a')
+--Result--
+[('one', 'I'), ('one', 'II'), ('one', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b          FROM t1 , t2 ON (CASE WHEN t1.a = 'a' THEN NULL ELSE 1 END)
+--Result--
+[('two', 'I'), ('two', 'II'), ('two', 'III'), ('three', 'I'), ('three', 'II'), ('three', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b          FROM t1 CROSS JOIN t2 ON (CASE WHEN t1.a = 'a' THEN NULL ELSE 1 END)
+--Result--
+[('two', 'I'), ('two', 'II'), ('two', 'III'), ('three', 'I'), ('three', 'II'), ('three', 'III')]
++--------------------+
+--Query--
+SELECT t1.b, t2.b          FROM t1 INNER JOIN t2 ON (CASE WHEN t1.a = 'a' THEN NULL ELSE 1 END)
+--Result--
+[('two', 'I'), ('two', 'II'), ('two', 'III'), ('three', 'I'), ('three', 'II'), ('three', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1, t3 USING (a)
+--Result--
+[('a', 'one', 1), ('b', 'two', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3, t4 USING (a,c)
+--Result--
+[('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t5 , t6 USING (a)
+--Result--
+[('AA', 'cc', 'cc'), ('BB', 'dd', 'DD')]
++--------------------+
+--Query--
+SELECT * FROM t5 CROSS JOIN t6 USING (a)
+--Result--
+[('AA', 'cc', 'cc'), ('BB', 'dd', 'DD')]
++--------------------+
+--Query--
+SELECT * FROM t5 INNER JOIN t6 USING (a)
+--Result--
+[('AA', 'cc', 'cc'), ('BB', 'dd', 'DD')]
++--------------------+
+--Query--
+SELECT * FROM t6 , t5 USING (a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6 CROSS JOIN t5 USING (a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6 INNER JOIN t5 USING (a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) , t5 USING (a)
+--Result--
+[('aa', 'cc', 'cc'), ('bb', 'DD', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) CROSS JOIN t5 USING (a)
+--Result--
+[('aa', 'cc', 'cc'), ('bb', 'DD', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) INNER JOIN t5 USING (a)
+--Result--
+[('aa', 'cc', 'cc'), ('bb', 'DD', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM t5 , t6 USING (a,b)
+--Result--
+[('AA', 'cc')]
++--------------------+
+--Query--
+SELECT * FROM t5 CROSS JOIN t6 USING (a,b)
+--Result--
+[('AA', 'cc')]
++--------------------+
+--Query--
+SELECT * FROM t5 INNER JOIN t6 USING (a,b)
+--Result--
+[('AA', 'cc')]
++--------------------+
+--Query--
+SELECT * FROM t6 , t5 USING (a,b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6 CROSS JOIN t5 USING (a,b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6 INNER JOIN t5 USING (a,b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 USING (a)
+--Result--
+[('a', 'one', 'I'), ('b', 'two', 'II'), ('c', 'three', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 USING (a)
+--Result--
+[('a', 'one', 'I'), ('b', 'two', 'II'), ('c', 'three', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 USING (a)
+--Result--
+[('a', 'one', 'I'), ('b', 'two', 'II'), ('c', 'three', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 , t2 ON (t1.a=t2.a)
+--Result--
+[('a', 'one', 'a', 'I'), ('b', 'two', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 CROSS JOIN t2 ON (t1.a=t2.a)
+--Result--
+[('a', 'one', 'a', 'I'), ('b', 'two', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN t2 ON (t1.a=t2.a)
+--Result--
+[('a', 'one', 'a', 'I'), ('b', 'two', 'b', 'II'), ('c', 'three', 'c', 'III')]
++--------------------+
+--Query--
+SELECT * FROM t3 , t4 USING (a)
+--Result--
+[('a', 1, None), ('b', 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 CROSS JOIN t4 USING (a)
+--Result--
+[('a', 1, None), ('b', 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 INNER JOIN t4 USING (a)
+--Result--
+[('a', 1, None), ('b', 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 , t4 ON (t3.a=t4.a)
+--Result--
+[('a', 1, 'a', None), ('b', 2, 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 CROSS JOIN t4 ON (t3.a=t4.a)
+--Result--
+[('a', 1, 'a', None), ('b', 2, 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 INNER JOIN t4 ON (t3.a=t4.a)
+--Result--
+[('a', 1, 'a', None), ('b', 2, 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 , t4 USING (a,c)
+--Result--
+[('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 CROSS JOIN t4 USING (a,c)
+--Result--
+[('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 INNER JOIN t4 USING (a,c)
+--Result--
+[('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 , t4 ON (t3.a=t4.a AND t3.c=t4.c)
+--Result--
+[('b', 2, 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 CROSS JOIN t4 ON (t3.a=t4.a AND t3.c=t4.c)
+--Result--
+[('b', 2, 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 INNER JOIN t4 ON (t3.a=t4.a AND t3.c=t4.c)
+--Result--
+[('b', 2, 'b', 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) AS x         , t5 USING (a)
+--Result--
+[('aa', 'cc', 'cc'), ('bb', 'DD', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) AS x         CROSS JOIN t5 USING (a)
+--Result--
+[('aa', 'cc', 'cc'), ('bb', 'DD', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) AS x         INNER JOIN t5 USING (a)
+--Result--
+[('aa', 'cc', 'cc'), ('bb', 'DD', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) AS x        , t5 ON (x.a=t5.a)
+--Result--
+[('aa', 'cc', 'AA', 'cc'), ('bb', 'DD', 'BB', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) AS x        CROSS JOIN t5 ON (x.a=t5.a)
+--Result--
+[('aa', 'cc', 'AA', 'cc'), ('bb', 'DD', 'BB', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a COLLATE nocase, b FROM t6) AS x        INNER JOIN t5 ON (x.a=t5.a)
+--Result--
+[('aa', 'cc', 'AA', 'cc'), ('bb', 'DD', 'BB', 'dd')]
++--------------------+
+--Query--
+SELECT * FROM t7 JOIN t8 ON (t7.a=t8.a)
+--Result--
+[('x', 'ex', 24, 'x', 'abc', 24)]
++--------------------+
+--Query--
+SELECT * FROM t7 LEFT JOIN t8 ON (t7.a=t8.a)
+--Result--
+[('x', 'ex', 24, 'x', 'abc', 24), ('y', 'why', 25, None, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t7 JOIN t8 USING (a)
+--Result--
+[('x', 'ex', 24, 'abc', 24)]
++--------------------+
+--Query--
+SELECT * FROM t7 LEFT JOIN t8 USING (a)
+--Result--
+[('x', 'ex', 24, 'abc', 24), ('y', 'why', 25, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t7 JOIN t8 USING (a)
+--Result--
+[('x', 'ex', 24, 'abc', 24)]
++--------------------+
+--Query--
+SELECT * FROM t7 NATURAL JOIN t8
+--Result--
+[('x', 'ex', 24, 'abc', 24)]
++--------------------+
+--Query--
+SELECT * FROM t8 JOIN t7 USING (a)
+--Result--
+[('x', 'abc', 24, 'ex', 24)]
++--------------------+
+--Query--
+SELECT * FROM t8 NATURAL JOIN t7
+--Result--
+[('x', 'abc', 24, 'ex', 24)]
++--------------------+
+--Query--
+SELECT * FROM t7 LEFT JOIN t8 USING (a)
+--Result--
+[('x', 'ex', 24, 'abc', 24), ('y', 'why', 25, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t7 NATURAL LEFT JOIN t8
+--Result--
+[('x', 'ex', 24, 'abc', 24), ('y', 'why', 25, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t8 LEFT JOIN t7 USING (a)
+--Result--
+[('x', 'abc', 24, 'ex', 24), ('z', 'ghi', 26, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t8 NATURAL LEFT JOIN t7
+--Result--
+[('x', 'abc', 24, 'ex', 24), ('z', 'ghi', 26, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t3 JOIN t4 USING (a,c)
+--Result--
+[('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 NATURAL JOIN t4
+--Result--
+[('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 LEFT JOIN t4 USING (a,c)
+--Result--
+[('a', 1), ('b', 2)]
++--------------------+
+--Query--
+SELECT * FROM t3 NATURAL LEFT JOIN t4
+--Result--
+[('a', 1), ('b', 2)]
++--------------------+
+--Query--
+SELECT a, x FROM t1 CROSS JOIN t10
+--Result--
+[('a', 1), ('a', 0), ('b', 1), ('b', 0), ('c', 1), ('c', 0)]
++--------------------+
+--Query--
+SELECT a, x FROM t1 NATURAL CROSS JOIN t10
+--Result--
+[('a', 1), ('a', 0), ('b', 1), ('b', 0), ('c', 1), ('c', 0)]
++--------------------+
+--Query--
+SELECT k FROM x1 WHERE x
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT k FROM x1 WHERE y
+--Result--
+[(3,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT k FROM x1 WHERE z
+--Result--
+[(1,), (2,), (6,)]
++--------------------+
+--Query--
+SELECT k FROM x1 WHERE '1'||z
+--Result--
+[(1,), (2,), (4,), (6,)]
++--------------------+
+--Query--
+SELECT k FROM x1 WHERE x IS NULL
+--Result--
+[(4,), (5,)]
++--------------------+
+--Query--
+SELECT k FROM x1 WHERE z - 78.43
+--Result--
+[(2,), (4,), (6,)]
++--------------------+
+--Query--
+SELECT k FROM x1 LEFT JOIN x2 USING(k)
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT k FROM x1 LEFT JOIN x2 USING(k) WHERE x2.k ORDER BY +k
+--Result--
+[(1,), (3,), (5,)]
++--------------------+
+--Query--
+SELECT k FROM x1 LEFT JOIN x2 USING(k) WHERE x2.k IS NULL
+--Result--
+[(2,), (4,), (6,)]
++--------------------+
+--Query--
+SELECT k FROM x1 NATURAL JOIN x2 WHERE x2.k
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT k FROM x1 NATURAL JOIN x2 WHERE x2.k-3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM z1 LIMIT 1
+--Result--
+[(51.65, -59.58, 'belfries')]
++--------------------+
+--Query--
+SELECT * FROM z1,z2 LIMIT 1
+--Result--
+[(51.65, -59.58, 'belfries', None, 21)]
++--------------------+
+--Query--
+SELECT z1.* FROM z1,z2 LIMIT 1
+--Result--
+[(51.65, -59.58, 'belfries')]
++--------------------+
+--Query--
+SELECT z2.* FROM z1,z2 LIMIT 1
+--Result--
+[(None, 21)]
++--------------------+
+--Query--
+SELECT z2.*, z1.* FROM z1,z2 LIMIT 1
+--Result--
+[(None, 21, 51.65, -59.58, 'belfries')]
++--------------------+
+--Query--
+SELECT max(a), * FROM z1
+--Result--
+[(63, 63, 'born', -26)]
++--------------------+
+--Query--
+SELECT *, min(a) FROM z1
+--Result--
+[(-5, None, 75, -5)]
++--------------------+
+--Query--
+SELECT *,* FROM z1,z2 LIMIT 1
+--Result--
+[(51.65, -59.58, 'belfries', None, 21, 51.65, -59.58, 'belfries', None, 21)]
++--------------------+
+--Query--
+SELECT z1.*,z1.* FROM z2,z1 LIMIT 1
+--Result--
+[(51.65, -59.58, 'belfries', 51.65, -59.58, 'belfries')]
++--------------------+
+--Query--
+SELECT a, b FROM z1
+--Result--
+[(51.65, -59.58), (-5, None), (-2.2, -23.18), (None, 67), (-1.04, -32.3), (63, 'born')]
++--------------------+
+--Query--
+SELECT a IS NULL, b+1, * FROM z1
+--Result--
+[(0, -58.58, 51.65, -59.58, 'belfries'), (0, None, -5, None, 75), (0, -22.18, -2.2, -23.18, 'suiters'), (1, 68, None, 67, 'quartets'), (0, -31.299999999999997, -1.04, -32.3, 'aspen'), (0, 1, 63, 'born', -26)]
++--------------------+
+--Query--
+SELECT 32*32, d||e FROM z2
+--Result--
+[(1024, None), (1024, '366')]
++--------------------+
+--Query--
+SELECT string_agg(three, ''), a1.* FROM a1 NATURAL JOIN a2
+--Result--
+[('12', 1, 1)]
++--------------------+
+--Query--
+SELECT group_concat(one), two FROM b1 GROUP BY two
+--Result--
+[('4,5', 'f'), ('1', 'o'), ('7,6', 's'), ('3,2', 't')]
++--------------------+
+--Query--
+SELECT group_concat(one), sum(one) FROM b1 GROUP BY (one>4)
+--Result--
+[('1,2,3,4', 10), ('5,6,7', 18)]
++--------------------+
+--Query--
+SELECT up FROM c1 GROUP BY up HAVING count(*)>3
+--Result--
+[('x',)]
++--------------------+
+--Query--
+SELECT up FROM c1 GROUP BY up HAVING sum(down)>16
+--Result--
+[('y',)]
++--------------------+
+--Query--
+SELECT up FROM c1 GROUP BY up HAVING sum(down)<16
+--Result--
+[('x',)]
++--------------------+
+--Query--
+SELECT up||down FROM c1 GROUP BY (down<5) HAVING max(down)<10
+--Result--
+[('x4',)]
++--------------------+
+--Query--
+SELECT up FROM c1 GROUP BY up HAVING down>10
+--Result--
+[('y',)]
++--------------------+
+--Query--
+SELECT up FROM c1 GROUP BY up HAVING up='y'
+--Result--
+[('y',)]
++--------------------+
+--Query--
+SELECT i, j FROM c2 GROUP BY i>4 HAVING j>6
+--Result--
+[(5, 10)]
++--------------------+
+--Query--
+SELECT sum(j), max(j) FROM c2 GROUP BY (i%3)
+--Result--
+[(54, 36), (27, 21), (39, 28)]
++--------------------+
+--Query--
+SELECT 1+sum(j), max(j)+1 FROM c2 GROUP BY (j%2)
+--Result--
+[(81, 37), (41, 22)]
++--------------------+
+--Query--
+SELECT count(*), round(avg(i),2) FROM c1, c2 ON (i=down) GROUP BY j%2
+--Result--
+[(3, 4.33), (1, 2.0)]
++--------------------+
+--Query--
+SELECT i, j FROM c2 GROUP BY i%2
+--Result--
+[(2, 1), (1, 0)]
++--------------------+
+--Query--
+SELECT i, j FROM c2 GROUP BY i%2 HAVING j<30
+--Result--
+[(2, 1), (1, 0)]
++--------------------+
+--Query--
+SELECT i, j FROM c2 GROUP BY i%2 HAVING j>30
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i, j FROM c2 GROUP BY i%2 HAVING j>30
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*), i, k FROM c2 NATURAL JOIN c3 GROUP BY substr(k, 1, 1)
+--Result--
+[(2, 4, 'beryllium'), (2, 1, 'hydrogen'), (1, 3, 'lithium')]
++--------------------+
+--Query--
+SELECT ALL a FROM h1
+--Result--
+[(1,), (1,), (1,), (4,), (4,), (4,)]
++--------------------+
+--Query--
+SELECT DISTINCT a FROM h1
+--Result--
+[(1,), (4,)]
++--------------------+
+--Query--
+SELECT ALL x FROM h2
+--Result--
+[('One',), ('Two',), ('Three',), ('Four',), ('one',), ('two',), ('three',), ('four',)]
++--------------------+
+--Query--
+SELECT ALL x FROM h1, h2 ON (x=b)
+--Result--
+[('One',), ('one',), ('Four',), ('four',)]
++--------------------+
+--Query--
+SELECT x FROM h2
+--Result--
+[('One',), ('Two',), ('Three',), ('Four',), ('one',), ('two',), ('three',), ('four',)]
++--------------------+
+--Query--
+SELECT x FROM h1, h2 ON (x=b)
+--Result--
+[('One',), ('one',), ('Four',), ('four',)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM h2
+--Result--
+[('One',), ('Two',), ('Three',), ('Four',)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM h1, h2 ON (x=b)
+--Result--
+[('One',), ('Four',)]
++--------------------+
+--Query--
+SELECT DISTINCT d FROM h3
+--Result--
+[(None,), ('2',), ('2,3',), ('2,4',), ('3',)]
++--------------------+
+--Query--
+SELECT DISTINCT b FROM h1
+--Result--
+[('one',), ('I',), ('i',), ('four',), ('IV',), ('iv',)]
++--------------------+
+--Query--
+SELECT DISTINCT b COLLATE nocase FROM h1
+--Result--
+[('one',), ('I',), ('four',), ('IV',)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM h2
+--Result--
+[('One',), ('Two',), ('Three',), ('Four',)]
++--------------------+
+--Query--
+SELECT DISTINCT x COLLATE binary FROM h2
+--Result--
+[('One',), ('Two',), ('Three',), ('Four',), ('one',), ('two',), ('three',), ('four',)]
++--------------------+
+--Query--
+SELECT * FROM j1 UNION ALL SELECT * FROM j2,j3 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 UNION ALL SELECT * FROM j2,j3 LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 UNION ALL SELECT * FROM j2,j3 LIMIT 10 OFFSET 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM j1 UNION ALL SELECT g FROM j2,j3 LIMIT (SELECT 10)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 UNION SELECT * FROM j2,j3 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+VALUES('8b') UNION SELECT max(e) FROM j2 ORDER BY 1
+--Result--
+[(None,), ('8b',)]
++--------------------+
+--Query--
+SELECT * FROM j1 UNION SELECT * FROM j2,j3 LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 UNION SELECT * FROM j2,j3 LIMIT 10 OFFSET 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM j1 UNION SELECT g FROM j2,j3 LIMIT (SELECT 10)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 EXCEPT SELECT * FROM j2,j3 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 EXCEPT SELECT * FROM j2,j3 LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 EXCEPT SELECT * FROM j2,j3 LIMIT 10 OFFSET 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM j1 EXCEPT SELECT g FROM j2,j3 LIMIT (SELECT 10)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 INTERSECT SELECT * FROM j2,j3 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 INTERSECT SELECT * FROM j2,j3 LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM j1 INTERSECT SELECT * FROM j2,j3 LIMIT 10 OFFSET 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM j1 INTERSECT SELECT g FROM j2,j3 LIMIT (SELECT 10)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM q1 UNION ALL SELECT d FROM q2
+--Result--
+[('16',), ('legible',), ('beauty',), ('legible',), ('beauty',), (-65.91,), ('emanating',)]
++--------------------+
+--Query--
+SELECT * FROM q1 WHERE a=16 UNION ALL SELECT 'x', * FROM q2 WHERE oid=1
+--Result--
+[('16', -87.66, None), ('x', 'legible', 1)]
++--------------------+
+--Query--
+SELECT count(*) FROM q1 UNION ALL SELECT min(e) FROM q2
+--Result--
+[(3,), (-16.56,)]
++--------------------+
+--Query--
+SELECT * FROM q2 UNION ALL SELECT * FROM q3
+--Result--
+[('legible', 1), ('beauty', 2), (-65.91, 4), ('emanating', -16.56), ('beauty', 2), ('beauty', 2)]
++--------------------+
+--Query--
+SELECT a FROM q1 UNION SELECT d FROM q2
+--Result--
+[(-65.91,), ('16',), ('beauty',), ('emanating',), ('legible',)]
++--------------------+
+--Query--
+SELECT * FROM q1 WHERE a=16 UNION SELECT 'x', * FROM q2 WHERE oid=1
+--Result--
+[('16', -87.66, None), ('x', 'legible', 1)]
++--------------------+
+--Query--
+SELECT * FROM q2 UNION SELECT * FROM q3
+--Result--
+[(-65.91, 4), ('beauty', 2), ('emanating', -16.56), ('legible', 1)]
++--------------------+
+--Query--
+SELECT a FROM q1 INTERSECT SELECT d FROM q2
+--Result--
+[('beauty',), ('legible',)]
++--------------------+
+--Query--
+SELECT * FROM q2 INTERSECT SELECT * FROM q3
+--Result--
+[('beauty', 2)]
++--------------------+
+--Query--
+SELECT a FROM q1 EXCEPT SELECT d FROM q2
+--Result--
+[('16',)]
++--------------------+
+--Query--
+SELECT * FROM q2 EXCEPT SELECT * FROM q3
+--Result--
+[(-65.91, 4), ('emanating', -16.56), ('legible', 1)]
++--------------------+
+--Query--
+SELECT * FROM q3
+--Result--
+[('beauty', 2), ('beauty', 2)]
++--------------------+
+--Query--
+SELECT * FROM q3 INTERSECT SELECT * FROM q3
+--Result--
+[('beauty', 2)]
++--------------------+
+--Query--
+SELECT * FROM q3 EXCEPT SELECT a,b FROM q1
+--Result--
+[('beauty', 2)]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT NULL
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT NULL UNION     SELECT NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT NULL INTERSECT SELECT NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT NULL EXCEPT    SELECT NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT 'ab'
+--Result--
+[(None,), ('ab',)]
++--------------------+
+--Query--
+SELECT NULL UNION     SELECT 'ab'
+--Result--
+[(None,), ('ab',)]
++--------------------+
+--Query--
+SELECT NULL INTERSECT SELECT 'ab'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT NULL EXCEPT    SELECT 'ab'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT 0
+--Result--
+[(None,), (0,)]
++--------------------+
+--Query--
+SELECT NULL UNION     SELECT 0
+--Result--
+[(None,), (0,)]
++--------------------+
+--Query--
+SELECT NULL INTERSECT SELECT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT NULL EXCEPT    SELECT 0
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT c FROM q1 UNION ALL SELECT g FROM q3
+--Result--
+[(None,), (-42.47,), (None,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT c FROM q1 UNION     SELECT g FROM q3
+--Result--
+[(None,), (-42.47,), (2,)]
++--------------------+
+--Query--
+SELECT c FROM q1 INTERSECT SELECT g FROM q3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM q1 EXCEPT    SELECT g FROM q3
+--Result--
+[(None,), (-42.47,)]
++--------------------+
+--Query--
+SELECT 'abc'                UNION SELECT 'ABC'
+--Result--
+[('ABC',), ('abc',)]
++--------------------+
+--Query--
+SELECT 'abc' COLLATE nocase UNION SELECT 'ABC'
+--Result--
+[('ABC',)]
++--------------------+
+--Query--
+SELECT 'abc'                UNION SELECT 'ABC' COLLATE nocase
+--Result--
+[('ABC',)]
++--------------------+
+--Query--
+SELECT 'abc' COLLATE binary UNION SELECT 'ABC' COLLATE nocase
+--Result--
+[('ABC',), ('abc',)]
++--------------------+
+--Query--
+SELECT 'abc' COLLATE nocase UNION SELECT 'ABC' COLLATE binary
+--Result--
+[('ABC',)]
++--------------------+
+--Query--
+SELECT a FROM y1 UNION SELECT b FROM y1
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT b FROM y1 UNION SELECT a FROM y1
+--Result--
+[('Abc',), ('abc',)]
++--------------------+
+--Query--
+SELECT a FROM y1 UNION SELECT c FROM y1
+--Result--
+[('aBC',)]
++--------------------+
+--Query--
+SELECT a FROM y1 UNION SELECT c COLLATE binary FROM y1
+--Result--
+[('aBC',)]
++--------------------+
+--Query--
+SELECT a FROM w1 UNION SELECT a FROM w2
+--Result--
+[(1,), ('1',)]
++--------------------+
+--Query--
+SELECT a FROM w2 UNION SELECT a FROM w1
+--Result--
+[(1,), ('1',)]
++--------------------+
+--Query--
+SELECT b FROM w1 UNION SELECT b FROM w2
+--Result--
+[(4.1,), ('4.1',)]
++--------------------+
+--Query--
+SELECT b FROM w2 UNION SELECT b FROM w1
+--Result--
+[(4.1,), ('4.1',)]
++--------------------+
+--Query--
+SELECT a FROM w1 INTERSECT SELECT a FROM w2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM w2 INTERSECT SELECT a FROM w1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM w1 INTERSECT SELECT b FROM w2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM w2 INTERSECT SELECT b FROM w1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM w1 EXCEPT SELECT a FROM w2
+--Result--
+[('1',)]
++--------------------+
+--Query--
+SELECT a FROM w2 EXCEPT SELECT a FROM w1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b FROM w1 EXCEPT SELECT b FROM w2
+--Result--
+[(4.1,)]
++--------------------+
+--Query--
+SELECT b FROM w2 EXCEPT SELECT b FROM w1
+--Result--
+[('4.1',)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1,2) INTERSECT SELECT x FROM t1 WHERE x IN (1)   UNION     SELECT x FROM t1 WHERE x IN (3)
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (3)   UNION     SELECT x FROM t1 WHERE x IN (1,2) INTERSECT SELECT x FROM t1 WHERE x IN (1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1,2) UNION     SELECT x FROM t1 WHERE x IN (3)   UNION ALL SELECT x FROM t1 WHERE x IN (1)
+--Result--
+[(1,), (2,), (3,), (1,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1)   UNION ALL SELECT x FROM t1 WHERE x IN (3)   UNION     SELECT x FROM t1 WHERE x IN (1,2)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1,2) UNION     SELECT x FROM t1 WHERE x IN (3)   EXCEPT    SELECT x FROM t1 WHERE x IN (1)
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1,2) EXCEPT    SELECT x FROM t1 WHERE x IN (3)   UNION     SELECT x FROM t1 WHERE x IN (1)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1,2) INTERSECT SELECT x FROM t1 WHERE x IN (1)   UNION ALL SELECT x FROM t1 WHERE x IN (3)
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (3)   UNION     SELECT x FROM t1 WHERE x IN (1,2) INTERSECT SELECT x FROM t1 WHERE x IN (1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (1,2) INTERSECT SELECT x FROM t1 WHERE x IN (2)   EXCEPT    SELECT x FROM t1 WHERE x IN (2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (2,3) EXCEPT    SELECT x FROM t1 WHERE x IN (2)   INTERSECT SELECT x FROM t1 WHERE x IN (2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (2)   UNION ALL SELECT x FROM t1 WHERE x IN (2)   EXCEPT    SELECT x FROM t1 WHERE x IN (2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (2)   EXCEPT    SELECT x FROM t1 WHERE x IN (2)   UNION ALL SELECT x FROM t1 WHERE x IN (2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN (2,3) EXCEPT    SELECT x FROM t1 WHERE x IN (2)   EXCEPT    SELECT x FROM t1 WHERE x IN (3)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x, y, z
+--Result--
+[(1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1), (2, 4, 93), (2, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x ASC, y ASC, z ASC
+--Result--
+[(1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1), (2, 4, 93), (2, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x DESC, y DESC, z DESC
+--Result--
+[(2, 5, -1), (2, 4, 93), (1, 5, -1), (1, 4, 93), (1, 2, 8), (1, 2, 7), (1, 2, 3), (1, 2, -20)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x DESC, y ASC, z DESC
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, 8), (1, 2, 7), (1, 2, 3), (1, 2, -20), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x DESC, y ASC, z ASC
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x, y, z
+--Result--
+[(1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1), (2, 4, 93), (2, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x DESC, y, z DESC
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, 8), (1, 2, 7), (1, 2, 3), (1, 2, -20), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x DESC, y, z
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1 ASC, 2 ASC, 3 ASC
+--Result--
+[(1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1), (2, 4, 93), (2, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1 DESC, 2 DESC, 3 DESC
+--Result--
+[(2, 5, -1), (2, 4, 93), (1, 5, -1), (1, 4, 93), (1, 2, 8), (1, 2, 7), (1, 2, 3), (1, 2, -20)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1 DESC, 2 ASC, 3 DESC
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, 8), (1, 2, 7), (1, 2, 3), (1, 2, -20), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1 DESC, 2 ASC, 3 ASC
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1, 2, 3
+--Result--
+[(1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1), (2, 4, 93), (2, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1 DESC, 2, 3 DESC
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, 8), (1, 2, 7), (1, 2, 3), (1, 2, -20), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY 1 DESC, 2, 3
+--Result--
+[(2, 4, 93), (2, 5, -1), (1, 2, -20), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (1, 5, -1)]
++--------------------+
+--Query--
+SELECT z, x FROM d1 ORDER BY 2
+--Result--
+[(3, 1), (8, 1), (7, 1), (-20, 1), (93, 1), (-1, 1), (-1, 2), (93, 2)]
++--------------------+
+--Query--
+SELECT z, x FROM d1 ORDER BY 1
+--Result--
+[(-20, 1), (-1, 2), (-1, 1), (3, 1), (7, 1), (8, 1), (93, 2), (93, 1)]
++--------------------+
+--Query--
+SELECT z+1 AS abc FROM d1 ORDER BY abc
+--Result--
+[(-19,), (0,), (0,), (4,), (8,), (9,), (94,), (94,)]
++--------------------+
+--Query--
+SELECT z+1 AS abc FROM d1 ORDER BY abc DESC
+--Result--
+[(94,), (94,), (9,), (8,), (4,), (0,), (0,), (-19,)]
++--------------------+
+--Query--
+SELECT z AS x, x AS z FROM d1 ORDER BY z
+--Result--
+[(3, 1), (8, 1), (7, 1), (-20, 1), (93, 1), (-1, 1), (-1, 2), (93, 2)]
++--------------------+
+--Query--
+SELECT z AS x, x AS z FROM d1 ORDER BY x
+--Result--
+[(-20, 1), (-1, 2), (-1, 1), (3, 1), (7, 1), (8, 1), (93, 2), (93, 1)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x+y+z
+--Result--
+[(1, 2, -20), (1, 5, -1), (1, 2, 3), (2, 5, -1), (1, 2, 7), (1, 2, 8), (1, 4, 93), (2, 4, 93)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY x*z
+--Result--
+[(1, 2, -20), (2, 5, -1), (1, 5, -1), (1, 2, 3), (1, 2, 7), (1, 2, 8), (1, 4, 93), (2, 4, 93)]
++--------------------+
+--Query--
+SELECT * FROM d1 ORDER BY y*z
+--Result--
+[(1, 2, -20), (2, 5, -1), (1, 5, -1), (1, 2, 3), (1, 2, 7), (1, 2, 8), (2, 4, 93), (1, 4, 93)]
++--------------------+
+--Query--
+SELECT x*z FROM d1 UNION ALL SELECT a FROM d2 ORDER BY x*z
+--Result--
+[(-20,), (-2,), (-1,), (3,), (7,), (8,), (93,), (186,), ('babied',), ('barked',), ('commercials',), ('gently',), ('iterate',), ('lad',), ('pragmatist',), ('reemphasizes',), ('rejoicing',), ('solemnness',)]
++--------------------+
+--Query--
+SELECT x, x/z FROM d1 UNION ALL SELECT a,b FROM d2 ORDER BY x, x/z
+--Result--
+[(1, -1), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (2, -2), (2, 0), ('babied', 'charitableness'), ('barked', 'interrupted'), ('commercials', 'bathrobe'), ('gently', 'failings'), ('iterate', 'sexton'), ('lad', 'relenting'), ('pragmatist', 'guarded'), ('reemphasizes', 'reply'), ('rejoicing', 'liabilities'), ('solemnness', 'annexed')]
++--------------------+
+--Query--
+SELECT a FROM d3 ORDER BY a
+--Result--
+[(None,), (12.9,), (13,), (14.1,), (15,), ('text',), (b'xxxx',)]
++--------------------+
+--Query--
+SELECT a FROM d3 ORDER BY a DESC
+--Result--
+[(b'xxxx',), ('text',), (15,), (14.1,), (13,), (12.9,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM d4 ORDER BY 1 COLLATE binary
+--Result--
+[('DEF',), ('JKL',), ('abc',), ('ghi',)]
++--------------------+
+--Query--
+SELECT x COLLATE binary FROM d4 ORDER BY 1 COLLATE nocase
+--Result--
+[('abc',), ('DEF',), ('ghi',), ('JKL',)]
++--------------------+
+--Query--
+SELECT x COLLATE binary FROM d4 ORDER BY 1
+--Result--
+[('DEF',), ('JKL',), ('abc',), ('ghi',)]
++--------------------+
+--Query--
+SELECT x COLLATE binary FROM d4 ORDER BY x
+--Result--
+[('abc',), ('DEF',), ('ghi',), ('JKL',)]
++--------------------+
+--Query--
+SELECT x COLLATE binary AS x FROM d4 ORDER BY x
+--Result--
+[('DEF',), ('JKL',), ('abc',), ('ghi',)]
++--------------------+
+--Query--
+SELECT x AS y FROM d4 ORDER BY y
+--Result--
+[('abc',), ('DEF',), ('ghi',), ('JKL',)]
++--------------------+
+--Query--
+SELECT x||'' FROM d4 ORDER BY x
+--Result--
+[('abc',), ('DEF',), ('ghi',), ('JKL',)]
++--------------------+
+--Query--
+SELECT x FROM d4 ORDER BY x||''
+--Result--
+[('DEF',), ('JKL',), ('abc',), ('ghi',)]
++--------------------+
+--Query--
+SELECT a FROM d5 UNION ALL SELECT c FROM d6 UNION ALL SELECT e FROM d7          ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM d5 UNION ALL SELECT c FROM d6 UNION ALL SELECT e FROM d7          ORDER BY c
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM d5 UNION ALL SELECT c FROM d6 UNION ALL SELECT e FROM d7          ORDER BY e
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM d5 UNION ALL SELECT c FROM d6 UNION ALL SELECT e FROM d7          ORDER BY 1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT b, a FROM d5 ORDER BY b
+--Result--
+[('f', 1), ('c', 4), (4, 'c'), (1, 'f')]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT b, a FROM d5 ORDER BY 2
+--Result--
+[('f', 1), ('c', 4), (4, 'c'), (1, 'f')]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT b, a FROM d5 ORDER BY a
+--Result--
+[(1, 'f'), (4, 'c'), ('c', 4), ('f', 1)]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT b, a FROM d5 ORDER BY 1
+--Result--
+[(1, 'f'), (4, 'c'), ('c', 4), ('f', 1)]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT b, a+1 FROM d5 ORDER BY a+1
+--Result--
+[('f', 2), ('c', 5), (4, 'c'), (1, 'f')]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT b, a+1 FROM d5 ORDER BY 2
+--Result--
+[('f', 2), ('c', 5), (4, 'c'), (1, 'f')]
++--------------------+
+--Query--
+SELECT a+1, b FROM d5 UNION ALL SELECT b, a+1 FROM d5 ORDER BY a+1
+--Result--
+[(2, 'f'), (5, 'c'), ('c', 5), ('f', 2)]
++--------------------+
+--Query--
+SELECT a+1, b FROM d5 UNION ALL SELECT b, a+1 FROM d5 ORDER BY 1
+--Result--
+[(2, 'f'), (5, 'c'), ('c', 5), ('f', 2)]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT c-1, d FROM d6 ORDER BY a, d
+--Result--
+[(1, 'e'), (1, 'f'), (4, 'b'), (4, 'c')]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT c-1, d FROM d6 ORDER BY c-1, b
+--Result--
+[(1, 'e'), (1, 'f'), (4, 'b'), (4, 'c')]
++--------------------+
+--Query--
+SELECT a, b FROM d5 UNION ALL SELECT c-1, d FROM d6 ORDER BY 1, 2
+--Result--
+[(1, 'e'), (1, 'f'), (4, 'b'), (4, 'c')]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 5
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 2+3
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT (SELECT a FROM f1 WHERE b = 'e')
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 5.0
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT '5'
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT -1
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',), ('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',), ('m',), ('n',), ('o',), ('p',), ('q',), ('r',), ('s',), ('t',), ('u',), ('v',), ('w',), ('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT length('abc')-100
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',), ('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',), ('m',), ('n',), ('o',), ('p',), ('q',), ('r',), ('s',), ('t',), ('u',), ('v',), ('w',), ('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT (SELECT count(*) FROM f1)/2 - 14
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',), ('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',), ('m',), ('n',), ('o',), ('p',), ('q',), ('r',), ('s',), ('t',), ('u',), ('v',), ('w',), ('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a DESC LIMIT 4
+--Result--
+[('z',), ('y',), ('x',), ('w',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a DESC LIMIT 8
+--Result--
+[('z',), ('y',), ('x',), ('w',), ('v',), ('u',), ('t',), ('s',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a DESC LIMIT '12.0'
+--Result--
+[('z',), ('y',), ('x',), ('w',), ('v',), ('u',), ('t',), ('s',), ('r',), ('q',), ('p',), ('o',)]
++--------------------+
+--Query--
+SELECT b FROM f1 WHERE a>21 ORDER BY a LIMIT 10
+--Result--
+[('v',), ('w',), ('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 10 OFFSET 5
+--Result--
+[('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',), ('m',), ('n',), ('o',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 2+3 OFFSET 10
+--Result--
+[('k',), ('l',), ('m',), ('n',), ('o',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a         LIMIT  (SELECT a FROM f1 WHERE b='j')         OFFSET (SELECT a FROM f1 WHERE b='b')
+--Result--
+[('c',), ('d',), ('e',), ('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT '5' OFFSET 3.0
+--Result--
+[('d',), ('e',), ('f',), ('g',), ('h',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT '5' OFFSET 0
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 0 OFFSET 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 3 OFFSET '1'||'5'
+--Result--
+[('p',), ('q',), ('r',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 10 OFFSET 20
+--Result--
+[('u',), ('v',), ('w',), ('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT a FROM f1 ORDER BY a DESC LIMIT 100 OFFSET 18+4
+--Result--
+[(4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 5 OFFSET -1
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 5 OFFSET -500
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 5 OFFSET 0
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 5, 10
+--Result--
+[('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',), ('m',), ('n',), ('o',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 10, 2+3
+--Result--
+[('k',), ('l',), ('m',), ('n',), ('o',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a         LIMIT (SELECT a FROM f1 WHERE b='b'), (SELECT a FROM f1 WHERE b='j')
+--Result--
+[('c',), ('d',), ('e',), ('f',), ('g',), ('h',), ('i',), ('j',), ('k',), ('l',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 3.0, '5'
+--Result--
+[('d',), ('e',), ('f',), ('g',), ('h',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 0, '5'
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 10, 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT '1'||'5', 3
+--Result--
+[('p',), ('q',), ('r',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 20, 10
+--Result--
+[('u',), ('v',), ('w',), ('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT a FROM f1 ORDER BY a DESC LIMIT 18+4, 100
+--Result--
+[(4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT -1, 5
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT -500, 5
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+
+--Query--
+SELECT b FROM f1 ORDER BY a LIMIT 0, 5
+--Result--
+[('a',), ('b',), ('c',), ('d',), ('e',)]
++--------------------+

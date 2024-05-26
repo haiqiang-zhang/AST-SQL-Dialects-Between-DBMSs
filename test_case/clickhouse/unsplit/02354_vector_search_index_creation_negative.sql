@@ -1,7 +1,3 @@
-
-
--- This file tests that various conditions are checked during creation of vector search indexes.
-
 SET allow_experimental_annoy_index = 1;
 SET allow_experimental_usearch_index = 1;
 DROP TABLE IF EXISTS tab;

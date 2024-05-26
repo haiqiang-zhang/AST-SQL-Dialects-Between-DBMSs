@@ -1,0 +1,35 @@
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and info = "COMMIT"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (10,)]
++--------------------+

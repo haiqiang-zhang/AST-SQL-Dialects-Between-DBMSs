@@ -1,0 +1,65 @@
+--Query--
+select sum(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select quantile(0.5)(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select quantiles(0.1, 0.2)(NULL :: Nullable(UInt32))
+--Result--
+[([nan, nan],)]
++--------------------+
+--Query--
+select quantile(0.5)(NULL), quantiles(0.1, 0.2)(NULL :: Nullable(UInt32)), count(NULL), sum(NULL)
+--Result--
+[(None, [nan, nan], 0, None)]
++--------------------+
+--Query--
+SELECT '-- notinhgs:'
+--Result--
+[('-- notinhgs:',)]
++--------------------+
+--Query--
+SELECT nothing() as n, toTypeName(n)
+--Result--
+[(None, 'Nullable(Nothing)')]
++--------------------+
+--Query--
+SELECT '-- quantile:'
+--Result--
+[('-- quantile:',)]
++--------------------+
+--Query--
+SELECT '-- quantiles:'
+--Result--
+[('-- quantiles:',)]
++--------------------+
+--Query--
+SELECT '-- nothing:'
+--Result--
+[('-- nothing:',)]
++--------------------+
+--Query--
+SELECT '-- nothing(UInt64):'
+--Result--
+[('-- nothing(UInt64):',)]
++--------------------+
+--Query--
+SELECT '-- nothing(Nullable(Nothing)):'
+--Result--
+[('-- nothing(Nullable(Nothing)):',)]
++--------------------+
+--Query--
+SELECT '-- sum:'
+--Result--
+[('-- sum:',)]
++--------------------+
+--Query--
+SELECT '-- count:'
+--Result--
+[('-- count:',)]
++--------------------+

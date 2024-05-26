@@ -1,0 +1,60 @@
+--Query--
+OPTIMIZE TABLE t_sparse_detach FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count() FROM t_sparse_detach WHERE s != ''
+--Result--
+[(954,)]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE table = 't_sparse_detach' AND database = currentDatabase() AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('s', 'Sparse')]
++--------------------+
+--Query--
+DETACH TABLE t_sparse_detach
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE t_sparse_detach
+--Result--
+[]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE table = 't_sparse_detach' AND database = currentDatabase() AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('s', 'Sparse')]
++--------------------+
+--Query--
+TRUNCATE TABLE t_sparse_detach
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE t_sparse_detach FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE table = 't_sparse_detach' AND database = currentDatabase() AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('s', 'Sparse')]
++--------------------+
+--Query--
+DETACH TABLE t_sparse_detach
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE t_sparse_detach
+--Result--
+[]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE table = 't_sparse_detach' AND database = currentDatabase() AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('s', 'Sparse')]
++--------------------+

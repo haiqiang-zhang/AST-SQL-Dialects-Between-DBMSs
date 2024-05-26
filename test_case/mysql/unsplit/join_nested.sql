@@ -1215,18 +1215,6 @@ INSERT INTO t5 VALUES
 SELECT COUNT(*) 
   FROM((t2 JOIN t1 ON t2.package_id = t1.id) 
         JOIN t3 ON t3.package_id = t1.id);
-SELECT COUNT(*) 
-  FROM ((t2 JOIN t1 ON t2.package_id = t1.id) 
-         JOIN t3 ON t3.package_id = t1.id)
-       LEFT JOIN 
-       (t5 JOIN t4 ON t5.carrier_id = t4.id)
-       ON t4.carrier = t1.carrier;
-SELECT COUNT(*) 
-  FROM ((t2 JOIN t1 ON t2.package_id = t1.id) 
-        JOIN t3 ON t3.package_id = t1.id)
-       LEFT JOIN 
-       (t5 JOIN t4 ON t5.carrier_id = t4.id)
-       ON t4.carrier = t1.carrier;
 DROP TABLE t1,t2,t3,t4,t5;
 CREATE TABLE t (
   a INT,

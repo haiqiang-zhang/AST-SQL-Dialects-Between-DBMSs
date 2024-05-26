@@ -1,0 +1,60 @@
+--Query--
+OPTIMIZE TABLE weird_partitions_02245
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE weird_partitions_02245
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT _partition_id, _partition_value FROM weird_partitions_02245 ORDER BY _partition_id ASC
+--Result--
+[('202112-0', (202112, 0)), ('202201-0', (202201, 0)), ('202301-0', (202301, 0))]
++--------------------+
+--Query--
+SELECT _partition_id, min(d), max(d), min(d1), max(d1), count() FROM weird_partitions_02245 GROUP BY _partition_id ORDER BY _partition_id ASC
+--Result--
+[('202112-0', datetime.datetime(2021, 12, 31, 22, 30), datetime.datetime(2021, 12, 31, 22, 30), datetime.datetime(2021, 12, 31, 14, 30), datetime.datetime(2021, 12, 31, 14, 30), 1000), ('202201-0', datetime.datetime(2022, 1, 1, 0, 30), datetime.datetime(2022, 1, 31, 22, 30), datetime.datetime(2021, 12, 31, 16, 30), datetime.datetime(2022, 1, 31, 14, 30), 2000), ('202301-0', datetime.datetime(2023, 1, 31, 22, 30), datetime.datetime(2023, 1, 31, 22, 30), datetime.datetime(2023, 1, 31, 14, 30), datetime.datetime(2023, 1, 31, 14, 30), 1000)]
++--------------------+
+--Query--
+select  DISTINCT _partition_id from weird_partitions_02245 where d >= '2021-12-31 00:00:00' and d < '2022-01-01 00:00:00' ORDER BY _partition_id
+--Result--
+[('202112-0',)]
++--------------------+
+--Query--
+explain estimate select  DISTINCT _partition_id from weird_partitions_02245 where d >= '2021-12-31 00:00:00' and d < '2022-01-01 00:00:00'
+--Result--
+[('test', 'weird_partitions_02245', 1, 1000, 1)]
++--------------------+
+--Query--
+select  DISTINCT _partition_id from weird_partitions_02245 where d >= '2022-01-01 00:00:00' and  d1 >= '2021-12-31 00:00:00' and d1 < '2022-01-01 00:00:00' ORDER BY _partition_id
+--Result--
+[('202201-0',)]
++--------------------+
+--Query--
+explain estimate select  DISTINCT _partition_id from weird_partitions_02245 where d >= '2022-01-01 00:00:00' and d1 >= '2021-12-31 00:00:00' and d1 < '2022-01-01 00:00:00'
+--Result--
+[('test', 'weird_partitions_02245', 1, 2000, 1)]
++--------------------+
+--Query--
+select  DISTINCT _partition_id from weird_partitions_02245 where d1 >= '2021-12-31 00:00:00' and d1 < '2022-01-01 00:00:00' ORDER BY _partition_id
+--Result--
+[('202112-0',), ('202201-0',)]
++--------------------+
+--Query--
+explain estimate select  DISTINCT _partition_id from weird_partitions_02245 where d1 >= '2021-12-31 00:00:00' and d1 < '2022-01-01 00:00:00'
+--Result--
+[('test', 'weird_partitions_02245', 2, 3000, 2)]
++--------------------+
+--Query--
+select  DISTINCT _partition_id from weird_partitions_02245 where d >= '2022-01-01 00:00:00' and  d1 >= '2021-12-31 00:00:00' and d1 < '2020-01-01 00:00:00' ORDER BY _partition_id
+--Result--
+[]
++--------------------+
+--Query--
+explain estimate select  DISTINCT _partition_id from weird_partitions_02245 where d >= '2022-01-01 00:00:00' and d1 >= '2021-12-31 00:00:00' and d1 < '2020-01-01 00:00:00'
+--Result--
+[('test', 'weird_partitions_02245', 0, 0, 0)]
++--------------------+

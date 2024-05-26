@@ -1,0 +1,20 @@
+--Query--
+SELECT * REPLACE i+100 AS i FROM integers
+--Result--
+[(101, 2, 3)]
++--------------------+
+--Query--
+SELECT * EXCLUDE (j, k) REPLACE (i+100 AS i), * EXCLUDE (j) REPLACE (i+100 AS i), * EXCLUDE (j, k) REPLACE (i+101 AS i) FROM integers
+--Result--
+[(101, 101, 3, 102)]
++--------------------+
+--Query--
+SELECT * REPLACE (i+100 AS i, j+200 AS "J") FROM integers
+--Result--
+[(101, 202, 3)]
++--------------------+
+--Query--
+SELECT integers.* REPLACE (i+100 AS i) FROM integers
+--Result--
+[(101, 2, 3)]
++--------------------+

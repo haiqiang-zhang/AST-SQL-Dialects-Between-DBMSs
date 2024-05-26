@@ -1,8 +1,3 @@
-
--- Tag no-replicated-database: executes with ON CLUSTER anyway
-
--- Ignore "ATTACH TABLE query with full table definition is not recommended"
--- Ignore BAD_ARGUMENTS
 SET send_logs_level='fatal';
 DROP TABLE IF EXISTS x;
 SELECT uuid FROM system.tables WHERE database = currentDatabase() and table = 'x';

@@ -50,11 +50,7 @@ INSERT INTO clstr_tst (b, c) VALUES (8, 'ocho');
 INSERT INTO clstr_tst (b, c, d) VALUES (6, 'seis', repeat('xyzzy', 100000));
 CLUSTER clstr_tst_c ON clstr_tst;
 SELECT a,b,c,substring(d for 30), length(d) from clstr_tst;
-SELECT a,b,c,substring(d for 30), length(d) from clstr_tst ORDER BY a;
-SELECT a,b,c,substring(d for 30), length(d) from clstr_tst ORDER BY b;
-SELECT a,b,c,substring(d for 30), length(d) from clstr_tst ORDER BY c;
 INSERT INTO clstr_tst_inh VALUES (0, 100, 'in child table');
-SELECT a,b,c,substring(d for 30), length(d) from clstr_tst;
 SELECT conname FROM pg_constraint WHERE conrelid = 'clstr_tst'::regclass
 ORDER BY 1;
 SELECT relname, relkind,

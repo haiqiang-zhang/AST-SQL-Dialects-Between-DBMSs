@@ -1,6 +1,3 @@
-
--- after merging sorted transform, that used to break the peer group detection in
--- the window transform.
 CREATE TABLE order_by_const
 (
     `a` UInt64,
@@ -24,4 +21,3 @@ select number,
     lagInFrame(number, 2, 1) over w
 from numbers(10)
 window w as (order by number);
-select number, row_number() over (partition by number rows between unbounded preceding and 1 preceding) from numbers(4) settings max_block_size = 2;

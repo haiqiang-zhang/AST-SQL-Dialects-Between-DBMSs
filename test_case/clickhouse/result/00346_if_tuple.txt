@@ -1,0 +1,30 @@
+--Query--
+SELECT number % 3 = 2 ? (number, toString(number)) : (number * 10, concat('! ', toString(number))) FROM system.numbers LIMIT 10
+--Result--
+[((0, '! 0'),), ((10, '! 1'),), ((2, '2'),), ((30, '! 3'),), ((40, '! 4'),), ((5, '5'),), ((60, '! 6'),), ((70, '! 7'),), ((8, '8'),), ((90, '! 9'),)]
++--------------------+
+--Query--
+SELECT 0 ? (number, toString(number)) : (number * 10, concat('! ', toString(number))) FROM system.numbers LIMIT 10
+--Result--
+[((0, '! 0'),), ((10, '! 1'),), ((20, '! 2'),), ((30, '! 3'),), ((40, '! 4'),), ((50, '! 5'),), ((60, '! 6'),), ((70, '! 7'),), ((80, '! 8'),), ((90, '! 9'),)]
++--------------------+
+--Query--
+SELECT 1 ? (number, toString(number)) : (number * 10, concat('! ', toString(number))) FROM system.numbers LIMIT 10
+--Result--
+[((0, '0'),), ((1, '1'),), ((2, '2'),), ((3, '3'),), ((4, '4'),), ((5, '5'),), ((6, '6'),), ((7, '7'),), ((8, '8'),), ((9, '9'),)]
++--------------------+
+--Query--
+SELECT number % 3 = 2 ? (1, 'Hello') : (2, 'World') FROM system.numbers LIMIT 10
+--Result--
+[((2, 'World'),), ((2, 'World'),), ((1, 'Hello'),), ((2, 'World'),), ((2, 'World'),), ((1, 'Hello'),), ((2, 'World'),), ((2, 'World'),), ((1, 'Hello'),), ((2, 'World'),)]
++--------------------+
+--Query--
+SELECT number % 3 = 2 ? (number, 'Hello') : (0, 'World') FROM system.numbers LIMIT 10
+--Result--
+[((0, 'World'),), ((0, 'World'),), ((2, 'Hello'),), ((0, 'World'),), ((0, 'World'),), ((5, 'Hello'),), ((0, 'World'),), ((0, 'World'),), ((8, 'Hello'),), ((0, 'World'),)]
++--------------------+
+--Query--
+SELECT number % 3 = 2 ? (number, 'Hello') : (0, toString(exp2(number))) FROM system.numbers LIMIT 10
+--Result--
+[((0, '1'),), ((0, '2'),), ((2, 'Hello'),), ((0, '8'),), ((0, '16'),), ((5, 'Hello'),), ((0, '64'),), ((0, '128'),), ((8, 'Hello'),), ((0, '512'),)]
++--------------------+

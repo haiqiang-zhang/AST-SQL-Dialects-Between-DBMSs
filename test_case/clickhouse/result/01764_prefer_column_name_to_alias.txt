@@ -1,0 +1,20 @@
+--Query--
+SELECT avg(number) AS number, max(number) FROM numbers(10)
+--Result--
+[(4.5, 9)]
++--------------------+
+--Query--
+SELECT sum(x) AS x, max(x) FROM (SELECT 1 AS x UNION ALL SELECT 2 AS x) t settings prefer_column_name_to_alias = 1
+--Result--
+[(3, 2)]
++--------------------+
+--Query--
+select sum(C1) as C1, count(C1) as C2 from (select number as C1 from numbers(3)) as ITBL settings prefer_column_name_to_alias = 1
+--Result--
+[(3, 3)]
++--------------------+
+--Query--
+SELECT any(uuid) AS id, max(end_ts) - any(start_ts) AS time_delta, any(start_ts) AS start_ts, max(end_ts) AS end_ts FROM mytable GROUP BY uuid HAVING max(end_ts) < 1620141001 ORDER BY any(start_ts) DESC
+--Result--
+[('3', 1, 1, 2)]
++--------------------+

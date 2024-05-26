@@ -1,0 +1,170 @@
+--Query--
+SELECT i8 FROM t1 WHERE i8 IN (1, 2, 5)
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE i8 IN (@int_one, @int_two, @int_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE i8 IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE dc IN (1.1, 2.2, 5.5)
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE dc IN (@dec_one, @dec_two, @dec_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE dc IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE r8 IN (1.1e100, 2.2e100, 5.5e100)
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE r8 IN (@dbl_one, @dbl_two, @dbl_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE r8 IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE vc IN ('1', '2', '5')
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE vc IN (@str_one, @str_two, @str_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE vc IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE d IN (DATE'2020-01-01', DATE'2020-02-02', DATE'2020-05-05')
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE d IN (@date_one, @date_two, @date_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE d IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE t IN (TIME'01:01:01', TIME'02:02:02', TIME'05:05:05')
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE t IN (@time_one, @time_two, @time_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE t IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE dt IN (TIMESTAMP'2020-01-01 01:01:01',              TIMESTAMP'2020-02-02 02:02:02',              TIMESTAMP'2020-05-05 05:05:05')
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE dt IN (@dt_one, @dt_two, @dt_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE dt IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE j IN (CAST('{"i":1, "s":"1"}' AS JSON),             CAST('{"i":2, "s":"2"}' AS JSON),             CAST('{"i":5, "s":"5"}' AS JSON))
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE j IN (CAST(@json_one AS JSON),             CAST(@json_two AS JSON),             CAST(@json_five AS JSON))
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM " SELECT i8 FROM t1 WHERE j IN (CAST(? AS JSON), CAST(? AS JSON), CAST(? AS JSON))"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE ji IN (1, 2, 5)
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE ji IN (@int_one, @int_two, @int_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE ji IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE js IN ('1', '2', '5')
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE js IN (@str_one, @str_two, @str_five)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT i8 FROM t1 WHERE js IN (?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE (i8, dc, vc) IN ((1, 1.1, '1'), (2, 2.2, '2'), (5, 5.5, '5'))
+--Result--
+[(1,), (2,), (5,)]
++--------------------+
+--Query--
+SELECT i8 FROM t1 WHERE (i8, dc, vc) IN ((@int_one, @dec_one, @str_one),                        (@int_two, @dec_two, @str_two),                        (@int_five, @dec_five, @str_five))
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM " SELECT i8 FROM t1 WHERE (i8, dc, vc) IN ((?, ?, ?), (?, ?, ?), (?, ?, ?))"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ps
+--Result--
+[]
++--------------------+

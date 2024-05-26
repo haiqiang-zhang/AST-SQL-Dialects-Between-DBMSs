@@ -1,0 +1,40 @@
+--Query--
+SELECT hex(a) FROM t1 ORDER BY a
+--Result--
+[('A2E6',), ('FEF7',)]
++--------------------+
+--Query--
+SELECT s as bad_code FROM t2 WHERE a='' ORDER BY s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT s as unassigned_code FROM t2 WHERE u='?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) as roundtrip_problem_chars FROM t2 WHERE hex(a) <> hex(a2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE a<>''
+--Result--
+[(28672,)]
++--------------------+
+--Query--
+SELECT code, hex(upper(a)), hex(lower(a)),a, upper(a), lower(a) FROM t1 WHERE hex(a)<>hex(upper(a)) OR hex(a)<>hex(lower(a))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE HEX(CAST(LOWER(a) AS CHAR CHARACTER SET utf8mb3)) <>       HEX(LOWER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE HEX(CAST(UPPER(a) AS CHAR CHARACTER SET utf8mb3)) <>       HEX(UPPER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code
+--Result--
+[]
++--------------------+

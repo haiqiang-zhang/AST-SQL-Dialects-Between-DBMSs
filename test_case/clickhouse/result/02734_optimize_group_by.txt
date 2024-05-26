@@ -1,0 +1,20 @@
+--Query--
+SELECT 'a' AS key, 'b' as value GROUP BY key WITH CUBE SETTINGS allow_experimental_analyzer = 0
+--Result--
+[('a', 'b'), ('a', 'b')]
++--------------------+
+--Query--
+SELECT 'a' AS key, 'b' as value GROUP BY key WITH CUBE SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('a', 'b'), ('a', 'b')]
++--------------------+
+--Query--
+SELECT 'a' AS key, 'b' as value GROUP BY ignore(1) WITH CUBE
+--Result--
+[('a', 'b'), ('a', 'b')]
++--------------------+
+--Query--
+SELECT 'a' AS key, 'b' as value GROUP BY key
+--Result--
+[('a', 'b')]
++--------------------+

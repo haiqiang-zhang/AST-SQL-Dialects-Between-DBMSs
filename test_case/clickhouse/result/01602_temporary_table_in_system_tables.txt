@@ -1,0 +1,25 @@
+--Query--
+SELECT database, name, create_table_query, engine, engine_full, is_temporary FROM system.tables WHERE name LIKE 'test_01602%' ORDER BY name
+--Result--
+[('', 'test_01602a', 'CREATE TEMPORARY TABLE test_01602a (`x` UInt32) ENGINE = Memory', 'Memory', 'Memory', 1), ('', 'test_01602b', 'CREATE TEMPORARY TABLE test_01602b (`y` Float64, `z` String) ENGINE = Memory', 'Memory', 'Memory', 1)]
++--------------------+
+--Query--
+SELECT * FROM system.columns WHERE table LIKE 'test_01602%' ORDER BY table, name
+--Result--
+[('', 'test_01602a', 'x', 'UInt32', 1, '', '', 0, 0, 0, '', 0, 0, 0, 0, '', None, 32, 2, 0, None), ('', 'test_01602b', 'y', 'Float64', 1, '', '', 0, 0, 0, '', 0, 0, 0, 0, '', None, None, None, None, None), ('', 'test_01602b', 'z', 'String', 2, '', '', 0, 0, 0, '', 0, 0, 0, 0, '', None, None, None, None, None)]
++--------------------+
+--Query--
+SHOW CREATE TEMPORARY TABLE test_01602a
+--Result--
+[('CREATE TEMPORARY TABLE test_01602a\n(\n    `x` UInt32\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SHOW CREATE TEMPORARY TABLE test_01602b
+--Result--
+[('CREATE TEMPORARY TABLE test_01602b\n(\n    `y` Float64,\n    `z` String\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SELECT COUNT() FROM system.databases WHERE name='_temporary_and_external_tables'
+--Result--
+[(0,)]
++--------------------+

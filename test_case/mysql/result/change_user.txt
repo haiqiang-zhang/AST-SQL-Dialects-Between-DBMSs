@@ -1,0 +1,85 @@
+--Query--
+select user(), current_user(), database()
+--Result--
+[('tester@localhost', 'tester@localhost', 'test_db')]
++--------------------+
+--Query--
+select concat('<', user(), '>'), concat('<', current_user(), '>'), database()
+--Result--
+[('<tester@localhost>', '<tester@localhost>', 'test_db')]
++--------------------+
+--Query--
+SELECT @@session.sql_big_selects
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.max_join_size
+--Result--
+[(18446744073709551615,)]
++--------------------+
+--Query--
+SELECT @@session.sql_big_selects
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.max_join_size
+--Result--
+[(18446744073709551615,)]
++--------------------+
+--Query--
+SELECT @@session.sql_big_selects
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@session.sql_big_selects
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@INSERT_ID
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@TIMESTAMP
+--Result--
+[(1716686346.046623,)]
++--------------------+
+--Query--
+SELECT @@INSERT_ID
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@TIMESTAMP=200
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('bug31418')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('bug31418')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT GET_LOCK('bug31418', 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('bug31418') = CONNECTION_ID()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+

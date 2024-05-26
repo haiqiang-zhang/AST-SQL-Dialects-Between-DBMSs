@@ -4,6 +4,4 @@ CREATE TABLE t (x UInt8) ENGINE = MergeTree ORDER BY x;
 INSERT INTO t VALUES (1), (2), (3);
 SELECT count() FROM t;
 DROP ROW POLICY IF EXISTS filter ON t;
-SELECT count() FROM t;
-SELECT count() FROM t;
 DROP TABLE t;

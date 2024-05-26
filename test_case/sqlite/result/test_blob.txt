@@ -1,0 +1,55 @@
+--Query--
+SELECT X'01020304'
+--Result--
+[(b'\x01\x02\x03\x04',)]
++--------------------+
+--Query--
+SELECT x'ABCDEF'
+--Result--
+[(b'\xab\xcd\xef',)]
++--------------------+
+--Query--
+SELECT x''
+--Result--
+[(b'',)]
++--------------------+
+--Query--
+SELECT x'abcdEF12'
+--Result--
+[(b'\xab\xcd\xef\x12',)]
++--------------------+
+--Query--
+SELECT x'0123456789abcdefABCDEF'
+--Result--
+[(b'\x01#Eg\x89\xab\xcd\xef\xab\xcd\xef',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(b'\x124V', b'x\x90\xab'), (b'\xcd\xef\x12', b'4Vx')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(b'\x124V', b'x\x90\xab'), (b'\xcd\xef\x12', b'4Vx')]
++--------------------+
+--Query--
+SELECT * FROM t1 where a = X'123456'
+--Result--
+[(b'\x124V', b'x\x90\xab')]
++--------------------+
+--Query--
+SELECT * FROM t1 where a = X'CDEF12'
+--Result--
+[(b'\xcd\xef\x12', b'4Vx')]
++--------------------+
+--Query--
+SELECT * FROM t1 where a = X'CD12'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(b'\x124V', b'x\x90\xab'), (b'\xcd\xef\x12', b'4Vx')]
++--------------------+

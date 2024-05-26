@@ -1,0 +1,50 @@
+--Query--
+SELECT pseudo FROM t1 WHERE pseudo1='joce' UNION SELECT pseudo FROM t1 WHERE pseudo='joce'
+--Result--
+[('dekad',), ('joce',)]
++--------------------+
+--Query--
+SELECT pseudo1 FROM t1 WHERE pseudo1='joce' UNION SELECT pseudo1 FROM t1 WHERE pseudo='joce'
+--Result--
+[('joce',), ('testtt',), ('tsestset',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE pseudo1='joce' UNION SELECT * FROM t1 WHERE pseudo='joce' order by pseudo desc,pseudo1 desc
+--Result--
+[('joce', 'tsestset', 1), ('joce', 'testtt', 1), ('dekad', 'joce', 1)]
++--------------------+
+--Query--
+SELECT pseudo1 FROM t1 WHERE pseudo='joce' UNION SELECT pseudo FROM t1 WHERE pseudo1='joce'
+--Result--
+[('testtt',), ('tsestset',), ('dekad',)]
++--------------------+
+--Query--
+SELECT pseudo1 FROM t1 WHERE pseudo='joce' UNION ALL SELECT pseudo FROM t1 WHERE pseudo1='joce'
+--Result--
+[('testtt',), ('tsestset',), ('dekad',)]
++--------------------+
+--Query--
+SELECT pseudo1 FROM t1 WHERE pseudo='joce' UNION SELECT 1
+--Result--
+[('testtt',), ('tsestset',), ('1',)]
++--------------------+
+--Query--
+SELECT 1 AS id_master, 1 AS id, NULL AS text1, 'ABCDE' AS text2 UNION SELECT id_master, t2.id, text1, text2 FROM t1 LEFT JOIN t2 ON t1.id = t2.id_master
+--Result--
+[(1, 1, None, 'ABCDE'), (1, 1, 'foo1', 'bar1'), (1, 2, 'foo2', 'bar2'), (1, 3, None, 'bar3'), (1, 4, 'foo4', 'bar4')]
++--------------------+
+--Query--
+SELECT 1 AS id_master, 1 AS id, 'ABCDE' AS text1, 'ABCDE' AS text2 UNION SELECT id_master, t2.id, text1, text2 FROM t1 LEFT JOIN t2 ON t1.id = t2.id_master
+--Result--
+[(1, 1, 'ABCDE', 'ABCDE'), (1, 1, 'foo1', 'bar1'), (1, 2, 'foo2', 'bar2'), (1, 3, None, 'bar3'), (1, 4, 'foo4', 'bar4')]
++--------------------+
+--Query--
+select A.NAME, A.PHONE, B.NAME, B.PHONE from t1 A left join t1 B on A.NAME = B.NAME and B.IID = 2 where A.IID = 1 and (A.PHONE <> B.PHONE or B.NAME is null) union select A.NAME, A.PHONE, B.NAME, B.PHONE from t1 B left join t1 A on B.NAME = A.NAME and A.IID = 1 where B.IID = 2 and (A.PHONE <> B.PHONE or A.NAME is null)
+--Result--
+[('a', '111', None, None), ('b', '222', None, None), ('d', '444', 'd', '454'), (None, None, 'f', '666'), (None, None, 'g', '777')]
++--------------------+
+--Query--
+select row_format from information_schema.TABLES where table_schema="test" and table_name="t2"
+--Result--
+[]
++--------------------+

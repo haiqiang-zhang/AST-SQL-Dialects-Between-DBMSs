@@ -1,0 +1,215 @@
+--Query--
+select CASE "b" when "a" then 1 when "b" then 2 END
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select CASE "c" when "a" then 1 when "b" then 2 END
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select CASE "c" when "a" then 1 when "b" then 2 ELSE 3 END
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select CASE BINARY "b" when "a" then 1 when "B" then 2 WHEN "b" then "ok" END
+--Result--
+[('ok',)]
++--------------------+
+--Query--
+select CASE "b" when "a" then 1 when binary "B" then 2 WHEN "b" then "ok" END
+--Result--
+[('ok',)]
++--------------------+
+--Query--
+select CASE concat("a","b") when concat("ab","") then "a" when "b" then "b" end
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select CASE when 1=0 then "true" else "false" END
+--Result--
+[('false',)]
++--------------------+
+--Query--
+select CASE 1 when 1 then "one" WHEN 2 then "two" ELSE "more" END
+--Result--
+[('one',)]
++--------------------+
+--Query--
+select CASE 2.0 when 1 then "one" WHEN 2.0 then "two" ELSE "more" END
+--Result--
+[('two',)]
++--------------------+
+--Query--
+select (CASE "two" when "one" then "1" WHEN "two" then "2" END) | 0
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select (CASE "two" when "one" then 1.00 WHEN "two" then 2.00 END) +0.0
+--Result--
+[(2.0,)]
++--------------------+
+--Query--
+select case 1/0 when "a" then "true" else "false" END
+--Result--
+[('false',)]
++--------------------+
+--Query--
+select case 1/0 when "a" then "true" END
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (case 1/0 when "a" then "true" END) | 0
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (case 1/0 when "a" then "true" END) + 0.0
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select case when 1>0 then "TRUE" else "FALSE" END
+--Result--
+[('TRUE',)]
++--------------------+
+--Query--
+select case when 1<0 then "TRUE" else "FALSE" END
+--Result--
+[('FALSE',)]
++--------------------+
+--Query--
+select case a when 1 then 2 when 2 then 3 else 0 end as fcase, count(*) from t1 group by fcase
+--Result--
+[(2, 1), (3, 1), (0, 2)]
++--------------------+
+--Query--
+select max(case col when 1 then val else null end) as color from t1 group by `row`
+--Result--
+[('orange',), ('yellow',), ('green',)]
++--------------------+
+--Query--
+SELECT  CASE _latin1'a' COLLATE latin1_general_ci  WHEN _latin1'A' THEN '1' ELSE 2 END, CASE _latin1'a' COLLATE latin1_bin         WHEN _latin1'A' THEN '1' ELSE 2 END, CASE _latin1'a' WHEN _latin1'A' COLLATE latin1_swedish_ci THEN '1' ELSE 2 END, CASE _latin1'a' WHEN _latin1'A' COLLATE latin1_bin        THEN '1' ELSE 2 END
+--Result--
+[('1', '2', '1', '2')]
++--------------------+
+--Query--
+SELECT 'case+union+test' UNION  SELECT CASE LOWER('1') WHEN LOWER('2') THEN 'BUG' ELSE 'nobug' END
+--Result--
+[('case+union+test',), ('nobug',)]
++--------------------+
+--Query--
+SELECT CASE LOWER('1') WHEN LOWER('2') THEN 'BUG' ELSE 'nobug' END
+--Result--
+[('nobug',)]
++--------------------+
+--Query--
+SELECT 'case+union+test' UNION  SELECT CASE '1' WHEN '2' THEN 'BUG' ELSE 'nobug' END
+--Result--
+[('case+union+test',), ('nobug',)]
++--------------------+
+--Query--
+select min(a), min(case when 1=1 then a else NULL end),   min(case when 1!=1 then NULL else a end)  from t1 where b=3 group by b
+--Result--
+[(2.0, 2.0, 2.0)]
++--------------------+
+--Query--
+SELECT COALESCE(t2.EMPNUM,t1.EMPNUM) AS CEMPNUM,                t1.EMPNUM AS EMPMUM1, t2.EMPNUM AS EMPNUM2   FROM t1 LEFT JOIN t2 ON t1.EMPNUM=t2.EMPNUM
+--Result--
+[(0.0, 0, 0.0), (2.0, 2, None)]
++--------------------+
+--Query--
+SELECT IFNULL(t2.EMPNUM,t1.EMPNUM) AS CEMPNUM,                t1.EMPNUM AS EMPMUM1, t2.EMPNUM AS EMPNUM2   FROM t1 LEFT JOIN t2 ON t1.EMPNUM=t2.EMPNUM
+--Result--
+[(0.0, 0, 0.0), (2.0, 2, None)]
++--------------------+
+--Query--
+select t1.a, (case t1.a when 0 then 0 else t1.b end) d from t1    join t2 on t1.a=t2.c order by d
+--Result--
+[(1, 4.572794622775115e+18), (3, 1.1120436154190596e+19), (2, 1.8196094287899843e+19)]
++--------------------+
+--Query--
+select t1.a, (case t1.a when 0 then 0 else t1.b end) d from t1    join t2 on t1.a=t2.c where b=11120436154190595086 order by d
+--Result--
+[(3, 1.1120436154190596e+19)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=1 AND CASE 1 WHEN a THEN 1 ELSE 1 END
+--Result--
+[]
++--------------------+
+--Query--
+SELECT IF(bt,i8u,i8s) AS u, IF(bf,i8u,i8s) AS s FROM source
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT * FROM target
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT CASE WHEN bt THEN i8u ELSE i8s END AS u,        CASE WHEN bf THEN i8u ELSE i8s END AS s FROM source
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT * FROM target
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT CASE bt WHEN TRUE THEN i8u WHEN FALSE THEN i8s END AS u,        CASE bf WHEN TRUE THEN i8u WHEN FALSE THEN i8s END AS s FROM source
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT * FROM target
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT COALESCE(i8u, i8s) AS u, COALESCE(i8s, i8u) AS s FROM source
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT * FROM target
+--Result--
+[(0.0, -9.223372036854776e+18), (1.8446744073709552e+19, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT HEX(a),        IFNULL(a,a) AS b,        IFNULL(a,a)+0 AS c,        IFNULL(a+0,a+0) AS d,        IFNULL(a+0,a) AS e,        IFNULL(a,a+0) AS f FROM t
+--Result--
+[('0', 48, 0, 0, 0, 0), ('1', 49, 1, 1, 1, 1), ('2', 50, 2, 2, 2, 2), ('3', 51, 3, 3, 3, 3), ('4', 52, 4, 4, 4, 4), ('5', 53, 5, 5, 5, 5), ('6', 54, 6, 6, 6, 6), ('7', 55, 7, 7, 7, 7), ('8', 56, 8, 8, 8, 8), ('9', 57, 9, 9, 9, 9), ('A', 12592, 10, 10, 10, 10), ('B', 12593, 11, 11, 11, 11), ('C', 12594, 12, 12, 12, 12), ('13', 12601, 19, 19, 19, 19), ('14', 12848, 20, 20, 20, 20), ('15', 12849, 21, 21, 21, 21), ('1D', 12857, 29, 29, 29, 29), ('1E', 13104, 30, 30, 30, 30), ('1F', 13105, 31, 31, 31, 31)]
++--------------------+
+--Query--
+SELECT * FROM v0 WHERE c >= 0
+--Result--
+[(1, 1, 1), (2, None, 666)]
++--------------------+
+--Query--
+SELECT CONCAT(IFNULL(t3, d)) AS col1 FROM t1
+--Result--
+[('2024-05-26 00:00:00.567',)]
++--------------------+
+--Query--
+SELECT CONCAT(IFNULL(t3, d)) AS col1 FROM t1 GROUP BY col1
+--Result--
+[('2024-05-26 00:00:00.567',)]
++--------------------+
+--Query--
+SELECT (t1.a,t1.a) IN (('a','c'),('a','b')) END FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT CASE t1.a WHEN 'a' THEN 'c' ELSE 'd' END FROM t1
+--Result--
+[('d',)]
++--------------------+

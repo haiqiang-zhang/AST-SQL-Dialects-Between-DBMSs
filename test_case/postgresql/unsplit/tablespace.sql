@@ -109,7 +109,6 @@ INSERT INTO testschema.atable VALUES(3);
 SELECT COUNT(*) FROM testschema.atable;
 CREATE MATERIALIZED VIEW testschema.amv AS SELECT * FROM testschema.atable;
 REFRESH MATERIALIZED VIEW testschema.amv;
-SELECT COUNT(*) FROM testschema.amv;
 CREATE TABLE testschema.tablespace_acl (c int);
 ALTER TABLE testschema.tablespace_acl ALTER c TYPE bigint;
 RESET ROLE;

@@ -1,0 +1,205 @@
+--Query--
+select 1, 1.0, -1, "hello", NULL
+--Result--
+[(1, 1.0, -1, 'hello', None)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select a b, b c from t1 as t2
+--Result--
+[]
++--------------------+
+--Query--
+select t1.id, t1.data, t2.data from t1, t2 where t1.id = t2.id
+--Result--
+[(1, 'male', 'yes'), (2, 'female', 'no')]
++--------------------+
+--Query--
+select t1.id, t1.data, t2.data from t1, t2 where t1.id = t2.id order by t1.id
+--Result--
+[(1, 'male', 'yes'), (2, 'female', 'no')]
++--------------------+
+--Query--
+select t1.id from t1 union select t2.id from t2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select @arg00 FROM t1 where a=1 union distinct select 1 FROM t1 where a=1
+--Result--
+[(None,), ('1',)]
++--------------------+
+--Query--
+select * from (select @arg00) aaa
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 1 union select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from (select 1 union select 1) aaa
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1 where i = 2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select a.* from (select 2147483648 as v_large) a
+--Result--
+[(2147483648,)]
++--------------------+
+--Query--
+select a.* from (select 214748364 as v_small) a
+--Result--
+[(214748364,)]
++--------------------+
+--Query--
+SELECT v1.c1 FROM v1 JOIN t2 ON c1=c2 ORDER BY 1
+--Result--
+[('1',), ('2',), ('2',), ('3',)]
++--------------------+
+--Query--
+SELECT v1.c1, v2.c2 FROM v1 JOIN v2 ON c1=c2
+--Result--
+[('1', '1'), ('2', '2'), ('3', '3'), ('2', '2')]
++--------------------+
+--Query--
+SELECT v1.c1, v2.c2 FROM v1 JOIN v2 ON c1=c2 GROUP BY v1.c1
+--Result--
+[('1', '1'), ('2', '2'), ('3', '3')]
++--------------------+
+--Query--
+SELECT v1.c1, v2.c2 FROM v1 JOIN v2 ON c1=c2 GROUP BY v1.c1 ORDER BY v2.c2
+--Result--
+[('1', '1'), ('2', '2'), ('3', '3')]
++--------------------+
+--Query--
+SELECT f1 FROM v1 va
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT f1 FROM t1) AS dt
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT f1 FROM (SELECT f1 FROM t1) AS dt1) AS dt2
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT t1.f1 AS a, t2.f1 AS b, t1.f1+t2.f1 AS d FROM t1 JOIN t1 AS t2) AS dt
+--Result--
+[(10, 10, 20)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT DISTINCT f1 FROM t1) AS dt
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT DISTINCT t1.f1+t2.f1 AS d FROM t1 JOIN t1 AS t2) AS dt
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(10, 'A')]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM v1) AS dt
+--Result--
+[(10, 'A')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM v2) AS dt
+--Result--
+[(10,)]
++--------------------+
+--Query--
+select a as d from t limit 1
+--Result--
+[]
++--------------------+
+--Query--
+select * from (select a as d, 2*a as two from t) dt
+--Result--
+[]
++--------------------+
+--Query--
+select d, two from (select a as d, 2*a as two from t) dt
+--Result--
+[]
++--------------------+
+--Query--
+select d as e, two as f from (select a as d, 2*a as two from t) dt
+--Result--
+[]
++--------------------+
+--Query--
+select * from v
+--Result--
+[]
++--------------------+
+--Query--
+select d, two from v
+--Result--
+[]
++--------------------+
+--Query--
+select d as e, two as f from v
+--Result--
+[]
++--------------------+
+--Query--
+select * from (select a as d, 2*a as two from t) dt
+--Result--
+[]
++--------------------+
+--Query--
+select d from (select a as d, 2*a as two from t) dt
+--Result--
+[]
++--------------------+
+--Query--
+select d as e from (select a as d, 2*a as two from t) dt
+--Result--
+[]
++--------------------+
+--Query--
+select * from v
+--Result--
+[]
++--------------------+
+--Query--
+select d, two from v
+--Result--
+[]
++--------------------+
+--Query--
+select d as e, two as f from v
+--Result--
+[]
++--------------------+

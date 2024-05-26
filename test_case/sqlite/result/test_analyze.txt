@@ -1,0 +1,245 @@
+--Query--
+SELECT count(*) FROM sqlite_master WHERE name='sqlite_stat1'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1 WHERE idx NOT NULL
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE main
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1 WHERE idx NOT NULL
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE main.t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE main.t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE main
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE main.t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '2 2'), ('t1i2', '2 1'), ('t1i3', '2 2 1')]
++--------------------+
+--Query--
+ANALYZE t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '4 4'), ('t1i2', '4 1'), ('t1i3', '4 4 1')]
++--------------------+
+--Query--
+ANALYZE main
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '5 3'), ('t1i2', '5 2'), ('t1i3', '5 3 1')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '5 3'), ('t1i2', '5 2'), ('t1i3', '5 3 1'), ('t2i1', '5 3'), ('t2i2', '5 2'), ('t2i3', '5 3 1')]
++--------------------+
+--Query--
+ANALYZE t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '5 3'), ('t1i2', '5 2'), ('t1i3', '5 3 1'), ('t2i1', '5 3'), ('t2i2', '5 2')]
++--------------------+
+--Query--
+ANALYZE t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '5 3'), ('t1i2', '5 2'), ('t1i3', '5 3 1'), ('t2i1', '5 3'), ('t2i2', '5 2')]
++--------------------+
+--Query--
+ANALYZE t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1i1', '5 3'), ('t1i2', '5 2'), ('t1i3', '5 3 1'), ('t2i1', '5 3')]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t3i1', '5 3'), ('t3i2', '5 3 1 1 1'), ('t3i3', '5 5 2 1 1')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[("another foolish ' name", '2 1'), ("foolish ' name", '2 1 1'), ('t3i1', '5 3'), ('t3i2', '5 3 1 1 1'), ('t3i3', '5 5 2 1 1')]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[("another foolish ' name", '2 1'), ('t3i1', '5 3'), ('t3i2', '5 3 1 1 1'), ('t3i3', '5 5 2 1 1')]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t3i1', '5 3'), ('t3i2', '5 3 1 1 1'), ('t3i3', '5 5 2 1 1')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t3i1', '5 3'), ('t3i2', '5 3 1 1 1'), ('t3i3', '5 5 2 1 1')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT idx FROM sqlite_stat1 ORDER BY 1
+--Result--
+[('t3i1',), ('t3i2',), ('t3i3',)]
++--------------------+
+--Query--
+SELECT DISTINCT tbl FROM sqlite_stat1 ORDER BY 1
+--Result--
+[('t3',)]
++--------------------+
+--Query--
+SELECT DISTINCT idx FROM sqlite_stat1 ORDER BY 1
+--Result--
+[('t3i1',), ('t3i3',)]
++--------------------+
+--Query--
+SELECT DISTINCT tbl FROM sqlite_stat1 ORDER BY 1
+--Result--
+[('t3',)]
++--------------------+
+--Query--
+SELECT DISTINCT idx FROM sqlite_stat1 ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT tbl FROM sqlite_stat1 ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tbl FROM sqlite_stat1 WHERE idx IS NULL ORDER BY tbl
+--Result--
+[('SQLiteDemo2',), ('sqliteDemo',), ('t1',)]
++--------------------+

@@ -1,0 +1,180 @@
+--Query--
+SELECT @@transaction_isolation
+--Result--
+[('REPEATABLE-READ',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT @@transaction_isolation
+--Result--
+[('REPEATABLE-READ',)]
++--------------------+
+--Query--
+SELECT @@transaction_isolation
+--Result--
+[('REPEATABLE-READ',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1000,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE s1 = 1001
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1000,), (1001,), (1002,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1001,), (1002,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE s1 >= 1000
+--Result--
+[(1001,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE s1 >= 1000
+--Result--
+[(1001,), (1002,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE s1 >= 1000
+--Result--
+[(1001,), (1002,), (1003,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1001,), (1002,), (1003,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE s1 >= 1000
+--Result--
+[(1001,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE s1 >= 1000
+--Result--
+[(1001,), (1002,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE s1 >= 1000
+--Result--
+[(1001,), (1002,), (1003,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1001,), (1002,), (1003,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1000,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1000,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (-1,), (1000,), (1001,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT only FROM t1 WHERE only = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@transaction_read_only
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@autocommit
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+

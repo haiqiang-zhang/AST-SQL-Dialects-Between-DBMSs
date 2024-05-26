@@ -1,0 +1,275 @@
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='abcde     '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcde     '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='xyzzy'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy'
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy  '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy   '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy    '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy                                  '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT 'abc123'='abc123                         ' COLLATE RTRIM
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc123                         '='abc123' COLLATE RTRIM
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '  '='' COLLATE RTRIM, '  '='' COLLATE BINARY, '  '=''
+--Result--
+[(1, 0, 0)]
++--------------------+
+--Query--
+SELECT ''='  ' COLLATE RTRIM, ''='  ' COLLATE BINARY, ''='  '
+--Result--
+[(1, 0, 0)]
++--------------------+
+--Query--
+SELECT '  '='      ' COLLATE RTRIM, '  '='        '
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+SELECT ''<>'  ' COLLATE RTRIM, ''<>'  ' COLLATE BINARY, ''<>'  '
+--Result--
+[(0, 1, 1)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzz'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzyy   '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzz   '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcd   '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcd'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abc'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcdef    '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c=''
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c=' '
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='                    '
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='abcde     '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcde     '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='xyzzy'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy'
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy  '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy   '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy    '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy                                  '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzz'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzyy   '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzz   '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcd   '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcd'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abc'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcdef    '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c=''
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c=' '
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='                    '
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+REINDEX
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='abcde     '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='abcde     '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='xyzzy'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy'
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy  '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy   '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy    '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE c='xyzzy                                  '
+--Result--
+[(2,), (3,), (4,)]
++--------------------+

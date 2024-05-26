@@ -1,0 +1,20 @@
+--Query--
+SELECT quantileExactWeighted(0.5)(number, 1) FROM (SELECT number FROM system.numbers LIMIT 1001)
+--Result--
+[(500,)]
++--------------------+
+--Query--
+SELECT quantilesExactWeighted(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999, 1)(number, 1) FROM (SELECT number FROM system.numbers LIMIT 1001)
+--Result--
+[([0, 1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 990, 999, 1000],)]
++--------------------+
+--Query--
+SELECT quantileTimingWeighted(0.5)(number, 1) FROM (SELECT number FROM system.numbers LIMIT 1001)
+--Result--
+[(500.0,)]
++--------------------+
+--Query--
+SELECT quantilesTimingWeighted(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999, 1)(number, 1) FROM (SELECT number FROM system.numbers LIMIT 1001)
+--Result--
+[([0.0, 1.0, 10.0, 50.0, 100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 950.0, 990.0, 999.0, 1000.0],)]
++--------------------+

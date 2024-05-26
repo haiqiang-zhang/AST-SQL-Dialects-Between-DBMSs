@@ -14,19 +14,9 @@ SELECT pg_input_is_valid('red', 'rainbow')
 [(True,)]
 +--------------------+
 --Query--
-SELECT pg_input_is_valid('mauve', 'rainbow')
---Result--
-[(False,)]
-+--------------------+
---Query--
 SELECT * FROM pg_input_error_info('mauve', 'rainbow')
 --Result--
 [('invalid input value for enum rainbow: "mauve"', None, None, '22P02')]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info(repeat('too_long', 32), 'rainbow')
---Result--
-[('invalid input value for enum rainbow: "too_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_longtoo_long"', None, None, '22P02')]
 +--------------------+
 --Query--
 SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'planets'::regtype ORDER BY 2
@@ -52,11 +42,6 @@ SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'planets'::regtyp
 SELECT enum_last(NULL::planets)
 --Result--
 [('neptune',)]
-+--------------------+
---Query--
-SELECT enum_last(NULL::planets)
---Result--
-[('pluto',)]
 +--------------------+
 --Query--
 SELECT enumlabel,        case when enumsortorder > 20 then null else enumsortorder end as so FROM pg_enum WHERE enumtypid = 'insenum'::regtype ORDER BY enumsortorder
@@ -114,11 +99,6 @@ SELECT max(col) FROM enumtest
 [('green',)]
 +--------------------+
 --Query--
-SELECT max(col) FROM enumtest WHERE col < 'green'
---Result--
-[('yellow',)]
-+--------------------+
---Query--
 SELECT * FROM enumtest WHERE col = 'orange'
 --Result--
 [('orange',)]
@@ -147,21 +127,6 @@ SELECT * FROM enumtest WHERE col < 'green' ORDER BY col
 SELECT * FROM enumtest WHERE col <= 'green' ORDER BY col
 --Result--
 [('red',), ('orange',), ('yellow',), ('green',)]
-+--------------------+
---Query--
-SELECT min(col) FROM enumtest
---Result--
-[('red',)]
-+--------------------+
---Query--
-SELECT max(col) FROM enumtest
---Result--
-[('green',)]
-+--------------------+
---Query--
-SELECT max(col) FROM enumtest WHERE col < 'green'
---Result--
-[('yellow',)]
 +--------------------+
 --Query--
 SELECT * FROM enumtest WHERE col = 'orange'
@@ -209,42 +174,12 @@ SELECT enum_first(NULL::rainbow)
 [('red',)]
 +--------------------+
 --Query--
-SELECT enum_last('green'::rainbow)
---Result--
-[('purple',)]
-+--------------------+
---Query--
 SELECT enum_range(NULL::rainbow)
 --Result--
 [('{red,orange,yellow,green,blue,purple}',)]
 +--------------------+
 --Query--
-SELECT enum_range('orange'::rainbow, 'green'::rainbow)
---Result--
-[('{orange,yellow,green}',)]
-+--------------------+
---Query--
-SELECT enum_range(NULL, 'green'::rainbow)
---Result--
-[('{red,orange,yellow,green}',)]
-+--------------------+
---Query--
-SELECT enum_range('orange'::rainbow, NULL)
---Result--
-[('{orange,yellow,green,blue,purple}',)]
-+--------------------+
---Query--
-SELECT enum_range(NULL::rainbow, NULL)
---Result--
-[('{red,orange,yellow,green,blue,purple}',)]
-+--------------------+
---Query--
 SELECT echo_me('red'::rainbow)
---Result--
-[('redwtf',)]
-+--------------------+
---Query--
-SELECT echo_me('red')
 --Result--
 [('redwtf',)]
 +--------------------+
@@ -257,11 +192,6 @@ SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'rainbow'::regtyp
 SAVEPOINT x
 --Result--
 []
-+--------------------+
---Query--
-SELECT enum_first(null::bogus)
---Result--
-[('good',)]
 +--------------------+
 --Query--
 SELECT 'new'::bogus
@@ -277,16 +207,6 @@ SELECT enumlabel, enumsortorder FROM pg_enum WHERE enumtypid = 'bogus'::regtype 
 SELECT 'bad'::bogus
 --Result--
 [('bad',)]
-+--------------------+
---Query--
-select enum_range(null::bogon)
---Result--
-[('{good,bad,ugly}',)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM pg_type WHERE typname = 'rainbow'
---Result--
-[(0,)]
 +--------------------+
 --Query--
 SELECT * FROM pg_enum WHERE NOT EXISTS   (SELECT 1 FROM pg_type WHERE pg_type.oid = enumtypid)

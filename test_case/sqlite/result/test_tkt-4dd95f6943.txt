@@ -1,0 +1,1480 @@
+--Query--
+SELECT x FROM t1 WHERE x IN(2, 4, 5) ORDER BY x ASC
+--Result--
+[(2,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN(2, 4, 5) ORDER BY x DESC
+--Result--
+[(5,), (4,), (2,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN(2, 4, 5) ORDER BY x ASC
+--Result--
+[(2,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x IN(2, 4, 5) ORDER BY x DESC
+--Result--
+[(5,), (4,), (2,)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (2, 4, 5) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (2, 4, 5) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (2, 4, 5) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (2, 4, 5) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (2, 4, 5)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (2, 4, 5)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT a FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT a FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT a FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 1 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y ASC
+--Result--
+[(1, 2), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 2 AND y IN (SELECT b FROM t3) ORDER BY x ASC, y DESC
+--Result--
+[(2, 5), (2, 4), (2, 2)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 3 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y ASC
+--Result--
+[(3, 2), (3, 4), (3, 5)]
++--------------------+
+--Query--
+SELECT x, y FROM t2 WHERE x = 4 AND y IN (SELECT b FROM t3) ORDER BY x DESC, y DESC
+--Result--
+[(4, 5), (4, 4), (4, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x ASC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x ASC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y ASC
+--Result--
+[(4, 1, 2), (4, 1, 4), (4, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y ASC
+--Result--
+[(2, 1, 2), (2, 1, 4), (2, 1, 5)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 4 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY a, x DESC, y DESC
+--Result--
+[(4, 1, 5), (4, 1, 4), (4, 1, 2)]
++--------------------+
+--Query--
+SELECT a, x, y FROM t2, t3 WHERE a = 2 AND x = 1 AND y IN (SELECT b FROM t3)        ORDER BY x DESC, y DESC
+--Result--
+[(2, 1, 5), (2, 1, 4), (2, 1, 2)]
++--------------------+
+--Query--
+SELECT x FROM t7 WHERE x IN (SELECT y FROM t8) ORDER BY x ASC
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t7 WHERE x IN (SELECT y FROM t8) ORDER BY x DESC
+--Result--
+[(3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT x FROM t7 WHERE x IN (SELECT y FROM t8) ORDER BY x ASC
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t7 WHERE x IN (SELECT y FROM t8) ORDER BY x DESC
+--Result--
+[(3,), (2,), (1,)]
++--------------------+

@@ -1,12 +1,6 @@
 DROP TABLE IF EXISTS null_;
 DROP TABLE IF EXISTS buffer_;
 DROP TABLE IF EXISTS aggregation_;
-
--- Use LIMIT max_rows+1 to force flush from the query context, and to avoid
--- flushing from the background thread, since in this case it can steal memory
--- the max_memory_usage may be exceeded during squashing other blocks.
-
-
 CREATE TABLE null_ (key UInt64) Engine=Null();
 CREATE TABLE buffer_ (key UInt64) Engine=Buffer(currentDatabase(), null_,
     1,    /* num_layers */
@@ -23,7 +17,6 @@ SET max_insert_threads=1;
 SET min_insert_block_size_bytes=9e6;
 SET min_insert_block_size_rows=0;
 OPTIMIZE TABLE buffer_;
-
 CREATE MATERIALIZED VIEW aggregation_ engine=Memory() AS SELECT toString(key) FROM null_;
 SET min_insert_block_size_bytes=0;
 SET min_insert_block_size_rows=100e3;

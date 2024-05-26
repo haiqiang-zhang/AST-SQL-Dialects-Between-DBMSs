@@ -1,0 +1,50 @@
+--Query--
+select toUInt8(x) from values('x Nullable(String)', '42', NULL, '0', '', '256')
+--Result--
+[(42,), (None,), (0,), (None,), (None,)]
++--------------------+
+--Query--
+select toInt64(x) from values('x Nullable(String)', '42', NULL, '0', '', '256')
+--Result--
+[(42,), (None,), (0,), (None,), (256,)]
++--------------------+
+--Query--
+select toDate(x) from values('x Nullable(String)', '2020-12-24', NULL, '0000-00-00', '', '9999-01-01')
+--Result--
+[(datetime.date(2020, 12, 24),), (None,), (datetime.date(1970, 1, 1),), (None,), (datetime.date(2149, 6, 6),)]
++--------------------+
+--Query--
+select toDateTime(x, 'Asia/Istanbul') from values('x Nullable(String)', '2020-12-24 01:02:03', NULL, '0000-00-00 00:00:00', '')
+--Result--
+[(datetime.datetime(2020, 12, 24, 1, 2, 3, tzinfo=<DstTzInfo 'Asia/Istanbul' +03+3:00:00 STD>),), (None,), (datetime.datetime(1970, 1, 1, 2, 0, tzinfo=<DstTzInfo 'Asia/Istanbul' EET+2:00:00 STD>),), (None,)]
++--------------------+
+--Query--
+select toDateTime64(x, 2, 'Asia/Istanbul') from values('x Nullable(String)', '2020-12-24 01:02:03', NULL, '0000-00-00 00:00:00', '')
+--Result--
+[(datetime.datetime(2020, 12, 24, 1, 2, 3, tzinfo=<DstTzInfo 'Asia/Istanbul' +03+3:00:00 STD>),), (None,), (datetime.datetime(1970, 1, 1, 2, 0, tzinfo=<DstTzInfo 'Asia/Istanbul' EET+2:00:00 STD>),), (datetime.datetime(1970, 1, 1, 2, 0, tzinfo=<DstTzInfo 'Asia/Istanbul' EET+2:00:00 STD>),)]
++--------------------+
+--Query--
+select toUnixTimestamp(x, 'Asia/Istanbul') from values ('x Nullable(String)', '2000-01-01 13:12:12', NULL, '')
+--Result--
+[(946725132,), (None,), (None,)]
++--------------------+
+--Query--
+select toDecimal32(x, 2) from values ('x Nullable(String)', '42', NULL, '3.14159')
+--Result--
+[(42.0,), (None,), (3.14,)]
++--------------------+
+--Query--
+select toDecimal64(x, 8) from values ('x Nullable(String)', '42', NULL, '3.14159')
+--Result--
+[(42.0,), (None,), (3.14159,)]
++--------------------+
+--Query--
+select toString(x) from values ('x Nullable(String)', '42', NULL, 'test')
+--Result--
+[('42',), (None,), ('test',)]
++--------------------+
+--Query--
+select toFixedString(x, 8) from values ('x Nullable(String)', '42', NULL, 'test')
+--Result--
+[('42',), (None,), ('test',)]
++--------------------+

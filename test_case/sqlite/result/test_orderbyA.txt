@@ -1,0 +1,10 @@
+--Query--
+EXPLAIN QUERY PLAN      SELECT a, sum(b) FROM t1 GROUP BY a ORDER BY a
+--Result--
+[(7, 0, 0, 'SCAN t1'), (9, 0, 0, 'USE TEMP B-TREE FOR GROUP BY')]
++--------------------+
+--Query--
+SELECT a, sum(b) FROM t1 GROUP BY a ORDER BY a
+--Result--
+[('one', 6), ('three', 24), ('two', 15)]
++--------------------+

@@ -1,0 +1,90 @@
+--Query--
+SELECT '-- key rename'
+--Result--
+[('-- key rename',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT k as key FROM t2) as t2 INNER JOIN rdb ON rdb.key == t2.key ORDER BY key
+--Result--
+[(0, 0, [0, 1], 'val20'), (2, 2, [2, 3], 'val22'), (3, 3, [3, 4], 'val23'), (6, 6, [6, 7], 'val26'), (7, 7, [7, 8], 'val27'), (8, 8, [8, 9], 'val28'), (9, 9, [9, 10], 'val29')]
++--------------------+
+--Query--
+SELECT '-- using'
+--Result--
+[('-- using',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT k as key FROM t2) as t2 INNER JOIN rdb USING key ORDER BY key
+--Result--
+[(0, [0, 1], 'val20'), (2, [2, 3], 'val22'), (3, [3, 4], 'val23'), (6, [6, 7], 'val26'), (7, [7, 8], 'val27'), (8, [8, 9], 'val28'), (9, [9, 10], 'val29')]
++--------------------+
+--Query--
+SELECT '-- left semi'
+--Result--
+[('-- left semi',)]
++--------------------+
+--Query--
+SELECT k FROM t2 LEFT SEMI JOIN rdb ON rdb.key == t2.k ORDER BY k
+--Result--
+[(0,), (2,), (3,), (6,), (7,), (8,), (9,)]
++--------------------+
+--Query--
+SELECT '-- left anti'
+--Result--
+[('-- left anti',)]
++--------------------+
+--Query--
+SELECT k FROM t2 LEFT ANTI JOIN rdb ON rdb.key == t2.k ORDER BY k
+--Result--
+[(1,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT '-- join_use_nulls left'
+--Result--
+[('-- join_use_nulls left',)]
++--------------------+
+--Query--
+SELECT k, key, toTypeName(value2), value2 FROM t2 LEFT JOIN rdb ON rdb.key == t2.k ORDER BY k SETTINGS join_use_nulls = 1
+--Result--
+[(0, 0, 'Nullable(String)', 'val20'), (1, None, 'Nullable(String)', None), (2, 2, 'Nullable(String)', 'val22'), (3, 3, 'Nullable(String)', 'val23'), (4, None, 'Nullable(String)', None), (5, None, 'Nullable(String)', None), (6, 6, 'Nullable(String)', 'val26'), (7, 7, 'Nullable(String)', 'val27'), (8, 8, 'Nullable(String)', 'val28'), (9, 9, 'Nullable(String)', 'val29')]
++--------------------+
+--Query--
+SELECT '-- join_use_nulls inner'
+--Result--
+[('-- join_use_nulls inner',)]
++--------------------+
+--Query--
+SELECT '-- columns subset'
+--Result--
+[('-- columns subset',)]
++--------------------+
+--Query--
+SELECT value2 FROM t2 LEFT JOIN rdb ON rdb.key == t2.k ORDER BY k
+--Result--
+[('val20',), ('',), ('val22',), ('val23',), ('',), ('',), ('val26',), ('val27',), ('val28',), ('val29',)]
++--------------------+
+--Query--
+SELECT '--- key types'
+--Result--
+[('--- key types',)]
++--------------------+
+--Query--
+SELECT * FROM t2 INNER JOIN rdb ON rdb.key == t2.k ORDER BY rdb.key
+--Result--
+[(0, 0, [0, 1], 'val20'), (2, 2, [2, 3], 'val22'), (3, 3, [3, 4], 'val23'), (6, 6, [6, 7], 'val26'), (7, 7, [7, 8], 'val27'), (8, 8, [8, 9], 'val28'), (9, 9, [9, 10], 'val29')]
++--------------------+
+--Query--
+SELECT '--- totals'
+--Result--
+[('--- totals',)]
++--------------------+
+--Query--
+SELECT rdb.key % 2, sum(k), max(value2) FROM t2 INNER JOIN rdb ON rdb.key == t2.k GROUP BY (rdb.key % 2) WITH TOTALS
+--Result--
+[(0, 16, 'val28'), (1, 19, 'val29'), (0, 35, 'val29')]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+

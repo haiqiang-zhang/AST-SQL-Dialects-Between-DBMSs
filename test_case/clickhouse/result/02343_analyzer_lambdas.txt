@@ -1,0 +1,80 @@
+--Query--
+SELECT 'Standalone lambdas'
+--Result--
+[('Standalone lambdas',)]
++--------------------+
+--Query--
+WITH x -> x + 1 AS lambda SELECT lambda(1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+WITH x -> toString(x) AS lambda_1, lambda_1 AS lambda_2, lambda_2 AS lambda_3 SELECT lambda_1(1), lambda_2(NULL), lambda_3([1,2,3])
+--Result--
+[('1', None, '[1,2,3]')]
++--------------------+
+--Query--
+SELECT 'Lambda as function parameter'
+--Result--
+[('Lambda as function parameter',)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> x + 1, [1,2,3])
+--Result--
+[([2, 3, 4],)]
++--------------------+
+--Query--
+WITH x -> x + 1 AS lambda SELECT arrayMap(lambda, [1,2,3])
+--Result--
+[([2, 3, 4],)]
++--------------------+
+--Query--
+SELECT 'Lambda compound argument'
+--Result--
+[('Lambda compound argument',)]
++--------------------+
+--Query--
+SELECT 'Lambda matcher'
+--Result--
+[('Lambda matcher',)]
++--------------------+
+--Query--
+WITH cast(tuple(1), 'Tuple (value UInt64)') AS compound_value SELECT id, test_table.* APPLY x -> compound_value.* FROM test_table
+--Result--
+[(0, 1, 1)]
++--------------------+
+--Query--
+WITH cast(tuple(1, 1), 'Tuple (value_1 UInt64, value_2 UInt64)') AS compound_value SELECT id, test_table.* APPLY x -> plus(compound_value.*) FROM test_table
+--Result--
+[(0, 2, 2)]
++--------------------+
+--Query--
+SELECT 'Lambda untuple'
+--Result--
+[('Lambda untuple',)]
++--------------------+
+--Query--
+SELECT 'Lambda carrying'
+--Result--
+[('Lambda carrying',)]
++--------------------+
+--Query--
+SELECT 'Lambda legacy syntax'
+--Result--
+[('Lambda legacy syntax',)]
++--------------------+
+--Query--
+SELECT arraySort(lambda((x, y), y), ['world', 'hello'], [2, 1])
+--Result--
+[(['hello', 'world'],)]
++--------------------+
+--Query--
+WITH x -> x + 1 AS lambda SELECT arrayMap(lambda(tuple(x), x + 1), [1, 2, 3]), lambda(1)
+--Result--
+[([2, 3, 4], 2)]
++--------------------+
+--Query--
+WITH (x, y) -> y AS lambda2 SELECT arrayMap(lambda(tuple(x), x + 1), [1, 2, 3]), lambda2(tuple(x), x + 1), 1 AS x
+--Result--
+[([2, 3, 4], 2, 1)]
++--------------------+

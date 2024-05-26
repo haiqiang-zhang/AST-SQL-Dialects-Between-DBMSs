@@ -9,29 +9,9 @@ SELECT pg_input_is_valid('42', 'xid')
 [(True,)]
 +--------------------+
 --Query--
-SELECT pg_input_is_valid('asdf', 'xid')
---Result--
-[(False,)]
-+--------------------+
---Query--
 SELECT * FROM pg_input_error_info('0xffffffffff', 'xid')
 --Result--
 [('value "0xffffffffff" is out of range for type xid', None, None, '22003')]
-+--------------------+
---Query--
-SELECT pg_input_is_valid('42', 'xid8')
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT pg_input_is_valid('asdf', 'xid8')
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info('0xffffffffffffffffffff', 'xid8')
---Result--
-[('value "0xffffffffffffffffffff" is out of range for type xid8', None, None, '22003')]
 +--------------------+
 --Query--
 select '1'::xid = '1'::xid
@@ -109,31 +89,6 @@ select '12:16:14,14'::pg_snapshot
 [('12:16:14',)]
 +--------------------+
 --Query--
-select pg_input_is_valid('12:13:', 'pg_snapshot')
---Result--
-[(True,)]
-+--------------------+
---Query--
-select pg_input_is_valid('31:12:', 'pg_snapshot')
---Result--
-[(False,)]
-+--------------------+
---Query--
-select * from pg_input_error_info('31:12:', 'pg_snapshot')
---Result--
-[('invalid input syntax for type pg_snapshot: "31:12:"', None, None, '22P02')]
-+--------------------+
---Query--
-select pg_input_is_valid('12:16:14,13', 'pg_snapshot')
---Result--
-[(False,)]
-+--------------------+
---Query--
-select * from pg_input_error_info('12:16:14,13', 'pg_snapshot')
---Result--
-[('invalid input syntax for type pg_snapshot: "12:16:14,13"', None, None, '22P02')]
-+--------------------+
---Query--
 select snap from snapshot_test order by nr
 --Result--
 [('12:13:',), ('12:20:13,15,18',), ('100001:100009:100005,100007,100008',), ('100:150:101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131',)]
@@ -149,34 +104,14 @@ select id, pg_visible_in_snapshot(id::text::xid8, snap) from snapshot_test, gene
 [(11, True), (12, True), (13, False), (14, True), (15, False), (16, True), (17, True), (18, False), (19, True), (20, False), (21, False)]
 +--------------------+
 --Query--
-select id, pg_visible_in_snapshot(id::text::xid8, snap) from snapshot_test, generate_series(90, 160) id where nr = 4
---Result--
-[(90, True), (91, True), (92, True), (93, True), (94, True), (95, True), (96, True), (97, True), (98, True), (99, True), (100, True), (101, False), (102, False), (103, False), (104, False), (105, False), (106, False), (107, False), (108, False), (109, False), (110, False), (111, False), (112, False), (113, False), (114, False), (115, False), (116, False), (117, False), (118, False), (119, False), (120, False), (121, False), (122, False), (123, False), (124, False), (125, False), (126, False), (127, False), (128, False), (129, False), (130, False), (131, False), (132, True), (133, True), (134, True), (135, True), (136, True), (137, True), (138, True), (139, True), (140, True), (141, True), (142, True), (143, True), (144, True), (145, True), (146, True), (147, True), (148, True), (149, True), (150, False), (151, False), (152, False), (153, False), (154, False), (155, False), (156, False), (157, False), (158, False), (159, False), (160, False)]
-+--------------------+
---Query--
 select pg_current_xact_id() >= pg_snapshot_xmin(pg_current_snapshot())
 --Result--
 [(True,)]
 +--------------------+
 --Query--
-select pg_visible_in_snapshot(pg_current_xact_id(), pg_current_snapshot())
---Result--
-[(False,)]
-+--------------------+
---Query--
 select pg_snapshot '1000100010001000:1000100010001100:1000100010001012,1000100010001013'
 --Result--
 [('1000100010001000:1000100010001100:1000100010001012,1000100010001013',)]
-+--------------------+
---Query--
-select pg_visible_in_snapshot('1000100010001012', '1000100010001000:1000100010001100:1000100010001012,1000100010001013')
---Result--
-[(False,)]
-+--------------------+
---Query--
-select pg_visible_in_snapshot('1000100010001015', '1000100010001000:1000100010001100:1000100010001012,1000100010001013')
---Result--
-[(True,)]
 +--------------------+
 --Query--
 SELECT pg_snapshot '1:9223372036854775807:3'

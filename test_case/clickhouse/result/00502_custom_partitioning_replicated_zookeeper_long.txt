@@ -1,0 +1,165 @@
+--Query--
+SELECT '*** Not partitioned ***'
+--Result--
+[('*** Not partitioned ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'not_partitioned_replica1_00502' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'not_partitioned_replica2_00502' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Sum before DETACH PARTITION:'
+--Result--
+[('Sum before DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DETACH PARTITION:'
+--Result--
+[('Sum after DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Partitioned by week ***'
+--Result--
+[('*** Partitioned by week ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_week_replica1' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_week_replica2' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Sum before DROP PARTITION:'
+--Result--
+[('Sum before DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DROP PARTITION:'
+--Result--
+[('Sum after DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Partitioned by a (Date, UInt8) tuple ***'
+--Result--
+[('*** Partitioned by a (Date, UInt8) tuple ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_tuple_replica1_00502' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_tuple_replica2_00502' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Sum before DETACH PARTITION:'
+--Result--
+[('Sum before DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DETACH PARTITION:'
+--Result--
+[('Sum after DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Partitioned by String ***'
+--Result--
+[('*** Partitioned by String ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_string_replica1' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_string_replica2' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Sum before DROP PARTITION:'
+--Result--
+[('Sum before DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DROP PARTITION:'
+--Result--
+[('Sum after DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Table without columns with fixed size ***'
+--Result--
+[('*** Table without columns with fixed size ***',)]
++--------------------+
+--Query--
+SELECT 'Parts:'
+--Result--
+[('Parts:',)]
++--------------------+
+--Query--
+SELECT partition, name, rows FROM system.parts WHERE database = currentDatabase() AND table = 'without_fixed_size_columns_replica2' AND active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Before DROP PARTITION:'
+--Result--
+[('Before DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'After DROP PARTITION:'
+--Result--
+[('After DROP PARTITION:',)]
++--------------------+

@@ -1,0 +1,25 @@
+--Query--
+SELECT CONNECTION_ID() INTO @id1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT variable_value FROM performance_schema.global_status WHERE variable_name='connections' INTO @id3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (@id1=@id2)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (@id2=@id3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (@id3=@id4)
+--Result--
+[(None,)]
++--------------------+

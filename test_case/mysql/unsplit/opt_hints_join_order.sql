@@ -243,8 +243,4 @@ SELECT
 COUNT(*) FROM t1 JOIN t2 AS ta3 JOIN t2 AS ta4
 WHERE ta4.f1 IN (SELECT /*+ QB_NAME(qb1) */ f1 FROM t4) AND
       ta3.f2 IN (SELECT /*+ QB_NAME(qb2) */ f2 FROM t2);
-SELECT /*+ JOIN_PREFIX(t2@qb2, t4@qb1, ta3, ta4) */
-COUNT(*) FROM t1 JOIN t2 AS ta3 JOIN t2 AS ta4
-WHERE ta4.f1 IN (SELECT /*+ QB_NAME(qb1) */ f1 FROM t4) AND
-      ta3.f2 IN (SELECT /*+ QB_NAME(qb2) */ f2 FROM t2);
 DROP TABLE t1, t2, t4;

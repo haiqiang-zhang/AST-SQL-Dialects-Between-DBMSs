@@ -1,0 +1,45 @@
+--Query--
+SELECT toDecimal128('1234567890', 28) AS x, toDecimal128(x, 29), toDecimal128(toDecimal128('1234567890', 28), 29)
+--Result--
+[(1234567890.0, 1234567890.0, 1234567890.0)]
++--------------------+
+--Query--
+SELECT toDecimal64('1234567890', 8) AS x, toDecimal64(x, 9), toDecimal64(toDecimal64('1234567890', 8), 9)
+--Result--
+[(1234567890.0, 1234567890.0, 1234567890.0)]
++--------------------+
+--Query--
+SELECT toDecimal32('12345678', 1) AS x, toDecimal32(x, 2), toDecimal32(toDecimal32('12345678', 1), 2)
+--Result--
+[(12345678.0, 12345678.0, 12345678.0)]
++--------------------+
+--Query--
+SELECT toDecimal128('9223372036854775807', 6) AS x, toInt64(x), toInt64(-x)
+--Result--
+[(9.223372036854776e+18, 9223372036854775807, -9223372036854775807)]
++--------------------+
+--Query--
+SELECT toDecimal128('2147483647', 10) AS x, toInt32(x), toInt32(-x)
+--Result--
+[(2147483647.0, 2147483647, -2147483647)]
++--------------------+
+--Query--
+SELECT toDecimal128('-0.9', 8) AS x, toUInt64(x)
+--Result--
+[(-0.9, 0)]
++--------------------+
+--Query--
+SELECT toDecimal128('-0.8', 4) AS x, toUInt32(x)
+--Result--
+[(-0.8, 0)]
++--------------------+
+--Query--
+SELECT toDecimal128('-0.7', 2) AS x, toUInt16(x)
+--Result--
+[(-0.7, 0)]
++--------------------+
+--Query--
+SELECT toDecimal128('-0.6', 6) AS x, toUInt8(x)
+--Result--
+[(-0.6, 0)]
++--------------------+

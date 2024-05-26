@@ -1,0 +1,30 @@
+--Query--
+select 'commit', arraySort(groupArray(n)) from (select n from mt1 union all select * from mt2)
+--Result--
+[('commit', [1, 10])]
++--------------------+
+--Query--
+select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 'snapshot', count(), sum(n) from mt1
+--Result--
+[('snapshot', 7, 28)]
++--------------------+
+--Query--
+select 'snapshot3', count() = (select count() from system.parts where database=currentDatabase() and table='mt1' and _state in ('Active', 'Outdated')) from mt1
+--Result--
+[('snapshot3', 0)]
++--------------------+
+--Query--
+select * from m
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from m
+--Result--
+[(1,)]
++--------------------+

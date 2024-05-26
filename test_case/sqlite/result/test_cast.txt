@@ -1,0 +1,125 @@
+--Query--
+SELECT x'616263'
+--Result--
+[(b'abc',)]
++--------------------+
+--Query--
+SELECT typeof(x'616263')
+--Result--
+[('blob',)]
++--------------------+
+--Query--
+SELECT CAST(x'616263' AS text)
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 123
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT 123.456
+--Result--
+[(123.456,)]
++--------------------+
+--Query--
+SELECT '123abc'
+--Result--
+[('123abc',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(9000000000000000001,), (9000000000000000001,), (9000000000000000001,), (9000000000000000001,)]
++--------------------+
+--Query--
+SELECT '' - 2851427734582196970
+--Result--
+[(-2851427734582196970,)]
++--------------------+
+--Query--
+SELECT 0 - 2851427734582196970
+--Result--
+[(-2851427734582196970,)]
++--------------------+
+--Query--
+SELECT '' - 1
+--Result--
+[(-1,)]
++--------------------+
+--Query--
+SELECT -'.'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '.'+0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT quote(X'310032003300')==quote(substr(X'310032003300', 1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(X'310032003300' AS TEXT)          ==CAST(substr(X'310032003300', 1) AS TEXT)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT v1.c0 FROM v1, t0 WHERE v1.c0=0
+--Result--
+[(0.0,), (0.0,), (0.0,), (0.0,)]
++--------------------+
+--Query--
+VALUES(CAST(44 AS REAL)),(55)
+--Result--
+[(44.0,), (55,)]
++--------------------+
+--Query--
+SELECT CAST(44 AS REAL) AS 'm' UNION ALL SELECT 55
+--Result--
+[(44.0,), (55,)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES(CAST(44 AS REAL)),(55))
+--Result--
+[(44.0,), (55,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT CAST(44 AS REAL) AS 'm' UNION ALL SELECT 55)
+--Result--
+[(44.0,), (55,)]
++--------------------+
+--Query--
+SELECT * FROM dual CROSS JOIN (VALUES(CAST(44 AS REAL)),(55))
+--Result--
+[('X', 44.0), ('X', 55)]
++--------------------+
+--Query--
+SELECT * FROM dual CROSS JOIN (SELECT CAST(44 AS REAL) AS 'm'                                  UNION ALL SELECT 55)
+--Result--
+[('X', 44.0), ('X', 55)]
++--------------------+
+--Query--
+SELECT name, type FROM pragma_table_info('v1')
+--Result--
+[('m', 'NUM')]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(44.0,), (55,)]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(44.0,), (55,)]
++--------------------+

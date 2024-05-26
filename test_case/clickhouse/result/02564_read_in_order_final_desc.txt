@@ -1,0 +1,10 @@
+--Query--
+SELECT timestamp, value FROM mytable FINAL WHERE key = 5 ORDER BY timestamp DESC
+--Result--
+[(1900000050000, 1.0), (1900000040000, 0.05), (1900000030000, 0.0), (1900000020000, -0.0002), (1900000010000, -1.0)]
++--------------------+
+--Query--
+SELECT if(explain like '%ReadType: InOrder%', 'Ok', 'Error: ' || explain) FROM (     EXPLAIN PLAN actions = 1     SELECT timestamp, value     FROM mytable FINAL     WHERE key = 5     ORDER BY timestamp SETTINGS enable_vertical_final = 0 ) WHERE explain like '%ReadType%'
+--Result--
+[('Ok',)]
++--------------------+

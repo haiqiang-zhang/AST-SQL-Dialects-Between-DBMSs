@@ -1,0 +1,255 @@
+--Query--
+EXPLAIN QUERY PLAN    select * from t1 WHERE a = 10
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    select * from t1
+--Result--
+[(2, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+SELECT * FROM t1 NOT INDEXED WHERE a = 'one' AND b = 'two'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main.t1 NOT INDEXED WHERE a = 'one' AND b = 'two'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i1 WHERE a = 'one' AND b = 'two'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main.t1 INDEXED BY i1 WHERE a = 'one' AND b = 'two'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i2 WHERE a = 'one' AND b = 'two'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 INDEXED BY i1 WHERE b = 'two'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 WHERE a = 'one' AND b = 'two'
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i2 (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 NOT INDEXED WHERE a = 'one' AND b = 'two'
+--Result--
+[(2, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 NOT INDEXED WHERE rowid=1
+--Result--
+[(2, 0, 0, 'SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 INDEXED BY i1 WHERE a = 'one' AND b = 'two'
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 INDEXED BY i2 WHERE a = 'one' AND b = 'two'
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i2 (b=?)')]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i2 WHERE a = 'one'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i2 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i1 WHERE a = 'one'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i1 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t3 INDEXED BY sqlite_autoindex_t3_1 ORDER BY e
+--Result--
+[(4, 0, 0, 'SCAN t3 USING INDEX sqlite_autoindex_t3_1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t3 INDEXED BY sqlite_autoindex_t3_1 WHERE e = 10
+--Result--
+[(3, 0, 0, 'SEARCH t3 USING INDEX sqlite_autoindex_t3_1 (e=?)')]
++--------------------+
+--Query--
+SELECT * FROM t3 INDEXED BY sqlite_autoindex_t3_1 WHERE f = 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 INDEXED BY i1, t2 INDEXED BY i3 WHERE a=c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 INDEXED BY i3, t1 INDEXED BY i1 WHERE a=c
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM v2
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i1 (a>?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM v2 WHERE b = 10
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i1 (a>?)')]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 WHERE b = 10 ORDER BY rowid
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i2 (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 NOT INDEXED WHERE b = 10 ORDER BY rowid
+--Result--
+[(3, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    DELETE FROM t1 WHERE a = 5
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    DELETE FROM t1 NOT INDEXED WHERE a = 5
+--Result--
+[(3, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    DELETE FROM t1 INDEXED BY i1 WHERE a = 5
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    DELETE FROM t1 INDEXED BY i1 WHERE a = 5 AND b = 10
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    DELETE FROM t1 INDEXED BY i2 WHERE a = 5 AND b = 10
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i2 (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    UPDATE t1 SET rowid=rowid+1 WHERE a = 5
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    UPDATE t1 NOT INDEXED SET rowid=rowid+1 WHERE a = 5
+--Result--
+[(4, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    UPDATE t1 INDEXED BY i1 SET rowid=rowid+1 WHERE a = 5
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    UPDATE t1 INDEXED BY i1 SET rowid=rowid+1 WHERE a = 5 AND b = 10
+--Result--
+[(5, 0, 0, 'SEARCH t1 USING INDEX i1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    UPDATE t1 INDEXED BY i2 SET rowid=rowid+1 WHERE a = 5 AND b = 10
+--Result--
+[(5, 0, 0, 'SEARCH t1 USING INDEX i2 (b=?)')]
++--------------------+
+--Query--
+select * from maintable as m inner join     joinme as j indexed by joinme_id_text_idx     on ( m.id  = j.id_int)
+--Result--
+[]
++--------------------+
+--Query--
+select * from maintable, joinme INDEXED by joinme_id_text_idx
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM indexed
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM indexed indexed by i10 where x>0
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t10 indexed by indexed WHERE indexed>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a,b,rowid FROM x1 INDEXED BY x1i WHERE a=1 AND b=1 AND rowid=3
+--Result--
+[(1, '1', 3)]
++--------------------+
+--Query--
+SELECT a,b,rowid FROM x1 INDEXED BY x1i WHERE a=1 AND b=1 AND rowid='3'
+--Result--
+[(1, '1', 3)]
++--------------------+
+--Query--
+SELECT a,b,rowid FROM x1 INDEXED BY x1i WHERE a=1 AND b=1 AND rowid='3.0'
+--Result--
+[(1, '1', 3)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT a,b,rowid FROM x1 INDEXED BY x1i WHERE a=1 AND b=1 AND rowid='3.0'
+--Result--
+[(2, 0, 0, 'SEARCH x1 USING COVERING INDEX x1i (a=? AND b=? AND rowid=?)')]
++--------------------+
+--Query--
+SELECT a,b,c FROM x2 INDEXED BY x2i WHERE a=1 AND b=1 AND c=3
+--Result--
+[(1, '1', 3)]
++--------------------+
+--Query--
+SELECT a,b,c FROM x2 INDEXED BY x2i WHERE a=1 AND b=1 AND c='3'
+--Result--
+[(1, '1', 3)]
++--------------------+
+--Query--
+SELECT a,b,c FROM x2 INDEXED BY x2i WHERE a=1 AND b=1 AND c='3.0'
+--Result--
+[(1, '1', 3)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT a,b,c FROM x2 INDEXED BY x2i WHERE a=1 AND b=1 AND c='3.0'
+--Result--
+[(2, 0, 0, 'SEARCH x2 USING COVERING INDEX x2i (a=? AND b=? AND rowid=?)')]
++--------------------+

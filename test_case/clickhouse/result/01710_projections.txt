@@ -1,0 +1,25 @@
+--Query--
+select toStartOfMinute(datetime) dt_m, countIf(first_time = 0) / count(), avg((kbytes * 8) / duration) from projection_test where domain = '1' group by dt_m order by dt_m
+--Result--
+[(datetime.datetime(2020, 10, 24, 0, 0), 0.0, -0.2906208323366036)]
++--------------------+
+--Query--
+select toStartOfMinute(datetime) dt_m, count(), sum(block_count) / sum(duration), avg(block_count / duration) from projection_test group by dt_m order by dt_m
+--Result--
+[(datetime.datetime(2020, 10, 24, 0, 0), 1000, -0.3856164567802157, 1.2352100180287104)]
++--------------------+
+--Query--
+select toStartOfHour(toStartOfMinute(datetime)) dt_h, uniqHLL12(x_id), uniqHLL12(y_id) from projection_test group by dt_h order by dt_h
+--Result--
+[(datetime.datetime(2020, 10, 24, 0, 0), 852, 894)]
++--------------------+
+--Query--
+SELECT 2, -1 FROM projection_test PREWHERE domain_alias = 1. WHERE domain = NULL GROUP BY -9223372036854775808 ORDER BY countIf(first_time = 0) / count(-2147483649) DESC NULLS LAST, 1048576 DESC NULLS LAST
+--Result--
+[]
++--------------------+
+--Query--
+select max(key) from projection_without_key
+--Result--
+[(999,)]
++--------------------+

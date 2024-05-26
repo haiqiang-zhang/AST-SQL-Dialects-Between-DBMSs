@@ -1,0 +1,205 @@
+--Query--
+select extract(DAY_MICROSECOND FROM "1999-01-02 10:11:12.000123")
+--Result--
+[(2101112000123,)]
++--------------------+
+--Query--
+select date_format("1997-12-31 23:59:59.000002", "%f")
+--Result--
+[('000002',)]
++--------------------+
+--Query--
+select date_add("1997-12-31 23:59:59.000002",INTERVAL "10000 99:99:99.999999" DAY_MICROSECOND)
+--Result--
+[('2025-05-23 04:40:39.000001',)]
++--------------------+
+--Query--
+select date_sub("1998-01-01 00:00:00.000001",INTERVAL "1 1:1:1.000002" DAY_MICROSECOND)
+--Result--
+[('1997-12-30 22:58:58.999999',)]
++--------------------+
+--Query--
+select adddate("1997-12-31 23:59:59.000001", 10)
+--Result--
+[('1998-01-10 23:59:59.000001',)]
++--------------------+
+--Query--
+select subdate("1997-12-31 23:59:59.000001", 10)
+--Result--
+[('1997-12-21 23:59:59.000001',)]
++--------------------+
+--Query--
+select datediff("1997-12-31 23:59:59.000001","1997-12-30")
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select weekofyear("1997-11-30 23:59:59.000001")
+--Result--
+[(48,)]
++--------------------+
+--Query--
+select makedate(03,1)
+--Result--
+[(datetime.date(2003, 1, 1),)]
++--------------------+
+--Query--
+select addtime("1997-12-31 23:59:59.999999", "1 1:1:1.000002")
+--Result--
+[('1998-01-02 01:01:01.000001',)]
++--------------------+
+--Query--
+select subtime("1997-12-31 23:59:59.000001", "1 1:1:1.000002")
+--Result--
+[('1997-12-30 22:58:57.999999',)]
++--------------------+
+--Query--
+select timediff("1997-01-01 23:59:59.000001","1995-12-31 23:59:59.000002")
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+select maketime(10,11,12)
+--Result--
+[(datetime.timedelta(seconds=36672),)]
++--------------------+
+--Query--
+select timestamp("2001-12-01", "01:01:01.999999")
+--Result--
+[(datetime.datetime(2001, 12, 1, 1, 1, 1, 999999),)]
++--------------------+
+--Query--
+select day("1997-12-31 23:59:59.000001")
+--Result--
+[(31,)]
++--------------------+
+--Query--
+select date("1997-12-31 23:59:59.000001")
+--Result--
+[(datetime.date(1997, 12, 31),)]
++--------------------+
+--Query--
+select time("1997-12-31 23:59:59.000001")
+--Result--
+[(datetime.timedelta(seconds=86399, microseconds=1),)]
++--------------------+
+--Query--
+select microsecond("1997-12-31 23:59:59.000001")
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(datetime.date(1997, 1, 1), datetime.datetime(1998, 1, 2, 1, 1, 0, 2), datetime.timedelta(days=2, seconds=3661, microseconds=2), datetime.timedelta(days=1, seconds=82737, microseconds=999999), datetime.timedelta(days=-2, seconds=86399, microseconds=999999), datetime.timedelta(seconds=36672), datetime.datetime(2001, 12, 1, 1, 1, 1), datetime.date(1997, 12, 31), datetime.timedelta(seconds=86399, microseconds=1))]
++--------------------+
+--Query--
+SELECT ADDTIME(t1,t2) As ttt, ADDTIME(t2, t3) As qqq from test
+--Result--
+[(datetime.datetime(2001, 1, 1, 2, 2, 2), None), (datetime.datetime(2001, 1, 1, 0, 0), datetime.timedelta(days=-2, seconds=82740)), (datetime.datetime(1997, 12, 31, 0, 0), datetime.timedelta(days=-2, seconds=82740)), (datetime.datetime(2001, 1, 1, 2, 2, 2), datetime.timedelta(days=-1)), (datetime.datetime(2001, 1, 1, 0, 0), datetime.timedelta(days=1)), (None, None), (None, None), (datetime.datetime(2001, 1, 1, 2, 2, 2), datetime.timedelta(days=1, seconds=7322))]
++--------------------+
+--Query--
+SELECT TIMEDIFF(t1, t4) As ttt, TIMEDIFF(t2, t3) As qqq,        TIMEDIFF(t3, t2) As eee, TIMEDIFF(t2, t4) As rrr from test
+--Result--
+[(datetime.timedelta(days=-31), None, None, None), (datetime.timedelta(days=34, seconds=82799), datetime.timedelta(seconds=82738), datetime.timedelta(days=-1, seconds=3662), None), (datetime.timedelta(days=-35, seconds=3601), datetime.timedelta(days=-1, seconds=3662), datetime.timedelta(seconds=82738), None), (None, datetime.timedelta(days=1, seconds=7322), datetime.timedelta(days=-2, seconds=79078), None), (datetime.timedelta(0), datetime.timedelta(days=-2, seconds=79078), datetime.timedelta(days=1, seconds=7322), None), (None, None, None, None), (None, None, None, None), (datetime.timedelta(0), datetime.timedelta(days=-1), datetime.timedelta(days=1), None)]
++--------------------+
+--Query--
+select addtime("-01:01:01.01", "-23:59:59.1") as a
+--Result--
+[('-25:01:00.110000',)]
++--------------------+
+--Query--
+select microsecond("1997-12-31 23:59:59.01") as a
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+select microsecond(19971231235959.01) as a
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+select date_add("1997-12-31",INTERVAL "10.09" SECOND_MICROSECOND) as a
+--Result--
+[('1997-12-31 00:00:10.090000',)]
++--------------------+
+--Query--
+select str_to_date("2003-01-02 10:11:12.0012", "%Y-%m-%d %H:%i:%S.%f")
+--Result--
+[(datetime.datetime(2003, 1, 2, 10, 11, 12, 1200),)]
++--------------------+
+--Query--
+select timediff('2008-09-29 20:10:10','2008-09-30 20:10:10'),time('00:00:00')
+--Result--
+[(datetime.timedelta(days=-1), datetime.timedelta(0))]
++--------------------+
+--Query--
+select timediff('2008-09-29 20:10:10','2008-09-30 20:10:10')>time('00:00:00')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select timediff('2008-09-29 20:10:10','2008-09-30 20:10:10')<time('00:00:00')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(time('-73:42:12') AS DECIMAL)
+--Result--
+[(-734212.0,)]
++--------------------+
+--Query--
+SELECT TIMEDIFF(TIME('17:00:00'),TIME('17:00:00'))=TIME('00:00:00') AS 1Eq,        TIMEDIFF(TIME('17:59:00'),TIME('17:00:00'))=TIME('00:00:00') AS 1NEq1,        TIMEDIFF(TIME('18:00:00'),TIME('17:00:00'))=TIME('00:00:00') AS 1NEq2,        TIMEDIFF(TIME('17:00:00'),TIME('17:00:00'))=     '00:00:00'  AS 2Eq,        TIMEDIFF(TIME('17:59:00'),TIME('17:00:00'))=     '00:00:00'  AS 2NEq1,        TIMEDIFF(TIME('18:00:00'),TIME('17:00:00'))=     '00:00:00'  AS 2NEq2,        TIMEDIFF(TIME('17:00:00'),TIME('17:00:00'))=TIME(0)          AS 3Eq,        TIMEDIFF(TIME('17:59:00'),TIME('17:00:00'))=TIME(0)          AS 3NEq1,        TIMEDIFF(TIME('18:00:00'),TIME('17:00:00'))=TIME(0)          AS 3NEq2,        TIME(0) AS Time0, TIME('00:00:00') AS Time00, '00:00:00' AS Literal0000,        TIMEDIFF(TIME('17:59:00'),TIME('17:00:00')),        TIMEDIFF(TIME('17:00:00'),TIME('17:59:00'))
+--Result--
+[(1, 0, 0, 1, 0, 0, 1, 0, 0, datetime.timedelta(0), datetime.timedelta(0), '00:00:00', datetime.timedelta(seconds=3540), datetime.timedelta(days=-1, seconds=82860))]
++--------------------+
+--Query--
+SELECT sec_to_time(3020399)=TIME('838:59:59')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sec_to_time(-3020399)=TIME('-838:59:59')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sec_to_time(-3020399)='-838:59:59'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT time(sec_to_time(-3020399))=TIME('-838:59:59')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT time(sec_to_time(-3020399))=TIME('-838:59:58')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT maketime(-1,0,1)='-01:00:01'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT TIME(maketime(-1,0,1))=CAST('-01:00:01' AS TIME)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT maketime(-1,0,1)=CAST('-01:00:01' AS TIME)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT maketime(1,0,1)=CAST('01:00:01' AS TIME)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT maketime(1,0,1)=CAST('01:00:02' AS TIME)
+--Result--
+[(0,)]
++--------------------+

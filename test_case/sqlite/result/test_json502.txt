@@ -1,0 +1,30 @@
+--Query--
+SELECT fullkey FROM t1, json_tree(x)
+--Result--
+[('$',), ('$.a',), ('$.a.b',), ('$.a.b.c',)]
++--------------------+
+--Query--
+SELECT json_error_position('{a:null,{"h":[1,[1,2,3]],"j":"abc"}:true}')
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT '{"a\x62c":123}' ->> 'abc'
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT '{"abc":123}' ->> 'a\x62c'
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x->'$.a\', x->'$.a\\', x->'$."a\\"', x->'$."b\\"' FROM t1
+--Result--
+[('111', None, '111', '222'), ('111', None, '111', '222')]
++--------------------+
+--Query--
+SELECT json_patch('{"a\x62c":123}','{"ab\x63":456}') ->> 'abc'
+--Result--
+[(456,)]
++--------------------+

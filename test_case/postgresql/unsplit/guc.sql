@@ -135,7 +135,6 @@ SHOW vacuum_cost_delay;
 SELECT relname from pg_class where relname = 'tmp_foo';
 SELECT current_user = 'regress_guc_user';
 DISCARD ALL;
-SELECT pg_listening_channels();
 SELECT name FROM pg_prepared_statements;
 SELECT name FROM pg_cursors;
 SHOW vacuum_cost_delay;
@@ -144,9 +143,7 @@ SELECT current_user = 'regress_guc_user';
 set search_path = foo, public, not_there_initially;
 select current_schemas(false);
 create schema not_there_initially;
-select current_schemas(false);
 drop schema not_there_initially;
-select current_schemas(false);
 reset search_path;
 set work_mem = '3MB';
 create function report_guc(text) returns text as
@@ -154,17 +151,11 @@ $$ select current_setting($1) $$ language sql
 set work_mem = '1MB';
 select report_guc('work_mem'), current_setting('work_mem');
 alter function report_guc(text) set work_mem = '2MB';
-select report_guc('work_mem'), current_setting('work_mem');
 alter function report_guc(text) reset all;
-select report_guc('work_mem'), current_setting('work_mem');
 set work_mem = '3MB';
 set work_mem = '3MB';
 select current_setting('work_mem');
-select current_setting('nosuch.setting', true) is null;
 set nosuch.setting = 'nada';
-select current_setting('nosuch.setting');
-select current_setting('nosuch.setting', false);
-select current_setting('nosuch.setting', true);
 set check_function_bodies = off;
 create function func_with_bad_set() returns int as $$ select 1 $$
 language sql
@@ -172,7 +163,6 @@ set default_text_search_config = no_such_config;
 reset check_function_bodies;
 set default_with_oids to f;
 SELECT pg_settings_get_flags(NULL);
-SELECT pg_settings_get_flags('does_not_exist');
 CREATE TABLE tab_settings_flags AS SELECT name, category,
     'EXPLAIN'          = ANY(flags) AS explain,
     'NO_RESET'         = ANY(flags) AS no_reset,

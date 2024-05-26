@@ -1,0 +1,15 @@
+--Query--
+select * from joinbug
+--Result--
+[(1, 11, 91, 81, 123456), (2, 22, 92, 82, 123457)]
++--------------------+
+--Query--
+select id, id2, val, val2, created from ( SELECT toUInt64(arrayJoin(range(50))) AS id2 ) js1 SEMI LEFT JOIN joinbug_join using id2
+--Result--
+[(1, 11, 91, 81, 123456), (2, 22, 92, 82, 123457)]
++--------------------+
+--Query--
+SELECT * FROM ( SELECT toUInt32(11) AS id2 ) AS js1 SEMI LEFT JOIN joinbug_join USING (id2)
+--Result--
+[(11, 1, 91, 81, 123456)]
++--------------------+

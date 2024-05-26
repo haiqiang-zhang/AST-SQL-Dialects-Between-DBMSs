@@ -1,0 +1,30 @@
+--Query--
+SELECT '- const pattern'
+--Result--
+[('- const pattern',)]
++--------------------+
+--Query--
+select multiFuzzyMatchAny('abc', 0, ['a1c']) from system.numbers limit 3
+--Result--
+[(0,), (0,), (0,)]
++--------------------+
+--Query--
+select multiFuzzyMatchAnyIndex('string', 1, ['zorro$', '^tring', 'ip$', 'how.*', 'it{2}', 'works'])
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select arraySort(multiFuzzyMatchAllIndices('halo some wrld', 2, ['some random string', '^halo.*world$', '^halo.*world$', '^halo.*world$', '^hallllo.*world$']))
+--Result--
+[([2, 3, 4],)]
++--------------------+
+--Query--
+select multiFuzzyMatchAllIndices('halo some wrld', 2, ['^halllllo.*world$', 'some random string'])
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT '- non-const pattern'
+--Result--
+[('- non-const pattern',)]
++--------------------+

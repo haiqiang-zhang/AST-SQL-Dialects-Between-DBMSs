@@ -66,8 +66,6 @@ table_schema = ? AND table_name = ?';
 SELECT MAX(AUTO_INCREMENT) FROM information_schema.tables t WHERE
 table_schema = 'test' AND t.table_name = 't1';
 INSERT INTO t1 VALUES (NULL, '1');
-SELECT MAX(AUTO_INCREMENT) FROM information_schema.tables t WHERE
-table_schema = 'test' AND t.table_name = 't1';
 CREATE TABLE t2 (b CHAR(250), c CHAR(250));
 INSERT INTO t2 (b,c) VALUES (repeat('b', 250), repeat('c', 250));
 PREPARE ps2 FROM 'SELECT DATA_FREE, FREE_EXTENTS, TOTAL_EXTENTS FROM information_schema.files WHERE

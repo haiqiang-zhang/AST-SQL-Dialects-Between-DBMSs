@@ -1,0 +1,15 @@
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for locking service lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 AS expect_1 FROM information_schema.processlist WHERE state = 'Waiting for locking service lock'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 AS expect_1 FROM information_schema.processlist WHERE state = 'Waiting for locking service lock'
+--Result--
+[(1,)]
++--------------------+

@@ -1,0 +1,25 @@
+--Query--
+LOCK TABLE t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t2 add column j int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(USER) FROM INFORMATION_SCHEMA.PROCESSLIST
+--Result--
+[(2,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY c1
+--Result--
+[(1, 'aaaaaaaaaa'), (2, 'bbbbbbbbbb')]
++--------------------+

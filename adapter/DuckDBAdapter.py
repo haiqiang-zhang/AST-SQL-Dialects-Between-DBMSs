@@ -7,11 +7,16 @@ from .DBMSAdapter import DBMSAdapter
 
 ECHO = False
 
+timeout_occurred = threading.Event()
+
 # setup_query_keyword = [
 #     "create table",
 #     "insert into",
 #     "drop table"
 # ]
+
+
+
 
 class DuckDBAdapter(DBMSAdapter):
     def __init__(self, filename:str="duckdb.db"):
@@ -36,8 +41,9 @@ class DuckDBAdapter(DBMSAdapter):
             #     continue
 
     def interrupt_connection(self, query:str):
+        timeout_occurred.set()
         self.conn.interrupt()
-        raise TimeoutError(f"Query timed out: '{query}'")
+        
 
     def query(self, sql_query:str, filename:str, timeout_duration=5):
         # Execute the SQL query
@@ -45,6 +51,7 @@ class DuckDBAdapter(DBMSAdapter):
         print_prevent_stopping(f"Filename: {filename}")
         # print_prevent_stopping(f"SQL: {sql_query}")
         combined_result = None
+        timeout_occurred.clear()
         timer = threading.Timer(timeout_duration, self.interrupt_connection, args=[sql_query])
         try:
             # print(query)
@@ -58,7 +65,10 @@ class DuckDBAdapter(DBMSAdapter):
             combined_result = (True, result)
             # print(result)
             # print("=================================")
-            print("Success")
+            if not timeout_occurred.is_set():
+                print_prevent_stopping(f"Success")
+            else:
+                raise TimeoutError(f"Query timed out")
 
         except Exception as e:
             # if any(keyword in query.lower() for keyword in setup_query_keyword):

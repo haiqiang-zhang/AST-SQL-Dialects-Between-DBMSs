@@ -1,0 +1,25 @@
+--Query--
+SELECT * FROM sum_map ORDER BY timeslot, statusMap.status, statusMap.requests
+--Result--
+[(datetime.date(2000, 1, 1), datetime.datetime(2000, 1, 1, 0, 0), [1, 2, 3], [10, 10, 10]), (datetime.date(2000, 1, 1), datetime.datetime(2000, 1, 1, 0, 0), [3, 4, 5], [10, 10, 10]), (datetime.date(2000, 1, 1), datetime.datetime(2000, 1, 1, 0, 1), [4, 5, 6], [10, 10, 10]), (datetime.date(2000, 1, 1), datetime.datetime(2000, 1, 1, 0, 1), [6, 7, 8], [10, 10, 10])]
++--------------------+
+--Query--
+SELECT sumMap(statusMap.status, statusMap.requests) FROM sum_map
+--Result--
+[(([1, 2, 3, 4, 5, 6, 7, 8], [10, 10, 20, 20, 20, 20, 10, 10]),)]
++--------------------+
+--Query--
+SELECT sumMapMerge(s) FROM (SELECT sumMapState(statusMap.status, statusMap.requests) AS s FROM sum_map)
+--Result--
+[(([1, 2, 3, 4, 5, 6, 7, 8], [10, 10, 20, 20, 20, 20, 10, 10]),)]
++--------------------+
+--Query--
+SELECT sumMapFiltered([1])(statusMap.status, statusMap.requests) FROM sum_map
+--Result--
+[(([1], [10]),)]
++--------------------+
+--Query--
+SELECT sumMapWithOverflow(events, counts) FROM sum_map_overflow
+--Result--
+[(([1], [1]),)]
++--------------------+

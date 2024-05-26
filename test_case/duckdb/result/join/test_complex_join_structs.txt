@@ -1,0 +1,75 @@
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs
+--Result--
+[(200, 200, 100, 100)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs WHERE id%2<>0
+--Result--
+[(100, 100, 50, 50)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs JOIN other_table USING (id)
+--Result--
+[(100, 100, 50, 50)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs LEFT JOIN other_table USING (id)
+--Result--
+[(200, 200, 100, 100)]
++--------------------+
+--Query--
+SELECT structs.j, COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs LEFT JOIN other_table o1 USING (id) CROSS JOIN other_table WHERE ((structs.j IN (0, 1) AND (structs.id=other_table.id)) OR (structs.j=2 AND structs.id+1=other_table.id)) GROUP BY ALL ORDER BY ALL
+--Result--
+[(0, 34, 34, 17, 17), (1, 32, 32, 16, 16), (2, 32, 32, 16, 16)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs
+--Result--
+[(200, 200, 100, 100)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs WHERE id%2<>0
+--Result--
+[(100, 100, 50, 50)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs JOIN other_table USING (id)
+--Result--
+[(100, 100, 50, 50)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs LEFT JOIN other_table USING (id)
+--Result--
+[(200, 200, 100, 100)]
++--------------------+
+--Query--
+SELECT structs.j, COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs LEFT JOIN other_table o1 USING (id) CROSS JOIN other_table WHERE ((structs.j IN (0, 1) AND (structs.id=other_table.id)) OR (structs.j=2 AND structs.id+1=other_table.id)) GROUP BY ALL ORDER BY ALL
+--Result--
+[(0, 34, 34, 17, 17), (1, 32, 32, 16, 16), (2, 32, 32, 16, 16)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs
+--Result--
+[(200, 200, 100, 100)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs WHERE id%2<>0
+--Result--
+[(100, 100, 50, 50)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs JOIN other_table USING (id)
+--Result--
+[(100, 100, 50, 50)]
++--------------------+
+--Query--
+SELECT COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs LEFT JOIN other_table USING (id)
+--Result--
+[(200, 200, 100, 100)]
++--------------------+
+--Query--
+SELECT structs.j, COUNT(*), COUNT(s), COUNT(DISTINCT s), COUNT(DISTINCT structs.id) FROM structs LEFT JOIN other_table o1 USING (id) CROSS JOIN other_table WHERE ((structs.j IN (0, 1) AND (structs.id=other_table.id)) OR (structs.j=2 AND structs.id+1=other_table.id)) GROUP BY ALL ORDER BY ALL
+--Result--
+[(0, 34, 34, 17, 17), (1, 32, 32, 16, 16), (2, 32, 32, 16, 16)]
++--------------------+

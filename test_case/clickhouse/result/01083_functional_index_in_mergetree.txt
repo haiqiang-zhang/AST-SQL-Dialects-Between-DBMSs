@@ -1,0 +1,105 @@
+--Query--
+SELECT 'TP1'
+--Result--
+[('TP1',)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE x > 7.42
+--Result--
+[(7.51,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE x < 7.49
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE x < 7.5
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT (NOT x < 7.49)
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT (NOT x < 7.5)
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT (NOT x > 7.42)
+--Result--
+[(7.51,)]
++--------------------+
+--Query--
+SELECT 'TP2'
+--Result--
+[('TP2',)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT x > 7.49
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT x < 7.42
+--Result--
+[(7.42,), (7.51,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT x < 7.41
+--Result--
+[(7.42,), (7.41,), (7.51,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT x < 7.5
+--Result--
+[(7.51,)]
++--------------------+
+--Query--
+SELECT 'TP3'
+--Result--
+[('TP3',)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE x > 7.41 AND x < 7.51
+--Result--
+[(7.42,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT (x > 7.41 AND x < 7.51)
+--Result--
+[(7.41,), (7.51,)]
++--------------------+
+--Query--
+SELECT 'TP4'
+--Result--
+[('TP4',)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT x < 7.41 AND NOT x > 7.49
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT x < 7.42 AND NOT x > 7.42
+--Result--
+[(7.42,)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE (NOT x < 7.4) AND (NOT x > 7.49)
+--Result--
+[(7.42,), (7.41,)]
++--------------------+
+--Query--
+SELECT 'TP5'
+--Result--
+[('TP5',)]
++--------------------+
+--Query--
+SELECT * FROM functional_index_mergetree WHERE NOT or(NOT x, toUInt64(x) AND NOT floor(x) > 6, x >= 7.42 AND round(x) <= 7)
+--Result--
+[(7.41,), (7.51,)]
++--------------------+

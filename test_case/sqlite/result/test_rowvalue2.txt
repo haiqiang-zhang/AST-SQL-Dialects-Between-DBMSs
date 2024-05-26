@@ -1,0 +1,1140 @@
+--Query--
+SELECT c FROM t1 WHERE (a, b) >= (1, 0)
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT c FROM t1 WHERE (a, b) > (1, 0)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT d FROM t2 WHERE (a, b) > (2, 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT d FROM t2 WHERE (a, b) >= (2, 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT d FROM t2 WHERE a=1 AND (b, c) >= (1, 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT d FROM t2 WHERE a=1 AND (b, c) > (1, 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[(15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[(14,), (15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(13,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS NULL) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == NULL) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c > 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c >= 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(25,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS NULL) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(21,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == NULL) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[(15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[(14,), (15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(13,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS NULL) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == NULL) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c > 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c >= 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(25,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS NULL) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(21,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == NULL) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[(15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[(14,), (15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(13,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS NULL) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == NULL) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c > 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c >= 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(25,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS NULL) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(21,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == NULL) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[(15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[(14,), (15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[(27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS 0) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(13,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == 0) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c < NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < 0) OR (a == 0 AND b == 0 AND c <= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c > NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > 0) OR (a == 0 AND b == 0 AND c >= NULL) ORDER BY +rowid
+--Result--
+[(16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 0) AND (b IS NULL) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 0) AND (b == NULL) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 0) OR (a == 0 AND b < NULL) OR (a == 0 AND b == NULL AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c > 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 0) OR (a == 0 AND b > NULL) OR (a == 0 AND b == NULL AND c >= 0) ORDER BY +rowid
+--Result--
+[(19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 0) AND (c IS 0) ORDER BY +rowid
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 0) AND (c == 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c < 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 0) OR (a == NULL AND b == 0 AND c <= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c > 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 0) OR (a == NULL AND b == 0 AND c >= 0) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS 1) AND (c IS NULL) ORDER BY +rowid
+--Result--
+[(25,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == 1) AND (c == NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c < NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < 1) OR (a == 1 AND b == 1 AND c <= NULL) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (22,), (23,), (24,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c > NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > 1) OR (a == 1 AND b == 1 AND c >= NULL) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS 1) AND (b IS NULL) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(21,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == 1) AND (b == NULL) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c < 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < 1) OR (a == 1 AND b < NULL) OR (a == 1 AND b == NULL AND c <= 1) ORDER BY +rowid
+--Result--
+[(10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > 1) OR (a == 1 AND b > NULL) OR (a == 1 AND b == NULL AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a IS NULL) AND (b IS 1) AND (c IS 1) ORDER BY +rowid
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a == NULL) AND (b == 1) AND (c == 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c < 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a < NULL) OR (a == NULL AND b < 1) OR (a == NULL AND b == 1 AND c <= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c > 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t4 WHERE (a > NULL) OR (a == NULL AND b > 1) OR (a == NULL AND b == 1 AND c >= 1) ORDER BY +rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x IS a) AND (+zY IS iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x == a) AND (+zY == iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < a) OR (x == a AND +zY < iB) ORDER BY iB
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < a) OR (x == a AND +zY <= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > a) OR (x == a AND +zY > iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36), ('35', '35', '35', 4)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > a) OR (x == a AND +zY >= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36), ('35', '35', '35', 4), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x IS a) AND (zY IS iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x == a) AND (zY == iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < a) OR (x == a AND zY < iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < a) OR (x == a AND zY <= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > a) OR (x == a AND zY > iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > a) OR (x == a AND zY >= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x IS a) AND (zY IS +iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x == a) AND (zY == +iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < a) OR (x == a AND zY < +iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < a) OR (x == a AND zY <= +iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > a) OR (x == a AND zY > +iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > a) OR (x == a AND zY >= +iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (+x IS a) AND (zY IS iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (+x == a) AND (zY == iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (+x < a) OR (+x == a AND zY < iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (+x < a) OR (+x == a AND zY <= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (+x > a) OR (+x == a AND zY > iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (+x > a) OR (+x == a AND zY >= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x IS +a) AND (zY IS iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x == +a) AND (zY == iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < +a) OR (x == +a AND zY < iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x < +a) OR (x == +a AND zY <= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 4), ('35', '35', '35', 35)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > +a) OR (x == +a AND zY > iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36)]
++--------------------+
+--Query--
+SELECT * FROM r1, r2 WHERE (x > +a) OR (x == +a AND zY >= iB) ORDER BY iB
+--Result--
+[('35', '35', '35', 36), ('35', '35', '35', 35)]
++--------------------+

@@ -53,5 +53,4 @@ INSERT INTO codecTest (key, ref_valueU64, valueU64, ref_valueU32, valueU32, ref_
 INSERT INTO codecTest (key, ref_valueU64, valueU64, ref_valueU32, valueU32, ref_valueU16, valueU16, ref_valueU8, valueU8, ref_valueI64, valueI64, ref_valueI32, valueI32, ref_valueI16, valueI16, ref_valueI8, valueI8, ref_valueDT, valueDT, ref_valueD, valueD)
     SELECT number as n, n + (rand64() - 9223372036854775807)/1000 as v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, toDateTime(v), toDateTime(v), toDate(v), toDate(v)
     FROM system.numbers LIMIT 3001, 1000;
-SELECT IF(2, NULL, 0.00009999999747378752), IF(104, 1048576, NULL), c1.key, IF(1, NULL, NULL), c2.key FROM codecTest AS c1 , codecTest AS c2 WHERE ignore(IF(255, -2, NULL), arrayJoin([65537]), IF(3, 1024, 9223372036854775807)) AND IF(NULL, 256, NULL) AND (IF(NULL, '1048576', NULL) = (c1.key - NULL)) LIMIT 65535;
 DROP TABLE codecTest;

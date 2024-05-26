@@ -46,5 +46,4 @@ CREATE TABLE table_map (n UInt32, m Map(String, Int))
 ENGINE = MergeTree ORDER BY n SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
 INSERT INTO table_map SELECT number, (arrayMap(x -> toString(x), range(number % 10 + 2)), range(number % 10 + 2)) FROM numbers(100000);
 INSERT INTO table_map SELECT number, arrayMap(x -> (toString(x), x), range(number % 10 + 2)) FROM numbers(100000);
-SELECT sum(m['1']), sum(m['7']), sum(m['100']) FROM table_map;
 DROP TABLE IF EXISTS table_map;

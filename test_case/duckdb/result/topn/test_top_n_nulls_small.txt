@@ -1,0 +1,65 @@
+--Query--
+SELECT i FROM integers ORDER BY i ASC NULLS FIRST LIMIT 5
+--Result--
+[(None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT i FROM integers ORDER BY i ASC NULLS LAST LIMIT 5
+--Result--
+[(0,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT i FROM integers ORDER BY i DESC NULLS FIRST LIMIT 5
+--Result--
+[(None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT i FROM integers ORDER BY i DESC NULLS LAST LIMIT 5
+--Result--
+[(999,), (998,), (997,), (996,), (995,)]
++--------------------+
+--Query--
+SELECT i FROM integers ORDER BY i NULLS FIRST LIMIT 5 OFFSET 1000
+--Result--
+[(0,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT i FROM integers ORDER BY i DESC NULLS FIRST LIMIT 5 OFFSET 1000
+--Result--
+[(999,), (998,), (997,), (996,), (995,)]
++--------------------+
+--Query--
+SELECT i FROM integers ORDER BY i NULLS LAST LIMIT 5 OFFSET 1000
+--Result--
+[(None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT j, i FROM integers ORDER BY j, i NULLS FIRST LIMIT 5
+--Result--
+[(0, None), (0, 0), (1, None), (1, 1), (2, None)]
++--------------------+
+--Query--
+SELECT j, i FROM integers ORDER BY j, i NULLS LAST LIMIT 5
+--Result--
+[(0, 0), (0, None), (1, 1), (1, None), (2, 2)]
++--------------------+
+--Query--
+SELECT j, i FROM integers ORDER BY j DESC, i DESC NULLS FIRST LIMIT 5
+--Result--
+[(999, None), (999, 999), (998, None), (998, 998), (997, None)]
++--------------------+
+--Query--
+SELECT j, i FROM integers ORDER BY j DESC, i DESC NULLS LAST LIMIT 5
+--Result--
+[(999, 999), (999, None), (998, 998), (998, None), (997, 997)]
++--------------------+
+--Query--
+SELECT i, j FROM integers ORDER BY i DESC NULLS FIRST, j DESC LIMIT 5
+--Result--
+[(None, 999), (None, 998), (None, 997), (None, 996), (None, 995)]
++--------------------+
+--Query--
+SELECT i, j FROM integers ORDER BY i DESC NULLS LAST, j ASC LIMIT 5
+--Result--
+[(999, 999), (998, 998), (997, 997), (996, 996), (995, 995)]
++--------------------+

@@ -1,0 +1,60 @@
+--Query--
+SELECT * FROM test_02559 ORDER BY x
+--Result--
+[(1, 'Hello, world!', 0), (2, 'Goodbye.', 3)]
++--------------------+
+--Query--
+SELECT s FROM test_02559 PREWHERE x AND y ORDER BY s
+--Result--
+[('Goodbye.',)]
++--------------------+
+--Query--
+SELECT s, y FROM test_02559 PREWHERE y ORDER BY s
+--Result--
+[('Goodbye.', 3)]
++--------------------+
+--Query--
+SELECT s, y FROM test_02559 PREWHERE NOT y ORDER BY s
+--Result--
+[('Hello, world!', 0)]
++--------------------+
+--Query--
+SELECT s, y FROM test_02559 PREWHERE x AND y ORDER BY s
+--Result--
+[('Goodbye.', 3)]
++--------------------+
+--Query--
+SELECT s, y FROM test_02559 PREWHERE x AND NOT y ORDER BY s
+--Result--
+[('Hello, world!', 0)]
++--------------------+
+--Query--
+SELECT s, y FROM test_02559 PREWHERE y AND x ORDER BY s
+--Result--
+[('Goodbye.', 3)]
++--------------------+
+--Query--
+SELECT s, y FROM test_02559 PREWHERE (NOT y) AND x ORDER BY s
+--Result--
+[('Hello, world!', 0)]
++--------------------+
+--Query--
+SELECT * FROM test_02559 ORDER BY x
+--Result--
+[(1, 'Hello, world!', 0, 10), (2, 'Goodbye.', 3, 10), (3, 'So long, and thanks for all the fish.', 42, 0)]
++--------------------+
+--Query--
+SELECT s FROM test_02559 PREWHERE z ORDER BY s
+--Result--
+[('Goodbye.',), ('Hello, world!',)]
++--------------------+
+--Query--
+SELECT s FROM test_02559 PREWHERE y AND z ORDER BY s
+--Result--
+[('Goodbye.',)]
++--------------------+
+--Query--
+SELECT s, z FROM test_02559 PREWHERE NOT y AND z ORDER BY s
+--Result--
+[('Hello, world!', 10)]
++--------------------+

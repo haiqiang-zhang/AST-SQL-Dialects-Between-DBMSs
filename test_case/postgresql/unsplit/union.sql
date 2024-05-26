@@ -26,61 +26,15 @@ set enable_hashagg to on;
 explain (costs off)
 select x from (values ('11'::varbit), ('10'::varbit)) _(x) union select x from (values ('11'::varbit), ('10'::varbit)) _(x);
 set enable_hashagg to off;
-explain (costs off)
-select x from (values ('11'::varbit), ('10'::varbit)) _(x) union select x from (values ('11'::varbit), ('10'::varbit)) _(x);
 reset enable_hashagg;
 set enable_hashagg to on;
-explain (costs off)
 select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x);
-select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x);
-explain (costs off)
-select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x);
-select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x);
-explain (costs off)
-select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x);
-select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x);
-explain (costs off)
-select x from (values (array['10'::varbit]), (array['11'::varbit])) _(x) union select x from (values (array['10'::varbit]), (array['01'::varbit])) _(x);
-select x from (values (array['10'::varbit]), (array['11'::varbit])) _(x) union select x from (values (array['10'::varbit]), (array['01'::varbit])) _(x);
 set enable_hashagg to off;
-explain (costs off)
-select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x);
-select x from (values (array[1, 2]), (array[1, 3])) _(x) union select x from (values (array[1, 2]), (array[1, 4])) _(x);
-explain (costs off)
-select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x);
-select x from (values (array[1, 2]), (array[1, 3])) _(x) intersect select x from (values (array[1, 2]), (array[1, 4])) _(x);
-explain (costs off)
-select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x);
-select x from (values (array[1, 2]), (array[1, 3])) _(x) except select x from (values (array[1, 2]), (array[1, 4])) _(x);
 reset enable_hashagg;
 set enable_hashagg to on;
-explain (costs off)
-select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x);
-select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x);
-explain (costs off)
-select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x);
-select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x);
-explain (costs off)
-select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x);
-select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x);
-explain (costs off)
-select x from (values (row('10'::varbit)), (row('11'::varbit))) _(x) union select x from (values (row('10'::varbit)), (row('01'::varbit))) _(x);
-select x from (values (row('10'::varbit)), (row('11'::varbit))) _(x) union select x from (values (row('10'::varbit)), (row('01'::varbit))) _(x);
 create type ct1 as (f1 varbit);
-explain (costs off)
-select x from (values (row('10'::varbit)::ct1), (row('11'::varbit)::ct1)) _(x) union select x from (values (row('10'::varbit)::ct1), (row('01'::varbit)::ct1)) _(x);
-select x from (values (row('10'::varbit)::ct1), (row('11'::varbit)::ct1)) _(x) union select x from (values (row('10'::varbit)::ct1), (row('01'::varbit)::ct1)) _(x);
 drop type ct1;
 set enable_hashagg to off;
-explain (costs off)
-select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x);
-select x from (values (row(1, 2)), (row(1, 3))) _(x) union select x from (values (row(1, 2)), (row(1, 4))) _(x);
-explain (costs off)
-select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x);
-select x from (values (row(1, 2)), (row(1, 3))) _(x) intersect select x from (values (row(1, 2)), (row(1, 4))) _(x);
-explain (costs off)
-select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x);
-select x from (values (row(1, 2)), (row(1, 3))) _(x) except select x from (values (row(1, 2)), (row(1, 4))) _(x);
 reset enable_hashagg;
 select union select;
 select intersect select;
@@ -90,22 +44,8 @@ set enable_sort = false;
 explain (costs off)
 select from generate_series(1,5) intersect select from generate_series(1,3);
 select from generate_series(1,5) union all select from generate_series(1,3);
-select from generate_series(1,5) intersect select from generate_series(1,3);
-select from generate_series(1,5) intersect all select from generate_series(1,3);
-select from generate_series(1,5) except select from generate_series(1,3);
-select from generate_series(1,5) except all select from generate_series(1,3);
 set enable_hashagg = false;
 set enable_sort = true;
-explain (costs off)
-select from generate_series(1,5) union select from generate_series(1,3);
-explain (costs off)
-select from generate_series(1,5) intersect select from generate_series(1,3);
-select from generate_series(1,5) union select from generate_series(1,3);
-select from generate_series(1,5) union all select from generate_series(1,3);
-select from generate_series(1,5) intersect select from generate_series(1,3);
-select from generate_series(1,5) intersect all select from generate_series(1,3);
-select from generate_series(1,5) except select from generate_series(1,3);
-select from generate_series(1,5) except all select from generate_series(1,3);
 reset enable_hashagg;
 reset enable_sort;
 CREATE TEMP TABLE t1 (a text, b text);

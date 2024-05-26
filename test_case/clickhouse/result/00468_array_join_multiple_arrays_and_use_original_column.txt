@@ -1,0 +1,30 @@
+--Query--
+SELECT nx FROM nested ARRAY JOIN nest.x AS nx, nest.y AS ny WHERE notEmpty(nest.y)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT 1 FROM nested ARRAY JOIN nest.x AS nx, nest.y AS ny WHERE notEmpty(nest.y)
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT nx, ny FROM nested ARRAY JOIN nest.x AS nx, nest.y AS ny WHERE notEmpty(nest.y)
+--Result--
+[(1, 4), (2, 5), (3, 6)]
++--------------------+
+--Query--
+SELECT nx FROM nested ARRAY JOIN nest.x AS nx, nest.y AS ny WHERE notEmpty(nest.x)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT nx, nest.y FROM nested ARRAY JOIN nest.x AS nx, nest.y AS ny
+--Result--
+[(1, [4, 5, 6]), (2, [4, 5, 6]), (3, [4, 5, 6])]
++--------------------+
+--Query--
+SELECT nx, ny, nest.x, nest.y FROM nested ARRAY JOIN nest.x AS nx, nest.y AS ny
+--Result--
+[(1, 4, [1, 2, 3], [4, 5, 6]), (2, 5, [1, 2, 3], [4, 5, 6]), (3, 6, [1, 2, 3], [4, 5, 6])]
++--------------------+

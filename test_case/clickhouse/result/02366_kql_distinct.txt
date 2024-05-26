@@ -1,0 +1,50 @@
+--Query--
+print '--  distinct * --'
+--Result--
+[('--  distinct * --',)]
++--------------------+
+--Query--
+Customers | distinct *
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual', 'Bachelors', 28), ('Stephanie', 'Cox', 'Management abcd defg', 'Bachelors', 33), ('Peter', 'Nara', 'Skilled Manual', 'Graduate Degree', 26), ('Latoya', 'Shen', 'Professional', 'Graduate Degree', 25), ('Apple', '', 'Skilled Manual', 'Bachelors', 28), (None, 'why', 'Professional', 'Partial College', 38)]
++--------------------+
+--Query--
+print '--  distinct one column --'
+--Result--
+[('--  distinct one column --',)]
++--------------------+
+--Query--
+Customers | distinct Occupation
+--Result--
+[('Skilled Manual',), ('Management abcd defg',), ('Professional',)]
++--------------------+
+--Query--
+print '--  distinct two column --'
+--Result--
+[('--  distinct two column --',)]
++--------------------+
+--Query--
+Customers | distinct Occupation, Education
+--Result--
+[('Skilled Manual', 'Bachelors'), ('Management abcd defg', 'Bachelors'), ('Skilled Manual', 'Graduate Degree'), ('Professional', 'Graduate Degree'), ('Professional', 'Partial College')]
++--------------------+
+--Query--
+print '--  distinct with where --'
+--Result--
+[('--  distinct with where --',)]
++--------------------+
+--Query--
+Customers where Age <30 | distinct Occupation, Education
+--Result--
+[('Skilled Manual', 'Bachelors'), ('Management abcd defg', 'Bachelors'), ('Skilled Manual', 'Graduate Degree'), ('Professional', 'Graduate Degree'), ('Professional', 'Partial College')]
++--------------------+
+--Query--
+print '--  distinct with where, order --'
+--Result--
+[('--  distinct with where, order --',)]
++--------------------+
+--Query--
+Customers |where Age <30 | order by Age| distinct Occupation, Education
+--Result--
+[('Skilled Manual', 'Bachelors'), ('Skilled Manual', 'Graduate Degree'), ('Professional', 'Graduate Degree')]
++--------------------+

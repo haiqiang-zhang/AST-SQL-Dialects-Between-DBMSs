@@ -1,0 +1,55 @@
+--Query--
+SHOW CREATE test_dictionary_10_shards
+--Result--
+[('CREATE DICTIONARY test.test_dictionary_10_shards\n(\n    `key` UInt64,\n    `value` UInt16\n)\nPRIMARY KEY key\nSOURCE(CLICKHOUSE(TABLE test_table))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(SPARSE_HASHED(SHARDS 10))',)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_dictionary_10_shards
+--Result--
+[]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() AND name = 'test_dictionary_10_shards'
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SELECT count() FROM test_table WHERE dictGet('test_dictionary_10_shards', 'value', key) != value
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SHOW CREATE test_dictionary_10_shards_nullable
+--Result--
+[('CREATE DICTIONARY test.test_dictionary_10_shards_nullable\n(\n    `key` UInt64,\n    `value` Nullable(UInt16)\n)\nPRIMARY KEY key\nSOURCE(CLICKHOUSE(TABLE test_table_nullable))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(SPARSE_HASHED(SHARDS 10))',)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_dictionary_10_shards_nullable
+--Result--
+[]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() AND name = 'test_dictionary_10_shards_nullable'
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_complex_dictionary_10_shards
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE test_complex_dictionary_10_shards
+--Result--
+[('CREATE DICTIONARY test.test_complex_dictionary_10_shards\n(\n    `key_1` UInt64,\n    `key_2` UInt64,\n    `value` UInt16\n)\nPRIMARY KEY key_1, key_2\nSOURCE(CLICKHOUSE(TABLE test_table_complex))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(COMPLEX_KEY_SPARSE_HASHED(SHARDS 10))',)]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() and name = 'test_complex_dictionary_10_shards'
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_dictionary_10_shards_string
+--Result--
+[]
++--------------------+

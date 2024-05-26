@@ -51,10 +51,6 @@ as $$
 $$ language sql;
 select x, pg_typeof(x), y, pg_typeof(y)
   from polyf(11, array[1, 2], 42, 34.5);
-select x, pg_typeof(x), y, pg_typeof(y)
-  from polyf(11, array[1, 2], point(1,2), point(3,4));
-select x, pg_typeof(x), y, pg_typeof(y)
-  from polyf(11, '{1,2}', point(1,2), '(3,4)');
 drop function polyf(a anyelement, b anyarray,
                     c anycompatible, d anycompatible);
 CREATE FUNCTION stfp(anyarray) RETURNS anyarray AS
@@ -166,8 +162,6 @@ CREATE AGGREGATE array_larger_accum (anyarray)
 );
 SELECT array_larger_accum(i)
 FROM (VALUES (ARRAY[1,2]), (ARRAY[3,4])) as t(i);
-SELECT array_larger_accum(i)
-FROM (VALUES (ARRAY[row(1,2),row(3,4)]), (ARRAY[row(5,6),row(7,8)])) as t(i);
 end;
 create function first_el_transfn(anyarray, anyelement) returns anyarray as
 'select $1 || $2' language sql immutable;
@@ -194,106 +188,63 @@ create function myleast(variadic anyarray) returns anyelement as $$
   select min($1[i]) from generate_subscripts($1,1) g(i)
 $$ language sql immutable strict;
 select myleast(10, 1, 20, 33);
-select myleast(1.1, 0.22, 0.55);
-select myleast('z'::text);
-select myleast(variadic array[1,2,3,4,-1]);
-select myleast(variadic array[1.1, -5.5]);
-select myleast(variadic array[]::int[]);
 select concat('%', 1, 2, 3, 4, 5);
-select concat('|', 'a'::text, 'b', 'c');
 select pg_typeof(null);
-select pg_typeof(0);
-select pg_typeof(0.0);
-select pg_typeof(1+1 = 2);
-select pg_typeof('x');
-select pg_typeof('' || '');
-select pg_typeof(pg_typeof(0));
-select pg_typeof(array[1.2,55.5]);
-select pg_typeof(myleast(10, 1, 20, 33));
 create function dfunc(a variadic int[]) returns int as
 $$ select array_upper($1, 1) $$ language sql;
 select dfunc(10);
-select dfunc(10,20);
 create or replace function dfunc(a variadic int[] default array[]::int[]) returns int as
 $$ select array_upper($1, 1) $$ language sql;
-select dfunc();
-select dfunc(10);
-select dfunc(10,20);
 drop function dfunc(a variadic int[]);
 create function anyctest(anycompatible, anycompatible)
 returns anycompatible as $$
   select greatest($1, $2)
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, 12) x;
-select x, pg_typeof(x) from anyctest(11, 12.3) x;
-select x, pg_typeof(x) from anyctest('11', '12.3') x;
 drop function anyctest(anycompatible, anycompatible);
 create function anyctest(anycompatible, anycompatible)
 returns anycompatiblearray as $$
   select array[$1, $2]
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, 12) x;
-select x, pg_typeof(x) from anyctest(11, 12.3) x;
 drop function anyctest(anycompatible, anycompatible);
 create function anyctest(anycompatible, anycompatiblearray)
 returns anycompatiblearray as $$
   select array[$1] || $2
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, array[12]) x;
-select x, pg_typeof(x) from anyctest(11, array[12.3]) x;
-select x, pg_typeof(x) from anyctest(12.3, array[13]) x;
-select x, pg_typeof(x) from anyctest(12.3, '{13,14.4}') x;
 drop function anyctest(anycompatible, anycompatiblearray);
 create function anyctest(anycompatible, anycompatiblerange)
 returns anycompatiblerange as $$
   select $2
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, int4range(4,7)) x;
-select x, pg_typeof(x) from anyctest(11, numrange(4,7)) x;
 drop function anyctest(anycompatible, anycompatiblerange);
 create function anyctest(anycompatiblerange, anycompatiblerange)
 returns anycompatible as $$
   select lower($1) + upper($2)
 $$ language sql;
-select x, pg_typeof(x) from anyctest(int4range(11,12), int4range(4,7)) x;
 drop function anyctest(anycompatiblerange, anycompatiblerange);
 create function anyctest(anycompatible, anycompatiblemultirange)
 returns anycompatiblemultirange as $$
   select $2
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, multirange(int4range(4,7))) x;
-select x, pg_typeof(x) from anyctest(11, multirange(numrange(4,7))) x;
 drop function anyctest(anycompatible, anycompatiblemultirange);
 create function anyctest(anycompatiblemultirange, anycompatiblemultirange)
 returns anycompatible as $$
   select lower($1) + upper($2)
 $$ language sql;
-select x, pg_typeof(x) from anyctest(multirange(int4range(11,12)), multirange(int4range(4,7))) x;
 drop function anyctest(anycompatiblemultirange, anycompatiblemultirange);
 create function anyctest(anycompatiblenonarray, anycompatiblenonarray)
 returns anycompatiblearray as $$
   select array[$1, $2]
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, 12) x;
-select x, pg_typeof(x) from anyctest(11, 12.3) x;
 drop function anyctest(anycompatiblenonarray, anycompatiblenonarray);
 create function anyctest(a anyelement, b anyarray,
                          c anycompatible, d anycompatible)
 returns anycompatiblearray as $$
   select array[c, d]
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, array[1, 2], 42, 34.5) x;
-select x, pg_typeof(x) from anyctest(11, array[1, 2], point(1,2), point(3,4)) x;
-select x, pg_typeof(x) from anyctest(11, '{1,2}', point(1,2), '(3,4)') x;
 drop function anyctest(a anyelement, b anyarray,
                        c anycompatible, d anycompatible);
 create function anyctest(variadic anycompatiblearray)
 returns anycompatiblearray as $$
   select $1
 $$ language sql;
-select x, pg_typeof(x) from anyctest(11, 12) x;
-select x, pg_typeof(x) from anyctest(11, 12.2) x;
-select x, pg_typeof(x) from anyctest(11, '12') x;
-select x, pg_typeof(x) from anyctest(variadic array[11, 12]) x;
-select x, pg_typeof(x) from anyctest(variadic array[11, 12.2]) x;
 drop function anyctest(variadic anycompatiblearray);

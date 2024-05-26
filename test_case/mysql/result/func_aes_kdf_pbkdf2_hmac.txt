@@ -1,0 +1,75 @@
+--Query--
+SELECT TO_BASE64(AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac'))
+--Result--
+[('44uRAyA9td7Ih/8XyI4paA==',)]
++--------------------+
+--Query--
+SELECT LENGTH(AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac'))
+--Result--
+[(16,)]
++--------------------+
+--Query--
+SELECT CHARSET(AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac'))
+--Result--
+[('binary',)]
++--------------------+
+--Query--
+SELECT AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac') = AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'my_text' = AES_DECRYPT(AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac'), 'my_key_string', '', 'pbkdf2_hmac')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT AES_ENCRYPT('my_text', repeat("x",32), '') = AES_ENCRYPT('my_text', repeat("y",32), '')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT AES_ENCRYPT('my_text', repeat("x",32), '', 'pbkdf2_hmac') = AES_ENCRYPT('my_text', repeat("y",32), '', 'pbkdf2_hmac')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT AES_ENCRYPT('my_text', repeat("x",32), '', 'pbkdf2_hmac') = AES_ENCRYPT('my_text', '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', '', 'pbkdf2_hmac')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'my_text' = AES_DECRYPT(AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac', 4000, '10001'), 'my_key_string', '', 'pbkdf2_hmac',4000, '10001')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'my_text' = AES_DECRYPT(AES_ENCRYPT('my_text', 'my_key_string', '', 'pbkdf2_hmac', 4000, 10001), 'my_key_string', '', 'pbkdf2_hmac',4000, 10001)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select AES_ENCRYPT('my_text', repeat("x",32))
+--Result--
+[(b"\xd2'\xe9\xe1\x06\x98lD5H\xbb\xb4\x9e\x80\xe5\x1e",)]
++--------------------+
+--Query--
+SELECT @@session.block_encryption_mode INTO @save_block_encryption_mode
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'my_text' = AES_DECRYPT(AES_ENCRYPT('my_text', 'my_key_string', @IV, 'pbkdf2_hmac'), 'my_key_string', @IV, 'pbkdf2_hmac')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'my_text' = AES_DECRYPT(AES_ENCRYPT('my_text', 'my_key_string', @IV, 'pbkdf2_hmac', 'salt'), 'my_key_string', @IV, 'pbkdf2_hmac', 'salt')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'my_text' = AES_DECRYPT(AES_ENCRYPT('my_text', 'my_key_string', @IV, 'pbkdf2_hmac', 'salt', '10001'), 'my_key_string', @IV, 'pbkdf2_hmac', 'salt', '10001')
+--Result--
+[(1,)]
++--------------------+

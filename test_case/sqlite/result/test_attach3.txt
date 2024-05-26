@@ -1,0 +1,125 @@
+--Query--
+ATTACH 'test2.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE name = 't3'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 't3'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master WHERE name = 'i1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'i1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'i1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'i1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'i1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM aux.sqlite_master
+--Result--
+[('sqlite_stat1',), ('Table2',), ('idx_col1_unique',), ('idx_col23_unique',), ('idx_col2',)]
++--------------------+
+--Query--
+SELECT name FROM aux.sqlite_master
+--Result--
+[('sqlite_stat1',), ('Table2',), ('idx_col1_unique',), ('idx_col23_unique',), ('idx_col2',)]
++--------------------+
+--Query--
+SELECT name FROM aux.sqlite_master
+--Result--
+[('sqlite_stat1',), ('Table2',), ('idx_col1_unique',), ('idx_col23_unique',), ('idx_col2',)]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'v1'
+--Result--
+[('view', 'v1', 'v1', 0, 'CREATE VIEW v1 AS SELECT * FROM t3')]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'v1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'tr1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.sqlite_master WHERE name = 'tr1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM temp.sqlite_master
+--Result--
+[(0,)]
++--------------------+
+--Query--
+ATTACH DATABASE ':memory:' AS notadb
+--Result--
+[]
++--------------------+
+--Query--
+DETACH DATABASE notadb
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE '' AS ''
+--Result--
+[]
++--------------------+
+--Query--
+DETACH ''
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE '' AS NULL
+--Result--
+[]
++--------------------+
+--Query--
+DETACH NULL
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH null AS null
+--Result--
+[]
++--------------------+
+--Query--
+DETACH ''
+--Result--
+[]
++--------------------+

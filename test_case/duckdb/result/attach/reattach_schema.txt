@@ -1,0 +1,40 @@
+--Query--
+ATTACH '__TEST_DIR__/reattach_schema.db' AS new_db
+--Result--
+[]
++--------------------+
+--Query--
+DETACH new_db
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/reattach_schema.db' AS new_name
+--Result--
+[]
++--------------------+
+--Query--
+USE new_name.my_schema
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM new_name.my_schema.my_view
+--Result--
+[(84,)]
++--------------------+
+--Query--
+SELECT new_name.my_schema.one()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM my_view
+--Result--
+[(84,)]
++--------------------+
+--Query--
+SELECT one()
+--Result--
+[(1,)]
++--------------------+

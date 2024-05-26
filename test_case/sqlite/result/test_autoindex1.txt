@@ -1,0 +1,50 @@
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM          data JOIN mimetypes ON (data.mimetype_id=mimetypes._id)               JOIN raw_contacts ON (data.raw_contact_id=raw_contacts._id)               JOIN accounts ON (raw_contacts.account_id=accounts._id)    WHERE mimetype_id=10 AND data14 IS NOT NULL
+--Result--
+[(6, 0, 0, 'SEARCH mimetypes USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SCAN accounts'), (12, 0, 0, 'SEARCH data USING INDEX data_mimetype_data1_index (mimetype_id=?)'), (21, 0, 0, 'SEARCH raw_contacts USING INTEGER PRIMARY KEY (rowid=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM          data JOIN mimetypes ON (data.mimetype_id=mimetypes._id)               JOIN raw_contacts ON (data.raw_contact_id=raw_contacts._id)               JOIN accounts ON (raw_contacts.account_id=accounts._id)    WHERE mimetypes._id=10 AND data14 IS NOT NULL
+--Result--
+[(6, 0, 0, 'SEARCH mimetypes USING INTEGER PRIMARY KEY (rowid=?)'), (9, 0, 0, 'SCAN accounts'), (11, 0, 0, 'SEARCH data USING INDEX data_mimetype_data1_index (mimetype_id=?)'), (19, 0, 0, 'SEARCH raw_contacts USING INTEGER PRIMARY KEY (rowid=?)')]
++--------------------+
+--Query--
+explain query plan   SELECT messages.ROWID,          messages.message_id,          messages.remote_id,          messages.date_received,          messages.date_sent,          messages.flags,          messages.size,          messages.color,          messages.date_last_viewed,          messages.subject_prefix,          subjects.subject,          sender.comment,          sender.address,          NULL,          messages.mailbox,          messages.original_mailbox,          NULL,          NULL,          messages.type,          messages.document_id,          sender,          NULL,          messages.conversation_id,          messages.conversation_position,          agglabels.labels    FROM mailboxes AS mailbox         JOIN messages ON mailbox.ROWID = messages.mailbox         LEFT OUTER JOIN subjects ON messages.subject = subjects.ROWID         LEFT OUTER JOIN addresses AS sender ON messages.sender = sender.ROWID         LEFT OUTER JOIN (                SELECT message_id, group_concat(mailbox_id) as labels                FROM labels GROUP BY message_id              ) AS agglabels ON messages.ROWID = agglabels.message_id   WHERE (mailbox.url = 'imap://email.app@imap.gmail.com/%5BGmail%5D/All%20Mail')     AND (messages.ROWID IN (             SELECT labels.message_id               FROM labels JOIN mailboxes ON labels.mailbox_id = mailboxes.ROWID              WHERE mailboxes.url = 'imap://email.app@imap.gmail.com/INBOX'))     AND messages.mailbox in (6,12,18,24,30,36,42,1,7,13,19,25,31,37,43,2,8,                              14,20,26,32,38,3,9,15,21,27,33,39,4,10,16,22,28,                              34,40,5,11,17,23,35,41)    ORDER BY date_received DESC
+--Result--
+[(3, 0, 0, 'MATERIALIZE agglabels'), (10, 3, 0, 'SCAN labels USING COVERING INDEX labels_message_id_mailbox_id_index'), (48, 0, 0, 'SEARCH mailbox USING COVERING INDEX sqlite_autoindex_mailboxes_1 (url=? AND rowid=?)'), (195, 0, 0, 'SEARCH messages USING INDEX message_mailbox_index (mailbox=?)'), (203, 0, 0, 'LIST SUBQUERY 2'), (207, 203, 0, 'SEARCH mailboxes USING COVERING INDEX sqlite_autoindex_mailboxes_1 (url=?)'), (211, 203, 0, 'SEARCH labels USING INDEX labels_mailbox_id_index (mailbox_id=?)'), (225, 0, 0, 'SEARCH subjects USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN'), (230, 0, 0, 'SEARCH sender USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN'), (239, 0, 0, 'BLOOM FILTER ON agglabels (message_id=?)'), (249, 0, 0, 'SEARCH agglabels USING AUTOMATIC COVERING INDEX (message_id=?) LEFT-JOIN')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT t1.z, agg2.m     FROM t1 JOIN agg2 ON t1.y=agg2.m    WHERE t1.x IN (1,2,3)
+--Result--
+[(2, 0, 0, 'CO-ROUTINE agg2'), (8, 2, 0, 'SCAN t2'), (10, 2, 0, 'USE TEMP B-TREE FOR GROUP BY'), (48, 0, 0, 'SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)'), (69, 0, 0, 'BLOOM FILTER ON agg2 (m=?)'), (82, 0, 0, 'SEARCH agg2 USING AUTOMATIC COVERING INDEX (m=?)')]
++--------------------+
+--Query--
+SELECT * FROM t920,(SELECT 0 FROM t920),(VALUES(9)) WHERE 5 IN (x)
+--Result--
+[(5, 0, 9), (5, 0, 9), (5, 0, 9)]
++--------------------+
+--Query--
+SELECT count(*) FROM t11 LEFT JOIN t12 WHERE t12.y IS t11.w
+--Result--
+[(0,)]
++--------------------+

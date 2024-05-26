@@ -1,0 +1,20 @@
+--Query--
+SELECT number % 2 ? toString(number) : toString(-number) FROM system.numbers LIMIT 10
+--Result--
+[('0',), ('1',), ('-2',), ('3',), ('-4',), ('5',), ('-6',), ('7',), ('-8',), ('9',)]
++--------------------+
+--Query--
+SELECT number % 2 ? toFixedString(toString(number), 2) : toFixedString(toString(-number), 2) FROM system.numbers LIMIT 10
+--Result--
+[('0',), ('1',), ('-2',), ('3',), ('-4',), ('5',), ('-6',), ('7',), ('-8',), ('9',)]
++--------------------+
+--Query--
+SELECT number % 2 ? toFixedString(toString(number), 2) : toString(-number) FROM system.numbers LIMIT 10
+--Result--
+[('0',), ('1\x00',), ('-2',), ('3\x00',), ('-4',), ('5\x00',), ('-6',), ('7\x00',), ('-8',), ('9\x00',)]
++--------------------+
+--Query--
+SELECT number % 2 ? 'Hello' : 'Goodbye' FROM system.numbers LIMIT 10
+--Result--
+[('Goodbye',), ('Hello',), ('Goodbye',), ('Hello',), ('Goodbye',), ('Hello',), ('Goodbye',), ('Hello',), ('Goodbye',), ('Hello',)]
++--------------------+

@@ -1,0 +1,80 @@
+--Query--
+SELECT 'uniqTheta many agrs'
+--Result--
+[('uniqTheta many agrs',)]
++--------------------+
+--Query--
+SELECT     uniqTheta(x), uniqTheta((x)), uniqTheta(x, y), uniqTheta((x, y)), uniqTheta(x, y, z), uniqTheta((x, y, z)) FROM (     SELECT         number % 10 AS x,         intDiv(number, 10) % 10 AS y,         toString(intDiv(number, 100) % 10) AS z     FROM system.numbers LIMIT 1000 )
+--Result--
+[(10, 10, 100, 100, 1000, 1000)]
++--------------------+
+--Query--
+SELECT 'uniqTheta distinct'
+--Result--
+[('uniqTheta distinct',)]
++--------------------+
+--Query--
+SELECT count(DISTINCT x) FROM (SELECT number % 123 AS x FROM system.numbers LIMIT 1000)
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT 'uniqTheta arrays'
+--Result--
+[('uniqTheta arrays',)]
++--------------------+
+--Query--
+SELECT uniqThetaArray([0, 1, 1], [0, 1, 1], [0, 1, 1])
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 'uniqTheta complex types'
+--Result--
+[('uniqTheta complex types',)]
++--------------------+
+--Query--
+SELECT 'uniqTheta decimals'
+--Result--
+[('uniqTheta decimals',)]
++--------------------+
+--Query--
+SELECT (uniqTheta(a), uniqTheta(b), uniqTheta(c)) FROM (SELECT * FROM decimal ORDER BY a)
+--Result--
+[((0, 0, 0),)]
++--------------------+
+--Query--
+SELECT (uniqTheta(a), uniqTheta(b), uniqTheta(c)) FROM (SELECT * FROM decimal ORDER BY a)
+--Result--
+[((101, 101, 101),)]
++--------------------+
+--Query--
+SELECT 'uniqTheta remove injective'
+--Result--
+[('uniqTheta remove injective',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX select uniqTheta(x) from (select number % 2 as x from numbers(10))
+--Result--
+[('SELECT uniqTheta(x)',), ('FROM',), ('(',), ('    SELECT number % 2 AS x',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+SELECT uniqMerge(Uniq), uniqThetaMerge(UniqThetaSketch) FROM stored_aggregates
+--Result--
+[(1000, 1000)]
++--------------------+
+--Query--
+OPTIMIZE TABLE stored_aggregates
+--Result--
+[]
++--------------------+
+--Query--
+select k, sum(c), uniqMerge(un), uniqThetaMerge(ut) from summing_merge_tree_aggregate_function group by k order by k
+--Result--
+[(0, 333333, 53, 53), (1, 333333, 53, 53), (2, 333333, 53, 53)]
++--------------------+
+--Query--
+optimize table summing_merge_tree_aggregate_function
+--Result--
+[]
++--------------------+

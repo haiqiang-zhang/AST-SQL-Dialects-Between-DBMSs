@@ -1,0 +1,65 @@
+--Query--
+select '01'=1
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT cos('0')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+select date '1992-01-01'>'1991-01-01'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select date '2023-12-11' < '2023-12-11 15:54:45.119'
+--Result--
+[(False,)]
++--------------------+
+--Query--
+SELECT * FROM test WHERE date >= '2023-08-05 00:00:00' AND date < '2023-08-06 00:00:00'
+--Result--
+[(datetime.date(2023, 8, 5), '5')]
++--------------------+
+--Query--
+SELECT '[hello]'[1]
+--Result--
+[('[',)]
++--------------------+
+--Query--
+SELECT list('hello world')
+--Result--
+[(['hello world'],)]
++--------------------+
+--Query--
+select 1 IN ('1', '2')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT COALESCE(1, '1')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select i=1 from (values ('01')) t(i)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select i IN (1) from (values ('01')) t(i)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+WITH cte AS (SELECT '01' AS s) SELECT 1=s AS in_res FROM cte
+--Result--
+[(True,)]
++--------------------+
+--Query--
+WITH cte AS (SELECT '01' AS s) SELECT 1 IN (s) AS in_res FROM cte
+--Result--
+[(True,)]
++--------------------+

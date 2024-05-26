@@ -1,0 +1,40 @@
+--Query--
+select 'create replica 1 and check deduplication'
+--Result--
+[('create replica 1 and check deduplication',)]
++--------------------+
+--Query--
+select 'two inserts with exact data, one inserted, one deduplicated by data digest'
+--Result--
+[('two inserts with exact data, one inserted, one deduplicated by data digest',)]
++--------------------+
+--Query--
+select 'two inserts with the same dedup token, one inserted, one deduplicated by the token'
+--Result--
+[('two inserts with the same dedup token, one inserted, one deduplicated by the token',)]
++--------------------+
+--Query--
+select 'reset deduplication token and insert new row'
+--Result--
+[('reset deduplication token and insert new row',)]
++--------------------+
+--Query--
+select 'create replica 2 and check deduplication'
+--Result--
+[('create replica 2 and check deduplication',)]
++--------------------+
+--Query--
+select 'inserted value deduplicated by data digest, the same result as before'
+--Result--
+[('inserted value deduplicated by data digest, the same result as before',)]
++--------------------+
+--Query--
+select 'inserted value deduplicated by dedup token, the same result as before'
+--Result--
+[('inserted value deduplicated by dedup token, the same result as before',)]
++--------------------+
+--Query--
+select 'new record inserted by providing new deduplication token'
+--Result--
+[('new record inserted by providing new deduplication token',)]
++--------------------+

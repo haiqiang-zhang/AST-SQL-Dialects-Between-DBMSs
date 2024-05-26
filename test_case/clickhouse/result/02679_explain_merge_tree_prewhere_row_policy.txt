@@ -1,0 +1,10 @@
+--Query--
+EXPLAIN header = 1, actions = 1 SELECT id, value FROM test_table PREWHERE id = 5 settings allow_experimental_analyzer=0
+--Result--
+[('Expression ((Projection + Before ORDER BY))',), ('Header: id UInt64',), ('        value String',), ('Actions: INPUT :: 0 -> id UInt64 : 0',), ('         INPUT :: 1 -> value String : 1',), ('Positions: 0 1',), ('  ReadFromMergeTree (test.test_table)',), ('  Header: id UInt64',), ('          value String',), ('  ReadType: Default',), ('  Parts: 0',), ('  Granules: 0',), ('  Prewhere info',), ('  Need filter: 1',), ('    Prewhere filter',), ('    Prewhere filter column: equals(id, 5) (removed)',), ('    Actions: INPUT : 0 -> id UInt64 : 0',), ('             COLUMN Const(UInt8) -> 5 UInt8 : 1',), ('             FUNCTION equals(id : 0, 5 :: 1) -> equals(id, 5) UInt8 : 2',), ('    Positions: 2 0',)]
++--------------------+
+--Query--
+EXPLAIN header = 1, actions = 1 SELECT id, value FROM test_table PREWHERE id = 5 settings allow_experimental_analyzer=1
+--Result--
+[('Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('Header: id UInt64',), ('        value String',), ('Actions: INPUT : 0 -> id UInt64 : 0',), ('         INPUT : 1 -> value String : 1',), ('         ALIAS id :: 0 -> __table1.id UInt64 : 2',), ('         ALIAS value :: 1 -> __table1.value String : 0',), ('         ALIAS __table1.id :: 2 -> id UInt64 : 1',), ('         ALIAS __table1.value :: 0 -> value String : 2',), ('Positions: 1 2',), ('  ReadFromMergeTree (test.test_table)',), ('  Header: id UInt64',), ('          value String',), ('  ReadType: Default',), ('  Parts: 0',), ('  Granules: 0',), ('  Prewhere info',), ('  Need filter: 1',), ('    Prewhere filter',), ('    Prewhere filter column: equals(id, 5_UInt8) (removed)',), ('    Actions: INPUT : 0 -> id UInt64 : 0',), ('             COLUMN Const(UInt8) -> 5_UInt8 UInt8 : 1',), ('             FUNCTION equals(id : 0, 5_UInt8 :: 1) -> equals(id, 5_UInt8) UInt8 : 2',), ('    Positions: 2 0',)]
++--------------------+

@@ -1,0 +1,65 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM system.query_cache
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SHOW TABLES SETTINGS use_query_cache = true
+--Result--
+[('eligible_test',)]
++--------------------+
+--Query--
+CHECK TABLE eligible_test SETTINGS use_query_cache = true
+--Result--
+[(1,)]
++--------------------+
+--Query--
+DESCRIBE TABLE eligible_test SETTINGS use_query_cache = true
+--Result--
+[('a', 'String', '', '', '', '', ''), ('b', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+EXISTS TABLE eligible_test SETTINGS use_query_cache = true
+--Result--
+[(1,)]
++--------------------+
+--Query--
+KILL QUERY WHERE query_id='3-857d-4a57-9ee0-3c7da5d60a90' SETTINGS use_query_cache = true
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE eligible_test FINAL SETTINGS use_query_cache = true
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE eligible_test SETTINGS use_query_cache = true
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE eligible_test TO eligible_test2 SETTINGS use_query_cache = true
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

@@ -1,5 +1,4 @@
 DROP DATABASE IF EXISTS test_truncate_database;
-
 CREATE DATABASE test_truncate_database;
 USE test_truncate_database;
 CREATE TABLE source_table_memory (x UInt16) ENGINE = Memory;

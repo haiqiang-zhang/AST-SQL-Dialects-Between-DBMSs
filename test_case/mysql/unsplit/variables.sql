@@ -29,7 +29,6 @@ select @@local.max_join_size, @@global.max_join_size;
 select @@identity,  length(@@version)>0;
 select @@VERSION=version();
 select last_insert_id(345);
-select @@IDENTITY,last_insert_id(), @@identity;
 select * from performance_schema.session_variables where variable_name like 'concurrent_insert';
 select * from performance_schema.session_variables where variable_name like 'concurrent_insert';
 select * from performance_schema.session_variables where variable_name like 'concurrent_insert';

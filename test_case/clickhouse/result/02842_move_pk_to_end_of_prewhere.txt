@@ -1,0 +1,10 @@
+--Query--
+SELECT replaceRegexpAll(explain, '__table1\.|_UInt8', '') FROM (EXPLAIN actions=1 SELECT count() FROM t_02848_mt1 WHERE k = 3 AND notEmpty(v)) WHERE explain LIKE '%Prewhere filter%' OR explain LIKE '%Filter%'
+--Result--
+[('          Prewhere filter',), ('          Prewhere filter column: and(notEmpty(v), equals(k, 3)) (removed)',)]
++--------------------+
+--Query--
+SELECT count() FROM t_02848_mt1 WHERE k = 3 AND notEmpty(v)
+--Result--
+[(1,)]
++--------------------+

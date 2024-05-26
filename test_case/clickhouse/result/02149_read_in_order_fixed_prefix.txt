@@ -1,0 +1,120 @@
+--Query--
+SELECT toStartOfMonth(date) as d, i FROM t_read_in_order ORDER BY d, i LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 1), 0), (datetime.date(2020, 10, 1), 0), (datetime.date(2020, 10, 1), 0), (datetime.date(2020, 10, 1), 0), (datetime.date(2020, 10, 1), 0)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT toStartOfMonth(date) as d, i FROM t_read_in_order ORDER BY d, i LIMIT 5
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('    FinishSortingTransform',), ('      PartialSortingTransform',), ('        MergingSortedTransform 2 → 1',), ('          (Expression)',), ('          ExpressionTransform × 2',), ('            (ReadFromMergeTree)',), ('            MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) × 2 0 → 1',)]
++--------------------+
+--Query--
+SELECT toStartOfMonth(date) as d, i FROM t_read_in_order ORDER BY d DESC, -i LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT toStartOfMonth(date) as d, i FROM t_read_in_order ORDER BY d DESC, -i LIMIT 5
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('    FinishSortingTransform',), ('      PartialSortingTransform',), ('        MergingSortedTransform 2 → 1',), ('          (Expression)',), ('          ExpressionTransform × 2',), ('            (ReadFromMergeTree)',), ('            ReverseTransform',), ('              MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InReverseOrder) 0 → 1',), ('                ReverseTransform',), ('                  MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InReverseOrder) 0 → 1',)]
++--------------------+
+--Query--
+SELECT toStartOfMonth(date) as d, i FROM t_read_in_order ORDER BY d, -i LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9), (datetime.date(2020, 10, 1), 9)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT toStartOfMonth(date) as d, i FROM t_read_in_order ORDER BY d, -i LIMIT 5
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('    FinishSortingTransform',), ('      PartialSortingTransform',), ('        MergingSortedTransform 2 → 1',), ('          (Expression)',), ('          ExpressionTransform × 2',), ('            (ReadFromMergeTree)',), ('            MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) × 2 0 → 1',)]
++--------------------+
+--Query--
+SELECT date, i FROM t_read_in_order WHERE date = '2020-10-11' ORDER BY i LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 11), 0), (datetime.date(2020, 10, 11), 0), (datetime.date(2020, 10, 11), 0), (datetime.date(2020, 10, 11), 0), (datetime.date(2020, 10, 11), 0)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT date, i FROM t_read_in_order WHERE date = '2020-10-11' ORDER BY i LIMIT 5 settings allow_experimental_analyzer=0
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('      (Expression)',), ('      ExpressionTransform',), ('        (Expression)',), ('        ExpressionTransform',), ('          (ReadFromMergeTree)',), ('          MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) 0 → 1',)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT date, i FROM t_read_in_order WHERE date = '2020-10-11' ORDER BY i LIMIT 5 settings allow_experimental_analyzer=1
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('      (Expression)',), ('      ExpressionTransform',), ('        (Expression)',), ('        ExpressionTransform',), ('          (ReadFromMergeTree)',), ('          MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) 0 → 1',)]
++--------------------+
+--Query--
+SELECT * FROM t_read_in_order WHERE date = '2020-10-11' ORDER BY i, v LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 11), 0, 0), (datetime.date(2020, 10, 11), 0, 10), (datetime.date(2020, 10, 11), 0, 20), (datetime.date(2020, 10, 11), 0, 30), (datetime.date(2020, 10, 11), 0, 40)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT * FROM t_read_in_order WHERE date = '2020-10-11' ORDER BY i, v LIMIT 5 settings allow_experimental_analyzer=0
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('    FinishSortingTransform',), ('      PartialSortingTransform',), ('        (Expression)',), ('        ExpressionTransform',), ('          (Expression)',), ('          ExpressionTransform',), ('            (ReadFromMergeTree)',), ('            MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) 0 → 1',)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT * FROM t_read_in_order WHERE date = '2020-10-11' ORDER BY i, v LIMIT 5 settings allow_experimental_analyzer=1
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('    FinishSortingTransform',), ('      PartialSortingTransform',), ('        (Expression)',), ('        ExpressionTransform',), ('          (Expression)',), ('          ExpressionTransform',), ('            (ReadFromMergeTree)',), ('            MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) 0 → 1',)]
++--------------------+
+--Query--
+SELECT date, i FROM t_read_in_order WHERE date = '2020-10-12' ORDER BY i LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 12), 0), (datetime.date(2020, 10, 12), 1), (datetime.date(2020, 10, 12), 2), (datetime.date(2020, 10, 12), 3), (datetime.date(2020, 10, 12), 4)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT date, i FROM t_read_in_order WHERE date = '2020-10-12' ORDER BY i DESC LIMIT 5
+--Result--
+[('SELECT',), ('    date,',), ('    i',), ('FROM t_read_in_order',), ("WHERE date = '2020-10-12'",), ('ORDER BY i DESC',), ('LIMIT 5',)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT date, i FROM t_read_in_order WHERE date = '2020-10-12' ORDER BY i DESC LIMIT 5 settings allow_experimental_analyzer=0
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('      (Expression)',), ('      ExpressionTransform',), ('        (Expression)',), ('        ExpressionTransform',), ('          (ReadFromMergeTree)',), ('          ReverseTransform',), ('            MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InReverseOrder) 0 → 1',)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT date, i FROM t_read_in_order WHERE date = '2020-10-12' ORDER BY i DESC LIMIT 5 settings allow_experimental_analyzer=1
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('      (Expression)',), ('      ExpressionTransform',), ('        (Expression)',), ('        ExpressionTransform',), ('          (ReadFromMergeTree)',), ('          ReverseTransform',), ('            MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InReverseOrder) 0 → 1',)]
++--------------------+
+--Query--
+SELECT date, i FROM t_read_in_order WHERE date = '2020-10-12' ORDER BY i DESC LIMIT 5
+--Result--
+[(datetime.date(2020, 10, 12), 99999), (datetime.date(2020, 10, 12), 99998), (datetime.date(2020, 10, 12), 99997), (datetime.date(2020, 10, 12), 99996), (datetime.date(2020, 10, 12), 99995)]
++--------------------+
+--Query--
+SYSTEM STOP MERGES t_read_in_order
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, b FROM t_read_in_order WHERE a = 1 ORDER BY b SETTINGS read_in_order_two_level_merge_threshold = 1
+--Result--
+[(1, 2), (1, 2), (1, 3), (1, 3), (1, 4), (1, 4)]
++--------------------+
+--Query--
+SELECT '========'
+--Result--
+[('========',)]
++--------------------+
+--Query--
+SELECT a, b FROM t_read_in_order WHERE a = 1 ORDER BY b DESC SETTINGS read_in_order_two_level_merge_threshold = 1
+--Result--
+[(1, 4), (1, 4), (1, 3), (1, 3), (1, 2), (1, 2)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT toStartOfDay(dt) as date, d FROM t_read_in_order ORDER BY date, round(d) LIMIT 5
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (Sorting)',), ('      (Expression)',), ('      ExpressionTransform',), ('        (ReadFromMergeTree)',), ('        MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) 0 → 1',)]
++--------------------+
+--Query--
+SELECT * from (   SELECT toStartOfDay(dt) as date, d FROM t_read_in_order ORDER BY date, round(d) LIMIT 50000000000   -- subquery with limit 50000000 to stabilize a test result and prevent order by d pushdown ) order by d limit 5
+--Result--
+[(datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01)]
++--------------------+
+--Query--
+SELECT * from (   SELECT toStartOfDay(dt) as date, d FROM t_read_in_order WHERE date = '2020-10-10' ORDER BY round(d) LIMIT 50000000000   -- subquery with limit 50000000 to stabilize a test result and prevent order by d pushdown ) order by d limit 5
+--Result--
+[(datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01), (datetime.datetime(2020, 10, 10, 0, 0), 0.01)]
++--------------------+

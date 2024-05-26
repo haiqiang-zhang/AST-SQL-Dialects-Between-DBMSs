@@ -1,0 +1,170 @@
+--Query--
+SELECT 1 / CAST(NULL, 'Nullable(Decimal(7, 2))')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(1) / CAST(NULL, 'Nullable(Decimal(7, 2))')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 / CAST(materialize(NULL), 'Nullable(Decimal(7, 2))')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(1) / CAST(materialize(NULL), 'Nullable(Decimal(7, 2))')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 / CAST(1, 'Nullable(Decimal(7, 2))')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT materialize(1) / CAST(1, 'Nullable(Decimal(7, 2))')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1 / CAST(materialize(1), 'Nullable(Decimal(7, 2))')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT materialize(1) / CAST(materialize(1), 'Nullable(Decimal(7, 2))')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT intDiv(1, CAST(NULL, 'Nullable(Decimal(7, 2))'))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT toDecimal32(1, 2) / CAST(NULL, 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(toDecimal32(1, 2)) / CAST(NULL, 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT toDecimal32(1, 2) / CAST(materialize(NULL), 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(toDecimal32(1, 2)) / CAST(materialize(NULL), 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT toDecimal32(1, 2) / CAST(1, 'Nullable(UInt32)')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT materialize(toDecimal32(1, 2)) / CAST(1, 'Nullable(UInt32)')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT toDecimal32(1, 2) / CAST(materialize(1), 'Nullable(UInt32)')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT materialize(toDecimal32(1, 2)) / CAST(materialize(1), 'Nullable(UInt32)')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(NULL, 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(NULL, 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(materialize(NULL), 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(materialize(NULL), 'Nullable(UInt32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(1, 'Nullable(UInt32)')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(1, 'Nullable(UInt32)')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(materialize(1), 'Nullable(UInt32)')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(materialize(1), 'Nullable(UInt32)')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(NULL, 'Nullable(Float32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(NULL, 'Nullable(Float32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(materialize(NULL), 'Nullable(Float32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(materialize(NULL), 'Nullable(Float32)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(1, 'Nullable(Float32)')
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(1, 'Nullable(Float32)')
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT 1 % CAST(materialize(1), 'Nullable(Float32)')
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT materialize(1) % CAST(materialize(1), 'Nullable(Float32)')
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT if(y = 0, 0, intDiv(x, y)) from nullable_division
+--Result--
+[(1,), (None,), (0,)]
++--------------------+

@@ -1,0 +1,55 @@
+--Query--
+select 'invalid values:'
+--Result--
+[('invalid values:',)]
++--------------------+
+--Query--
+select geohashEncode(181.0, 91.0)
+--Result--
+[('zzzzzzzzzzzz',)]
++--------------------+
+--Query--
+select count(geohashDecode('abcdefghijklmnopqrstuvwxyz'))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 'constant values:'
+--Result--
+[('constant values:',)]
++--------------------+
+--Query--
+select round(geohashDecode('ezs42').1, 5), round(geohashDecode('ezs42').2, 5)
+--Result--
+[(-5.60303, 42.60498)]
++--------------------+
+--Query--
+select 'default precision:'
+--Result--
+[('default precision:',)]
++--------------------+
+--Query--
+select 'mixing const and non-const-columns:'
+--Result--
+[('mixing const and non-const-columns:',)]
++--------------------+
+--Query--
+select 'from table (with const precision):'
+--Result--
+[('from table (with const precision):',)]
++--------------------+
+--Query--
+select 1 as p, geohashEncode(longitude, latitude, p) as actual, if(actual = encoded, 'Ok', concat('expected: ', encoded)) from geohash_test_data WHERE length(encoded) = p
+--Result--
+[(1, '6', 'Ok'), (1, '6', 'Ok'), (1, '6', 'Ok'), (1, '7', 'Ok'), (1, '7', 'Ok'), (1, 'k', 'Ok'), (1, 'k', 'Ok'), (1, 'k', 'Ok'), (1, '7', 'Ok'), (1, '7', 'Ok'), (1, 'k', 'Ok'), (1, 'k', 'Ok'), (1, 'k', 'Ok'), (1, 'e', 'Ok'), (1, 'e', 'Ok'), (1, 's', 'Ok'), (1, 's', 'Ok'), (1, 's', 'Ok'), (1, 'e', 'Ok'), (1, 'e', 'Ok'), (1, 's', 'Ok'), (1, 's', 'Ok'), (1, 's', 'Ok'), (1, 'e', 'Ok'), (1, 'e', 'Ok'), (1, 's', 'Ok'), (1, 's', 'Ok'), (1, 's', 'Ok'), (1, 'w', 'Ok'), (1, 'g', 'Ok'), (1, 'u', 'Ok')]
++--------------------+
+--Query--
+select 'incorrectly decoded values:'
+--Result--
+[('incorrectly decoded values:',)]
++--------------------+
+--Query--
+select 	geohashDecode(encoded) as actual, 	'expected:', encoded, '=>', latitude, longitude, 	'length:', 	length(encoded), 	'max lat error:', 180 / power(2, 2.5 * length(encoded)) as latitude_max_error, 	'max lon error:', 360 / power(2, 2.5 * length(encoded)) as longitude_max_error, 	'err:', (actual.2 - latitude) as lat_error, (actual.1 - longitude) as lon_error, 	'derr:', abs(lat_error) - latitude_max_error, abs(lon_error) - longitude_max_error from geohash_test_data where 	abs(lat_error) > latitude_max_error 	or 	abs(lon_error) > longitude_max_error
+--Result--
+[]
++--------------------+

@@ -1,0 +1,10 @@
+--Query--
+SELECT dummy FROM system.one ORDER BY materialize('{"k":"v"}'::JSON)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT materialize('{"k":"v"}'::JSON) SETTINGS extremes = 1
+--Result--
+[(('v',),), (('v',),), (('v',),)]
++--------------------+

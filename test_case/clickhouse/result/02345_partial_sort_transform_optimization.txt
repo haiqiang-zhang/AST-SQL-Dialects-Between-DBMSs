@@ -1,0 +1,10 @@
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT 0 a, toNullable(number) b, toString(number) c FROM numbers(1e6)) ORDER BY a DESC, b DESC, c LIMIT 1500) limit 10
+--Result--
+[(0, 999999, '999999'), (0, 999998, '999998'), (0, 999997, '999997'), (0, 999996, '999996'), (0, 999995, '999995'), (0, 999994, '999994'), (0, 999993, '999993'), (0, 999992, '999992'), (0, 999991, '999991'), (0, 999990, '999990')]
++--------------------+
+--Query--
+SELECT number FROM (SELECT number, 1 AS k FROM numbers(100000) ORDER BY k ASC, number DESC LIMIT 1025, 1023) LIMIT 5
+--Result--
+[(98974,), (98973,), (98972,), (98971,), (98970,)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+select str, str in ('a', 'd') from lc_00688
+--Result--
+[('a', 1), ('b', 0)]
++--------------------+
+--Query--
+select val, val in (1, 3) from lc_00688
+--Result--
+[(1, 1), (2, 0)]
++--------------------+
+--Query--
+select str, str in (select arrayJoin(['a', 'd'])) from lc_00688
+--Result--
+[('a', 1), ('b', 0)]
++--------------------+
+--Query--
+select val, val in (select arrayJoin([1, 3])) from lc_00688
+--Result--
+[(1, 1), (2, 0)]
++--------------------+
+--Query--
+select str, str in (select str from lc_00688) from lc_00688
+--Result--
+[('a', 1), ('b', 1)]
++--------------------+
+--Query--
+select val, val in (select val from lc_00688) from lc_00688
+--Result--
+[(1, 1), (2, 1)]
++--------------------+
+--Query--
+SELECT v FROM ary_lc_null WHERE v IN (SELECT v FROM ary_lc_null)
+--Result--
+[(['1'],)]
++--------------------+

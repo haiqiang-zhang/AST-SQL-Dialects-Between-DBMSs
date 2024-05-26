@@ -1,0 +1,20 @@
+--Query--
+select currentUser() IS NOT NULL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select length(currentUser()) > 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select currentUser() = user(), currentUser() = USER(), current_user() = currentUser()
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+select currentUser() = initial_user from system.processes where query like '%$!@#%' AND current_database = currentDatabase()
+--Result--
+[(1,)]
++--------------------+

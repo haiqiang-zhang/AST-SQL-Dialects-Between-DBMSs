@@ -1,0 +1,145 @@
+--Query--
+SELECT 1 FROM dual WHERE EXISTS (SELECT * FROM t1 AS it)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT 1 FROM dual)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT 1 FROM dual WHERE FALSE)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.pk = 1)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.uk = 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ukn = 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ik = 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.d = 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.pk = ot.pk)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.uk = ot.uk)
+--Result--
+[(1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ukn = ot.ukn)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ik = ot.ik)
+--Result--
+[(1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.d = ot.d)
+--Result--
+[(1, 10, 20, 30, 40), (2, 20, 40, 60, 80)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.pk > ot.pk)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.uk > ot.uk)
+--Result--
+[(1, 10, 20, 30, 40)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ukn > ot.ukn)
+--Result--
+[(0, None, 0, None, None), (1, 10, 20, 30, 40)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ik > ot.ik)
+--Result--
+[(1, 10, 20, 30, 40)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.d > ot.d)
+--Result--
+[(1, 10, 20, 30, 40)]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ik = ot.pk)
+--Result--
+[(30,), (60,)]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.pk = ot.pk)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.uk = ot.pk)
+--Result--
+[(10,), (20,)]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.ukn = ot.pk)
+--Result--
+[(20,), (40,)]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE EXISTS (SELECT * FROM t1 AS it WHERE it.d = ot.pk)
+--Result--
+[(40,), (80,)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t2 AS it WHERE ot.d = it.pk - 1)
+--Result--
+[(1, 10, 20, 30, 40)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS ot WHERE EXISTS (SELECT * FROM t1 AS it1 JOIN t2 AS it2 ON it1.pk > it2.pk               WHERE ot.d = it2.pk)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT * FROM t1 WHERE 127 = 55)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1) AND       EXISTS (SELECT * FROM t1)
+--Result--
+[]
++--------------------+

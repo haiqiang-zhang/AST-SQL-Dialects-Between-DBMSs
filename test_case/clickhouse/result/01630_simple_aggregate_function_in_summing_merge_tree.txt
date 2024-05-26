@@ -1,0 +1,15 @@
+--Query--
+select sumMap(sMap), sumMapMerge(aMap) from test_smt
+--Result--
+[(([25], [1]), ([25], [1]))]
++--------------------+
+--Query--
+optimize table simple_agf_summing_mt final
+--Result--
+[]
++--------------------+
+--Query--
+SELECT arraySort(groupUniqArrayArrayMerge(grp_aggreg)) gra , arraySort(groupUniqArrayArray(grp_simple)) grs FROM simple_agf_summing_mt group by a
+--Result--
+[([0, 1], [0, 1])]
++--------------------+

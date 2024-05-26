@@ -22,10 +22,6 @@ LAYOUT(FLAT());
 SELECT 'Flat dictionary';
 SELECT dictGetOrDefault('flat_dictionary', ('v1', 'v2'), 0, (intDiv(1, id), intDiv(1, id)))
 FROM dictionary_source_table;
-SELECT dictGetOrDefault('flat_dictionary', 'v2', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('flat_dictionary', 'v3', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
 DROP DICTIONARY flat_dictionary;
 DROP DICTIONARY IF EXISTS hashed_dictionary;
 CREATE DICTIONARY hashed_dictionary
@@ -40,14 +36,6 @@ SOURCE(CLICKHOUSE(TABLE 'dictionary_source_table'))
 LIFETIME(MIN 0 MAX 0)
 LAYOUT(HASHED());
 SELECT 'Hashed dictionary';
-SELECT dictGetOrDefault('hashed_dictionary', ('v1', 'v2'), 0, (intDiv(1, id), intDiv(1, id)))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('hashed_dictionary', 'v2', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('hashed_dictionary', 'v3', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('hashed_dictionary', 'v2', 1, intDiv(1, id))
-FROM dictionary_source_table;
 DROP DICTIONARY hashed_dictionary;
 DROP DICTIONARY IF EXISTS hashed_array_dictionary;
 CREATE DICTIONARY hashed_array_dictionary
@@ -62,12 +50,6 @@ SOURCE(CLICKHOUSE(TABLE 'dictionary_source_table'))
 LIFETIME(MIN 0 MAX 0)
 LAYOUT(HASHED_ARRAY());
 SELECT 'Hashed array dictionary';
-SELECT dictGetOrDefault('hashed_array_dictionary', ('v1', 'v2'), 0, (intDiv(1, id), intDiv(1, id)))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('hashed_array_dictionary', 'v2', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('hashed_array_dictionary', 'v3', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
 DROP DICTIONARY hashed_array_dictionary;
 DROP TABLE IF EXISTS range_dictionary_source_table;
 CREATE TABLE range_dictionary_source_table
@@ -92,8 +74,6 @@ LIFETIME(MIN 0 MAX 0)
 LAYOUT(RANGE_HASHED())
 RANGE(MIN start MAX end);
 SELECT 'Range hashed dictionary';
-SELECT dictGetOrDefault('range_hashed_dictionary', 'val', id, toDate('2023-01-02'), intDiv(NULL, id))
-FROM range_dictionary_source_table;
 DROP DICTIONARY range_hashed_dictionary;
 DROP TABLE range_dictionary_source_table;
 DROP DICTIONARY IF EXISTS cache_dictionary;
@@ -109,12 +89,6 @@ SOURCE(CLICKHOUSE(TABLE 'dictionary_source_table'))
 LIFETIME(MIN 0 MAX 0)
 LAYOUT(CACHE(SIZE_IN_CELLS 10));
 SELECT 'Cache dictionary';
-SELECT dictGetOrDefault('cache_dictionary', ('v1', 'v2'), 0, (intDiv(1, id), intDiv(1, id)))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('cache_dictionary', 'v2', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('cache_dictionary', 'v3', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
 DROP DICTIONARY cache_dictionary;
 DROP DICTIONARY IF EXISTS direct_dictionary;
 CREATE DICTIONARY direct_dictionary
@@ -128,12 +102,6 @@ PRIMARY KEY id
 SOURCE(CLICKHOUSE(TABLE 'dictionary_source_table'))
 LAYOUT(DIRECT());
 SELECT 'Direct dictionary';
-SELECT dictGetOrDefault('direct_dictionary', ('v1', 'v2'), 0, (intDiv(1, id), intDiv(1, id)))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('direct_dictionary', 'v2', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
-SELECT dictGetOrDefault('direct_dictionary', 'v3', id+1, intDiv(NULL, id))
-FROM dictionary_source_table;
 DROP DICTIONARY direct_dictionary;
 DROP TABLE dictionary_source_table;
 DROP TABLE IF EXISTS ip_dictionary_source_table;
@@ -158,10 +126,6 @@ SOURCE(CLICKHOUSE(TABLE 'ip_dictionary_source_table'))
 LAYOUT(IP_TRIE)
 LIFETIME(3600);
 SELECT 'IP TRIE dictionary';
-SELECT dictGetOrDefault('ip_dictionary', 'cca2', toIPv4('202.79.32.10'), intDiv(0, id))
-FROM ip_dictionary_source_table;
-SELECT dictGetOrDefault('ip_dictionary', ('asn', 'cca2'), IPv6StringToNum('2a02:6b8:1::1'), 
-(intDiv(1, id), intDiv(1, id))) FROM ip_dictionary_source_table;
 DROP DICTIONARY ip_dictionary;
 DROP TABLE IF EXISTS polygon_dictionary_source_table;
 CREATE TABLE polygon_dictionary_source_table 
@@ -184,8 +148,6 @@ DROP TABLE IF EXISTS points;
 CREATE TABLE points (x Float64, y Float64) ENGINE=TinyLog;
 INSERT INTO points VALUES (0.5, 0), (-0.5, 0), (10,10);
 SELECT 'POLYGON dictionary';
-SELECT tuple(x, y) as key, dictGetOrDefault('polygon_dictionary', 'name', key, intDiv(1, y))
-FROM points;
 DROP TABLE points;
 DROP DICTIONARY polygon_dictionary;
 DROP TABLE polygon_dictionary_source_table;

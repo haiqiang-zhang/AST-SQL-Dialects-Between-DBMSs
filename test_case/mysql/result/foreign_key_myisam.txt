@@ -1,0 +1,50 @@
+--Query--
+SELECT referenced_table_name, unique_constraint_name FROM   information_schema.referential_constraints WHERE table_name = 'child'
+--Result--
+[('parent0', 'PRIMARY')]
++--------------------+
+--Query--
+SELECT referenced_table_name, unique_constraint_name FROM   information_schema.referential_constraints WHERE table_name = 'child'
+--Result--
+[('parent0', 'PRIMARY')]
++--------------------+
+--Query--
+SELECT referenced_table_name, unique_constraint_name FROM   information_schema.referential_constraints WHERE table_name = 'child'
+--Result--
+[('parent0', 'PRIMARY')]
++--------------------+
+--Query--
+SELECT referenced_table_name, unique_constraint_name FROM   information_schema.referential_constraints WHERE table_name = 'child'
+--Result--
+[('parent0', 'PRIMARY')]
++--------------------+
+--Query--
+LOCK TABLES parent WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES child READ, parent WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES child WRITE, parent WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

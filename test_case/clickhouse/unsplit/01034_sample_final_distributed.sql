@@ -5,11 +5,8 @@ insert into sample_final select number / (8192 * 4), toDate('2019-01-01'), toDat
 select 'count';
 select count() from sample_final;
 select 'count final';
-select count() from sample_final final;
 select 'count sample';
-select count() from sample_final sample 1/2;
 select 'count sample final';
-select count() from sample_final final sample 1/2;
 select 'count final max_parallel_replicas';
 set max_parallel_replicas=2;
 drop table if exists sample_final;

@@ -1,0 +1,25 @@
+--Query--
+select * from (     select lag(i, -1) over () as negative, lead(i, 1) over () as positive     from generate_series(0, 10, 1) tbl(i)     ) w where negative <> positive
+--Result--
+[]
++--------------------+
+--Query--
+SELECT depname, sum(sum(salary)) over (partition by depname order by salary) FROM empsalary group by depname, salary order by depname, salary
+--Result--
+[('develop', 4200), ('develop', 8700), ('develop', 19100), ('develop', 25100), ('personnel', 3500), ('personnel', 7400), ('sales', 9600), ('sales', 14600)]
++--------------------+
+--Query--
+SELECT empno, sum(salary*2) OVER (PARTITION BY depname ORDER BY empno) FROM empsalary ORDER BY depname, empno
+--Result--
+[(7, 8400), (8, 20400), (9, 29400), (10, 39800), (11, 50200), (2, 7800), (5, 14800), (1, 10000), (3, 19600), (4, 29200)]
++--------------------+
+--Query--
+SELECT empno, 2*sum(salary) OVER (PARTITION BY depname ORDER BY empno) FROM empsalary ORDER BY depname, empno
+--Result--
+[(7, 8400), (8, 20400), (9, 29400), (10, 39800), (11, 50200), (2, 7800), (5, 14800), (1, 10000), (3, 19600), (4, 29200)]
++--------------------+
+--Query--
+SELECT depname, sum(salary)*100.0000/sum(sum(salary)) OVER (PARTITION BY depname ORDER BY salary) AS revenueratio FROM empsalary GROUP BY depname, salary ORDER BY depname, revenueratio
+--Result--
+[('develop', 23.904382470119522), ('develop', 51.724137931034484), ('develop', 54.45026178010471), ('develop', 100.0), ('personnel', 52.7027027027027), ('personnel', 100.0), ('sales', 34.24657534246575), ('sales', 100.0)]
++--------------------+

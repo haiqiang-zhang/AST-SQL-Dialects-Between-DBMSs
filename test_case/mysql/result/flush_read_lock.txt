@@ -1,0 +1,505 @@
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "commit"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from 'select * from t1_base'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt1
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from 'insert into t1_base values (1)'
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "insert into t1_base values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt1
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from 'insert into t1_base values (1)'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1_base read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1_base read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1_base write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "lock tables t1_base write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1_temp write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1_temp write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "optimize table t1_base"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "repair table t1_base"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "set autocommit= 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "xa prepare 'test1'"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "xa rollback 'test1'"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "xa prepare 'test1'"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "xa commit 'test1'"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "xa rollback 'test1'"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "xa commit 'test2'"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "check table t1_base"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for commit lock" and         info = "alter table t1_temp add column c1 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1_base
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t2_base
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3_trans
+--Result--
+[(1,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "insert into t2_base values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1_base
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3_trans
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1_base
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3_trans
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+

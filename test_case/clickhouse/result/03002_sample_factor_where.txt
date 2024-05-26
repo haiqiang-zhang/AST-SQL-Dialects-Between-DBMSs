@@ -1,0 +1,15 @@
+--Query--
+SELECT uniq(b) * any(_sample_factor) FROM t_sample_factor SAMPLE 200000
+--Result--
+[(2.0,)]
++--------------------+
+--Query--
+SELECT uniq(b) * any(_sample_factor) FROM t_sample_factor SAMPLE 200000 WHERE a < -1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT uniq(b) * any(_sample_factor) FROM t_sample_factor SAMPLE 200000 PREWHERE a < -1
+--Result--
+[(0.0,)]
++--------------------+

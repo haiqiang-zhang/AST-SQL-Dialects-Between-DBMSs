@@ -10,8 +10,6 @@ SELECT count() FROM merge;
 EXPLAIN SELECT count() FROM merge settings allow_experimental_analyzer=0;
 CREATE TABLE mt3 (id UInt64) ENGINE = TinyLog;
 INSERT INTO mt2 VALUES (2);
-SELECT count() FROM merge;
-EXPLAIN SELECT count() FROM merge settings allow_experimental_analyzer=0;
 DROP TABLE IF EXISTS mt1;
 DROP TABLE IF EXISTS mt2;
 DROP TABLE IF EXISTS mt3;

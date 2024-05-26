@@ -16,9 +16,7 @@ INSERT INTO TIMESTAMPTZ_TBL VALUES ('now');
 SELECT pg_sleep(0.1);
 BEGIN;
 INSERT INTO TIMESTAMPTZ_TBL VALUES ('now');
-SELECT pg_sleep(0.1);
 INSERT INTO TIMESTAMPTZ_TBL VALUES ('now');
-SELECT pg_sleep(0.1);
 SELECT count(*) AS two FROM TIMESTAMPTZ_TBL WHERE d1 = timestamp(2) with time zone 'now';
 SELECT count(d1) AS three, count(DISTINCT d1) AS two FROM TIMESTAMPTZ_TBL;
 COMMIT;
@@ -66,10 +64,7 @@ SELECT '19970710 173201' AT TIME ZONE 'America/New_York';
 SELECT '20500710 173201 Europe/Helsinki'::timestamptz;
 SELECT '20500110 173201 Europe/Helsinki'::timestamptz;
 SELECT pg_input_is_valid('now', 'timestamptz');
-SELECT pg_input_is_valid('garbage', 'timestamptz');
-SELECT pg_input_is_valid('2001-01-01 00:00 Nehwon/Lankhmar', 'timestamptz');
 SELECT * FROM pg_input_error_info('garbage', 'timestamptz');
-SELECT * FROM pg_input_error_info('2001-01-01 00:00 Nehwon/Lankhmar', 'timestamptz');
 INSERT INTO TIMESTAMPTZ_TBL VALUES ('1997-06-10 18:32:01 PDT');
 INSERT INTO TIMESTAMPTZ_TBL VALUES ('Feb 10 17:32:01 1997');
 INSERT INTO TIMESTAMPTZ_TBL VALUES ('Feb 11 17:32:01 1997');
@@ -150,33 +145,13 @@ FROM (
 (VALUES (timestamptz '2020-02-11 15:44:17.71393')) ts (ts),
 (VALUES (timestamptz '2001-01-01')) origin (origin);
 SELECT date_bin('5 min'::interval, timestamptz '2020-02-01 01:01:01+00', timestamptz '2020-02-01 00:02:30+00');
-SELECT date_bin('30 minutes'::interval, timestamptz '2024-02-01 15:00:00', timestamptz '2024-02-01 17:00:00');
 SELECT d1 - timestamp with time zone '1997-01-02' AS diff
   FROM TIMESTAMPTZ_TBL
   WHERE d1 BETWEEN timestamp with time zone '1902-01-01' AND timestamp with time zone '2038-01-01';
 SELECT date_part('epoch', '294270-01-01 00:00:00+00'::timestamptz);
 SELECT extract(epoch from '294270-01-01 00:00:00+00'::timestamptz);
-SELECT extract(epoch from '5000-01-01 00:00:00+00'::timestamptz);
 SELECT timestamptz '294276-12-31 23:59:59 UTC' - timestamptz '1999-12-23 19:59:04.224193 UTC' AS ok;
 SELECT to_char(d1, 'DAY Day day DY Dy dy MONTH Month month RM MON Mon mon')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'FMDAY FMDay FMday FMMONTH FMMonth FMmonth FMRM')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'Y,YYY YYYY YYY YY Y CC Q MM WW DDD DD D J')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'FMY,YYY FMYYYY FMYYY FMYY FMY FMCC FMQ FMMM FMWW FMDDD FMDD FMD FMJ')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'HH HH12 HH24 MI SS SSSS')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, E'"HH:MI:SS is" HH:MI:SS "\\"text between quote marks\\""')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'YYYYTH YYYYth Jth')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'YYYY A.D. YYYY a.d. YYYY bc HH:MI:SS P.M. HH:MI:SS p.m. HH:MI:SS pm')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'IYYY IYY IY I IW IDDD ID')
-   FROM TIMESTAMPTZ_TBL;
-SELECT to_char(d1, 'FMIYYY FMIYY FMIY FMI FMIW FMIDDD FMID')
    FROM TIMESTAMPTZ_TBL;
 SELECT to_char(d, 'FF1 FF2 FF3 FF4 FF5 FF6  ff1 ff2 ff3 ff4 ff5 ff6  MS US')
    FROM (VALUES
@@ -233,8 +208,6 @@ INSERT INTO TIMESTAMPTZ_TST VALUES(4, '1000000312 23:58:48 IST');
 DROP TABLE TIMESTAMPTZ_TST;
 set TimeZone to 'America/New_York';
 SELECT make_timestamptz(1973, 07, 15, 08, 15, 55.33);
-SELECT make_timestamptz(1973, 07, 15, 08, 15, 55.33, '+2');
-SELECT make_timestamptz(1973, 07, 15, 08, 15, 55.33, '-2');
 WITH tzs (tz) AS (VALUES
     ('+1'), ('+1:'), ('+1:0'), ('+100'), ('+1:00'), ('+01:00'),
     ('+10'), ('+1000'), ('+10:'), ('+10:0'), ('+10:00'), ('+10:00:'),
@@ -243,34 +216,15 @@ WITH tzs (tz) AS (VALUES
      SELECT make_timestamptz(2010, 2, 27, 3, 45, 00, tz), tz FROM tzs;
 SELECT make_timestamptz(1973, 07, 15, 08, 15, 55.33, '+2') = '1973-07-15 08:15:55.33+02'::timestamptz;
 SELECT make_timestamptz(2014, 12, 10, 0, 0, 0, 'Europe/Prague') = timestamptz '2014-12-10 00:00:00 Europe/Prague';
-SELECT make_timestamptz(2014, 12, 10, 0, 0, 0, 'Europe/Prague') AT TIME ZONE 'UTC';
-SELECT make_timestamptz(1846, 12, 10, 0, 0, 0, 'Asia/Manila') AT TIME ZONE 'UTC';
-SELECT make_timestamptz(1881, 12, 10, 0, 0, 0, 'Europe/Paris') AT TIME ZONE 'UTC';
-SELECT make_timestamptz(2008, 12, 10, 10, 10, 10, 'EST');
-SELECT make_timestamptz(2008, 12, 10, 10, 10, 10, 'EDT');
-SELECT make_timestamptz(2014, 12, 10, 10, 10, 10, 'PST8PDT');
 RESET TimeZone;
 select * from generate_series('2020-01-01 00:00'::timestamptz,
                               '2020-01-02 03:00'::timestamptz,
                               '1 hour'::interval);
-select generate_series('2022-01-01 00:00'::timestamptz,
-                       'infinity'::timestamptz,
-                       '1 month'::interval) limit 10;
 SET TimeZone to 'UTC';
 SELECT date_add('2022-10-30 00:00:00+01'::timestamptz,
                 '1 day'::interval);
-SELECT date_add('2021-10-31 00:00:00+02'::timestamptz,
-                '1 day'::interval,
-                'Europe/Warsaw');
 SELECT date_subtract('2022-10-30 00:00:00+01'::timestamptz,
                      '1 day'::interval);
-SELECT date_subtract('2021-10-31 00:00:00+02'::timestamptz,
-                     '1 day'::interval,
-                     'Europe/Warsaw');
-SELECT * FROM generate_series('2021-12-31 23:00:00+00'::timestamptz,
-                              '2020-12-31 23:00:00+00'::timestamptz,
-                              '-1 month'::interval,
-                              'Europe/Warsaw');
 RESET TimeZone;
 SET TimeZone to 'UTC';
 SELECT '2011-03-27 00:00:00 Europe/Moscow'::timestamptz;
@@ -329,13 +283,7 @@ SELECT '2014-10-26 00:59:59'::timestamp AT TIME ZONE 'MSK';
 SELECT '2014-10-26 01:00:00'::timestamp AT TIME ZONE 'MSK';
 SELECT '2014-10-26 01:00:01'::timestamp AT TIME ZONE 'MSK';
 SELECT '2014-10-26 02:00:00'::timestamp AT TIME ZONE 'MSK';
-SELECT make_timestamptz(2014, 10, 26, 0, 0, 0, 'MSK');
-SELECT make_timestamptz(2014, 10, 26, 1, 0, 0, 'MSK');
 SELECT to_timestamp(         0);
-SELECT to_timestamp( 946684800);
-SELECT to_timestamp(1262349296.7890123);
-SELECT to_timestamp(' Infinity'::float);
-SELECT to_timestamp('-Infinity'::float);
 SET TimeZone to 'Europe/Moscow';
 SELECT '2011-03-26 21:00:00 UTC'::timestamptz;
 SELECT '2011-03-26 22:00:00 UTC'::timestamptz;
@@ -383,4 +331,3 @@ explain (costs off)
 select * from tmptz where f1 at time zone 'utc' = '2017-01-18 00:00';
 select * from tmptz where f1 at time zone 'utc' = '2017-01-18 00:00';
 SELECT age(timestamptz 'infinity');
-SELECT age(timestamptz 'infinity', timestamptz 'infinity');

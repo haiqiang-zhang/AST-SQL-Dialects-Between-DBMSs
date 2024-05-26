@@ -1,0 +1,150 @@
+--Query--
+select number, count() over (partition by intDiv(number, 3) order by number rows unbounded preceding) from numbers(10)
+--Result--
+[(0, 1), (1, 2), (2, 3), (3, 1), (4, 2), (5, 3), (6, 1), (7, 2), (8, 3), (9, 1)]
++--------------------+
+--Query--
+select number, max(number) over (partition by intDiv(number, 3) order by number desc rows unbounded preceding) from numbers(10) settings max_block_size = 2
+--Result--
+[(2, 2), (1, 2), (0, 2), (5, 5), (4, 5), (3, 5), (8, 8), (7, 8), (6, 8), (9, 9)]
++--------------------+
+--Query--
+select number, avg(number) over (order by number rows unbounded preceding) from numbers(10)
+--Result--
+[(0, 0.0), (1, 0.5), (2, 1.0), (3, 1.5), (4, 2.0), (5, 2.5), (6, 3.0), (7, 3.5), (8, 4.0), (9, 4.5)]
++--------------------+
+--Query--
+select number, quantileExact(number) over (partition by intDiv(number, 3) AS value order by number rows unbounded preceding) from numbers(10)
+--Result--
+[(0, 0), (1, 1), (2, 1), (3, 3), (4, 4), (5, 4), (6, 6), (7, 7), (8, 7), (9, 9)]
++--------------------+
+--Query--
+select number, quantileExact(number) over (partition by intDiv(number, 3) AS value order by number rows unbounded preceding) q from numbers(10)
+--Result--
+[(0, 0), (1, 1), (2, 1), (3, 3), (4, 4), (5, 4), (6, 6), (7, 7), (8, 7), (9, 9)]
++--------------------+
+--Query--
+select * from (select count(*) over (rows unbounded preceding) c from numbers(3)) where c > 0
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select * from (select count(*) over (rows unbounded preceding) c from numbers(3)) order by c
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select sum(any(number)) over (rows unbounded preceding) from numbers(1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select number, max(number) over (partition by intDiv(number, 3) order by number desc rows unbounded preceding), count(number) over (partition by intDiv(number, 5) order by number rows unbounded preceding) as m from numbers(31) order by number settings max_block_size = 2
+--Result--
+[(0, 2, 1), (1, 2, 2), (2, 2, 3), (3, 5, 4), (4, 5, 5), (5, 5, 1), (6, 8, 2), (7, 8, 3), (8, 8, 4), (9, 11, 5), (10, 11, 1), (11, 11, 2), (12, 14, 3), (13, 14, 4), (14, 14, 5), (15, 17, 1), (16, 17, 2), (17, 17, 3), (18, 20, 4), (19, 20, 5), (20, 20, 1), (21, 23, 2), (22, 23, 3), (23, 23, 4), (24, 26, 5), (25, 26, 1), (26, 26, 2), (27, 29, 3), (28, 29, 4), (29, 29, 5), (30, 30, 1)]
++--------------------+
+--Query--
+select median(x) over (partition by x) from (select 1 x)
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+select groupArray(number) over (rows unbounded preceding) from numbers(3)
+--Result--
+[([0],), ([0, 1],), ([0, 1, 2],)]
++--------------------+
+--Query--
+select count(1) over (rows unbounded preceding), max(number + 1) over () from numbers(3)
+--Result--
+[(1, 3), (2, 3), (3, 3)]
++--------------------+
+--Query--
+select distinct any(number) over (rows unbounded preceding) from numbers(2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+with number + 1 as x select intDiv(number, 3) as y, sum(x + y) over (partition by y order by x rows unbounded preceding) from numbers(7)
+--Result--
+[(0, 1), (0, 3), (0, 6), (1, 5), (1, 11), (1, 18), (2, 9)]
++--------------------+
+--Query--
+select 1 window w1 as ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select min(number) over (partition by p)  from (select number, intDiv(number, 3) p from numbers(10))
+--Result--
+[(0,), (0,), (0,), (3,), (3,), (3,), (6,), (6,), (6,), (9,)]
++--------------------+
+--Query--
+select     min(number) over wa, min(number) over wo,     max(number) over wa, max(number) over wo from     (select number, intDiv(number, 3) p, mod(number, 5) o         from numbers(31)) window     wa as (partition by p order by o         range between unbounded preceding and unbounded following),     wo as (partition by p order by o         rows between unbounded preceding and unbounded following) settings max_block_size = 2
+--Result--
+[(0, 0, 2, 2), (0, 0, 2, 2), (0, 0, 2, 2), (3, 3, 5, 5), (3, 3, 5, 5), (3, 3, 5, 5), (6, 6, 8, 8), (6, 6, 8, 8), (6, 6, 8, 8), (9, 9, 11, 11), (9, 9, 11, 11), (9, 9, 11, 11), (12, 12, 14, 14), (12, 12, 14, 14), (12, 12, 14, 14), (15, 15, 17, 17), (15, 15, 17, 17), (15, 15, 17, 17), (18, 18, 20, 20), (18, 18, 20, 20), (18, 18, 20, 20), (21, 21, 23, 23), (21, 21, 23, 23), (21, 21, 23, 23), (24, 24, 26, 26), (24, 24, 26, 26), (24, 24, 26, 26), (27, 27, 29, 29), (27, 27, 29, 29), (27, 27, 29, 29), (30, 30, 30, 30)]
++--------------------+
+--Query--
+select number, p,     count(*) over (partition by p order by number         rows between 1 preceding and unbounded following),     count(*) over (partition by p order by number         rows between current row and unbounded following),     count(*) over (partition by p order by number         rows between 1 following and unbounded following) from (select number, intDiv(number, 5) p from numbers(31)) order by p, number settings max_block_size = 2
+--Result--
+[(0, 0, 5, 5, 4), (1, 0, 5, 4, 3), (2, 0, 4, 3, 2), (3, 0, 3, 2, 1), (4, 0, 2, 1, 0), (5, 1, 5, 5, 4), (6, 1, 5, 4, 3), (7, 1, 4, 3, 2), (8, 1, 3, 2, 1), (9, 1, 2, 1, 0), (10, 2, 5, 5, 4), (11, 2, 5, 4, 3), (12, 2, 4, 3, 2), (13, 2, 3, 2, 1), (14, 2, 2, 1, 0), (15, 3, 5, 5, 4), (16, 3, 5, 4, 3), (17, 3, 4, 3, 2), (18, 3, 3, 2, 1), (19, 3, 2, 1, 0), (20, 4, 5, 5, 4), (21, 4, 5, 4, 3), (22, 4, 4, 3, 2), (23, 4, 3, 2, 1), (24, 4, 2, 1, 0), (25, 5, 5, 5, 4), (26, 5, 5, 4, 3), (27, 5, 4, 3, 2), (28, 5, 3, 2, 1), (29, 5, 2, 1, 0), (30, 6, 1, 1, 0)]
++--------------------+
+--Query--
+select x, min(x) over w, max(x) over w, count(x) over w from (     select toUInt8(number) x from numbers(11)) window w as (order by x asc range between 1 preceding and 2 following) order by x
+--Result--
+[(0, 0, 2, 3), (1, 0, 3, 4), (2, 1, 4, 4), (3, 2, 5, 4), (4, 3, 6, 4), (5, 4, 7, 4), (6, 5, 8, 4), (7, 6, 9, 4), (8, 7, 10, 4), (9, 8, 10, 3), (10, 9, 10, 2)]
++--------------------+
+--Query--
+explain select     count(*) over (partition by p),     count(*) over (),     count(*) over (partition by p order by o) from     (select number, intDiv(number, 3) p, mod(number, 5) o         from numbers(16)) t
+--Result--
+[('Expression ((Project names + Projection))',), ("  Window (Window step for window '')",), ("    Window (Window step for window 'PARTITION BY __table1.p')",), ("      Window (Window step for window 'PARTITION BY __table1.p ORDER BY __table1.o ASC')",), ("        Sorting (Sorting for window 'PARTITION BY __table1.p ORDER BY __table1.o ASC')",), ('          Expression ((Before WINDOW + (Change column names to column identifiers + (Project names + (Projection + Change column names to column identifiers)))))',), ('            ReadFromSystemNumbers',)]
++--------------------+
+--Query--
+select number, p, o,     count(*) over w,     rank() over w,     dense_rank() over w,     row_number() over w from (select number, intDiv(number, 5) p, mod(number, 3) o     from numbers(31) order by o, number) t window w as (partition by p order by o, number) order by p, o, number settings max_block_size = 2
+--Result--
+[(0, 0, 0, 1, 1, 1, 1), (3, 0, 0, 2, 2, 2, 2), (1, 0, 1, 3, 3, 3, 3), (4, 0, 1, 4, 4, 4, 4), (2, 0, 2, 5, 5, 5, 5), (6, 1, 0, 1, 1, 1, 1), (9, 1, 0, 2, 2, 2, 2), (7, 1, 1, 3, 3, 3, 3), (5, 1, 2, 4, 4, 4, 4), (8, 1, 2, 5, 5, 5, 5), (12, 2, 0, 1, 1, 1, 1), (10, 2, 1, 2, 2, 2, 2), (13, 2, 1, 3, 3, 3, 3), (11, 2, 2, 4, 4, 4, 4), (14, 2, 2, 5, 5, 5, 5), (15, 3, 0, 1, 1, 1, 1), (18, 3, 0, 2, 2, 2, 2), (16, 3, 1, 3, 3, 3, 3), (19, 3, 1, 4, 4, 4, 4), (17, 3, 2, 5, 5, 5, 5), (21, 4, 0, 1, 1, 1, 1), (24, 4, 0, 2, 2, 2, 2), (22, 4, 1, 3, 3, 3, 3), (20, 4, 2, 4, 4, 4, 4), (23, 4, 2, 5, 5, 5, 5), (27, 5, 0, 1, 1, 1, 1), (25, 5, 1, 2, 2, 2, 2), (28, 5, 1, 3, 3, 3, 3), (26, 5, 2, 4, 4, 4, 4), (29, 5, 2, 5, 5, 5, 5), (30, 6, 0, 1, 1, 1, 1)]
++--------------------+
+--Query--
+select     anyOrNull(number)         over (order by number rows between 1 preceding and 1 preceding),     anyOrNull(number)         over (order by number rows between 1 following and 1 following) from numbers(5)
+--Result--
+[(None, 1), (0, 2), (1, 3), (2, 4), (3, None)]
++--------------------+
+--Query--
+select number, p, pp,     lagInFrame(number) over w as lag1,     lagInFrame(number, number - pp) over w as lag2,     lagInFrame(number, number - pp, number * 11) over w as lag,     leadInFrame(number, number - pp, number * 11) over w as lead from (select number, intDiv(number, 5) p, p * 5 pp from numbers(16)) window w as (partition by p order by number     rows between unbounded preceding and unbounded following) order by number settings max_block_size = 3
+--Result--
+[(0, 0, 0, 0, 0, 0, 0), (1, 0, 0, 0, 0, 0, 2), (2, 0, 0, 1, 0, 0, 4), (3, 0, 0, 2, 0, 0, 33), (4, 0, 0, 3, 0, 0, 44), (5, 1, 5, 0, 5, 5, 5), (6, 1, 5, 5, 5, 5, 7), (7, 1, 5, 6, 5, 5, 9), (8, 1, 5, 7, 5, 5, 88), (9, 1, 5, 8, 5, 5, 99), (10, 2, 10, 0, 10, 10, 10), (11, 2, 10, 10, 10, 10, 12), (12, 2, 10, 11, 10, 10, 14), (13, 2, 10, 12, 10, 10, 143), (14, 2, 10, 13, 10, 10, 154), (15, 3, 15, 0, 15, 15, 15)]
++--------------------+
+--Query--
+select lagInFrame(toNullable(1)) over ()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select intDiv(1, NULL) x, toTypeName(x), max(x) over ()
+--Result--
+[(None, 'Nullable(Nothing)', None)]
++--------------------+
+--Query--
+select     number,     fIrSt_VaLue(number) over w,     lAsT_vAlUe(number) over w from numbers(10) window w as (order by number range between 1 preceding and 1 following) order by number
+--Result--
+[(0, 0, 1), (1, 0, 2), (2, 1, 3), (3, 2, 4), (4, 3, 5), (5, 4, 6), (6, 5, 7), (7, 6, 8), (8, 7, 9), (9, 8, 9)]
++--------------------+
+--Query--
+SELECT nth_value(1, /* INT64_MAX */ 0x7fffffffffffffff) OVER ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT leadInFrame(1, 0) OVER ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select sum(a[length(a)]) from (     select groupArray(number) over (partition by modulo(number, 11)             order by modulo(number, 1111), number) a     from numbers_mt(10000) ) settings max_block_size = 7
+--Result--
+[(49995000,)]
++--------------------+
+--Query--
+select bitmapCardinality(bs) from     (         select groupBitmapMergeState(bm) over (order by k asc rows between unbounded preceding and current row) as bs         from             (                 select                     groupBitmapState(number) as bm, k                 from                     (                         select                             number,                             number % 3 as k                         from numbers(3)                     )                 group by k             )     )
+--Result--
+[(1,), (2,), (3,)]
++--------------------+

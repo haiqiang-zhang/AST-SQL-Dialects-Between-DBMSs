@@ -1,0 +1,30 @@
+--Query--
+show create table t_index
+--Result--
+[('CREATE TABLE test.t_index\n(\n    `a` Int32,\n    `b` String,\n    INDEX i_a a TYPE minmax GRANULARITY 4,\n    INDEX i_b b TYPE bloom_filter GRANULARITY 2\n)\nENGINE = MergeTree\nORDER BY a\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+select table, name, type, expr, granularity from system.data_skipping_indices where database = currentDatabase() and table = 't_index'
+--Result--
+[('t_index', 'i_a', 'minmax', 'a', 4), ('t_index', 'i_b', 'bloom_filter', 'b', 2)]
++--------------------+
+--Query--
+select table, name, type, expr, granularity from system.data_skipping_indices where database = currentDatabase() and table = 't_index'
+--Result--
+[('t_index', 'i_b', 'bloom_filter', 'b', 2)]
++--------------------+
+--Query--
+select table, name, type, expr, granularity from system.data_skipping_indices where database = currentDatabase() and table = 't_index'
+--Result--
+[]
++--------------------+
+--Query--
+select table, name, type, expr, granularity from system.data_skipping_indices where database = currentDatabase() and table = 't_index'
+--Result--
+[]
++--------------------+
+--Query--
+select table, name, type, expr, granularity from system.data_skipping_indices where database = currentDatabase() and table = 't_index_replica'
+--Result--
+[]
++--------------------+

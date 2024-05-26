@@ -1,0 +1,10 @@
+--Query--
+SELECT 1 FROM t1, LATERAL (SELECT DISTINCT t1.x) AS dt, t2 WHERE t2.pk = dt.x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM   t1,   LATERAL (SELECT DISTINCT t1.x) AS dt1,   LATERAL (SELECT DISTINCT dt1.x) AS dt2 WHERE dt1.x = dt2.x
+--Result--
+[(1,)]
++--------------------+

@@ -74,5 +74,4 @@ drop table if exists ttl;
 create table ttl (i Int, s String ttl toDate('2000-01-02')) engine = MergeTree order by i
 SETTINGS max_number_of_merges_with_ttl_in_pool=0,materialize_ttl_recalculate_only=true;
 alter table ttl modify column s String ttl toDate('2000-01-02');
-select count() from system.mutations where database = currentDatabase() and table = 'ttl' and is_done;
 drop table if exists ttl;

@@ -1,0 +1,40 @@
+--Query--
+SELECT '1 group, multiple matches, String and FixedString'
+--Result--
+[('1 group, multiple matches, String and FixedString',)]
++--------------------+
+--Query--
+SELECT extractAllGroupsVertical('hello world', '(\\w+)')
+--Result--
+[([['hello'], ['world']],)]
++--------------------+
+--Query--
+SELECT 'mutiple groups, multiple matches'
+--Result--
+[('mutiple groups, multiple matches',)]
++--------------------+
+--Query--
+SELECT 'big match'
+--Result--
+[('big match',)]
++--------------------+
+--Query--
+SELECT     length(haystack), length(matches[1]), length(matches), arrayMap((x) -> length(x), arrayMap(x -> x[1], matches)) FROM (     SELECT         repeat('abcdefghijklmnopqrstuvwxyz', number * 10) AS haystack,         extractAllGroupsVertical(haystack, '(abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz)') AS matches     FROM numbers(3) )
+--Result--
+[(0, 0, 0, []), (260, 1, 1, [156]), (520, 1, 3, [156, 156, 156])]
++--------------------+
+--Query--
+SELECT 'lots of matches'
+--Result--
+[('lots of matches',)]
++--------------------+
+--Query--
+SELECT     length(haystack), length(matches[1]), length(matches), arrayReduce('sum', arrayMap((x) -> length(x), arrayMap(x -> x[1], matches))) FROM (     SELECT         repeat('abcdefghijklmnopqrstuvwxyz', number * 10) AS haystack,         extractAllGroupsVertical(haystack, '(\\w)') AS matches     FROM numbers(3) )
+--Result--
+[(0, 0, 0, 0), (260, 1, 260, 260), (520, 1, 520, 520)]
++--------------------+
+--Query--
+SELECT 'lots of groups'
+--Result--
+[('lots of groups',)]
++--------------------+

@@ -1,0 +1,280 @@
+--Query--
+SELECT concatWithSeparator('|') = ''
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a') == 'a'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', 'b') == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('b')) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize('a'), 'b') == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize('a'), materialize('b')) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', toFixedString('b', 1)) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(toFixedString('b', 1))) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize('a'), toFixedString('b', 1)) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize('a'), materialize(toFixedString('b', 1))) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', toFixedString('a', 1), 'b') == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', toFixedString('a', 1), materialize('b')) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize(toFixedString('a', 1)), 'b') == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize(toFixedString('a', 1)), materialize('b')) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', toFixedString('a', 1), toFixedString('b', 1)) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', toFixedString('a', 1), materialize(toFixedString('b', 1))) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize(toFixedString('a', 1)), toFixedString('b', 1)) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1))) == 'a|b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator(null, 'a', 'b') == null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('1', null, 'b') == null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('1', 'a', null) == null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(42 :: Int8)) == 'a|42'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(43 :: Int16)) == 'a|43'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(44 :: Int32)) == 'a|44'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(45 :: Int64)) == 'a|45'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(46 :: Int128)) == 'a|46'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(47 :: Int256)) == 'a|47'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(48 :: UInt8)) == 'a|48'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(49 :: UInt16)) == 'a|49'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(50 :: UInt32)) == 'a|50'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(51 :: UInt64)) == 'a|51'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(52 :: UInt128)) == 'a|52'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(53 :: UInt256)) == 'a|53'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(42.42 :: Float32)) == 'a|42.42'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(43.43 :: Float64)) == 'a|43.43'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(44.44 :: Decimal(2))) == 'a|44'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(true :: Bool)) == 'a|true'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(false :: Bool)) == 'a|false'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('foo' :: String)) == 'a|foo'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('bar' :: FixedString(3))) == 'a|bar'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('foo' :: Nullable(String))) == 'a|foo'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('bar' :: Nullable(FixedString(3)))) == 'a|bar'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('foo' :: LowCardinality(String))) == 'a|foo'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('bar' :: LowCardinality(FixedString(3)))) == 'a|bar'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('foo' :: LowCardinality(Nullable(String)))) == 'a|foo'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('bar' :: LowCardinality(Nullable(FixedString(3))))) == 'a|bar'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('fae310ca-d52a-4923-9e9b-02bf67f4b009' :: UUID)) == 'a|fae310ca-d52a-4923-9e9b-02bf67f4b009'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('2023-11-14' :: Date)) == 'a|2023-11-14'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('2123-11-14' :: Date32)) == 'a|2123-11-14'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('2023-11-14 05:50:12' :: DateTime('Europe/Amsterdam'))) == 'a|2023-11-14 05:50:12'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('hallo' :: Enum('hallo' = 1))) == 'a|hallo'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(['foo', 'bar'] :: Array(String))) == 'a|[\'foo\',\'bar\']'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize((42, 'foo') :: Tuple(Int32, String))) == 'a|(42,\'foo\')'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize(map(42, 'foo') :: Map(Int32, String))) == 'a|{42:\'foo\'}'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('122.233.64.201' :: IPv4)) == 'a|122.233.64.201'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT concatWithSeparator('|', 'a', materialize('2001:0001:130F:0002:0003:09C0:876A:130B' :: IPv6)) == 'a|2001:0001:130F:0002:0003:09C0:876A:130B'
+--Result--
+[(0,)]
++--------------------+

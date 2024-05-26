@@ -44,24 +44,9 @@ SELECT pg_input_is_valid('1.5 weeks', 'interval')
 [(True,)]
 +--------------------+
 --Query--
-SELECT pg_input_is_valid('garbage', 'interval')
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT pg_input_is_valid('@ 30 eons ago', 'interval')
---Result--
-[(False,)]
-+--------------------+
---Query--
 SELECT * FROM pg_input_error_info('garbage', 'interval')
 --Result--
 [('invalid input syntax for type interval: "garbage"', None, None, '22007')]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info('@ 30 eons ago', 'interval')
---Result--
-[('invalid input syntax for type interval: "@ 30 eons ago"', None, None, '22007')]
 +--------------------+
 --Query--
 SELECT * FROM INTERVAL_TBL
@@ -334,11 +319,6 @@ SELECT interval(0) '1 day 01:23:45.6789'
 [(datetime.timedelta(days=1, seconds=5026),)]
 +--------------------+
 --Query--
-SELECT interval(2) '1 day 01:23:45.6789'
---Result--
-[(datetime.timedelta(days=1, seconds=5025, microseconds=680000),)]
-+--------------------+
---Query--
 SELECT interval '12:34.5678' minute to second(2)
 --Result--
 [(datetime.timedelta(seconds=754, microseconds=570000),)]
@@ -347,46 +327,6 @@ SELECT interval '12:34.5678' minute to second(2)
 SELECT interval '1.234' second
 --Result--
 [(datetime.timedelta(seconds=1, microseconds=234000),)]
-+--------------------+
---Query--
-SELECT interval '1.234' second(2)
---Result--
-[(datetime.timedelta(seconds=1, microseconds=230000),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03' day to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=7380),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03.4567' day to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=123, microseconds=460000),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03:04.5678' day to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=7384, microseconds=570000),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03.45678' hour to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=123, microseconds=460000),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03:04.5678' hour to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=7384, microseconds=570000),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03.5678' minute to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=123, microseconds=570000),)]
-+--------------------+
---Query--
-SELECT interval '1 2:03:04.5678' minute to second(2)
---Result--
-[(datetime.timedelta(days=1, seconds=7384, microseconds=570000),)]
 +--------------------+
 --Query--
 SELECT f1, f1::INTERVAL DAY TO MINUTE AS "minutes",   (f1 + INTERVAL '1 month')::INTERVAL MONTH::INTERVAL YEAR AS "years"   FROM interval_tbl
@@ -479,64 +419,14 @@ select make_interval(years := 2)
 [(datetime.timedelta(days=730),)]
 +--------------------+
 --Query--
-select make_interval(years := 1, months := 6)
---Result--
-[(datetime.timedelta(days=545),)]
-+--------------------+
---Query--
-select make_interval(years := 1, months := -1, weeks := 5, days := -7, hours := 25, mins := -180)
---Result--
-[(datetime.timedelta(days=358),)]
-+--------------------+
---Query--
 select make_interval() = make_interval(years := 0, months := 0, weeks := 0, days := 0, mins := 0, secs := 0.0)
 --Result--
 [(True,)]
 +--------------------+
 --Query--
-select make_interval(hours := -2, mins := -10, secs := -25.3)
---Result--
-[(datetime.timedelta(days=6300),)]
-+--------------------+
---Query--
 SELECT EXTRACT(DECADE FROM INTERVAL '100 y')
 --Result--
 [(10.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(DECADE FROM INTERVAL '99 y')
---Result--
-[(9.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(DECADE FROM INTERVAL '-99 y')
---Result--
-[(-9.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(DECADE FROM INTERVAL '-100 y')
---Result--
-[(-10.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(CENTURY FROM INTERVAL '100 y')
---Result--
-[(1.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(CENTURY FROM INTERVAL '99 y')
---Result--
-[(0.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(CENTURY FROM INTERVAL '-99 y')
---Result--
-[(0.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(CENTURY FROM INTERVAL '-100 y')
---Result--
-[(-1.0,)]
 +--------------------+
 --Query--
 SELECT extract(epoch from interval '1000000000 days')

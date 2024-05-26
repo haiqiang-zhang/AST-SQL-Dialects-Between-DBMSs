@@ -1,0 +1,30 @@
+--Query--
+select minMap([toInt32(number % 10), number % 10 + 1], [number, 1]) as m, toTypeName(m) from numbers(1, 100)
+--Result--
+[(([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]), 'Tuple(Array(Int32), Array(UInt64))')]
++--------------------+
+--Query--
+select minMap([1], [toInt32(number) - 50]) from numbers(1, 100)
+--Result--
+[(([1], [-49]),)]
++--------------------+
+--Query--
+select maxMap([1], [toInt32(number) - 50]) from numbers(1, 100)
+--Result--
+[(([1], [50]),)]
++--------------------+
+--Query--
+select minMap(val, cnt) from values ('val Array(UUID), cnt Array(UUID)', 	(['01234567-89ab-cdef-0123-456789abcdef'], ['01111111-89ab-cdef-0123-456789abcdef']), 	(['01234567-89ab-cdef-0123-456789abcdef'], ['02222222-89ab-cdef-0123-456789abcdef']))
+--Result--
+[(([UUID('01234567-89ab-cdef-0123-456789abcdef')], [UUID('01111111-89ab-cdef-0123-456789abcdef')]),)]
++--------------------+
+--Query--
+select maxMap(val, cnt) from values ('val Array(UUID), cnt Array(UUID)', 	(['01234567-89ab-cdef-0123-456789abcdef'], ['01111111-89ab-cdef-0123-456789abcdef']), 	(['01234567-89ab-cdef-0123-456789abcdef'], ['02222222-89ab-cdef-0123-456789abcdef']))
+--Result--
+[(([UUID('01234567-89ab-cdef-0123-456789abcdef')], [UUID('02222222-89ab-cdef-0123-456789abcdef')]),)]
++--------------------+
+--Query--
+select sumMap(val, cnt) from values ('val Array(UInt64), cnt Array(UInt64)',  ([1], [0]), ([2], [0]))
+--Result--
+[(([], []),)]
++--------------------+

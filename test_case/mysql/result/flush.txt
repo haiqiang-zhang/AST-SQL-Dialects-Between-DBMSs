@@ -1,0 +1,335 @@
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(345,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read, t2 read, t3 write
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read, t2 read, t3 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read, t2 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (1,), (2,)]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[(1,), (1,), (1,), (2,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (1,), (2,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush"   and info = "flush table t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush"   and info = "select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush"   and info = "flush tables"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush"   and info = "select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush"   and info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock"   and info = "insert into t2 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

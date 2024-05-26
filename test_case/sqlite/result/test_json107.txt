@@ -1,0 +1,55 @@
+--Query--
+SELECT json_valid( CAST('{"a":1}' AS BLOB) )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('{"a":123}' AS blob) -> 'a'
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT CAST('{"a":123}' AS blob) ->> 'a'
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT json_extract(CAST('{"a":123}' AS blob), '$.a')
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT json_insert(CAST('{"a":123}' AS blob),'$.b',456)
+--Result--
+[('{"a":123,"b":456}',)]
++--------------------+
+--Query--
+SELECT json_remove(CAST('{"a":123,"b":456}' AS blob),'$.a')
+--Result--
+[('{"b":456}',)]
++--------------------+
+--Query--
+SELECT json_set(CAST('{"a":123,"b":456}' AS blob),'$.a',789)
+--Result--
+[('{"a":789,"b":456}',)]
++--------------------+
+--Query--
+SELECT json_replace(CAST('{"a":123,"b":456}' AS blob),'$.a',789)
+--Result--
+[('{"a":789,"b":456}',)]
++--------------------+
+--Query--
+SELECT json_type(CAST('{"a":123,"b":456}' AS blob))
+--Result--
+[('object',)]
++--------------------+
+--Query--
+SELECT json(CAST('{"a":123,"b":456}' AS blob))
+--Result--
+[('{"a":123,"b":456}',)]
++--------------------+
+--Query--
+SELECT key, value FROM json_tree( CAST('{"a":123,"b":456}' AS blob) )       WHERE atom
+--Result--
+[('a', 123), ('b', 456)]
++--------------------+

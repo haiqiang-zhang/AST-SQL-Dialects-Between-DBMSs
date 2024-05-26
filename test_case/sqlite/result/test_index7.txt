@@ -1,0 +1,190 @@
+--Query--
+SELECT count(a), count(b) FROM t1
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT c FROM t1 WHERE a NOT LIKE 'abc%' AND a=7 ORDER BY +b
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t1 WHERE a NOT LIKE 'abc%' AND a=7 ORDER BY +b
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX bad1 (a=?)'), (12, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT * FROM t2 WHERE a=5
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX t2a1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN       SELECT * FROM t2 WHERE a IS NOT NULL AND a>0
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX t2a1 (a>?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT * FROM t2 WHERE a IS NULL
+--Result--
+[(2, 0, 0, 'SCAN t2')]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=15
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=15
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t2 WHERE a=15
+--Result--
+[(2, 0, 0, 'SCAN t2')]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=15 AND a<100
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t2 WHERE a=15 AND a<100
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING COVERING INDEX t2a2 (a=?)')]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=515 AND a>200
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t2 WHERE a=515 AND a>200
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING COVERING INDEX t2a2 (a=?)')]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT stat+0 FROM sqlite_stat1 WHERE idx='t3b'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t5 WHERE a=1 AND b='xyz'), t4 WHERE c='abc'
+--Result--
+[(1, 'xyz', 'abc', 'not xyz')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t5 WHERE a=1 AND b='xyz'), t4 WHERE c='abc'
+--Result--
+[(1, 'xyz', 'abc', 'not xyz')]
++--------------------+
+--Query--
+SELECT * FROM v4 WHERE d='xyz' AND c='def'
+--Result--
+[('def', 'xyz')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM v4 WHERE d='xyz' AND c='def'
+--Result--
+[(3, 0, 0, 'SEARCH t4 USING INDEX i4 (c=?)')]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE y IS TRUE ORDER BY x
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE y IS TRUE ORDER BY x
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+

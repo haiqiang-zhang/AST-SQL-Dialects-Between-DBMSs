@@ -1,0 +1,90 @@
+--Query--
+SELECT * FROM nullable_key ORDER BY k, v
+--Result--
+[(0, 0), (2, 3), (4, 6), (6, 9), (8, 12), (10, 15), (12, 18), (14, 21), (16, 24), (18, 27), (None, -2), (None, -1), (None, 0)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k IS NULL
+--Result--
+[(None, 0), (None, -1), (None, -2)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k IS NOT NULL
+--Result--
+[(0, 0), (2, 3), (4, 6), (6, 9), (8, 12), (10, 15), (12, 18), (14, 21), (16, 24), (18, 27)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k > 10
+--Result--
+[(12, 18), (14, 21), (16, 24), (18, 27)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k < 10
+--Result--
+[(0, 0), (2, 3), (4, 6), (6, 9), (8, 12)]
++--------------------+
+--Query--
+OPTIMIZE TABLE nullable_key FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k IS NULL
+--Result--
+[(None, 0), (None, -1), (None, -2)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k IS NOT NULL
+--Result--
+[(0, 0), (2, 3), (4, 6), (6, 9), (8, 12), (10, 15), (12, 18), (14, 21), (16, 24), (18, 27)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k IN (10, 20) SETTINGS transform_null_in = 1
+--Result--
+[(10, 15)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key WHERE k IN (3, NULL) SETTINGS transform_null_in = 1
+--Result--
+[(None, 0), (None, -1), (None, -2)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key_without_final_mark WHERE s IS NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM nullable_key_without_final_mark WHERE s IS NOT NULL
+--Result--
+[('123',)]
++--------------------+
+--Query--
+SELECT * FROM nullable_minmax_index ORDER BY k, v
+--Result--
+[(1, 1), (1, 3), (2, 1), (2, 2), (2, 7), (2, None), (2, None), (3, 2), (3, 4), (3, None)]
++--------------------+
+--Query--
+SELECT * FROM nullable_minmax_index WHERE v IS NULL
+--Result--
+[(2, None), (2, None), (3, None)]
++--------------------+
+--Query--
+SELECT * FROM nullable_minmax_index WHERE v IS NOT NULL
+--Result--
+[(1, 3), (2, 7), (3, 4), (1, 1), (2, 2), (2, 1), (3, 2)]
++--------------------+
+--Query--
+SELECT * FROM nullable_minmax_index WHERE v > 2
+--Result--
+[(1, 3), (2, 7), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM nullable_minmax_index WHERE v <= 2
+--Result--
+[(1, 1), (2, 2), (2, 1), (3, 2)]
++--------------------+
+--Query--
+SELECT * FROM xxxx_null WHERE ts > '2021-10-11 00:00:00'
+--Result--
+[(datetime.datetime(2021, 11, 11, 0, 0),)]
++--------------------+

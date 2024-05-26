@@ -1,0 +1,205 @@
+--Query--
+select count(*) = 1 from information_schema.processlist     where state = "Waiting for table metadata lock" and           info = "insert into t1 values ()"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist     where state = "Waiting for table metadata lock" and           info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist     where state = "Waiting for table metadata lock" and            info = "insert into t2 values()"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t3 WRITE, t3 AS a WRITE, t3 AS b READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4 AS a, t4 AS b
+--Result--
+[(1, 2, 3, None, 1, 2, 3, None)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t3 WRITE, t3 AS a WRITE, t3 AS b READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4 AS a, t4 AS b
+--Result--
+[(1, 2, 3, None, 1, 2, 3, None)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

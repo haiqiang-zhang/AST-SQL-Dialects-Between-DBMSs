@@ -1,6 +1,3 @@
-
---- (when marks was reading with max_read_buffer_size=0, hence DROP MARK CACHE is required)
-
 DROP TABLE IF EXISTS data_02411;
 CREATE TABLE data_02411
 (

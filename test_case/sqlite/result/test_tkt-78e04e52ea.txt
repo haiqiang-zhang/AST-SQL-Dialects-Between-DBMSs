@@ -1,0 +1,20 @@
+--Query--
+SELECT * FROM "", t2
+--Result--
+[(1, None, 2)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master
+--Result--
+[('t2',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE x=5
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX  (x=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE x=2
+--Result--
+[(2, 0, 0, 'SCAN t2')]
++--------------------+

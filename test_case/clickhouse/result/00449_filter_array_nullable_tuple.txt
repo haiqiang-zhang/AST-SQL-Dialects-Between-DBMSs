@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM (SELECT range(number) AS x FROM system.numbers LIMIT 10) WHERE length(x) % 2 = 0
+--Result--
+[([],), ([0, 1],), ([0, 1, 2, 3],), ([0, 1, 2, 3, 4, 5],), ([0, 1, 2, 3, 4, 5, 6, 7],)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT arrayMap(x -> toNullable(x), range(number)) AS x FROM system.numbers LIMIT 10) WHERE length(x) % 2 = 0
+--Result--
+[([],), ([0, 1],), ([0, 1, 2, 3],), ([0, 1, 2, 3, 4, 5],), ([0, 1, 2, 3, 4, 5, 6, 7],)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT arrayMap(x -> (x, x), range(number)) AS x FROM system.numbers LIMIT 10) WHERE length(x) % 2 = 0
+--Result--
+[([],), ([(0, 0), (1, 1)],), ([(0, 0), (1, 1), (2, 2), (3, 3)],), ([(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)],), ([(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7)],)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT arrayMap(x -> (x, x + 1), range(number)) AS x FROM system.numbers LIMIT 10) WHERE length(x) % 2 = 0
+--Result--
+[([],), ([(0, 1), (1, 2)],), ([(0, 1), (1, 2), (2, 3), (3, 4)],), ([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)],), ([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8)],)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT arrayMap(x -> (x, toNullable(x)), range(number)) AS x FROM system.numbers LIMIT 10) WHERE length(x) % 2 = 0
+--Result--
+[([],), ([(0, 0), (1, 1)],), ([(0, 0), (1, 1), (2, 2), (3, 3)],), ([(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)],), ([(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7)],)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT arrayMap(x -> (x, nullIf(x, 3)), range(number)) AS x FROM system.numbers LIMIT 10) WHERE length(x) % 2 = 0
+--Result--
+[([],), ([(0, 0), (1, 1)],), ([(0, 0), (1, 1), (2, 2), (3, None)],), ([(0, 0), (1, 1), (2, 2), (3, None), (4, 4), (5, 5)],), ([(0, 0), (1, 1), (2, 2), (3, None), (4, 4), (5, 5), (6, 6), (7, 7)],)]
++--------------------+

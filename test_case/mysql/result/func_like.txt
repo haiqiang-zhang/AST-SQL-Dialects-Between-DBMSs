@@ -1,0 +1,415 @@
+--Query--
+select * from t1 where a like "abc%"
+--Result--
+[('abc',), ('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like concat("abc","%")
+--Result--
+[('abc',), ('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like "ABC%"
+--Result--
+[('abc',), ('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like "test%"
+--Result--
+[('test',)]
++--------------------+
+--Query--
+select * from t1 where a like "te_t"
+--Result--
+[('test',)]
++--------------------+
+--Query--
+select * from t1 where a like "%a%"
+--Result--
+[('a',), ('abc',), ('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like "%abcd%"
+--Result--
+[('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like "%abc\d%"
+--Result--
+[('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like 'a\\%' escape '#'
+--Result--
+[('a\\b',)]
++--------------------+
+--Query--
+select * from t1 where a like 'a\\%' escape '#' and a like 'a\\\\b'
+--Result--
+[('a\\b',)]
++--------------------+
+--Query--
+prepare stmt1 from 'select * from t1 where a like \'a\\%\' escape ?'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a like '2004-03-11 12:00:21'
+--Result--
+[(datetime.datetime(2004, 3, 11, 12, 0, 21),)]
++--------------------+
+--Query--
+select * from t1 where a like '%PESA%'
+--Result--
+[('Pojazdy Szynowe PESA Bydgoszcz SA Holding',), ('Pojazdy Szynowe PESA Bydgoszcz S A Holding',)]
++--------------------+
+--Query--
+select * from t1 where a like '%PESA %'
+--Result--
+[('Pojazdy Szynowe PESA Bydgoszcz SA Holding',), ('Pojazdy Szynowe PESA Bydgoszcz S A Holding',)]
++--------------------+
+--Query--
+select * from t1 where a like '%PES%'
+--Result--
+[('Techni Tapes Sp. z o.o.',), ('Pojazdy Szynowe PESA Bydgoszcz SA Holding',), ('AKAPESTER 1 P.P.H.U.',), ('Pojazdy Szynowe PESA Bydgoszcz S A Holding',), ('PPUH PESKA-I Maria Struniarska',)]
++--------------------+
+--Query--
+select * from t1 where a like '%PESKA%'
+--Result--
+[('PPUH PESKA-I Maria Struniarska',)]
++--------------------+
+--Query--
+select * from t1 where a like '%ESKA%'
+--Result--
+[('PPUH PESKA-I Maria Struniarska',)]
++--------------------+
+--Query--
+select _cp866'aaaaaaaaa' like _cp866'%aaaa%' collate cp866_bin
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t2 JOIN t1 ON 1 LIKE a GROUP BY a
+--Result--
+[]
++--------------------+
+--Query--
+select 0x0000000001020003F03F40408484040ADDE40 like 0x256F3B38312A7725
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0x003c8793403032 like '%-112%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0x903f645a8c507dd79178 like '%-128%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0xac14aa84f000d276d66ed9 like '%-107%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0xf0be117400d02a20b8e049da3e74 like '%-123%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0x961838f6fc3c7f9ec17b5d900410d8aa like '%-113%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0x6a8473fc1c64ce4f2684c05a400c5e7ca4a01a like '%emailin%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0x00b25278956e0044683dfc180cd886aeff2f5bc3fc18 like '%-122%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0xbc24421ce6194ab5c260e80af647ae58fdbfca18a19dc8411424 like '%-106%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ('a%b' LIKE 'a\%b' ESCAPE (SELECT x FROM t1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ('a%b' LIKE 'ax%b' ESCAPE (SELECT x FROM t1))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ('a%b' LIKE 'a\%b' ESCAPE (SELECT x FROM t1))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ('a%b' LIKE 'ax%b' ESCAPE (SELECT x FROM t1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE y LIKE 'abc%%' ESCAPE (SELECT 'c' FROM t1) ORDER BY y
+--Result--
+[(2, 'ab%cde')]
++--------------------+
+--Query--
+SELECT wildstr, str, like_result FROM t1 WHERE (str LIKE wildstr) <> like_result
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'aa' LIKE CONVERT('%a' USING big5)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'aa' LIKE CONVERT('%a' USING utf8mb4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'aa' LIKE CONVERT('%a' USING gb18030)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'aa' LIKE CONVERT('%a' USING binary)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'aa' LIKE CONVERT('%a' USING latin1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'aa' LIKE CONVERT('%a' USING utf8mb3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '%%a' escape '%'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '__a' escape '_'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b%a' like '#%a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+select 1 where 'b_a' like '#_a' escape '#'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE col1 LIKE '2019%'
+--Result--
+[(datetime.date(2019, 6, 13),), (datetime.date(2019, 7, 13),)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE col1 LIKE '2019-06-1%'
+--Result--
+[(datetime.date(2019, 6, 13),)]
++--------------------+
+--Query--
+select 1 from t1 where a like @pattern
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 1 from t1 where a like ?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t WHERE gc <> 0
+--Result--
+[('aba',)]
++--------------------+
+--Query--
+SELECT x FROM v WHERE y <> 0
+--Result--
+[('abbbba',)]
++--------------------+
+--Query--
+SELECT _latin1'abc' LIKE _latin1'a\\bc' ESCAPE _latin1'' AS col1,        _utf8mb4'abc' LIKE _utf8mb4'a\\bc' ESCAPE _utf8mb4'' AS col2,        _latin1'abc' LIKE _latin1'a\\bc' ESCAPE _ascii'' AS col3
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+SELECT _latin1'a\bc' LIKE _latin1'a\%' AS col1,        _utf8mb4'a\bc' LIKE _utf8mb4'a\%' AS col2
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1 LIKE c1
+--Result--
+[('100',)]
++--------------------+
+--Query--
+SELECT c1 LIKE c1 AS l FROM t1
+--Result--
+[(1,), (0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1 LIKE c1 ESCAPE '1'
+--Result--
+[('abc\\d',)]
++--------------------+
+--Query--
+SELECT c1 LIKE c1 ESCAPE '1' AS l FROM t1
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1 LIKE c1 ESCAPE 1
+--Result--
+[('abc\\d',)]
++--------------------+
+--Query--
+SELECT c1 LIKE c1 ESCAPE 1 AS l FROM t1
+--Result--
+[(0,), (1,)]
++--------------------+

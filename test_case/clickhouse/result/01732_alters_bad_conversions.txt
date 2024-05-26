@@ -1,0 +1,15 @@
+--Query--
+SHOW CREATE TABLE bad_conversions
+--Result--
+[('CREATE TABLE test.bad_conversions\n(\n    `a` UInt32\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT count() FROM system.mutations WHERE table = 'bad_conversions' AND database = currentDatabase()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SHOW CREATE TABLE bad_conversions_2
+--Result--
+[("CREATE TABLE test.bad_conversions_2\n(\n    `e` Enum8('foo' = 1, 'bar' = 2)\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS index_granularity = 8192",)]
++--------------------+

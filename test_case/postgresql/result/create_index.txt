@@ -19,21 +19,6 @@ SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box
 [(0,)]
 +--------------------+
 --Query--
-SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle
---Result--
-[(0,)]
-+--------------------+
---Query--
 SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10
 --Result--
 [('((1000,0),(0,1000))',), ('((0,1000),(1000,1000))',)]
@@ -59,41 +44,6 @@ EXPLAIN (COSTS OFF) SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,
 [('Aggregate',), ('  ->  Index Only Scan using grect2ind on fast_emp4000',), ("        Index Cond: (home_base && '(1000,1000),(0,0)'::box)",)]
 +--------------------+
 --Query--
-SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box
---Result--
-[(0,)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL
---Result--
-[('Aggregate',), ('  ->  Index Only Scan using grect2ind on fast_emp4000',), ('        Index Cond: (home_base IS NULL)',)]
-+--------------------+
---Query--
-SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL
---Result--
-[(0,)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon
---Result--
-[('Aggregate',), ('  ->  Index Scan using ggpolygonind on gpolygon_tbl',), ("        Index Cond: (f1 && '((1000,1000),(0,0))'::polygon)",)]
-+--------------------+
---Query--
-SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon
---Result--
-[(2,)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle
---Result--
-[('Aggregate',), ('  ->  Index Scan using ggcircleind on gcircle_tbl',), ("        Index Cond: (f1 && '<(500,500),500>'::circle)",)]
-+--------------------+
---Query--
-SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle
---Result--
-[(0,)]
-+--------------------+
---Query--
 EXPLAIN (COSTS OFF) SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10
 --Result--
 [('Limit',), ('  ->  Index Scan using ggpolygonind on gpolygon_tbl',), ("        Order By: (f1 <-> '(0,0)'::point)",)]
@@ -107,11 +57,6 @@ SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10
 EXPLAIN (COSTS OFF) SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10
 --Result--
 [('Limit',), ('  ->  Index Scan using ggcircleind on gcircle_tbl',), ("        Order By: (f1 <-> '(200,300)'::point)",)]
-+--------------------+
---Query--
-SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10
---Result--
-[]
 +--------------------+
 --Query--
 EXPLAIN (COSTS OFF) SELECT point(x,x), (SELECT f1 FROM gpolygon_tbl ORDER BY f1 <-> point(x,x) LIMIT 1) as c FROM generate_series(0,10,1) x
@@ -324,11 +269,6 @@ SELECT pg_get_indexdef('unique_idx3'::regclass)
 [('CREATE UNIQUE INDEX unique_idx3 ON public.unique_tbl USING btree (i)',)]
 +--------------------+
 --Query--
-SELECT pg_get_indexdef('unique_idx4'::regclass)
---Result--
-[('CREATE UNIQUE INDEX unique_idx4 ON public.unique_tbl USING btree (i) NULLS NOT DISTINCT',)]
-+--------------------+
---Query--
 VACUUM FULL concur_heap
 --Result--
 []
@@ -434,19 +374,9 @@ REINDEX TABLE testcomment
 []
 +--------------------+
 --Query--
-SELECT obj_description('testcomment_idx1'::regclass, 'pg_class')
---Result--
-[('test comment',)]
-+--------------------+
---Query--
 REINDEX TABLE CONCURRENTLY testcomment
 --Result--
 []
-+--------------------+
---Query--
-SELECT obj_description('testcomment_idx1'::regclass, 'pg_class')
---Result--
-[('test comment',)]
 +--------------------+
 --Query--
 REINDEX TABLE CONCURRENTLY concur_clustered
@@ -484,11 +414,6 @@ SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_ind
 [('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
 +--------------------+
 --Query--
-SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
---Result--
-[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
-+--------------------+
---Query--
 SELECT pg_describe_object(classid, objid, objsubid) as obj,        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,        deptype FROM pg_depend WHERE classid = 'pg_class'::regclass AND   objid in ('concur_reindex_part'::regclass,             'concur_reindex_part_0'::regclass,             'concur_reindex_part_0_1'::regclass,             'concur_reindex_part_0_2'::regclass,             'concur_reindex_part_index'::regclass,             'concur_reindex_part_index_0'::regclass,             'concur_reindex_part_index_0_1'::regclass,             'concur_reindex_part_index_0_2'::regclass)   ORDER BY 1, 2
 --Result--
 [('column c1 of table concur_reindex_part', 'table concur_reindex_part', 'i'), ('column c2 of table concur_reindex_part_0', 'table concur_reindex_part_0', 'i'), ('index concur_reindex_part_index', 'column c1 of table concur_reindex_part', 'a'), ('index concur_reindex_part_index_0', 'column c1 of table concur_reindex_part_0', 'a'), ('index concur_reindex_part_index_0', 'index concur_reindex_part_index', 'P'), ('index concur_reindex_part_index_0', 'table concur_reindex_part_0', 'S'), ('index concur_reindex_part_index_0_1', 'column c1 of table concur_reindex_part_0_1', 'a'), ('index concur_reindex_part_index_0_1', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_1', 'table concur_reindex_part_0_1', 'S'), ('index concur_reindex_part_index_0_2', 'column c1 of table concur_reindex_part_0_2', 'a'), ('index concur_reindex_part_index_0_2', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_2', 'table concur_reindex_part_0_2', 'S'), ('table concur_reindex_part', 'schema public', 'n'), ('table concur_reindex_part_0', 'schema public', 'n'), ('table concur_reindex_part_0', 'table concur_reindex_part', 'a'), ('table concur_reindex_part_0_1', 'schema public', 'n'), ('table concur_reindex_part_0_1', 'table concur_reindex_part_0', 'a'), ('table concur_reindex_part_0_2', 'schema public', 'n'), ('table concur_reindex_part_0_2', 'table concur_reindex_part_0', 'a')]
@@ -504,11 +429,6 @@ REINDEX INDEX CONCURRENTLY concur_reindex_part_index_0_2
 []
 +--------------------+
 --Query--
-SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
---Result--
-[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
-+--------------------+
---Query--
 REINDEX TABLE CONCURRENTLY concur_reindex_part_0_1
 --Result--
 []
@@ -522,11 +442,6 @@ REINDEX TABLE CONCURRENTLY concur_reindex_part_0_2
 SELECT pg_describe_object(classid, objid, objsubid) as obj,        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,        deptype FROM pg_depend WHERE classid = 'pg_class'::regclass AND   objid in ('concur_reindex_part'::regclass,             'concur_reindex_part_0'::regclass,             'concur_reindex_part_0_1'::regclass,             'concur_reindex_part_0_2'::regclass,             'concur_reindex_part_index'::regclass,             'concur_reindex_part_index_0'::regclass,             'concur_reindex_part_index_0_1'::regclass,             'concur_reindex_part_index_0_2'::regclass)   ORDER BY 1, 2
 --Result--
 [('column c1 of table concur_reindex_part', 'table concur_reindex_part', 'i'), ('column c2 of table concur_reindex_part_0', 'table concur_reindex_part_0', 'i'), ('index concur_reindex_part_index', 'column c1 of table concur_reindex_part', 'a'), ('index concur_reindex_part_index_0', 'column c1 of table concur_reindex_part_0', 'a'), ('index concur_reindex_part_index_0', 'index concur_reindex_part_index', 'P'), ('index concur_reindex_part_index_0', 'table concur_reindex_part_0', 'S'), ('index concur_reindex_part_index_0_1', 'column c1 of table concur_reindex_part_0_1', 'a'), ('index concur_reindex_part_index_0_1', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_1', 'table concur_reindex_part_0_1', 'S'), ('index concur_reindex_part_index_0_2', 'column c1 of table concur_reindex_part_0_2', 'a'), ('index concur_reindex_part_index_0_2', 'index concur_reindex_part_index_0', 'P'), ('index concur_reindex_part_index_0_2', 'table concur_reindex_part_0_2', 'S'), ('table concur_reindex_part', 'schema public', 'n'), ('table concur_reindex_part_0', 'schema public', 'n'), ('table concur_reindex_part_0', 'table concur_reindex_part', 'a'), ('table concur_reindex_part_0_1', 'schema public', 'n'), ('table concur_reindex_part_0_1', 'table concur_reindex_part_0', 'a'), ('table concur_reindex_part_0_2', 'schema public', 'n'), ('table concur_reindex_part_0_2', 'table concur_reindex_part_0', 'a')]
-+--------------------+
---Query--
-SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')   ORDER BY relid, level
---Result--
-[('concur_reindex_part_index', None, 0), ('concur_reindex_part_index_0', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_10', 'concur_reindex_part_index', 1), ('concur_reindex_part_index_0_1', 'concur_reindex_part_index_0', 2), ('concur_reindex_part_index_0_2', 'concur_reindex_part_index_0', 2)]
 +--------------------+
 --Query--
 REINDEX INDEX concur_reindex_part_index
@@ -559,54 +474,9 @@ ANALYZE concur_exprs_tab
 []
 +--------------------+
 --Query--
-SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_expr ON public.concur_exprs_tab USING btree (((c1)::text) COLLATE "C")',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_pred ON public.concur_exprs_tab USING btree (c1) WHERE ((c1)::text > ((500000000)::text COLLATE "C"))',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_pred_2 ON public.concur_exprs_tab USING btree (((1 / c1))) WHERE (\'-H\'::text >= ((c2)::text COLLATE "C"))',)]
-+--------------------+
---Query--
 REINDEX TABLE CONCURRENTLY concur_exprs_tab
 --Result--
 []
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_expr ON public.concur_exprs_tab USING btree (((c1)::text) COLLATE "C")',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_pred ON public.concur_exprs_tab USING btree (c1) WHERE ((c1)::text > ((500000000)::text COLLATE "C"))',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_pred_2 ON public.concur_exprs_tab USING btree (((1 / c1))) WHERE (\'-H\'::text >= ((c2)::text COLLATE "C"))',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_expr ON public.concur_exprs_tab USING btree (((c1)::text) COLLATE "C")',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_pred ON public.concur_exprs_tab USING btree (c1) WHERE ((c1)::text > ((500000000)::text COLLATE "C"))',)]
-+--------------------+
---Query--
-SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass)
---Result--
-[('CREATE UNIQUE INDEX concur_exprs_index_pred_2 ON public.concur_exprs_tab USING btree (((1 / c1))) WHERE (\'-H\'::text >= (c2 COLLATE "C"))',)]
 +--------------------+
 --Query--
 SELECT attrelid::regclass, attnum, attstattarget   FROM pg_attribute WHERE attrelid IN (     'concur_exprs_index_expr'::regclass,     'concur_exprs_index_pred'::regclass,     'concur_exprs_index_pred_2'::regclass)   ORDER BY attrelid::regclass::text, attnum

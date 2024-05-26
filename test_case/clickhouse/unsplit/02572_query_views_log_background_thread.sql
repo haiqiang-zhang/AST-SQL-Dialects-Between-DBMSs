@@ -1,5 +1,3 @@
-
-
 drop table if exists buffer_02572;
 drop table if exists data_02572;
 drop table if exists copy_02572;

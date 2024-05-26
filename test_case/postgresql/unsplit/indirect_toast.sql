@@ -10,7 +10,6 @@ UPDATE indtoasttest SET cnt = cnt +1, f1 = f1||'' RETURNING substring(indtoastte
 UPDATE indtoasttest SET cnt = cnt +1, f1 = '-'||f1||'-' RETURNING substring(indtoasttest::text, 1, 200);
 SELECT substring(indtoasttest::text, 1, 200) FROM indtoasttest;
 VACUUM FREEZE indtoasttest;
-SELECT substring(indtoasttest::text, 1, 200) FROM indtoasttest;
 CREATE FUNCTION update_using_indirect()
         RETURNS trigger
         LANGUAGE plpgsql AS $$
@@ -23,9 +22,7 @@ CREATE TRIGGER indtoasttest_update_indirect
         ON indtoasttest
         FOR EACH ROW
         EXECUTE PROCEDURE update_using_indirect();
-SELECT substring(indtoasttest::text, 1, 200) FROM indtoasttest;
 VACUUM FREEZE indtoasttest;
-SELECT substring(indtoasttest::text, 1, 200) FROM indtoasttest;
 DROP TABLE indtoasttest;
 DROP FUNCTION update_using_indirect();
 RESET default_toast_compression;

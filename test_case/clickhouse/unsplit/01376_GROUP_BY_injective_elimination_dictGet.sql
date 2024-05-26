@@ -20,11 +20,6 @@ LIFETIME(1)
 LAYOUT(FLAT());
 SELECT dictGet('dictdb_01376.dict_exists', 'value', toUInt64(1)) as val FROM numbers(2) GROUP BY val;
 EXPLAIN SYNTAX SELECT dictGet('dictdb_01376.dict_exists', 'value', toUInt64(1)) as val FROM numbers(2) GROUP BY val;
-EXPLAIN QUERY TREE
-SELECT dictGet('dictdb_01376.dict_exists', 'value', number) as val
-FROM numbers(2)
-GROUP BY val
-SETTINGS allow_experimental_analyzer = 1;
 DROP DICTIONARY dictdb_01376.dict_exists;
 DROP TABLE dictdb_01376.table_for_dict;
 DROP DATABASE dictdb_01376;

@@ -1,0 +1,125 @@
+--Query--
+select @@max_heap_table_size
+--Result--
+[(16777216,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+select 1 from t1 limit 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT   TABLE_CATALOG,   TABLE_SCHEMA,   TABLE_NAME,   TABLE_TYPE,   ENGINE,   ROW_FORMAT,   TABLE_COLLATION,   CREATE_OPTIONS,   TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 't1'
+--Result--
+[('def', 'db1', 't1', 'BASE TABLE', 'InnoDB', 'Dynamic', 'utf8mb4_0900_ai_ci', '', ''), ('def', 'schema1', 't1', 'BASE TABLE', 'InnoDB', 'Dynamic', 'utf8mb4_0900_ai_ci', '', ''), ('def', 'test_db', 't1', 'BASE TABLE', 'InnoDB', 'Dynamic', 'utf8mb4_0900_ai_ci', '', '')]
++--------------------+
+--Query--
+SELECT   TABLE_CATALOG,   TABLE_SCHEMA,   TABLE_NAME,   COLUMN_NAME,   COLUMN_DEFAULT,   IS_NULLABLE,   DATA_TYPE,   CHARACTER_SET_NAME,   COLLATION_NAME,   COLUMN_TYPE,   COLUMN_KEY,   EXTRA,   PRIVILEGES,   COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 't1'
+--Result--
+[('def', 'test_db', 't1', 'c', None, 'NO', 'int', None, None, 'int', 'PRI', '', 'select,insert,update,references', '')]
++--------------------+
+--Query--
+SELECT   TRIGGER_CATALOG,   TRIGGER_SCHEMA,   TRIGGER_NAME,   EVENT_MANIPULATION,   EVENT_OBJECT_CATALOG,   EVENT_OBJECT_SCHEMA,   EVENT_OBJECT_TABLE,   ACTION_CONDITION,   ACTION_STATEMENT,   ACTION_ORIENTATION,   ACTION_TIMING,   ACTION_REFERENCE_OLD_TABLE,   ACTION_REFERENCE_NEW_TABLE,   ACTION_REFERENCE_OLD_ROW,   ACTION_REFERENCE_NEW_ROW,   SQL_MODE,   DEFINER FROM INFORMATION_SCHEMA.TRIGGERS WHERE trigger_name = 't1_bi'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.VIEWS WHERE table_name = 'v1'
+--Result--
+[('def', 'test_db', 'v1', 'select 1 AS `1`', 'NONE', 'NO', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci')]
++--------------------+
+--Query--
+SELECT   SPECIFIC_NAME,   ROUTINE_CATALOG,   ROUTINE_SCHEMA,   ROUTINE_NAME,   ROUTINE_TYPE,   DTD_IDENTIFIER,   ROUTINE_BODY,   ROUTINE_DEFINITION,   EXTERNAL_NAME,   EXTERNAL_LANGUAGE,   PARAMETER_STYLE,   IS_DETERMINISTIC,   SQL_DATA_ACCESS,   SQL_PATH,   SECURITY_TYPE,   SQL_MODE,   ROUTINE_COMMENT,   DEFINER FROM INFORMATION_SCHEMA.ROUTINES WHERE routine_name = 'p1'
+--Result--
+[('p1', 'def', 'test_db', 'p1', 'PROCEDURE', None, 'SQL', 'SELECT 1', None, 'SQL', 'SQL', 'NO', 'CONTAINS SQL', None, 'DEFINER', {'ERROR_FOR_DIVISION_BY_ZERO', 'ONLY_FULL_GROUP_BY', 'NO_ZERO_DATE', 'NO_ENGINE_SUBSTITUTION', 'STRICT_TRANS_TABLES', 'NO_ZERO_IN_DATE'}, '', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT   SPECIFIC_NAME,   ROUTINE_CATALOG,   ROUTINE_SCHEMA,   ROUTINE_NAME,   ROUTINE_TYPE,   DTD_IDENTIFIER,   ROUTINE_BODY,   ROUTINE_DEFINITION,   EXTERNAL_NAME,   EXTERNAL_LANGUAGE,   PARAMETER_STYLE,   IS_DETERMINISTIC,   SQL_DATA_ACCESS,   SQL_PATH,   SECURITY_TYPE,   SQL_MODE,   ROUTINE_COMMENT,   DEFINER FROM INFORMATION_SCHEMA.ROUTINES WHERE routine_name = 'f1'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'SHOW CREATE TRIGGER t1_bi'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*)=0 FROM INFORMATION_SCHEMA.PROCESSLIST WHERE   INFO= "KILL QUERY $ID"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT GET_LOCK('t', 1000)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('t')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT table_name, column_name, column_type FROM        INFORMATION_SCHEMA.COLUMNS WHERE table_name='t1'
+--Result--
+[('t1', 'c1', 'int'), ('t1', 'c2', 'int'), ('t1', 'c3', 'text')]
++--------------------+
+--Query--
+SELECT table_schema, table_name, index_name, column_name FROM        INFORMATION_SCHEMA.STATISTICS WHERE table_name='t1'
+--Result--
+[('test_db', 't1', 'c2d', 'c2'), ('test_db', 't1', 'PRIMARY', 'c1')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE table_name='t1'
+--Result--
+[('def', 'test_db', 'PRIMARY', 'test_db', 't1', 'PRIMARY KEY', 'YES')]
++--------------------+
+--Query--
+SELECT constraint_schema, constraint_name, table_name, column_name FROM        INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE table_name='t1'
+--Result--
+[('test_db', 'PRIMARY', 't1', 'c1')]
++--------------------+

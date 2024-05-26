@@ -1,0 +1,70 @@
+--Query--
+CHECK TABLE mt_table SETTINGS max_threads = 1
+--Result--
+[]
++--------------------+
+--Query--
+CHECK TABLE mt_table SETTINGS max_threads = 1
+--Result--
+[('201801_1_1_0', 1, ''), ('201901_2_2_0', 1, '')]
++--------------------+
+--Query--
+SELECT '========'
+--Result--
+[('========',)]
++--------------------+
+--Query--
+CHECK TABLE mt_table SETTINGS max_threads = 1
+--Result--
+[('201801_1_1_0', 1, ''), ('201901_2_2_0', 1, ''), ('201901_3_3_0', 1, '')]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '========'
+--Result--
+[('========',)]
++--------------------+
+--Query--
+CHECK TABLE mt_table SETTINGS max_threads = 1
+--Result--
+[('201801_1_1_1', 1, ''), ('201901_2_3_1', 1, '')]
++--------------------+
+--Query--
+SELECT '========'
+--Result--
+[('========',)]
++--------------------+
+--Query--
+CHECK TABLE mt_table SETTINGS max_threads = 1
+--Result--
+[('201801_1_1_1', 1, ''), ('201901_2_3_1', 1, ''), ('201902_4_4_0', 1, '')]
++--------------------+
+--Query--
+SELECT '========'
+--Result--
+[('========',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+CHECK TABLE mt_table PARTITION 201902 SETTINGS max_threads = 1
+--Result--
+[('201902_4_5_1', 1, '')]
++--------------------+
+--Query--
+SELECT '========'
+--Result--
+[('========',)]
++--------------------+
+--Query--
+CHECK TABLE mt_table PART '201801_1_1_0'
+--Result--
+[('201801_1_1_0', 1, '')]
++--------------------+

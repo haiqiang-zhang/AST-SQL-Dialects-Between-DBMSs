@@ -1,0 +1,15 @@
+--Query--
+SELECT GET_LOCK('mysqltest_lock', 100)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "UPDATE t1 SET c1=GET_LOCK('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('mysqltest_lock')
+--Result--
+[(1,)]
++--------------------+

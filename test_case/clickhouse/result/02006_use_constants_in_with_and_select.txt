@@ -1,0 +1,20 @@
+--Query--
+SELECT     1 AS max_size,     groupArray(max_size)(col) FROM     (SELECT col FROM (         SELECT 1 AS col         UNION ALL         SELECT 2     ) ORDER BY col)
+--Result--
+[(1, [1])]
++--------------------+
+--Query--
+WITH 1 AS max_size SELECT groupArray(max_size)(col) FROM      (SELECT col FROM (          SELECT 1 as col          UNION ALL          SELECT 2      ) ORDER BY col)
+--Result--
+[([1],)]
++--------------------+
+--Query--
+WITH 0.1 AS level SELECT quantile(level)(number) FROM numbers(1000)
+--Result--
+[(99.9,)]
++--------------------+
+--Query--
+SELECT 0.1 AS level, quantile(level)(number) FROM numbers(1000)
+--Result--
+[(0.1, 99.9)]
++--------------------+

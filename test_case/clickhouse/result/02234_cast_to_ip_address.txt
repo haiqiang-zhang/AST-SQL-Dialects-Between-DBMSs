@@ -1,0 +1,125 @@
+--Query--
+SELECT 'IPv4 functions'
+--Result--
+[('IPv4 functions',)]
++--------------------+
+--Query--
+SELECT IPv4StringToNumOrDefault('test')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IPv4StringToNumOrNull('test')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IPv4StringToNum('127.0.0.1')
+--Result--
+[(2130706433,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT toIPv4OrDefault('test')
+--Result--
+[(IPv4Address('0.0.0.0'),)]
++--------------------+
+--Query--
+SELECT toIPv4OrNull('test')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT toIPv4('127.0.0.1')
+--Result--
+[(IPv4Address('127.0.0.1'),)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT cast('127.0.0.1' , 'IPv4')
+--Result--
+[(IPv4Address('127.0.0.1'),)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT 'IPv6 functions'
+--Result--
+[('IPv6 functions',)]
++--------------------+
+--Query--
+SELECT IPv6StringToNumOrDefault('test')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT IPv6StringToNumOrNull('test')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IPv6StringToNum('::ffff:127.0.0.1')
+--Result--
+[(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x7f\x00\x00\x01',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT toIPv6OrDefault('test')
+--Result--
+[(IPv6Address('::'),)]
++--------------------+
+--Query--
+SELECT toIPv6OrNull('test')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT toIPv6('::ffff:127.0.0.1')
+--Result--
+[(IPv6Address('::ffff:7f00:1'),)]
++--------------------+
+--Query--
+SELECT count() FROM numbers_mt(100000000) WHERE NOT ignore(toIPv6OrZero(randomString(8)))
+--Result--
+[(100000000,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT toFixedString('::1', 5) as value, cast(value, 'IPv6'), toIPv6(value)
+--Result--
+[('::1', IPv6Address('::1'), IPv6Address('::1'))]
++--------------------+

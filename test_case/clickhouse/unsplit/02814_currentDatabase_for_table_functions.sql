@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS null_table;
 DROP TABLE IF EXISTS null_table_buffer;
 DROP TABLE IF EXISTS null_mv;

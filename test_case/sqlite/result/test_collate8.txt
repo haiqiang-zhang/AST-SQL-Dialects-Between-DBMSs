@@ -1,0 +1,135 @@
+--Query--
+SELECT a FROM t1 ORDER BY a
+--Result--
+[('aaa',), ('BBB',), ('ccc',), ('DDD',)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 WHERE a<'ccc' ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 WHERE a<'ccc' COLLATE binary ORDER BY 1
+--Result--
+[(1,), (2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM t1 WHERE +a<'ccc' ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT a FROM t1 ORDER BY +a
+--Result--
+[('aaa',), ('BBB',), ('ccc',), ('DDD',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t1 ORDER BY "x"
+--Result--
+[('aaa',), ('BBB',), ('ccc',), ('DDD',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t1 WHERE x<'ccc' ORDER BY 1
+--Result--
+[('aaa',), ('BBB',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t1 WHERE x<'ccc' COLLATE binary ORDER BY [x]
+--Result--
+[('aaa',), ('BBB',), ('DDD',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t1 WHERE +x<'ccc' ORDER BY 1
+--Result--
+[('aaa',), ('BBB',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t1 ORDER BY +x
+--Result--
+[('aaa',), ('BBB',), ('ccc',), ('DDD',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t2 WHERE x='abc'
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t2 WHERE x='abc' COLLATE nocase
+--Result--
+[('abc',), ('ABC',)]
++--------------------+
+--Query--
+SELECT a AS x FROM t2 WHERE (x COLLATE nocase)='abc'
+--Result--
+[('abc',), ('ABC',)]
++--------------------+
+--Query--
+SELECT a COLLATE nocase AS x FROM t2 WHERE x='abc'
+--Result--
+[('abc',), ('ABC',)]
++--------------------+
+--Query--
+SELECT a COLLATE nocase AS x FROM t2 WHERE (x COLLATE binary)='abc'
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT a COLLATE nocase AS x FROM t2 WHERE x='abc' COLLATE binary
+--Result--
+[('abc',), ('ABC',)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE (a COLLATE nocase)='abc' COLLATE binary
+--Result--
+[('abc',), ('ABC',)]
++--------------------+
+--Query--
+SELECT a COLLATE nocase AS x FROM t2 WHERE 'abc'=x COLLATE binary
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||'') COLLATE nocase
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||'' COLLATE nocase)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||('' COLLATE nocase))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||upper('' COLLATE nocase))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||max('' COLLATE nocase,'' COLLATE binary))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||max('' COLLATE binary,'' COLLATE nocase))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||CASE WHEN 1-1=2 THEN '' COLLATE nocase                                         ELSE '' COLLATE binary END)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||CASE WHEN 1+1=2 THEN '' COLLATE nocase                                         ELSE '' COLLATE binary END)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'abc'==('ABC'||CASE WHEN 1=2 THEN '' COLLATE binary                                       ELSE '' COLLATE nocase END)
+--Result--
+[(0,)]
++--------------------+

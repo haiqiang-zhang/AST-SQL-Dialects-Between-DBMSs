@@ -1,0 +1,45 @@
+--Query--
+select 'NativeReader'
+--Result--
+[('NativeReader',)]
++--------------------+
+--Query--
+select toTypeName(dict), dict, lowCardinalityIndices(dict), lowCardinalityKeys(dict) from (select '123_' || toLowCardinality(v) as dict from (select arrayJoin(['a', 'bb', '', 'a', 'ccc', 'a', 'bb', '', 'dddd']) as v))
+--Result--
+[('LowCardinality(String)', '123_a', 2, ''), ('LowCardinality(String)', '123_bb', 3, '123_'), ('LowCardinality(String)', '123_', 1, '123_a'), ('LowCardinality(String)', '123_a', 2, '123_bb'), ('LowCardinality(String)', '123_ccc', 4, '123_ccc'), ('LowCardinality(String)', '123_a', 2, '123_dddd'), ('LowCardinality(String)', '123_bb', 3, ''), ('LowCardinality(String)', '123_', 1, ''), ('LowCardinality(String)', '123_dddd', 5, '')]
++--------------------+
+--Query--
+select '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+select 'MergeTree'
+--Result--
+[('MergeTree',)]
++--------------------+
+--Query--
+detach table lc_small_dict
+--Result--
+[]
++--------------------+
+--Query--
+detach table lc_big_dict
+--Result--
+[]
++--------------------+
+--Query--
+attach table lc_small_dict
+--Result--
+[]
++--------------------+
+--Query--
+attach table lc_big_dict
+--Result--
+[]
++--------------------+
+--Query--
+select sum(toUInt64OrZero(str)) from lc_small_dict
+--Result--
+[(499500000,)]
++--------------------+

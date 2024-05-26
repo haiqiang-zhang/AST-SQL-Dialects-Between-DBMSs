@@ -1,0 +1,140 @@
+--Query--
+SELECT '=DICTIONARY in Ordinary DB'
+--Result--
+[('=DICTIONARY in Ordinary DB',)]
++--------------------+
+--Query--
+SHOW CREATE DICTIONARY db_01018.dict1
+--Result--
+[("CREATE DICTIONARY db_01018.dict1\n(\n    `key_column` UInt64 DEFAULT 0,\n    `second_column` UInt8 DEFAULT 1,\n    `third_column` String DEFAULT 'qqq'\n)\nPRIMARY KEY key_column\nSOURCE(CLICKHOUSE(HOST 'localhost' PORT 9000 USER 'default' TABLE 'table_for_dict' PASSWORD '[HIDDEN]' DB 'database_for_dict_01018'))\nLIFETIME(MIN 1 MAX 10)\nLAYOUT(FLAT())",)]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018 LIKE 'dict1'
+--Result--
+[('dict1',)]
++--------------------+
+--Query--
+EXISTS DICTIONARY db_01018.dict1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT database, name FROM system.dictionaries WHERE database='db_01018' AND name LIKE 'dict1'
+--Result--
+[('db_01018', 'dict1')]
++--------------------+
+--Query--
+SELECT '==DETACH DICTIONARY'
+--Result--
+[('==DETACH DICTIONARY',)]
++--------------------+
+--Query--
+DETACH DICTIONARY db_01018.dict1
+--Result--
+[]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018 LIKE 'dict1'
+--Result--
+[]
++--------------------+
+--Query--
+EXISTS DICTIONARY db_01018.dict1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT database, name FROM system.dictionaries WHERE database='db_01018' AND name LIKE 'dict1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '==ATTACH DICTIONARY'
+--Result--
+[('==ATTACH DICTIONARY',)]
++--------------------+
+--Query--
+ATTACH DICTIONARY db_01018.dict1
+--Result--
+[]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018 LIKE 'dict1'
+--Result--
+[('dict1',)]
++--------------------+
+--Query--
+EXISTS DICTIONARY db_01018.dict1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT database, name FROM system.dictionaries WHERE database='db_01018' AND name LIKE 'dict1'
+--Result--
+[('db_01018', 'dict1')]
++--------------------+
+--Query--
+SELECT '==DROP DICTIONARY'
+--Result--
+[('==DROP DICTIONARY',)]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018 LIKE 'dict1'
+--Result--
+[]
++--------------------+
+--Query--
+EXISTS DICTIONARY db_01018.dict1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT database, name FROM system.dictionaries WHERE database='db_01018' AND name LIKE 'dict1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '=DICTIONARY in Memory DB'
+--Result--
+[('=DICTIONARY in Memory DB',)]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM memory_db LIKE 'dict2'
+--Result--
+[]
++--------------------+
+--Query--
+EXISTS DICTIONARY memory_db.dict2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT database, name FROM system.dictionaries WHERE database='memory_db' AND name LIKE 'dict2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '=DICTIONARY in Lazy DB'
+--Result--
+[('=DICTIONARY in Lazy DB',)]
++--------------------+
+--Query--
+SELECT '=DROP DATABASE WITH DICTIONARY'
+--Result--
+[('=DROP DATABASE WITH DICTIONARY',)]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018
+--Result--
+[('dict4',)]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018
+--Result--
+[]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM db_01018
+--Result--
+[('dict4',)]
++--------------------+

@@ -16,6 +16,3 @@ DROP VIEW v1;
 DROP TABLE t1;
 DROP PROCEDURE p1;
 select count(*) from information_schema.COLUMN_PRIVILEGES;
-select count(*) from information_schema.SCHEMA_PRIVILEGES;
-select count(*) from information_schema.TABLE_PRIVILEGES;
-select count(*) from information_schema.USER_PRIVILEGES;

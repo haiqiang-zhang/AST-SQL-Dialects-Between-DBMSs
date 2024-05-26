@@ -1,14 +1,7 @@
-CREATE TABLE t1 (
-  e1 enum('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ '),
-  e2 enum('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ«ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¿)ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂªÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ®')
-) ENGINE=MYISAM character set cp1251;
-DROP TABLE t1;
 SELECT @@collation_connection;
 CREATE TABLE t1 (a MEDIUMINT NULL) ENGINE=MYISAM;
 INSERT INTO t1 VALUES (1234567);
 SELECT GROUP_CONCAT(IFNULL(a,'')) FROM t1;
-SELECT GROUP_CONCAT(IF(a,a,'')) FROM t1;
-SELECT GROUP_CONCAT(CASE WHEN a THEN a ELSE '' END) FROM t1;
 SELECT COALESCE(a,'') FROM t1 GROUP BY 1;
 CREATE TABLE t2 AS
 SELECT

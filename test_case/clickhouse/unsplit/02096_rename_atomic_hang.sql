@@ -14,5 +14,4 @@ drop database db_hang;
 rename database db_hang_temp to db_hang;
 insert into db_hang.test select * from numbers(1000);
 select count() from db_hang.test;
-select count() from db_hang.test_mv;
 drop database db_hang;

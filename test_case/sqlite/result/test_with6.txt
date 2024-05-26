@@ -1,0 +1,45 @@
+--Query--
+WITH c(x) AS (VALUES(0),(1))   SELECT c1.x||c2.x||c3.x FROM c c1, c c2, c c3
+--Result--
+[('000',), ('001',), ('010',), ('011',), ('100',), ('101',), ('110',), ('111',)]
++--------------------+
+--Query--
+WITH c(x) AS MATERIALIZED (VALUES(0),(1))   SELECT c1.x||c2.x||c3.x FROM c c1, c c2, c c3
+--Result--
+[('000',), ('001',), ('010',), ('011',), ('100',), ('101',), ('110',), ('111',)]
++--------------------+
+--Query--
+WITH c(x) AS NOT MATERIALIZED (VALUES(0),(1))   SELECT c1.x||c2.x||c3.x FROM c c1, c c2, c c3
+--Result--
+[('000',), ('001',), ('010',), ('011',), ('100',), ('101',), ('110',), ('111',)]
++--------------------+
+--Query--
+WITH c(x) AS MATERIALIZED (VALUES(0),(1))   SELECT c1.x||c2.x||c3.x     FROM (SELECT x FROM c LIMIT 5) AS c1,          (SELECT x FROM c LIMIT 6) AS c2,          (SELECT x FROM c LIMIT 7) AS c3
+--Result--
+[('000',), ('001',), ('010',), ('011',), ('100',), ('101',), ('110',), ('111',)]
++--------------------+
+--Query--
+WITH c(x) AS (VALUES(0),(1))   SELECT c1.x||c2.x||c3.x     FROM (SELECT x FROM c LIMIT 5) AS c1,          (SELECT x FROM c LIMIT 6) AS c2,          (SELECT x FROM c LIMIT 7) AS c3
+--Result--
+[('000',), ('001',), ('010',), ('011',), ('100',), ('101',), ('110',), ('111',)]
++--------------------+
+--Query--
+WITH c(x) AS (VALUES(0),(1))   SELECT c2.x + 100*(SELECT sum(x+1) FROM c WHERE c.x<=c2.x)     FROM c AS c2 WHERE c2.x<10
+--Result--
+[(100,), (301,)]
++--------------------+
+--Query--
+SELECT y FROM t2 ORDER BY y
+--Result--
+[(40404,), (40405,), (40406,), (40504,), (40505,), (40506,), (40604,), (40605,), (40606,)]
++--------------------+
+--Query--
+SELECT y FROM t2 ORDER BY y
+--Result--
+[(40404,), (40405,), (40406,), (40504,), (40505,), (40506,), (40604,), (40605,), (40606,)]
++--------------------+
+--Query--
+SELECT y FROM t2 ORDER BY y
+--Result--
+[(40404,), (40405,), (40406,), (40504,), (40505,), (40506,), (40604,), (40605,), (40606,)]
++--------------------+

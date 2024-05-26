@@ -1,0 +1,210 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[('integer', 0)]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *, '|' FROM t0 ORDER BY +c0
+--Result--
+[('integer', 0, '|')]
++--------------------+
+--Query--
+SELECT id,x,'|' FROM t1a ORDER BY id
+--Result--
+[]
++--------------------+
+--Query--
+REPLACE INTO t0(c0) VALUES(NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[('xyz', 'xyz')]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('integer', 0)]
++--------------------+
+--Query--
+REPLACE INTO t1(a,c) VALUES(NULL,NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('aaa', 'ccc', 'ccc')]
++--------------------+
+--Query--
+REPLACE INTO t2(a,c) VALUES(NULL,NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('aaa', 'aaa', 'ccc')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+REPLACE INTO t3 VALUES(NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(123, 123)]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE b=123
+--Result--
+[(123, 123)]
++--------------------+
+--Query--
+REPLACE INTO t4 VALUES(NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(123, 1234)]
++--------------------+
+--Query--
+SELECT * FROM t4 WHERE b=1234
+--Result--
+[(123, 1234)]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[(1, 1, 0), (1, 1, 99)]
++--------------------+
+--Query--
+SELECT 100, * FROM t3
+--Result--
+[(100, 123, 123), (100, 1, 1)]
++--------------------+
+--Query--
+SELECT 200, * FROM t3
+--Result--
+[(200, 123, 123), (200, 1, 1)]
++--------------------+
+--Query--
+REINDEX
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, quote(b) FROM t1
+--Result--
+[('aaa', "'ccc'")]
++--------------------+
+--Query--
+SELECT c0, c1, c2 FROM t0 LEFT JOIN t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *, (1 BETWEEN CAST(t0.c0 AS TEXT) AND t0.c0) FROM t0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE (1 BETWEEN CAST(t0.c0 AS TEXT) AND t0.c0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tab
+--Result--
+[('2001-01-01', 0, 0, 0, None)]
++--------------------+
+--Query--
+SELECT * FROM tab
+--Result--
+[('2001-01-01', 0, 0, 5, None)]
++--------------------+
+--Query--
+SELECT name, type FROM pragma_table_xinfo('t1')
+--Result--
+[('c1', ''), ('c2', '')]
++--------------------+
+--Query--
+EXPLAIN SELECT a FROM t1 INDEXED BY x2
+--Result--
+[(0, 'Init', 0, 11, 0, None, 0, None), (1, 'OpenRead', 0, 3, 0, '1', 0, None), (2, 'OpenRead', 1, 11, 0, 'k(2,,)', 0, None), (3, 'Rewind', 1, 10, 1, '0', 0, None), (4, 'DeferredSeek', 1, 0, 0, None, 0, None), (5, 'IfNullRow', 1, 8, 1, None, 0, None), (6, 'Column', 1, 0, 1, None, 0, None), (7, 'Affinity', 1, 1, 0, 'D', 0, None), (8, 'ResultRow', 1, 1, 0, None, 0, None), (9, 'Next', 1, 4, 0, None, 1, None), (10, 'Halt', 0, 0, 0, None, 0, None), (11, 'Transaction', 0, 0, 38, '7', 1, None), (12, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+EXPLAIN SELECT b FROM t1 INDEXED BY x2
+--Result--
+[(0, 'Init', 0, 10, 0, None, 0, None), (1, 'OpenRead', 0, 3, 0, '1', 0, None), (2, 'OpenRead', 1, 11, 0, 'k(2,,)', 0, None), (3, 'Rewind', 1, 9, 1, '0', 0, None), (4, 'DeferredSeek', 1, 0, 0, None, 0, None), (5, 'IfNullRow', 1, 7, 1, None, 0, None), (6, 'Column', 0, 0, 1, None, 0, None), (7, 'ResultRow', 1, 1, 0, None, 0, None), (8, 'Next', 1, 4, 0, None, 1, None), (9, 'Halt', 0, 0, 0, None, 0, None), (10, 'Transaction', 0, 0, 38, '7', 1, None), (11, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+

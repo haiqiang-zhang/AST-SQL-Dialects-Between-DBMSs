@@ -1,0 +1,25 @@
+--Query--
+select release_lock("lock_bug26141_sync") into @a
+--Result--
+[]
++--------------------+
+--Query--
+select get_lock("lock_bug26141_wait", 1000) into @a
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+

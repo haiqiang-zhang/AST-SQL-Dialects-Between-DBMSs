@@ -1,0 +1,110 @@
+--Query--
+SELECT * WHERE toDateTime64(123.345, 3) == '2020-02-05 14:34:12.33333333333333333333333333333333333333333333333333333333'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'in SELECT'
+--Result--
+[('in SELECT',)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT DT64 = S
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT S = DT64
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT materialize(DT64) = S
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT S = materialize(DT64)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'in WHERE'
+--Result--
+[('in WHERE',)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE DT64 = S
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S = DT64
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE materialize(DT64) = S
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S = materialize(DT64)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'other operators'
+--Result--
+[('other operators',)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE DT64 <= S
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE DT64 >= S
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S <= DT64
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S >= DT64
+--Result--
+[(0,)]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE DT64 < S
+--Result--
+[]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE DT64 > S
+--Result--
+[]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE DT64 != S
+--Result--
+[]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S < DT64
+--Result--
+[]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S > DT64
+--Result--
+[]
++--------------------+
+--Query--
+WITH '2020-02-05 14:34:12.333' as S, toDateTime64(S, 3) as DT64 SELECT * WHERE S != DT64
+--Result--
+[]
++--------------------+

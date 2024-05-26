@@ -1,0 +1,70 @@
+--Query--
+SYSTEM STOP MERGES mt_01451
+--Result--
+[]
++--------------------+
+--Query--
+SELECT v FROM mt_01451 ORDER BY v
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT v FROM mt_01451 ORDER BY v
+--Result--
+[(0,), (2,)]
++--------------------+
+--Query--
+SELECT name FROM system.detached_parts WHERE table = 'mt_01451' AND database = currentDatabase()
+--Result--
+[('all_2_2_0',)]
++--------------------+
+--Query--
+SELECT v FROM mt_01451 ORDER BY v
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT name FROM system.detached_parts WHERE table = 'mt_01451' AND database = currentDatabase()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- drop part --'
+--Result--
+[('-- drop part --',)]
++--------------------+
+--Query--
+SELECT v FROM mt_01451 ORDER BY v
+--Result--
+[(0,), (2,)]
++--------------------+
+--Query--
+SELECT name FROM system.parts WHERE table = 'mt_01451' AND active AND database = currentDatabase()
+--Result--
+[('all_1_1_0',), ('all_3_3_0',)]
++--------------------+
+--Query--
+SELECT '-- resume merges --'
+--Result--
+[('-- resume merges --',)]
++--------------------+
+--Query--
+SYSTEM START MERGES mt_01451
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE mt_01451 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT v FROM mt_01451 ORDER BY v
+--Result--
+[(0,), (2,)]
++--------------------+
+--Query--
+SELECT name FROM system.parts WHERE table = 'mt_01451' AND active AND database = currentDatabase()
+--Result--
+[('all_1_3_1',)]
++--------------------+

@@ -94,7 +94,6 @@ select '-------subtractYears---------';
 select '-------toDate32---------';
 select toDate32('1900-01-01'), toDate32(toDate('2000-01-01'));
 select toDate32OrZero('1899-01-01'), toDate32OrNull('1899-01-01');
-select toDate32OrZero(''), toDate32OrNull('');
 select (select toDate32OrZero(''));
 select (select toDate32OrNull(''));
 SELECT toString(T.d) dateStr

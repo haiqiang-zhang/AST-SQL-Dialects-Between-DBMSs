@@ -1,0 +1,35 @@
+--Query--
+SELECT cast(tuple(1, 'Value'), 'Tuple(first UInt64, second String)') AS value, value.first, value.second
+--Result--
+[((1, 'Value'), 1, 'Value')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+WITH (x -> x + 1) AS lambda SELECT lambda(1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1) AS t1, t1 AS t2
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS t2, (SELECT 1) AS t1
+--Result--
+[(1, 1)]
++--------------------+

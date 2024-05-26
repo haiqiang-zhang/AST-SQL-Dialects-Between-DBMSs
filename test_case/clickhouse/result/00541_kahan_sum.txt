@@ -1,0 +1,20 @@
+--Query--
+SELECT sum(1) FROM (SELECT * FROM system.numbers LIMIT 1000)
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT sumWithOverflow(1) FROM (SELECT * FROM system.numbers LIMIT 1000)
+--Result--
+[(232,)]
++--------------------+
+--Query--
+SELECT sumKahan(1e100) - 1e100 * 1000 FROM (SELECT * FROM system.numbers LIMIT 1000)
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT abs(sum(1e100) - 1e100 * 1000) > 1 FROM (SELECT * FROM system.numbers LIMIT 1000)
+--Result--
+[(1,)]
++--------------------+

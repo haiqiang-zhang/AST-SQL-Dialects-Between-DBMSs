@@ -1,0 +1,30 @@
+--Query--
+SHOW CREATE VIEW test_1602.v
+--Result--
+[('CREATE VIEW test_1602.v\n(\n    `EventDate` DateTime,\n    `CounterID` UInt32,\n    `UserID` UInt32\n)\nAS SELECT *\nFROM test_1602.tbl',)]
++--------------------+
+--Query--
+SHOW CREATE VIEW test_1602.vv
+--Result--
+[('CREATE MATERIALIZED VIEW test_1602.vv\n(\n    `EventDate` DateTime,\n    `CounterID` UInt32,\n    `UserID` UInt32\n)\nENGINE = MergeTree\nPARTITION BY toYYYYMM(EventDate)\nORDER BY (CounterID, EventDate, intHash32(UserID))\nSETTINGS index_granularity = 8192\nAS SELECT *\nFROM test_1602.tbl',)]
++--------------------+
+--Query--
+SHOW CREATE test_1602.VIEW
+--Result--
+[('CREATE VIEW test_1602.VIEW\n(\n    `EventDate` DateTime,\n    `CounterID` UInt32,\n    `UserID` UInt32\n)\nAS SELECT *\nFROM test_1602.tbl',)]
++--------------------+
+--Query--
+SHOW CREATE test_1602.DATABASE
+--Result--
+[('CREATE VIEW test_1602.DATABASE\n(\n    `EventDate` DateTime,\n    `CounterID` UInt32,\n    `UserID` UInt32\n)\nAS SELECT *\nFROM test_1602.tbl',)]
++--------------------+
+--Query--
+SHOW CREATE test_1602.DICTIONARY
+--Result--
+[('CREATE VIEW test_1602.DICTIONARY\n(\n    `EventDate` DateTime,\n    `CounterID` UInt32,\n    `UserID` UInt32\n)\nAS SELECT *\nFROM test_1602.tbl',)]
++--------------------+
+--Query--
+SHOW CREATE test_1602.TABLE
+--Result--
+[('CREATE VIEW test_1602.`TABLE`\n(\n    `EventDate` DateTime,\n    `CounterID` UInt32,\n    `UserID` UInt32\n)\nAS SELECT *\nFROM test_1602.tbl',)]
++--------------------+

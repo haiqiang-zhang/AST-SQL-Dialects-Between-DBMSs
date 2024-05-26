@@ -1,0 +1,3380 @@
+--Query--
+select json_extract(trace,"$.steps[*].statement_parameters") from information_schema.optimizer_trace
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+11.1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+11"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ?+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select 1.0+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select 1e0+?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select date(?)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select 11.1*(?+?)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select -(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as time), ?+1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ABS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select sum(1) over (order by ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select sum(1) over (order by 1.1 range ? preceding)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 1 where ? group by ? having ? order by ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 1 from t1 left join t2 on ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 1 where ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as unsigned)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as char(10))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as binary(3))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as date)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as time(6))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as datetime(6))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as year)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as float)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as double)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as decimal(10))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select cast(? as json)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select convert(?, decimal(10))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 1 where ? and ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ?=12, ?=?,   1 BETWEEN ? AND 4.3, ? BETWEEN 1 AND 4.3, ? BETWEEN ? AND ?,   ? >= 3, ? >= ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ifnull(?,?),ifnull(?,cast("2000" as date))'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select if(?,?,?),if(?,cast("2000" as date),?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select coalesce(?,?,?),coalesce(?,cast("2000" as date),?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? in (?,?), ? in (2,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? not in (?,?), ? not in (2,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' select case ? when 3 then 1e0 else 2e0 end, case 3 when ? then 6 else 12 end, case ? when ? then 6 else 12 end'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' select case 3 when 3 then ? else 2e0 end, case 3 when 3 then 1e0 else ? end, case 3 when 3 then ? else ? end, case ? when ? then ? else ? end'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' select case ? when ? then ? else ? end'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' select case when 3=2 then ? else 2e0 end, case when ? then 6 else 12 end, case when ? then ? else ? end'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' select ? in (select a from t1),        3 in (select ? from t1)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' select ? >= ALL(select a from t1),        ? = ALL (select a from t1),        ? >= ANY (select a from t1),        ? NOT IN (select a from t1)'
+--Result--
+[]
++--------------------+
+--Query--
+select length(@a),sha2(@a, 0)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+prepare s from 'select length(?), sha2(?, 0)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'insert into t3 values(?)'
+--Result--
+[]
++--------------------+
+--Query--
+select length(a), a=@a from t3
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'update t3 set a=?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'delete from t3 where a=?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'insert into t3 select ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'insert into t3 select ? union select ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'insert into t3 select ? union all select ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'create table t4 as select ? as a from t3 limit 1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from  'create table t4 as select cast(? as binary(1000000)) as a from t3   limit 1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ~ ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? IS TRUE'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? IS FALSE'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? IS NOT TRUE'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? IS NOT FALSE'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? IS NULL'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? IS NOT NULL'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select - ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? - ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ! ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NOT ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NOT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? DIV ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? AND ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? OR ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? XOR ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? % ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? MOD ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select + ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? + ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select - ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? - ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? * ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? / ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? = ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select hex(? & ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? & 2'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? | ?'
+--Result--
+[]
++--------------------+
+--Query--
+select '18446744073709551615' | 0
+--Result--
+[(18446744073709551615,)]
++--------------------+
+--Query--
+prepare s from 'select ? ^ ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? / ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? = ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? <=> ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? > ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? >= ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? < ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? <= ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? <> ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? != ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? << ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? >> ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? LIKE ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? NOT LIKE ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? REGEXP ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? RLIKE ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? NOT REGEXP ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 1 from articles where MATCH (title,body) AGAINST (?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ? SOUNDS LIKE ?'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ABS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ACOS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(?, INTERVAL ? MONTH)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(?, INTERVAL ? SECOND)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "SELECT ADDDATE('2008-01-02', interval ? second)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(?, INTERVAL ? DAY_SECOND)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(?, INTERVAL 1 MONTH)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(CAST(? AS DATE), INTERVAL 1 MONTH)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDDATE(CAST(? AS DATETIME), INTERVAL 1 SECOND)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ADDTIME(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select ADDTIME(?, time'01:01:01')"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select AES_DECRYPT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select AES_DECRYPT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select AES_ENCRYPT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select AES_ENCRYPT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ANY_VALUE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ASCII(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ASIN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ATAN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ATAN(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ATAN2(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ATAN2(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select AVG(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BENCHMARK(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIN_TO_UUID(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIN_TO_UUID(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BINARY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIT_AND(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIT_COUNT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select bit_count(?),bit_count(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIT_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIT_OR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select BIT_XOR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CEIL(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CEILING(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHAR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHAR(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHAR(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHAR(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHAR(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHAR_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHARACTER_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CHARSET(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COALESCE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COALESCE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COALESCE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COALESCE(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COALESCE(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COERCIBILITY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COLLATION(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COMPRESS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT_WS(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT_WS(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT_WS(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONCAT_WS(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONNECTION_ID()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONV(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CONVERT_TZ(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COUNT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select COUNT(DISTINCT ?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CRC32(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURDATE()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURRENT_DATE()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURRENT_ROLE()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURRENT_TIME()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURRENT_TIMESTAMP()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURRENT_USER()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select CURTIME()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DATABASE()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DATE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DATE_FORMAT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DATEDIFF(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DAY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DAYNAME(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DAYOFMONTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DAYOFWEEK(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DAYOFYEAR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select DEGREES(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ELT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ELT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ELT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ELT(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select EXP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select EXPORT_SET(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select EXPORT_SET(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select EXPORT_SET(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select EXTRACT(YEAR FROM ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ExtractValue(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FIELD(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FIELD(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FIELD(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FIELD(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FIND_IN_SET(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FIRST_VALUE(?) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FLOOR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FORMAT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FORMAT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FOUND_ROWS()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FROM_BASE64(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FROM_DAYS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FROM_UNIXTIME(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select FROM_UNIXTIME(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GeomCollection(?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GET_FORMAT(DATE, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GET_LOCK(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GREATEST(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GROUP_CONCAT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GROUP_CONCAT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GROUP_CONCAT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GROUP_CONCAT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GROUP_CONCAT(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GROUP_CONCAT(DISTINCT ?,? ORDER BY ? SEPARATOR ",")'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GTID_SUBSET(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select GTID_SUBTRACT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select HEX(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select HOUR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ICU_VERSION()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IF(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IFNULL(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INET_ATON(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INET_NTOA(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INET6_ATON(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INET6_NTOA(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INSERT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INSTR(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INTERVAL(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INTERVAL(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INTERVAL(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select INTERVAL(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_FREE_LOCK(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_IPV4(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_IPV4_COMPAT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_IPV4_MAPPED(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_IPV6(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_USED_LOCK(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select IS_UUID(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ISNULL(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY_APPEND(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY_APPEND(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY_INSERT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAY_INSERT(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_ARRAYAGG(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_CONTAINS(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_CONTAINS(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_CONTAINS_PATH(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_CONTAINS_PATH(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_CONTAINS_PATH(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_DEPTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_EXTRACT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_EXTRACT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_EXTRACT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_EXTRACT(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_INSERT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_INSERT(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_KEYS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_KEYS(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_LENGTH(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PATCH(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PATCH(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PATCH(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PATCH(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PRESERVE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PRESERVE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PRESERVE(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_MERGE_PRESERVE(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_OBJECT()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_OBJECT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_OBJECT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_OBJECTAGG(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_PRETTY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_QUOTE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_REMOVE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_REMOVE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_REMOVE(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_REMOVE(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_REPLACE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_REPLACE(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_SEARCH(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_SEARCH(?,?,?,"x",?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_SET(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_SET(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_STORAGE_FREE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_STORAGE_SIZE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'SELECT *      FROM        JSON_TABLE(          ?,          "$[*]"          COLUMNS(            rowid FOR ORDINALITY,            ac VARCHAR(100) PATH "$.a" DEFAULT ''111'' ON EMPTY DEFAULT ''999'' ON ERROR,            aj JSON PATH "$.a" DEFAULT ''{"x": 333}'' ON EMPTY,            bx INT EXISTS PATH "$.b"          )        ) AS tt'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_TYPE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_UNQUOTE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select JSON_VALID(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LAG(?,?,?) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LAG(?,?,2.1) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LAST_DAY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LAST_INSERT_ID()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LAST_INSERT_ID(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LAST_VALUE(?) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LCASE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LEAD(?,?,?) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LEAD(?,?,2.1) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LEAST(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LEFT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LineString(?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOAD_FILE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOCALTIME()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOCALTIMESTAMP()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOCATE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOCATE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOG(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOG(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOG10(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOG2(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LOWER(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LPAD(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select LTRIM(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAKE_SET(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAKE_SET(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAKE_SET(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAKE_SET(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAKEDATE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAKETIME(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SOURCE_POS_WAIT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SOURCE_POS_WAIT(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SOURCE_POS_WAIT(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MAX(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRContains(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRCoveredBy(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRCovers(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRDisjoint(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBREquals(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRIntersects(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBROverlaps(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRTouches(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MBRWithin(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MD5(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MICROSECOND(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MID(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MID(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MIN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MINUTE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MOD(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MONTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MONTHNAME(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MultiLineString(?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MultiPoint(?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select MultiPolygon(?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NOW()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NTH_VALUE(?,?) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NTILE(?) over () from t1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NULLIF(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NULLIF(100,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select NULLIF(?,100)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 200 + NULLIF(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 200 + NULLIF("100",?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select 200 + NULLIF(?,"100")'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select OCT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select OCTET_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ORD(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select PERIOD_ADD(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select PERIOD_DIFF(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select PI()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select Point(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select Polygon(?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select POW(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select POWER(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select QUARTER(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select QUOTE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RADIANS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RAND(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RANDOM_BYTES(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_INSTR(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_INSTR(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_INSTR(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_LIKE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_REPLACE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_REPLACE(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_REPLACE(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_SUBSTR(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_SUBSTR(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REGEXP_SUBSTR(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RELEASE_ALL_LOCKS()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RELEASE_LOCK(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REPEAT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REPLACE(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select REVERSE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RIGHT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ROLES_GRAPHML()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ROUND(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ROUND(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ROW_COUNT()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RPAD(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select RTRIM(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SCHEMA()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SEC_TO_TIME(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SECOND(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SESSION_USER()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SHA1(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SHA2(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SIGN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SIN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SLEEP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SOUNDEX(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SPACE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SQRT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Area(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsBinary(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsBinary(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsGeoJSON(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsGeoJSON(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsGeoJSON(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_AsText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Buffer(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Buffer(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Buffer(?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Buffer(?,?,?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Buffer_Strategy(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Buffer_Strategy(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Centroid(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Contains(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_ConvexHull(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Crosses(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Difference(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Dimension(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Disjoint(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Distance(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Distance_Sphere(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Distance_Sphere(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_EndPoint(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Envelope(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Equals(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_ExteriorRing(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeoHash(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeoHash(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomCollFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomCollFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomCollFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomCollFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomCollFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomCollFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeometryN(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeometryType(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromGeoJSON(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromGeoJSON(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromGeoJSON(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_GeomFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_InteriorRingN(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Intersection(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Intersects(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_IsClosed(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_IsEmpty(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_IsSimple(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_IsValid(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LatFromGeoHash(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Latitude(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Latitude(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Length(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LineFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LineFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LineFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LineFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LineFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LineFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_LongFromGeoHash(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Longitude(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Longitude(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MakeEnvelope(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MLineFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MLineFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MLineFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MLineFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MLineFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MLineFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPointFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPointFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPointFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPointFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPointFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPointFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPolyFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPolyFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPolyFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPolyFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPolyFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_MPolyFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_NumGeometries(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_NumInteriorRing(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_NumPoints(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Overlaps(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromGeoHash(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PointN(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PolyFromText(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PolyFromText(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PolyFromText(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PolyFromWKB(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PolyFromWKB(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_PolyFromWKB(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Simplify(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_SRID(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_SRID(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_StartPoint(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_SwapXY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_SymDifference(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Touches(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Union(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Validate(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Within(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_X(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_X(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Y(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select ST_Y(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STATEMENT_DIGEST(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STATEMENT_DIGEST_TEXT(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STD(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STDDEV(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STDDEV_POP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STDDEV_SAMP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STR_TO_DATE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select STRCMP(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBDATE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBDATE(?, INTERVAL 1 MONTH)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBDATE(CAST(? AS DATE), INTERVAL 1 MONTH)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBDATE(CAST(? AS DATETIME), INTERVAL 1 SECOND)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBSTR(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBSTR(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBSTRING(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBSTRING(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBSTRING_INDEX(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUBTIME(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SUM(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SYSDATE()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select SYSTEM_USER()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TAN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIME(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIME_FORMAT(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIME_TO_SEC(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMEDIFF(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMEDIFF(?,"01:02:03")'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMEDIFF(?,"2001-01-01 01:02:03")'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMESTAMP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMESTAMP(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMESTAMPADD(HOUR,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TIMESTAMPDIFF(HOUR,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TO_BASE64(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TO_DAYS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TO_SECONDS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TRIM(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select TRUNCATE(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UCASE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UNCOMPRESS(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UNCOMPRESSED_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UNHEX(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UNIX_TIMESTAMP()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UNIX_TIMESTAMP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UpdateXML(?,?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UPPER(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select USER()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UTC_DATE()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UTC_TIME()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UTC_TIMESTAMP()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UUID()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UUID_SHORT()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UUID_TO_BIN(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select UUID_TO_BIN(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select VALIDATE_PASSWORD_STRENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select VAR_POP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select VAR_SAMP(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select VARIANCE(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select VERSION()'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WAIT_FOR_EXECUTED_GTID_SET(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WAIT_FOR_EXECUTED_GTID_SET(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WEEK(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WEEK(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WEEKDAY(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WEEKOFYEAR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select WEIGHT_STRING(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select YEAR(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select YEARWEEK(?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from 'select YEARWEEK(?,?)'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT i1+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM "SELECT i2+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s3 FROM "SELECT i3+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s4 FROM "SELECT i4+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s5 FROM "SELECT i8+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s6 FROM "SELECT dc1+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s7 FROM "SELECT dc2+? FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s2
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s3
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s4
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s5
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s6
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s7
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE si FROM "INSERT INTO t1 VALUES(1,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE su FROM "UPDATE t1  SET i1=?, i2=?, i3=?, i4=?, i8=?, i1u=?, i2u=?, i3u=?, i4u=?, i8u=?,      dc=?, f4=?, f8=?, vc=?, fc=?, vb=?, fb=?, d=?, t=?, dt=?, ts=?  WHERE pk=1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE siu FROM "INSERT INTO t1 VALUES(1,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)  ON DUPLICATE KEY  UPDATE i1=?, i2=?, i3=?, i4=?, i8=?, i1u=?, i2u=?, i3u=?, i4u=?, i8u=?,      dc=?, f4=?, f8=?, vc=?, fc=?, vb=?, fb=?, d=?, t=?, dt=?, ts=?"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE si
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE su
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE siu
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT ? + ?"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + (? + ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT -(?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + -(?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT GREATEST(?, ?), LEAST(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + GREATEST(?, ?), 3.14e0 + LEAST(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT COALESCE(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + COALESCE(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT CASE ? WHEN 1 THEN ? ELSE ? END"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + CASE ? WHEN 1 THEN ? ELSE ? END"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT IFNULL(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + IFNULL(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT NULLIF(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + NULLIF(?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT IF(?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT 666 + IF(?, ?, ?)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s FROM "DELETE FROM t1 WHERE (?, ?) NOT IN (SELECT 'a', 'b' FROM t2)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s FROM "SELECT * FROM t1 WHERE (?, ?) NOT IN (SELECT 'a', 'b' FROM t2)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s FROM "SELECT NULL"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s FROM "SELECT NULL + ? "
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'SELECT * FROM t1 WHERE col1 LIKE ? OR col2 LIKE ?'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT * FROM t WHERE c LIKE ? COLLATE utf8mb4_lt_0900_ai_ci"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ps
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT format_bytes(?)"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT format_pico_time(?)"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT ps_thread_id(?)"
+--Result--
+[]
++--------------------+

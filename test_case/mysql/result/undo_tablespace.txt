@@ -1,0 +1,20 @@
+--Query--
+SELECT NAME, SPACE_TYPE, STATE FROM INFORMATION_SCHEMA.INNODB_TABLESPACES        WHERE SPACE_TYPE = 'Undo' ORDER BY NAME
+--Result--
+[('innodb_undo_001', 'Undo', 'active'), ('innodb_undo_002', 'Undo', 'active'), ('undo_003', 'Undo', 'active')]
++--------------------+
+--Query--
+SELECT TABLESPACE_NAME, FILE_NAME, FILE_TYPE FROM INFORMATION_SCHEMA.FILES        WHERE FILE_NAME LIKE '%undo%' ORDER BY TABLESPACE_NAME
+--Result--
+[('innodb_undo_001', './undo_001', 'UNDO LOG'), ('innodb_undo_002', './undo_002', 'UNDO LOG'), ('undo_003', './undo_003.ibu', 'UNDO LOG')]
++--------------------+
+--Query--
+SELECT NAME, SPACE_TYPE, STATE FROM INFORMATION_SCHEMA.INNODB_TABLESPACES        WHERE SPACE_TYPE = 'Undo' ORDER BY NAME
+--Result--
+[('innodb_undo_001', 'Undo', 'active'), ('innodb_undo_002', 'Undo', 'active'), ('undo_003', 'Undo', 'inactive')]
++--------------------+
+--Query--
+SELECT TABLESPACE_NAME, FILE_NAME, FILE_TYPE FROM INFORMATION_SCHEMA.FILES        WHERE FILE_NAME LIKE '%undo%' ORDER BY TABLESPACE_NAME
+--Result--
+[('innodb_undo_001', './undo_001', 'UNDO LOG'), ('innodb_undo_002', './undo_002', 'UNDO LOG'), ('undo_003', './undo_003.ibu', 'UNDO LOG')]
++--------------------+

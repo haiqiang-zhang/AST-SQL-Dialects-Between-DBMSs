@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT GET_LOCK("dangling", 0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST WHERE STATE = "User lock"   AND INFO = "SELECT GET_LOCK('dangling', 3600)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 FROM INFORMATION_SCHEMA.PROCESSLIST WHERE STATE = "User lock"   AND INFO = "SELECT GET_LOCK('dangling', 3600)"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST WHERE STATE = "User lock"   AND INFO = "SELECT GET_LOCK('dangling', 3600)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('dangling')
+--Result--
+[(1,)]
++--------------------+

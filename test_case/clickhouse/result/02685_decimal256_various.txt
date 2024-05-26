@@ -1,0 +1,115 @@
+--Query--
+SELECT 1.1::Decimal(60, 30)
+--Result--
+[(1.1,)]
++--------------------+
+--Query--
+SELECT round(1.1::Decimal(60, 30))
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT hex(1.234567890123456789012345678901::Decimal(60, 30))
+--Result--
+[('356C760E4FC986A2A39F1A950F00000000000000000000000000000000000000',)]
++--------------------+
+--Query--
+SELECT bin(1.234567890123456789012345678901::Decimal(60, 30))
+--Result--
+[('0011010101101100011101100000111001001111110010011000011010100010101000111001111100011010100101010000111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',)]
++--------------------+
+--Query--
+SELECT reinterpret(unhex(hex(1.234567890123456789012345678901::Decimal(60, 30))), 'Decimal(60, 30)')
+--Result--
+[(1.2345678901234567,)]
++--------------------+
+--Query--
+SELECT arraySum([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[(4.65,)]
++--------------------+
+--Query--
+SELECT arrayMin([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[(1.2,)]
++--------------------+
+--Query--
+SELECT arrayMax([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[(3.45,)]
++--------------------+
+--Query--
+SELECT arrayAvg([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[(2.325,)]
++--------------------+
+--Query--
+SELECT toTypeName(arrayProduct([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)]))
+--Result--
+[('Float64',)]
++--------------------+
+--Query--
+SELECT arrayCumSum([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[([1.2, 4.65],)]
++--------------------+
+--Query--
+SELECT arrayCumSumNonNegative([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[([1.2, 4.65],)]
++--------------------+
+--Query--
+SELECT arrayDifference([1.2::Decimal(60, 30), 3.45::Decimal(61, 29)])
+--Result--
+[([0.0, 2.25],)]
++--------------------+
+--Query--
+SELECT arrayCompact([1.2::Decimal(60, 30) AS x, x, x, x, 3.45::Decimal(3, 2) AS y, y, x, x])
+--Result--
+[([1.2, 3.45, 1.2],)]
++--------------------+
+--Query--
+SELECT 1.2::Decimal(2, 1) IN (1.2::Decimal(60, 30), 3.4::Decimal(60, 30))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1.23::Decimal(3, 2) IN (1.2::Decimal(60, 30), 3.4::Decimal(60, 30))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1.2::Decimal(60, 30) IN (1.2::Decimal(2, 1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT arrayJoin(sumMap(x)) FROM (SELECT [('Hello', 1.2::Decimal256(30)), ('World', 3.4::Decimal256(30))]::Map(String, Decimal256(30)) AS x UNION ALL SELECT [('World', 5.6::Decimal256(30)), ('GoodBye', -111.222::Decimal256(30))]::Map(String, Decimal256(30))) ORDER BY 1
+--Result--
+[(('GoodBye', -111.222),), (('Hello', 1.2),), (('World', 9.0),)]
++--------------------+
+--Query--
+SELECT mapAdd(map('Hello', 1.2::Decimal128(30), 'World', 3.4::Decimal128(30)), map('World', 5.6::Decimal128(30), 'GoodBye', -111.222::Decimal128(30)))
+--Result--
+[({'GoodBye': -111.222, 'Hello': 1.2, 'World': 9.0},)]
++--------------------+
+--Query--
+SELECT mapSubtract(map('Hello', 1.2::Decimal128(30), 'World', 3.4::Decimal128(30)), map('World', 5.6::Decimal128(30), 'GoodBye', -111.222::Decimal128(30)))
+--Result--
+[({'GoodBye': 111.222, 'Hello': 1.2, 'World': -2.2},)]
++--------------------+
+--Query--
+SELECT arraySort(arrayIntersect([1, 2, 3]::Array(UInt256), [2, 3, 4]::Array(UInt256)))
+--Result--
+[([2, 3],)]
++--------------------+
+--Query--
+select coalesce(cast('123', 'Nullable(Decimal(20, 10))'), 0)
+--Result--
+[(123.0,)]
++--------------------+
+--Query--
+SELECT * FROM decimal_insert_cast_issue
+--Result--
+[(1.0,)]
++--------------------+

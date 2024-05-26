@@ -1,0 +1,80 @@
+--Query--
+SHOW CREATE TABLE table_with_lc_key
+--Result--
+[("CREATE TABLE test.table_with_lc_key\n(\n    `enum_key` Enum8('y' = 1, 'x' = 2),\n    `lc_key` String,\n    `value` String\n)\nENGINE = MergeTree\nORDER BY (enum_key, lc_key)\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+DETACH TABLE table_with_lc_key
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE table_with_lc_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM table_with_lc_key WHERE enum_key > 0 and lc_key like 'h%'
+--Result--
+[('y', 'hello', 'world')]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_with_lc_key
+--Result--
+[("CREATE TABLE test.table_with_lc_key\n(\n    `enum_key` Enum8('y' = 1, 'x' = 2, 'z' = 3),\n    `lc_key` String,\n    `value` String\n)\nENGINE = MergeTree\nORDER BY (enum_key, lc_key)\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+DETACH TABLE table_with_lc_key
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE table_with_lc_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM table_with_lc_key WHERE enum_key > 0 and lc_key like 'h%'
+--Result--
+[('y', 'hello', 'world')]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_with_lc_key
+--Result--
+[('CREATE TABLE test.table_with_lc_key\n(\n    `enum_key` Int8,\n    `lc_key` String,\n    `value` String\n)\nENGINE = MergeTree\nORDER BY (enum_key, lc_key)\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+DETACH TABLE table_with_lc_key
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE table_with_lc_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM table_with_lc_key WHERE enum_key > 0 and lc_key like 'h%'
+--Result--
+[(1, 'hello', 'world')]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_with_string_key
+--Result--
+[('CREATE TABLE test.table_with_string_key\n(\n    `int_key` Int8,\n    `str_key` LowCardinality(String),\n    `value` String\n)\nENGINE = MergeTree\nORDER BY (int_key, str_key)\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+DETACH TABLE table_with_string_key
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE table_with_string_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM table_with_string_key WHERE int_key > 0 and str_key like 'h%'
+--Result--
+[(1, 'hello', 'world')]
++--------------------+

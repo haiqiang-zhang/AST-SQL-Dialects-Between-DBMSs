@@ -31,10 +31,6 @@ CREATE DATABASE db1;
 CREATE TABLE db1.t(c1 INT CONSTRAINT t2_chk_1 CHECK (c1 > 10));
 DROP DATABASE db1;
 DROP TABLE t1;
-create table t1 (f1 int,
-                 CONSTRAINT cafe CHECK (f1 < 10),
-                 CONSTRAINT cafÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ© CHECK (f1 < 10));
-DROP TABLE t1;
 CREATE TABLE t1(CHECK((f1 + f2) > 10), f1 int CHECK (f1 < 10), f2 int);
 SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS;
 DROP TABLE t1;
@@ -528,7 +524,6 @@ CREATE TABLE t2 (
 DROP DATABASE test2;
 INSERT INTO t2(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10)
     VALUES(B'1111000',1,11,11,11,5,5,9.1,9.1,9.1);
-SELECT HEX(c1), c2, c3, c4, c5, c6, c7, c8, c9, c10 FROM t2;
 DROP TABLE t2;
 CREATE TABLE t1(c1 INT CHECK(c1 > 10));
 PREPARE stmt1 FROM 'INSERT INTO t1 VALUES(1)';

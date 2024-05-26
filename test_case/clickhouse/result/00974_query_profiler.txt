@@ -1,0 +1,20 @@
+--Query--
+SELECT sleep(0.5), ignore('test real time query profiler')
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(), ignore('test cpu time query profiler') FROM numbers_mt(10000000000)
+--Result--
+[(10000000000, 0)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

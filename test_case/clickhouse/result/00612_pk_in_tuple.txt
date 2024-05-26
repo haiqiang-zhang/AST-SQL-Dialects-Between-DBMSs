@@ -1,0 +1,130 @@
+--Query--
+select 'all'
+--Result--
+[('all',)]
++--------------------+
+--Query--
+select * from tab_00612 order by key
+--Result--
+[(1, [1]), (2, [2])]
++--------------------+
+--Query--
+select 'key, arrayJoin(arr) in (1, 1)'
+--Result--
+[('key, arrayJoin(arr) in (1, 1)',)]
++--------------------+
+--Query--
+select key, arrayJoin(arr) as val from tab_00612 where (key, val) in (1, 1)
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+select 'key, arrayJoin(arr) in ((1, 1), (2, 2))'
+--Result--
+[('key, arrayJoin(arr) in ((1, 1), (2, 2))',)]
++--------------------+
+--Query--
+select key, arrayJoin(arr) as val from tab_00612 where (key, val) in ((1, 1), (2, 2)) order by key
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+select '(key, left array join arr) in (1, 1)'
+--Result--
+[('(key, left array join arr) in (1, 1)',)]
++--------------------+
+--Query--
+select key from tab_00612 left array join arr as val where (key, val) in (1, 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select '(key, left array join arr) in ((1, 1), (2, 2))'
+--Result--
+[('(key, left array join arr) in ((1, 1), (2, 2))',)]
++--------------------+
+--Query--
+select key from tab_00612 left array join arr as val where (key, val) in ((1, 1), (2, 2)) order by key
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select 'all'
+--Result--
+[('all',)]
++--------------------+
+--Query--
+select * from tab_00612 order by key
+--Result--
+[(1, [1]), (2, [2])]
++--------------------+
+--Query--
+select 'key, arrayJoin(n.x) in (1, 1)'
+--Result--
+[('key, arrayJoin(n.x) in (1, 1)',)]
++--------------------+
+--Query--
+select key, arrayJoin(n.x) as val from tab_00612 where (key, val) in (1, 1)
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+select 'key, arrayJoin(n.x) in ((1, 1), (2, 2))'
+--Result--
+[('key, arrayJoin(n.x) in ((1, 1), (2, 2))',)]
++--------------------+
+--Query--
+select key, arrayJoin(n.x) as val from tab_00612 where (key, val) in ((1, 1), (2, 2)) order by key
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+select '(key, left array join n.x) in (1, 1)'
+--Result--
+[('(key, left array join n.x) in (1, 1)',)]
++--------------------+
+--Query--
+select key from tab_00612 left array join n.x as val where (key, val) in (1, 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select '(key, left array join n.x) in ((1, 1), (2, 2))'
+--Result--
+[('(key, left array join n.x) in ((1, 1), (2, 2))',)]
++--------------------+
+--Query--
+select key from tab_00612 left array join n.x as val where (key, val) in ((1, 1), (2, 2)) order by key
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select 'max(key) from tab_00612 where (key, left array join n.x) in (1, 1)'
+--Result--
+[('max(key) from tab_00612 where (key, left array join n.x) in (1, 1)',)]
++--------------------+
+--Query--
+select max(key) from tab_00612 left array join `n.x` as val where (key, val) in ((1, 1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 'max(key) from tab_00612 where (key, left array join n.x) in ((1, 1), (2, 2))'
+--Result--
+[('max(key) from tab_00612 where (key, left array join n.x) in ((1, 1), (2, 2))',)]
++--------------------+
+--Query--
+select 'max(key) from tab_00612 any left join (select key, arrayJoin(n.x) as val from tab_00612) using key where (key, val) in (1, 1)'
+--Result--
+[('max(key) from tab_00612 any left join (select key, arrayJoin(n.x) as val from tab_00612) using key where (key, val) in (1, 1)',)]
++--------------------+
+--Query--
+select 'max(key) from tab_00612 any left join (select key, arrayJoin(n.x) as val from tab_00612) using key where (key, val) in ((1, 1), (2, 2))'
+--Result--
+[('max(key) from tab_00612 any left join (select key, arrayJoin(n.x) as val from tab_00612) using key where (key, val) in ((1, 1), (2, 2))',)]
++--------------------+
+--Query--
+SELECT count(*) FROM tab_00612 PREWHERE id1 IN (1)
+--Result--
+[(1,)]
++--------------------+

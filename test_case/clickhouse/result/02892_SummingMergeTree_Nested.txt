@@ -1,0 +1,30 @@
+--Query--
+system stop merges nested_smt
+--Result--
+[]
++--------------------+
+--Query--
+select * from nested_smt order by val
+--Result--
+[(datetime.date(2023, 10, 5), 1, [1, 2, 3], [10, 20, 30]), (datetime.date(2023, 10, 5), 2, [1, 2, 3], [1, 1, 1])]
++--------------------+
+--Query--
+select * from nested_smt final
+--Result--
+[(datetime.date(2023, 10, 5), 3, [1, 2, 3], [11, 21, 31])]
++--------------------+
+--Query--
+system start merges nested_smt
+--Result--
+[]
++--------------------+
+--Query--
+optimize table nested_smt final
+--Result--
+[]
++--------------------+
+--Query--
+select * from nested_smt
+--Result--
+[(datetime.date(2023, 10, 5), 3, [1, 2, 3], [11, 21, 31])]
++--------------------+

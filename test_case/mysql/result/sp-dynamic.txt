@@ -1,0 +1,90 @@
+--Query--
+prepare stmt from "create table t1 (a int)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt_alter from "alter table t1 add (b int)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt_alter
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+select @tab_name
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @drop_sql
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @create_sql
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @insert_sql
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @select_sql
+--Result--
+[(None,)]
++--------------------+
+--Query--
+prepare stmt from "create table t1 (a int)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select name from t1"
+--Result--
+[]
++--------------------+
+--Query--
+select name from t1
+--Result--
+[('aaa',), ('bbb',), ('ccc',)]
++--------------------+
+--Query--
+prepare stmt from     "select name from t1 where name=(select name from t1 where id=2)"
+--Result--
+[]
++--------------------+
+--Query--
+select name from t1 where name=(select name from t1 where id=2)
+--Result--
+[('bbb',)]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+select @rsql
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @rsql
+--Result--
+[(None,)]
++--------------------+

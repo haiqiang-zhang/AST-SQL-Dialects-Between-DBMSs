@@ -4,21 +4,6 @@ select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by rol
 [(1, 1, 0, 21, 2, 11), (1, 2, 0, 25, 2, 13), (1, 3, 0, 14, 1, 14), (1, None, 1, 60, 5, 14), (2, 3, 0, 15, 1, 15), (2, None, 1, 15, 1, 15), (3, 3, 0, 16, 1, 16), (3, 4, 0, 17, 1, 17), (3, None, 1, 33, 2, 17), (4, 1, 0, 37, 2, 19), (4, None, 1, 37, 2, 19), (None, None, 3, 145, 10, 19)]
 +--------------------+
 --Query--
-select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by rollup (a,b) order by a,b
---Result--
-[(1, 1, 0, 21, 2, 11), (1, 2, 0, 25, 2, 13), (1, 3, 0, 14, 1, 14), (1, None, 1, 60, 5, 14), (2, 3, 0, 15, 1, 15), (2, None, 1, 15, 1, 15), (3, 3, 0, 16, 1, 16), (3, 4, 0, 17, 1, 17), (3, None, 1, 33, 2, 17), (4, 1, 0, 37, 2, 19), (4, None, 1, 37, 2, 19), (None, None, 3, 145, 10, 19)]
-+--------------------+
---Query--
-select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by rollup (a,b) order by b desc, a
---Result--
-[(1, None, 1, 60, 5, 14), (2, None, 1, 15, 1, 15), (3, None, 1, 33, 2, 17), (4, None, 1, 37, 2, 19), (None, None, 3, 145, 10, 19), (3, 4, 0, 17, 1, 17), (1, 3, 0, 14, 1, 14), (2, 3, 0, 15, 1, 15), (3, 3, 0, 16, 1, 16), (1, 2, 0, 25, 2, 13), (1, 1, 0, 21, 2, 11), (4, 1, 0, 37, 2, 19)]
-+--------------------+
---Query--
-select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by rollup (a,b) order by coalesce(a,0)+coalesce(b,0)
---Result--
-[(None, None, 3, 145, 10, 19), (1, None, 1, 60, 5, 14), (1, 1, 0, 21, 2, 11), (2, None, 1, 15, 1, 15), (3, None, 1, 33, 2, 17), (1, 2, 0, 25, 2, 13), (1, 3, 0, 14, 1, 14), (4, None, 1, 37, 2, 19), (4, 1, 0, 37, 2, 19), (2, 3, 0, 15, 1, 15), (3, 3, 0, 16, 1, 16), (3, 4, 0, 17, 1, 17)]
-+--------------------+
---Query--
 select a, b, grouping(a,b),        array_agg(v order by v),        string_agg(v::text, ':' order by v desc),        percentile_disc(0.5) within group (order by v),        rank(1,2,12) within group (order by a,b,v)   from gstest1 group by rollup (a,b) order by a,b
 --Result--
 [(1, 1, 0, [10, 11], '11:10', 10, 3), (1, 2, 0, [12, 13], '13:12', 12, 1), (1, 3, 0, [14], '14', 14, 1), (1, None, 1, [10, 11, 12, 13, 14], '14:13:12:11:10', 12, 3), (2, 3, 0, [15], '15', 15, 1), (2, None, 1, [15], '15', 15, 1), (3, 3, 0, [16], '16', 16, 1), (3, 4, 0, [17], '17', 17, 1), (3, None, 1, [16, 17], '17:16', 16, 1), (4, 1, 0, [18, 19], '19:18', 18, 1), (4, None, 1, [18, 19], '19:18', 18, 1), (None, None, 3, [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], '19:18:17:16:15:14:13:12:11:10', 14, 3)]
@@ -39,82 +24,12 @@ select sum(c) from gstest2   group by grouping sets((), grouping sets((), groupi
 [(None,), (None,), (None,)]
 +--------------------+
 --Query--
-select sum(c) from gstest2   group by grouping sets((), grouping sets((), grouping sets(((a, b)))))   order by 1 desc
---Result--
-[(None,), (None,)]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets(grouping sets(rollup(c), grouping sets(cube(c))))   order by 1 desc
---Result--
-[(None,), (None,)]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets(a, grouping sets(a, cube(b)))   order by 1 desc
---Result--
-[(None,)]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets(grouping sets((a, (b))))   order by 1 desc
---Result--
-[]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets(grouping sets((a, b)))   order by 1 desc
---Result--
-[]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets(grouping sets(a, grouping sets(a), a))   order by 1 desc
---Result--
-[]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets(grouping sets(a, grouping sets(a, grouping sets(a), ((a)), a, grouping sets(a), (a)), a))   order by 1 desc
---Result--
-[]
-+--------------------+
---Query--
-select sum(c) from gstest2   group by grouping sets((a,(a,b)), grouping sets((a,(a,b)),a))   order by 1 desc
---Result--
-[]
-+--------------------+
---Query--
 select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),a)
 --Result--
 []
 +--------------------+
 --Query--
-select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),())
---Result--
-[(None, None, None, 0)]
-+--------------------+
---Query--
-select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),(),(),())
---Result--
-[(None, None, None, 0), (None, None, None, 0), (None, None, None, 0)]
-+--------------------+
---Query--
-select sum(v), count(*) from gstest_empty group by grouping sets ((),(),())
---Result--
-[(None, 0), (None, 0), (None, 0)]
-+--------------------+
---Query--
-select t1.a, t2.b, sum(t1.v), count(*) from gstest_empty t1, gstest_empty t2  group by grouping sets ((t1.a,t2.b),())
---Result--
-[(None, None, None, 0)]
-+--------------------+
---Query--
 select t1.a, t2.b, grouping(t1.a, t2.b), sum(t1.v), max(t2.a)   from gstest1 t1, gstest2 t2  group by grouping sets ((t1.a, t2.b), ())
---Result--
-[(None, None, 3, None, None)]
-+--------------------+
---Query--
-select t1.a, t2.b, grouping(t1.a, t2.b), sum(t1.v), max(t2.a)   from gstest1 t1 join gstest2 t2 on (t1.a=t2.a)  group by grouping sets ((t1.a, t2.b), ())
---Result--
-[(None, None, 3, None, None)]
-+--------------------+
---Query--
-select a, b, grouping(a, b), sum(t1.v), max(t2.c)   from gstest1 t1 join gstest2 t2 using (a,b)  group by grouping sets ((a, b), ())
 --Result--
 [(None, None, 3, None, None)]
 +--------------------+
@@ -127,11 +42,6 @@ explain (costs off) select g as alias1, g as alias2   from generate_series(1,3) 
 select g as alias1, g as alias2   from generate_series(1,3) g  group by alias1, rollup(alias2)
 --Result--
 [(1, 1), (1, None), (2, 2), (2, None), (3, 3), (3, None)]
-+--------------------+
---Query--
-select (x+y)*1, sum(z)  from (select 1 as x, 2 as y, 3 as z) s  group by grouping sets (x+y, x)
---Result--
-[(3, 3), (None, 3)]
 +--------------------+
 --Query--
 select a, b, sum(v.x)   from (values (1),(2)) v(x), gstest_data(v.x)  group by rollup (a,b)
@@ -169,24 +79,9 @@ select a, b from (values (1,2),(2,3)) v(a,b) group by a,b, grouping sets(a)
 [(1, 2), (2, 3)]
 +--------------------+
 --Query--
-select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by grouping sets ((a,b),(a+1,b+1),(a+2,b+2)) order by 3,6
---Result--
-[(1, 1, 0, 21, 2, 11), (1, 2, 0, 25, 2, 13), (1, 3, 0, 14, 1, 14), (2, 3, 0, 15, 1, 15), (3, 3, 0, 16, 1, 16), (3, 4, 0, 17, 1, 17), (4, 1, 0, 37, 2, 19), (None, None, 3, 21, 2, 11), (None, None, 3, 21, 2, 11), (None, None, 3, 25, 2, 13), (None, None, 3, 25, 2, 13), (None, None, 3, 14, 1, 14), (None, None, 3, 14, 1, 14), (None, None, 3, 15, 1, 15), (None, None, 3, 15, 1, 15), (None, None, 3, 16, 1, 16), (None, None, 3, 16, 1, 16), (None, None, 3, 17, 1, 17), (None, None, 3, 17, 1, 17), (None, None, 3, 37, 2, 19), (None, None, 3, 37, 2, 19)]
-+--------------------+
---Query--
-select(select (select grouping(a,b) from (values (1)) v2(c)) from (values (1,2)) v1(a,b) group by (a,b)) from (values(6,7)) v3(e,f) GROUP BY ROLLUP((e+1),(f+1))
---Result--
-[(0,), (0,), (0,)]
-+--------------------+
---Query--
 select(select (select grouping(a,b) from (values (1)) v2(c)) from (values (1,2)) v1(a,b) group by (a,b)) from (values(6,7)) v3(e,f) GROUP BY CUBE((e+1),(f+1)) ORDER BY (e+1),(f+1)
 --Result--
 [(0,), (0,), (0,), (0,)]
-+--------------------+
---Query--
-select a, b, sum(c), sum(sum(c)) over (order by a,b) as rsum   from gstest2 group by cube (a,b) order by rsum, a, b
---Result--
-[(None, None, None, None)]
 +--------------------+
 --Query--
 select a, b, sum(c) from (values (1,1,10),(1,1,11),(1,2,12),(1,2,13),(1,3,14),(2,3,15),(3,3,16),(3,4,17),(4,1,18),(4,1,19)) v(a,b,c) group by rollup (a,b)
@@ -194,27 +89,12 @@ select a, b, sum(c) from (values (1,1,10),(1,1,11),(1,2,12),(1,2,13),(1,3,14),(2
 [(1, 1, 21), (1, 2, 25), (1, 3, 14), (1, None, 60), (2, 3, 15), (2, None, 15), (3, 3, 16), (3, 4, 17), (3, None, 33), (4, 1, 37), (4, None, 37), (None, None, 145)]
 +--------------------+
 --Query--
-select a, b, sum(v.x)   from (values (1),(2)) v(x), gstest_data(v.x)  group by cube (a,b) order by a,b
---Result--
-[(1, 1, 1), (1, 2, 1), (1, 3, 1), (1, None, 3), (2, 1, 2), (2, 2, 2), (2, 3, 2), (2, None, 6), (None, 1, 3), (None, 2, 3), (None, 3, 3), (None, None, 9)]
-+--------------------+
---Query--
 explain (costs off) select * from gstest1 group by grouping sets((a,b,v),(v)) order by v,b,a
 --Result--
 [('GroupAggregate',), ('  Group Key: "*VALUES*".column3, "*VALUES*".column2, "*VALUES*".column1',), ('  Group Key: "*VALUES*".column3',), ('  ->  Sort',), ('        Sort Key: "*VALUES*".column3, "*VALUES*".column2, "*VALUES*".column1',), ('        ->  Values Scan on "*VALUES*"',)]
 +--------------------+
 --Query--
-select a, b, sum(c), count(*) from gstest2 group by grouping sets (rollup(a,b),a)
---Result--
-[(None, None, None, 0)]
-+--------------------+
---Query--
 select a,count(*) from gstest2 group by rollup(a) order by a
---Result--
-[(None, 0)]
-+--------------------+
---Query--
-select a,count(*) from gstest2 group by rollup(a) having a is distinct from 1 order by a
 --Result--
 [(None, 0)]
 +--------------------+
@@ -232,11 +112,6 @@ select v.c, (select count(*) from gstest2 group by () having v.c)   from (values
 explain (costs off)   select v.c, (select count(*) from gstest2 group by () having v.c)     from (values (false),(true)) v(c) order by v.c
 --Result--
 [('Sort',), ('  Sort Key: "*VALUES*".column1',), ('  ->  Values Scan on "*VALUES*"',), ('        SubPlan 1',), ('          ->  Aggregate',), ('                Group Key: ()',), ('                Filter: "*VALUES*".column1',), ('                ->  Result',), ('                      One-Time Filter: "*VALUES*".column1',), ('                      ->  Seq Scan on gstest2',)]
-+--------------------+
---Query--
-select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by grouping sets ((a),(b)) order by 3,1,2
---Result--
-[(1, None, 1, 60, 5, 14), (2, None, 1, 15, 1, 15), (3, None, 1, 33, 2, 17), (4, None, 1, 37, 2, 19), (None, 1, 2, 58, 4, 19), (None, 2, 2, 25, 2, 13), (None, 3, 2, 45, 3, 16), (None, 4, 2, 17, 1, 17)]
 +--------------------+
 --Query--
 explain (costs off) select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by grouping sets ((a),(b)) order by 3,1,2
@@ -274,54 +149,9 @@ explain (costs off)   select unhashable_col, unsortable_col,          grouping(u
 [('Sort',), ('  Sort Key: (GROUPING(unhashable_col, unsortable_col)), (sum(v))',), ('  ->  MixedAggregate',), ('        Hash Key: unsortable_col',), ('        Group Key: unhashable_col',), ('        ->  Sort',), ('              Sort Key: unhashable_col',), ('              ->  Seq Scan on gstest4',)]
 +--------------------+
 --Query--
-select unhashable_col, unsortable_col,        grouping(unhashable_col, unsortable_col),        count(*), sum(v)   from gstest4 group by grouping sets ((v,unhashable_col),(v,unsortable_col))  order by 3,5
---Result--
-[('0000', None, 1, 1, 1), ('0001', None, 1, 1, 2), ('0010', None, 1, 1, 4), ('0011', None, 1, 1, 8), ('0000', None, 1, 1, 16), ('0001', None, 1, 1, 32), ('0010', None, 1, 1, 64), ('0011', None, 1, 1, 128), (None, '1', 2, 1, 1), (None, '1', 2, 1, 2), (None, '2', 2, 1, 4), (None, '2', 2, 1, 8), (None, '2', 2, 1, 16), (None, '2', 2, 1, 32), (None, '1', 2, 1, 64), (None, '1', 2, 1, 128)]
-+--------------------+
---Query--
-explain (costs off)   select unhashable_col, unsortable_col,          grouping(unhashable_col, unsortable_col),          count(*), sum(v)     from gstest4 group by grouping sets ((v,unhashable_col),(v,unsortable_col))    order by 3,5
---Result--
-[('Sort',), ('  Sort Key: (GROUPING(unhashable_col, unsortable_col)), (sum(v))',), ('  ->  MixedAggregate',), ('        Hash Key: v, unsortable_col',), ('        Group Key: v, unhashable_col',), ('        ->  Sort',), ('              Sort Key: v, unhashable_col',), ('              ->  Seq Scan on gstest4',)]
-+--------------------+
---Query--
-select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),a)
---Result--
-[]
-+--------------------+
---Query--
 explain (costs off)   select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),a)
 --Result--
 [('HashAggregate',), ('  Hash Key: a, b',), ('  Hash Key: a',), ('  ->  Seq Scan on gstest_empty',)]
-+--------------------+
---Query--
-select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),())
---Result--
-[(None, None, None, 0)]
-+--------------------+
---Query--
-select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),(),(),())
---Result--
-[(None, None, None, 0), (None, None, None, 0), (None, None, None, 0)]
-+--------------------+
---Query--
-explain (costs off)   select a, b, sum(v), count(*) from gstest_empty group by grouping sets ((a,b),(),(),())
---Result--
-[('MixedAggregate',), ('  Hash Key: a, b',), ('  Group Key: ()',), ('  Group Key: ()',), ('  Group Key: ()',), ('  ->  Seq Scan on gstest_empty',)]
-+--------------------+
---Query--
-select sum(v), count(*) from gstest_empty group by grouping sets ((),(),())
---Result--
-[(None, 0), (None, 0), (None, 0)]
-+--------------------+
---Query--
-explain (costs off)   select sum(v), count(*) from gstest_empty group by grouping sets ((),(),())
---Result--
-[('Aggregate',), ('  Group Key: ()',), ('  Group Key: ()',), ('  Group Key: ()',), ('  ->  Seq Scan on gstest_empty',)]
-+--------------------+
---Query--
-select a, b, sum(v.x)   from (values (1),(2)) v(x), gstest_data(v.x)  group by grouping sets (a,b)  order by 1, 2, 3
---Result--
-[(1, None, 3), (2, None, 6), (None, 1, 3), (None, 2, 3), (None, 3, 3)]
 +--------------------+
 --Query--
 explain (costs off)   select a, b, sum(v.x)     from (values (1),(2)) v(x), gstest_data(v.x)    group by grouping sets (a,b)    order by 3, 1, 2
@@ -329,34 +159,9 @@ explain (costs off)   select a, b, sum(v.x)     from (values (1),(2)) v(x), gste
 [('Sort',), ('  Sort Key: (sum("*VALUES*".column1)), gstest_data.a, gstest_data.b',), ('  ->  HashAggregate',), ('        Hash Key: gstest_data.a',), ('        Hash Key: gstest_data.b',), ('        ->  Nested Loop',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Function Scan on gstest_data',)]
 +--------------------+
 --Query--
-select a, b, grouping(a,b), sum(v), count(*), max(v)   from gstest1 group by grouping sets ((a,b),(a+1,b+1),(a+2,b+2)) order by 3,6
---Result--
-[(1, 1, 0, 21, 2, 11), (1, 2, 0, 25, 2, 13), (1, 3, 0, 14, 1, 14), (2, 3, 0, 15, 1, 15), (3, 3, 0, 16, 1, 16), (3, 4, 0, 17, 1, 17), (4, 1, 0, 37, 2, 19), (None, None, 3, 21, 2, 11), (None, None, 3, 21, 2, 11), (None, None, 3, 25, 2, 13), (None, None, 3, 25, 2, 13), (None, None, 3, 14, 1, 14), (None, None, 3, 14, 1, 14), (None, None, 3, 15, 1, 15), (None, None, 3, 15, 1, 15), (None, None, 3, 16, 1, 16), (None, None, 3, 16, 1, 16), (None, None, 3, 17, 1, 17), (None, None, 3, 17, 1, 17), (None, None, 3, 37, 2, 19), (None, None, 3, 37, 2, 19)]
-+--------------------+
---Query--
-explain (costs off)   select a, b, grouping(a,b), sum(v), count(*), max(v)     from gstest1 group by grouping sets ((a,b),(a+1,b+1),(a+2,b+2)) order by 3,6
---Result--
-[('Sort',), ('  Sort Key: (GROUPING("*VALUES*".column1, "*VALUES*".column2)), (max("*VALUES*".column3))',), ('  ->  HashAggregate',), ('        Hash Key: "*VALUES*".column1, "*VALUES*".column2',), ('        Hash Key: ("*VALUES*".column1 + 1), ("*VALUES*".column2 + 1)',), ('        Hash Key: ("*VALUES*".column1 + 2), ("*VALUES*".column2 + 2)',), ('        ->  Values Scan on "*VALUES*"',)]
-+--------------------+
---Query--
-select a, b, sum(c), sum(sum(c)) over (order by a,b) as rsum   from gstest2 group by cube (a,b) order by rsum, a, b
---Result--
-[(None, None, None, None)]
-+--------------------+
---Query--
 explain (costs off)   select a, b, sum(c), sum(sum(c)) over (order by a,b) as rsum     from gstest2 group by cube (a,b) order by rsum, a, b
 --Result--
 [('Sort',), ('  Sort Key: (sum((sum(c))) OVER (?)), a, b',), ('  ->  WindowAgg',), ('        ->  Sort',), ('              Sort Key: a, b',), ('              ->  MixedAggregate',), ('                    Hash Key: a, b',), ('                    Hash Key: a',), ('                    Hash Key: b',), ('                    Group Key: ()',), ('                    ->  Seq Scan on gstest2',)]
-+--------------------+
---Query--
-select a, b, sum(v.x)   from (values (1),(2)) v(x), gstest_data(v.x)  group by cube (a,b) order by a,b
---Result--
-[(1, 1, 1), (1, 2, 1), (1, 3, 1), (1, None, 3), (2, 1, 2), (2, 2, 2), (2, 3, 2), (2, None, 6), (None, 1, 3), (None, 2, 3), (None, 3, 3), (None, None, 9)]
-+--------------------+
---Query--
-explain (costs off)   select a, b, sum(v.x)     from (values (1),(2)) v(x), gstest_data(v.x)    group by cube (a,b) order by a,b
---Result--
-[('Sort',), ('  Sort Key: gstest_data.a, gstest_data.b',), ('  ->  MixedAggregate',), ('        Hash Key: gstest_data.a, gstest_data.b',), ('        Hash Key: gstest_data.a',), ('        Hash Key: gstest_data.b',), ('        Group Key: ()',), ('        ->  Nested Loop',), ('              ->  Values Scan on "*VALUES*"',), ('              ->  Function Scan on gstest_data',)]
 +--------------------+
 --Query--
 select v||'a', case grouping(v||'a') when 1 then 1 else 0 end, count(*)   from unnest(array[1,1], array['a','b']) u(i,v)  group by rollup(i, v||'a') order by 1,3
@@ -364,19 +169,9 @@ select v||'a', case grouping(v||'a') when 1 then 1 else 0 end, count(*)   from u
 [('aa', 0, 1), ('ba', 0, 1), (None, 1, 2), (None, 1, 2)]
 +--------------------+
 --Query--
-select v||'a', case when grouping(v||'a') = 1 then 1 else 0 end, count(*)   from unnest(array[1,1], array['a','b']) u(i,v)  group by rollup(i, v||'a') order by 1,3
---Result--
-[('aa', 0, 1), ('ba', 0, 1), (None, 1, 2), (None, 1, 2)]
-+--------------------+
---Query--
 analyze bug_16784
 --Result--
 []
-+--------------------+
---Query--
-select * from   (values (1),(2)) v(a),   lateral (select a, i, j, count(*) from              bug_16784 group by cube(i,j)) s   order by v.a, i, j
---Result--
-[(1, 1, 0, 1, 1), (1, 1, 0, 2, 1), (1, 1, 0, 3, 1), (1, 1, 0, 4, 1), (1, 1, 0, 5, 1), (1, 1, 0, 6, 1), (1, 1, 0, 7, 1), (1, 1, 0, 8, 1), (1, 1, 0, 9, 1), (1, 1, 0, None, 9), (1, 1, 1, 10, 1), (1, 1, 1, 11, 1), (1, 1, 1, 12, 1), (1, 1, 1, 13, 1), (1, 1, 1, 14, 1), (1, 1, 1, 15, 1), (1, 1, 1, 16, 1), (1, 1, 1, 17, 1), (1, 1, 1, 18, 1), (1, 1, 1, 19, 1), (1, 1, 1, None, 10), (1, 1, 2, 20, 1), (1, 1, 2, 21, 1), (1, 1, 2, 22, 1), (1, 1, 2, 23, 1), (1, 1, 2, 24, 1), (1, 1, 2, 25, 1), (1, 1, 2, 26, 1), (1, 1, 2, 27, 1), (1, 1, 2, 28, 1), (1, 1, 2, 29, 1), (1, 1, 2, None, 10), (1, 1, 3, 30, 1), (1, 1, 3, 31, 1), (1, 1, 3, 32, 1), (1, 1, 3, 33, 1), (1, 1, 3, 34, 1), (1, 1, 3, 35, 1), (1, 1, 3, 36, 1), (1, 1, 3, 37, 1), (1, 1, 3, 38, 1), (1, 1, 3, 39, 1), (1, 1, 3, None, 10), (1, 1, 4, 40, 1), (1, 1, 4, None, 1), (1, 1, None, 1, 1), (1, 1, None, 2, 1), (1, 1, None, 3, 1), (1, 1, None, 4, 1), (1, 1, None, 5, 1), (1, 1, None, 6, 1), (1, 1, None, 7, 1), (1, 1, None, 8, 1), (1, 1, None, 9, 1), (1, 1, None, 10, 1), (1, 1, None, 11, 1), (1, 1, None, 12, 1), (1, 1, None, 13, 1), (1, 1, None, 14, 1), (1, 1, None, 15, 1), (1, 1, None, 16, 1), (1, 1, None, 17, 1), (1, 1, None, 18, 1), (1, 1, None, 19, 1), (1, 1, None, 20, 1), (1, 1, None, 21, 1), (1, 1, None, 22, 1), (1, 1, None, 23, 1), (1, 1, None, 24, 1), (1, 1, None, 25, 1), (1, 1, None, 26, 1), (1, 1, None, 27, 1), (1, 1, None, 28, 1), (1, 1, None, 29, 1), (1, 1, None, 30, 1), (1, 1, None, 31, 1), (1, 1, None, 32, 1), (1, 1, None, 33, 1), (1, 1, None, 34, 1), (1, 1, None, 35, 1), (1, 1, None, 36, 1), (1, 1, None, 37, 1), (1, 1, None, 38, 1), (1, 1, None, 39, 1), (1, 1, None, 40, 1), (1, 1, None, None, 40), (2, 2, 0, 1, 1), (2, 2, 0, 2, 1), (2, 2, 0, 3, 1), (2, 2, 0, 4, 1), (2, 2, 0, 5, 1), (2, 2, 0, 6, 1), (2, 2, 0, 7, 1), (2, 2, 0, 8, 1), (2, 2, 0, 9, 1), (2, 2, 0, None, 9), (2, 2, 1, 10, 1), (2, 2, 1, 11, 1), (2, 2, 1, 12, 1), (2, 2, 1, 13, 1), (2, 2, 1, 14, 1), (2, 2, 1, 15, 1), (2, 2, 1, 16, 1), (2, 2, 1, 17, 1), (2, 2, 1, 18, 1), (2, 2, 1, 19, 1), (2, 2, 1, None, 10), (2, 2, 2, 20, 1), (2, 2, 2, 21, 1), (2, 2, 2, 22, 1), (2, 2, 2, 23, 1), (2, 2, 2, 24, 1), (2, 2, 2, 25, 1), (2, 2, 2, 26, 1), (2, 2, 2, 27, 1), (2, 2, 2, 28, 1), (2, 2, 2, 29, 1), (2, 2, 2, None, 10), (2, 2, 3, 30, 1), (2, 2, 3, 31, 1), (2, 2, 3, 32, 1), (2, 2, 3, 33, 1), (2, 2, 3, 34, 1), (2, 2, 3, 35, 1), (2, 2, 3, 36, 1), (2, 2, 3, 37, 1), (2, 2, 3, 38, 1), (2, 2, 3, 39, 1), (2, 2, 3, None, 10), (2, 2, 4, 40, 1), (2, 2, 4, None, 1), (2, 2, None, 1, 1), (2, 2, None, 2, 1), (2, 2, None, 3, 1), (2, 2, None, 4, 1), (2, 2, None, 5, 1), (2, 2, None, 6, 1), (2, 2, None, 7, 1), (2, 2, None, 8, 1), (2, 2, None, 9, 1), (2, 2, None, 10, 1), (2, 2, None, 11, 1), (2, 2, None, 12, 1), (2, 2, None, 13, 1), (2, 2, None, 14, 1), (2, 2, None, 15, 1), (2, 2, None, 16, 1), (2, 2, None, 17, 1), (2, 2, None, 18, 1), (2, 2, None, 19, 1), (2, 2, None, 20, 1), (2, 2, None, 21, 1), (2, 2, None, 22, 1), (2, 2, None, 23, 1), (2, 2, None, 24, 1), (2, 2, None, 25, 1), (2, 2, None, 26, 1), (2, 2, None, 27, 1), (2, 2, None, 28, 1), (2, 2, None, 29, 1), (2, 2, None, 30, 1), (2, 2, None, 31, 1), (2, 2, None, 32, 1), (2, 2, None, 33, 1), (2, 2, None, 34, 1), (2, 2, None, 35, 1), (2, 2, None, 36, 1), (2, 2, None, 37, 1), (2, 2, None, 38, 1), (2, 2, None, 39, 1), (2, 2, None, 40, 1), (2, 2, None, None, 40)]
 +--------------------+
 --Query--
 analyze gs_data_1
@@ -389,34 +184,9 @@ explain (costs off) select g100, g10, sum(g::numeric), count(*), max(g::text) fr
 [('GroupAggregate',), ('  Group Key: g1000, g100, g10',), ('  Group Key: g1000, g100',), ('  Group Key: g1000',), ('  Group Key: ()',), ('  Sort Key: g100, g10',), ('    Group Key: g100, g10',), ('    Group Key: g100',), ('  Sort Key: g10, g1000',), ('    Group Key: g10, g1000',), ('    Group Key: g10',), ('  ->  Sort',), ('        Sort Key: g1000, g100, g10',), ('        ->  Seq Scan on gs_data_1',)]
 +--------------------+
 --Query--
-explain (costs off) select g100, g10, sum(g::numeric), count(*), max(g::text) from gs_data_1 group by cube (g1000, g100,g10)
---Result--
-[('GroupAggregate',), ('  Group Key: g1000, g100, g10',), ('  Group Key: g1000, g100',), ('  Group Key: g1000',), ('  Group Key: ()',), ('  Sort Key: g100, g10',), ('    Group Key: g100, g10',), ('    Group Key: g100',), ('  Sort Key: g10, g1000',), ('    Group Key: g10, g1000',), ('    Group Key: g10',), ('  ->  Sort',), ('        Sort Key: g1000, g100, g10',), ('        ->  Seq Scan on gs_data_1',)]
-+--------------------+
---Query--
 (select * from gs_hash_1 except select * from gs_group_1)   union all (select * from gs_group_1 except select * from gs_hash_1)
 --Result--
 []
-+--------------------+
---Query--
-select a, b, c from (values (1, 2, 3), (4, null, 6), (7, 8, 9)) as t (a, b, c) group by all rollup(a, b), rollup(a, c) order by a, b, c
---Result--
-[(1, 2, 3), (1, 2, None), (1, 2, None), (1, None, 3), (1, None, 3), (1, None, None), (1, None, None), (1, None, None), (4, None, 6), (4, None, 6), (4, None, 6), (4, None, None), (4, None, None), (4, None, None), (4, None, None), (4, None, None), (7, 8, 9), (7, 8, None), (7, 8, None), (7, None, 9), (7, None, 9), (7, None, None), (7, None, None), (7, None, None), (None, None, None)]
-+--------------------+
---Query--
-select a, b, c from (values (1, 2, 3), (4, null, 6), (7, 8, 9)) as t (a, b, c) group by rollup(a, b), rollup(a, c) order by a, b, c
---Result--
-[(1, 2, 3), (1, 2, None), (1, 2, None), (1, None, 3), (1, None, 3), (1, None, None), (1, None, None), (1, None, None), (4, None, 6), (4, None, 6), (4, None, 6), (4, None, None), (4, None, None), (4, None, None), (4, None, None), (4, None, None), (7, 8, 9), (7, 8, None), (7, 8, None), (7, None, 9), (7, None, 9), (7, None, None), (7, None, None), (7, None, None), (None, None, None)]
-+--------------------+
---Query--
-select a, b, c from (values (1, 2, 3), (4, null, 6), (7, 8, 9)) as t (a, b, c) group by distinct rollup(a, b), rollup(a, c) order by a, b, c
---Result--
-[(1, 2, 3), (1, 2, None), (1, None, 3), (1, None, None), (4, None, 6), (4, None, 6), (4, None, None), (4, None, None), (7, 8, 9), (7, 8, None), (7, None, 9), (7, None, None), (None, None, None)]
-+--------------------+
---Query--
-select distinct a, b, c from (values (1, 2, 3), (4, null, 6), (7, 8, 9)) as t (a, b, c) group by rollup(a, b), rollup(a, c) order by a, b, c
---Result--
-[(1, 2, 3), (1, 2, None), (1, None, 3), (1, None, None), (4, None, 6), (4, None, None), (7, 8, 9), (7, 8, None), (7, None, 9), (7, None, None), (None, None, None)]
 +--------------------+
 --Query--
 explain (costs off) select (select grouping(v1)) from (values ((select 1))) v(v1) group by cube(v1)
@@ -427,14 +197,4 @@ explain (costs off) select (select grouping(v1)) from (values ((select 1))) v(v1
 select (select grouping(v1)) from (values ((select 1))) v(v1) group by cube(v1)
 --Result--
 [(1,), (0,)]
-+--------------------+
---Query--
-explain (costs off) select (select grouping(v1)) from (values ((select 1))) v(v1) group by v1
---Result--
-[('GroupAggregate',), ('  InitPlan 1 (returns $1)',), ('    ->  Result',), ('  InitPlan 3 (returns $2)',), ('    ->  Result',), ('  ->  Result',), ('  SubPlan 2',), ('    ->  Result',)]
-+--------------------+
---Query--
-select (select grouping(v1)) from (values ((select 1))) v(v1) group by v1
---Result--
-[(0,)]
 +--------------------+

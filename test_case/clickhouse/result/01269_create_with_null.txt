@@ -1,0 +1,50 @@
+--Query--
+SELECT toTypeName(a), toTypeName(b), toTypeName(c), toTypeName(d) FROM data_null
+--Result--
+[('Nullable(Int32)', 'Int32', 'Nullable(Int32)', 'Int32')]
++--------------------+
+--Query--
+SHOW CREATE TABLE data_null
+--Result--
+[('CREATE TABLE test.data_null\n(\n    `a` Nullable(Int32),\n    `b` Int32,\n    `c` Nullable(Int32),\n    `d` Int32\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE set_null
+--Result--
+[('CREATE TABLE test.set_null\n(\n    `a` Nullable(Int32),\n    `b` Int32,\n    `c` Nullable(Int32),\n    `d` Nullable(Int32),\n    `f` Nullable(UInt8) DEFAULT 1\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+DETACH TABLE set_null
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE set_null
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE set_null
+--Result--
+[('CREATE TABLE test.set_null\n(\n    `a` Nullable(Int32),\n    `b` Int32,\n    `c` Nullable(Int32),\n    `d` Nullable(Int32),\n    `f` Nullable(UInt8) DEFAULT 1\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE cannot_be_nullable
+--Result--
+[('CREATE TABLE test.cannot_be_nullable\n(\n    `n` Nullable(Int8),\n    `a` Array(UInt8)\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+DETACH TABLE cannot_be_nullable
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE cannot_be_nullable
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE cannot_be_nullable
+--Result--
+[('CREATE TABLE test.cannot_be_nullable\n(\n    `n` Nullable(Int8),\n    `a` Array(UInt8)\n)\nENGINE = Memory',)]
++--------------------+

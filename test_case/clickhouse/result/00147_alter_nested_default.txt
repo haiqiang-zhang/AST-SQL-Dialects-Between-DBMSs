@@ -1,0 +1,65 @@
+--Query--
+SELECT * FROM alter_00147
+--Result--
+[(datetime.date(2015, 1, 1), ['Hello', 'World'])]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello'), (datetime.date(2015, 1, 1), 'World')]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n WHERE n.x LIKE '%Hello%'
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello')]
++--------------------+
+--Query--
+SELECT * FROM alter_00147
+--Result--
+[(datetime.date(2015, 1, 1), ['Hello', 'World'], [0, 0])]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello', 0), (datetime.date(2015, 1, 1), 'World', 0)]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n WHERE n.x LIKE '%Hello%'
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello', 0)]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ORDER BY n.x
+--Result--
+[(datetime.date(2015, 1, 1), ['Hello', 'World'], [0, 0]), (datetime.date(2015, 1, 1), ['Hello2', 'World2'], [0, 0])]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n ORDER BY n.x
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello', 0), (datetime.date(2015, 1, 1), 'Hello2', 0), (datetime.date(2015, 1, 1), 'World', 0), (datetime.date(2015, 1, 1), 'World2', 0)]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n WHERE n.x LIKE '%Hello%' ORDER BY n.x
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello', 0), (datetime.date(2015, 1, 1), 'Hello2', 0)]
++--------------------+
+--Query--
+OPTIMIZE TABLE alter_00147
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ORDER BY n.x
+--Result--
+[(datetime.date(2015, 1, 1), ['Hello', 'World'], [0, 0]), (datetime.date(2015, 1, 1), ['Hello2', 'World2'], [0, 0])]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n ORDER BY n.x
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello', 0), (datetime.date(2015, 1, 1), 'Hello2', 0), (datetime.date(2015, 1, 1), 'World', 0), (datetime.date(2015, 1, 1), 'World2', 0)]
++--------------------+
+--Query--
+SELECT * FROM alter_00147 ARRAY JOIN n WHERE n.x LIKE '%Hello%' ORDER BY n.x
+--Result--
+[(datetime.date(2015, 1, 1), 'Hello', 0), (datetime.date(2015, 1, 1), 'Hello2', 0)]
++--------------------+

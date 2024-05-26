@@ -26,6 +26,4 @@ INSERT INTO test_rads_to_degs VALUES (0.017453292519943295);
 INSERT INTO test_rads_to_degs VALUES (3.141592653589793);
 INSERT INTO test_rads_to_degs VALUES (3.1503192998497647);
 INSERT INTO test_rads_to_degs VALUES (6.283185307179586);
-select RADIANS(DEGREES(radians)) from test_rads_to_degs order by radians;
-select DEGREES(radians) from test_rads_to_degs order by radians;
 DROP TABLE test_rads_to_degs;

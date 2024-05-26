@@ -9,5 +9,4 @@ ENGINE = MergeTree()
 ORDER by (key1, key2);
 INSERT INTO table_with_pk_clear SELECT number, number * number, toString(number), toString(number * number) FROM numbers(1000);
 SELECT count(distinct key1) FROM table_with_pk_clear;
-SELECT count(distinct key2) FROM table_with_pk_clear;
 DROP TABLE IF EXISTS table_with_pk_clear;

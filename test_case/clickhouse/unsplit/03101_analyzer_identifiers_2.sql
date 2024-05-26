@@ -26,5 +26,3 @@ SELECT x + 1 AS x, x FROM (SELECT 1 AS x);
 SELECT x, x + 1 AS x FROM (SELECT 1 AS x);
 SELECT '---';
 SELECT arrayMap(x -> x + 1, [1, 2]);
-SELECT x, arrayMap((x, y) -> x[1] + y + arrayFirst(x -> x != y, x), arr) FROM (SELECT 1 AS x, [([1, 2], 3), ([4, 5], 6)] AS arr);
-SELECT x1, arrayMap((x2, y2) -> x2[1] + y2 + arrayFirst(x3 -> x3 != y2, x2), arr) FROM (SELECT 1 AS x1, [([1, 2], 3), ([4, 5], 6)] AS arr);

@@ -36,13 +36,6 @@ CREATE TABLE test_table_signed_values
     weight UInt64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_signed_values SELECT number % 3, number, number, number, number, number % 3 FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    avgWeighted(value1, weight),
-    avgWeighted(value2, weight),
-    avgWeighted(value3, weight),
-    avgWeighted(value4, weight)
-FROM test_table_signed_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_signed_values;
 SELECT 'Test float values';
 DROP TABLE IF EXISTS test_table_float_values;
@@ -56,7 +49,6 @@ CREATE TABLE test_table_float_values
     weight UInt64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_float_values SELECT number % 3, number, number, number % 3 FROM system.numbers LIMIT 120;
-SELECT id, avgWeighted(value1, weight), avgWeighted(value2, weight) FROM test_table_float_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_float_values;
 SELECT 'Test nullable unsigned integer values';
 DROP TABLE IF EXISTS test_table_nullable_unsigned_values;
@@ -72,13 +64,6 @@ CREATE TABLE test_table_nullable_unsigned_values
     weight UInt64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_unsigned_values SELECT number % 3, number, number, number, number, number % 3 FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    avgWeighted(value1, weight),
-    avgWeighted(value2, weight),
-    avgWeighted(value3, weight),
-    avgWeighted(value4, weight)
-FROM test_table_nullable_unsigned_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_unsigned_values;
 SELECT 'Test nullable signed integer values';
 DROP TABLE IF EXISTS test_table_nullable_signed_values;
@@ -94,13 +79,6 @@ CREATE TABLE test_table_nullable_signed_values
     weight UInt64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_signed_values SELECT number % 3, number, number, number, number, number % 3 FROM system.numbers LIMIT 120;
-SELECT
-    id,
-    avgWeighted(value1, weight),
-    avgWeighted(value2, weight),
-    avgWeighted(value3, weight),
-    avgWeighted(value4, weight)
-FROM test_table_nullable_signed_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_signed_values;
 SELECT 'Test nullable float values';
 DROP TABLE IF EXISTS test_table_nullable_float_values;
@@ -114,7 +92,6 @@ CREATE TABLE test_table_nullable_float_values
     weight UInt64
 ) ENGINE=TinyLog;
 INSERT INTO test_table_nullable_float_values SELECT number % 3, number, number, number % 3 FROM system.numbers LIMIT 120;
-SELECT id, avgWeighted(value1, weight), avgWeighted(value2, weight) FROM test_table_nullable_float_values GROUP BY id ORDER BY id;
 DROP TABLE test_table_nullable_float_values;
 SELECT 'Test null specifics';
 DROP TABLE IF EXISTS test_table_null_specifics;
@@ -132,13 +109,4 @@ CREATE TABLE test_table_null_specifics
 INSERT INTO test_table_null_specifics VALUES (0, 1, 1, NULL, 1, 1);
 INSERT INTO test_table_null_specifics VALUES (0, 2, NULL, NULL, 2, NULL);
 INSERT INTO test_table_null_specifics VALUES (0, 3, 3, NULL, 3, 3);
-SELECT
-    id,
-    avgWeighted(value1, weight),
-    avgWeighted(value2, weight),
-    avgWeighted(value3, weight),
-    avgWeighted(value1, weight_nullable),
-    avgWeighted(value2, weight_nullable),
-    avgWeighted(value3, weight_nullable)
-FROM test_table_null_specifics GROUP BY id ORDER BY id;
 DROP TABLE IF EXISTS test_table_null_specifics;

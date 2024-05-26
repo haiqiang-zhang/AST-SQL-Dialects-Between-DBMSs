@@ -49,11 +49,6 @@ execute pstmt_def_insert(null)
 []
 +--------------------+
 --Query--
-execute pstmt_def_insert(1)
---Result--
-[]
-+--------------------+
---Query--
 deallocate pstmt_def_insert
 --Result--
 []
@@ -84,29 +79,9 @@ select name, generic_plans, custom_plans from pg_prepared_statements   where  na
 [('test_mode_pp', 0, 1)]
 +--------------------+
 --Query--
-explain (costs off) execute test_mode_pp(2)
---Result--
-[('Aggregate',), ('  ->  Seq Scan on test_mode',), ('        Filter: (a = $1)',)]
-+--------------------+
---Query--
 select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
 --Result--
-[('test_mode_pp', 1, 1)]
-+--------------------+
---Query--
-execute test_mode_pp(1)
---Result--
-[(1000,)]
-+--------------------+
---Query--
-execute test_mode_pp(1)
---Result--
-[(1000,)]
-+--------------------+
---Query--
-execute test_mode_pp(1)
---Result--
-[(1000,)]
+[('test_mode_pp', 0, 1)]
 +--------------------+
 --Query--
 execute test_mode_pp(1)
@@ -116,30 +91,15 @@ execute test_mode_pp(1)
 --Query--
 select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
 --Result--
-[('test_mode_pp', 1, 5)]
-+--------------------+
---Query--
-execute test_mode_pp(1)
---Result--
-[(1000,)]
+[('test_mode_pp', 0, 2)]
 +--------------------+
 --Query--
 select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
 --Result--
-[('test_mode_pp', 2, 5)]
-+--------------------+
---Query--
-explain (costs off) execute test_mode_pp(2)
---Result--
-[('Aggregate',), ('  ->  Seq Scan on test_mode',), ('        Filter: (a = $1)',)]
-+--------------------+
---Query--
-explain (costs off) execute test_mode_pp(2)
---Result--
-[('Aggregate',), ('  ->  Index Only Scan using test_mode_a_idx on test_mode',), ('        Index Cond: (a = 2)',)]
+[('test_mode_pp', 0, 2)]
 +--------------------+
 --Query--
 select name, generic_plans, custom_plans from pg_prepared_statements   where  name = 'test_mode_pp'
 --Result--
-[('test_mode_pp', 3, 6)]
+[('test_mode_pp', 0, 2)]
 +--------------------+

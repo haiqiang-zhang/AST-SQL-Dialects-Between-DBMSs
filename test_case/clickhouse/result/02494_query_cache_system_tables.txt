@@ -1,0 +1,90 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'The Default for query_cache_system_table_handling is = throw'
+--Result--
+[('The Default for query_cache_system_table_handling is = throw',)]
++--------------------+
+--Query--
+SELECT count(*) FROM system.query_cache
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Check behavior of query_cache_system_table_handling = throw'
+--Result--
+[('Check behavior of query_cache_system_table_handling = throw',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Check behavior of query_cache_system_table_handling = save'
+--Result--
+[('Check behavior of query_cache_system_table_handling = save',)]
++--------------------+
+--Query--
+SELECT * FROM system.one SETTINGS use_query_cache = 1, query_cache_system_table_handling = 'save'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Check behavior of query_cache_system_table_handling = ignore'
+--Result--
+[('Check behavior of query_cache_system_table_handling = ignore',)]
++--------------------+
+--Query--
+SELECT * FROM system.one SETTINGS use_query_cache = 1, query_cache_system_table_handling = 'ignore'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Other tests'
+--Result--
+[('Other tests',)]
++--------------------+
+--Query--
+USE system
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM one SETTINGS use_query_cache = 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * SETTINGS use_query_cache = 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SElECT * FROM system SETTINGS use_query_cache = 1
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

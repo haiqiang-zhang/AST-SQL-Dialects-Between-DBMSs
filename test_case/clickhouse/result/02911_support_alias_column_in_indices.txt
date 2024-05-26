@@ -1,0 +1,25 @@
+--Query--
+use 02911_support_alias_column_in_indices
+--Result--
+[]
++--------------------+
+--Query--
+explain indexes = 1 select * from test1 where a > 10 settings allow_experimental_analyzer = 0
+--Result--
+[('Expression ((Projection + Before ORDER BY))',), ('  Filter (WHERE)',), ('    ReadFromMergeTree (02911_support_alias_column_in_indices.test1)',), ('    Indexes:',), ('      PrimaryKey',), ('        Keys: ',), ('          c',), ('        Condition: (plus(c, 1) in [11, +Inf))',), ('        Parts: 1/2',), ('        Granules: 1/2',), ('      Skip',), ('        Name: i',), ('        Description: minmax GRANULARITY 1',), ('        Parts: 1/1',), ('        Granules: 1/1',)]
++--------------------+
+--Query--
+explain indexes = 1 select * from test1 where a > 10 settings allow_experimental_analyzer = 1
+--Result--
+[('Expression ((Project names + Projection))',), ('  Filter ((WHERE + (Change column names to column identifiers + Compute alias columns)))',), ('    ReadFromMergeTree (02911_support_alias_column_in_indices.test1)',), ('    Indexes:',), ('      PrimaryKey',), ('        Keys: ',), ('          c',), ('        Condition: (plus(c, 1) in [11, +Inf))',), ('        Parts: 1/2',), ('        Granules: 1/2',), ('      Skip',), ('        Name: i',), ('        Description: minmax GRANULARITY 1',), ('        Parts: 1/1',), ('        Granules: 1/1',)]
++--------------------+
+--Query--
+explain indexes = 1 select * from test2 where a2 > 15 settings allow_experimental_analyzer = 0
+--Result--
+[('Expression ((Projection + Before ORDER BY))',), ('  Filter (WHERE)',), ('    ReadFromMergeTree (02911_support_alias_column_in_indices.test2)',), ('    Indexes:',), ('      PrimaryKey',), ('        Keys: ',), ('          c',), ('        Condition: (plus(plus(c, 1), 1) in [16, +Inf))',), ('        Parts: 1/2',), ('        Granules: 1/2',), ('      Skip',), ('        Name: i',), ('        Description: minmax GRANULARITY 1',), ('        Parts: 1/1',), ('        Granules: 1/1',)]
++--------------------+
+--Query--
+explain indexes = 1 select * from test2 where a2 > 15 settings allow_experimental_analyzer = 1
+--Result--
+[('Expression ((Project names + Projection))',), ('  Filter ((WHERE + (Change column names to column identifiers + Compute alias columns)))',), ('    ReadFromMergeTree (02911_support_alias_column_in_indices.test2)',), ('    Indexes:',), ('      PrimaryKey',), ('        Keys: ',), ('          c',), ('        Condition: (plus(plus(c, 1), 1) in [16, +Inf))',), ('        Parts: 1/2',), ('        Granules: 1/2',), ('      Skip',), ('        Name: i',), ('        Description: minmax GRANULARITY 1',), ('        Parts: 1/1',), ('        Granules: 1/1',)]
++--------------------+

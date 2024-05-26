@@ -1,0 +1,20 @@
+--Query--
+SELECT   *,   count() OVER () AS c FROM numbers(10) ORDER BY toString(number)
+--Result--
+[(0, 10), (1, 10), (2, 10), (3, 10), (4, 10), (5, 10), (6, 10), (7, 10), (8, 10), (9, 10)]
++--------------------+
+--Query--
+WITH   toString(number) as str SELECT   *,   count() OVER () AS c FROM numbers(10) ORDER BY str
+--Result--
+[(0, 10), (1, 10), (2, 10), (3, 10), (4, 10), (5, 10), (6, 10), (7, 10), (8, 10), (9, 10)]
++--------------------+
+--Query--
+SELECT   *,   count() OVER () AS c,   toString(number) as str FROM numbers(10) ORDER BY str
+--Result--
+[(0, 10, '0'), (1, 10, '1'), (2, 10, '2'), (3, 10, '3'), (4, 10, '4'), (5, 10, '5'), (6, 10, '6'), (7, 10, '7'), (8, 10, '8'), (9, 10, '9')]
++--------------------+
+--Query--
+WITH   test AS (     SELECT       *,       count() OVER () AS c     FROM numbers(10)   ) SELECT * FROM test ORDER BY toString(number)
+--Result--
+[(0, 10), (1, 10), (2, 10), (3, 10), (4, 10), (5, 10), (6, 10), (7, 10), (8, 10), (9, 10)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+SELECT DISTINCT toTypeName(data) FROM type_json_dst
+--Result--
+[('Tuple(\n    k1 Int8,\n    k2 String)',)]
++--------------------+
+--Query--
+SELECT id, data FROM type_json_dst ORDER BY id
+--Result--
+[(1, (1, 'foo'))]
++--------------------+
+--Query--
+SELECT id, data FROM type_json_dst ORDER BY id
+--Result--
+[(1, (1, 'foo', '')), (2, (2, 'bar', '')), (3, (3, '', 'aaa'))]
++--------------------+
+--Query--
+TRUNCATE TABLE type_json_src
+--Result--
+[]
++--------------------+
+--Query--
+SELECT id, data FROM type_json_dst ORDER BY id
+--Result--
+[(1, ([], 1, 'foo', '')), (2, ([], 2, 'bar', '')), (3, ([], 3, '', 'aaa')), (4, ([(5, 6, 0), (7, 0, 8)], 0, '', ''))]
++--------------------+
+--Query--
+SYSTEM STOP MERGES type_json_src
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE type_json_src
+--Result--
+[]
++--------------------+

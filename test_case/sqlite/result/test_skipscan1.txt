@@ -1,0 +1,410 @@
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t1 WHERE b=345 ORDER BY a
+--Result--
+[('abc', 345, 7, 8, '|'), ('def', 345, 9, 10, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t1 WHERE d<>99 AND b=345 ORDER BY a DESC
+--Result--
+[('def', 345, 9, 10, '|'), ('abc', 345, 7, 8, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE d<>99 AND b=345 ORDER BY a DESC
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE d<>99 AND b=345 ORDER BY a DESC
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t1 WHERE c=6 ORDER BY a, b, c
+--Result--
+[('abc', 234, 6, 7, '|'), ('bcd', 100, 6, 11, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE c=6 ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE c=6 ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c=?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t1 WHERE c IN (6,7) ORDER BY a, b, c
+--Result--
+[('abc', 234, 6, 7, '|'), ('abc', 345, 7, 8, '|'), ('bcd', 100, 6, 11, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE c IN (6,7) ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE c IN (6,7) ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c=?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t1 WHERE c BETWEEN 6 AND 7 ORDER BY a, b, c
+--Result--
+[('abc', 234, 6, 7, '|'), ('abc', 345, 7, 8, '|'), ('bcd', 100, 6, 11, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE c BETWEEN 6 AND 7 ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c>? AND c<?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE c BETWEEN 6 AND 7 ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c>? AND c<?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t1 WHERE b IN (234, 345) AND c BETWEEN 6 AND 7    ORDER BY a, b
+--Result--
+[('abc', 234, 6, 7, '|'), ('abc', 345, 7, 8, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE b IN (234, 345) AND c BETWEEN 6 AND 7    ORDER BY a, b
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND b=? AND c>? AND c<?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t1 WHERE b IN (234, 345) AND c BETWEEN 6 AND 7    ORDER BY a, b
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND b=? AND c>? AND c<?)')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x, a, b, c, d, '|' FROM t1j, t1 WHERE c=y ORDER BY +a
+--Result--
+[('six', 'abc', 234, 6, 7, '|'), ('six', 'bcd', 100, 6, 11, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT x, a, b, c, d, '|' FROM t1j, t1 WHERE c=y ORDER BY +a
+--Result--
+[(5, 0, 0, 'SCAN t1j'), (7, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c=?)'), (32, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT x, a, b, c, d, '|' FROM t1j LEFT JOIN t1 ON c=y ORDER BY +y, +a
+--Result--
+[('one', None, None, None, None, '|'), ('six', 'abc', 234, 6, 7, '|'), ('six', 'bcd', 100, 6, 11, '|'), ('ninty-nine', None, None, None, None, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT x, a, b, c, d, '|' FROM t1j LEFT JOIN t1 ON c=y ORDER BY +y, +a
+--Result--
+[(5, 0, 0, 'SCAN t1j'), (7, 0, 0, 'SEARCH t1 USING INDEX t1abc (ANY(a) AND ANY(b) AND c=?) LEFT-JOIN'), (39, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t2 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[('abc', 345, 7, 8, '|'), ('def', 345, 9, 10, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t2 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING INDEX sqlite_autoindex_t2_1 (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t2 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING INDEX sqlite_autoindex_t2_1 (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t3 WHERE b=345 ORDER BY a
+--Result--
+[('abc', 345, 7, 8, '|'), ('def', 345, 9, 10, '|')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t3 WHERE b=345 ORDER BY a
+--Result--
+[(3, 0, 0, 'SEARCH t3 USING PRIMARY KEY (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t3 WHERE b=345 ORDER BY a
+--Result--
+[(3, 0, 0, 'SEARCH t3 USING PRIMARY KEY (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE a=1
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE b=2
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE c=3
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE d=4
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE e=5
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE f=6
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE g=7
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT i FROM t4 WHERE h=8
+--Result--
+[(9,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT xh, loc FROM t5 WHERE loc >= 'M' AND loc < 'N'
+--Result--
+[(2, 0, 0, 'SEARCH t5 USING COVERING INDEX t5i1 (loc>? AND loc<?)')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT xh, loc FROM t5 WHERE loc >= 'M' AND loc < 'N'
+--Result--
+[(2, 0, 0, 'SEARCH t5 USING COVERING INDEX t5i1 (loc>? AND loc<?)')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1
+--Result--
+[(2, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1ab (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1
+--Result--
+[(2, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX t1ab (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1
+--Result--
+[(2, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b=1
+--Result--
+[(2, 0, 0, 'SCAN t1')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1    WHERE (y = 'AB' AND x <= 4)       OR (y = 'EF' AND x = 5)
+--Result--
+[(1, 'AB')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1    WHERE (y = 'AB' AND x <= 4)       OR (y = 'EF' AND x = 5)
+--Result--
+[(4, 0, 0, 'MULTI-INDEX OR'), (5, 4, 0, 'INDEX 1'), (16, 5, 0, 'SEARCH t1 USING PRIMARY KEY (ANY(x) AND y=?)'), (24, 4, 0, 'INDEX 2'), (29, 24, 0, 'SEARCH t1 USING PRIMARY KEY (x=? AND y=?)')]
++--------------------+
+--Query--
+SELECT * FROM t1    WHERE y = 'AB' OR (y = 'CD' AND x = 2)   ORDER BY +x
+--Result--
+[(1, 'AB'), (2, 'CD')]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t9a WHERE b IN (SELECT x FROM t9b WHERE y!=5)
+--Result--
+[(3, 0, 0, 'SEARCH t9a USING INDEX t9a_ab (ANY(a) AND b=?)'), (12, 0, 0, 'LIST SUBQUERY 1'), (14, 12, 0, 'SCAN t9b')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT  * FROM t9a WHERE b IN (SELECT x FROM t9b WHERE y!=5)
+--Result--
+[(3, 0, 0, 'SEARCH t9a USING INDEX t9a_ab (ANY(a) AND b=?)'), (12, 0, 0, 'LIST SUBQUERY 1'), (14, 12, 0, 'SCAN t9b')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t6 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[(4, 0, 0, 'SEARCH t6 USING INDEX t6abc (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t6 WHERE d<>99 AND b=345 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a,b,c,d,'|' FROM t6 WHERE d<>99 AND b=345 ORDER BY a DESC
+--Result--
+[(4, 0, 0, 'SEARCH t6 USING INDEX t6abc (ANY(a) AND b=?)')]
++--------------------+
+--Query--
+SELECT a,b,c,d,'|' FROM t6 WHERE d<>99 AND b=345 ORDER BY a DESC
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+

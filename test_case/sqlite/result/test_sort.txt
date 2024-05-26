@@ -1,0 +1,325 @@
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY n
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY n ASC
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT ALL n FROM t1 ORDER BY n ASC
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY n DESC
+--Result--
+[(8,), (7,), (6,), (5,), (4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY v
+--Result--
+[('eight',), ('five',), ('four',), ('one',), ('seven',), ('six',), ('three',), ('two',)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY v
+--Result--
+[(8,), (5,), (4,), (1,), (7,), (6,), (3,), (2,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY v DESC
+--Result--
+[(2,), (3,), (6,), (7,), (1,), (4,), (5,), (8,)]
++--------------------+
+--Query--
+SELECT flt FROM t1 ORDER BY flt
+--Result--
+[(-11.0,), (-1.6,), (-0.0013442,), (0.123,), (2.15,), (3.141592653,), (123.0,), (4221.0,)]
++--------------------+
+--Query--
+SELECT flt FROM t1 ORDER BY flt DESC
+--Result--
+[(4221.0,), (123.0,), (3.141592653,), (2.15,), (0.123,), (-0.0013442,), (-1.6,), (-11.0,)]
++--------------------+
+--Query--
+SELECT roman FROM t1 ORDER BY roman
+--Result--
+[('I',), ('II',), ('III',), ('IV',), ('V',), ('VI',), ('VII',), ('VIII',)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log, flt
+--Result--
+[(1,), (2,), (3,), (5,), (4,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log asc, flt
+--Result--
+[(1,), (2,), (3,), (5,), (4,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log, flt ASC
+--Result--
+[(1,), (2,), (3,), (5,), (4,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log ASC, flt asc
+--Result--
+[(1,), (2,), (3,), (5,), (4,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log, flt DESC
+--Result--
+[(1,), (3,), (2,), (7,), (6,), (4,), (5,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log ASC, flt DESC
+--Result--
+[(1,), (3,), (2,), (7,), (6,), (4,), (5,), (8,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log DESC, flt
+--Result--
+[(8,), (5,), (4,), (6,), (7,), (2,), (3,), (1,)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY log DESC, flt DESC
+--Result--
+[(8,), (7,), (6,), (4,), (5,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY v
+--Result--
+[('x-123.0',), ('x-2.15',), ('x-2b',), ('x-3.141592653',), ('x-4221.0',), ('x0.0013442',), ('x1.6',), ('x11.0',)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY substr(v,2,999)
+--Result--
+[('x-123.0',), ('x-2.15',), ('x-2b',), ('x-3.141592653',), ('x-4221.0',), ('x0.0013442',), ('x1.6',), ('x11.0',)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY substr(v,2,999)+0.0
+--Result--
+[('x-4221.0',), ('x-123.0',), ('x-3.141592653',), ('x-2.15',), ('x-2b',), ('x0.0013442',), ('x1.6',), ('x11.0',)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY substr(v,2,999)+0.0 DESC
+--Result--
+[('x11.0',), ('x1.6',), ('x0.0013442',), ('x-2b',), ('x-2.15',), ('x-3.141592653',), ('x-123.0',), ('x-4221.0',)]
++--------------------+
+--Query--
+SELECT a, b FROM t2 ORDER BY a
+--Result--
+[('AGLIENTU', 1), ('AGLIE`', 2), ('AGNA', 3)]
++--------------------+
+--Query--
+SELECT a, b FROM t2 ORDER BY a DESC
+--Result--
+[('AGNA', 3), ('AGLIE`', 2), ('AGLIENTU', 1)]
++--------------------+
+--Query--
+SELECT a, b FROM t2 ORDER BY a
+--Result--
+[('aglie`', 2), ('aglientu', 1), ('agna', 3)]
++--------------------+
+--Query--
+SELECT a, b FROM t2 ORDER BY a DESC
+--Result--
+[('agna', 3), ('aglientu', 1), ('aglie`', 2)]
++--------------------+
+--Query--
+SELECT n FROM t1 ORDER BY n
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,), (11,), (12,)]
++--------------------+
+--Query--
+SELECT n||'' FROM t1 ORDER BY 1
+--Result--
+[('1',), ('10',), ('11',), ('12',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT n+0 FROM t1 ORDER BY 1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,), (11,), (12,)]
++--------------------+
+--Query--
+SELECT n||'' FROM t1 ORDER BY 1 DESC
+--Result--
+[('9',), ('8',), ('7',), ('6',), ('5',), ('4',), ('3',), ('2',), ('12',), ('11',), ('10',), ('1',)]
++--------------------+
+--Query--
+SELECT n+0 FROM t1 ORDER BY 1 DESC
+--Result--
+[(12,), (11,), (10,), (9,), (8,), (7,), (6,), (5,), (4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY 1
+--Result--
+[('x-123.0',), ('x-2.15',), ('x-2b',), ('x-3.141592653',), ('x-4.0e9',), ('x-4221.0',), ('x0.0013442',), ('x01234567890123456789',), ('x1.6',), ('x11.0',), ('x2.7',), ('x5.0e10',)]
++--------------------+
+--Query--
+SELECT v FROM t1 ORDER BY 1 DESC
+--Result--
+[('x5.0e10',), ('x2.7',), ('x11.0',), ('x1.6',), ('x01234567890123456789',), ('x0.0013442',), ('x-4221.0',), ('x-4.0e9',), ('x-3.141592653',), ('x-2b',), ('x-2.15',), ('x-123.0',)]
++--------------------+
+--Query--
+select a from t3 order by b, a
+--Result--
+[(2,), (3,), (5,), (6,), (1,), (4,)]
++--------------------+
+--Query--
+select a from t3 order by b, a desc
+--Result--
+[(6,), (5,), (3,), (2,), (1,), (4,)]
++--------------------+
+--Query--
+select a from t3 order by b desc, a
+--Result--
+[(4,), (1,), (2,), (3,), (5,), (6,)]
++--------------------+
+--Query--
+select a from t3 order by b desc, a desc
+--Result--
+[(4,), (1,), (6,), (5,), (3,), (2,)]
++--------------------+
+--Query--
+select a from t3 order by b, a
+--Result--
+[(2,), (3,), (5,), (6,), (1,), (4,)]
++--------------------+
+--Query--
+select a from t3 order by b, a desc
+--Result--
+[(6,), (5,), (3,), (2,), (1,), (4,)]
++--------------------+
+--Query--
+select a from t3 order by b desc, a
+--Result--
+[(4,), (1,), (2,), (3,), (5,), (6,)]
++--------------------+
+--Query--
+select a from t3 order by b desc, a desc
+--Result--
+[(4,), (1,), (6,), (5,), (3,), (2,)]
++--------------------+
+--Query--
+SELECT a FROM t4 ORDER BY 1
+--Result--
+[(1,), (2,), (11,), (12,)]
++--------------------+
+--Query--
+SELECT b FROM t4 ORDER BY 1
+--Result--
+[('1',), ('11',), ('12',), ('2',)]
++--------------------+
+--Query--
+SELECT a FROM v4 ORDER BY 1
+--Result--
+[(1,), (2,), (11,), (12,)]
++--------------------+
+--Query--
+SELECT b FROM v4 ORDER BY 1
+--Result--
+[('1',), ('11',), ('12',), ('2',)]
++--------------------+
+--Query--
+SELECT a FROM t4 UNION SELECT a FROM v4 ORDER BY 1
+--Result--
+[(1,), (2,), (11,), (12,)]
++--------------------+
+--Query--
+SELECT b FROM t4 UNION SELECT a FROM v4 ORDER BY 1
+--Result--
+[(1,), (2,), (11,), (12,), ('1',), ('11',), ('12',), ('2',)]
++--------------------+
+--Query--
+SELECT a FROM t4 UNION SELECT b FROM v4 ORDER BY 1
+--Result--
+[(1,), (2,), (11,), (12,), ('1',), ('11',), ('12',), ('2',)]
++--------------------+
+--Query--
+SELECT b FROM t4 UNION SELECT b FROM v4 ORDER BY 1
+--Result--
+[('1',), ('11',), ('12',), ('2',)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY a, b
+--Result--
+[(100.0, 'A1'), (100.0, 'A2')]
++--------------------+
+--Query--
+SELECT x FROM t6 ORDER BY y
+--Result--
+[(4,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t6 ORDER BY y DESC
+--Result--
+[(3,), (2,), (1,), (4,)]
++--------------------+
+--Query--
+SELECT x FROM t6 WHERE y<1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t6 WHERE y<'1'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x FROM t6 WHERE y<x'31'
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT x FROM t6 WHERE y>1
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT x FROM t6 WHERE y>'1'
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT c FROM t7 WHERE c<=3 ORDER BY c DESC
+--Result--
+[(3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT c FROM t7 WHERE c<3 ORDER BY c DESC
+--Result--
+[(2,), (1,)]
++--------------------+
+--Query--
+select y from t8, t9 where a=1 order by a, y
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+select a.id, b.id, b.text from a join b on (a.id = b.aId)       order by a.id, b.text
+--Result--
+[(1, 2, 'xxx'), (1, 3, 'yyy'), (1, 1, 'zzz')]
++--------------------+
+--Query--
+SELECT a, b FROM t10 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, b FROM t10 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master ORDER BY sql
+--Result--
+[('index', 'sqlite_autoindex_t8_1', 't8', 11, None), ('index', 'i3', 't3', 5, 'CREATE INDEX i3 on t3(b,a)'), ('table', 'a', 'a', 13, 'CREATE TABLE a (id integer primary key)'), ('table', 'b', 'b', 14, 'CREATE TABLE b (id integer primary key, aId integer, text)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(\n       n int,\n       v varchar(10),\n       log int,\n       roman varchar(10),\n       flt real\n    )'), ('table', 't10', 't10', 15, 'CREATE TABLE t10(a, b)'), ('table', 't2', 't2', 3, 'CREATE TABLE t2(a,b)'), ('table', 't3', 't3', 4, 'CREATE TABLE t3(a,b)'), ('table', 't4', 't4', 6, 'CREATE TABLE t4(\n      a INTEGER,\n      b VARCHAR(30)\n    )'), ('table', 't5', 't5', 7, 'CREATE TABLE t5(a real, b text)'), ('table', 't6', 't6', 8, 'CREATE TABLE t6(x, y)'), ('table', 't7', 't7', 9, 'CREATE TABLE t7(c INTEGER PRIMARY KEY)'), ('table', 't8', 't8', 10, 'CREATE TABLE t8(a unique, b, c)'), ('table', 't9', 't9', 12, 'CREATE TABLE t9(x,y)'), ('view', 'v4', 'v4', 0, 'CREATE VIEW v4 AS SELECT * FROM t4')]
++--------------------+

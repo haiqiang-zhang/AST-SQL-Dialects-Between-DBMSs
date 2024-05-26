@@ -1,0 +1,320 @@
+--Query--
+SELECT 1 IN ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 IN (2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 IN (2,3,4,5,6,7,8,9)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN (2)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN (2,3,4,5,6,7,8,9)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT null IN ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT null NOT IN ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT null IN t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT null NOT IN t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN t2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT null IN t2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT null NOT IN t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN t3
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN t3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT null IN t3
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT null NOT IN t3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN (SELECT x+y FROM t1, t2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN (SELECT x+y FROM t1,t2)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT null IN (SELECT x+y FROM t1,t2)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT null NOT IN (SELECT x+y FROM t1,t2)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1.23 IN ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1.23 NOT IN ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1.23 IN t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1.23 NOT IN t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'hello' IN ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'hello' NOT IN ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'hello' IN t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'hello' NOT IN t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x'303132' IN ()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT x'303132' NOT IN ()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x'303132' IN t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT x'303132' NOT IN t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN (2,3,4)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN (2,3,4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'a' IN ('b','c','d')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a' NOT IN ('b','c','d')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 2 IN (2,3,4,null)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 3 NOT IN (2,3,4,null)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 4 IN (2,3,4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 2 NOT IN (2,3,4)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'b' IN ('b','c','d')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'c' NOT IN ('b','c','d')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'd' IN ('b','c',null,'d')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'b' NOT IN (null,'b','c','d')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a' IN (NULL,'a')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'a' IN (NULL,'b')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 'a' NOT IN (NULL,'a')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a' NOT IN (NULL,'b')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 IN (2,3,4,null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 NOT IN (2,3,4,null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 'a' IN ('b','c',null,'d')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 'a' NOT IN (null,'b','c','d')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null IN (2,3,4,null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null NOT IN (2,3,4,null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null IN (2,3,4)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null NOT IN (2,3,4)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null IN ('b','c','d')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null NOT IN ('b','c','d')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null IN ('b','c',null,'d')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT null NOT IN (null,'b','c','d')
+--Result--
+[(None,)]
++--------------------+

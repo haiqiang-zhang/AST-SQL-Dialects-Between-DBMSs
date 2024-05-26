@@ -1,0 +1,150 @@
+--Query--
+USE test_01155_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+SELECT materialize(1), substr(_table, 1, 10), s FROM merge('test_01155_ordinary', '') ORDER BY _table, s
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DICTIONARY test_01155_ordinary.dict TO test_01155_ordinary.dict1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT database, name, uuid FROM system.dictionaries WHERE database='test_01155_ordinary'
+--Result--
+[('test_01155_ordinary', 'dict1', UUID('00000000-0000-0000-0000-000000000000'))]
++--------------------+
+--Query--
+RENAME TABLE test_01155_ordinary.dict1 TO test_01155_ordinary.dict
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'ordinary:'
+--Result--
+[('ordinary:',)]
++--------------------+
+--Query--
+SHOW TABLES FROM test_01155_ordinary
+--Result--
+[('.inner.mv1',), ('dict',), ('dst',), ('mv1',), ('mv2',), ('src',)]
++--------------------+
+--Query--
+RENAME TABLE test_01155_ordinary.mv1 TO test_01155_atomic.mv1
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE test_01155_ordinary.mv2 TO test_01155_atomic.mv2
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE test_01155_ordinary.dst TO test_01155_atomic.dst
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE test_01155_ordinary.src TO test_01155_atomic.src
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DICTIONARY test_01155_ordinary.dict TO test_01155_atomic.dict
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'ordinary after rename:'
+--Result--
+[('ordinary after rename:',)]
++--------------------+
+--Query--
+SELECT substr(name, 1, 10) FROM system.tables WHERE database='test_01155_ordinary'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'atomic after rename:'
+--Result--
+[('atomic after rename:',)]
++--------------------+
+--Query--
+USE default
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DATABASE test_01155_atomic TO test_01155_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+USE test_01155_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DATABASE test_01155_ordinary TO test_01155_atomic
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE DATABASE test_01155_atomic
+--Result--
+[('CREATE DATABASE test_01155_atomic\nENGINE = Atomic',)]
++--------------------+
+--Query--
+RENAME TABLE test_01155_atomic.mv1 TO test_01155_ordinary.mv1
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE test_01155_atomic.mv2 TO test_01155_ordinary.mv2
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE test_01155_atomic.dst TO test_01155_ordinary.dst
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE test_01155_atomic.src TO test_01155_ordinary.src
+--Result--
+[]
++--------------------+
+--Query--
+RENAME DICTIONARY test_01155_atomic.dict TO test_01155_ordinary.dict
+--Result--
+[]
++--------------------+
+--Query--
+SELECT database, name, uuid FROM system.dictionaries WHERE database='test_01155_ordinary'
+--Result--
+[('test_01155_ordinary', 'dict', UUID('00000000-0000-0000-0000-000000000000'))]
++--------------------+
+--Query--
+SELECT 'test_01155_ordinary:'
+--Result--
+[('test_01155_ordinary:',)]
++--------------------+
+--Query--
+SHOW TABLES FROM test_01155_ordinary
+--Result--
+[('.inner.mv1',), ('dict',), ('dst',), ('mv1',), ('mv2',), ('src',)]
++--------------------+
+--Query--
+SELECT 'test_01155_atomic:'
+--Result--
+[('test_01155_atomic:',)]
++--------------------+
+--Query--
+SHOW TABLES FROM test_01155_atomic
+--Result--
+[]
++--------------------+

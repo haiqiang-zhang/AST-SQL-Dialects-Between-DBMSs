@@ -1,0 +1,35 @@
+--Query--
+SELECT COUNT(*) FROM zero_rows_per_granule
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT distinct(marks) from system.parts WHERE table = 'zero_rows_per_granule' and database=currentDatabase() and active=1
+--Result--
+[(5,)]
++--------------------+
+--Query--
+OPTIMIZE TABLE zero_rows_per_granule FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sum(marks) from system.parts WHERE table = 'zero_rows_per_granule' and database=currentDatabase() and active=1
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT '-----'
+--Result--
+[('-----',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE four_rows_per_granule FINAL
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE four_rows_per_granule FINAL
+--Result--
+[]
++--------------------+

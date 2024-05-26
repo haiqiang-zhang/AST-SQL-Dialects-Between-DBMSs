@@ -1,0 +1,570 @@
+--Query--
+SELECT t2.a,t2.b   FROM t2
+--Result--
+[(3, 3), (4, 2), (5, 3)]
++--------------------+
+--Query--
+SELECT t3.a,t3.b   FROM t3
+--Result--
+[(1, 2), (2, 2)]
++--------------------+
+--Query--
+SELECT t4.a,t4.b   FROM t4
+--Result--
+[(3, 2), (4, 2)]
++--------------------+
+--Query--
+SELECT t3.a,t3.b,t4.a,t4.b   FROM t3,t4
+--Result--
+[(2, 2, 3, 2), (1, 2, 3, 2), (2, 2, 4, 2), (1, 2, 4, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t2.b=t4.b
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 2, 2, 4, 2), (4, 2, 1, 2, 3, 2), (4, 2, 2, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4   FROM t2        LEFT JOIN t34        ON t2.b=t34.b4
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 2, 2, 4, 2), (4, 2, 1, 2, 3, 2), (4, 2, 2, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t3.a=1 AND t2.b=t4.b
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4   FROM t2        LEFT JOIN t34        ON t34.a3=1 AND t2.b=t34.b4
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t2.b=t4.b     WHERE t3.a=1 OR t3.c IS NULL
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t2.b=t4.b     WHERE t3.a=1 OR t3.c IS NULL
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4   FROM t2        LEFT JOIN t34        ON t2.b=t34.b4     WHERE t34.a3=1 OR t34.c3 IS NULL
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t2.b=t4.b     WHERE t3.a>1 OR t3.c IS NULL
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 2, 2, 4, 2), (4, 2, 2, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4   FROM t2        LEFT JOIN t34        ON t2.b=t34.b4     WHERE t34.a3>1 OR t34.c3 IS NULL
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 2, 2, 4, 2), (4, 2, 2, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t5.a,t5.b   FROM t5
+--Result--
+[(3, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT t3.a,t3.b,t4.a,t4.b,t5.a,t5.b   FROM t3,t4,t5
+--Result--
+[(1, 2, 4, 2, 3, 1), (2, 2, 4, 2, 3, 1), (1, 2, 3, 2, 3, 1), (2, 2, 3, 2, 3, 1), (1, 2, 4, 2, 2, 2), (2, 2, 4, 2, 2, 2), (1, 2, 3, 2, 2, 2), (2, 2, 3, 2, 2, 2), (1, 2, 4, 2, 3, 3), (2, 2, 4, 2, 3, 3), (1, 2, 3, 2, 3, 3), (2, 2, 3, 2, 3, 3)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,t5.a,t5.b   FROM t2        LEFT JOIN                      (t3, t4, t5)        ON t2.b=t4.b
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 3, 2, 3, 3), (4, 2, 1, 2, 3, 2, 3, 3), (4, 2, 2, 2, 4, 2, 3, 3), (4, 2, 1, 2, 4, 2, 3, 3), (4, 2, 2, 2, 3, 2, 2, 2), (4, 2, 1, 2, 3, 2, 2, 2), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 1, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 3, 1), (4, 2, 1, 2, 3, 2, 3, 1), (4, 2, 2, 2, 4, 2, 3, 1), (4, 2, 1, 2, 4, 2, 3, 1), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t345.a3,t345.b3,t345.a4,t345.b4,t345.a5,t345.b5   FROM t2        LEFT JOIN t345        ON t2.b=t345.b4
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 3, 2, 3, 3), (4, 2, 1, 2, 3, 2, 3, 3), (4, 2, 2, 2, 4, 2, 3, 3), (4, 2, 1, 2, 4, 2, 3, 3), (4, 2, 2, 2, 3, 2, 2, 2), (4, 2, 1, 2, 3, 2, 2, 2), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 1, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 3, 1), (4, 2, 1, 2, 3, 2, 3, 1), (4, 2, 2, 2, 4, 2, 3, 1), (4, 2, 1, 2, 4, 2, 3, 1), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,t5.a,t5.b   FROM t2        LEFT JOIN                      (t3, t4, t5)        ON t2.b=t4.b     WHERE t3.a>1 OR t3.c IS NULL
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 3, 2, 3, 3), (4, 2, 2, 2, 4, 2, 3, 3), (4, 2, 2, 2, 3, 2, 2, 2), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 3, 1), (4, 2, 2, 2, 4, 2, 3, 1), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,t5.a,t5.b   FROM t2        LEFT JOIN                      (t3, t4, t5)        ON t2.b=t4.b     WHERE t3.a>1 OR t3.c IS NULL
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 3, 2, 3, 3), (4, 2, 2, 2, 4, 2, 3, 3), (4, 2, 2, 2, 3, 2, 2, 2), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 3, 1), (4, 2, 2, 2, 4, 2, 3, 1), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t345.a3,t345.b3,t345.a4,t345.b4,t345.a5,t345.b5   FROM t2        LEFT JOIN t345        ON t2.b=t345.b4     WHERE t345.a3>1 OR t345.c3 IS NULL
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 3, 2, 3, 3), (4, 2, 2, 2, 4, 2, 3, 3), (4, 2, 2, 2, 3, 2, 2, 2), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 3, 1), (4, 2, 2, 2, 4, 2, 3, 1), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,t5.a,t5.b   FROM t2        LEFT JOIN                      (t3, t4, t5)        ON t2.b=t4.b     WHERE (t3.a>1 OR t3.c IS NULL) AND            (t5.a<3 OR t5.c IS NULL)
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 2, 2), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,t5.a,t5.b   FROM t2        LEFT JOIN                      (t3, t4, t5)        ON t2.b=t4.b     WHERE (t3.a>1 OR t3.c IS NULL) AND            (t5.a<3 OR t5.c IS NULL)
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 4, 2, 2, 2), (4, 2, 2, 2, 3, 2, 2, 2), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t345.a3,t345.b3,t345.a4,t345.b4,t345.a5,t345.b5   FROM t2        LEFT JOIN t345        ON t2.b=t345.b4     WHERE (t345.a3>1 OR t345.c3 IS NULL) AND            (t345.a5<3 OR t345.c5 IS NULL)
+--Result--
+[(3, 3, None, None, None, None, None, None), (4, 2, 2, 2, 3, 2, 2, 2), (4, 2, 2, 2, 4, 2, 2, 2), (5, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t6.a,t6.b   FROM t6
+--Result--
+[(3, 2), (6, 2), (6, 1)]
++--------------------+
+--Query--
+SELECT t7.a,t7.b   FROM t7
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+SELECT t6.a,t6.b,t7.a,t7.b   FROM t6,t7
+--Result--
+[(3, 2, 2, 2), (3, 2, 1, 1), (6, 2, 2, 2), (6, 2, 1, 1), (6, 1, 2, 2), (6, 1, 1, 1)]
++--------------------+
+--Query--
+SELECT t8.a,t8.b   FROM t8
+--Result--
+[(0, 2), (1, 2)]
++--------------------+
+--Query--
+SELECT t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM (t6, t7)        LEFT JOIN         t8        ON t7.b=t8.b AND t6.b < 10
+--Result--
+[(3, 2, 2, 2, 1, 2), (3, 2, 2, 2, 0, 2), (3, 2, 1, 1, None, None), (6, 2, 2, 2, 1, 2), (6, 2, 2, 2, 0, 2), (6, 2, 1, 1, None, None), (6, 1, 2, 2, 1, 2), (6, 1, 2, 2, 0, 2), (6, 1, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM (t6, t7)        LEFT JOIN         t8        ON t7.b=t8.b AND t6.b < 10
+--Result--
+[(3, 2, 2, 2, 1, 2), (3, 2, 2, 2, 0, 2), (3, 2, 1, 1, None, None), (6, 2, 2, 2, 1, 2), (6, 2, 2, 2, 0, 2), (6, 2, 1, 1, None, None), (6, 1, 2, 2, 1, 2), (6, 1, 2, 2, 0, 2), (6, 1, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t67        LEFT JOIN         t8        ON t67.b7=t8.b AND t67.b6 < 10
+--Result--
+[(3, 2, 2, 2, 1, 2), (3, 2, 2, 2, 0, 2), (3, 2, 1, 1, None, None), (6, 2, 2, 2, 1, 2), (6, 2, 2, 2, 0, 2), (6, 2, 1, 1, None, None), (6, 1, 2, 2, 1, 2), (6, 1, 2, 2, 0, 2), (6, 1, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t5.a,t5.b   FROM t5
+--Result--
+[(3, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t5         LEFT JOIN         (           (t6, t7)          LEFT JOIN           t8          ON t7.b=t8.b AND t6.b < 10        )        ON t6.b >= 2 AND t5.b=t7.b
+--Result--
+[(3, 1, 6, 2, 1, 1, None, None), (3, 1, 3, 2, 1, 1, None, None), (2, 2, 6, 2, 2, 2, 0, 2), (2, 2, 6, 2, 2, 2, 1, 2), (2, 2, 3, 2, 2, 2, 0, 2), (2, 2, 3, 2, 2, 2, 1, 2), (3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t5         LEFT JOIN         (           t67          LEFT JOIN           t8          ON t67.b7=t8.b AND t67.b6 < 10        )        ON t67.b6 >= 2 AND t5.b=t67.b7
+--Result--
+[(3, 1, 6, 2, 1, 1, None, None), (3, 1, 3, 2, 1, 1, None, None), (2, 2, 6, 2, 2, 2, 0, 2), (2, 2, 6, 2, 2, 2, 1, 2), (2, 2, 3, 2, 2, 2, 0, 2), (2, 2, 3, 2, 2, 2, 1, 2), (3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t5         LEFT JOIN         (           (t6, t7)          LEFT JOIN           t8          ON t7.b=t8.b AND t6.b < 10        )        ON t6.b >= 2 AND t5.b=t7.b AND           (t8.a < 1 OR t8.c IS NULL)
+--Result--
+[(3, 1, 6, 2, 1, 1, None, None), (3, 1, 3, 2, 1, 1, None, None), (2, 2, 6, 2, 2, 2, 0, 2), (2, 2, 3, 2, 2, 2, 0, 2), (3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t5         LEFT JOIN         (           t67          LEFT JOIN           t8          ON t67.b7=t8.b AND t67.b6 < 10        )        ON t67.b6 >= 2 AND t5.b=t67.b7 AND           (t8.a < 1 OR t8.c IS NULL)
+--Result--
+[(3, 1, 6, 2, 1, 1, None, None), (3, 1, 3, 2, 1, 1, None, None), (2, 2, 6, 2, 2, 2, 0, 2), (2, 2, 3, 2, 2, 2, 0, 2), (3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t3.a=1 AND t2.b=t4.b
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4   FROM t2        LEFT JOIN t34        ON t34.a3=1 AND t2.b=t34.b4
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t3.a=1 AND t2.b=t4.b,        t5         LEFT JOIN         (           (t6, t7)          LEFT JOIN           t8          ON t7.b=t8.b AND t6.b < 10        )        ON t6.b >= 2 AND t5.b=t7.b
+--Result--
+[(5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (3, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (3, 3, None, None, None, None, 3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t2        LEFT JOIN t34        ON t34.a3=1 AND t2.b=t34.b4        CROSS JOIN t5         LEFT JOIN         (           t67          LEFT JOIN           t8          ON t67.b7=t8.b AND t67.b6 < 10        )        ON t67.b6 >= 2 AND t5.b=t67.b7
+--Result--
+[(5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (3, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (3, 3, None, None, None, None, 3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t2        LEFT JOIN                      (t3, t4)        ON t3.a=1 AND t2.b=t4.b,        t5         LEFT JOIN         (           (t6, t7)          LEFT JOIN           t8          ON t7.b=t8.b AND t6.b < 10        )        ON t6.b >= 2 AND t5.b=t7.b     WHERE t2.a > 3 AND           (t6.a < 6 OR t6.c IS NULL)
+--Result--
+[(5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t2        LEFT JOIN t34        ON t34.a3=1 AND t2.b=t34.b4        CROSS JOIN t5         LEFT JOIN         (           t67          LEFT JOIN           t8          ON t67.b7=t8.b AND t67.b6 < 10        )        ON t67.b6 >= 2 AND t5.b=t67.b7     WHERE t2.a > 3 AND           (t67.a6 < 6 OR t67.c6 IS NULL)
+--Result--
+[(5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b   FROM t1
+--Result--
+[(1, 3), (2, 2), (3, 2)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2)
+--Result--
+[(1, 3, 3, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 3, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 3, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 3, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 3, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 3, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 3, 3, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 3, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (3, 2, 3, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (3, 2, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 3, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 3, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t1        LEFT JOIN                        (           t2          LEFT JOIN t34          ON t34.a3=1 AND t2.b=t34.b4          CROSS JOIN t5           LEFT JOIN           (             t67            LEFT JOIN             t8            ON t67.b7=t8.b AND t67.b6 < 10          )          ON t67.b6 >= 2 AND t5.b=t67.b7         )        ON (t34.b3=2 OR t34.c3 IS NULL) AND (t67.b6=2 OR t67.c6 IS NULL) AND           (t1.b=t5.b OR t34.c3 IS NULL OR t67.c6 IS NULL or t8.c IS NULL) AND           (t1.a <> 2)
+--Result--
+[(1, 3, 3, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 3, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 3, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 3, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 3, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 3, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 3, 3, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 3, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (3, 2, 3, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (3, 2, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 3, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 3, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 3, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 3, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2)     WHERE (t2.a >= 4 OR t2.c IS NULL)
+--Result--
+[(1, 3, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 3, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t1        LEFT JOIN                        (           t2          LEFT JOIN t34          ON t34.a3=1 AND t2.b=t34.b4          CROSS JOIN t5           LEFT JOIN           (             t67            LEFT JOIN             t8            ON t67.b7=t8.b AND t67.b6 < 10          )          ON t67.b6 >= 2 AND t5.b=t67.b7         )        ON (t34.b3=2 OR t34.c3 IS NULL) AND (t67.b6=2 OR t67.c6 IS NULL) AND           (t1.b=t5.b OR t34.c3 IS NULL OR t67.c6 IS NULL or t8.c IS NULL) AND           (t1.a <> 2)     WHERE (t2.a >= 4 OR t2.c IS NULL)
+--Result--
+[(1, 3, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 3, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 3, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 3, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None), (2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b   FROM t0
+--Result--
+[(1, 1), (1, 2), (2, 2)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2)     WHERE t0.a=1 AND           t0.b=t1.b AND                     (t2.a >= 4 OR t2.c IS NULL)
+--Result--
+[(1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2)     WHERE t0.a=1 AND           t0.b=t1.b AND                     (t2.a >= 4 OR t2.c IS NULL)
+--Result--
+[(1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b   FROM t0        CROSS JOIN t1        LEFT JOIN                        (           t2          LEFT JOIN t34          ON t34.a3=1 AND t2.b=t34.b4          CROSS JOIN t5           LEFT JOIN           (             t67            LEFT JOIN             t8            ON t67.b7=t8.b AND t67.b6 < 10          )          ON t67.b6 >= 2 AND t5.b=t67.b7         )        ON (t34.b3=2 OR t34.c3 IS NULL) AND (t67.b6=2 OR t67.c6 IS NULL) AND           (t1.b=t5.b OR t34.c3 IS NULL OR t67.c6 IS NULL or t8.c IS NULL) AND           (t1.a <> 2)     WHERE t0.a=1 AND           t0.b=t1.b AND                     (t2.a >= 4 OR t2.c IS NULL)
+--Result--
+[(1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 3, 2, 2, 2, 0, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 3, 2, 1, 1, None, None), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2)]
++--------------------+
+--Query--
+SELECT t9.a,t9.b   FROM t9
+--Result--
+[(1, 1), (1, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b,t9.a,t9.b   FROM t0        CROSS JOIN t1        LEFT JOIN                        (           t2          LEFT JOIN t34          ON t34.a3=1 AND t2.b=t34.b4          CROSS JOIN t5           LEFT JOIN           (             t67            LEFT JOIN             t8            ON t67.b7=t8.b AND t67.b6 < 10          )          ON t67.b6 >= 2 AND t5.b=t67.b7         )        ON (t34.b3=2 OR t34.c3 IS NULL) AND (t67.b6=2 OR t67.c6 IS NULL) AND           (t1.b=t5.b OR t34.c3 IS NULL OR t67.c6 IS NULL or t8.c IS NULL) AND           (t1.a <> 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t34.a3 < 5 OR t34.c3 IS NULL) AND            (t34.b3=t34.b4 OR t34.c3 IS NULL OR t34.c4 IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t67.a6 >=4 OR t67.c6 IS NULL) AND            (t67.a7 <= 2 OR t67.c7 IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b   FROM t1
+--Result--
+[(1, 3), (2, 2), (3, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b   FROM t2
+--Result--
+[(3, 3), (4, 2), (5, 3)]
++--------------------+
+--Query--
+SELECT t3.a,t3.b   FROM t3
+--Result--
+[(1, 2), (2, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b   FROM t2         LEFT JOIN                      t3        ON t2.b=t3.b
+--Result--
+[(3, 3, None, None), (4, 2, 2, 2), (4, 2, 1, 2), (5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b   FROM t1, t2         LEFT JOIN                      t3        ON t2.b=t3.b     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None), (1, 3, 3, 3, None, None), (2, 2, 4, 2, 2, 2), (2, 2, 4, 2, 1, 2), (1, 3, 4, 2, 2, 2), (1, 3, 4, 2, 1, 2), (2, 2, 5, 3, None, None), (1, 3, 5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b   FROM t1        CROSS JOIN t2        LEFT JOIN                      t3        ON t2.b=t3.b     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None), (1, 3, 3, 3, None, None), (2, 2, 4, 2, 2, 2), (2, 2, 4, 2, 1, 2), (1, 3, 4, 2, 2, 2), (1, 3, 4, 2, 1, 2), (2, 2, 5, 3, None, None), (1, 3, 5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b   FROM t1, t3         RIGHT JOIN                      t2        ON t2.b=t3.b     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None), (1, 3, 3, 3, None, None), (2, 2, 4, 2, 2, 2), (2, 2, 4, 2, 1, 2), (1, 3, 4, 2, 2, 2), (1, 3, 4, 2, 1, 2), (2, 2, 5, 3, None, None), (1, 3, 5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b   FROM t1 CROSS JOIN        (          t3          RIGHT JOIN                        t2          ON t2.b=t3.b        )     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None), (1, 3, 3, 3, None, None), (2, 2, 4, 2, 2, 2), (2, 2, 4, 2, 1, 2), (1, 3, 4, 2, 2, 2), (1, 3, 4, 2, 1, 2), (2, 2, 5, 3, None, None), (1, 3, 5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t3.a,t3.b,t4.a,t4.b   FROM t3,t4
+--Result--
+[(2, 2, 3, 2), (1, 2, 3, 2), (2, 2, 4, 2), (1, 2, 4, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2         LEFT JOIN                      (t3, t4)        ON t3.a=1 AND t2.b=t4.b
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t2        LEFT JOIN                      (t3 CROSS JOIN t4)        ON t3.a=1 AND t2.b=t4.b
+--Result--
+[(3, 3, None, None, None, None), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 3, 2), (5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1 CROSS JOIN        (          t2           LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b        )     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1 CROSS JOIN        (          t2          LEFT JOIN                        (t3 CROSS JOIN t4)          ON t3.a=1 AND t2.b=t4.b        )     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1, (t3, t4)         RIGHT JOIN                      t2        ON t3.a=1 AND t2.b=t4.b     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1 CROSS JOIN        (          (t3 CROSS JOIN t4)          RIGHT JOIN                        t2          ON t3.a=1 AND t2.b=t4.b        )     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1, (t3, t4)        RIGHT JOIN                      t2        ON t3.a=1 AND t2.b=t4.b     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1 CROSS JOIN        (          (t3 CROSS JOIN t4)          RIGHT JOIN                        t2          ON t3.a=1 AND t2.b=t4.b        )     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM t1, (t3, t4)        RIGHT JOIN        t2        ON t3.a=1 AND t2.b=t4.b     WHERE t1.a <= 2
+--Result--
+[(2, 2, 3, 3, None, None, None, None), (1, 3, 3, 3, None, None, None, None), (2, 2, 4, 2, 1, 2, 4, 2), (2, 2, 4, 2, 1, 2, 3, 2), (1, 3, 4, 2, 1, 2, 4, 2), (1, 3, 4, 2, 1, 2, 3, 2), (2, 2, 5, 3, None, None, None, None), (1, 3, 5, 3, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM (t3,t4)        LEFT JOIN                      (t1,t2)        ON t3.a=1 AND t3.b=t2.b AND t2.b=t4.b
+--Result--
+[(None, None, 2, 2, 3, 2), (4, 2, 1, 2, 3, 2), (4, 2, 1, 2, 3, 2), (4, 2, 1, 2, 3, 2), (None, None, 2, 2, 4, 2), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 4, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM (t3,t4)        LEFT JOIN                      (t1,t2)        ON t3.a=1 AND t3.b=t2.b AND t2.b=t4.b
+--Result--
+[(None, None, 2, 2, 3, 2), (4, 2, 1, 2, 3, 2), (4, 2, 1, 2, 3, 2), (4, 2, 1, 2, 3, 2), (None, None, 2, 2, 4, 2), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 4, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b,t4.a,t4.b   FROM (t3 CROSS JOIN t4)        LEFT JOIN                      (t1 CROSS JOIN t2)        ON t3.a=1 AND t3.b=t2.b AND t2.b=t4.b
+--Result--
+[(None, None, 2, 2, 3, 2), (4, 2, 1, 2, 3, 2), (4, 2, 1, 2, 3, 2), (4, 2, 1, 2, 3, 2), (None, None, 2, 2, 4, 2), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 4, 2), (4, 2, 1, 2, 4, 2)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t3.a,t3.b,t4.a,t4.b,        t5.a,t5.b,t6.a,t6.b,t7.a,t7.b,t8.a,t8.b,t9.a,t9.b   FROM t0,t1        LEFT JOIN                        (           t2          LEFT JOIN                        (t3, t4)          ON t3.a=1 AND t2.b=t4.b,          t5           LEFT JOIN           (             (t6, t7)            LEFT JOIN             t8            ON t7.b=t8.b AND t6.b < 10          )          ON t6.b >= 2 AND t5.b=t7.b         )        ON (t3.b=2 OR t3.c IS NULL) AND (t6.b=2 OR t6.c IS NULL) AND           (t1.b=t5.b OR t3.c IS NULL OR t6.c IS NULL or t8.c IS NULL) AND           (t1.a != 2),        t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t3.a < 5 OR t3.c IS NULL) AND            (t3.b=t4.b OR t3.c IS NULL OR t4.c IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t6.a >=4 OR t6.c IS NULL) AND            (t7.a <= 2 OR t7.c IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1)]
++--------------------+
+--Query--
+SELECT t0.a,t0.b,t1.a,t1.b,t2.a,t2.b,t34.a3,t34.b3,t34.a4,t34.b4,        t5.a,t5.b,t67.a6,t67.b6,t67.a7,t67.b7,t8.a,t8.b,t9.a,t9.b   FROM t0        CROSS JOIN t1        LEFT JOIN                        (           t2          LEFT JOIN                        t34          ON t34.a3=1 AND t2.b=t34.b4          CROSS JOIN t5           LEFT JOIN           (             t67            LEFT JOIN             t8            ON t67.b7=t8.b AND t67.b6 < 10          )          ON t67.b6 >= 2 AND t5.b=t67.b7         )        ON (t34.b3=2 OR t34.c3 IS NULL) AND (t67.b6=2 OR t67.c6 IS NULL) AND           (t1.b=t5.b OR t34.c3 IS NULL OR t67.c6 IS NULL or t8.c IS NULL) AND           (t1.a <> 2)        CROSS JOIN t9      WHERE t0.a=1 AND            t0.b=t1.b AND                      (t2.a >= 4 OR t2.c IS NULL) AND            (t34.a3 < 5 OR t34.c3 IS NULL) AND            (t34.b3=t34.b4 OR t34.c3 IS NULL OR t34.c4 IS NULL) AND            (t5.a >=2 OR t5.c IS NULL) AND            (t67.a6 >=4 OR t67.c6 IS NULL) AND            (t67.a7 <= 2 OR t67.c7 IS NULL) AND            (t8.a < 1 OR t8.c IS NULL) AND            (t8.b=t9.b OR t8.c IS NULL) AND            (t9.a=1)
+--Result--
+[(1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 2), (1, 2, 2, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 2, 2, 6, 2, 2, 2, 0, 2, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 2), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 3, None, None, None, None, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 3, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 4, 2, 1, 2, 4, 2, 3, 1, 6, 2, 1, 1, None, None, 1, 1), (1, 2, 3, 2, 5, 3, None, None, None, None, 3, 1, 6, 2, 1, 1, None, None, 1, 1)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b   FROM t2
+--Result--
+[(3, 3), (4, 2), (5, 3)]
++--------------------+
+--Query--
+SELECT t3.a,t3.b   FROM t3
+--Result--
+[(1, 2), (2, 2)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b   FROM t2 LEFT JOIN t3 ON t2.b=t3.b     WHERE t2.a = 4 OR (t2.a > 4 AND t3.a IS NULL)
+--Result--
+[(4, 2, 2, 2), (4, 2, 1, 2), (5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a,t3.b   FROM t2 LEFT JOIN (t3) ON t2.b=t3.b     WHERE t2.a = 4 OR (t2.a > 4 AND t3.a IS NULL)
+--Result--
+[(4, 2, 2, 2), (4, 2, 1, 2), (5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a1,t3.b   FROM t2 LEFT JOIN t3 ON t2.b=t3.b     WHERE t2.a = 4 OR (t2.a > 4 AND t3.a1 IS NULL)
+--Result--
+[(4, 2, 2, 2), (4, 2, 1, 2), (5, 3, None, None)]
++--------------------+
+--Query--
+SELECT t2.a,t2.b,t3.a1,t3.b   FROM t2 NATURAL LEFT JOIN t3     WHERE t2.a = 4 OR (t2.a > 4 AND t3.a1 IS NULL)
+--Result--
+[(4, 2, 2, 2), (4, 2, 1, 2), (5, 3, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN (t2 LEFT JOIN t3 ON t2.a=t3.a) ON t1.a=t3.a
+--Result--
+[(1, None, None), (2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 LEFT JOIN t3 ON t2.a=t3.a ON t1.a=t3.a
+--Result--
+[(1, None, None), (2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 LEFT JOIN t3 ON t2.a=t3.a ON t1.a=t3.a
+--Result--
+[(1, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 LEFT JOIN t3 ON t2.a=t3.a ON t1.a=t3.a
+--Result--
+[(1, None, None)]
++--------------------+
+--Query--
+SELECT a, b, c FROM t1 LEFT JOIN (t2, t3) ON b < 3 and b = c
+--Result--
+[(None, 0, 0), (None, 1, 1), (None, 2, 2), (0, 0, 0), (0, 1, 1), (0, 2, 2), (1, 0, 0), (1, 1, 1), (1, 2, 2), (2, 0, 0), (2, 1, 1), (2, 2, 2), (3, 0, 0), (3, 1, 1), (3, 2, 2), (4, 0, 0), (4, 1, 1), (4, 2, 2), (5, 0, 0), (5, 1, 1), (5, 2, 2), (6, 0, 0), (6, 1, 1), (6, 2, 2), (7, 0, 0), (7, 1, 1), (7, 2, 2), (8, 0, 0), (8, 1, 1), (8, 2, 2), (9, 0, 0), (9, 1, 1), (9, 2, 2), (10, 0, 0), (10, 1, 1), (10, 2, 2), (11, 0, 0), (11, 1, 1), (11, 2, 2), (12, 0, 0), (12, 1, 1), (12, 2, 2), (13, 0, 0), (13, 1, 1), (13, 2, 2), (14, 0, 0), (14, 1, 1), (14, 2, 2), (15, 0, 0), (15, 1, 1), (15, 2, 2), (16, 0, 0), (16, 1, 1), (16, 2, 2), (17, 0, 0), (17, 1, 1), (17, 2, 2), (18, 0, 0), (18, 1, 1), (18, 2, 2), (19, 0, 0), (19, 1, 1), (19, 2, 2)]
++--------------------+
+--Query--
+SELECT a, b, c FROM t1 LEFT JOIN (t2, t3) ON b < 3 and b = c
+--Result--
+[(None, None, None), (0, None, None), (1, None, None), (2, None, None), (3, None, None), (4, None, None), (5, None, None), (6, None, None), (7, None, None), (8, None, None), (9, None, None), (10, None, None), (11, None, None), (12, None, None), (13, None, None), (14, None, None), (15, None, None), (16, None, None), (17, None, None), (18, None, None), (19, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c11=c21
+--Result--
+[(4, None), (5, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN (t2 LEFT JOIN t3 ON c21=c31) ON c11=c21
+--Result--
+[(4, None, None), (5, None, None)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT DISTINCT gl.groupid, gp.price   FROM t4 gl         LEFT JOIN        (t3 g INNER JOIN t2 p ON g.goodsid = p.goods               INNER JOIN t1 gp ON p.goods = gp.goods)        ON gl.groupid = g.groupid and p.shop = 'fr') t
+--Result--
+[(1, None), (2, None), (3, '2340'), (4, None), (5, None), (6, '9900')]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1, None), (2, None), (3, '2340'), (4, None), (5, None), (6, '9900')]
++--------------------+
+--Query--
+SELECT * FROM  (SELECT DISTINCT g.groupid, fr.price   FROM t4 g        LEFT JOIN        v1 fr on g.groupid = fr.groupid and fr.shop = 'fr') t
+--Result--
+[(1, None), (2, None), (3, '2340'), (4, None), (5, None), (6, '9900')]
++--------------------+
+--Query--
+SELECT t1.a FROM t1 JOIN t2 ON a=b JOIN t3 ON a=c JOIN t4 USING(d)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.a FROM t1 JOIN t2 ON a=b JOIN t3 ON a=c NATURAL JOIN t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT v1.e FROM v1 JOIN t2 ON e=b JOIN t3 ON e=c JOIN t4 USING(d)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT v2.e FROM v2 JOIN t2 ON e=b JOIN t3 ON e=c JOIN t4 USING(d)
+--Result--
+[]
++--------------------+
+--Query--
+select t1.id1 from t1 inner join (t3 left join v1 on t3.id3 = v1.id3)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 p LEFT JOIN (t3 JOIN t1)                      ON (t1.id=t3.id AND t1.type='B' AND p.id=t3.id)                    LEFT JOIN t2 ON (t3.pid=t2.pid)   WHERE p.id=1
+--Result--
+[(1, 'A', None, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 p LEFT JOIN v1 ON p.id=v1.id                    LEFT JOIN t2 ON v1.pid=t2.pid   WHERE p.id=1
+--Result--
+[(1, 'A', None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT t1.id1 AS id, t5.id1 AS ngroupbynsa   FROM t1 INNER JOIN t2 ON t2.id2 = t1.id1        LEFT OUTER JOIN        (t3 INNER JOIN t4 ON t4.id1 = t3.id2 INNER JOIN t5 ON t4.id2 = t5.id1)        ON t3.id2 IS NOT NULL     WHERE t1.id1=2
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM "SELECT t1.id1 AS id, t5.id1 AS ngroupbynsa   FROM t1 INNER JOIN t2 ON t2.id2 = t1.id1        LEFT OUTER JOIN        (t3 INNER JOIN t4 ON t4.id1 = t3.id2 INNER JOIN t5 ON t4.id2 = t5.id1)        ON t3.id2 IS NOT NULL     WHERE t1.id1=2"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.id1 AS id, t5.id1 AS ngroupbynsa   FROM t1 INNER JOIN t2 ON t2.id2 = t1.id1        LEFT OUTER JOIN        (t3 INNER JOIN t4 ON t4.id1 = t3.id2 INNER JOIN t5 ON t4.id2 = t5.id1)        ON t3.id2 IS NOT NULL     WHERE t1.id1=2
+--Result--
+[(2, 1), (2, 1)]
++--------------------+
+--Query--
+SELECT t1.*   FROM t1 LEFT JOIN        (t2 LEFT JOIN t3 ON t3.ct=t2.id AND t3.ln='5') ON t1.ct=t2.id     WHERE t1.id='5'
+--Result--
+[(5, None, None)]
++--------------------+
+--Query--
+SELECT t1.*, t4.nm   FROM t1 LEFT JOIN       (t2 LEFT JOIN t3 ON t3.ct=t2.id AND t3.ln='5') ON t1.ct=t2.id           LEFT JOIN t4 ON t2.sr=t4.id     WHERE t1.id='5'
+--Result--
+[(5, None, None, None)]
++--------------------+
+--Query--
+SELECT b FROM t1 JOIN (t2 LEFT JOIN t3 USING (a) LEFT JOIN t4 USING (a) LEFT JOIN t5 USING (a)) USING (a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 JOIN (t2 JOIN t3 USING (a) JOIN t4 USING (a) JOIN t5 USING (a)) USING (a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*)    FROM((t2 JOIN t1 ON t2.package_id = t1.id)          JOIN t3 ON t3.package_id = t1.id)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT a.c AS c FROM (   SELECT a.c AS c FROM (     SELECT a.a AS c FROM t AS a     INNER JOIN t AS b ON a.b > b.b   ) AS a   INNER JOIN t AS b ON a.c >= b.a ) AS a INNER JOIN t AS b ON a.c >= b.d
+--Result--
+[]
++--------------------+

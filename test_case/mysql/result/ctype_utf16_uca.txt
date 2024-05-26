@@ -1,0 +1,55 @@
+--Query--
+select hex('a'), hex('a ')
+--Result--
+[('61', '6120')]
++--------------------+
+--Query--
+select 'c' like '\_' as want0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select group_concat(c1 order by binary c1 separator '') from t1 group by c1 collate utf16_unicode_ci
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c LIKE _utf16 0x039C0025 COLLATE utf16_general_ci
+--Result--
+[('Μωδαί̈',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c LIKE _utf16 0x039C0025 COLLATE utf16_general_ci ORDER BY c
+--Result--
+[('Μωδ',), ('Μωδαί̈',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c LIKE _utf16 0x039C0025 COLLATE utf16_unicode_ci
+--Result--
+[('Μωδαί̈',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c LIKE _utf16 0x039C0025 COLLATE utf16_unicode_ci ORDER BY c
+--Result--
+[('Μωδ',), ('Μωδαί̈',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c LIKE _utf16 0x039C0025 COLLATE utf16_unicode_ci
+--Result--
+[('Μωδαί̈',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c LIKE _utf16 0x039C0025 COLLATE utf16_unicode_ci ORDER BY c
+--Result--
+[('Μωδ',), ('Μωδαί̈',)]
++--------------------+
+--Query--
+SELECT a, length(a) la, @l:=lower(a) l, length(@l) ll, @u:=upper(a) u, length(@u) lu FROM t1 ORDER BY id
+--Result--
+[('ıi', 4, 'ıi', 4, 'II', 4), ('ıı', 4, 'ıı', 4, 'II', 4), ('ii', 4, 'ii', 4, 'II', 4), ('İI', 4, 'ii', 4, 'İI', 4), ('İİ', 4, 'ii', 4, 'İİ', 4), ('II', 4, 'ii', 4, 'II', 4)]
++--------------------+
+--Query--
+SELECT a, length(a) la, @l:=lower(a) l, length(@l) ll, @u:=upper(a) u, length(@u) lu FROM t1 ORDER BY id
+--Result--
+[('ıi', 4, 'ıi', 4, 'Iİ', 4), ('ıı', 4, 'ıı', 4, 'II', 4), ('ii', 4, 'ii', 4, 'İİ', 4), ('İI', 4, 'iı', 4, 'İI', 4), ('İİ', 4, 'ii', 4, 'İİ', 4), ('II', 4, 'ıı', 4, 'II', 4)]
++--------------------+

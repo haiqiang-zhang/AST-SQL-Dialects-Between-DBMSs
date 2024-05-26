@@ -1,0 +1,10 @@
+--Query--
+SELECT toIntervalMinute(lc) as e, toTypeName(e) FROM t1
+--Result--
+[(1, 'LowCardinality(IntervalMinute)'), (2, 'LowCardinality(IntervalMinute)')]
++--------------------+
+--Query--
+SELECT toIntervalMinute(lc), toTypeName(materialize(r.lc)) FROM t1 AS l INNER JOIN t2 as r USING (lc)
+--Result--
+[(2, 'LowCardinality(String)')]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+SELECT dummy IN (0) AS x, count() GROUP BY x
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT materialize(1) IN (0) AS x, count() GROUP BY x
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT     number IN (1, 2) AS x,     count() FROM numbers(10) GROUP BY x ORDER BY x
+--Result--
+[(0, 8), (1, 2)]
++--------------------+

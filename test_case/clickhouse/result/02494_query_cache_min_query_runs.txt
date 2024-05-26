@@ -1,0 +1,65 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_min_query_runs = 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM system.query_cache
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_min_query_runs = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_min_query_runs = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_min_query_runs = 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_min_query_runs = 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_min_query_runs = 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

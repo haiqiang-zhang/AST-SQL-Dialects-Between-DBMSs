@@ -1,0 +1,100 @@
+--Query--
+EXPLAIN SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (SELECT 1 UNION ALL SELECT 1) UNION ALL SELECT 1
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION (SELECT 1 UNION ALL SELECT 1)
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (SELECT 1 UNION DISTINCT SELECT 1) UNION DISTINCT SELECT 1
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION DISTINCT (SELECT 1 UNION SELECT 1)
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL SELECT 1 UNION SELECT 1))) UNION ALL (((SELECT 1) UNION (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION SELECT 1 ) UNION DISTINCT SELECT 1))))
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Distinct',), ('    Union',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('  Distinct',), ('    Union',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (((((((((((((((SELECT 1 UNION ALL SELECT 1) UNION SELECT 1))))))))))))))
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (((((((((((((((((((((((((((((SELECT 1 UNION SELECT 1)))))))))))))))))))))))))))))
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (((((((((((((((((((((((((((((SELECT 1 UNION SELECT 1)))))))))))))))))))))))))))))
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (SELECT 1 UNION ALL SELECT 1) UNION ALL SELECT 1
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION (SELECT 1 UNION ALL SELECT 1)
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (SELECT 1 UNION DISTINCT SELECT 1) UNION DISTINCT SELECT 1
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN SELECT 1 UNION DISTINCT (SELECT 1 UNION SELECT 1)
+--Result--
+[('Distinct',), ('  Union',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',), ('    Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('      ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL SELECT 1 UNION SELECT 1))) UNION ALL (((SELECT 1) UNION (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION SELECT 1 ) UNION DISTINCT SELECT 1))))
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Distinct',), ('    Union',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',), ('      Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('        ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (((((((((((((((SELECT 1 UNION ALL SELECT 1) UNION SELECT 1))))))))))))))
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (((((((((((((((((((((((((((((SELECT 1 UNION SELECT 1)))))))))))))))))))))))))))))
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+
+--Query--
+EXPLAIN (((((((((((((((((((((((((((((SELECT 1 UNION SELECT 1)))))))))))))))))))))))))))))
+--Result--
+[('Union',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',), ('  Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('    ReadFromStorage (SystemOne)',)]
++--------------------+

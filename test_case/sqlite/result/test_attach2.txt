@@ -1,0 +1,70 @@
+--Query--
+ATTACH 'test2.db' AS t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM t2.sqlite_master
+--Result--
+[('sqlite_stat1',), ('Table2',), ('idx_col1_unique',), ('idx_col23_unique',), ('idx_col2',)]
++--------------------+
+--Query--
+SELECT name FROM t2.sqlite_master
+--Result--
+[('sqlite_stat1',), ('Table2',), ('idx_col1_unique',), ('idx_col23_unique',), ('idx_col2',)]
++--------------------+
+--Query--
+SELECT name FROM main.sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' as file2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db2' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test3.db' as aux2
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux2
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db2' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('text2',)]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[('text4',)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[('text3',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('text2',)]
++--------------------+

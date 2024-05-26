@@ -1,0 +1,30 @@
+--Query--
+SELECT name, column, type FROM system.parts_columns WHERE table = 't_materialize_column' AND database = currentDatabase() AND active ORDER BY name, column
+--Result--
+[('1_1_1_0_2', 'i', 'Int32'), ('1_1_1_0_2', 's', 'LowCardinality(String)')]
++--------------------+
+--Query--
+SELECT '==========='
+--Result--
+[('===========',)]
++--------------------+
+--Query--
+SELECT name, column, type FROM system.parts_columns WHERE table = 't_materialize_column' AND database = currentDatabase() AND active ORDER BY name, column
+--Result--
+[('1_1_1_0_2', 'i', 'Int32'), ('1_1_1_0_2', 's', 'LowCardinality(String)'), ('2_3_3_0', 'i', 'Int32'), ('2_3_3_0', 's', 'LowCardinality(String)')]
++--------------------+
+--Query--
+SELECT '==========='
+--Result--
+[('===========',)]
++--------------------+
+--Query--
+SELECT name, column, type FROM system.parts_columns WHERE table = 't_materialize_column' AND database = currentDatabase() AND active ORDER BY name, column
+--Result--
+[('1_1_1_0_4', 'i', 'Int32'), ('1_1_1_0_4', 's', 'LowCardinality(String)'), ('2_3_3_0_4', 'i', 'Int32'), ('2_3_3_0_4', 's', 'LowCardinality(String)')]
++--------------------+
+--Query--
+SELECT * FROM t_materialize_column ORDER BY i
+--Result--
+[(1, '1'), (2, '2')]
++--------------------+

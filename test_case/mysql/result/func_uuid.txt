@@ -1,0 +1,80 @@
+--Query--
+SELECT HEX(uuid_to_bin('{c8eb4b15-cb09-48bb-bbb2-e6a0b6b4d5c7}', TRUE)) AS a,        HEX(uuid_to_bin('{e60c88ba-083f-4ceb-be59-f67636d718a2}', TRUE)) AS b
+--Result--
+[('48BBCB09C8EB4B15BBB2E6A0B6B4D5C7', '4CEB083FE60C88BABE59F67636D718A2')]
++--------------------+
+--Query--
+SELECT HEX(uuid_to_bin('c8eb4b15cb0948bbbbb2e6a0b6b4d5c7', TRUE)) AS a,        HEX(uuid_to_bin('e60c88ba083f4cebbe59f67636d718a2', TRUE)) AS b
+--Result--
+[('48BBCB09C8EB4B15BBB2E6A0B6B4D5C7', '4CEB083FE60C88BABE59F67636D718A2')]
++--------------------+
+--Query--
+SELECT HEX(uuid_to_bin('c8eb4b15-cb09-48bb-bbb2-e6a0b6b4d5c7', TRUE)) AS a,        HEX(uuid_to_bin('e60c88ba-083f-4ceb-be59-f67636d718a2', TRUE)) AS b
+--Result--
+[('48BBCB09C8EB4B15BBB2E6A0B6B4D5C7', '4CEB083FE60C88BABE59F67636D718A2')]
++--------------------+
+--Query--
+SELECT bin_to_uuid(unhex('7f9d04ae61b34468ac798ffcc984ab68')) AS a, bin_to_uuid(unhex('7f9d04ae61b34468ac898ffcc984ab68'),TRUE) AS b
+--Result--
+[('7f9d04ae-61b3-4468-ac79-8ffcc984ab68', '61b34468-04ae-7f9d-ac89-8ffcc984ab68')]
++--------------------+
+--Query--
+SELECT uuid_to_bin('{c8eb4b15-CB09-48bb-bbb2-e6a0b6b4d5c7}') = x'c8eb4b15cb0948bbbbb2e6a0b6b4d5c7'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT uuid_to_bin('{c8eb4b15-CB09-48bb-bbb2-e6a0b6b4d5c7}', TRUE) = x'48bbcb09c8eb4b15bbb2e6a0b6b4d5c7'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT bin_to_uuid(x'7f9d04ae61b34468ac798ffcc984ab68') = '7f9d04ae-61b3-4468-ac79-8ffcc984ab68'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT bin_to_uuid(x'7f9d04ae61b34468ac798ffcc984ab68', TRUE) = '61b34468-04ae-7f9d-ac79-8ffcc984ab68'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT bin_to_uuid(NULL) AS a, bin_to_uuid(NULL, TRUE) AS b
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT uuid_to_bin(NULL) AS a, uuid_to_bin(NULL, TRUE) AS b
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT is_uuid(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT bin_to_uuid(a), bin_to_uuid(a,TRUE) FROM t
+--Result--
+[('7f9d04ae-61b3-4468-ac79-8ffcc984ab68', '61b34468-04ae-7f9d-ac79-8ffcc984ab68'), ('d00653b2-90b9-40d1-93c2-194456bd4f3d', '90b940d1-53b2-d006-93c2-194456bd4f3d'), ('e60c88ba-083f-4ceb-be59-f67636d718a2', '083f4ceb-88ba-e60c-be59-f67636d718a2'), ('c8eb4b15-cb09-48bb-bbb2-e6a0b6b4d5c7', 'cb0948bb-4b15-c8eb-bbb2-e6a0b6b4d5c7')]
++--------------------+
+--Query--
+SELECT HEX(uuid_to_bin(bin_to_uuid(a))) AS c1,        uuid_to_bin(bin_to_uuid(a)) = a AS c2,        HEX(uuid_to_bin(bin_to_uuid(a, TRUE), TRUE)) AS c3,        uuid_to_bin(bin_to_uuid(a, TRUE), TRUE) = a AS c4 FROM t
+--Result--
+[('7F9D04AE61B34468AC798FFCC984AB68', 1, '7F9D04AE61B34468AC798FFCC984AB68', 1), ('D00653B290B940D193C2194456BD4F3D', 1, 'D00653B290B940D193C2194456BD4F3D', 1), ('E60C88BA083F4CEBBE59F67636D718A2', 1, 'E60C88BA083F4CEBBE59F67636D718A2', 1), ('C8EB4B15CB0948BBBBB2E6A0B6B4D5C7', 1, 'C8EB4B15CB0948BBBBB2E6A0B6B4D5C7', 1)]
++--------------------+
+--Query--
+PREPARE s FROM "SELECT bin_to_uuid(x'7f9d04ae61b34468ac798ffcc984ab68',true)"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM "SELECT bin_to_uuid(uuid_to_bin('{12345678-1234-5678-1234-567812345678}', true), true)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col1, HEX(gcol2) FROM t1 where gcol2=x'12345679123456781234567812345678'
+--Result--
+[('12345679123456781234567812345678', '12345679123456781234567812345678')]
++--------------------+

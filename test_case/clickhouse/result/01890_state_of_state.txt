@@ -1,0 +1,20 @@
+--Query--
+SELECT uniqExact(x) FROM (SELECT uniqState(number) AS x FROM numbers(100))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT hex(toString(uniqExactState(x))) FROM (SELECT uniqState(number) AS x FROM numbers(1000))
+--Result--
+[('01ACA45BA7DD058B4F68BE1AC382E2E1B9',)]
++--------------------+
+--Query--
+SELECT toTypeName(uniqExactState(x)) FROM (SELECT quantileState(number) AS x FROM numbers(1000))
+--Result--
+[('AggregateFunction(uniqExact, AggregateFunction(quantile, UInt64))',)]
++--------------------+
+--Query--
+SELECT finalizeAggregation(initializeAggregation('uniqExactState', initializeAggregation('uniqState', 0)))
+--Result--
+[(1,)]
++--------------------+

@@ -1,0 +1,415 @@
+--Query--
+SELECT x, typeof(x), y, typeof(y) FROM a2 ORDER BY rowid
+--Result--
+[(1, 'integer', 1, 'integer'), (2, 'integer', '2', 'text'), ('3', 'text', 3, 'integer'), ('4', 'text', '4', 'text')]
++--------------------+
+--Query--
+SELECT (SELECT rowid FROM a1 WHERE a=x AND b=y) FROM a2
+--Result--
+[(None,), (None,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT (SELECT rowid FROM a1 WHERE (a, b) = (x, y)) FROM a2
+--Result--
+[(None,), (None,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2 WHERE a=x AND b=y
+--Result--
+[(15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2 WHERE (a, b) = (x, y)
+--Result--
+[(15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2 WHERE coalesce(NULL,x)=a AND coalesce(NULL,y)=b
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2    WHERE (coalesce(NULL,x), coalesce(NULL,y)) = (a, b)
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2 WHERE +x=a AND +y=b
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2 WHERE (+x, +y) = (a, b)
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT (SELECT rowid FROM a1 WHERE a=+x AND b=+y) FROM a2
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT (SELECT rowid FROM a1 WHERE (a, b) = (+x, +y)) FROM a2
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT (SELECT rowid FROM a1 WHERE (+x, +y) = (a, b)) FROM a2
+--Result--
+[(3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1 WHERE (a, b) IN (SELECT x, y FROM a2)
+--Result--
+[(15,), (92,)]
++--------------------+
+--Query--
+SELECT a1.rowid FROM a1, a2 WHERE EXISTS (     SELECT 1 FROM a1 WHERE a=x AND b=y   )
+--Result--
+[(3,), (14,), (15,), (92,), (3,), (14,), (15,), (92,)]
++--------------------+
+--Query--
+SELECT * FROM b1, b2 WHERE a=x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM b1 WHERE a IN (SELECT x FROM b2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM b1 WHERE a IN (SELECT x FROM b2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE (a, b) IN (SELECT x, y FROM c2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE (a, b) IN (SELECT x, y FROM c2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE (a, +b) IN (SELECT x, y FROM c2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c1.rowid FROM c1 WHERE b = (SELECT y FROM c2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c1.rowid FROM c1 WHERE (a, b) = (SELECT x, y FROM c2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (a, c) IN (SELECT x, y FROM d2)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (+c, a) IN (SELECT x, y FROM d2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM d1 WHERE (c, a) = (       SELECT x, y FROM d2 WHERE d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1, d2 WHERE a = y
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT d1.rowid FROM d1 WHERE a = (       SELECT y FROM d2 where d2.rowid=d1.rowid     )
+--Result--
+[(2,), (4,)]
++--------------------+
+--Query--
+SELECT rowid FROM e1 WHERE (a, c) IN (SELECT x, y FROM e2)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT rowid FROM e2 WHERE rowid IN (SELECT +c FROM e1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT rowid FROM e2 WHERE rowid IN (SELECT 0+c FROM e1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM f3 WHERE (e, f) IN (     SELECT a, b FROM f1 UNION ALL SELECT c, d FROM f2   )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM f3 WHERE (e, f) IN (     SELECT a, b FROM f1 UNION ALL SELECT c, d FROM f2   )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM g2 WHERE (x, y) IN (     SELECT a, b FROM g1 ORDER BY +a, +b LIMIT 10   )
+--Result--
+[(1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT * FROM g2 WHERE (x, y) IN (     SELECT a, b FROM g1 ORDER BY a, b LIMIT 10   )
+--Result--
+[(1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT * FROM g2 WHERE (x, y) IN (     SELECT a, b FROM g1 ORDER BY 1, 2 LIMIT 10   )
+--Result--
+[(1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a, b) IN ( (3, 3), (2, 2) )
+--Result--
+[(2, 2.0), (3, 3.0)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a, b) IN ( (3, 3), (2, 2) )
+--Result--
+[(2, 2.0), (3, 3.0)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 WHERE (a, b) IN ( (3, 3), (2, 2) )
+--Result--
+[(2, 0, 0, 'SEARCH t1 USING COVERING INDEX t1x1 (a=? AND b=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND b=?)'), (6, 0, 0, 'LIST SUBQUERY 2'), (7, 6, 0, 'SCAN 2 CONSTANT ROWS')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a, b) IN ( (3, 3), (2, 2) )
+--Result--
+[(2, 2.0), (3, 3.0)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 WHERE (a, b) IN ( (3, 3), (2, 2) )
+--Result--
+[(2, 0, 0, 'SEARCH t1 USING COVERING INDEX t1x1 (a=? AND b=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND a=? AND b=?)'), (6, 0, 0, 'LIST SUBQUERY 2'), (7, 6, 0, 'SCAN 2 CONSTANT ROWS')]
++--------------------+

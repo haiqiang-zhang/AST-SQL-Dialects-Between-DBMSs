@@ -17,10 +17,6 @@ INSERT INTO attimezone (VALUES
 	('infinity', 'infinity', '12:15:37.123456-08', NULL),
 	('-infinity', '-infinity', '20:38:40-15:59', NULL),
 );
-select localtimestamp;
-select localtime;
-select current_localtimestamp();
-select current_localtime();
 SET TimeZone = 'Asia/Amman';
 SET TimeZone = 'America/Chihuahua';
 SET TimeZone = 'America/Ciudad_Juarez';

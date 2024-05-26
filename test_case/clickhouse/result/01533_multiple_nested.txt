@@ -1,0 +1,85 @@
+--Query--
+OPTIMIZE TABLE nested FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'all'
+--Result--
+[('all',)]
++--------------------+
+--Query--
+SELECT * FROM nested
+--Result--
+[([(1, 'q'), (2, 'w'), (3, 'e')], [(4, [('a', 5), ('s', 6), ('d', 7)])], [([(8, 9), (10, 11)], [('z', 'x'), ('c', 'v')])]), ([(12, 'qq')], [(4, []), (5, [('b', 6), ('n', 7)])], [([], []), ([(44, 55), (66, 77)], [])])]
++--------------------+
+--Query--
+SELECT 'col1'
+--Result--
+[('col1',)]
++--------------------+
+--Query--
+SELECT col1.a, col1.s FROM nested
+--Result--
+[([1, 2, 3], ['q', 'w', 'e']), ([12], ['qq'])]
++--------------------+
+--Query--
+SELECT 'col2'
+--Result--
+[('col2',)]
++--------------------+
+--Query--
+SELECT col2.a, col2.n, col2.n.s, col2.n.b FROM nested
+--Result--
+[([4], [[('a', 5), ('s', 6), ('d', 7)]], [['a', 's', 'd']], [[5, 6, 7]]), ([4, 5], [[], [('b', 6), ('n', 7)]], [[], ['b', 'n']], [[], [6, 7]])]
++--------------------+
+--Query--
+SELECT 'col3'
+--Result--
+[('col3',)]
++--------------------+
+--Query--
+SELECT col3.n1, col3.n2, col3.n1.a, col3.n1.b, col3.n2.s, col3.n2.t FROM nested
+--Result--
+[([[(8, 9), (10, 11)]], [[('z', 'x'), ('c', 'v')]], [[8, 10]], [[9, 11]], [['z', 'c']], [['x', 'v']]), ([[], [(44, 55), (66, 77)]], [[], []], [[], [44, 66]], [[], [55, 77]], [[], []], [[], []])]
++--------------------+
+--Query--
+SELECT 'read files'
+--Result--
+[('read files',)]
++--------------------+
+--Query--
+SYSTEM DROP MARK CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM DROP MARK CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT id % 10, sum(length(col1)), sumArray(arrayMap(x -> length(x), col1.n.b)) FROM nested GROUP BY id % 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT arraySum(col1.a), arrayMap(x -> x * x * 2, col1.a) FROM nested ORDER BY id LIMIT 5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT untuple(arrayJoin(arrayJoin(col1.n))) FROM nested ORDER BY id LIMIT 10 OFFSET 10
+--Result--
+[]
++--------------------+

@@ -1,0 +1,2360 @@
+--Query--
+select get_lock("mysqltest_lock", 100)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and info = "update t1 set n = 2 and get_lock('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update low_priority t1 set n = 4"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select n from t1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "select n from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select release_lock("mysqltest_lock")
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select n from t1 where get_lock('mysqltest_lock', 100)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and info = "select n from t1 where get_lock('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update low_priority t1 set n = 4"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select n from t1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and info = "select a from t1 where get_lock('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select c from t2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and info = "select c from t2 where get_lock('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update t1,t2 set c=a where b=d"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "update t1,t2 set c=a where b=d"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "update t1,t2 set c=a where b=d"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read, t2 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert t1 select * from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 write, t1 as t1_2 write, t2 as t2_2 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert t1 select * from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock" AND info =   "SELECT user.Select_priv FROM user, db WHERE user.user = db.user LIMIT 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "FLUSH TABLES WITH READ LOCK"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "FLUSH TABLES WITH READ LOCK"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock"   and info = "DROP DATABASE mysqltest_1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 auto_increment=0"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 2 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 auto_increment=0"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "select * from t2 for update"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "update t2 set a = 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "lock tables t2 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "select * from t1 where get_lock('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update t1 set i= 10"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(10,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "flush tables with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "insert into t1 values (1,2)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock" and         info = "insert into t1 values (1,2)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "select * from t1 where get_lock('mysqltest_lock', 100)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update t1 set a= 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @tlwa < @tlwb
+--Result--
+[(None,)]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for global read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c4 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES v1 WRITE, t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE, v1 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column j int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 drop column j"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table flush" AND info = "FLUSH TABLES"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock" AND         info = "DROP TABLE t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT table_name, table_rows, table_comment FROM information_schema.tables   WHERE table_schema= 'test' AND table_name= 't1'
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+lock table t3 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename tables t1 to t2, t2 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT GET_LOCK('mysqltest_lock', 100)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('mysqltest_lock')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "SELECT * FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "SELECT * FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v1 READ, v2 READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES v1 READ, v2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v1 READ, v2 READ
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v1 READ, v2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v1 READ
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v2 READ
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE, v4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE, v4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE, v4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v3 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v4 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v3 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v4 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE, v4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v3 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v4 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "SELECT * FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "SELECT * FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v1 WRITE, v2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES v2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES v2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t5 WRITE, t6 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES v3 WRITE, t6 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t5 WRITE, t6 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t5 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t6 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t5 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t6 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t5 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t6 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t5 WRITE, t6 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t5 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t6 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t5 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t6 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t7 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "SELECT * FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t8 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "SELECT * FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t7 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "SELECT GET_LOCK('mysqltest_lock', 100) FROM t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t8 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t7 WRITE, t8 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t1 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t7 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "User lock" and         info = "INSERT INTO t2 VALUES (GET_LOCK('mysqltest_lock', 100))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t8 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t7 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t8 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t7 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t8 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t7 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t1 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t8 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLES t2 WRITE"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "UPDATE t1 SET i= 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v1 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "UPDATE t1 SET i= 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v2 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v2 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE t1 SET i= 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE t2 SET i= 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v3 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v3 READ LOCAL
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE t2 SET i= 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLE t1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT LOW_PRIORITY INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "REPLACE LOW_PRIORITY INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE LOW_PRIORITY t1 SET i= 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE LOW_PRIORITY t1 AS a, t1 AS b SET a.i= 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE LOW_PRIORITY FROM t1 LIMIT 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE LOW_PRIORITY FROM a USING t1 AS a, t1 AS b"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOAD DATA LOW_PRIORITY INFILE '../../std_data/rpl_loaddata.dat' INTO TABLE t1 (@dummy,i)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE LOW_PRIORITY FROM v1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t2 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE LOW_PRIORITY FROM tm LIMIT 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOCK TABLE t1 READ"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "REPLACE INTO t1 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE t1 SET i= 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "UPDATE t1 AS a, t1 AS b SET a.i= 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE FROM t1 LIMIT 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE FROM a USING t1 AS a, t1 AS b"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "LOAD DATA INFILE '../../std_data/rpl_loaddata.dat' INTO TABLE t1 (@dummy,i)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE FROM v1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "INSERT INTO t3 VALUES (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DELETE FROM tm LIMIT 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, t3 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert into t3 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t2 to t0, t4 to t2, t0 to t4"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "PREPARE stmt1 FROM ..."
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+

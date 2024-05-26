@@ -1,0 +1,55 @@
+--Query--
+SELECT DISTINCT y FROM t1 ORDER BY y
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT min(x) FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT max(x) FROM t1
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=(SELECT max(a) FROM t2)
+--Result--
+[(999,)]
++--------------------+
+--Query--
+SELECT coalesce(min(x+0),-1), coalesce(max(x+0),-1) FROM         (SELECT * FROM t1 UNION SELECT NULL as 'x', NULL as 'y')
+--Result--
+[(1, 20)]
++--------------------+
+--Query--
+SELECT y, count(x), count(*) FROM         (SELECT null AS x, y+1 AS y FROM t1 UNION SELECT * FROM t1)       GROUP BY y ORDER BY y
+--Result--
+[(1, 1, 1), (2, 2, 3), (3, 4, 5), (4, 8, 9), (5, 5, 6), (6, 0, 1)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT max(x) FROM t1)
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT min(x) FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT min(a), max(a) FROM t4
+--Result--
+[('1234', '34')]
++--------------------+
+--Query--
+SELECT (SELECT min(x) FROM t6), (SELECT max(x) FROM t6)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT (SELECT min(x) FROM t6), (SELECT max(x) FROM t6)
+--Result--
+[(None, None)]
++--------------------+

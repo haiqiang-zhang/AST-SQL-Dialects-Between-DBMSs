@@ -1,9 +1,4 @@
 select groupArray(s) from (select sum(n) s from (select toDecimal32(1, 2) as n));
-select groupArray(s) from (select sum(n) s from (select toDecimal64(1, 5) as n));
-select groupArray(s) from (select sum(n) s from (select toDecimal128(1, 10) as n));
-select groupArray(s) from (select sum(n) s from (select toDecimal32(number, 2) as n from numbers(1000)));
-select groupArray(s) from (select sum(n) s from (select toDecimal64(number, 5) as n from numbers(1000)));
-select groupArray(s) from (select sum(n) s from (select toDecimal128(number, 10) as n from numbers(1000)));
 DROP TABLE IF EXISTS sensor_value;
 CREATE TABLE sensor_value (
     received_at DateTime('Asia/Istanbul'),

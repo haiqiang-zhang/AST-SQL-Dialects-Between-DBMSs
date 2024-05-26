@@ -1,0 +1,220 @@
+--Query--
+SELECT *, '|' FROM t1 ORDER BY c, a
+--Result--
+[('arctic', 'sleep', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('dynamic', 'juliet', 'flipper', 'command', '|'), ('journal', 'sherman', 'gamma', 'patriot', '|')]
++--------------------+
+--Query--
+SELECT name, key FROM pragma_index_xinfo('t1')
+--Result--
+[('c', 1), ('a', 1), ('b', 0), ('d', 0)]
++--------------------+
+--Query--
+SELECT wr FROM pragma_table_list('t1')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY +c, a
+--Result--
+[('arctic', 'sleep', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('dynamic', 'juliet', 'flipper', 'command', '|'), ('journal', 'sherman', 'gamma', 'patriot', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY c DESC, a DESC
+--Result--
+[('journal', 'sherman', 'gamma', 'patriot', '|'), ('dynamic', 'juliet', 'flipper', 'command', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY b, d
+--Result--
+[('dynamic', 'juliet', 'flipper', 'command', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'gamma', 'patriot', '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY +b, d
+--Result--
+[('dynamic', 'juliet', 'flipper', 'command', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'gamma', 'patriot', '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+REPLACE INTO t1 VALUES('dynamic','phone','flipper','harvard')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY c, a
+--Result--
+[('arctic', 'sleep', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('dynamic', 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'gamma', 'patriot', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY b, d
+--Result--
+[('dynamic', 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'gamma', 'patriot', '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY c, a
+--Result--
+[('arctic', 'sleep', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'ammonia', 3.1415926, '|'), ('dynamic', 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'gamma', 3.1415926, '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY b, d
+--Result--
+[('dynamic', 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'ammonia', 3.1415926, '|'), ('journal', 'sherman', 'gamma', 3.1415926, '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY c, a
+--Result--
+[('arctic', 'sleep', 'ammonia', 'helena', '|'), ('journal', 'sherman', 'ammonia', 3.1415926, '|'), (1250, 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'gamma', 3.1415926, '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY b, d
+--Result--
+[(1250, 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'ammonia', 3.1415926, '|'), ('journal', 'sherman', 'gamma', 3.1415926, '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 ORDER BY b, d
+--Result--
+[(1250, 'phone', 'flipper', 'harvard', '|'), ('journal', 'sherman', 'ammonia', 3.1415926, '|'), ('journal', 'sherman', 'gamma', 3.1415926, '|'), ('arctic', 'sleep', 'ammonia', 'helena', '|')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_stat1 ORDER BY idx
+--Result--
+[('t1', 't1', '4 2 1'), ('t1', 't1bd', '4 2 2')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[('abc', 'def')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[('ABC', 'def')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[('def', 'abc')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[('xyz', 'ABC')]
++--------------------+
+--Query--
+SELECT * FROM t6 ORDER BY b, a
+--Result--
+[('ABC', 'def', 'ghi')]
++--------------------+
+--Query--
+SELECT * FROM t6 ORDER BY c
+--Result--
+[('ABC', 'def', 'ghi')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1250, 'phone', 'flipper', 'harvard'), ('journal', 'sherman', 'ammonia', 3.1415926), ('journal', 'sherman', 'gamma', 3.1415926), ('arctic', 'sleep', 'ammonia', 'helena')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t42.rowid FROM t41, t42
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT t42.rowid FROM t42, t41
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t45 WHERE b='two' AND a>4
+--Result--
+[(5, 'two', 'x'), (7, 'two', 'x'), (9, 'two', 'x')]
++--------------------+
+--Query--
+SELECT * FROM t45 WHERE b='one' AND a<8
+--Result--
+[(2, 'one', 'x'), (4, 'one', 'x'), (6, 'one', 'x')]
++--------------------+
+--Query--
+WITH r(x) AS (     SELECT 1 UNION ALL SELECT x+1 FROM r WHERE x<100   )   INSERT INTO t46 SELECT x / 20, x % 20, x % 10, x FROM r
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM t46 WHERE c = 5 AND a = 1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT count(*) FROM t46 WHERE c = 5 AND a = 1
+--Result--
+[(3, 0, 0, 'SEARCH t46 USING COVERING INDEX i46 (c=? AND a=?)')]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master WHERE tbl_name = 't47'
+--Result--
+[('t47',), ('i47',)]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master WHERE tbl_name = 't48'
+--Result--
+[('t48',), ('sqlite_autoindex_t48_2',)]
++--------------------+
+--Query--
+SELECT type, name, '|' FROM sqlite_master
+--Result--
+[('table', 't1', '|'), ('table', 'sqlite_stat1', '|'), ('table', 't4', '|'), ('table', 't5', '|'), ('table', 't6', '|'), ('index', 'sqlite_autoindex_t6_1', '|'), ('table', 't2', '|'), ('table', 't3', '|'), ('index', 'sqlite_autoindex_t3_1', '|'), ('table', 't41', '|'), ('table', 't42', '|'), ('table', 't45', '|'), ('table', 't46', '|'), ('table', 't47', '|'), ('table', 't48', '|'), ('index', 'sqlite_autoindex_t48_2', '|'), ('index', 't1bd', '|'), ('index', 'i2', '|'), ('index', 'i45', '|'), ('index', 'i46', '|'), ('index', 'i47', '|'), ('table', 't70a', '|'), ('index', 'sqlite_autoindex_t70a_1', '|')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t11 ORDER BY a COLLATE binary
+--Result--
+[('A',), ('a',)]
++--------------------+
+--Query--
+REINDEX
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0, t1
+--Result--
+[('abc', 'xyz', 'abc', 'xyz')]
++--------------------+
+--Query--
+SELECT name FROM sqlite_sequence ORDER BY +name
+--Result--
+[('a',), ('c0',), ('c2',)]
++--------------------+

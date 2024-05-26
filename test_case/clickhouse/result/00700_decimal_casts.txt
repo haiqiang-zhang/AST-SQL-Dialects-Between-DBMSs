@@ -1,0 +1,30 @@
+--Query--
+SELECT toDecimal32('1.1', 1), toDecimal32('1.1', 2), toDecimal32('1.1', 8)
+--Result--
+[(1.1, 1.1, 1.1)]
++--------------------+
+--Query--
+SELECT '0.1' AS x, toDecimal64(x, 0)
+--Result--
+[('0.1', 0.0)]
++--------------------+
+--Query--
+SELECT '0.1' AS x, toDecimal128(x, 0)
+--Result--
+[('0.1', 0.0)]
++--------------------+
+--Query--
+SELECT toFloat32(9999999)   as x, toDecimal32(x, 0), toDecimal32(-x, 0), toDecimal64(x, 0), toDecimal64(-x, 0)
+--Result--
+[(9999999.0, 9999999.0, -9999999.0, 9999999.0, -9999999.0)]
++--------------------+
+--Query--
+SELECT toInt32(999999999) as x, toDecimal64(x, 9), toDecimal64(-x, 9), toDecimal128(x, 29), toDecimal128(-x, 29)
+--Result--
+[(999999999, 999999999.0, -999999999.0, 999999999.0, -999999999.0)]
++--------------------+
+--Query--
+SELECT CAST('42.4200', 'Decimal(9,2)') AS a, CAST(a, 'Decimal(9,2)'), CAST(a, 'Decimal(18, 2)'), CAST(a, 'Decimal(38, 2)')
+--Result--
+[(42.42, 42.42, 42.42, 42.42)]
++--------------------+

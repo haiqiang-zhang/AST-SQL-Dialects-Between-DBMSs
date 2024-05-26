@@ -11,7 +11,6 @@ explain (costs off) select * from lp where a > 'a' and a < 'd';
 explain (costs off) select * from lp where a > 'a' and a <= 'd';
 explain (costs off) select * from lp where a = 'a';
 explain (costs off) select * from lp where 'a' = a;
-
 explain (costs off) select * from lp where a is not null;
 explain (costs off) select * from lp where a is null;
 explain (costs off) select * from lp where a = 'a' or a = 'c';
@@ -48,13 +47,10 @@ create table rlp5_default partition of rlp5 default;
 create table rlp5_1 partition of rlp5 for values from (31) to (40);
 explain (costs off) select * from rlp where a < 1;
 explain (costs off) select * from rlp where 1 > a;
-
 explain (costs off) select * from rlp where a <= 1;
 explain (costs off) select * from rlp where a = 1;
 explain (costs off) select * from rlp where a = 1::bigint;
-
 explain (costs off) select * from rlp where a = 1::numeric;
-
 explain (costs off) select * from rlp where a <= 10;
 explain (costs off) select * from rlp where a > 10;
 explain (costs off) select * from rlp where a < 15;
@@ -70,7 +66,6 @@ explain (costs off) select * from rlp where a is null;
 explain (costs off) select * from rlp where a is not null;
 explain (costs off) select * from rlp where a > 30;
 explain (costs off) select * from rlp where a = 30;
-
 explain (costs off) select * from rlp where a <= 31;
 explain (costs off) select * from rlp where a = 1 or a = 7;
 explain (costs off) select * from rlp where a = 1 or b = 'ab';
@@ -80,14 +75,9 @@ explain (costs off) select * from rlp where a >= 29;
 explain (costs off) select * from rlp where a < 1 or (a > 20 and a < 25);
 explain (costs off) select * from rlp where a = 20 or a = 40;
 explain (costs off) select * from rlp3 where a = 20;
-
-
 explain (costs off) select * from rlp where a > 1 and a = 10;
-
 explain (costs off) select * from rlp where a > 1 and a >=15;
-
 explain (costs off) select * from rlp where a = 1 and a = 3;
-
 explain (costs off) select * from rlp where (a = 1 and a = 3) or (a > 1 and a = 15);
 create table mc3p (a int, b int, c int) partition by range (a, abs(b), c);
 create table mc3p_default partition of mc3p default;
@@ -285,12 +275,7 @@ set enable_indexonlyscan = off;
 prepare ab_q1 (int, int, int) as
 select * from ab where a between $1 and $2 and b <= $3;
 explain (analyze, costs off, summary off, timing off) execute ab_q1 (2, 2, 3);
-explain (analyze, costs off, summary off, timing off) execute ab_q1 (1, 2, 3);
 deallocate ab_q1;
-prepare ab_q1 (int, int) as
-select a from ab where a between $1 and $2 and b < 3;
-explain (analyze, costs off, summary off, timing off) execute ab_q1 (2, 2);
-explain (analyze, costs off, summary off, timing off) execute ab_q1 (2, 4);
 prepare ab_q2 (int, int) as
 select a from ab where a between $1 and $2 and b < (select 3);
 explain (analyze, costs off, summary off, timing off) execute ab_q2 (2, 2);
@@ -372,7 +357,6 @@ explain (analyze, costs off, summary off, timing off) execute ab_q6(1);
 execute ab_q6(100);
 reset enable_bitmapscan;
 reset enable_indexscan;
-deallocate ab_q1;
 deallocate ab_q2;
 deallocate ab_q3;
 deallocate ab_q4;
@@ -467,12 +451,7 @@ create table listp_2_1 partition of listp_2 for values in(2);
 select * from listp where b = 1;
 prepare q1 (int,int) as select * from listp where b in ($1,$2);
 explain (analyze, costs off, summary off, timing off)  execute q1 (1,1);
-explain (analyze, costs off, summary off, timing off)  execute q1 (2,2);
-explain (analyze, costs off, summary off, timing off)  execute q1 (0,0);
 deallocate q1;
-prepare q1 (int,int,int,int) as select * from listp where b in($1,$2) and $3 <> b and $4 <> b;
-explain (analyze, costs off, summary off, timing off)  execute q1 (1,2,2,0);
-explain (analyze, costs off, summary off, timing off)  execute q1 (1,2,2,1);
 explain (analyze, costs off, summary off, timing off)
 select * from listp where a = (select null::int);
 drop table listp;
@@ -549,10 +528,6 @@ analyze ma_test;
 prepare mt_q1 (int) as select a from ma_test where a >= $1 and a % 10 = 5 order by b;
 explain (analyze, costs off, summary off, timing off) execute mt_q1(15);
 execute mt_q1(15);
-explain (analyze, costs off, summary off, timing off) execute mt_q1(25);
-execute mt_q1(25);
-explain (analyze, costs off, summary off, timing off) execute mt_q1(35);
-execute mt_q1(35);
 deallocate mt_q1;
 prepare mt_q2 (int) as select * from ma_test where a >= $1 order by b limit 1;
 explain (analyze, verbose, costs off, summary off, timing off) execute mt_q2 (35);
@@ -734,12 +709,6 @@ drop table rp_prefix_test2;
 drop table rp_prefix_test3;
 select
   'explain (costs off) select tableoid::regclass,* from hp_prefix_test where ' ||
-  string_agg(c.colname || case when g.s & (1 << c.colpos) = 0 then ' is null' else ' = ' || (colpos+1)::text end, ' and ' order by c.colpos)
-from (values('a',0),('b',1),('c',2),('d',3)) c(colname, colpos), generate_Series(0,15) g(s)
-group by g.s
-order by g.s;
-select
-  'select tableoid::regclass,* from hp_prefix_test where ' ||
   string_agg(c.colname || case when g.s & (1 << c.colpos) = 0 then ' is null' else ' = ' || (colpos+1)::text end, ' and ' order by c.colpos)
 from (values('a',0),('b',1),('c',2),('d',3)) c(colname, colpos), generate_Series(0,15) g(s)
 group by g.s

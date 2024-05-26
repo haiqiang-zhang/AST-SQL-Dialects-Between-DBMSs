@@ -1,0 +1,25 @@
+--Query--
+select * from t1_mrg
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (4,)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM information_schema.processlist WHERE state   LIKE "Waiting%" AND info = "ALTER TABLE t2 ADD val INT"
+--Result--
+[(0,)]
++--------------------+

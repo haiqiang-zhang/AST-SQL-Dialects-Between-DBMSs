@@ -1,0 +1,160 @@
+--Query--
+SELECT avg(DISTINCT b) FROM (SELECT * FROM t2 LEFT RIGHT JOIN t1 ON c)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT a     FROM (           SELECT a             FROM (                   SELECT a                     FROM (                           SELECT a FROM t1 NATURAL LEFT JOIN t1                            WHERE (b, 2 ) IS ( SELECT 2 IN(2,2),2)                          )                     NATURAL LEFT FULL JOIN t1                    WHERE ( rowid , 1 )<=(CASE 5 WHEN 619 THEN 841 ELSE 3374391096 END,0)                    ORDER BY a ASC                  )             NATURAL LEFT JOIN t1            WHERE (b, 2 ) IS ( SELECT 3 IN(3,3),3)          )     NATURAL LEFT FULL JOIN t1    WHERE ( rowid , 1 )<=(CASE 5 WHEN 619 THEN 841 ELSE 3374391096 END,0)    ORDER BY a ASC
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT count(*) FROM t9
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT * FROM t9 WHERE id<>128*h+64*g+32*f+16*e+8*d+4*c+2*b+a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 NATURAL RIGHT JOIN t1 WHERE a=5555 OR (1,b)==(SELECT 2 IN (2,2),4)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 AS t2 NATURAL RIGHT JOIN t1 AS t3    WHERE (a,b) IN (SELECT rowid, b FROM t1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT value, t1.* FROM json_each('7') NATURAL RIGHT JOIN t1    WHERE (a,b) IN (SELECT a, b FROM t1)
+--Result--
+[(7, 15, 'xray', 'baker', 42)]
++--------------------+
+--Query--
+SELECT quote(a.key), b.value     FROM a RIGHT JOIN json_each('["a","c"]') AS b ON a.key=b.value
+--Result--
+[("'a'", 'a'), ('NULL', 'c')]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 NATURAL RIGHT JOIN t1 AS t2 WHERE (a,b) IN (SELECT a+0, b FROM t1)
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON (a=b) WHERE 99+(b+1)!=99
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON (a=b) WHERE 99+(b+1)!=99
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b, d FROM t1 RIGHT JOIN t2 WHERE (b+0)=1 AND d!=4
+--Result--
+[(1, 'not-4')]
++--------------------+
+--Query--
+SELECT b, d FROM t1 RIGHT JOIN t2 WHERE (b+0)=1 AND d!=4
+--Result--
+[(1, 'not-4')]
++--------------------+
+--Query--
+SELECT b, d FROM t1 RIGHT JOIN t2 WHERE (b+0)=1 AND d!=4
+--Result--
+[(1, 'not-4')]
++--------------------+
+--Query--
+SELECT * FROM y0 RIGHT JOIN y1 ON true INNER JOIN y2 ON true WHERE y2.c!=99 AND y2.c!=98
+--Result--
+[(None, 1, 3), (None, 1, 4), (None, 2, 3), (None, 2, 4)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true LEFT JOIN t3 ON a<>''
+--Result--
+[(0, 1, 3, 'not-4', 5, 6), (0, 'x', None, None, 5, 6), (1, 1, 3, 'not-4', 5, 6), (1, 'x', None, None, 5, 6), ('1', 1, 3, 'not-4', 5, 6), ('1', 'x', None, None, 5, 6), (10, 1, 3, 'not-4', 5, 6), (10, 'x', None, None, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true LEFT JOIN t3 ON a<>'' WHERE c IS NULL
+--Result--
+[(0, 'x', None, None, 5, 6), (1, 'x', None, None, 5, 6), ('1', 'x', None, None, 5, 6), (10, 'x', None, None, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true JOIN t3 ON a<>'' WHERE c IS NULL
+--Result--
+[(0, 'x', None, None, 5, 6), (1, 'x', None, None, 5, 6), ('1', 'x', None, None, 5, 6), (10, 'x', None, None, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true JOIN t3 ON a<>''
+--Result--
+[(0, 1, 3, 'not-4', 5, 6), (0, 'x', None, None, 5, 6), (1, 1, 3, 'not-4', 5, 6), (1, 'x', None, None, 5, 6), ('1', 1, 3, 'not-4', 5, 6), ('1', 'x', None, None, 5, 6), (10, 1, 3, 'not-4', 5, 6), (10, 'x', None, None, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true LEFT JOIN t3 ON a<>'' WHERE c<>''
+--Result--
+[(0, 1, 3, 'not-4', 5, 6), (1, 1, 3, 'not-4', 5, 6), ('1', 1, 3, 'not-4', 5, 6), (10, 1, 3, 'not-4', 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true LEFT JOIN t3 ON a<>'' WHERE c IS NOT NULL
+--Result--
+[(0, 1, 3, 'not-4', 5, 6), (1, 1, 3, 'not-4', 5, 6), ('1', 1, 3, 'not-4', 5, 6), (10, 1, 3, 'not-4', 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true JOIN t3 ON a<>'' WHERE c<>''
+--Result--
+[(0, 1, 3, 'not-4', 5, 6), (1, 1, 3, 'not-4', 5, 6), ('1', 1, 3, 'not-4', 5, 6), (10, 1, 3, 'not-4', 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t2 ON true JOIN t3 ON a<>'' WHERE c IS NOT NULL
+--Result--
+[(0, 1, 3, 'not-4', 5, 6), (1, 1, 3, 'not-4', 5, 6), ('1', 1, 3, 'not-4', 5, 6), (10, 1, 3, 'not-4', 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t2 RIGHT JOIN t1 ON true
+--Result--
+[(1, 3, 'not-4', 0), (1, 3, 'not-4', 1), (1, 3, 'not-4', '1'), (1, 3, 'not-4', 10), ('x', None, None, 0), ('x', None, None, 1), ('x', None, None, '1'), ('x', None, None, 10)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON true INNER JOIN t3 ON (b IS NOT NULL)=0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 99     FROM t1          LEFT JOIN t2 ON true          RIGHT JOIN t3 ON true          RIGHT JOIN t4 ON true    WHERE a=b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *     FROM t1          LEFT JOIN t2 ON TRUE          JOIN t3 ON c=''          RIGHT JOIN t4 ON b=''
+--Result--
+[]
++--------------------+
+--Query--
+WITH t7(x, y) AS (SELECT 100, 200 FROM t5)     SELECT * FROM t4 JOIN t7 ON true RIGHT JOIN (SELECT y AS z FROM t7) AS t6 ON (x=z)
+--Result--
+[(None, None, None, None, 200)]
++--------------------+
+--Query--
+ANALYZE main
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT b, c, d FROM t2, t3 WHERE b<>0    UNION SELECT DISTINCT b, c, d FROM t2, t3 WHERE b ISNULL
+--Result--
+[]
++--------------------+

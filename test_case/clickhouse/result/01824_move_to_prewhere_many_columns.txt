@@ -1,0 +1,25 @@
+--Query--
+SELECT partition, part_type FROM system.parts WHERE table = 't_move_to_prewhere' AND database = currentDatabase() ORDER BY partition
+--Result--
+[('1', 'Wide'), ('2', 'Compact')]
++--------------------+
+--Query--
+SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string)
+--Result--
+[(35,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(explain, '__table1\.', '') FROM (EXPLAIN actions=1 SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string)) WHERE explain LIKE '%Prewhere%' OR explain LIKE '%Filter%'
+--Result--
+[('      Filter',), ('      Filter column: and(a, b, c, not(ignore(fat_string))) (removed)',), ('        Prewhere info',), ('          Prewhere filter',), ('          Prewhere filter column: and(a, b, c) (removed)',)]
++--------------------+
+--Query--
+SELECT partition, part_type FROM system.parts WHERE table = 't_move_to_prewhere' AND database = currentDatabase() ORDER BY partition
+--Result--
+[('1', 'Compact'), ('2', 'Compact')]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string)
+--Result--
+[('SELECT count()',), ('FROM t_move_to_prewhere',), ('WHERE a AND b AND c AND (NOT ignore(fat_string))',)]
++--------------------+

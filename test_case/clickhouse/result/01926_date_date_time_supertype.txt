@@ -1,0 +1,25 @@
+--Query--
+SELECT 'Array'
+--Result--
+[('Array',)]
++--------------------+
+--Query--
+SELECT toTypeName([toDate('2000-01-01'), toDateTime('2000-01-01', 'Asia/Istanbul')])
+--Result--
+[("Array(DateTime('Asia/Istanbul'))",)]
++--------------------+
+--Query--
+SELECT 'If'
+--Result--
+[('If',)]
++--------------------+
+--Query--
+WITH toDate('2000-01-01') as a, toDateTime('2000-01-01', 'Asia/Istanbul') as b SELECT if(value, b, a) as result, toTypeName(result) FROM predicate_table
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, tzinfo=<DstTzInfo 'Asia/Istanbul' EET+2:00:00 STD>), "DateTime('Asia/Istanbul')"), (datetime.datetime(2000, 1, 1, 0, 0, tzinfo=<DstTzInfo 'Asia/Istanbul' EET+2:00:00 STD>), "DateTime('Asia/Istanbul')")]
++--------------------+
+--Query--
+SELECT 'Cast'
+--Result--
+[('Cast',)]
++--------------------+

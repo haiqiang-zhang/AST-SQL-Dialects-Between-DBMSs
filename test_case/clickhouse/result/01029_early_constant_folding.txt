@@ -1,0 +1,25 @@
+--Query--
+EXPLAIN SYNTAX SELECT 1 WHERE 1 = 0
+--Result--
+[('SELECT 1',), ('WHERE 0',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1 WHERE 1 IN (0, 1, 2)
+--Result--
+[('SELECT 1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1 WHERE 1 IN (0, 2) AND 2 = ((SELECT 2) AS subquery)
+--Result--
+[('SELECT 1',), ("WHERE (1 IN (0, 2)) AND (2 = (__scalarSubqueryResult(_CAST(2, 'Nullable(UInt8)')) AS subquery))",)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1 WHERE 1 IN ((SELECT arrayJoin([1, 2, 3])) AS subquery)
+--Result--
+[('SELECT 1',), ('WHERE 1 IN ((',), ('    SELECT arrayJoin([1, 2, 3])',), (') AS subquery)',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1 WHERE NOT ignore()
+--Result--
+[('SELECT 1',), ('WHERE NOT ignore()',)]
++--------------------+

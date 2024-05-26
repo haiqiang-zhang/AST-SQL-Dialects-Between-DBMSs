@@ -1,0 +1,15 @@
+--Query--
+SELECT * FROM (SELECT * WHERE dummy GLOBAL IN (SELECT 0))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * WHERE dummy GLOBAL IN (SELECT toUInt8(number) FROM system.numbers LIMIT 10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM system.numbers LIMIT 20) WHERE number GLOBAL IN (SELECT number FROM system.numbers LIMIT 10))
+--Result--
+[(0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,)]
++--------------------+

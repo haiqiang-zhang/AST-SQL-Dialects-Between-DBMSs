@@ -1,6 +1,4 @@
-
 SYSTEM DROP QUERY CACHE;
-
 SELECT 1 SETTINGS use_query_cache = true, query_cache_store_results_of_queries_with_nondeterministic_functions = true, max_threads = 16;
 SELECT COUNT(*) FROM system.query_cache;
 SELECT '---';

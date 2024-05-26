@@ -1,0 +1,100 @@
+--Query--
+select * from t1 ignore key (key1) where text1='teststring' or    text1 like 'teststring_%' ORDER BY text1
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1='teststring' or text1 like 'teststring_%'
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1='teststring' or text1 > 'teststring\t'
+--Result--
+[('teststring',)]
++--------------------+
+--Query--
+select * from t1 order by text1
+--Result--
+[('nothing',), ('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 ignore key (key1) where text1='teststring' or    text1 like 'teststring_%' ORDER BY text1
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select concat('|', text1, '|') as c from t1 where text1='teststring' or text1 like 'teststring_%' order by c
+--Result--
+[('|teststring\t|',), ('|teststring|',)]
++--------------------+
+--Query--
+select concat('|', text1, '|') from t1 where text1='teststring' or text1 > 'teststring\t'
+--Result--
+[('|teststring|',)]
++--------------------+
+--Query--
+select text1, length(text1) from t1 order by text1
+--Result--
+[('nothing', 7), ('teststring\t', 11), ('teststring', 10)]
++--------------------+
+--Query--
+select concat('|', text1, '|') as c from t1 where text1='teststring' or text1 like 'teststring_%' order by c
+--Result--
+[('|teststring\t|',), ('|teststring |',), ('|teststring|',)]
++--------------------+
+--Query--
+select concat('|', text1, '|') as c from t1 where text1='teststring' or text1 like 'teststring_%' order by c
+--Result--
+[('|teststring\t|',), ('|teststring|',)]
++--------------------+
+--Query--
+select * from t1 ignore key (key1) where text1='teststring' or    text1 like 'teststring_%' ORDER BY text1
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1='teststring' or text1 like 'teststring_%'
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1='teststring' or text1 >= 'teststring\t'
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 order by text1
+--Result--
+[('nothing',), ('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 order by text1
+--Result--
+[('nothing',), ('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1='teststring' or text1 like 'teststring_%'
+--Result--
+[('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1='teststring' or text1 > 'teststring\t'
+--Result--
+[('teststring',)]
++--------------------+
+--Query--
+select * from t1 order by text1
+--Result--
+[('nothing',), ('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 order by text1
+--Result--
+[('nothing',), ('teststring\t',), ('teststring',)]
++--------------------+
+--Query--
+select * from t1 where text1 like 'teststring_%'
+--Result--
+[('teststring\t',), ('teststring ',)]
++--------------------+

@@ -1,0 +1,45 @@
+--Query--
+SELECT 'aes_encrypt_mysql'
+--Result--
+[('aes_encrypt_mysql',)]
++--------------------+
+--Query--
+SELECT aes_encrypt_mysql('aes-256-ecb', CAST(null as Nullable(String)), 'test_key________________________')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+WITH 'aes-256-ecb' as mode, 'Hello World!' as plaintext, 'test_key________________________' as key SELECT hex(aes_encrypt_mysql(mode, toNullable(plaintext), key))
+--Result--
+[('D1B43643E1D0E9390E39BA4EAE150851',)]
++--------------------+
+--Query--
+SELECT 'aes_decrypt_mysql'
+--Result--
+[('aes_decrypt_mysql',)]
++--------------------+
+--Query--
+SELECT aes_decrypt_mysql('aes-256-ecb', CAST(null as Nullable(String)), 'test_key________________________')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 'encrypt'
+--Result--
+[('encrypt',)]
++--------------------+
+--Query--
+WITH 'aes-256-ecb' as mode, 'test_key________________________' as key SELECT mode, encrypt(mode, CAST(null as Nullable(String)), key)
+--Result--
+[('aes-256-ecb', None)]
++--------------------+
+--Query--
+SELECT 'decrypt'
+--Result--
+[('decrypt',)]
++--------------------+
+--Query--
+WITH 'aes-256-ecb' as mode, 'test_key________________________' as key SELECT mode, decrypt(mode, CAST(null as Nullable(String)), key)
+--Result--
+[('aes-256-ecb', None)]
++--------------------+

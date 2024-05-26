@@ -1,0 +1,100 @@
+--Query--
+SELECT a, ntile(1) OVER (ORDER BY a) FROM t3
+--Result--
+[('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1), ('f', 1), ('g', 1), ('h', 1), ('i', 1), ('j', 1)]
++--------------------+
+--Query--
+SELECT a, nth_value(b, c) OVER (ORDER BY a) FROM t4
+--Result--
+[(1, None), (2, None), (3, 'B'), (4, None), (5, 'E'), (6, 'A'), (7, 'A'), (8, 'B'), (9, None), (10, 'D')]
++--------------------+
+--Query--
+SELECT a, lead(b) OVER (ORDER BY a) FROM t4
+--Result--
+[(1, 'B'), (2, 'C'), (3, 'D'), (4, 'E'), (5, 'F'), (6, 'G'), (7, 'H'), (8, 'I'), (9, 'J'), (10, None)]
++--------------------+
+--Query--
+SELECT a, lag(b) OVER (ORDER BY a) FROM t4
+--Result--
+[(1, None), (2, 'A'), (3, 'B'), (4, 'C'), (5, 'D'), (6, 'E'), (7, 'F'), (8, 'G'), (9, 'H'), (10, 'I')]
++--------------------+
+--Query--
+SELECT group_concat(b, '.') OVER (     ORDER BY a ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING   ) FROM t4
+--Result--
+[('A.B.C.D.E.F.G.H.I.J',), ('B.C.D.E.F.G.H.I.J',), ('C.D.E.F.G.H.I.J',), ('D.E.F.G.H.I.J',), ('E.F.G.H.I.J',), ('F.G.H.I.J',), ('G.H.I.J',), ('H.I.J',), ('I.J',), ('J',)]
++--------------------+
+--Query--
+SELECT a, count(*) OVER abc, count(*) OVER def FROM t5   WINDOW abc AS (ORDER BY a),           def AS (ORDER BY a DESC)   ORDER BY a
+--Result--
+[(1, 1, 5), (2, 2, 4), (3, 3, 3), (4, 4, 2), (5, 5, 1)]
++--------------------+
+--Query--
+SELECT a, max(a) FILTER (WHERE (a%2)=0) OVER w FROM t5    WINDOW w AS (ORDER BY a)
+--Result--
+[(1, None), (2, 2), (3, 2), (4, 4), (5, 4)]
++--------------------+
+--Query--
+SELECT a, max(c) OVER (ORDER BY a ROWS BETWEEN 1 PRECEDING AND 2 PRECEDING)   FROM t5
+--Result--
+[(1, None), (2, None), (3, None), (4, None), (5, None)]
++--------------------+
+--Query--
+SELECT abs(max(b) OVER (ORDER BY b)) FROM ttt GROUP BY b
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT sum(b) OVER (     ORDER BY a RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING   ) FROM ttt
+--Result--
+[(18,), (17,), (15,), (12,), (11,), (9,), (6,), (5,), (3,)]
++--------------------+
+--Query--
+SELECT max(c) OVER (PARTITION BY b ORDER BY a RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW),    min(c) OVER (PARTITION BY b ORDER BY a RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)   FROM ttt ORDER BY a
+--Result--
+[(1, 1), (2, 2), (3, 3), (2, 1), (3, 2), (4, 3), (3, 1), (4, 2), (5, 3)]
++--------------------+
+--Query--
+SELECT row_number() OVER win,          nth_value(d,2) OVER win,          lead(d) OVER win   FROM t1   WINDOW win AS (ORDER BY a)
+--Result--
+[(1, None, 8), (2, 8, 12), (3, 8, None)]
++--------------------+
+--Query--
+SELECT row_number() OVER win,            rank() OVER win,            dense_rank() OVER win,            ntile(2) OVER win,            first_value(d) OVER win,            last_value(d) OVER win,            nth_value(d,2) OVER win,            lead(d) OVER win,            lag(d) OVER win,            max(d) OVER win,            min(d) OVER win     FROM t1     WINDOW win AS (ORDER BY a)
+--Result--
+[(1, 1, 1, 1, 4, 4, None, 8, None, 4, 4), (2, 2, 2, 1, 4, 8, 8, 12, 4, 8, 4), (3, 3, 3, 2, 4, 12, 8, None, 8, 12, 4)]
++--------------------+
+--Query--
+SELECT rank() OVER () FROM t2
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT dense_rank() OVER (PARTITION BY x) FROM t2
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT id, min(b) OVER (PARTITION BY a ORDER BY id) FROM t7
+--Result--
+[(1, 2), (2, 2), (3, 2), (4, None), (5, 8), (6, 1)]
++--------------------+
+--Query--
+SELECT NTILE(256) OVER (ORDER BY total) - 1 AS nt FROM t8
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM v8
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT NTILE(256) OVER (ORDER BY total) - 1 AS nt FROM t8   ) sub
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT (SELECT min(a) OVER ()) FROM t2
+--Result--
+[(1,), (2,), (3,)]
++--------------------+

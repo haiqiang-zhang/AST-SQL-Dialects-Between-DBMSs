@@ -1,0 +1,10 @@
+--Query--
+SELECT *   FROM sales     PIVOT(         SUM(amount)         FOR YEAR IN (2020, 2021)             MONTH IN ('JAN', 'FEB', 'MAR', 'APR')     ) AS p   ORDER BY EMPID
+--Result--
+[(1, 10000, 5000, None, 18000, 400, 3000, 11000, None), (2, 35000, 90500, None, 4500, 4500, 200, 12000, 800)]
++--------------------+
+--Query--
+SELECT *   FROM sales     PIVOT(         SUM(amount + year)         FOR YEAR IN (2020, 2021)             MONTH IN ('JAN', 'FEB', 'MAR', 'APR')     ) AS p   ORDER BY EMPID
+--Result--
+[(1, 12020, 7020, None, 22040, 2421, 5021, 15042, None), (2, 37020, 92520, None, 6520, 6521, 2221, 16042, 2821)]
++--------------------+

@@ -1,0 +1,110 @@
+--Query--
+select IPv4StringToNum('') == 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4StringToNum(materialize('')) == 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4StringToNum('not an ip string') == 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4StringToNum(materialize('not an ip string')) == 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4StringToNum('127.0.0.1' as p) == (0x7f000001 as n), IPv4NumToString(n) == p
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+select IPv4StringToNum(materialize('127.0.0.1') as p) == (materialize(0x7f000001) as n), IPv4NumToString(n) == p
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+select IPv4NumToString(toUInt32(0)) == '0.0.0.0'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4NumToString(materialize(toUInt32(0))) == materialize('0.0.0.0')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4NumToString(toUInt32(0x7f000001)) == '127.0.0.1'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv4NumToString(materialize(toUInt32(0x7f000001))) == materialize('127.0.0.1')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6NumToString(toFixedString('', 16)) == '::'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6NumToString(toFixedString(materialize(''), 16)) == materialize('::')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6NumToString(IPv6StringToNum('::ffff:127.0.0.1' as p) as n) == p
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6NumToString(IPv6StringToNum(materialize('::ffff:127.0.0.1') as p) as n) == p
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6NumToString(toFixedString(unhex('20010DB800000003000001FF0000002E'), 16)) == '2001:db8:0:3:0:1ff:0:2e'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6NumToString(toFixedString(unhex(materialize('20010DB800000003000001FF0000002E')), 16)) == materialize('2001:db8:0:3:0:1ff:0:2e')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6StringToNum('') == toFixedString(materialize(''), 16)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6StringToNum(materialize('')) == toFixedString(materialize(''), 16)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6StringToNum('not an ip string') == toFixedString(materialize(''), 16)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select IPv6StringToNum(materialize('not an ip string')) == toFixedString(materialize(''), 16)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT hex(IPv4ToIPv6(1297626935))
+--Result--
+[('00000000000000000000FFFF4D583737',)]
++--------------------+
+--Query--
+SELECT cutIPv6(IPv6StringToNum('2001:0DB8:AC10:FE01:FEED:BABE:CAFE:F00D'), 0, 0)
+--Result--
+[('2001:db8:ac10:fe01:feed:babe:cafe:f00d',)]
++--------------------+

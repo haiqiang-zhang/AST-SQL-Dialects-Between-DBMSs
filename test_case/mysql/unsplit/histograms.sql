@@ -168,9 +168,6 @@ DROP VIEW my_view;
 ALTER TABLE t1 ADD COLUMN virtual_generated INT AS (col_integer + 10) VIRTUAL,
                ADD COLUMN stored_generated INT AS (col_integer + 20) STORED;
 INSERT INTO t1 (col_integer) VALUES (10), (20), (30);
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1 DROP COLUMN virtual_generated, DROP COLUMN stored_generated;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
@@ -274,33 +271,12 @@ ALTER TABLE t1 DROP COLUMN col2;
 SELECT schema_name, table_name, column_name
 FROM information_schema.COLUMN_STATISTICS;
 INSERT INTO t1 VALUES (1), (2);
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1 RENAME TO t1_renamed, ALGORITHM = INPLACE;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE t1_renamed RENAME TO t1, ALGORITHM = COPY;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE t1;
 CREATE TABLE t1 (col1 VARCHAR(255), col2 VARCHAR(255));
 INSERT INTO t1 VALUES ('foo', 'foo'), ('bar', 'bar'), ('fo', 'fo'),
                       ('yay', 'yay');
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 CREATE DATABASE histogram_db;
 CREATE TABLE histogram_db.t1 (col1 INT);
 SELECT schema_name, table_name, column_name
@@ -400,14 +376,8 @@ DROP TABLE t1;
 CREATE TABLE p (col1 INT PRIMARY KEY, col2 INT, col3 INT)
                PARTITION BY KEY (col1) PARTITIONS 4;
 INSERT INTO p VALUES (1, 1, 1), (2, 2, 2), (3, 3, 3);
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 ALTER TABLE p PARTITION BY HASH (col1) PARTITIONS 2;
 SELECT schema_name, table_name, column_name
-FROM information_schema.COLUMN_STATISTICS;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
 FROM information_schema.COLUMN_STATISTICS;
 DROP TABLE p;
 CREATE SCHEMA foo;
@@ -884,9 +854,6 @@ AND NOT OUTR . pk <> 7  )
 AND OUTR . col_varchar_key IS NULL
 HAVING x <= 3
 ORDER BY OUTR . pk , OUTR . pk;
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS WHERE table_name = 't2' and column_name = 'col_datetime';
 DROP TABLE t1, t2;
 CREATE TABLE t1 (
   pk int(11) NOT NULL AUTO_INCREMENT,
@@ -983,9 +950,6 @@ INSERT INTO t1 VALUES ("00:00:00", "2017-01-01");
 DROP TABLE t1;
 CREATE TABLE tbl_int (col1 INT);
 INSERT INTO tbl_int VALUES (1), (2), (2), (2), (3), (6), (8), (8), (NULL), (NULL);
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 > 0;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 > 1;
 SELECT COUNT(*)/10.0 FROM tbl_int WHERE col1 > 2;
@@ -1083,9 +1047,6 @@ DROP TABLE tbl_int;
 CREATE TABLE tbl_float (col double);
 INSERT INTO tbl_float VALUES (0.1), (0.2), (0.3), (0.3), (0.4), (0.5), (0.5),
                              (0.8), (NULL), (NULL);
-SELECT schema_name, table_name, column_name,
-       JSON_REMOVE(histogram, '$."last-updated"')
-FROM information_schema.COLUMN_STATISTICS;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col > 0.0;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col > 0.1;
 SELECT COUNT(*)/10.0 FROM tbl_float WHERE col > 0.2;

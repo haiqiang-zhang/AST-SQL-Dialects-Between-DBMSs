@@ -1,0 +1,285 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=1 UNION ALL SELECT 2 FROM t1 WHERE b=0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=1 UNION SELECT 2 FROM t1 WHERE b=0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=1 UNION ALL SELECT 2 FROM t1 WHERE b=4
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=1 UNION SELECT 2 FROM t1 WHERE b=4
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=0 UNION ALL SELECT 2 FROM t1 WHERE b=4
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=0 UNION SELECT 2 FROM t1 WHERE b=4
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=0 UNION ALL SELECT 2 FROM t1 WHERE b=0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a=0 UNION SELECT 2 FROM t1 WHERE b=0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=1 UNION ALL SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=1 UNION SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=1 UNION ALL SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=1 UNION SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=0 UNION ALL SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=0 UNION SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=0 UNION ALL SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM t1 WHERE a=0 UNION SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=1 UNION ALL SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=1 UNION SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=1 UNION ALL SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=1 UNION SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=0 UNION ALL SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=0 UNION SELECT 2 FROM t1 WHERE b=4)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=0 UNION ALL SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT EXISTS       (SELECT 1 FROM t1 WHERE a=0 UNION SELECT 2 FROM t1 WHERE b=0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*), sum(x), sum(y) FROM t2
+--Result--
+[(64, 4096, 4160)]
++--------------------+
+--Query--
+SELECT 1 FROM t2 WHERE x=0     UNION ALL     SELECT 2 FROM t2 WHERE x=1     UNION ALL     SELECT 3 FROM t2 WHERE x=2     UNION ALL     SELECT 4 FROM t2 WHERE x=3     UNION ALL     SELECT 5 FROM t2 WHERE x=4     UNION ALL     SELECT 6 FROM t2 WHERE y=0     UNION ALL     SELECT 7 FROM t2 WHERE y=1     UNION ALL     SELECT 8 FROM t2 WHERE y=2     UNION ALL     SELECT 9 FROM t2 WHERE y=3     UNION ALL     SELECT 10 FROM t2 WHERE y=4
+--Result--
+[(2,), (4,), (8,), (10,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=3       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=2       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=3       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=2       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=-1       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=2       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=-2       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=-3       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=-2       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=-3       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=3       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=2       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=3       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=2       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=-1       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=2       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=-2       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=-3       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION ALL       SELECT 2 FROM t2 WHERE x=-1       UNION ALL       SELECT 3 FROM t2 WHERE x=2       UNION ALL       SELECT 4 FROM t2 WHERE x=-2       UNION ALL       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION ALL       SELECT 7 FROM t2 WHERE y=1       UNION ALL       SELECT 8 FROM t2 WHERE y=-3       UNION ALL       SELECT 9 FROM t2 WHERE y=3       UNION ALL       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=3       UNION       SELECT 5 FROM t2 WHERE x=4       UNION       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=2       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=-1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=3       UNION       SELECT 5 FROM t2 WHERE x=4       UNION       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=2       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=-1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=-1       UNION       SELECT 5 FROM t2 WHERE x=4       UNION       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=2       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=-1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=-2       UNION       SELECT 5 FROM t2 WHERE x=4       UNION       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=-3       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=-1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=-2       UNION       SELECT 5 FROM t2 WHERE x=4       UNION       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=-3       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=-1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=-2       UNION       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=-3       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=4     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0       UNION       SELECT 2 FROM t2 WHERE x=-1       UNION       SELECT 3 FROM t2 WHERE x=2       UNION       SELECT 4 FROM t2 WHERE x=-2       UNION       SELECT 5 FROM t2 WHERE x=4       UNION ALL       SELECT 6 FROM t2 WHERE y=0       UNION       SELECT 7 FROM t2 WHERE y=1       UNION       SELECT 8 FROM t2 WHERE y=-3       UNION       SELECT 9 FROM t2 WHERE y=3       UNION       SELECT 10 FROM t2 WHERE y=-4     )
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 FROM t2 WHERE x=1 EXCEPT SELECT 2 FROM t2 WHERE y=2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=1 EXCEPT SELECT 2 FROM t2 WHERE y=2     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=1 EXCEPT SELECT 2 FROM t2 WHERE y=2     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0 EXCEPT SELECT 2 FROM t2 WHERE y=2     )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=0 EXCEPT SELECT 2 FROM t2 WHERE y=2     )
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 2 FROM t2 WHERE y=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 1 FROM t2 WHERE y=2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 2 FROM t2 WHERE y=2     )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 1 FROM t2 WHERE y=2     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 2 FROM t2 WHERE y=2     )
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 1 FROM t2 WHERE y=2     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (       SELECT 1 FROM t2 WHERE x=0 INTERSECT SELECT 1 FROM t2 WHERE y=2     )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT EXISTS (       SELECT 1 FROM t2 WHERE x=1 INTERSECT SELECT 1 FROM t2 WHERE y=0     )
+--Result--
+[(0,)]
++--------------------+

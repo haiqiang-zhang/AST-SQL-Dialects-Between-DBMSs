@@ -1,0 +1,180 @@
+--Query--
+select * from t1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+select a,t>0,c,i from t1
+--Result--
+[]
++--------------------+
+--Query--
+select a,t>0,c,i from t1
+--Result--
+[(1, 1, 'hello', None), (2, 1, 'hello', None), (3, 1, 'hello', None)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select id from t2
+--Result--
+[]
++--------------------+
+--Query--
+select t2 from t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) from t2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select row_count()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 11), (2, 22)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 11), (2, 22)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('9.999999', '10', '10'), ('0.0001225', '1.22e-4', None), ('0.1225', '0.1225', None), ('0.1225877', '0.12259', None), ('12.25', '12.25', None), ('12.25', '12.25', '12.2'), ('122500', '122500', None), ('12250000000', '1.22e10', None), ('1.225e15', '1.22e15', None), ('5000000', '5000000', None), ('1.25e78', '1.25e78', None), ('1.25e-94', '1.2e-94', None), ('1.25e203', '1.2e203', None), ('1.25e-175', '1e-175', None), ('1.225', None, '1.23'), ('1.37', None, '1.37'), ('-1.37', None, '-1.4'), ('-0.0187', None, '0'), ('5000', None, '5000'), ('-5000', None, '-5e3')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('9.999999', '10', '9.999'), ('0.00001225', '1.22e-5', '1e-5'), ('0.0001225', '1.22e-4', None), ('0.1225', '0.1225', None), ('0.1225877', '0.12259', None), ('12.25', '12.25', None), ('12.25', '12.25', '12.25'), ('122500', '122500', None), ('12250000000', '1.22e10', None), ('1.225e15', '1.22e15', None), ('5000000', '5000000', None), ('1.25e78', '1.25e78', None), ('1.25e-94', '1.2e-94', None), ('1.25e203', '1.2e203', None), ('1.25e-175', '1e-175', None), ('1.225', None, '1.225'), ('1.37', None, '1.37'), ('-1.37', None, '-1.37'), ('0.00187', None, '0.002'), ('-0.0187', None, '-0.02'), ('5000', None, '5000'), ('-5000', None, '-5000')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(4188,), (4188,), (4188,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(15449237462,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(11, 1, 21, 1)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(11, 1, 21, 1)]
++--------------------+
+--Query--
+PREPARE st1 FROM 'INSERT INTO v2 (pk) VALUES ( 1 )'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+PREPARE st1 FROM "INSERT INTO v1 (pk) VALUES (2)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       table_target AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       view_target2 AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       view_target3 AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       table_target AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       view_target2 AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       view_target2 AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT          stations.mexs_id AS mexs_id, datetime AS messzeit FROM            table_source INNER JOIN      view_stations AS stations ON              table_source.id = stations.icao LEFT JOIN       view_target3 AS old USING           (mexs_id)
+--Result--
+[('87654321', datetime.datetime(2006, 7, 12, 7, 50))]
++--------------------+
+--Query--
+SELECT * FROM table_target
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM view_target2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM view_target3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT VALUES(x) FROM t
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE stmt FROM "INSERT INTO v1 (col_blob, pk, col_varchar)  SELECT col_blob, col_int, col_blob  FROM t2  WHERE pk BETWEEN 7 AND 8  LIMIT 1"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+

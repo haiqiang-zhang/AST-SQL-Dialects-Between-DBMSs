@@ -1,0 +1,130 @@
+--Query--
+SELECT 'rowid', * FROM (SELECT * FROM t1, t2)
+--Result--
+[('rowid', 1, 2, 3, 7, 8, 9)]
++--------------------+
+--Query--
+SELECT 'rowid', * FROM v1
+--Result--
+[('rowid', 1, 2, 3, 7, 8, 9)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a, b AS 'a', c AS 'a', 4 AS 'a' FROM t1)
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>1
+--Result--
+[(4000000000,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>2147483647
+--Result--
+[(4000000000,), (2147483648,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a<2147483648
+--Result--
+[(1,), (2147483647,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a<=2147483648
+--Result--
+[(1,), (2147483648,), (2147483647,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a<10000000000
+--Result--
+[(1,), (4000000000,), (2147483648,), (2147483647,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a<1000000000000 ORDER BY 1
+--Result--
+[(1,), (2147483647,), (2147483648,), (4000000000,)]
++--------------------+
+--Query--
+SELECT * from z
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3), (4000000000, 'a', 'b'), (2147483648, 'b2', 'c2'), (2147483647, 'b3', 'c3')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3), (4000000000, 'a', 'b'), (2147483648, 'b2', 'c2'), (2147483647, 'b3', 'c3')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3), (4000000000, 'a', 'b'), (2147483648, 'b2', 'c2'), (2147483647, 'b3', 'c3')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM x
+--Result--
+[(1000,)]
++--------------------+

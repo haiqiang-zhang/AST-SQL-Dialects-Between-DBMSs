@@ -1,0 +1,60 @@
+--Query--
+SELECT '*** BEFORE MUTATION BEFORE MERGE ***'
+--Result--
+[('*** BEFORE MUTATION BEFORE MERGE ***',)]
++--------------------+
+--Query--
+SELECT id,a,_block_number,_part from test ORDER BY id
+--Result--
+[(1, 1, 1, 'all_1_1_0'), (2, 2, 1, 'all_1_1_0'), (3, 3, 1, 'all_1_1_0'), (4, 4, 2, 'all_2_2_0'), (5, 5, 2, 'all_2_2_0'), (6, 6, 2, 'all_2_2_0')]
++--------------------+
+--Query--
+SELECT '*** AFTER MUTATION BEFORE MERGE ***'
+--Result--
+[('*** AFTER MUTATION BEFORE MERGE ***',)]
++--------------------+
+--Query--
+SELECT id,a,_block_number,_part from test ORDER BY id
+--Result--
+[(1, 0, 1, 'all_1_1_0_3'), (2, 0, 1, 'all_1_1_0_3'), (3, 0, 1, 'all_1_1_0_3'), (4, 4, 2, 'all_2_2_0_3'), (5, 5, 2, 'all_2_2_0_3'), (6, 6, 2, 'all_2_2_0_3')]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '*** AFTER MUTATION AFTER MERGE ***'
+--Result--
+[('*** AFTER MUTATION AFTER MERGE ***',)]
++--------------------+
+--Query--
+SELECT *,_block_number,_part from test ORDER BY id
+--Result--
+[(1, 0, 1, 'all_1_2_1_3'), (2, 0, 1, 'all_1_2_1_3'), (3, 0, 1, 'all_1_2_1_3'), (4, 4, 2, 'all_1_2_1_3'), (5, 5, 2, 'all_1_2_1_3'), (6, 6, 2, 'all_1_2_1_3')]
++--------------------+
+--Query--
+SELECT '*** AFTER MUTATION AFTER MERGE , NEW BLOCK ***'
+--Result--
+[('*** AFTER MUTATION AFTER MERGE , NEW BLOCK ***',)]
++--------------------+
+--Query--
+SELECT *,_block_number,_part from test ORDER BY id
+--Result--
+[(1, 0, 1, 'all_1_2_1_3'), (2, 0, 1, 'all_1_2_1_3'), (3, 0, 1, 'all_1_2_1_3'), (4, 4, 2, 'all_1_2_1_3'), (5, 5, 2, 'all_1_2_1_3'), (6, 6, 2, 'all_1_2_1_3'), (7, 7, 4, 'all_4_4_0'), (8, 8, 4, 'all_4_4_0'), (9, 9, 4, 'all_4_4_0')]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '*** AFTER MUTATION AFTER MERGE , NEW BLOCK MERGED ***'
+--Result--
+[('*** AFTER MUTATION AFTER MERGE , NEW BLOCK MERGED ***',)]
++--------------------+
+--Query--
+SELECT *,_block_number,_part from test ORDER BY id
+--Result--
+[(1, 0, 1, 'all_1_4_2_3'), (2, 0, 1, 'all_1_4_2_3'), (3, 0, 1, 'all_1_4_2_3'), (4, 4, 2, 'all_1_4_2_3'), (5, 5, 2, 'all_1_4_2_3'), (6, 6, 2, 'all_1_4_2_3'), (7, 7, 4, 'all_1_4_2_3'), (8, 8, 4, 'all_1_4_2_3'), (9, 9, 4, 'all_1_4_2_3')]
++--------------------+

@@ -17,5 +17,4 @@ CREATE TABLE test_log
 ENGINE = StripeLog;
 INSERT INTO test_log (crypto_name, trade_date) VALUES ('abc', '2021-01-01'), ('def', '2022-02-02');
 TRUNCATE TABLE test_log;
-SELECT count() FROM  test_log;
 DROP TABLE test_log;

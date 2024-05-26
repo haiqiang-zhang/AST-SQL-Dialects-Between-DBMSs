@@ -409,16 +409,6 @@ select * from matest0 order by 1-id
 [(6, 'Test 6'), (5, 'Test 5'), (4, 'Test 4'), (3, 'Test 3'), (2, 'Test 2'), (1, 'Test 1')]
 +--------------------+
 --Query--
-explain (verbose, costs off) select min(1-id) from matest0
---Result--
-[('Result',), ('  Output: $0',), ('  InitPlan 1 (returns $0)',), ('    ->  Limit',), ('          Output: ((1 - matest0.id))',), ('          ->  Result',), ('                Output: ((1 - matest0.id))',), ('                ->  Merge Append',), ('                      Sort Key: ((1 - matest0.id))',), ('                      ->  Index Scan using matest0i on public.matest0 matest0_1',), ('                            Output: matest0_1.id, (1 - matest0_1.id)',), ('                            Index Cond: ((1 - matest0_1.id) IS NOT NULL)',), ('                      ->  Index Scan using matest1i on public.matest1 matest0_2',), ('                            Output: matest0_2.id, (1 - matest0_2.id)',), ('                            Index Cond: ((1 - matest0_2.id) IS NOT NULL)',), ('                      ->  Sort',), ('                            Output: matest0_3.id, ((1 - matest0_3.id))',), ('                            Sort Key: ((1 - matest0_3.id))',), ('                            ->  Bitmap Heap Scan on public.matest2 matest0_3',), ('                                  Output: matest0_3.id, (1 - matest0_3.id)',), ('                                  Filter: ((1 - matest0_3.id) IS NOT NULL)',), ('                                  ->  Bitmap Index Scan on matest2_pkey',), ('                      ->  Index Scan using matest3i on public.matest3 matest0_4',), ('                            Output: matest0_4.id, (1 - matest0_4.id)',), ('                            Index Cond: ((1 - matest0_4.id) IS NOT NULL)',)]
-+--------------------+
---Query--
-select min(1-id) from matest0
---Result--
-[(-5,)]
-+--------------------+
---Query--
 explain (costs off) select t1.* from matest0 t1, matest0 t2 where t1.b = t2.b and t2.c = t2.d order by t1.b limit 10
 --Result--
 [('Limit',), ('  ->  Merge Join',), ('        Merge Cond: (t1.b = t2.b)',), ('        ->  Merge Append',), ('              Sort Key: t1.b',), ('              ->  Index Scan using matest0i on matest0 t1_1',), ('              ->  Index Scan using matest1i on matest1 t1_2',), ('        ->  Materialize',), ('              ->  Merge Append',), ('                    Sort Key: t2.b',), ('                    ->  Index Scan using matest0i on matest0 t2_1',), ('                          Filter: (c = d)',), ('                    ->  Index Scan using matest1i on matest1 t2_2',), ('                          Filter: (c = d)',)]
@@ -649,31 +639,6 @@ explain (costs off) select * from mcrparted order by a, abs(b), c
 [('Merge Append',), ('  Sort Key: mcrparted.a, (abs(mcrparted.b)), mcrparted.c',), ('  ->  Index Scan using mcrparted0_a_abs_c_idx on mcrparted0 mcrparted_1',), ('  ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('  ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('  ->  Index Scan using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('  ->  Index Scan using mcrparted4_a_abs_c_idx on mcrparted4 mcrparted_5',), ('  ->  Index Scan using mcrparted5_a_abs_c_idx on mcrparted5 mcrparted_6',), ('  ->  Index Scan using mcrparted_def_a_abs_c_idx on mcrparted_def mcrparted_7',)]
 +--------------------+
 --Query--
-explain (costs off) select * from mcrparted order by a, abs(b), c
---Result--
-[('Append',), ('  ->  Index Scan using mcrparted0_a_abs_c_idx on mcrparted0 mcrparted_1',), ('  ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('  ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('  ->  Index Scan using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('  ->  Index Scan using mcrparted4_a_abs_c_idx on mcrparted4 mcrparted_5',), ('  ->  Index Scan using mcrparted5_a_abs_c_idx on mcrparted5 mcrparted_6',)]
-+--------------------+
---Query--
-explain (costs off) select * from mcrparted order by a desc, abs(b) desc, c desc
---Result--
-[('Append',), ('  ->  Index Scan Backward using mcrparted5_a_abs_c_idx on mcrparted5 mcrparted_6',), ('  ->  Index Scan Backward using mcrparted4_a_abs_c_idx on mcrparted4 mcrparted_5',), ('  ->  Index Scan Backward using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('  ->  Index Scan Backward using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('  ->  Index Scan Backward using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('  ->  Index Scan Backward using mcrparted0_a_abs_c_idx on mcrparted0 mcrparted_1',)]
-+--------------------+
---Query--
-explain (costs off) select * from mcrparted order by a, abs(b), c
---Result--
-[('Append',), ('  ->  Index Scan using mcrparted0_a_abs_c_idx on mcrparted0 mcrparted_1',), ('  ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('  ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('  ->  Index Scan using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('  ->  Index Scan using mcrparted4_a_abs_c_idx on mcrparted4 mcrparted_5',), ('  ->  Merge Append',), ('        Sort Key: mcrparted_7.a, (abs(mcrparted_7.b)), mcrparted_7.c',), ('        ->  Index Scan using mcrparted5a_a_abs_c_idx on mcrparted5a mcrparted_7',), ('        ->  Index Scan using mcrparted5_def_a_abs_c_idx on mcrparted5_def mcrparted_8',)]
-+--------------------+
---Query--
-explain (costs off) select a, abs(b) from mcrparted order by a, abs(b), c
---Result--
-[('Append',), ('  ->  Index Scan using mcrparted0_a_abs_c_idx on mcrparted0 mcrparted_1',), ('  ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('  ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('  ->  Index Scan using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('  ->  Index Scan using mcrparted4_a_abs_c_idx on mcrparted4 mcrparted_5',), ('  ->  Index Scan using mcrparted5a_a_abs_c_idx on mcrparted5a mcrparted_6',)]
-+--------------------+
---Query--
-explain (costs off) select * from mcrparted where a < 20 order by a, abs(b), c
---Result--
-[('Append',), ('  ->  Index Scan using mcrparted0_a_abs_c_idx on mcrparted0 mcrparted_1',), ('        Index Cond: (a < 20)',), ('  ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('        Index Cond: (a < 20)',), ('  ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('        Index Cond: (a < 20)',), ('  ->  Index Scan using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('        Index Cond: (a < 20)',)]
-+--------------------+
---Query--
 explain (costs off) select * from mclparted order by a
 --Result--
 [('Append',), ('  ->  Index Only Scan using mclparted1_a_idx on mclparted1 mclparted_1',), ('  ->  Index Only Scan using mclparted2_a_idx on mclparted2 mclparted_2',)]
@@ -717,16 +682,6 @@ explain (costs off) select * from mclparted where a in(1,2,4) order by a
 explain (costs off) select * from mclparted where a in(1,2,4,100) order by a
 --Result--
 [('Merge Append',), ('  Sort Key: mclparted.a',), ('  ->  Index Only Scan using mclparted1_a_idx on mclparted1 mclparted_1',), ("        Index Cond: (a = ANY ('{1,2,4,100}'::integer[]))",), ('  ->  Index Only Scan using mclparted2_a_idx on mclparted2 mclparted_2',), ("        Index Cond: (a = ANY ('{1,2,4,100}'::integer[]))",), ('  ->  Index Only Scan using mclparted4_a_idx on mclparted4 mclparted_3',), ("        Index Cond: (a = ANY ('{1,2,4,100}'::integer[]))",), ('  ->  Index Only Scan using mclparted_def_a_idx on mclparted_def mclparted_4',), ("        Index Cond: (a = ANY ('{1,2,4,100}'::integer[]))",)]
-+--------------------+
---Query--
-explain (costs off) select * from mcrparted where a < 20 order by a, abs(b), c limit 1
---Result--
-[('Limit',), ('  ->  Append',), ('        ->  Sort',), ('              Sort Key: mcrparted_1.a, (abs(mcrparted_1.b)), mcrparted_1.c',), ('              ->  Seq Scan on mcrparted0 mcrparted_1',), ('                    Filter: (a < 20)',), ('        ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_2',), ('              Index Cond: (a < 20)',), ('        ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_3',), ('              Index Cond: (a < 20)',), ('        ->  Index Scan using mcrparted3_a_abs_c_idx on mcrparted3 mcrparted_4',), ('              Index Cond: (a < 20)',)]
-+--------------------+
---Query--
-explain (costs off) select * from mcrparted where a = 10 order by a, abs(b), c
---Result--
-[('Append',), ('  ->  Index Scan using mcrparted1_a_abs_c_idx on mcrparted1 mcrparted_1',), ('        Index Cond: (a = 10)',), ('  ->  Index Scan using mcrparted2_a_abs_c_idx on mcrparted2 mcrparted_2',), ('        Index Cond: (a = 10)',)]
 +--------------------+
 --Query--
 explain (costs off) select * from bool_lp order by b

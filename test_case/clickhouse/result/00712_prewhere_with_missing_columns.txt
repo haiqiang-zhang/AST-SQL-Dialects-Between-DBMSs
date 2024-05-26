@@ -1,0 +1,20 @@
+--Query--
+SELECT * FROM mergetree_00712
+--Result--
+[(1, 'Hello, world!')]
++--------------------+
+--Query--
+SELECT * FROM mergetree_00712 ORDER BY x
+--Result--
+[(1, 'Hello, world!', 0), (2, 'Goodbye.', 3)]
++--------------------+
+--Query--
+SELECT s FROM mergetree_00712 PREWHERE x AND y ORDER BY s
+--Result--
+[('Goodbye.',)]
++--------------------+
+--Query--
+SELECT s, y FROM mergetree_00712 PREWHERE x AND y ORDER BY s
+--Result--
+[('Goodbye.', 3)]
++--------------------+

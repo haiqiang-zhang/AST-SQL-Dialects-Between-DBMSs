@@ -1,0 +1,130 @@
+--Query--
+SELECT sql FROM sqlite_master WHERE name LIKE 'c%'
+--Result--
+[('CREATE TABLE c1(x REFERENCES "p2")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p2")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p2"(a))',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name LIKE 'c%'
+--Result--
+[('CREATE TABLE c1(x REFERENCES "p2")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p2")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p2"(a))',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name LIKE 'c%'
+--Result--
+[('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE t2(x)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE t2(x)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE t2(x)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE t2(x)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE t2(x)',), ('CREATE VIEW ttt AS\n        WITH xyz(x) AS (SELECT col1 FROM log_entry)\n        SELECT x FROM xyz',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "p3"(a PRIMARY KEY, b)',), (None,), ('CREATE TABLE c1(x REFERENCES "p3")',), ('CREATE TABLE c2(x, FOREIGN KEY (x) REFERENCES "p3")',), ('CREATE TABLE c3(x, FOREIGN KEY (x) REFERENCES "p3"(a))',), ('CREATE TABLE "newname"(col1, y)',), ('CREATE INDEX i1 ON "newname"(col1)',), ('CREATE TABLE log_entry(newname, y)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE t2(x)',), ('CREATE VIEW ttt AS\n        WITH xyz(x) AS (SELECT col1 FROM log_entry)\n        SELECT x FROM xyz',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type = 'trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type = 'trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type = 'trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'r2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'r2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid, * FROM t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'r3'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'r3'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT d,e,f FROM t1 ORDER BY b,c
+--Result--
+[(1, 2, 3), (4, 5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='r1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='r1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, b, c FROM v1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'v4'
+--Result--
+[('CREATE VIEW v4 AS SELECT * FROM t4 WHERE (a=1 AND 0) OR b=2',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='i0'
+--Result--
+[('CREATE INDEX i0 ON t0(likelihood(1,2) AND 0)',)]
++--------------------+

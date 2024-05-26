@@ -1,0 +1,85 @@
+--Query--
+SYSTEM STOP MERGES data_01660
+--Result--
+[]
++--------------------+
+--Query--
+SELECT _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, active FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '# two parts'
+--Result--
+[('# two parts',)]
++--------------------+
+--Query--
+SELECT _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660'
+--Result--
+[('Active',), ('Active',)]
++--------------------+
+--Query--
+SELECT name, _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660' ORDER BY name
+--Result--
+[('all_1_1_0', 'Active'), ('all_2_2_0', 'Active')]
++--------------------+
+--Query--
+SELECT name, active FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660' ORDER BY name
+--Result--
+[('all_1_1_0', 1), ('all_2_2_0', 1)]
++--------------------+
+--Query--
+SELECT '# optimize'
+--Result--
+[('# optimize',)]
++--------------------+
+--Query--
+SYSTEM START MERGES data_01660
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE data_01660 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(), _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660' GROUP BY _state ORDER BY _state
+--Result--
+[(1, 'Active'), (2, 'Outdated')]
++--------------------+
+--Query--
+SELECT '# truncate'
+--Result--
+[('# truncate',)]
++--------------------+
+--Query--
+TRUNCATE data_01660
+--Result--
+[]
++--------------------+
+--Query--
+SELECT if (count() > 0, 'HAVE PARTS', 'NO PARTS'), _state FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660' GROUP BY _state ORDER BY _state
+--Result--
+[('HAVE PARTS', 'Outdated')]
++--------------------+
+--Query--
+SELECT '# drop'
+--Result--
+[('# drop',)]
++--------------------+
+--Query--
+SELECT * FROM system.parts WHERE database = currentDatabase() AND table = 'data_01660'
+--Result--
+[]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+select md5('a'), hex(md5('a'))
+--Result--
+[('0cc175b9c0f1b6a831c399e269772661', '3063633137356239633066316236613833316333393965323639373732363631')]
++--------------------+
+--Query--
+select md5('hello')
+--Result--
+[('5d41402abc4b2a76b9719d911017c592',)]
++--------------------+
+--Query--
+select length(unhex(md5("abrakadabra")))
+--Result--
+[(16,)]
++--------------------+
+--Query--
+select * from t1 where f1='test' and (f2= md5("test") or f2= md5("TEST"))
+--Result--
+[('test', '098f6bcd4621d373cade4e832627b4f6')]
++--------------------+
+--Query--
+select * from t1 where f1='test' and (f2= md5("TEST") or f2= md5("test"))
+--Result--
+[('test', '098f6bcd4621d373cade4e832627b4f6')]
++--------------------+
+--Query--
+select * from t1 where f1='test' and (f2= sha("test") or f2= sha("TEST"))
+--Result--
+[('test', 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3')]
++--------------------+
+--Query--
+select * from t1 where f1='test' and (f2= sha("TEST") or f2= sha("test"))
+--Result--
+[('test', 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3')]
++--------------------+

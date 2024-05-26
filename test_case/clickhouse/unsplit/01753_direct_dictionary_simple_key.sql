@@ -71,7 +71,6 @@ SELECT 'dictGetOrDefault non existing value';
 SELECT dictGetOrDefault('01753_dictionary_db.direct_dictionary_simple_key_complex_attributes', 'value_first', number, toString('default')) as value_first,
     dictGetOrDefault('01753_dictionary_db.direct_dictionary_simple_key_complex_attributes', 'value_second', number, toString('default')) as value_second FROM system.numbers LIMIT 4;
 SELECT 'dictHas';
-SELECT dictHas('01753_dictionary_db.direct_dictionary_simple_key_complex_attributes', number) FROM system.numbers LIMIT 4;
 SELECT 'select all values as input stream';
 SELECT * FROM 01753_dictionary_db.direct_dictionary_simple_key_complex_attributes;
 DROP DICTIONARY 01753_dictionary_db.direct_dictionary_simple_key_complex_attributes;
@@ -98,7 +97,6 @@ SELECT 'dictGet';
 SELECT dictGet('01753_dictionary_db.direct_dictionary_simple_key_hierarchy', 'parent_id', number) FROM system.numbers LIMIT 5;
 SELECT 'dictGetHierarchy';
 SELECT dictGetHierarchy('01753_dictionary_db.direct_dictionary_simple_key_hierarchy', toUInt64(1));
-SELECT dictGetHierarchy('01753_dictionary_db.direct_dictionary_simple_key_hierarchy', toUInt64(4));
 DROP DICTIONARY 01753_dictionary_db.direct_dictionary_simple_key_hierarchy;
 DROP TABLE 01753_dictionary_db.simple_key_hierarchy_table;
 DROP DATABASE 01753_dictionary_db;

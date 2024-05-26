@@ -1,0 +1,25 @@
+--Query--
+SELECT id FROM (     SELECT 1 AS id     UNION ALL     SELECT NULL     UNION ALL     SELECT NULL ) js1 ALL FULL OUTER JOIN  (     SELECT 1 AS id     UNION ALL     SELECT NULL     UNION ALL     SELECT NULL ) js2 USING (id) ORDER BY id
+--Result--
+[(1,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT NULL AS x ) js1 INNER JOIN  (     SELECT NULL AS x ) js2 USING (x)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT NULL AS x ) js1 FULL OUTER JOIN  (     SELECT NULL AS x ) js2 USING (x)
+--Result--
+[(None,), (None,)]
++--------------------+

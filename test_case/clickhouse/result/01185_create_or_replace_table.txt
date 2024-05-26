@@ -1,0 +1,50 @@
+--Query--
+show tables
+--Result--
+[]
++--------------------+
+--Query--
+show tables
+--Result--
+[('t1',)]
++--------------------+
+--Query--
+show create table t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `n` UInt64,\n    `s` String\n)\nENGINE = MergeTree\nORDER BY n\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+show tables
+--Result--
+[('t1',)]
++--------------------+
+--Query--
+show create table t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `n` UInt64,\n    `s` Nullable(String)\n)\nENGINE = MergeTree\nORDER BY n\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(2, None)]
++--------------------+
+--Query--
+replace table t1 (n UInt64) engine=MergeTree order by n
+--Result--
+[]
++--------------------+
+--Query--
+show tables
+--Result--
+[('t1',)]
++--------------------+
+--Query--
+show create table t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `n` UInt64\n)\nENGINE = MergeTree\nORDER BY n\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(3,)]
++--------------------+

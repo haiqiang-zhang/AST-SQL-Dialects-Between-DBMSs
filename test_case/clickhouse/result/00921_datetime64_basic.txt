@@ -1,0 +1,20 @@
+--Query--
+WITH 'UTC' as timezone SELECT timezone, timeZoneOf(now64(3, timezone)) == timezone
+--Result--
+[('UTC', 1)]
++--------------------+
+--Query--
+WITH 'Europe/Minsk' as timezone SELECT timezone, timeZoneOf(now64(3, timezone)) == timezone
+--Result--
+[('Europe/Minsk', 1)]
++--------------------+
+--Query--
+SELECT toDateTime64('2019-09-16 19:20:11', 3, 'UTC')
+--Result--
+[(datetime.datetime(2019, 9, 16, 19, 20, 11, tzinfo=<UTC>),)]
++--------------------+
+--Query--
+SELECT toString(t, 'UTC'), toDate(t), toStartOfDay(t), toStartOfQuarter(t), toTime(t), toStartOfMinute(t) FROM A ORDER BY t
+--Result--
+[('2019-05-03 11:25:25.123', datetime.date(2019, 5, 3), datetime.datetime(2019, 5, 3, 0, 0, tzinfo=<UTC>), datetime.date(2019, 4, 1), datetime.datetime(1970, 1, 2, 11, 25, 25, tzinfo=<UTC>), datetime.datetime(2019, 5, 3, 11, 25, tzinfo=<UTC>))]
++--------------------+

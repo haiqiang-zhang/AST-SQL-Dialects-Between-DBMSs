@@ -1,0 +1,30 @@
+--Query--
+select round(match(t1.texte,t1.sujet,t1.motsclefs) against('droit'),5)        from t1 left join t2 on t2.id=t1.id
+--Result--
+[(0.0,), (0.0,), (0.22764,), (0.0,)]
++--------------------+
+--Query--
+select match(t1.texte,t1.sujet,t1.motsclefs) against('droit' IN BOOLEAN MODE)        from t1 left join t2 on t2.id=t1.id
+--Result--
+[(0.0,), (0.0,), (0.22764469683170319,), (0.0,)]
++--------------------+
+--Query--
+select * from t1 left join t2 on venue_id = entity_id where match(name) against('aberdeen' in boolean mode) and dt = '2003-05-23 19:30:00'
+--Result--
+[(1, 'a1', datetime.datetime(2003, 5, 23, 19, 30), 'aberdeen town hall', 1)]
++--------------------+
+--Query--
+select * from t1 left join t2 on venue_id = entity_id where match(name) against('aberdeen') and dt = '2003-05-23 19:30:00'
+--Result--
+[(1, 'a1', datetime.datetime(2003, 5, 23, 19, 30), 'aberdeen town hall', 1)]
++--------------------+
+--Query--
+select * from t1 left join t2 on (venue_id = entity_id and match(name) against('aberdeen' in boolean mode)) where dt = '2003-05-23 19:30:00'
+--Result--
+[(1, 'a1', datetime.datetime(2003, 5, 23, 19, 30), 'aberdeen town hall', 1), (None, 'a2', datetime.datetime(2003, 5, 23, 19, 30), None, None)]
++--------------------+
+--Query--
+select * from t1 left join t2 on (venue_id = entity_id and match(name) against('aberdeen')) where dt = '2003-05-23 19:30:00'
+--Result--
+[(1, 'a1', datetime.datetime(2003, 5, 23, 19, 30), 'aberdeen town hall', 1), (None, 'a2', datetime.datetime(2003, 5, 23, 19, 30), None, None)]
++--------------------+

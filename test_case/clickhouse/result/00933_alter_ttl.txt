@@ -1,0 +1,20 @@
+--Query--
+show create table ttl
+--Result--
+[('CREATE TABLE test.ttl\n(\n    `d` Date,\n    `a` Int32\n)\nENGINE = MergeTree\nPARTITION BY toDayOfMonth(d)\nORDER BY a\nTTL d + toIntervalDay(1)\nSETTINGS remove_empty_parts = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+optimize table ttl partition 10 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl order by d, a
+--Result--
+[(datetime.date(2100, 10, 10), 3), (datetime.date(2100, 10, 10), 4)]
++--------------------+
+--Query--
+desc table ttl
+--Result--
+[('d', 'Date', '', '', '', '', ''), ('a', 'Int32', '', '', '', '', 'd + toIntervalDay(1)')]
++--------------------+

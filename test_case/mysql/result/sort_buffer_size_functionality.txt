@@ -1,0 +1,110 @@
+--Query--
+SELECT COUNT(@@GLOBAL.sort_buffer_size)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+SELECT @@SESSION.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size = VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME='sort_buffer_size'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@session.sort_buffer_size = VARIABLE_VALUE  FROM performance_schema.session_variables  WHERE VARIABLE_NAME='sort_buffer_size'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sort_buffer_size = @@GLOBAL.sort_buffer_size
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+select @@session.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+select @@session.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sort_buffer_size
+--Result--
+[(262144,)]
++--------------------+
+--Query--
+select variable_value from performance_schema.session_status where variable_name ='Sort_merge_passes'
+--Result--
+[('0',)]
++--------------------+
+--Query--
+select variable_value from performance_schema.session_status where variable_name ='Sort_rows'
+--Result--
+[('0',)]
++--------------------+
+--Query--
+select variable_value from performance_schema.session_status where variable_name ='Sort_scan'
+--Result--
+[('0',)]
++--------------------+
+--Query--
+select ( select variable_value from performance_schema.global_status where variable_name ='Sort_merge_passes') - @Sort_merge_passes
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (select variable_value from performance_schema.global_status where variable_name ='Sort_rows') - @Sort_rows
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (select variable_value from performance_schema.global_status where variable_name ='Sort_scan') - @Sort_scan
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select ( select variable_value from performance_schema.global_status where variable_name ='Sort_merge_passes') - @Sort_merge_passes
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (select variable_value from performance_schema.global_status where variable_name ='Sort_rows') - @Sort_rows
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (select variable_value from performance_schema.global_status where variable_name ='Sort_scan') - @Sort_scan
+--Result--
+[(None,)]
++--------------------+

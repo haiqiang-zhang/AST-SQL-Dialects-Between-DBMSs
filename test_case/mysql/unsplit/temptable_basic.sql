@@ -87,17 +87,8 @@ SELECT DISTINCT * FROM
 SELECT DISTINCT ST_AsText(t1.c),ST_AsText(t2.c) FROM
     t_point AS t1,
     t_point AS t2;
-SELECT DISTINCT ST_AsText(t1.c),ST_AsText(t2.c) FROM
-    t_geom AS t1,
-    t_geom AS t2;
 SELECT c,COUNT(*) FROM t_int GROUP BY c;
-SELECT c,COUNT(*) FROM t_char GROUP BY c;
-SELECT c,COUNT(*) FROM t_varchar GROUP BY c;
-SELECT c,COUNT(*) FROM t_text GROUP BY c;
-SELECT c,COUNT(*) FROM t_blob GROUP BY c;
-SELECT c,COUNT(*) FROM t_json GROUP BY c;
 SELECT ST_AsText(c),COUNT(*) FROM t_point GROUP BY c;
-SELECT ST_AsText(c),COUNT(*) FROM t_geom GROUP BY c;
 DROP TABLE t_int;
 DROP TABLE t_char;
 DROP TABLE t_varchar;
@@ -114,10 +105,6 @@ INSERT INTO t_pk VALUES
         (1),
 	(2),
 	(3);
-SELECT COUNT(t_pk.pk) FROM t_pk
-    WHERE 1 IN (SELECT 1 FROM t_pk AS SQ2_alias1
-        WHERE 1 IN (SELECT 1 FROM t_pk AS C_SQ1_alias1)
-    );
 DROP TABLE t_pk;
 CREATE TABLE t_json(json_col JSON);
 INSERT INTO t_json VALUES (

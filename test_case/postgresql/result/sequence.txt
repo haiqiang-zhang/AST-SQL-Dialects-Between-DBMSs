@@ -19,84 +19,9 @@ SELECT nextval('serialTest2_f2_seq')
 [(2,)]
 +--------------------+
 --Query--
-SELECT nextval('serialTest2_f3_seq')
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT nextval('serialTest2_f4_seq')
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT nextval('serialTest2_f5_seq')
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT nextval('serialTest2_f6_seq')
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test'::text)
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test'::regclass)
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT currval('sequence_test'::text)
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT currval('sequence_test'::regclass)
---Result--
-[(2,)]
-+--------------------+
---Query--
 SELECT setval('sequence_test'::text, 32)
 --Result--
 [(32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test'::regclass)
---Result--
-[(33,)]
-+--------------------+
---Query--
-SELECT setval('sequence_test'::text, 99, false)
---Result--
-[(99,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test'::regclass)
---Result--
-[(99,)]
-+--------------------+
---Query--
-SELECT setval('sequence_test'::regclass, 32)
---Result--
-[(32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test'::text)
---Result--
-[(33,)]
-+--------------------+
---Query--
-SELECT setval('sequence_test'::regclass, 99, false)
---Result--
-[(99,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test'::text)
---Result--
-[(99,)]
 +--------------------+
 --Query--
 DISCARD SEQUENCES
@@ -109,134 +34,14 @@ SELECT * FROM foo_seq_new
 [(1, 0, False)]
 +--------------------+
 --Query--
-SELECT nextval('foo_seq_new')
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT nextval('foo_seq_new')
---Result--
-[(2,)]
-+--------------------+
---Query--
 SELECT last_value, log_cnt IN (31, 32) AS log_cnt_ok, is_called FROM foo_seq_new
 --Result--
-[(2, True, True)]
+[(1, False, False)]
 +--------------------+
 --Query--
 SELECT * FROM serialTest1
 --Result--
 [('foo', 1), ('bar', 2), ('force', 100), ('more', 3)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test4')
---Result--
-[(-1,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(24,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(28,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(36,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(5,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(24,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(28,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(36,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-24,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-28,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-36,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-5,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-24,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-28,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-32,)]
-+--------------------+
---Query--
-SELECT nextval('sequence_test2')
---Result--
-[(-36,)]
-+--------------------+
---Query--
-SELECT setval('sequence_test2', 5)
---Result--
-[(5,)]
 +--------------------+
 --Query--
 SELECT * FROM information_schema.sequences   WHERE sequence_name ~ ANY(ARRAY['sequence_test', 'serialtest'])   ORDER BY sequence_name ASC
@@ -246,7 +51,7 @@ SELECT * FROM information_schema.sequences   WHERE sequence_name ~ ANY(ARRAY['se
 --Query--
 SELECT schemaname, sequencename, start_value, min_value, max_value, increment_by, cycle, cache_size, last_value FROM pg_sequences WHERE sequencename ~ ANY(ARRAY['sequence_test', 'serialtest'])   ORDER BY sequencename ASC
 --Result--
-[('public', 'sequence_test10', 1, -20000, 32767, 1, False, 1, None), ('public', 'sequence_test11', 1, 1, 2147483647, 1, False, 1, None), ('public', 'sequence_test12', -1, -2147483648, -1, -1, False, 1, None), ('public', 'sequence_test13', -32768, -2147483648, 2147483647, 1, False, 1, None), ('public', 'sequence_test14', 32767, -2147483648, 2147483647, -1, False, 1, None), ('public', 'sequence_test2', 32, 5, 36, 4, True, 1, 5), ('public', 'sequence_test3', 1, 1, 9223372036854775807, 1, False, 1, None), ('public', 'sequence_test4', -1, -9223372036854775808, -1, -1, False, 1, -1), ('public', 'sequence_test5', 1, 1, 32767, 1, False, 1, None), ('public', 'sequence_test6', 1, 1, 32767, 1, False, 1, None), ('public', 'sequence_test7', 1, 1, 9223372036854775807, 1, False, 1, None), ('public', 'sequence_test8', 1, 1, 20000, 1, False, 1, None), ('public', 'sequence_test9', -1, -32768, -1, -1, False, 1, None), ('public', 'serialtest1_f2_foo', 1, 1, 2147483647, 1, False, 1, 3), ('public', 'serialtest2_f2_seq', 1, 1, 2147483647, 1, False, 1, 2), ('public', 'serialtest2_f3_seq', 1, 1, 32767, 1, False, 1, 2), ('public', 'serialtest2_f4_seq', 1, 1, 32767, 1, False, 1, 2), ('public', 'serialtest2_f5_seq', 1, 1, 9223372036854775807, 1, False, 1, 2), ('public', 'serialtest2_f6_seq', 1, 1, 9223372036854775807, 1, False, 1, 2)]
+[('public', 'sequence_test10', 1, -20000, 32767, 1, False, 1, None), ('public', 'sequence_test11', 1, 1, 2147483647, 1, False, 1, None), ('public', 'sequence_test12', -1, -2147483648, -1, -1, False, 1, None), ('public', 'sequence_test13', -32768, -2147483648, 2147483647, 1, False, 1, None), ('public', 'sequence_test14', 32767, -2147483648, 2147483647, -1, False, 1, None), ('public', 'sequence_test2', 32, 5, 36, 4, True, 1, None), ('public', 'sequence_test3', 1, 1, 9223372036854775807, 1, False, 1, None), ('public', 'sequence_test4', -1, -9223372036854775808, -1, -1, False, 1, None), ('public', 'sequence_test5', 1, 1, 32767, 1, False, 1, None), ('public', 'sequence_test6', 1, 1, 32767, 1, False, 1, None), ('public', 'sequence_test7', 1, 1, 9223372036854775807, 1, False, 1, None), ('public', 'sequence_test8', 1, 1, 20000, 1, False, 1, None), ('public', 'sequence_test9', -1, -32768, -1, -1, False, 1, None), ('public', 'serialtest1_f2_foo', 1, 1, 2147483647, 1, False, 1, 3), ('public', 'serialtest2_f2_seq', 1, 1, 2147483647, 1, False, 1, 2), ('public', 'serialtest2_f3_seq', 1, 1, 32767, 1, False, 1, 1), ('public', 'serialtest2_f4_seq', 1, 1, 32767, 1, False, 1, 1), ('public', 'serialtest2_f5_seq', 1, 1, 9223372036854775807, 1, False, 1, 1), ('public', 'serialtest2_f6_seq', 1, 1, 9223372036854775807, 1, False, 1, 1)]
 +--------------------+
 --Query--
 SELECT * FROM pg_sequence_parameters('sequence_test4'::regclass)
@@ -264,24 +69,9 @@ COMMENT ON SEQUENCE sequence_test2 IS NULL
 []
 +--------------------+
 --Query--
-SELECT nextval('seq')
---Result--
-[(1,)]
-+--------------------+
---Query--
 SELECT lastval()
 --Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT setval('seq', 99)
---Result--
-[(99,)]
-+--------------------+
---Query--
-SELECT lastval()
---Result--
-[(99,)]
+[(3,)]
 +--------------------+
 --Query--
 DISCARD SEQUENCES
@@ -289,52 +79,17 @@ DISCARD SEQUENCES
 []
 +--------------------+
 --Query--
-SELECT nextval('seq2')
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT lastval()
---Result--
-[(1,)]
-+--------------------+
---Query--
 START TRANSACTION READ ONLY
 --Result--
 []
 +--------------------+
 --Query--
-SELECT nextval('sequence_test_temp1')
---Result--
-[(1,)]
-+--------------------+
---Query--
 START TRANSACTION READ ONLY
 --Result--
 []
-+--------------------+
---Query--
-SELECT setval('sequence_test_temp1', 1)
---Result--
-[(1,)]
 +--------------------+
 --Query--
 SELECT * FROM information_schema.sequences WHERE sequence_name IN   ('sequence_test2', 'serialtest2_f2_seq', 'serialtest2_f3_seq',    'serialtest2_f4_seq', 'serialtest2_f5_seq', 'serialtest2_f6_seq')   ORDER BY sequence_name ASC
 --Result--
 [('test_db', 'public', 'sequence_test2', 'bigint', 64, 2, 0, '32', '5', '36', '4', 'YES')]
-+--------------------+
---Query--
-SELECT nextval('test_seq1')
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT nextval('test_seq1')
---Result--
-[(2,)]
-+--------------------+
---Query--
-SELECT nextval('test_seq1')
---Result--
-[(3,)]
 +--------------------+

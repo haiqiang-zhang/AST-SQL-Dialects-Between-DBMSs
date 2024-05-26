@@ -1,0 +1,15 @@
+--Query--
+SELECT a, c FROM test_rlp WHERE c%2 == 0 AND b < 5
+--Result--
+[(0, 10), (2, 12), (4, 14)]
++--------------------+
+--Query--
+SELECT a, c FROM test_rlp WHERE b < 5 SETTINGS optimize_move_to_prewhere = 0
+--Result--
+[(0, 10), (1, 11), (2, 12), (3, 13), (4, 14)]
++--------------------+
+--Query--
+SELECT a, c FROM test_rlp PREWHERE b < 5
+--Result--
+[(0, 10), (1, 11), (2, 12), (3, 13), (4, 14)]
++--------------------+

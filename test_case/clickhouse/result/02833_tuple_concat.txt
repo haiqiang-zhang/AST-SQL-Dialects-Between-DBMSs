@@ -1,0 +1,25 @@
+--Query--
+SELECT tupleConcat((1, 'y'), (2, 'n'))
+--Result--
+[((1, 'y', 2, 'n'),)]
++--------------------+
+--Query--
+WITH (1,2,3) || ('a','b','c') || ('2020-10-08'::Date, '2020-11-08'::Date) AS t SELECT t, t.1, t.2, t.3, t.4, t.5, t.6, t.7, t.8
+--Result--
+[((1, 2, 3, 'a', 'b', 'c', datetime.date(2020, 10, 8), datetime.date(2020, 11, 8)), 1, 2, 3, 'a', 'b', 'c', datetime.date(2020, 10, 8), datetime.date(2020, 11, 8))]
++--------------------+
+--Query--
+WITH (tup || tup) AS res SELECT res, res.1, res.2, res.3, res.4 FROM t_02833
+--Result--
+[((1, 2, 1, 2), 1, 2, 1, 2)]
++--------------------+
+--Query--
+WITH (tup || (3, 4)) AS res SELECT res, res.1, res.2, res.3, res.4 FROM t_02833
+--Result--
+[((1, 2, 3, 4), 1, 2, 3, 4)]
++--------------------+
+--Query--
+WITH ((3, 4) || tup) AS res SELECT res, res.1, res.2, res.3, res.4 FROM t_02833
+--Result--
+[((3, 4, 1, 2), 3, 4, 1, 2)]
++--------------------+

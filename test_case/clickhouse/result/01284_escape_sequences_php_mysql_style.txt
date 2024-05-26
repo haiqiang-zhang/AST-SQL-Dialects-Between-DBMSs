@@ -1,0 +1,15 @@
+--Query--
+SELECT 'a\_\c\l\i\c\k\h\o\u\s\e', 'a\\_\\c\\l\\i\\c\\k\\h\\o\\u\\s\\e'
+--Result--
+[('a\\_\\c\\l\\i\\c\\k\\h\\o\\u\\s\x1b', 'a\\_\\c\\l\\i\\c\\k\\h\\o\\u\\s\\e')]
++--------------------+
+--Query--
+select 'aXb' like 'a_b', 'aXb' like 'a\_b', 'a_b' like 'a\_b', 'a_b' like 'a\\_b'
+--Result--
+[(1, 0, 1, 1)]
++--------------------+
+--Query--
+SELECT match('Hello', '\w+'), match('Hello', '\\w+'), match('Hello', '\\\w+'), match('Hello', '\w\+'), match('Hello', 'w+')
+--Result--
+[(1, 1, 0, 0, 0)]
++--------------------+

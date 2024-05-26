@@ -1,0 +1,40 @@
+--Query--
+SELECT CONCAT_WS('<---->',number,alpha) AS new FROM t1 GROUP BY new LIMIT 1
+--Result--
+[('1413006<---->idlfmv',)]
++--------------------+
+--Query--
+select * from t1 where concat(A,C,B,D) = 'AAAA2003-03-011051'
+--Result--
+[('AAAA', 105.0, datetime.date(2003, 3, 1), 1)]
++--------------------+
+--Query--
+select 'a' union select concat('a', -4)
+--Result--
+[('a',), ('a-4',)]
++--------------------+
+--Query--
+select concat(f1, 2) a from t1 union select 'x' a from t1
+--Result--
+[('1234562',), ('x',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE CONCAT(c1,' ',c2) REGEXP 'First.*'
+--Result--
+[('', 'First')]
++--------------------+
+--Query--
+SELECT CONCAT('gui_', t2.a), t1.d FROM t2    LEFT JOIN t1 ON t1.a = CONCAT('gui_', t2.a) AND t1.b = 'a' AND t1.c = 'b'
+--Result--
+[('gui_A', 'str1'), ('gui_AB', 'str2'), ('gui_ABC', 'str3')]
++--------------------+
+--Query--
+SELECT @query
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @s
+--Result--
+[(None,)]
++--------------------+

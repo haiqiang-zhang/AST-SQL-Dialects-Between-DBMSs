@@ -1,0 +1,60 @@
+--Query--
+SELECT extractValue(@xml,'/a')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select UpdateXML('<a>a1<b>b1<c>c1</c>b2</b>a2</a>','/a/b/c','+++++++++')
+--Result--
+[('<a>a1<b>b1+++++++++b2</b>a2</a>',)]
++--------------------+
+--Query--
+select updatexml('<div><div><span>1</span><span>2</span></div></div>',                  '/','<tr><td>1</td><td>2</td></tr>') as upd1
+--Result--
+[('<tr><td>1</td><td>2</td></tr>',)]
++--------------------+
+--Query--
+select updatexml('', '/', '') as upd2
+--Result--
+[('',)]
++--------------------+
+--Query--
+select extractvalue(@xml,'order/clerk')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select ExtractValue('<tag1><![CDATA[test]]></tag1>','/tag1')
+--Result--
+[('test',)]
++--------------------+
+--Query--
+select updatexml(NULL, 1, 1), updatexml(1, NULL, 1), updatexml(1, 1, NULL)
+--Result--
+[(None, None, None)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 ORDER BY(UPDATEXML(a, '1', '1'))
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT REPLACE(EXTRACTVALUE('1', '/a'),'ds','')
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT AVG(DISTINCT EXTRACTVALUE((''),('$@k')))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT UPDATEXML(CONVERT(_latin1'<' USING utf8mb3),'1','1')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @y
+--Result--
+[(None,)]
++--------------------+

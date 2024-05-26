@@ -1,0 +1,25 @@
+--Query--
+select 'Original bug: the same query executed multiple times yielded different results.'
+--Result--
+[('Original bug: the same query executed multiple times yielded different results.',)]
++--------------------+
+--Query--
+select 'For unclear reasons this happened only in Release builds, not in Debug builds.'
+--Result--
+[('For unclear reasons this happened only in Release builds, not in Debug builds.',)]
++--------------------+
+--Query--
+select count(*) from bug_delta_gorilla where 0 <> value_bug
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 'The same issue in a much smaller repro happens also in Debug builds'
+--Result--
+[('The same issue in a much smaller repro happens also in Debug builds',)]
++--------------------+
+--Query--
+select * from bug_delta_gorilla
+--Result--
+[(0,), (1,), (3,)]
++--------------------+

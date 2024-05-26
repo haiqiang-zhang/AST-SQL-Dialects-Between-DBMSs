@@ -1,0 +1,30 @@
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT part_name FROM system.parts where table='test' and active and database = currentDatabase()
+--Result--
+[('all_1_1_1',)]
++--------------------+
+--Query--
+SELECT part_name FROM system.parts where table='test' and active and database = currentDatabase()
+--Result--
+[('all_2_2_0',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT part_name FROM system.parts where table='test' and active and database = currentDatabase()
+--Result--
+[('all_1_1_1',)]
++--------------------+
+--Query--
+SELECT part_name FROM system.parts where table='test' and active and database = currentDatabase()
+--Result--
+[('all_2_2_0',)]
++--------------------+

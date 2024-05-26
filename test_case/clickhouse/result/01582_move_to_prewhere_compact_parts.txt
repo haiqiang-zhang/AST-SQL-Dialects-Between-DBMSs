@@ -1,0 +1,5 @@
+--Query--
+SELECT replaceRegexpAll(explain, '__table1\.|_UInt8', '') FROM (EXPLAIN actions=1 SELECT * FROM prewhere_move WHERE x > 100) WHERE explain LIKE '%Prewhere%' OR explain LIKE '%Filter%'
+--Result--
+[('    Prewhere info',), ('      Prewhere filter',), ('      Prewhere filter column: greater(x, 100) (removed)',)]
++--------------------+

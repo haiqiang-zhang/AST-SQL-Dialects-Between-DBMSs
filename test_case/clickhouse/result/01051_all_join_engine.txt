@@ -1,0 +1,110 @@
+--Query--
+SELECT 'left'
+--Result--
+[('left',)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN left_join j USING(x) ORDER BY x, str, s
+--Result--
+[(0, 'a1', ''), (1, 'a2', ''), (2, 'a3', 'b1'), (2, 'a3', 'b2'), (3, 'a4', ''), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5')]
++--------------------+
+--Query--
+SELECT 'inner'
+--Result--
+[('inner',)]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN inner_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5')]
++--------------------+
+--Query--
+SELECT 'right'
+--Result--
+[('right',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN right_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5'), (5, '', 'b6')]
++--------------------+
+--Query--
+SELECT 'full'
+--Result--
+[('full',)]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL JOIN full_join j USING(x) ORDER BY x, str, s
+--Result--
+[(0, 'a1', ''), (1, 'a2', ''), (2, 'a3', 'b1'), (2, 'a3', 'b2'), (3, 'a4', ''), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5'), (5, '', 'b6')]
++--------------------+
+--Query--
+SELECT 'inner (join_use_nulls mix)'
+--Result--
+[('inner (join_use_nulls mix)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN inner_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5')]
++--------------------+
+--Query--
+SELECT 'right (join_use_nulls mix)'
+--Result--
+[('right (join_use_nulls mix)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN right_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5'), (5, None, 'b6')]
++--------------------+
+--Query--
+SELECT 'left (join_use_nulls)'
+--Result--
+[('left (join_use_nulls)',)]
++--------------------+
+--Query--
+SELECT 'inner (join_use_nulls)'
+--Result--
+[('inner (join_use_nulls)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN inner_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5')]
++--------------------+
+--Query--
+SELECT 'right (join_use_nulls)'
+--Result--
+[('right (join_use_nulls)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN right_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5'), (5, None, 'b6')]
++--------------------+
+--Query--
+SELECT 'full (join_use_nulls)'
+--Result--
+[('full (join_use_nulls)',)]
++--------------------+
+--Query--
+SELECT 'inner (join_use_nulls mix2)'
+--Result--
+[('inner (join_use_nulls mix2)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 INNER JOIN inner_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5')]
++--------------------+
+--Query--
+SELECT 'right (join_use_nulls mix2)'
+--Result--
+[('right (join_use_nulls mix2)',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN right_join j USING(x) ORDER BY x, str, s
+--Result--
+[(2, 'a3', 'b1'), (2, 'a3', 'b2'), (4, 'a5', 'b3'), (4, 'a5', 'b4'), (4, 'a5', 'b5'), (5, '', 'b6')]
++--------------------+

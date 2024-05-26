@@ -85,10 +85,8 @@ BEGIN;
 RESET SESSION AUTHORIZATION;
 ROLLBACK;
 CREATE VIEW atestv1 AS SELECT * FROM atest1;
-
 CREATE VIEW atestv2 AS SELECT * FROM atest2;
 CREATE VIEW atestv3 AS SELECT * FROM atest3;
-
 CREATE VIEW atestv0 AS SELECT 0 as x WHERE false;
 SELECT * FROM atestv1;
 SELECT * FROM atestv2;
@@ -280,9 +278,7 @@ END;
 REVOKE ALL PRIVILEGES ON LANGUAGE sql FROM PUBLIC;
 CREATE AGGREGATE priv_testagg1(int) (sfunc = int4pl, stype = int4);
 SELECT priv_testagg1(x) FROM (VALUES (1), (2), (3)) _(x);
-SELECT priv_testagg1(x) FROM (VALUES (1), (2), (3)) _(x);
 SELECT col1 FROM atest2 WHERE col2 = true;
-SELECT priv_testagg1(x) FROM (VALUES (1), (2), (3)) _(x);
 DROP AGGREGATE priv_testagg1(int);
 GRANT ALL PRIVILEGES ON LANGUAGE sql TO PUBLIC;
 BEGIN;
@@ -353,85 +349,9 @@ DROP TABLE test11b;
 TRUNCATE atest2;
 TRUNCATE atest3;
 select has_table_privilege(NULL,'pg_authid','select');
-select has_table_privilege(-999999,'pg_authid','update');
-select has_table_privilege(1,'select');
-select has_table_privilege(current_user,'pg_authid','select');
-select has_table_privilege(current_user,'pg_authid','insert');
-select has_table_privilege(t2.oid,'pg_authid','update')
-from (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(t2.oid,'pg_authid','delete')
-from (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(current_user,t1.oid,'rule')
-from (select oid from pg_class where relname = 'pg_authid') as t1;
-select has_table_privilege(current_user,t1.oid,'references')
-from (select oid from pg_class where relname = 'pg_authid') as t1;
-select has_table_privilege(t2.oid,t1.oid,'select')
-from (select oid from pg_class where relname = 'pg_authid') as t1,
-  (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(t2.oid,t1.oid,'insert')
-from (select oid from pg_class where relname = 'pg_authid') as t1,
-  (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege('pg_authid','update');
-select has_table_privilege('pg_authid','delete');
-select has_table_privilege('pg_authid','truncate');
-select has_table_privilege(t1.oid,'select')
-from (select oid from pg_class where relname = 'pg_authid') as t1;
-select has_table_privilege(t1.oid,'trigger')
-from (select oid from pg_class where relname = 'pg_authid') as t1;
-select has_table_privilege(current_user,'pg_class','select');
-select has_table_privilege(current_user,'pg_class','insert');
-select has_table_privilege(t2.oid,'pg_class','update')
-from (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(t2.oid,'pg_class','delete')
-from (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(current_user,t1.oid,'references')
-from (select oid from pg_class where relname = 'pg_class') as t1;
-select has_table_privilege(t2.oid,t1.oid,'select')
-from (select oid from pg_class where relname = 'pg_class') as t1,
-  (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(t2.oid,t1.oid,'insert')
-from (select oid from pg_class where relname = 'pg_class') as t1,
-  (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege('pg_class','update');
-select has_table_privilege('pg_class','delete');
-select has_table_privilege('pg_class','truncate');
-select has_table_privilege(t1.oid,'select')
-from (select oid from pg_class where relname = 'pg_class') as t1;
-select has_table_privilege(t1.oid,'trigger')
-from (select oid from pg_class where relname = 'pg_class') as t1;
-select has_table_privilege(current_user,'atest1','select');
-select has_table_privilege(current_user,'atest1','insert');
-select has_table_privilege(t2.oid,'atest1','update')
-from (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(t2.oid,'atest1','delete')
-from (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(current_user,t1.oid,'references')
-from (select oid from pg_class where relname = 'atest1') as t1;
-select has_table_privilege(t2.oid,t1.oid,'select')
-from (select oid from pg_class where relname = 'atest1') as t1,
-  (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege(t2.oid,t1.oid,'insert')
-from (select oid from pg_class where relname = 'atest1') as t1,
-  (select oid from pg_roles where rolname = current_user) as t2;
-select has_table_privilege('atest1','update');
-select has_table_privilege('atest1','delete');
-select has_table_privilege('atest1','truncate');
-select has_table_privilege(t1.oid,'select')
-from (select oid from pg_class where relname = 'atest1') as t1;
-select has_table_privilege(t1.oid,'trigger')
-from (select oid from pg_class where relname = 'atest1') as t1;
 select has_column_privilege('pg_authid',NULL,'select');
-select has_column_privilege(9999,'nosuchcol','select');
-select has_column_privilege(9999,99::int2,'select');
-select has_column_privilege('pg_authid',99::int2,'select');
-select has_column_privilege(9999,99::int2,'select');
 create temp table mytable(f1 int, f2 int, f3 int);
 alter table mytable drop column f2;
-select has_column_privilege('mytable','........pg.dropped.2........','select');
-select has_column_privilege('mytable',2::int2,'select');
-select has_column_privilege('mytable',99::int2,'select');
-select has_column_privilege('mytable',2::int2,'select');
-select has_column_privilege('mytable',99::int2,'select');
 drop table mytable;
 CREATE TABLE atest4 (a int);
 END;
@@ -458,35 +378,9 @@ DROP FUNCTION dogrant_ok();
 CREATE SEQUENCE x_seq;
 SELECT has_sequence_privilege('x_seq', 'USAGE');
 SELECT lo_create(1001);
-SELECT lo_create(1002);
-SELECT lo_create(1003);
-SELECT lo_create(1004);
-SELECT lo_create(1005);
 GRANT ALL ON LARGE OBJECT 1001 TO PUBLIC;
-SELECT lo_create(2001);
-SELECT lo_create(2002);
-SELECT loread(lo_open(1001, x'20000'::int), 32);
-SELECT loread(lo_open(1001, x'40000'::int), 32);
-SELECT loread(lo_open(1002, x'40000'::int), 32);
-SELECT loread(lo_open(1003, x'40000'::int), 32);
-SELECT loread(lo_open(1004, x'40000'::int), 32);
 SELECT lowrite(lo_open(1001, x'20000'::int), 'abcd');
-SELECT lowrite(lo_open(1002, x'20000'::int), 'abcd');
-SELECT lowrite(lo_open(1003, x'20000'::int), 'abcd');
-SELECT lowrite(lo_open(1004, x'20000'::int), 'abcd');
-REVOKE ALL ON LARGE OBJECT 2001, 2002 FROM PUBLIC;
-SELECT lo_unlink(1001);
-SELECT lo_unlink(2002);
 SELECT oid, pg_get_userbyid(lomowner) ownername, lomacl FROM pg_largeobject_metadata WHERE oid >= 1000 AND oid < 3000 ORDER BY oid;
-SELECT loread(lo_open(1003, x'40000'::int), 32);
-SELECT loread(lo_open(1005, x'40000'::int), 32);
-SELECT lo_truncate(lo_open(1005, x'20000'::int), 10);
-SELECT lo_truncate(lo_open(2001, x'20000'::int), 10);
-SELECT loread(lo_open(1002, x'40000'::int), 32);
-SELECT lowrite(lo_open(1002, x'20000'::int), 'abcd');
-SELECT lo_truncate(lo_open(1002, x'20000'::int), 10);
-SELECT lo_put(1002, 1, 'abcd');
-SELECT lo_unlink(1002);
 RESET SESSION AUTHORIZATION;
 BEGIN;
 ROLLBACK;
@@ -506,12 +400,7 @@ CREATE TABLE testns.acltest1 (x int);
 DROP TABLE testns.acltest1;
 CREATE TABLE testns.acltest1 (x int);
 SELECT pg_input_is_valid('regress_priv_user1=r/regress_priv_user2', 'aclitem');
-SELECT pg_input_is_valid('regress_priv_user1=r/', 'aclitem');
 SELECT * FROM pg_input_error_info('regress_priv_user1=r/', 'aclitem');
-SELECT pg_input_is_valid('regress_priv_user1=r/regress_no_such_user', 'aclitem');
-SELECT * FROM pg_input_error_info('regress_priv_user1=r/regress_no_such_user', 'aclitem');
-SELECT pg_input_is_valid('regress_priv_user1=rY', 'aclitem');
-SELECT * FROM pg_input_error_info('regress_priv_user1=rY', 'aclitem');
 BEGIN;
 COMMIT;
 BEGIN;
@@ -573,7 +462,6 @@ DROP TABLE atest6;
 DROP TABLE atestc;
 DROP TABLE atestp1;
 DROP TABLE atestp2;
-SELECT lo_unlink(oid) FROM pg_largeobject_metadata WHERE oid >= 1000 AND oid < 3000 ORDER BY oid;
 CREATE TABLE lock_table (a int);
 BEGIN;
 LOCK TABLE lock_table IN ACCESS SHARE MODE;

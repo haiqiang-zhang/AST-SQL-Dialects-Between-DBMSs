@@ -1,0 +1,140 @@
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2)
+--Result--
+[('one',), ('two',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (+i=2 AND j=2)
+--Result--
+[('one',), ('two',)]
++--------------------+
+--Query--
+SELECT n FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2)
+--Result--
+[('uno',), ('dos',)]
++--------------------+
+--Query--
+SELECT k, n FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2)
+--Result--
+[('one', 'uno'), ('two', 'dos')]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2) OR (i=3 AND j=3)
+--Result--
+[('one',), ('two',), ('three',)]
++--------------------+
+--Query--
+SELECT n FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2) OR (i=3 AND j=3)
+--Result--
+[('uno',), ('dos',), ('tres',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (j=2 AND m=2)
+--Result--
+[('one',), ('two',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2) OR (j=3 AND m=3)
+--Result--
+[('one',), ('two',), ('three',)]
++--------------------+
+--Query--
+SELECT n FROM t WHERE (i=1 AND j=1) OR (i=2 AND j=2) OR (j=3 AND m=3)
+--Result--
+[('uno',), ('dos',), ('tres',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (j=2 AND m=2) OR (i=3 AND j=3)
+--Result--
+[('one',), ('two',), ('three',)]
++--------------------+
+--Query--
+SELECT n FROM t WHERE (i=1 AND j=1) OR (j=2 AND m=2) OR (i=3 AND j=3)
+--Result--
+[('uno',), ('dos',), ('tres',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (j=1 AND m=1) OR (i=2 AND j=2) OR (i=3 AND j=3)
+--Result--
+[('one',), ('two',), ('three',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=1) OR (j=2 AND i=2) OR (i=3 AND j=3)
+--Result--
+[('one',), ('two',), ('three',)]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND j=2) OR (i=2 AND j=1) OR (i=3 AND j=4)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT k FROM t WHERE (i=1 AND (j=1 or j=2)) OR (i=3 AND j=3)
+--Result--
+[('one',), ('three',)]
++--------------------+
+--Query--
+SELECT a, x FROM t1 JOIN t2 ON +y=d OR x=7 ORDER BY a, x
+--Result--
+[(1, 3)]
++--------------------+
+--Query--
+SELECT a, x FROM t1 JOIN t2 ON y=d OR x=7 ORDER BY a, x
+--Result--
+[(1, 3)]
++--------------------+
+--Query--
+SELECT *     FROM t44 AS x        LEFT JOIN (SELECT a AS c, b AS d FROM t44) AS y ON a=c    WHERE d=4 OR d IS NULL
+--Result--
+[(3, 4, 3, 4)]
++--------------------+
+--Query--
+SELECT *     FROM t44 AS x        LEFT JOIN (SELECT a AS c, b AS d FROM t44) AS y ON a=c    WHERE d=4 OR d IS NULL    ORDER BY a
+--Result--
+[(3, 4, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t44 LEFT JOIN t46 ON a=c    WHERE d=4 OR d IS NULL
+--Result--
+[(3, 4, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t44 LEFT JOIN t46 ON a=c    WHERE d=4 OR d IS NULL    ORDER BY a
+--Result--
+[(3, 4, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE     c0=1 or  c1=1 or  c2=1 or  c3=1 or     c4=1 or  c5=1 or  c6=1 or  c7=1 or     c8=1 or  c9=1 or c10=1 or c11=1 or     c12=1 or c13=1 or c14=1 or c15=1 or     c16=1 or c17=1
+--Result--
+[(1, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, None)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE     c0=1 or  c1=1 or  c2=1 or  c3=1 or     c4=1 or  c5=1 or  c6=1 or  c7=1 or     c8=1 or  c9=1 or c10=1 or c11=1 or     c12=1 or c13=1 or c14=1 or c15=1 or     c16=1 or c17=1
+--Result--
+[(1, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE     c0=1 or  c1=1 or  c2=1 or  c3=1 or     c4=1 or  c5=1 or  c6=1 or  c7=1 or     c8=1 or  c9=1 or c10=1 or c11=1 or     c12=1 or c13=1 or c14=1 or c15=1 or     c16=1 or c17=1
+--Result--
+[(1, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 1, None, None)]
++--------------------+
+--Query--
+SELECT t1.* FROM t1 LEFT JOIN t2 ON abs(t1.a)=abs(t2.b)
+--Result--
+[(None, 2)]
++--------------------+
+--Query--
+SELECT * FROM y1 LEFT JOIN y2 ON ((x=1 AND y=b) OR (x=2 AND y=b))
+--Result--
+[(1, 1, None, None)]
++--------------------+
+--Query--
+SELECT      bar.Id, bar.ba, bar.bb, foo.fb     FROM foo LEFT JOIN bar            ON (bar.ba = 1 AND bar.bb = foo.fb)            OR (bar.ba = 5 AND bar.bb = foo.fb)
+--Result--
+[(1, 1, 1, 1), (None, None, None, 2), (None, None, None, 3), (4, 1, 4, 4), (None, None, None, 5), (None, None, None, 6), (7, 1, 7, 7), (None, None, None, 8), (None, None, None, 9)]
++--------------------+
+--Query--
+SELECT      bar.Id, bar.ba, bar.bb, foo.fb     FROM foo LEFT JOIN bar            ON (bar.ba = 1 AND bar.bb = foo.fb)            OR (bar.ba = 5 AND bar.bb = foo.fb)
+--Result--
+[(1, 1, 1, 1), (None, None, None, 2), (None, None, None, 3), (4, 1, 4, 4), (None, None, None, 5), (None, None, None, 6), (7, 1, 7, 7), (None, None, None, 8), (None, None, None, 9)]
++--------------------+

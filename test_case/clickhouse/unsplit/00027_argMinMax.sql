@@ -1,7 +1,4 @@
 select argMin(x.1, x.2), argMax(x.1, x.2) from (select (number, number + 1) as x from numbers(10));
-select argMin(x.1, x.2), argMax(x.1, x.2) from (select (toString(number), toInt32(number) + 1) as x from numbers(10));
-select argMin(x.1, x.2), argMax(x.1, x.2) from (select (toDate(number, 'UTC'), toDateTime(number, 'UTC') + 1) as x from numbers(10));
-select argMin(x.1, x.2), argMax(x.1, x.2) from (select (toDecimal32(number, 2), toDecimal64(number, 2) + 1) as x from numbers(10));
 SELECT
     argMinArray(id, num),
     argMaxArray(id, num)

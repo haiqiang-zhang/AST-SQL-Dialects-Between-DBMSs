@@ -1,0 +1,55 @@
+--Query--
+OPTIMIZE TABLE nnd
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (            SELECT                ts,                metric,                nonNegativeDerivative(metric, ts) OVER (PARTITION BY metric ORDER BY ts, metric ASC Rows BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS deriv            FROM nnd            LIMIT 5, 1        ) = (            SELECT                ts,                metric,                nonNegativeDerivative(metric, ts, toIntervalSecond(1)) OVER (PARTITION BY metric ORDER BY ts ASC Rows BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS deriv            FROM nnd            LIMIT 5, 1        )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 340.00000000000006), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.20550000000000002), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 3 NANOSECOND) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 2 PRECEDING AND 2 FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 1.0200000000000004e-06), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 6.165000000000001e-10), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 4 MICROSECOND) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 0.00136), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 8.22e-07), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 5 MILLISECOND) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 1.7000000000000004), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0010275000000000002), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 6 SECOND) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 1 PRECEDING AND UNBOUNDED FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 2040.0000000000005), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 1.233), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 7 MINUTE) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN UNBOUNDED PRECEDING AND 2 FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 142800.00000000003), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 86.31), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 8 HOUR) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 9792000.000000002), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 5918.400000000001), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 9 DAY) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 3 PRECEDING AND 3 FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 264384000.00000003), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 159796.80000000002), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+
+--Query--
+SELECT ts, metric, nonNegativeDerivative(metric, ts, INTERVAL 10 WEEK) OVER (PARTITION BY id>3 ORDER BY ts, metric ASC Rows BETWEEN 1 PRECEDING AND UNBOUNDED FOLLOWING) AS deriv FROM nnd
+--Result--
+[(datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 1.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 123000, tzinfo=<UTC>), 2.34, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 21, 127000, tzinfo=<UTC>), 3.7, 2056320000.0000002), (datetime.datetime(1979, 12, 12, 21, 21, 21, 129000, tzinfo=<UTC>), 2.1, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 22, tzinfo=<UTC>), 1.3345, 0.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 1242864.0), (datetime.datetime(1979, 12, 12, 21, 21, 23, tzinfo=<UTC>), 1.54, 0.0)]
++--------------------+

@@ -29,19 +29,9 @@ fetch all from c1
 [(2, 1)]
 +--------------------+
 --Query--
-declare c2 cursor with hold for select count_tt1_v(), count_tt1_s()
---Result--
-[]
-+--------------------+
---Query--
-fetch all from c2
---Result--
-[(2, 1)]
-+--------------------+
---Query--
 SELECT name, statement, is_holdable, is_binary, is_scrollable FROM pg_cursors
 --Result--
-[('c2', 'declare c2 cursor with hold for select count_tt1_v(), count_tt1_s()', True, False, False)]
+[]
 +--------------------+
 --Query--
 PREPARE cprep AS   SELECT name, statement, is_holdable, is_binary, is_scrollable FROM pg_cursors
@@ -51,12 +41,12 @@ PREPARE cprep AS   SELECT name, statement, is_holdable, is_binary, is_scrollable
 --Query--
 EXECUTE cprep
 --Result--
-[('c2', 'declare c2 cursor with hold for select count_tt1_v(), count_tt1_s()', True, False, False)]
+[]
 +--------------------+
 --Query--
 SELECT name FROM pg_cursors ORDER BY 1
 --Result--
-[('c2',)]
+[]
 +--------------------+
 --Query--
 CLOSE ALL

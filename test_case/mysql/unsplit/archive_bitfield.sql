@@ -21,7 +21,6 @@ insert into t1 values
 (NULL,b'000000010'),
 (NULL,b'000000011'),
 (NULL,b'000000100');
-select hex(b) from t1 order by pk1;
 drop table t1;
 create table t1 (a bit(7), b bit(9)) engine = archive;
 insert into t1 values 

@@ -1,0 +1,95 @@
+--Query--
+WITH rows(i, j) AS (         SELECT 1, 1 UNION ALL SELECT i+1, j+i FROM rows WHERE i<10     )     INSERT INTO t1 SELECT * FROM rows
+--Result--
+[]
++--------------------+
+--Query--
+WITH rows(i, j) AS (         SELECT 1, 1 UNION ALL SELECT i+1, j+i FROM rows WHERE i<10     )     INSERT INTO t1 SELECT * FROM rows
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM log
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM c1
+--Result--
+[(None, 'aaa')]
++--------------------+
+--Query--
+SELECT * FROM c2
+--Result--
+[(None, 'bbb')]
++--------------------+
+--Query--
+SELECT * FROM c3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM c4
+--Result--
+[(None, 'aaa')]
++--------------------+
+--Query--
+SELECT * FROM c5
+--Result--
+[(None, 'bbb')]
++--------------------+
+--Query--
+SELECT * FROM c6
+--Result--
+[('i', 'ccc')]
++--------------------+
+--Query--
+SELECT * FROM r1 ORDER BY a
+--Result--
+[('i', 1), ('iii', 'v'), ('vii', 'vi')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (1, None), (2, None), (3, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (3, 1), (5, 1), (1, 1), (2, 1), (3, 1), (1, 1), (2, 1), (3, 1)]
++--------------------+
+--Query--
+SELECT * FROM log
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM log
+--Result--
+[('t2->30',), ('t3->1',), ('t2->1',), ('t3->1',), ('t2->1',), ('t3->1',)]
++--------------------+
+--Query--
+SELECT * FROM log
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM log
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'this does not affect things!'
+--Result--
+[('this does not affect things!',)]
++--------------------+
+--Query--
+SELECT * FROM q1
+--Result--
+[('2:3',), ('3:2',), ('4:3',), ('5:5',)]
++--------------------+
+--Query--
+SELECT * FROM q1
+--Result--
+[]
++--------------------+

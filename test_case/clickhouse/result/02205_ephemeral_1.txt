@@ -1,0 +1,150 @@
+--Query--
+DESCRIBE t_ephemeral_02205_1
+--Result--
+[('x', 'UInt32', 'DEFAULT', 'y', '', '', ''), ('y', 'UInt32', 'EPHEMERAL', '17', '', '', ''), ('z', 'UInt32', 'DEFAULT', '5', '', '', '')]
++--------------------+
+--Query--
+# Test INSERT without columns list - should participate only ordinary columns (x, z) INSERT INTO t_ephemeral_02205_1 VALUES (1, 2)
+--Result--
+[]
++--------------------+
+--Query--
+# SELECT * should only return ordinary columns (x, z) - ephemeral is not stored in the table SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(17, 2)]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+# Test INSERT using ephemerals default INSERT INTO t_ephemeral_02205_1 (x, y) VALUES (DEFAULT, DEFAULT)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(17, 5)]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+# Test INSERT using explicit ephemerals value INSERT INTO t_ephemeral_02205_1 (x, y) VALUES (DEFAULT, 7)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(7, 5)]
++--------------------+
+--Query--
+# Test ALTER TABLE DELETE ALTER TABLE t_ephemeral_02205_1 DELETE WHERE x = 7
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+# Test INSERT into column, defaulted to ephemeral, but explicitly provided with value INSERT INTO t_ephemeral_02205_1 (x, y) VALUES (21, 7)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(21, 5)]
++--------------------+
+--Query--
+# Test without default CREATE TABLE t_ephemeral_02205_1 (x UInt32 DEFAULT y, y UInt32 EPHEMERAL, z UInt32 DEFAULT 5) ENGINE = Memory
+--Result--
+[]
++--------------------+
+--Query--
+DESCRIBE t_ephemeral_02205_1
+--Result--
+[('x', 'UInt32', 'DEFAULT', 'y', '', '', ''), ('y', 'UInt32', 'EPHEMERAL', "defaultValueOfTypeName('UInt32')", '', '', ''), ('z', 'UInt32', 'DEFAULT', '5', '', '', '')]
++--------------------+
+--Query--
+# Test INSERT without columns list - should participate only ordinary columns (x, z) INSERT INTO t_ephemeral_02205_1 VALUES (1, 2)
+--Result--
+[]
++--------------------+
+--Query--
+# SELECT * should only return ordinary columns (x, z) - ephemeral is not stored in the table SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[(0, 2)]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+# Test ALTER TABLE DELETE ALTER TABLE t_ephemeral_02205_1 DELETE WHERE x = 7
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE t_ephemeral_02205_1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t_ephemeral_02205_1
+--Result--
+[]
++--------------------+

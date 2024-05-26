@@ -1,0 +1,65 @@
+--Query--
+SELECT toDecimal32OrZero('1.1', 1), toDecimal32OrZero('1.1', 2), toDecimal32OrZero('1.1', 8)
+--Result--
+[(1.1, 1.1, 1.1)]
++--------------------+
+--Query--
+SELECT toDecimal128OrZero('', 0) AS x, toDecimal128OrZero('0.42', 2) AS y
+--Result--
+[(0.0, 0.42)]
++--------------------+
+--Query--
+SELECT toDecimal64OrZero('', 0) AS x, toDecimal64OrZero('0.42', 3) AS y
+--Result--
+[(0.0, 0.42)]
++--------------------+
+--Query--
+SELECT toDecimal32OrZero('', 0) AS x, toDecimal32OrZero('0.42', 4) AS y
+--Result--
+[(0.0, 0.42)]
++--------------------+
+--Query--
+SELECT toDecimal64OrZero('999999999999999999', 0), toDecimal64OrZero('1000000000000000000', 0)
+--Result--
+[(1e+18, 0.0)]
++--------------------+
+--Query--
+SELECT toDecimal128OrZero('99999999999999999999999999999999999999', 0)
+--Result--
+[(1e+38,)]
++--------------------+
+--Query--
+SELECT '----'
+--Result--
+[('----',)]
++--------------------+
+--Query--
+SELECT toDecimal32OrNull('1.1', 1), toDecimal32OrNull('1.1', 2), toDecimal32OrNull('1.1', 8)
+--Result--
+[(1.1, 1.1, 1.1)]
++--------------------+
+--Query--
+SELECT toDecimal128OrNull('', 0) AS x, toDecimal128OrNull('-0.42', 2) AS y
+--Result--
+[(None, -0.42)]
++--------------------+
+--Query--
+SELECT toDecimal64OrNull('', 0) AS x, toDecimal64OrNull('-0.42', 3) AS y
+--Result--
+[(None, -0.42)]
++--------------------+
+--Query--
+SELECT toDecimal32OrNull('', 0) AS x, toDecimal32OrNull('-0.42', 4) AS y
+--Result--
+[(None, -0.42)]
++--------------------+
+--Query--
+SELECT toDecimal64OrNull('999999999999999999', 0), toDecimal64OrNull('1000000000000000000', 0)
+--Result--
+[(1e+18, None)]
++--------------------+
+--Query--
+SELECT toDecimal128OrNull('99999999999999999999999999999999999999', 0)
+--Result--
+[(1e+38,)]
++--------------------+

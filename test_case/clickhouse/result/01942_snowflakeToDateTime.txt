@@ -1,0 +1,20 @@
+--Query--
+SELECT 'const column'
+--Result--
+[('const column',)]
++--------------------+
+--Query--
+WITH 	CAST(1426860704886947840 AS Int64) AS i64, 	'UTC' AS tz SELECT 	tz, 	i64, 	snowflakeToDateTime(i64, tz) as dt, 	toTypeName(dt), 	snowflakeToDateTime64(i64, tz) as dt64, 	toTypeName(dt64)
+--Result--
+[('UTC', 1426860704886947840, datetime.datetime(2021, 8, 15, 10, 57, 56, tzinfo=<UTC>), "DateTime('UTC')", datetime.datetime(2021, 8, 15, 10, 57, 56, 492000, tzinfo=<UTC>), "DateTime64(3, 'UTC')")]
++--------------------+
+--Query--
+SELECT 1 FROM tab WHERE snowflakeToDateTime(42::Int64, tz) != now() SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM tab WHERE snowflakeToDateTime64(42::Int64, tz) != now() SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(1,)]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM test_00616 ORDER BY ver
+--Result--
+[(datetime.date(2018, 3, 21), 1, 1), (datetime.date(2018, 3, 21), 1, 2)]
++--------------------+
+--Query--
+SELECT * FROM replacing_00616 ORDER BY ver
+--Result--
+[(datetime.date(2018, 3, 21), 1, 1), (datetime.date(2018, 3, 21), 1, 2)]
++--------------------+
+--Query--
+SELECT * FROM replacing_00616 FINAL ORDER BY ver
+--Result--
+[(datetime.date(2018, 3, 21), 1, 2)]
++--------------------+
+--Query--
+OPTIMIZE TABLE replacing_00616 PARTITION '201803' FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM replacing_00616 ORDER BY ver
+--Result--
+[(datetime.date(2018, 3, 21), 1, 2)]
++--------------------+
+--Query--
+SELECT * FROM replacing_00616 FINAL ORDER BY ver
+--Result--
+[(datetime.date(2018, 3, 21), 1, 2)]
++--------------------+

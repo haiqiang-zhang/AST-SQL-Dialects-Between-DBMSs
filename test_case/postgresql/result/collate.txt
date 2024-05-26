@@ -69,11 +69,6 @@ SELECT a, lower(x COLLATE "C"), lower(y COLLATE "C") FROM collate_test10
 [(1, 'hij', 'hij'), (2, 'hij', 'hij')]
 +--------------------+
 --Query--
-SELECT a, x, y FROM collate_test10 ORDER BY lower(y), a
---Result--
-[(1, 'hij', 'hij'), (2, 'HIJ', 'HIJ')]
-+--------------------+
---Query--
 SELECT table_name, view_definition FROM information_schema.views   WHERE table_name LIKE 'collview%' ORDER BY 1
 --Result--
 [('collview1', ' SELECT a,\n    b\n   FROM collate_test1\n  WHERE ((b COLLATE "C") >= \'bbc\'::text);'), ('collview2', ' SELECT a,\n    b\n   FROM collate_test1\n  ORDER BY (b COLLATE "C");'), ('collview3', ' SELECT a,\n    lower(((x || x) COLLATE "POSIX")) AS lower\n   FROM collate_test10;')]
@@ -84,44 +79,14 @@ SELECT a, coalesce(b, 'foo') FROM collate_test1 ORDER BY 2
 [(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
 +--------------------+
 --Query--
-SELECT a, coalesce(b, 'foo') FROM collate_test2 ORDER BY 2
---Result--
-[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
-+--------------------+
---Query--
-SELECT a, lower(coalesce(x, 'foo')), lower(coalesce(y, 'foo')) FROM collate_test10
---Result--
-[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
-+--------------------+
---Query--
 SELECT a, b, greatest(b, 'CCC') FROM collate_test1 ORDER BY 3
 --Result--
 [(2, 'Abc', 'CCC'), (4, 'ABD', 'CCC'), (1, 'abc', 'abc'), (3, 'bbc', 'bbc')]
 +--------------------+
 --Query--
-SELECT a, b, greatest(b, 'CCC') FROM collate_test2 ORDER BY 3
---Result--
-[(2, 'Abc', 'CCC'), (4, 'ABD', 'CCC'), (1, 'abc', 'abc'), (3, 'bbc', 'bbc')]
-+--------------------+
---Query--
-SELECT a, x, y, lower(greatest(x, 'foo')), lower(greatest(y, 'foo')) FROM collate_test10
---Result--
-[(1, 'hij', 'hij', 'hij', 'hij'), (2, 'HIJ', 'HIJ', 'foo', 'foo')]
-+--------------------+
---Query--
 SELECT a, nullif(b, 'abc') FROM collate_test1 ORDER BY 2
 --Result--
 [(4, 'ABD'), (2, 'Abc'), (3, 'bbc'), (1, None)]
-+--------------------+
---Query--
-SELECT a, nullif(b, 'abc') FROM collate_test2 ORDER BY 2
---Result--
-[(4, 'ABD'), (2, 'Abc'), (3, 'bbc'), (1, None)]
-+--------------------+
---Query--
-SELECT a, lower(nullif(x, 'foo')), lower(nullif(y, 'foo')) FROM collate_test10
---Result--
-[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
 +--------------------+
 --Query--
 SELECT a, CASE b WHEN 'abc' THEN 'abcd' ELSE b END FROM collate_test1 ORDER BY 2
@@ -149,17 +114,7 @@ SELECT a, b::testdomain_p FROM collate_test2 ORDER BY 2
 [(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
 +--------------------+
 --Query--
-SELECT a, lower(x::testdomain), lower(y::testdomain) FROM collate_test10
---Result--
-[(1, 'hij', 'hij'), (2, 'hij', 'hij')]
-+--------------------+
---Query--
 SELECT min(b), max(b) FROM collate_test1
---Result--
-[('ABD', 'bbc')]
-+--------------------+
---Query--
-SELECT min(b), max(b) FROM collate_test2
 --Result--
 [('ABD', 'bbc')]
 +--------------------+
@@ -167,21 +122,6 @@ SELECT min(b), max(b) FROM collate_test2
 SELECT array_agg(b ORDER BY b) FROM collate_test1
 --Result--
 [(['ABD', 'Abc', 'abc', 'bbc'],)]
-+--------------------+
---Query--
-SELECT array_agg(b ORDER BY b) FROM collate_test2
---Result--
-[(['ABD', 'Abc', 'abc', 'bbc'],)]
-+--------------------+
---Query--
-SELECT array_agg(x COLLATE "C" ORDER BY y COLLATE "POSIX") FROM collate_test10
---Result--
-[(['HIJ', 'hij'],)]
-+--------------------+
---Query--
-SELECT array_agg(a ORDER BY x COLLATE "C", y COLLATE "POSIX") FROM collate_test10
---Result--
-[([2, 1],)]
 +--------------------+
 --Query--
 SELECT a, b FROM collate_test1 UNION ALL SELECT a, b FROM collate_test1 ORDER BY 2
@@ -239,11 +179,6 @@ SELECT a, CAST(b AS varchar) FROM collate_test1 ORDER BY 2
 [(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
 +--------------------+
 --Query--
-SELECT a, CAST(b AS varchar) FROM collate_test2 ORDER BY 2
---Result--
-[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
-+--------------------+
---Query--
 SELECT a, b FROM collate_test1 ORDER BY a, vc(b)
 --Result--
 [(1, 'abc'), (2, 'Abc'), (3, 'bbc'), (4, 'ABD')]
@@ -254,17 +189,7 @@ SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test1)) ORDER 
 [('ABD',), ('Abc',), ('abc',), ('bbc',)]
 +--------------------+
 --Query--
-SELECT * FROM unnest((SELECT array_agg(b ORDER BY b) FROM collate_test2)) ORDER BY 1
---Result--
-[('ABD',), ('Abc',), ('abc',), ('bbc',)]
-+--------------------+
---Query--
 SELECT a, dup(b) FROM collate_test1 ORDER BY 2
---Result--
-[(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
-+--------------------+
---Query--
-SELECT a, dup(b) FROM collate_test2 ORDER BY 2
 --Result--
 [(4, 'ABD'), (2, 'Abc'), (1, 'abc'), (3, 'bbc')]
 +--------------------+

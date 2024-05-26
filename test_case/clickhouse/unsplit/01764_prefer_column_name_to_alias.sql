@@ -6,5 +6,4 @@ DROP TABLE IF EXISTS mytable;
 CREATE TABLE IF NOT EXISTS mytable (start_ts UInt32, end_ts UInt32, uuid String) ENGINE = MergeTree() ORDER BY start_ts;
 INSERT INTO mytable VALUES (1, 2, 3);
 SELECT any(uuid) AS id, max(end_ts) - any(start_ts) AS time_delta, any(start_ts) AS start_ts, max(end_ts) AS end_ts FROM mytable GROUP BY uuid HAVING max(end_ts) < 1620141001 ORDER BY any(start_ts) DESC;
-SELECT any(uuid) AS id, max(end_ts) - any(start_ts) AS time_delta, any(start_ts) AS start_ts, max(end_ts) AS end_ts FROM mytable GROUP BY uuid HAVING max(end_ts) < 1620141001 ORDER BY any(start_ts) DESC SETTINGS prefer_column_name_to_alias=1;
 DROP TABLE mytable;

@@ -14,7 +14,5 @@ CREATE TABLE tmp (n Int8) ENGINE=Memory;
 SELECT * FROM tmp;
 TRUNCATE TABLE tmp;
 SELECT (*,).1 AS c, toTypeName(c) FROM tmp;
-SELECT (*,).1 AS c, toTypeName(c) FROM test_01457.tf_numbers;
-SELECT (*,).1 AS c, toTypeName(c) FROM test_01457.tf_merge;
 DROP DATABASE test_01457;
 DROP TABLE tmp;

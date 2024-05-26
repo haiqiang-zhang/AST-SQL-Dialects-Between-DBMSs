@@ -1,0 +1,15 @@
+--Query--
+SELECT number FROM numbers(10) ORDER BY number DESC OFFSET 2 ROWS FETCH NEXT 3 ROWS WITH TIES
+--Result--
+[(7,), (6,), (5,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_fetch ORDER BY a, b OFFSET 1 ROW FETCH FIRST 3 ROWS ONLY) ORDER BY a, b
+--Result--
+[(1, 1), (2, 1), (3, 3)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_fetch ORDER BY a OFFSET 1 ROW FETCH FIRST 3 ROWS WITH TIES) ORDER BY a, b
+--Result--
+[(1, 1), (2, 1), (3, 3), (3, 4)]
++--------------------+

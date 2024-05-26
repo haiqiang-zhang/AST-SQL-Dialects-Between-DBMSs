@@ -149,29 +149,9 @@ SELECT pg_get_triggerdef(oid, true) FROM pg_trigger WHERE tgrelid = 'main_table'
 []
 +--------------------+
 --Query--
-SELECT pg_get_triggerdef(oid, false) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a'
---Result--
-[]
-+--------------------+
---Query--
-SELECT pg_get_triggerdef(oid, true) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_any'
---Result--
-[]
-+--------------------+
---Query--
 SELECT count(*) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_a'
 --Result--
 [(0,)]
-+--------------------+
---Query--
-SELECT count(*) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'modified_modified_a'
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = 'main_table'::regclass AND tgname = 'after_upd_a_b_row_trig'
---Result--
-[]
 +--------------------+
 --Query--
 select * from trigtest2
@@ -199,24 +179,9 @@ SELECT * FROM min_updates_test
 [('a', 2, 2), ('b', 3, 2)]
 +--------------------+
 --Query--
-SELECT count(*) FROM european_city_view
---Result--
-[(0,)]
-+--------------------+
---Query--
 SELECT * FROM city_view
 --Result--
 []
-+--------------------+
---Query--
-select pg_trigger_depth()
---Result--
-[(0,)]
-+--------------------+
---Query--
-select pg_trigger_depth()
---Result--
-[(0,)]
 +--------------------+
 --Query--
 select pg_trigger_depth()
@@ -362,11 +327,6 @@ select * from parted
 select tgname, conname, t.tgrelid::regclass, t.tgconstrrelid::regclass,   c.conrelid::regclass, c.confrelid::regclass   from pg_trigger t join pg_constraint c on (t.tgconstraint = c.oid)   where tgname = 'parted_trigger'   order by t.tgrelid::regclass::text
 --Result--
 []
-+--------------------+
---Query--
-select tgrelid::regclass, count(*) from pg_trigger   where tgrelid::regclass in ('trg_clone', 'trg_clone1', 'trg_clone2', 	'trg_clone3', 'trg_clone_3_3')   group by tgrelid::regclass order by tgrelid::regclass
---Result--
-[('trg_clone', 1), ('trg_clone1', 1), ('trg_clone2', 1), ('trg_clone3', 1), ('trg_clone_3_3', 1)]
 +--------------------+
 --Query--
 select tgrelid::regclass, tgname, tgenabled from pg_trigger   where tgrelid in ('parent'::regclass, 'child1'::regclass)   order by tgrelid::regclass::text

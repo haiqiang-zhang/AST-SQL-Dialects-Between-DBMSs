@@ -1,0 +1,45 @@
+--Query--
+DETACH TABLE buffer
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE buffer
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE file
+--Result--
+[("CREATE TABLE test.file\n(\n    `n` Int8\n)\nENGINE = File('TSVWithNamesAndTypes')",)]
++--------------------+
+--Query--
+SHOW CREATE buffer
+--Result--
+[("CREATE TABLE test.buffer\n(\n    `n` Int8\n)\nENGINE = Buffer('test', 'file', 16, 10, 200, 10000, 1000000, 10000000, 1000000000)",)]
++--------------------+
+--Query--
+SHOW CREATE merge
+--Result--
+[("CREATE TABLE test.merge\n(\n    `n` Int8\n)\nENGINE = Merge('test', 'distributed')",)]
++--------------------+
+--Query--
+SHOW CREATE merge_tf
+--Result--
+[("CREATE TABLE test.merge_tf\n(\n    `n` Int8\n) AS merge('test', '.*')",)]
++--------------------+
+--Query--
+SHOW CREATE VIEW view
+--Result--
+[("CREATE VIEW test.view\n(\n    `n` Int64\n)\nAS SELECT toInt64(n) AS n\nFROM\n(\n    SELECT toString(n) AS n\n    FROM test.merge\n    WHERE _table != 'qwerty'\n    ORDER BY _table ASC\n)\nUNION ALL\nSELECT *\nFROM test.file",)]
++--------------------+
+--Query--
+SHOW CREATE dict
+--Result--
+[("CREATE DICTIONARY test.dict\n(\n    `n` UInt64,\n    `col` String DEFAULT '42'\n)\nPRIMARY KEY n\nSOURCE(CLICKHOUSE(HOST 'localhost' PORT 9440 SECURE 1 USER 'default' TABLE 'url'))\nLIFETIME(MIN 0 MAX 1)\nLAYOUT(CACHE(SIZE_IN_CELLS 1))",)]
++--------------------+
+--Query--
+SYSTEM DROP DNS CACHE
+--Result--
+[]
++--------------------+

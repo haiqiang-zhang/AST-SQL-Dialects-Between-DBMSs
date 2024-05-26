@@ -6,4 +6,3 @@ create table x(
 insert into x select number, number from VALUES('number UInt64', 1000, 10000, 100000);
 select a, sipHash64(a) from x order by sipHash64(a);
 select '';
-select a, sipHash64(a) from x order by `sipHash64(a)`;

@@ -1,0 +1,5 @@
+--Query--
+EXPLAIN QUERY PLAN   SELECT *     FROM t41    LEFT JOIN (SELECT count(*) AS cnt, x1.d                 FROM (t42 INNER JOIN t43 ON d=g) AS x1                WHERE x1.d>5                GROUP BY x1.d) AS x2                   ON t41.b=x2.d
+--Result--
+[(3, 0, 0, 'MATERIALIZE x2'), (11, 3, 0, 'SCAN t43'), (13, 3, 0, 'SEARCH t42 USING INTEGER PRIMARY KEY (rowid=?)'), (18, 3, 0, 'USE TEMP B-TREE FOR GROUP BY'), (56, 0, 0, 'SCAN t41'), (62, 0, 0, 'BLOOM FILTER ON x2 (d=?)'), (72, 0, 0, 'SEARCH x2 USING AUTOMATIC COVERING INDEX (d=?) LEFT-JOIN')]
++--------------------+

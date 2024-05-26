@@ -1,5 +1,3 @@
-
-
 SET insert_quorum_parallel = false;
 SET select_sequential_consistency = 1;
 DROP TABLE IF EXISTS quorum1;

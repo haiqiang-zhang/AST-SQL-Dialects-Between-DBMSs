@@ -1,0 +1,15 @@
+--Query--
+select * from system.settings where name = 'send_timeout'
+--Result--
+[('send_timeout', '300', 0, "Timeout for sending data to network, in seconds. If client needs to sent some data, but it did not able to send any bytes in this interval, exception is thrown. If you set this setting on client, the 'receive_timeout' for the socket will be also set on the corresponding connection end on the server.", None, None, 0, 'Seconds', '300', '', 0)]
++--------------------+
+--Query--
+select * from system.merge_tree_settings order by length(description) limit 1
+--Result--
+[('storage_policy', 'default', 0, 'Name of storage disk policy', None, None, 0, 'String', 0)]
++--------------------+
+--Query--
+with [     'Seconds',     'Bool',     'Int64',     'String',     'Float',     'UInt64',     'MaxThreads' ] as types select hasAll(arrayDistinct(groupArray(type)), types) from system.merge_tree_settings
+--Result--
+[(1,)]
++--------------------+

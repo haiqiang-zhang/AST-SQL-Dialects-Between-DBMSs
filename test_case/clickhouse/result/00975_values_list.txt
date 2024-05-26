@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM VALUES('a UInt64, s String', (1, 'one'), (2, 'two'), (3, 'three'))
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM values_list
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT subtractYears(date, 1), subtractYears(date_time, 1) FROM VALUES('date Date, date_time DateTime', (toDate('2019-01-01'), toDateTime('2019-01-01 00:00:00')))
+--Result--
+[(datetime.date(2018, 1, 1), datetime.datetime(2018, 1, 1, 0, 0))]
++--------------------+
+--Query--
+SELECT * FROM VALUES('s String', ('abra'), ('cadabra'), ('abracadabra'))
+--Result--
+[('abra',), ('cadabra',), ('abracadabra',)]
++--------------------+
+--Query--
+SELECT * FROM VALUES('n UInt64, s String, ss String', (1 + 22, '23', toString(23)), (toUInt64('24'), '24', concat('2', '4')))
+--Result--
+[(23, '23', '23'), (24, '24', '24')]
++--------------------+
+--Query--
+SELECT * FROM VALUES('a Decimal(4, 4), b String, c String', (divide(toDecimal32(5, 3), 3), 'a', 'b'))
+--Result--
+[(1.666, 'a', 'b')]
++--------------------+
+--Query--
+SELECT * FROM VALUES('x Nullable(Float64)', NULL)
+--Result--
+[(None,)]
++--------------------+

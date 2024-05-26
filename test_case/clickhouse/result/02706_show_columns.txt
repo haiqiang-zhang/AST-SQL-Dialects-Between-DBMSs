@@ -1,0 +1,150 @@
+--Query--
+SELECT '--- Aliases of SHOW COLUMNS'
+--Result--
+[('--- Aliases of SHOW COLUMNS',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('str', 'String', 'NO', 'SOR', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SHOW FIELDS FROM tab
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('str', 'String', 'NO', 'SOR', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- EXTENDED'
+--Result--
+[('--- EXTENDED',)]
++--------------------+
+--Query--
+SHOW EXTENDED COLUMNS FROM tab
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('str', 'String', 'NO', 'SOR', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- FULL'
+--Result--
+[('--- FULL',)]
++--------------------+
+--Query--
+SHOW FULL COLUMNS FROM tab
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, '', None, 'example comment', ''), ('str', 'String', 'NO', 'SOR', None, '', None, '', ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '', None, '', '')]
++--------------------+
+--Query--
+SELECT '--- LIKE'
+--Result--
+[('--- LIKE',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab LIKE '%int%'
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- NOT LIKE'
+--Result--
+[('--- NOT LIKE',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab NOT LIKE '%int%'
+--Result--
+[('str', 'String', 'NO', 'SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- ILIKE'
+--Result--
+[('--- ILIKE',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab ILIKE '%INT%'
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- NOT ILIKE'
+--Result--
+[('--- NOT ILIKE',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab NOT ILIKE '%INT%'
+--Result--
+[('str', 'String', 'NO', 'SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- WHERE'
+--Result--
+[('--- WHERE',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab WHERE field LIKE '%int%'
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- LIMIT'
+--Result--
+[('--- LIMIT',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab LIMIT 1
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, '')]
++--------------------+
+--Query--
+SELECT '--- Check with weird table names'
+--Result--
+[('--- Check with weird table names',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM `$4@^7`
+--Result--
+[('c', 'String', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SHOW COLUMNS FROM NULL
+--Result--
+[('c', 'String', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SHOW COLUMNS FROM `'` FROM `'`
+--Result--
+[('c', 'String', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SHOW COLUMNS FROM `'`.`'`
+--Result--
+[('c', 'String', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- Original table'
+--Result--
+[('--- Original table',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab
+--Result--
+[('int32', 'Nullable(Int32)', 'YES', '', None, ''), ('str', 'String', 'NO', 'SOR', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- Equally named table in other database'
+--Result--
+[('--- Equally named table in other database',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM tab FROM database_123456789abcde
+--Result--
+[('int32', 'Int32', 'NO', '', None, ''), ('str', 'String', 'NO', '', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+
+--Query--
+SELECT '--- Short form'
+--Result--
+[('--- Short form',)]
++--------------------+
+--Query--
+SHOW COLUMNS FROM database_123456789abcde.tab
+--Result--
+[('int32', 'Int32', 'NO', '', None, ''), ('str', 'String', 'NO', '', None, ''), ('uint64', 'UInt64', 'NO', 'PRI SOR', None, '')]
++--------------------+

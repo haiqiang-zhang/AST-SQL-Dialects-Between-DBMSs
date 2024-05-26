@@ -1,0 +1,15 @@
+--Query--
+SELECT name, type, compression_codec FROM system.columns WHERE table='alter_bug' AND database=currentDatabase()
+--Result--
+[('epoch', 'UInt64', 'CODEC(Delta(8), LZ4)'), ('_time_dec', 'Float64', '')]
++--------------------+
+--Query--
+SELECT name, type, default_expression, compression_codec FROM system.columns WHERE table='alter_bug' AND database=currentDatabase()
+--Result--
+[('epoch', 'UInt64', 'toUInt64(_time_dec)', 'CODEC(Delta(8), LZ4)'), ('_time_dec', 'Float64', '', '')]
++--------------------+
+--Query--
+SELECT * FROM alter_bug
+--Result--
+[(1577351080, 1577351080.0)]
++--------------------+

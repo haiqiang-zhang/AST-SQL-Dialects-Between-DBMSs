@@ -1,0 +1,440 @@
+--Query--
+select (1,2,3) IN ((3,2,3), (1,2,3), (1,3,3))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select row(10,2,3) IN (row(3,2,3), row(1,2,3), row(1,3,3))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select (1,2,(3,4)) IN ((3,2,(3,4)), (1,2,(3,4)))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (1,2,3)=(0,NULL,3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (1,2,3)=(1,NULL,3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3)=(1,NULL,0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)=ROW(1,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW(2,2,3)=ROW(1+1,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)=ROW(1+1,2,3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)<ROW(1+1,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)>ROW(1+1,2,3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)<=ROW(1+1,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)>=ROW(1+1,2,3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,3)<>ROW(1+1,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW(NULL,2,3)=ROW(NULL,2,3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ROW(NULL,2,3)<=>ROW(NULL,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW(1,2,ROW(3,4,5))=ROW(1,2,ROW(3,4,5))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW('test',2,3.33)=ROW('test',2,3.33)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW('test',2,ROW(3,33))=ROW('test',2,ROW(3,33))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ROW('test',2,ROW(3,33))=ROW('test',2,ROW(3,3))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ROW('test',2,ROW(3,33))=ROW('test',2,ROW(3,NULL))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1 where ROW(1,2,3)=ROW(a,b,c)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+select * from t1 where ROW(0,2,3)=ROW(a,b,c)
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where ROW(1,2,3)<ROW(a,b,c)
+--Result--
+[(2, 3, 1), (3, 2, 1)]
++--------------------+
+--Query--
+select ROW(a,2,3) IN(row(1,b,c), row(2,3,1)) from t1
+--Result--
+[(1,), (0,), (0,), (None,)]
++--------------------+
+--Query--
+select a, MAX(b), (1, MAX(b)) = (1, 4) from t1 group by a
+--Result--
+[(1, 4, 1), (10, 43, 0)]
++--------------------+
+--Query--
+SELECT ROW(2,10) <=> ROW(3,4)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT ROW(NULL,10) <=> ROW(3,NULL)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (1,2,3) = (1,   NULL, 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) = (1+1, NULL, 3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (1,2,3) = (1,   NULL, 3+1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b,c) = (1,2,3)
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT (1,2,3) <> (1,   NULL, 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) <> (1+1, NULL, 3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (1,2,3) <> (1,   NULL, 3+1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b,c) <> (1,2,3)
+--Result--
+[(None, 2, 4), (1, None, 4), (1, 3, None), (None, 2, 2), (1, None, 2), (1, 1, None)]
++--------------------+
+--Query--
+SELECT (1,2,3) < (NULL, 2,    3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) < (1,    NULL, 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) < (1-1,  NULL, 3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (1,2,3) < (1+1,  NULL, 3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b,c) < (1,2,3)
+--Result--
+[(1, 1, None)]
++--------------------+
+--Query--
+SELECT (1,2,3) <= (NULL, 2,    3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) <= (1,    NULL, 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) <= (1-1,  NULL, 3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (1,2,3) <= (1+1,  NULL, 3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b,c) <= (1,2,3)
+--Result--
+[(1, 2, 3), (1, 1, None)]
++--------------------+
+--Query--
+SELECT (1,2,3) > (NULL, 2,    3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) > (1,    NULL, 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) > (1-1,  NULL, 3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (1,2,3) > (1+1,  NULL, 3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b,c) > (1,2,3)
+--Result--
+[(1, 3, None)]
++--------------------+
+--Query--
+SELECT (1,2,3) >= (NULL, 2,    3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) >= (1,    NULL, 3)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1,2,3) >= (1-1,  NULL, 3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (1,2,3) >= (1+1,  NULL, 3)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b,c) >= (1,2,3)
+--Result--
+[(1, 2, 3), (1, 3, None)]
++--------------------+
+--Query--
+SELECT ROW(1,1,1) = ROW(1,1,1) as `1`, ROW(1,1,1) = ROW(1,2,1) as `0`, ROW(1,NULL,1) = ROW(2,2,1) as `0`, ROW(1,NULL,1) = ROW(1,2,2) as `0`, ROW(1,NULL,1) = ROW(1,2,1) as `null`
+--Result--
+[(1, 0, 0, 0, None)]
++--------------------+
+--Query--
+select row(NULL,1)=(2,0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=3 and b=2
+--Result--
+[(3, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a,b)=(3,2)
+--Result--
+[(3, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE t1.a=t2.a and t1.b=t2.b
+--Result--
+[(1, 1, 1, 1, 1), (1, 1, 1, 1, 2), (1, 2, 1, 2, 1), (1, 2, 1, 2, 2), (3, 1, 3, 1, 1), (3, 1, 3, 1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE (t1.a,t1.b)=(t2.a,t2.b)
+--Result--
+[(1, 1, 1, 1, 1), (1, 1, 1, 1, 2), (1, 2, 1, 2, 1), (1, 2, 1, 2, 2), (3, 1, 3, 1, 1), (3, 1, 3, 1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE t1.a=1 and t1.b=t2.b
+--Result--
+[(1, 1, 1, 1, 1), (1, 1, 1, 1, 2), (1, 2, 1, 2, 1), (1, 2, 1, 2, 2), (1, 1, 3, 1, 1), (1, 1, 3, 1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE (t1.a,t1.b)=(t2.a,2)
+--Result--
+[(1, 2, 1, 1, 1), (1, 2, 1, 1, 2), (1, 2, 1, 2, 1), (1, 2, 1, 2, 2), (3, 2, 3, 1, 1), (3, 2, 3, 1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE (t1.a,t1.b)=(t2.a,t2.b+1)
+--Result--
+[(1, 2, 1, 1, 1), (1, 2, 1, 1, 2), (3, 2, 3, 1, 1), (3, 2, 3, 1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE (t1.a-1,t1.b)=(t2.a-1,t2.b+1)
+--Result--
+[(1, 2, 1, 1, 1), (1, 2, 1, 1, 2), (3, 2, 3, 1, 1), (3, 2, 3, 1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a=3 and b=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE (a,b)=(3,2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE (t2.a,(t2.b,t2.c))=(t1.a,(2,1))
+--Result--
+[(1, 1, 1, 2, 1), (1, 2, 1, 2, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1,t2 WHERE t2.a=t1.a AND (t2.b,t2.c)=(2,1)
+--Result--
+[(1, 1, 1, 2, 1), (1, 2, 1, 2, 1)]
++--------------------+
+--Query--
+SELECT h FROM t1 WHERE (a,b,c,d,e,f,g)=(1,2,3,4,5,6,7)
+--Result--
+[(99,)]
++--------------------+
+--Query--
+SELECT @x
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1,t2 where (a,b) = (c,d)
+--Result--
+[('abc', 1, 'abc', 1)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE ROW(a, b) >= ROW('1', (SELECT 1 FROM t1 WHERE a > '1234abc'))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ROW(1,2) = (SELECT 1,2 FROM DUAL WHERE 1 = 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ROW(1,2) = (SELECT 1,3 FROM DUAL WHERE 1 = 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ROW(1,2) = (SELECT 1,2 FROM t1 WHERE 1 = 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ROW(1,2) = (SELECT 1,3 FROM t1 WHERE 1 = 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT i FROM t1 WHERE ROW(1,2) = (SELECT 1,2 FROM DUAL WHERE 1 = 0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i FROM t1 WHERE ROW(1,2) = (SELECT 1,3 FROM DUAL WHERE 1 = 0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) = row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) <> row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) <=> row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) > row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) >= row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) < row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT row( min(a), 1 ) <= row( a, 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT row( row( min(a), 1 ), 1 ) = row( row( a, 1 ), 1 ) AS al FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+

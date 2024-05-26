@@ -53,7 +53,6 @@ insert into t1 values (repeat(0x2020, 10));
 insert into t1 values (repeat(0x2021, 10));
 select hex(a) from t1 order by a;
 alter table t1 drop index a;
-select hex(a) from t1 order by a;
 drop table t1;
 create table t1 (a varchar(250) character set utf16 primary key) engine=MyISAM;
 drop table t1;

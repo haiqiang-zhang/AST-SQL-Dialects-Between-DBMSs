@@ -1,0 +1,20 @@
+--Query--
+SELECT * FROM pragma_table_info('integers')
+--Result--
+[(0, 'i', 'INTEGER', False, None, False), (1, 'j', 'INTEGER', False, None, False)]
++--------------------+
+--Query--
+SELECT name FROM pragma_table_info('integers')
+--Result--
+[('i',), ('j',)]
++--------------------+
+--Query--
+SELECT a.name, cid, value FROM pragma_table_info('integers') AS a INNER JOIN join_table ON a.name=join_table.name ORDER BY a.name
+--Result--
+[('i', 0, 33), ('j', 1, 44)]
++--------------------+
+--Query--
+SELECT cid, name FROM (SELECT * FROM pragma_table_info('integers')) AS a
+--Result--
+[(0, 'i'), (1, 'j')]
++--------------------+

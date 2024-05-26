@@ -1,0 +1,20 @@
+--Query--
+SELECT quantiles(0.5)(now()::DateTime('UTC')) WHERE 0
+--Result--
+[([datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>)],)]
++--------------------+
+--Query--
+SELECT arrayReduce('quantiles(0.5)', []::Array(DateTime('UTC')))
+--Result--
+[([datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>)],)]
++--------------------+
+--Query--
+SELECT DISTINCT arrayReduce('quantiles(0.5)', materialize([]::Array(DateTime('UTC')))) FROM numbers(1000) LIMIT 10
+--Result--
+[([datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>)],)]
++--------------------+
+--Query--
+SELECT quantile(0.5)(now()::DateTime('UTC')) WHERE 0
+--Result--
+[(datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>),)]
++--------------------+

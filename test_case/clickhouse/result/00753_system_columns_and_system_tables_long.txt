@@ -1,0 +1,165 @@
+--Query--
+SELECT total_bytes_uncompressed, total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for TinyLog'
+--Result--
+[('Check total_bytes/total_rows for TinyLog',)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(27, None)]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for Log'
+--Result--
+[('Check total_bytes/total_rows for Log',)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(43, 1)]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for StripeLog'
+--Result--
+[('Check total_bytes/total_rows for StripeLog',)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(113, 1)]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for Memory'
+--Result--
+[('Check total_bytes/total_rows for Memory',)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(4096, 1)]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for Buffer'
+--Result--
+[('Check total_bytes/total_rows for Buffer',)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(256, 50)]
++--------------------+
+--Query--
+SELECT 'Check lifetime_bytes/lifetime_rows for Buffer'
+--Result--
+[('Check lifetime_bytes/lifetime_rows for Buffer',)]
++--------------------+
+--Query--
+SELECT lifetime_bytes, lifetime_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(100, 50)]
++--------------------+
+--Query--
+OPTIMIZE TABLE check_system_tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lifetime_bytes, lifetime_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(100, 50)]
++--------------------+
+--Query--
+SELECT lifetime_bytes, lifetime_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(200, 100)]
++--------------------+
+--Query--
+OPTIMIZE TABLE check_system_tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lifetime_bytes, lifetime_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(200, 100)]
++--------------------+
+--Query--
+SELECT lifetime_bytes, lifetime_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(402, 201)]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for Set'
+--Result--
+[('Check total_bytes/total_rows for Set',)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(2048, 50)]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(2048, 100)]
++--------------------+
+--Query--
+SELECT 'Check total_bytes/total_rows for Join'
+--Result--
+[('Check total_bytes/total_rows for Join',)]
++--------------------+
+--Query--
+SELECT total_bytes BETWEEN 5000 AND 15000, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(1, 50)]
++--------------------+
+--Query--
+SELECT total_bytes BETWEEN 5000 AND 15000, total_rows FROM system.tables WHERE name = 'check_system_tables' AND database = currentDatabase()
+--Result--
+[(1, 100)]
++--------------------+
+--Query--
+SELECT 'Check total_uncompressed_bytes/total_bytes/total_rows for Materialized views'
+--Result--
+[('Check total_uncompressed_bytes/total_bytes/total_rows for Materialized views',)]
++--------------------+
+--Query--
+SELECT total_bytes_uncompressed, total_bytes, total_rows FROM system.tables WHERE name = 'check_system_tables_mv' AND database = currentDatabase()
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+SELECT total_bytes_uncompressed > 0, total_bytes > 0, total_rows FROM system.tables WHERE name = 'check_system_tables_mv' AND database = currentDatabase()
+--Result--
+[(1, 1, 1)]
++--------------------+

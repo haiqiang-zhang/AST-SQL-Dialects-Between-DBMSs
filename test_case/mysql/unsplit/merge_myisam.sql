@@ -58,7 +58,6 @@ INSERT INTO t1 VALUES (1,1), (2,1);
 CREATE TABLE t2 (  a int(11) NOT NULL default '0',  b int(11) NOT NULL default '0',  PRIMARY KEY  (a,b)) ENGINE=MyISAM;
 INSERT INTO t2 VALUES (1,2), (2,2);
 select max(b) from t3 where a = 2;
-select max(b) from t1 where a = 2;
 drop table t3,t1,t2;
 CREATE TABLE t1 (c1 INT NOT NULL);
 CREATE TABLE t2 (c1 INT NOT NULL);
@@ -147,7 +146,6 @@ create table t3 (
 insert into t2 values ( null, '');
 insert into t2 values ( 9999999999.999, '');
 insert into t3 select * from t2;
-select min(a), max(a) from t1;
 select min(a), max(a) from t1;
 drop table t1, t2, t3;
 create table t1 (a int,b int,c int, index (a,b,c));
@@ -424,9 +422,6 @@ INSERT INTO t1 (id, grp, id_rev) SELECT id, grp, id_rev FROM t2;
 CREATE TABLE t3 (id INTEGER, grp TINYINT, id_rev INTEGER)
   ENGINE= MRG_MYISAM UNION= (t1, t2);
 SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t2;
-SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t2;
 DROP TABLE t1, t2, t3;
 CREATE TABLE t1 (c1 INT) ENGINE=MyISAM;
 CREATE TABLE t2 (c1 INT) ENGINE=MRG_MYISAM UNION=(t1) INSERT_METHOD=LAST;

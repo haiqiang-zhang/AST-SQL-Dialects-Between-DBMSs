@@ -1,0 +1,30 @@
+--Query--
+ATTACH '__TEST_DIR__/db_size.db' AS db1
+--Result--
+[]
++--------------------+
+--Query--
+CHECKPOINT db1
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/db_size.db' AS db1 (READ_ONLY)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT free_blocks>0 FROM pragma_database_size() WHERE database_name='db1'
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT free_blocks>0 FROM pragma_database_size() WHERE database_name='db1'
+--Result--
+[(True,)]
++--------------------+

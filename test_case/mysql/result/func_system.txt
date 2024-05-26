@@ -1,0 +1,90 @@
+--Query--
+select database()
+--Result--
+[('test_db',)]
++--------------------+
+--Query--
+select charset(database())
+--Result--
+[('utf8mb3',)]
++--------------------+
+--Query--
+select database() = "test"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select database() = _utf8mb3"test"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select database() = _latin1"test"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select user() like "%@%"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select user() like _utf8mb3"%@%"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select user() like _latin1"%@%"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select version()>="3.23.29"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select version()>=_utf8mb3"3.23.29"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select version()>=_latin1"3.23.29"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select collation(charset(_utf8mb3'a')), collation(collation(_utf8mb3'a'))
+--Result--
+[('utf8mb3_general_ci', 'utf8mb3_general_ci')]
++--------------------+
+--Query--
+select TRUE,FALSE,NULL
+--Result--
+[(1, 0, None)]
++--------------------+
+--Query--
+select concat(user(), '--', c1) from t1
+--Result--
+[('tester@localhost--row 1',), ('tester@localhost--row 2',), ('tester@localhost--row 3',)]
++--------------------+
+--Query--
+select * from t1 where a=version()
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a=database()
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a=user()
+--Result--
+[]
++--------------------+
+--Query--
+select left(concat(a,version()),1) from t1
+--Result--
+[('a',)]
++--------------------+

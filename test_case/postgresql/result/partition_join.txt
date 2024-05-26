@@ -144,16 +144,6 @@ SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL 			  (SELECT t1.b AS t1b, t2.* FR
 [(100,)]
 +--------------------+
 --Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL 			  (SELECT t1.b AS t1b, t2.* FROM prt2 t2) s 			  ON t1.a = s.b WHERE s.t1b = s.b
---Result--
-[('Aggregate',), ('  ->  Nested Loop',), ('        ->  Append',), ('              ->  Seq Scan on prt1_p1 t1_1',), ('              ->  Seq Scan on prt1_p2 t1_2',), ('              ->  Seq Scan on prt1_p3 t1_3',), ('        ->  Append',), ('              ->  Index Only Scan using iprt2_p1_b on prt2_p1 t2_1',), ('                    Index Cond: (b = t1.a)',), ('                    Filter: (b = t1.b)',), ('              ->  Index Only Scan using iprt2_p2_b on prt2_p2 t2_2',), ('                    Index Cond: (b = t1.a)',), ('                    Filter: (b = t1.b)',), ('              ->  Index Only Scan using iprt2_p3_b on prt2_p3 t2_3',), ('                    Index Cond: (b = t1.a)',), ('                    Filter: (b = t1.b)',)]
-+--------------------+
---Query--
-SELECT count(*) FROM prt1 t1 LEFT JOIN LATERAL 			  (SELECT t1.b AS t1b, t2.* FROM prt2 t2) s 			  ON t1.a = s.b WHERE s.t1b = s.b
---Result--
-[(5,)]
-+--------------------+
---Query--
 EXPLAIN (COSTS OFF) SELECT a, b FROM prt1 FULL JOIN prt2 p2(b,a,c) USING(a,b)   WHERE a BETWEEN 490 AND 510   GROUP BY 1, 2 ORDER BY 1, 2
 --Result--
 [('Group',), ('  Group Key: (COALESCE(prt1.a, p2.a)), (COALESCE(prt1.b, p2.b))',), ('  ->  Merge Append',), ('        Sort Key: (COALESCE(prt1.a, p2.a)), (COALESCE(prt1.b, p2.b))',), ('        ->  Group',), ('              Group Key: (COALESCE(prt1.a, p2.a)), (COALESCE(prt1.b, p2.b))',), ('              ->  Sort',), ('                    Sort Key: (COALESCE(prt1.a, p2.a)), (COALESCE(prt1.b, p2.b))',), ('                    ->  Merge Full Join',), ('                          Merge Cond: ((prt1.a = p2.a) AND (prt1.b = p2.b))',), ('                          Filter: ((COALESCE(prt1.a, p2.a) >= 490) AND (COALESCE(prt1.a, p2.a) <= 510))',), ('                          ->  Sort',), ('                                Sort Key: prt1.a, prt1.b',), ('                                ->  Seq Scan on prt1_p1 prt1',), ('                          ->  Sort',), ('                                Sort Key: p2.a, p2.b',), ('                                ->  Seq Scan on prt2_p1 p2',), ('        ->  Group',), ('              Group Key: (COALESCE(prt1_1.a, p2_1.a)), (COALESCE(prt1_1.b, p2_1.b))',), ('              ->  Sort',), ('                    Sort Key: (COALESCE(prt1_1.a, p2_1.a)), (COALESCE(prt1_1.b, p2_1.b))',), ('                    ->  Merge Full Join',), ('                          Merge Cond: ((prt1_1.a = p2_1.a) AND (prt1_1.b = p2_1.b))',), ('                          Filter: ((COALESCE(prt1_1.a, p2_1.a) >= 490) AND (COALESCE(prt1_1.a, p2_1.a) <= 510))',), ('                          ->  Sort',), ('                                Sort Key: prt1_1.a, prt1_1.b',), ('                                ->  Seq Scan on prt1_p2 prt1_1',), ('                          ->  Sort',), ('                                Sort Key: p2_1.a, p2_1.b',), ('                                ->  Seq Scan on prt2_p2 p2_1',), ('        ->  Group',), ('              Group Key: (COALESCE(prt1_2.a, p2_2.a)), (COALESCE(prt1_2.b, p2_2.b))',), ('              ->  Sort',), ('                    Sort Key: (COALESCE(prt1_2.a, p2_2.a)), (COALESCE(prt1_2.b, p2_2.b))',), ('                    ->  Merge Full Join',), ('                          Merge Cond: ((prt1_2.a = p2_2.a) AND (prt1_2.b = p2_2.b))',), ('                          Filter: ((COALESCE(prt1_2.a, p2_2.a) >= 490) AND (COALESCE(prt1_2.a, p2_2.a) <= 510))',), ('                          ->  Sort',), ('                                Sort Key: prt1_2.a, prt1_2.b',), ('                                ->  Seq Scan on prt1_p3 prt1_2',), ('                          ->  Sort',), ('                                Sort Key: p2_2.a, p2_2.b',), ('                                ->  Seq Scan on prt2_p3 p2_2',)]
@@ -384,16 +374,6 @@ ANALYZE pht1_e
 []
 +--------------------+
 --Query--
-EXPLAIN (COSTS OFF) SELECT avg(t1.a), avg(t2.b), avg(t3.a + t3.b), t1.c, t2.c, t3.c FROM pht1 t1, pht2 t2, pht1_e t3 WHERE t1.b = t2.b AND t1.c = t2.c AND ltrim(t3.c, 'A') = t1.c GROUP BY t1.c, t2.c, t3.c ORDER BY t1.c, t2.c, t3.c
---Result--
-[('GroupAggregate',), ('  Group Key: t1.c, t3.c',), ('  ->  Sort',), ('        Sort Key: t1.c, t3.c',), ('        ->  Append',), ('              ->  Hash Join',), ("                    Hash Cond: (t1_1.c = ltrim(t3_1.c, 'A'::text))",), ('                    ->  Hash Join',), ('                          Hash Cond: ((t1_1.b = t2_1.b) AND (t1_1.c = t2_1.c))',), ('                          ->  Seq Scan on pht1_p1 t1_1',), ('                          ->  Hash',), ('                                ->  Seq Scan on pht2_p1 t2_1',), ('                    ->  Hash',), ('                          ->  Seq Scan on pht1_e_p1 t3_1',), ('              ->  Hash Join',), ("                    Hash Cond: (t1_2.c = ltrim(t3_2.c, 'A'::text))",), ('                    ->  Hash Join',), ('                          Hash Cond: ((t1_2.b = t2_2.b) AND (t1_2.c = t2_2.c))',), ('                          ->  Seq Scan on pht1_p2 t1_2',), ('                          ->  Hash',), ('                                ->  Seq Scan on pht2_p2 t2_2',), ('                    ->  Hash',), ('                          ->  Seq Scan on pht1_e_p2 t3_2',), ('              ->  Hash Join',), ("                    Hash Cond: (t1_3.c = ltrim(t3_3.c, 'A'::text))",), ('                    ->  Hash Join',), ('                          Hash Cond: ((t1_3.b = t2_3.b) AND (t1_3.c = t2_3.c))',), ('                          ->  Seq Scan on pht1_p3 t1_3',), ('                          ->  Hash',), ('                                ->  Seq Scan on pht2_p3 t2_3',), ('                    ->  Hash',), ('                          ->  Seq Scan on pht1_e_p3 t3_3',)]
-+--------------------+
---Query--
-SELECT avg(t1.a), avg(t2.b), avg(t3.a + t3.b), t1.c, t2.c, t3.c FROM pht1 t1, pht2 t2, pht1_e t3 WHERE t1.b = t2.b AND t1.c = t2.c AND ltrim(t3.c, 'A') = t1.c GROUP BY t1.c, t2.c, t3.c ORDER BY t1.c, t2.c, t3.c
---Result--
-[(24.0, 24.0, 48.0, '0000', '0000', 'A0000'), (75.0, 75.0, 148.0, '0001', '0001', 'A0001'), (123.0, 123.0, 248.0, '0002', '0002', 'A0002'), (174.0, 174.0, 348.0, '0003', '0003', 'A0003'), (225.0, 225.0, 448.0, '0004', '0004', 'A0004'), (273.0, 273.0, 548.0, '0005', '0005', 'A0005')]
-+--------------------+
---Query--
 ANALYZE prt1
 --Result--
 []
@@ -417,11 +397,6 @@ ANALYZE plt1
 ANALYZE plt2
 --Result--
 []
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT avg(t1.a), avg(t2.b), t1.c, t2.c FROM plt1 t1 RIGHT JOIN plt2 t2 ON t1.c = t2.c WHERE t1.a % 25 = 0 GROUP BY t1.c, t2.c ORDER BY t1.c, t2.c
---Result--
-[('Sort',), ('  Sort Key: t1.c',), ('  ->  HashAggregate',), ('        Group Key: t1.c',), ('        ->  Append',), ('              ->  Hash Join',), ('                    Hash Cond: (t2_1.c = t1_1.c)',), ('                    ->  Seq Scan on plt2_p1 t2_1',), ('                    ->  Hash',), ('                          ->  Seq Scan on plt1_p1 t1_1',), ('                                Filter: ((a % 25) = 0)',), ('              ->  Hash Join',), ('                    Hash Cond: (t2_2.c = t1_2.c)',), ('                    ->  Seq Scan on plt2_p2 t2_2',), ('                    ->  Hash',), ('                          ->  Seq Scan on plt1_p2 t1_2',), ('                                Filter: ((a % 25) = 0)',), ('              ->  Hash Join',), ('                    Hash Cond: (t2_3.c = t1_3.c)',), ('                    ->  Seq Scan on plt2_p3 t2_3',), ('                    ->  Hash',), ('                          ->  Seq Scan on plt1_p3 t1_3',), ('                                Filter: ((a % 25) = 0)',)]
 +--------------------+
 --Query--
 ANALYZE prt1_l
@@ -487,16 +462,6 @@ SELECT * FROM prt1_l t1 LEFT JOIN LATERAL 			  (SELECT t2.a AS t2a, t2.c AS t2c,
 EXPLAIN (COSTS OFF) SELECT * FROM prt1_l t1 JOIN LATERAL 			  (SELECT * FROM prt1_l t2 TABLESAMPLE SYSTEM (t1.a) REPEATABLE(t1.b)) s 			  ON t1.a = s.a AND t1.b = s.b AND t1.c = s.c
 --Result--
 [('Gather',), ('  Workers Planned: 2',), ('  ->  Nested Loop',), ('        ->  Parallel Append',), ('              ->  Parallel Seq Scan on prt1_l_p1 t1_1',), ('              ->  Parallel Seq Scan on prt1_l_p2_p2 t1_3',), ('              ->  Parallel Seq Scan on prt1_l_p2_p1 t1_2',), ('              ->  Parallel Seq Scan on prt1_l_p3_p1 t1_4',), ('              ->  Parallel Seq Scan on prt1_l_p3_p2 t1_5',), ('        ->  Append',), ('              ->  Sample Scan on prt1_l_p1 t2_1',), ('                    Sampling: system (t1.a) REPEATABLE (t1.b)',), ('                    Filter: ((t1.a = a) AND (t1.b = b) AND ((t1.c)::text = (c)::text))',), ('              ->  Sample Scan on prt1_l_p2_p1 t2_2',), ('                    Sampling: system (t1.a) REPEATABLE (t1.b)',), ('                    Filter: ((t1.a = a) AND (t1.b = b) AND ((t1.c)::text = (c)::text))',), ('              ->  Sample Scan on prt1_l_p2_p2 t2_3',), ('                    Sampling: system (t1.a) REPEATABLE (t1.b)',), ('                    Filter: ((t1.a = a) AND (t1.b = b) AND ((t1.c)::text = (c)::text))',), ('              ->  Sample Scan on prt1_l_p3_p1 t2_4',), ('                    Sampling: system (t1.a) REPEATABLE (t1.b)',), ('                    Filter: ((t1.a = a) AND (t1.b = b) AND ((t1.c)::text = (c)::text))',), ('              ->  Sample Scan on prt1_l_p3_p2 t2_5',), ('                    Sampling: system (t1.a) REPEATABLE (t1.b)',), ('                    Filter: ((t1.a = a) AND (t1.b = b) AND ((t1.c)::text = (c)::text))',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT COUNT(*) FROM prt1_l t1 LEFT JOIN LATERAL 			  (SELECT t1.b AS t1b, t2.* FROM prt2_l t2) s 			  ON t1.a = s.b AND t1.b = s.a AND t1.c = s.c 			  WHERE s.t1b = s.a
---Result--
-[('Aggregate',), ('  ->  Gather',), ('        Workers Planned: 2',), ('        ->  Nested Loop',), ('              ->  Parallel Append',), ('                    ->  Parallel Seq Scan on prt1_l_p1 t1_1',), ('                    ->  Parallel Seq Scan on prt1_l_p2_p2 t1_3',), ('                    ->  Parallel Seq Scan on prt1_l_p2_p1 t1_2',), ('                    ->  Parallel Seq Scan on prt1_l_p3_p1 t1_4',), ('                    ->  Parallel Seq Scan on prt1_l_p3_p2 t1_5',), ('              ->  Append',), ('                    ->  Seq Scan on prt2_l_p1 t2_1',), ('                          Filter: ((a = t1.b) AND (t1.a = b) AND (t1.b = a) AND ((t1.c)::text = (c)::text))',), ('                    ->  Seq Scan on prt2_l_p2_p1 t2_2',), ('                          Filter: ((a = t1.b) AND (t1.a = b) AND (t1.b = a) AND ((t1.c)::text = (c)::text))',), ('                    ->  Seq Scan on prt2_l_p2_p2 t2_3',), ('                          Filter: ((a = t1.b) AND (t1.a = b) AND (t1.b = a) AND ((t1.c)::text = (c)::text))',), ('                    ->  Seq Scan on prt2_l_p3_p1 t2_4',), ('                          Filter: ((a = t1.b) AND (t1.a = b) AND (t1.b = a) AND ((t1.c)::text = (c)::text))',), ('                    ->  Seq Scan on prt2_l_p3_p2 t2_5',), ('                          Filter: ((a = t1.b) AND (t1.a = b) AND (t1.b = a) AND ((t1.c)::text = (c)::text))',)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM prt1_l t1 LEFT JOIN LATERAL 			  (SELECT t1.b AS t1b, t2.* FROM prt2_l t2) s 			  ON t1.a = s.b AND t1.b = s.a AND t1.c = s.c 			  WHERE s.t1b = s.a
---Result--
-[(100,)]
 +--------------------+
 --Query--
 EXPLAIN (COSTS OFF) SELECT t1.a, t1.c, t2.b, t2.c FROM (SELECT * FROM prt1_l WHERE a = 1 AND a = 2) t1 RIGHT JOIN prt2_l t2 ON t1.a = t2.b AND t1.b = t2.a AND t1.c = t2.c

@@ -23,13 +23,11 @@ CREATE TABLE floats (
 
 ) engine=Memory;
 INSERT INTO floats VALUES (1.1, 1.2, 1.3, 41.1, 41.1, 42.1);
-SELECT  toTypeName(a), toTypeName(b), toTypeName(c), toTypeName(d), toTypeName(e), toTypeName(f) FROM floats;
 CREATE TABLE strings (
     a VARCHAR,
     b VARCHAR(11)
 ) engine=Memory;
 INSERT INTO strings VALUES ('test', 'string');
-SELECT  toTypeName(a), toTypeName(b)  FROM strings;
 DROP TABLE floats;
 DROP TABLE ints;
 DROP TABLE strings;

@@ -1,0 +1,45 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_ttl = 3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM system.query_cache
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT stale FROM system.query_cache
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT stale FROM system.query_cache
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, query_cache_ttl = 3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT stale FROM system.query_cache
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

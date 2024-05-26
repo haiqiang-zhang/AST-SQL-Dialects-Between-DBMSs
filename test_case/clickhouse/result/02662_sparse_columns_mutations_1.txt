@@ -1,0 +1,35 @@
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_mutations_1' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_0', 'String', 'Sparse')]
++--------------------+
+--Query--
+SELECT countIf(s = 'foo'), arraySort(groupUniqArray(s)) FROM t_sparse_mutations_1
+--Result--
+[(477, ['', 'foo'])]
++--------------------+
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_mutations_1' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_0_2', 'Nullable(String)', 'Default')]
++--------------------+
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_mutations_1' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_0_2', 'Nullable(String)', 'Default'), ('2_3_3_0', 'Nullable(String)', 'Default')]
++--------------------+
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_mutations_1' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_0_4', 'String', 'Default'), ('2_3_3_0_4', 'String', 'Default')]
++--------------------+
+--Query--
+OPTIMIZE TABLE t_sparse_mutations_1 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_mutations_1' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_1_4', 'String', 'Sparse'), ('2_3_3_1_4', 'String', 'Sparse')]
++--------------------+

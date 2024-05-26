@@ -1,0 +1,20 @@
+--Query--
+SELECT id, data.a, data.s FROM t_json_field ORDER BY id
+--Result--
+[(1, 10, 'a')]
++--------------------+
+--Query--
+SELECT DISTINCT toTypeName(data) FROM t_json_field
+--Result--
+[('Tuple(\n    a UInt8,\n    s String)',)]
++--------------------+
+--Query--
+SELECT id, data.a, data.s, data.b FROM t_json_field ORDER BY id
+--Result--
+[(1, '10', 'a', 0), (2, 'sss', 'b', 300), (3, '20', 'c', 0)]
++--------------------+
+--Query--
+SELECT id, data.a, data.s, data.b, data.t FROM t_json_field ORDER BY id
+--Result--
+[(1, '10', 'a', 0, ''), (2, 'sss', 'b', 300, ''), (3, '20', 'c', 0, ''), (4, '30', '', 400, ''), (5, '0', 'qqq', 0, 'foo')]
++--------------------+

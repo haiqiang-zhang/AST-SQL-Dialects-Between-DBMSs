@@ -1,0 +1,270 @@
+--Query--
+SELECT schema_name, HEX(schema_name)   FROM information_schema.schemata   WHERE schema_name NOT IN ('mtr', 'sys')   ORDER BY schema_name
+--Result--
+[('information_schema', '696E666F726D6174696F6E5F736368656D61'), ('mysql', '6D7973716C'), ('performance_schema', '706572666F726D616E63655F736368656D61'), ('test_db', '746573745F6462')]
++--------------------+
+--Query--
+SELECT c FROM t1a WHERE c IN (SELECT c FROM t1b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t1a WHERE EXISTS (SELECT c FROM t1b WHERE t1a.c = t1b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t1a WHERE NOT EXISTS (SELECT c FROM t1b WHERE t1a.c = t1b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t2a WHERE c IN (SELECT c FROM t2b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t2a WHERE EXISTS (SELECT c FROM t2b WHERE t2a.c = t2b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t2a WHERE NOT EXISTS (SELECT c FROM t2b WHERE t2a.c = t2b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a JOIN t1b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a INNER JOIN t1b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a JOIN t1b USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a INNER JOIN t1b USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a CROSS JOIN t1b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a LEFT JOIN t1b USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1a LEFT JOIN t1b ON (t1a.c = t1b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1b RIGHT JOIN t1a USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1b RIGHT JOIN t1a ON (t1a.c = t1b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a JOIN t2b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a INNER JOIN t2b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a JOIN t2b USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a INNER JOIN t2b USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a CROSS JOIN t2b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a LEFT JOIN t2b USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2a LEFT JOIN t2b ON (t2a.c = t2b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2b RIGHT JOIN t2a USING (c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2b RIGHT JOIN t2a ON (t2a.c = t2b.c)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c, COUNT(c) FROM t1 GROUP BY c
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt4 FROM 'SELECT CHAR_LENGTH(?)'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt5 FROM 'SELECT CHARSET(?)'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt6 FROM 'SELECT INSERT(c1,1,1,?) FROM t1'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt7 FROM 'SELECT INSTR(c1,?) FROM t2'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt8 FROM 'SELECT LOCATE(?,c1) FROM t2'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt9 FROM 'SELECT LPAD(c1,9,?) FROM t1'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt10 FROM 'SELECT REPLACE(c1,?,\'x\') FROM t2'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt11 FROM 'SELECT REPLACE(c1,\'x\',?) FROM t1'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt12 FROM 'SELECT RPAD(c1,9,?) FROM t1'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt13 FROM 'UPDATE t4 SET c1=\'x\' WHERE c1=?'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt14 FROM 'UPDATE t4 SET c1=? WHERE c1=\'x\''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt4
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt5
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt6
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt7
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt8
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt9
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt10
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt11
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt12
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt13
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt14
+--Result--
+[]
++--------------------+

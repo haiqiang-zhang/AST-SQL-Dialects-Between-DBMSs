@@ -1,0 +1,810 @@
+--Query--
+select * from (select 2 from DUAL) b
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select t1.a,t3.y from t1,(select a as y from t2  where b='c') as t3  where t1.a = t3.y
+--Result--
+[(3, 3), (3, 3)]
++--------------------+
+--Query--
+select t1.a,t3.a from t1,(select * from t2  where b='c') as t3  where t1.a = t3.a
+--Result--
+[(3, 3), (3, 3)]
++--------------------+
+--Query--
+select t1.a,t4.y from t1,(select t2.a as y from t2,(select t3.b from t3 where t3.a>3) as t5  where t2.b=t5.b) as t4  where t1.a = t4.y
+--Result--
+[(3, 3), (3, 3)]
++--------------------+
+--Query--
+SELECT a,2 as a FROM (SELECT '1' as a) b HAVING a=2
+--Result--
+[('1', 2)]
++--------------------+
+--Query--
+SELECT a,2 as a FROM (SELECT '1' as a) b HAVING a=1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 as x1, (select * from t1) as x2
+--Result--
+[(3, 'c', 1, 'a'), (3, 'c', 1, 'a'), (2, 'b', 1, 'a'), (1, 'a', 1, 'a'), (3, 'c', 2, 'b'), (3, 'c', 2, 'b'), (2, 'b', 2, 'b'), (1, 'a', 2, 'b'), (3, 'c', 3, 'c'), (3, 'c', 3, 'c'), (2, 'b', 3, 'c'), (1, 'a', 3, 'c'), (3, 'c', 3, 'c'), (3, 'c', 3, 'c'), (2, 'b', 3, 'c'), (1, 'a', 3, 'c')]
++--------------------+
+--Query--
+select * from (select 1) as a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a from (select 1 as a) as b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 from (select 1) as a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from (select * from t1 union select * from t1) a
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+select * from (select * from t1 union all select * from t1) a
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (3, 'c'), (1, 'a'), (2, 'b'), (3, 'c'), (3, 'c')]
++--------------------+
+--Query--
+select * from (select * from t1 union all select * from t1 limit 2) a
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+select * from (select * from t1 intersect all select * from t1 order by a,b limit 2) a
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+select * from (select * from t1 except all select * from t1 limit 2) a
+--Result--
+[]
++--------------------+
+--Query--
+select * from (select * from t1 where t1.a=(select a from t2 where t2.a=t1.a)) a
+--Result--
+[(1, 'a')]
++--------------------+
+--Query--
+select * from (select * from t1 where t1.a=(select t2.a from t2 where t2.a=t1.a) union select t1.a, t1.b from t1) a
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1) as b ORDER BY a  ASC LIMIT 0,20
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT (SELECT * FROM (SELECT 1 as a) as a )) as b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from (select 1 as a) b  left join (select 2 as a) c using(a)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN d.pla_id, m2.mat_id FROM t1 m2 INNER JOIN (SELECT mp.pla_id, MIN(m1.matintnum) AS matintnum FROM t2 mp INNER JOIN t1 m1 ON mp.mat_id=m1.mat_id GROUP BY mp.pla_id) d ON d.matintnum=m2.matintnum
+--Result--
+[(100, 1), (101, 1), (102, 1), (103, 2), (104, 2), (105, 3)]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN d.pla_id, m2.test FROM t1 m2  INNER JOIN (SELECT mp.pla_id, MIN(m1.matintnum) AS matintnum FROM t2 mp INNER JOIN t1 m1 ON mp.mat_id=m1.mat_id GROUP BY mp.pla_id) d ON d.matintnum=m2.matintnum
+--Result--
+[(100, 1), (101, 1), (102, 1), (103, 2), (104, 2), (105, 3)]
++--------------------+
+--Query--
+SELECT a.x FROM (SELECT 1 AS x) AS a HAVING a.x = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 as a from (select * from t1) b
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 2 as a from (select * from t1) b
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select count(*) from t1 INNER JOIN (SELECT A.E1, A.E2, A.E3 FROM t1 AS A WHERE A.E3 = (SELECT MAX(B.E3) FROM t1 AS B WHERE A.E2 = B.E2)) AS themax ON t1.E1 = themax.E2 AND t1.E1 = t1.E2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select * from ( select * from t1 union select * from t1) a,(select * from t1 union select * from t1) b
+--Result--
+[(2, 1), (1, 1), (2, 2), (1, 2)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 2), (1, 2), (1, 2), (2, 2), (2, 2), (3, 0)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(3, 0)]
++--------------------+
+--Query--
+select 497, TMP.ID, NULL from (select 497 as ID, MAX(t3.DATA) as DATA      from t1 join t2 on (t1.ObjectID = t2.ID) join t3 on (t1.ObjectID = t3.ID) group by t2.ParID order by DATA DESC) as TMP
+--Result--
+[]
++--------------------+
+--Query--
+SELECT s.name, AVG(s.val) AS median FROM (SELECT x.name, x.val FROM t1 x, t1 y WHERE x.name=y.name GROUP BY x.name, x.val HAVING SUM(y.val <= x.val) >= COUNT(*)/2 AND SUM(y.val >= x.val) >= COUNT(*)/2) AS s GROUP BY s.name
+--Result--
+[('a', 7.0), ('b', 3.5)]
++--------------------+
+--Query--
+select distinct sum(b) from t1 group by a
+--Result--
+[(4.0,)]
++--------------------+
+--Query--
+select * from t1 union distinct select * from t2 union all select * from t3
+--Result--
+[(1,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+select * from (select * from t1 union distinct select * from t2 union all select * from t3) X
+--Result--
+[(1,), (2,), (3,), (3,)]
++--------------------+
+--Query--
+select A.* from (t1 inner join (select * from t2) as A on t1.ID = A.FID)
+--Result--
+[]
++--------------------+
+--Query--
+select t2.* from ((select * from t1) as A inner join t2 on A.ID = t2.FID)
+--Result--
+[]
++--------------------+
+--Query--
+select t2.* from (select * from t1) as A inner join t2 on A.ID = t2.FID
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 0 FROM (SELECT 0) t01, (SELECT 0) t02, (SELECT 0) t03, (SELECT 0) t04, (SELECT 0) t05, (SELECT 0) t06, (SELECT 0) t07, (SELECT 0) t08, (SELECT 0) t09, (SELECT 0) t10, (SELECT 0) t11, (SELECT 0) t12, (SELECT 0) t13, (SELECT 0) t14, (SELECT 0) t15, (SELECT 0) t16, (SELECT 0) t17, (SELECT 0) t18, (SELECT 0) t19, (SELECT 0) t20, (SELECT 0) t21, (SELECT 0) t22, (SELECT 0) t23, (SELECT 0) t24, (SELECT 0) t25, (SELECT 0) t26, (SELECT 0) t27, (SELECT 0) t28, (SELECT 0) t29, (SELECT 0) t30, (SELECT 0) t31, (SELECT 0) t32, (SELECT 0) t33, (SELECT 0) t34, (SELECT 0) t35, (SELECT 0) t36, (SELECT 0) t37, (SELECT 0) t38, (SELECT 0) t39, (SELECT 0) t40, (SELECT 0) t41, (SELECT 0) t42, (SELECT 0) t43, (SELECT 0) t44, (SELECT 0) t45, (SELECT 0) t46, (SELECT 0) t47, (SELECT 0) t48, (SELECT 0) t49, (SELECT 0) t50, (SELECT 0) t51, (SELECT 0) t52, (SELECT 0) t53, (SELECT 0) t54, (SELECT 0) t55, (SELECT 0) t56, (SELECT 0) t57, (SELECT 0) t58, (SELECT 0) t59, (SELECT 0) t60, (SELECT 0) t61
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT MIN(i) FROM t1 WHERE j = SUBSTRING('12', (SELECT * FROM (SELECT MIN(j) FROM t1) t2))) t3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SUM(DISTINCT table2.col_int_key) field1,        table1.col_varchar_key field2 FROM   (SELECT * FROM C  ) table1   JOIN (SELECT * FROM C  ) table2   ON table2 .`col_varchar_key` = table1 .`col_varchar_nokey` GROUP  BY field2 ORDER  BY field1
+--Result--
+[(2.0, 'd'), (2.0, 'w')]
++--------------------+
+--Query--
+SELECT table1.col_varchar FROM  ( SELECT * FROM C  ) table1  JOIN ( SELECT * FROM C  ) table2  ON table2.col_varchar = table1.col_varchar WHERE   table2.col_varchar < table2.col_varchar   AND table1.col_varchar != 'k' LIMIT  1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT  table1.col_date_key AS field1 FROM   C AS table1 WHERE   (table1.col_int_key <=ANY     ( SELECT SUBQUERY1_t1.col_int_key       FROM viewC AS SUBQUERY1_t1       WHERE SUBQUERY1_t1.col_varchar_10_key <= table1.col_varchar_10_key     )   )
+--Result--
+[(datetime.date(2003, 4, 2),)]
++--------------------+
+--Query--
+SELECT table1 . o1 FROM C table1   JOIN ( C table2     JOIN ( SELECT * FROM cc ) table3     ON table3 .`i1`  = table2 .o1   ) ON table3 .`i2`  = table2 .o1
+--Result--
+[('m',)]
++--------------------+
+--Query--
+SELECT * FROM (   SELECT DISTINCT tableb.col_datetime_key   FROM t1 tablea LEFT JOIN t1 tableb ON tablea.pk < tableb.col_int_key ) AS from_subquery
+--Result--
+[(datetime.datetime(1900, 1, 1, 0, 0),), (None,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1) tt
+--Result--
+[(1, 1), (2, 2), (3, 3), (5, 5), (9, 9), (7, 7)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 JOIN t2 ON f1=f2) tt
+--Result--
+[(1, 1, 1, 1), (3, 3, 3, 3), (2, 2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 WHERE f1 IN (2,3)) tt WHERE f11=2
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 WHERE f1 IN (2,3)) tt WHERE f11=2
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 WHERE f1 IN (2,3)) tt JOIN   (SELECT * FROM t1 WHERE f1 IN (1,2)) aa ON tt.f1=aa.f1
+--Result--
+[(2, 2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 WHERE f1 IN (2,3)) tt JOIN   (SELECT * FROM t1 WHERE f1 IN (1,2)) aa ON tt.f1=aa.f1
+--Result--
+[(2, 2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1, 1), (2, 2), (3, 3), (5, 5), (9, 9), (7, 7)]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1, 1, 1, 1), (3, 3, 3, 3), (2, 2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM v3 WHERE f11 IN (1,3)
+--Result--
+[(3, 3)]
++--------------------+
+--Query--
+SELECT * FROM v3 JOIN v4 ON f1=f2
+--Result--
+[(3, 3, 3, 3), (2, 2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM v3 JOIN v4 ON f1=f2
+--Result--
+[(3, 3, 3, 3), (2, 2, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM v4 WHERE f2 IN (1,3)
+--Result--
+[(3, 3)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 HAVING f1=f1) tt
+--Result--
+[(1, 1), (2, 2), (3, 3), (5, 5), (9, 9), (7, 7)]
++--------------------+
+--Query--
+SELECT * FROM t1,v3 AS v31,v3 WHERE t1.f1=v31.f1 and t1.f1=v3.f1
+--Result--
+[(1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7)]
++--------------------+
+--Query--
+SELECT * FROM t1,v3 AS v31,v3 WHERE t1.f1=v31.f1 and t1.f1=v3.f1
+--Result--
+[(1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (2, 2, 2, 2, 2, 2), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (3, 3, 3, 3, 3, 3), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (9, 9, 9, 9, 9, 9), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7), (7, 7, 7, 7, 7, 7)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM   (SELECT * FROM t1 WHERE f1 < 7) tt WHERE f1 > 2) zz
+--Result--
+[(3, 3), (5, 5)]
++--------------------+
+--Query--
+SELECT * FROM  (SELECT * FROM   (SELECT * FROM t1 WHERE f1 < 7 ) tt WHERE f1 > 2 ) x JOIN  (SELECT * FROM   (SELECT * FROM t1 WHERE f1 < 7 ) tt WHERE f1 > 2 ) z  ON x.f1 = z.f1
+--Result--
+[(3, 3, 3, 3), (5, 5, 5, 5)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM v6) tt
+--Result--
+[(3, 3), (2, 2)]
++--------------------+
+--Query--
+SELECT alias1.col_time_key AS field1 FROM ( ( SELECT SQ1_alias1.* FROM t1 AS SQ1_alias1 ) AS alias1   INNER JOIN t1 AS alias2   ON (alias2.col_int_key = alias1.col_int_key)   ) WHERE alias1.col_int_key = 207 ORDER BY alias1.col_varchar_key, field1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM (   SELECT 1, 2 FROM DUAL   WHERE EXISTS  (     SELECT f1     FROM  t1     )) AS tt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT tt.col_time_key FROM ( ( SELECT * FROM t1 ) AS tt   INNER JOIN t1   ON (t1.col_int_key = tt.col_int_key)   ) WHERE tt.col_int_key = 207 ORDER BY tt.col_varchar_key, tt.pk ASC, 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE (field1, field2) IN (   SELECT t1.col_varchar_key AS field1,          t1.col_int_key AS field2   FROM ( t1 INNER JOIN (       SELECT t2.*       FROM t2       WHERE t2.col_int_nokey < t2.pk ) AS alias2     ON (alias2.col_varchar_key = t1.col_varchar_key ) )   GROUP BY field1, field2   ORDER BY t1.col_int_key, t1 .pk DESC )
+--Result--
+[('c', 4)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a, a) NOT IN   (SELECT * FROM (SELECT 8, 4 UNION SELECT 2, 3) tt)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT OUTR.col_date_key FROM t2 AS OUTR2   LEFT JOIN t2 AS OUTR ON OUTR2.pk < OUTR.pk WHERE ( OUTR.col_varchar_nokey , OUTR.col_varchar_key )   IN (     SELECT DISTINCT col_varchar_key , col_varchar_key     FROM t1     WHERE col_int_nokey XOR OUTR.col_time_nokey   )   XOR OUTR.col_date_nokey IS NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT alias2.fk AS field1 FROM t1 AS alias1 JOIN   (SELECT * FROM t2 ) AS alias2 ON alias1.fk = alias2.fk
+--Result--
+[]
++--------------------+
+--Query--
+SELECT alias2.fk AS field1 FROM t1 AS alias1 JOIN   (SELECT * FROM t2 ) AS alias2 ON alias1.fk = alias2.fk
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM (   ( SELECT * FROM ( SELECT * FROM t2 ) AS alias1 ) AS alias1,   ( SELECT * FROM t1 ) AS alias2 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT alias1.col_text AS field1 ,        alias1.col_tinytext AS field2 FROM t2 AS alias1   LEFT OUTER JOIN ( SELECT * FROM t1 ) AS alias2 ON alias1.pk = alias2.pk WHERE alias2.pk >=1  AND alias2.pk < 3 ORDER BY field1,field2 ASC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT derived.vc FROM (SELECT * FROM t1) AS derived WHERE derived.vc IN (   SELECT t2.vc1   FROM t2 JOIN t3 ON t2.vc2=t3.vc)
+--Result--
+[('seven',)]
++--------------------+
+--Query--
+SELECT col_int_key FROM t1 WHERE ( NOT EXISTS (   SELECT col_varchar_nokey   FROM t1   WHERE ( 7 ) IN (       SELECT v1.col_int_key       FROM ( v1 JOIN ( SELECT * FROM t1 ) AS d1         ON ( d1.col_varchar_nokey = v1.col_varchar_nokey ) )     ) ) )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT pk FROM t2 WHERE pk IN ( SELECT * FROM v1 )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT t2.col_int FROM t2     RIGHT JOIN ( SELECT * FROM t1 ) AS dt   ON t2.col_varchar = dt.col_varchar WHERE t2.col_int IS NOT NULL
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT t2.col_int FROM t2     RIGHT JOIN ( SELECT * FROM t1 ) AS dt   ON t2.col_varchar = dt.col_varchar WHERE t2.col_int IS NOT NULL
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT col_time_nokey AS x FROM (SELECT * FROM t2) AS outr WHERE col_varchar_nokey IN (   SELECT innr.col_varchar_key   FROM (SELECT * FROM t3) AS innr2     LEFT JOIN (SELECT * FROM t1) AS innr     ON innr2.col_varchar_key >= innr.col_varchar_key   WHERE outr.col_varchar_nokey = 'e'   )   AND outr.col_varchar_key <> 'r'
+--Result--
+[]
++--------------------+
+--Query--
+select tt.field100 from t1 join (select * from t1) tt where t1.field100=tt.field100 limit 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select tt.field100 from t1 join (select * from t1) tt where t1.field100=tt.field100 limit 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT grandparent.col_varchar_nokey AS g1 FROM (SELECT * FROM t3) AS grandparent WHERE grandparent.col_varchar_nokey IN  (SELECT parent.col_varchar_key AS p1   FROM (SELECT * FROM t2) AS parent   WHERE grandparent.col_varchar_key IN (     SELECT child1.col_varchar_key AS c1     FROM (SELECT * FROM t1) AS child1       LEFT JOIN (SELECT * FROM t2) AS child2       ON child1.col_varchar_nokey <> child2.col_varchar_key     )     AND grandparent.col_int_key IS UNKNOWN   ) ORDER BY grandparent.col_varchar_nokey
+--Result--
+[('r',)]
++--------------------+
+--Query--
+SELECT pk FROM ( SELECT col_blob, pk FROM t2 ) AS A NATURAL JOIN t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1) AS a1 RIGHT JOIN t3 LEFT JOIN t2 ON d=c ON a=c
+--Result--
+[(None, None, 0, None)]
++--------------------+
+--Query--
+SELECT a1.a, a1.b, a1.c FROM (SELECT a, b, c FROM t1 ) a1 JOIN t2 ON a1.a=t2.a WHERE a1.b='xxx'
+--Result--
+[(1, 'xxx', 'abc')]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1, (SELECT * FROM t2) AS dt WHERE t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM (t1 JOIN t2 ON t1.a=t2.a) JOIN (SELECT * FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100, 1, 100), (2, 20, 2, 200, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT t2.a, t2.b FROM t1 JOIN t2 USING (a)) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM (t1 JOIN t2 USING (a))      JOIN      (SELECT t2.a, t2.b FROM t1 JOIN t2 USING (a)) AS dt      ON t1.a=dt.a
+--Result--
+[(1, 10, 100, 1, 100), (2, 20, 200, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM (t1 JOIN t2 USING (a))      JOIN      (SELECT t1.a, t2.b FROM t1 JOIN t2 USING (a)) AS dt1      ON t1.a=dt1.a AND t2.b=dt1.b      JOIN      (SELECT t2.a, t2.b FROM t1 JOIN t2 USING (a)) AS dt2      ON dt1.a=dt2.a
+--Result--
+[(1, 10, 100, 1, 100, 1, 100), (2, 20, 200, 2, 200, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT t2.a, t2.b FROM t1 JOIN t2 USING (a)               WHERE t1.b > 15) AS dt ON t1.a=dt.a
+--Result--
+[(2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2               WHERE a IN (SELECT a FROM t1)) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 UNION SELECT * FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 UNION ALL SELECT * FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (1, 10, 1, 100), (2, 20, 2, 200), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT DISTINCT a, b FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT SUM(a) AS a, SUM(b) AS b FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT a, SUM(b) AS b FROM t2 GROUP BY a) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100.0), (2, 20, 2, 200.0)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT 1 AS a FROM t2 HAVING COUNT(*) > 1) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 LIMIT 1) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 LIMIT 2 OFFSET 1) AS dt ON t1.a=dt.a
+--Result--
+[(2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT 1 AS a) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT a, b, @c:= a+b FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100, 101), (2, 20, 2, 200, 202)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt
+--Result--
+[(1, 100), (2, 200)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt
+--Result--
+[(2, 200), (1, 100)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt WHERE dt.a > 0
+--Result--
+[(1, 100), (2, 200)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt WHERE dt.a > 0
+--Result--
+[(2, 200), (1, 100)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 ORDER BY t2.a) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT dt.a, COUNT(*) FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt GROUP BY dt.a
+--Result--
+[(1, 1), (2, 1)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt
+--Result--
+[(1, 100), (2, 200)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt
+--Result--
+[(1, 100), (2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 ORDER BY t2.a) AS dt ON t1.a=dt.a ORDER BY t1.b
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt ON t1.a=dt.a ORDER BY t1.b
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT a, (SELECT COUNT(*) FROM t1) AS b FROM t2) AS dt      ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 2), (2, 20, 2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN (SELECT a, (SELECT b) AS b FROM t2) AS dt ON t1.a=dt.a
+--Result--
+[(1, 10, 1, 100), (2, 20, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM (t1 JOIN t2 USING (a))      JOIN (SELECT t2.a, t2.b FROM t1 JOIN t2 USING (a)) AS dt      ON t1.a=dt.a
+--Result--
+[(1, 10, 100, 1, 100), (2, 20, 200, 2, 200)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2, 21)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 100), (2, 200)]
++--------------------+
+--Query--
+SELECT outr.col_date_key AS x FROM (SELECT * FROM t1) AS outr2 LEFT JOIN (SELECT * FROM t2) AS outr      ON outr2.col_varchar_key = outr.col_varchar_nokey WHERE (outr.col_int_key, outr.col_int_key) IN        (SELECT innr.pk AS x, innr.pk AS y         FROM (SELECT * FROM t3) AS innr         WHERE innr.col_date_nokey IS NOT NULL XOR               innr.col_varchar_nokey > 'p'         ORDER BY innr.col_date_nokey) XOR       (outr.col_int_nokey < 2 OR        NOT outr.col_int_key IS NULL) ORDER BY outr.col_int_key,          outr.pk
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table1.pk FROM (SELECT * FROM t1) AS table1      LEFT JOIN        (SELECT * FROM t1) AS table2        RIGHT OUTER JOIN        (SELECT * FROM t2) AS table3        ON table3.col_varchar_nokey = table2.col_varchar_key      ON table3.pk = table2.col_int_nokey WHERE table3.col_varchar_key <> ALL        (SELECT sq1_t1.col_varchar_nokey AS sq1_field1         FROM (SELECT * FROM t3) AS sq1_t1              LEFT OUTER JOIN              (SELECT * FROM t1) AS sq1_t2              ON sq1_t2.col_varchar_key = sq1_t1.col_varchar_nokey        ) OR       table1.pk = 96
+--Result--
+[]
++--------------------+
+--Query--
+SELECT outr.pk AS x FROM (SELECT * FROM t1) AS outr2      LEFT JOIN (SELECT * FROM t2) AS outr      ON outr2.col_time_nokey >= outr.col_date_nokey WHERE (outr.col_int_nokey, outr.col_int_key) IN        (SELECT innr.col_int_key AS x,                innr.col_int_nokey AS y         FROM (SELECT * FROM t3) AS innr2              LEFT JOIN (SELECT * FROM t4) AS innr              ON innr2.col_varchar_key <> innr.col_varchar_nokey         WHERE innr.col_int_key <> innr.pk OR innr.pk = 9        ) AND        outr.pk < 7 XOR outr.col_varchar_nokey <> 'i' ORDER BY outr.col_varchar_key, outr.pk
+--Result--
+[(13,), (3,), (5,), (6,), (9,), (19,), (20,), (15,), (1,), (4,), (12,), (16,), (17,), (11,), (10,), (8,), (2,), (18,), (14,), (7,)]
++--------------------+
+--Query--
+SELECT table1.pk FROM   t1 AS table1      RIGHT JOIN          t2 AS table2        LEFT OUTER JOIN          (SELECT sq2_t1.*           FROM t2 AS sq2_t1 INNER JOIN t3 AS sq2_t2                ON sq2_t2.col_int_nokey = sq2_t1.col_int_key           WHERE sq2_t2.col_varchar_nokey <= sq2_t1.col_varchar_key OR                 sq2_t2.col_int_nokey <> 2          ) AS table3         ON table3.col_int_key = table2.col_int_key       ON table3.pk = table2.col_int_key WHERE table3.pk >= 6 OR       table1.pk > 68 AND       table1.pk < ( 68 + 76 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SHA(pk) IN (SELECT * FROM (SELECT '' FROM t2) a) FROM t1
+--Result--
+[(0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT table2.pk AS field2 FROM (SELECT sq1_t2.pk       FROM t1 AS sq1_t1            JOIN             (t1 AS sq1_t2 RIGHT JOIN t2 AS sq1_t3              ON sq1_t3.pk = sq1_t2.pk             )            ON sq1_t3.col_int_key = sq1_t2.pk AND               sq1_t1.col_varchar_key IN              (SELECT child_sq1_t2.col_varchar_key AS child_sq1_field1               FROM t1 AS child_sq1_t2              )      ) AS table1      LEFT JOIN      t1 AS table2        JOIN        (SELECT sq2_t1.* FROM t1 AS sq2_t1) AS table3        ON table3.col_varchar_key = table2.col_varchar_key      ON table3.col_varchar_key = table2.col_varchar_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table1.pk AS field1,        table2.pk field2 FROM (SELECT sq1_t1.*       FROM t1 AS sq1_t1      ) AS table1      RIGHT JOIN        (SELECT sq2_t1.*         FROM t2 AS sq2_t1         WHERE sq2_t1.col_int_key NOT IN                (SELECT child_sq1_t1.col_int_key AS child_sq2_field1                 FROM t2 AS child_sq1_t1                )        ) AS table2        RIGHT JOIN t2 AS table3        ON table3.col_varchar_nokey = table2.col_varchar_key      ON table3.col_varchar_nokey = table2.col_varchar_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN alias1.col_date_key AS field1 FROM t1 AS alias1      INNER JOIN      ((SELECT  sq1_alias1.col_varchar_key        FROM t1 AS sq1_alias1 RIGHT OUTER JOIN t2 AS sq1_alias2             ON sq1_alias2.pk = sq1_alias1.col_int_key        WHERE ('n', 'l') IN           (SELECT                   c_sq1_alias1.col_varchar_nokey AS c_sq1_field1,                   c_sq1_alias1.col_varchar_key AS c_sq1_field2            FROM t3 AS c_sq1_alias1                 INNER JOIN                  (t1 AS c_sq1_alias2                   INNER JOIN t1 AS c_sq1_alias3                   ON c_sq1_alias3.col_varchar_key = c_sq1_alias2.col_varchar_key                  )                  ON c_sq1_alias3.pk = c_sq1_alias2.pk            WHERE c_sq1_alias3.col_int_nokey <> c_sq1_alias2.col_int_nokey           ) AND              sq1_alias2.col_varchar_key = 't'        ) AS alias2         INNER JOIN t3 AS alias3         ON alias3.col_varchar_nokey = alias2.col_varchar_key       )       ON alias3.col_varchar_key = alias2.col_varchar_key
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM 'SELECT * FROM v'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM 'SELECT * FROM (SELECT * FROM t) AS dt'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s1
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT MIN(alias1.col_varchar_nokey) AS field1 FROM (SELECT sq1_alias1.*       FROM t1 AS sq1_alias1, t1 AS sq1_alias2       WHERE sq1_alias1.col_varchar_nokey IN                 (SELECT c_sq1_alias2.col_varchar_key AS c_sq1_field1                  FROM t1 AS c_sq1_alias1 INNER JOIN                       t1 AS c_sq1_alias2                       ON c_sq1_alias2.col_varchar_nokey = c_sq1_alias1.col_varchar_key                  WHERE c_sq1_alias1.col_int_nokey <> c_sq1_alias1.col_int_nokey                 ) AND             sq1_alias2.pk = sq1_alias1.pk      ) AS alias1,      (SELECT sq2_alias1.*       FROM t2 AS sq2_alias1 RIGHT JOIN            t3 AS sq2_alias2            ON sq2_alias2.col_varchar_key = sq2_alias1.col_varchar_key      ) AS alias2
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT t1.k FROM t1 RIGHT JOIN      (SELECT t2.*       FROM t1 AS t2 JOIN t1 AS t3            ON TRUE       WHERE t3.k IN (SELECT k FROM t1 AS t4 WHERE k>1)      ) AS dt      ON t1.pk = dt.pk
+--Result--
+[(10,), (10,), (20,), (20,)]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT b FROM t1 WHERE a) AS dt1      RIGHT JOIN t2      ON c NOT BETWEEN 1 AND 2      NATURAL JOIN t1 AS t3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT alias1.dt_field AS field1 FROM (SELECT t2.c2n AS dt_field       FROM t1 RIGHT JOIN t2            ON t2.c2k = t1.c1k      ) AS alias1      RIGHT JOIN t2 AS alias2      ON alias2.c2n = alias1.dt_field
+--Result--
+[('ff',), ('tt',), ('cc',), ('cc',), ('cc',), ('cc',), ('rr',), ('kk',)]
++--------------------+
+--Query--
+SELECT alias1.dt_field AS field1 FROM (SELECT t2.c2n AS dt_field       FROM t2 LEFT JOIN t1            ON t2.c2k = t1.c1k      ) AS alias1      RIGHT JOIN t2 AS alias2      ON alias2.c2n = alias1.dt_field
+--Result--
+[('ff',), ('tt',), ('cc',), ('cc',), ('cc',), ('cc',), ('rr',), ('kk',)]
++--------------------+
+--Query--
+SELECT alias1.v_field AS field1 FROM vl AS alias1      RIGHT JOIN t2 AS alias2      ON alias2.c2n = alias1.v_field
+--Result--
+[('ff',), ('tt',), ('cc',), ('cc',), ('cc',), ('cc',), ('rr',), ('kk',)]
++--------------------+
+--Query--
+SELECT alias1.v_field AS field1 FROM vr AS alias1      RIGHT JOIN t2 AS alias2      ON alias2.c2n = alias1.v_field
+--Result--
+[('ff',), ('tt',), ('cc',), ('cc',), ('cc',), ('cc',), ('rr',), ('kk',)]
++--------------------+
+--Query--
+SELECT alias1.dt_field AS field1 FROM (SELECT t2.c2n AS dt_field       FROM t1 RIGHT JOIN              (`empty` RIGHT JOIN t2               ON TRUE)            ON t2.c2k = t1.c1k      ) AS alias1      RIGHT JOIN t2 AS alias2      ON alias2.c2n = alias1.dt_field
+--Result--
+[('ff',), ('tt',), ('cc',), ('cc',), ('cc',), ('cc',), ('rr',), ('kk',)]
++--------------------+
+--Query--
+SELECT alias1.dt_field AS field1 FROM (SELECT t2.c2n AS dt_field       FROM t1 RIGHT JOIN              (t2 LEFT JOIN `empty`               ON TRUE)            ON t2.c2k = t1.c1k      ) AS alias1      RIGHT JOIN t2 AS alias2      ON alias2.c2n = alias1.dt_field
+--Result--
+[('ff',), ('tt',), ('cc',), ('cc',), ('cc',), ('cc',), ('rr',), ('kk',)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN (   SELECT t3.* FROM t2 INNER JOIN t3 ON b = c ) AS sq ON a <= sq.c
+--Result--
+[(None, None), (1, 1), (1, 5)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM (SELECT 1 FROM t WHERE SUM(1)) AS t)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT 1 FROM (SELECT 1 FROM t WHERE SUM(0)) AS t)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT g_t3.g_f1, g_t3.g_f2, g_t3.g_f3 FROM (SELECT g_t0.integer1 AS g_f1,              g_t0.integer2 AS g_f2,              g_t0.varchar1 AS g_f3       FROM t1 g_t0      ) g_t3 GROUP BY g_t3.g_f1, g_t3.g_f2, g_t3.g_f3 HAVING g_t3.g_f3 = (select varchar1                     from t2                     where integer1 = g_t3.g_f1                     )
+--Result--
+[(11, 12, 'test1'), (21, 22, 'test2'), (31, 32, 'test3')]
++--------------------+
+--Query--
+SELECT t1.col_int FROM (SELECT * FROM K) t1 JOIN (SELECT * FROM H) t2 USING(col_varchar) WHERE t1.col_int IS NULL ORDER BY t1.col_int
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT (1) alias1,              (SELECT alias1) alias2       FROM t1) X
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT alias2 FROM (SELECT (1) alias1,              (SELECT alias1) alias2       FROM t1) X
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT table1.col_int FROM t3 AS table1   LEFT JOIN (       SELECT subquery1_t1.*       FROM t1 AS subquery1_t1         RIGHT JOIN t2 AS subquery1_t2         ON (subquery1_t2.col_varchar_key = subquery1_t1.col_varchar_key)     ) AS table3     ON (table3.col_varchar_key = table1.col_varchar_key) WHERE table3.col_varchar_key  IN (   SELECT subquery2_t3.col_varchar   FROM t3 AS subquery2_t3   WHERE subquery2_t3.pk < table3.pk )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT   table2.col_int_key AS field3 FROM   (     SELECT subquery2_t2.*     FROM t1 AS subquery2_t1       INNER JOIN t2 AS subquery2_t2       ON (subquery2_t2.pk = subquery2_t1.col_int)   ) AS table1     RIGHT OUTER JOIN (       SELECT subquery3_t1.*       FROM t2 AS subquery3_t1     ) AS table2     ON (table1.col_varchar_key = table2.col_varchar_key) WHERE table1.col_varchar_key IN (   SELECT subquery4_t1.col_varchar AS subquery4_field1   FROM t3 AS subquery4_t1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE ( SELECT t1_id AS it1   FROM ( SELECT * FROM t1 AS it2          WHERE t1_id = ( SELECT t1_id                          FROM ( SELECT * FROM t2 AS it3                                 WHERE t2_id=ot.t2_id                               ) AS dt1                        )        ) AS dt2 ) IS NOT NULL
+--Result--
+[(-1, -1), (1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t2 AS ot WHERE ( SELECT t1_id AS it1   FROM ( SELECT * FROM t1 AS it2          WHERE t1_id = ( SELECT /*+ NO_MERGE() */ t1_id                          FROM ( SELECT * FROM t2 AS it3                                 WHERE t2_id=ot.t2_id                               ) AS dt1                        )        ) AS dt2 ) IS NOT NULL
+--Result--
+[(-1, -1), (1, 1)]
++--------------------+
+--Query--
+SELECT t1.rec_id FROM tbl1 AS t1 INNER JOIN        (SELECT a.id, a.rec_id,s_date         FROM tbl2 AS b, tbl1 AS a         WHERE a.id_value2 = b.t_id AND a.id = 6889877970355107670         ORDER BY s_date DESC) t2      ON t1.id = t2.id AND t1.rec_id = t2.rec_id
+--Result--
+[]
++--------------------+
+--Query--
+SELECT field1 FROM (SELECT alias1.c5 AS field1,              alias1.c13 AS field2,              alias1.c1 AS field4       FROM t1 AS alias1 RIGHT JOIN t2 AS alias2            ON alias1.pk = alias2.c12       ORDER BY field2      ) as dt
+--Result--
+[(None,), (None,), (None,), (None,), ("can't",)]
++--------------------+
+--Query--
+SELECT field1 FROM (SELECT *       FROM (SELECT alias1.c5 AS field1,                    alias1.c13 AS field2,                    alias1.c1 AS field4             FROM t1 AS alias1 RIGHT JOIN t2 AS alias2                  ON alias1.pk = alias2.c12             ORDER BY field2            ) AS dt_inner      ) AS dt_outer
+--Result--
+[(None,), (None,), (None,), (None,), ("can't",)]
++--------------------+
+--Query--
+prepare s from " SELECT field1 FROM (SELECT alias1.c1 AS field1,              alias1.c2 AS field2       FROM t1 AS alias1 RIGHT JOIN t2 AS alias2            ON alias1.pk = alias2.c1       ORDER BY field2) as dt"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.i FROM t1 WHERE FALSE AND       t1.i > (SELECT MAX(a)               FROM (SELECT 8 AS a UNION SELECT 3) AS tt)
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s FROM " SELECT dtaa.c AS c FROM (SELECT 1 AS c       FROM (SELECT 1 AS c             FROM t AS ta RIGHT JOIN t AS tb ON ta.u  <= ?             WHERE 1 OR ?             GROUP BY ta.u            ) AS dta            INNER JOIN t AS tbb            ON dta.c = tbb.h      ) AS dtaa      RIGHT JOIN t AS tbbb      ON dtaa.c or w"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN ( SELECT 1 FROM t1 ) d1 ON TRUE ORDER BY a
+--Result--
+[(123, 1)]
++--------------------+
+--Query--
+SELECT a, b FROM t1
+--Result--
+[(777, 777), (888, 888), (999, 999)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT *       FROM (SELECT t1.*             FROM t1 LEFT JOIN t1 AS t2                  ON (t1.f1 = t2.f1)) AS dt1 ORDER BY f1 asc) AS dt2
+--Result--
+[(None,), ('1',)]
++--------------------+
+--Query--
+SELECT a, b FROM (SELECT a, b, count1, count2       FROM (SELECT dt3.a, dt3.b, dt3.count1, count2             FROM (SELECT dt1.a, dt1.b, count1                   FROM (SELECT a, b                         FROM (SELECT a, b FROM t1) AS dt GROUP BY a, b) AS dt1                        LEFT JOIN                        (SELECT a, COUNT(*) AS count1 FROM t1 GROUP BY a) AS dt2                        ON (dt2.a = dt1.a)) AS dt3                  LEFT JOIN                  (SELECT a, COUNT(*) AS count2                   FROM (SELECT a FROM t1) AS dt5 GROUP BY a) AS dt4                  ON (dt3.a = dt4.a)) AS dt5       ORDER BY count1 desc, a, count2 desc, b) AS dt6
+--Result--
+[('Cat1', 0), ('Cat1', 2), ('Cat1', 4), ('Cat1', 6), ('Cat1', 8), ('Cat2', 1), ('Cat2', 3), ('Cat2', 5), ('Cat2', 7), (None, None)]
++--------------------+

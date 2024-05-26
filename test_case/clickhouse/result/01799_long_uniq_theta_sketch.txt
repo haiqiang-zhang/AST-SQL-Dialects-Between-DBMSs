@@ -1,0 +1,50 @@
+--Query--
+SELECT 'uniqTheta'
+--Result--
+[('uniqTheta',)]
++--------------------+
+--Query--
+SELECT Y, uniqTheta(X) FROM (SELECT number AS X, (3*X*X - 7*X + 11) % 37 AS Y FROM system.numbers LIMIT 15) GROUP BY Y ORDER BY Y
+--Result--
+[(1, 1), (3, 1), (6, 1), (7, 1), (9, 1), (11, 1), (14, 1), (17, 1), (19, 1), (20, 2), (26, 1), (31, 1), (35, 1), (36, 1)]
++--------------------+
+--Query--
+SELECT 'uniqTheta round(float)'
+--Result--
+[('uniqTheta round(float)',)]
++--------------------+
+--Query--
+SELECT 'uniqTheta round(toFloat32())'
+--Result--
+[('uniqTheta round(toFloat32())',)]
++--------------------+
+--Query--
+SELECT 'uniqTheta IPv4NumToString'
+--Result--
+[('uniqTheta IPv4NumToString',)]
++--------------------+
+--Query--
+SELECT 'uniqTheta precise'
+--Result--
+[('uniqTheta precise',)]
++--------------------+
+--Query--
+SELECT uniqExact(number) FROM numbers(1e7)
+--Result--
+[(10000000,)]
++--------------------+
+--Query--
+SELECT uniqCombined(number) FROM numbers(1e7)
+--Result--
+[(10021957,)]
++--------------------+
+--Query--
+SELECT uniqCombined64(number) FROM numbers(1e7)
+--Result--
+[(10021969,)]
++--------------------+
+--Query--
+SELECT uniqTheta(number) FROM numbers(1e7)
+--Result--
+[(10094819,)]
++--------------------+

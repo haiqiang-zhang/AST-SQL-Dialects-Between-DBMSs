@@ -1,0 +1,185 @@
+--Query--
+SYSTEM STOP MERGES merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication
+--Result--
+[(1, '1')]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication
+--Result--
+[(1, '1')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication ORDER BY key
+--Result--
+[(1, '1'), (1, '1'), (2, '2'), (3, '3'), (4, '4')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication ORDER BY key
+--Result--
+[(1, '1'), (1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (7, '7')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication ORDER BY key
+--Result--
+[(1, '1'), (1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (7, '7'), (8, '8'), (9, '9'), (10, '10'), (11, '11'), (12, '12')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication WHERE key = 10
+--Result--
+[(10, '10')]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication WHERE key = 12
+--Result--
+[(12, '12')]
++--------------------+
+--Query--
+DETACH TABLE merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE  merge_tree_deduplication FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT key, value FROM merge_tree_deduplication ORDER BY key
+--Result--
+[(1, '1'), (1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (8, '8'), (9, '9'), (11, '11'), (12, '12')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT part, key, value FROM merge_tree_deduplication ORDER BY key, part
+--Result--
+[(77, 11, '11'), (88, 11, '11'), (77, 12, '12')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_deduplication WHERE part = 33 ORDER BY key
+--Result--
+[(1, '1', 33), (1, '1', 33), (2, '2', 33), (3, '3', 33)]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+DETACH TABLE merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_deduplication WHERE part = 33 ORDER BY key
+--Result--
+[(1, '1', 33), (1, '1', 33), (1, '1', 33), (1, '1', 33), (2, '2', 33), (3, '3', 33)]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_deduplication WHERE part = 33 ORDER BY key
+--Result--
+[(1, '1', 33), (1, '1', 33), (1, '1', 33), (1, '1', 33), (1, '1', 33), (2, '2', 33), (3, '3', 33)]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+DETACH TABLE merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE merge_tree_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_deduplication WHERE part = 44 ORDER BY key
+--Result--
+[(1, '1', 44), (2, '2', 44), (3, '3', 44), (4, '4', 44)]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_no_deduplication ORDER BY key
+--Result--
+[(1, '1'), (1, '1')]
++--------------------+
+--Query--
+SELECT '==============='
+--Result--
+[('===============',)]
++--------------------+
+--Query--
+DETACH TABLE merge_tree_no_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE merge_tree_no_deduplication
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_no_deduplication ORDER BY key
+--Result--
+[(1, '1'), (1, '1'), (1, '1'), (2, '2'), (3, '3'), (4, '4')]
++--------------------+

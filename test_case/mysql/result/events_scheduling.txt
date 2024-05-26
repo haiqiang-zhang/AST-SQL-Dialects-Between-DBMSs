@@ -1,0 +1,15 @@
+--Query--
+SELECT IF(TIME_TO_SEC(TIMEDIFF(ENDS,STARTS))=6, 'OK', 'ERROR') FROM INFORMATION_SCHEMA.EVENTS WHERE EVENT_SCHEMA=DATABASE() AND EVENT_NAME='event_2'
+--Result--
+[('OK',)]
++--------------------+
+--Query--
+SELECT EVENT_NAME, STATUS FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_NAME
+--Result--
+[('event_2', 'ENABLED'), ('event_4', 'ENABLED')]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where db='events_test' and command = 'Connect' and user=current_user()
+--Result--
+[(1,)]
++--------------------+

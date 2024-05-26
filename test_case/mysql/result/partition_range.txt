@@ -1,0 +1,205 @@
+--Query--
+select partition_method, partition_expression, partition_description   from information_schema.partitions where table_name = "t1"
+--Result--
+[(None, None, None), ('RANGE', 'to_seconds(`a`)', '63342604800'), ('RANGE', 'to_seconds(`a`)', '63340531200')]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(datetime.date(2003, 12, 30),), (datetime.date(2004, 12, 31),)]
++--------------------+
+--Query--
+select * from t1 where a <= '2003-12-31'
+--Result--
+[(datetime.date(2003, 12, 30),)]
++--------------------+
+--Query--
+select * from t1 where a <= '2005-01-01'
+--Result--
+[(datetime.date(2003, 12, 30),), (datetime.date(2004, 12, 31),)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(datetime.datetime(2004, 1, 1, 11, 59, 29),), (datetime.datetime(2005, 1, 1, 11, 59, 59),)]
++--------------------+
+--Query--
+select * from t1 where a <= '2004-01-01 11:59:59'
+--Result--
+[(datetime.datetime(2004, 1, 1, 11, 59, 29),)]
++--------------------+
+--Query--
+select * from t1 where a <= '2005-01-01'
+--Result--
+[(datetime.datetime(2004, 1, 1, 11, 59, 29),)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a is null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1 where a >= 0
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+select * from t1 where a < 0
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a <= 0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1 where a > 1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a is null
+--Result--
+[(None, 0), (None, 1)]
++--------------------+
+--Query--
+select * from t1 where a >= 0
+--Result--
+[(0, 0), (0, 1), (1, 0), (1, 1)]
++--------------------+
+--Query--
+select * from t1 where a < 0
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a <= 0
+--Result--
+[(0, 0), (0, 1)]
++--------------------+
+--Query--
+select * from t1 where a > 1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1, 1), (6, 1, 1), (10, 1, 1), (15, 1, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1, 1), (6, 1, 1), (10, 1, 1), (15, 1, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1, 1), (6, 1, 1), (10, 1, 1), (15, 1, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1, 1), (6, 1, 1), (10, 1, 1), (15, 1, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1, 1), (6, 1, 1), (10, 1, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1, 1), (6, 1, 1), (10, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1, 1, 1), (4, 1, 1)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE c3 BETWEEN '1996-12-31' AND '2000-12-31'
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= '2004-07-01' AND a <= '2004-09-30'
+--Result--
+[(datetime.date(2004, 7, 13),), (datetime.date(2004, 7, 20),), (datetime.date(2004, 7, 30),), (datetime.date(2004, 8, 13),), (datetime.date(2004, 8, 20),), (datetime.date(2004, 8, 30),), (datetime.date(2004, 9, 13),), (datetime.date(2004, 9, 20),), (datetime.date(2004, 9, 30),)]
++--------------------+
+--Query--
+SELECT * from t1 WHERE (a >= '2004-07-01' AND a <= '2004-09-30') OR       (a >= '2005-07-01' AND a <= '2005-09-30')
+--Result--
+[(datetime.date(2004, 7, 13),), (datetime.date(2004, 7, 20),), (datetime.date(2004, 7, 30),), (datetime.date(2004, 8, 13),), (datetime.date(2004, 8, 20),), (datetime.date(2004, 8, 30),), (datetime.date(2004, 9, 13),), (datetime.date(2004, 9, 20),), (datetime.date(2004, 9, 30),), (datetime.date(2005, 7, 13),), (datetime.date(2005, 7, 20),), (datetime.date(2005, 7, 30),), (datetime.date(2005, 8, 13),), (datetime.date(2005, 8, 20),), (datetime.date(2005, 8, 30),), (datetime.date(2005, 9, 13),), (datetime.date(2005, 9, 20),), (datetime.date(2005, 9, 30),)]
++--------------------+
+--Query--
+select sum(count) from t2 ch where ch.defid in (50,52) and ch.day between 20070320 and 20070401 group by defid
+--Result--
+[(579.0,)]
++--------------------+
+--Query--
+SELECT a, MAX(b) FROM t1 WHERE a IN (10, 100) GROUP BY a
+--Result--
+[(10, 10)]
++--------------------+

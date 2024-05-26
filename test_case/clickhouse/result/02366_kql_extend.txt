@@ -1,0 +1,85 @@
+--Query--
+--     'Aldi','Snargaluff',600,'2016-09-11', --     'Costco','Snargaluff',200,'2016-09-10', -- ]  DROP TABLE IF EXISTS Ledger
+--Result--
+[]
++--------------------+
+--Query--
+print '-- extend #1 --'
+--Result--
+[('-- extend #1 --',)]
++--------------------+
+--Query--
+Ledger | extend PriceInCents = 100 * Price | take 2
+--Result--
+[('Aldi', 'Apple', 4.0, datetime.date(2016, 9, 10), 400.0), ('Costco', 'Apple', 2.0, datetime.date(2016, 9, 11), 200.0)]
++--------------------+
+--Query--
+print '-- extend #2 --'
+--Result--
+[('-- extend #2 --',)]
++--------------------+
+--Query--
+Ledger | extend PriceInCents = 100 * Price | sort by PriceInCents asc | project Fruit, PriceInCents | take 2
+--Result--
+[('Apple', 200.0), ('Apple', 400.0)]
++--------------------+
+--Query--
+print '-- extend #3 --'
+--Result--
+[('-- extend #3 --',)]
++--------------------+
+--Query--
+Ledger | extend PriceInCents = 100 * Price | sort by PriceInCents asc | project Fruit, PriceInCents | summarize AveragePrice = avg(PriceInCents), Purchases = count() by Fruit | extend Sentence = strcat(Fruit, ' cost ', tostring(AveragePrice), ' on average based on ', tostring(Purchases), ' samples.') | project Sentence | sort by Sentence asc
+--Result--
+[('Apple cost 480 on average based on 5 samples.',), ('Snargaluff cost 28080 on average based on 5 samples.',)]
++--------------------+
+--Query--
+print '-- extend #4 --'
+--Result--
+[('-- extend #4 --',)]
++--------------------+
+--Query--
+Ledger | extend a = Price | extend b = a | extend c = a, d = b + 500 | extend Pass = bool(b == a and c == a and d == b + 500) | summarize binary_all_and(Pass)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+print '-- extend #5 --'
+--Result--
+[('-- extend #5 --',)]
++--------------------+
+--Query--
+Ledger | take 2 | extend strcat(Fruit, ' was purchased from ', Supplier, ' for $', tostring(Price), ' on ', tostring(Purchase)) | extend PriceInCents = 100 * Price
+--Result--
+[('Aldi', 'Apple', 4.0, datetime.date(2016, 9, 10), 'Apple was purchased from Aldi for $4 on 2016-09-10', 400.0), ('Costco', 'Apple', 2.0, datetime.date(2016, 9, 11), 'Apple was purchased from Costco for $2 on 2016-09-11', 200.0)]
++--------------------+
+--Query--
+print '-- extend #6 --'
+--Result--
+[('-- extend #6 --',)]
++--------------------+
+--Query--
+Ledger | extend Price = 100 * Price
+--Result--
+[('Aldi', 'Apple', datetime.date(2016, 9, 10), 400.0), ('Costco', 'Apple', datetime.date(2016, 9, 11), 200.0), ('Aldi', 'Apple', datetime.date(2016, 9, 10), 600.0), ('Costco', 'Snargaluff', datetime.date(2016, 9, 12), 10000.0), ('Aldi', 'Apple', datetime.date(2016, 9, 12), 700.0), ('Aldi', 'Snargaluff', datetime.date(2016, 9, 11), 40000.0), ('Costco', 'Snargaluff', datetime.date(2016, 9, 12), 10400.0), ('Aldi', 'Apple', datetime.date(2016, 9, 12), 500.0), ('Aldi', 'Snargaluff', datetime.date(2016, 9, 11), 60000.0), ('Costco', 'Snargaluff', datetime.date(2016, 9, 10), 20000.0)]
++--------------------+
+--Query--
+print '-- extend #7 --'
+--Result--
+[('-- extend #7 --',)]
++--------------------+
+--Query--
+print a = 4 | extend a = 5
+--Result--
+[(5,)]
++--------------------+
+--Query--
+print '-- extend #8 --'
+--Result--
+[('-- extend #8 --',)]
++--------------------+
+--Query--
+print '-- extend #9 --'
+--Result--
+[('-- extend #9 --',)]
++--------------------+

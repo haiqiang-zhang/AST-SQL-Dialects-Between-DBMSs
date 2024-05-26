@@ -1,0 +1,20 @@
+--Query--
+PREPARE stmt FROM 'UPDATE t1, (SELECT DISTINCT b FROM t1 t1i) d SET a = 0 WHERE 1=0'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'UPDATE t1, (SELECT DISTINCT b FROM t1 t1i) d SET a = 0 WHERE 1=0'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'UPDATE t1, ((SELECT 1 FROM t1 t1i) UNION (SELECT 2 FROM t1 t1ii)) e SET a = 0 WHERE 1=0'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'UPDATE t1, ((SELECT 1 FROM t1 t1i) UNION (SELECT 2 FROM t1 t1ii)) e SET a = 0 WHERE 1=0'
+--Result--
+[]
++--------------------+

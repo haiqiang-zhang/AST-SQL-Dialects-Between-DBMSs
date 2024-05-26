@@ -1,0 +1,5 @@
+--Query--
+SELECT a, b, quote(d), group_concat(b,'') OVER w1 FROM t1   WINDOW w1 AS       (ORDER BY d DESC NULLS LAST       RANGE BETWEEN 2.50 PRECEDING AND 2.25 FOLLOWING)   ORDER BY +d DESC NULLS LAST, +a
+--Result--
+[(5, 'E', '10.26', 'ED'), (4, 'D', '10.25', 'EDC'), (3, 'C', '8.0', 'EDC'), (2, 'B', '5.55', 'CBA'), (1, 'A', '5.4', 'BA'), (6, 'N', 'NULL', 'NN'), (7, 'N', 'NULL', 'NN')]
++--------------------+

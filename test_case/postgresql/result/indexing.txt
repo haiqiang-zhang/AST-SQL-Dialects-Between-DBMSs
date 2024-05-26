@@ -134,36 +134,6 @@ select relname as child, inhparent::regclass as parent, pg_get_indexdef as child
 [('idxpart1_expr_idx', 'idxpart_expr_idx', 'CREATE INDEX idxpart1_expr_idx ON public.idxpart1 USING btree (((a + b)))'), ('idxpart2_expr_idx', 'idxpart_expr_idx', 'CREATE INDEX idxpart2_expr_idx ON public.idxpart2 USING btree (((a + b)))'), ('idxpart3_expr_idx', 'idxpart_expr_idx', 'CREATE INDEX idxpart3_expr_idx ON public.idxpart3 USING btree (((a + b)))')]
 +--------------------+
 --Query--
-select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class left join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
---Result--
-[('idxpart1_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a COLLATE "C")'), ('idxpart2_a_idx', None, 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a COLLATE "POSIX")'), ('idxpart2_a_idx1', None, 'CREATE INDEX idxpart2_a_idx1 ON public.idxpart2 USING btree (a)'), ('idxpart2_a_idx2', 'idxpart_a_idx', 'CREATE INDEX idxpart2_a_idx2 ON public.idxpart2 USING btree (a COLLATE "C")'), ('idxpart3_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart3_a_idx ON public.idxpart3 USING btree (a COLLATE "C")'), ('idxpart4_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart4_a_idx ON public.idxpart4 USING btree (a COLLATE "C")'), ('idxpart_a_idx', None, 'CREATE INDEX idxpart_a_idx ON ONLY public.idxpart USING btree (a COLLATE "C")')]
-+--------------------+
---Query--
-select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class left join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
---Result--
-[('idxpart1_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a text_pattern_ops)'), ('idxpart2_a_idx', None, 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a)'), ('idxpart2_a_idx1', 'idxpart_a_idx', 'CREATE INDEX idxpart2_a_idx1 ON public.idxpart2 USING btree (a text_pattern_ops)'), ('idxpart3_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart3_a_idx ON public.idxpart3 USING btree (a text_pattern_ops)'), ('idxpart4_a_idx', 'idxpart_a_idx', 'CREATE INDEX idxpart4_a_idx ON public.idxpart4 USING btree (a text_pattern_ops)'), ('idxpart_a_idx', None, 'CREATE INDEX idxpart_a_idx ON ONLY public.idxpart USING btree (a text_pattern_ops)')]
-+--------------------+
---Query--
-select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef   from pg_class left join pg_inherits on inhrelid = oid,   lateral pg_get_indexdef(pg_class.oid)   where relkind in ('i', 'I') and relname like 'idxpart%' order by relname
---Result--
-[('idxpart1_1_idx', 'idxpart_1_idx', 'CREATE INDEX idxpart1_1_idx ON public.idxpart1 USING btree (b, a)'), ('idxpart1_1b_idx', None, 'CREATE INDEX idxpart1_1b_idx ON public.idxpart1 USING btree (b)'), ('idxpart1_2_idx', 'idxpart_2_idx', 'CREATE INDEX idxpart1_2_idx ON public.idxpart1 USING btree (((b + a))) WHERE (a > 1)'), ('idxpart1_2b_idx', None, 'CREATE INDEX idxpart1_2b_idx ON public.idxpart1 USING btree (((a + b))) WHERE (a > 1)'), ('idxpart1_2c_idx', None, 'CREATE INDEX idxpart1_2c_idx ON public.idxpart1 USING btree (((b + a))) WHERE (b > 1)'), ('idxpart_1_idx', None, 'CREATE INDEX idxpart_1_idx ON ONLY public.idxpart USING btree (b, a)'), ('idxpart_2_idx', None, 'CREATE INDEX idxpart_2_idx ON ONLY public.idxpart USING btree (((b + a))) WHERE (a > 1)')]
-+--------------------+
---Query--
-select c.relname, pg_get_indexdef(indexrelid)   from pg_class c join pg_index i on c.oid = i.indexrelid   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
---Result--
-[('idxpart1_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a)'), ('idxpart1_c_b_idx', 'CREATE INDEX idxpart1_c_b_idx ON public.idxpart1 USING btree (c, b)'), ('idxpart2_a_idx', 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a)'), ('idxpart2_c_b_idx', 'CREATE INDEX idxpart2_c_b_idx ON public.idxpart2 USING btree (c, b)'), ('idxparti', 'CREATE INDEX idxparti ON ONLY public.idxpart USING btree (a)'), ('idxparti2', 'CREATE INDEX idxparti2 ON ONLY public.idxpart USING btree (c, b)')]
-+--------------------+
---Query--
-select c.relname, pg_get_indexdef(indexrelid)   from pg_class c join pg_index i on c.oid = i.indexrelid   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
---Result--
-[('idxpart1_abs_idx', 'CREATE INDEX idxpart1_abs_idx ON public.idxpart1 USING btree (abs(b))'), ('idxpart1_expr_idx', 'CREATE INDEX idxpart1_expr_idx ON public.idxpart1 USING btree (((b + 1)))'), ('idxpart2_abs_idx', 'CREATE INDEX idxpart2_abs_idx ON public.idxpart2 USING btree (abs(b))'), ('idxpart2_expr_idx', 'CREATE INDEX idxpart2_expr_idx ON public.idxpart2 USING btree (((b + 1)))'), ('idxpart_abs_idx', 'CREATE INDEX idxpart_abs_idx ON ONLY public.idxpart USING btree (abs(b))'), ('idxpart_expr_idx', 'CREATE INDEX idxpart_expr_idx ON ONLY public.idxpart USING btree (((b + 1)))')]
-+--------------------+
---Query--
-select c.relname, pg_get_indexdef(indexrelid)   from pg_class c join pg_index i on c.oid = i.indexrelid   where indrelid::regclass::text like 'idxpart%'   order by indexrelid::regclass::text collate "C"
---Result--
-[('idxpart1_a_idx', 'CREATE INDEX idxpart1_a_idx ON public.idxpart1 USING btree (a) WHERE (b > 1000)'), ('idxpart2_a_idx', 'CREATE INDEX idxpart2_a_idx ON public.idxpart2 USING btree (a) WHERE (b > 1000)'), ('idxpart_a_idx', 'CREATE INDEX idxpart_a_idx ON ONLY public.idxpart USING btree (a) WHERE (b > 1000)')]
-+--------------------+
---Query--
 select attrelid::regclass, attname, attnum from pg_attribute   where attrelid::regclass::text like 'idxpart%' and attnum > 0   order by attrelid::regclass, attnum
 --Result--
 [('idxpart1', '........pg.dropped.1........', 1), ('idxpart1', '........pg.dropped.2........', 2), ('idxpart1', 'col_keep', 3), ('idxpart1', '........pg.dropped.4........', 4), ('idxpart1_col_keep_idx', 'col_keep', 1), ('idxpart', 'col_keep', 1), ('idxpart_col_keep_idx', 'col_keep', 1)]

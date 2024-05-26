@@ -1,0 +1,95 @@
+--Query--
+select 1+2/*hello*/+3
+--Result--
+[(6,)]
++--------------------+
+--Query--
+select 1 /* long multi line comment */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 /*!32301 +1 */
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 1 /*!999999 +1 */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1--1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 1 --2 +1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+select 1 # The rest of the row will be ignored
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1/*!999992*/
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 + /*!00000 2 */ + 3 /*!99999 noise*/ + 4
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT 1 /*!99999 /* */ */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 2 /*!12345 /* */ */
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 3 /*! /* */ */
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT 1 + /*!800001+0 */ + 0 AS should_return_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 /*!080100	+1*/ AS should_return_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 /*!080100 +1*/ AS should_return_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 /*!080100+1*/ AS should_return_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 /*!080100+1*/ AS should_return_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 /*!080100 +1*/ AS should_return_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 /*!080100 +1*/ AS should_return_2
+--Result--
+[(2,)]
++--------------------+

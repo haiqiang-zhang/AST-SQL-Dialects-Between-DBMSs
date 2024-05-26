@@ -1,0 +1,285 @@
+--Query--
+select grp,group_concat(c) from t1 group by grp
+--Result--
+[(1, 'a'), (2, 'b,c'), (3, 'E,C,D,d,d,D')]
++--------------------+
+--Query--
+select grp, group_concat(a separator "")+0 from t1 group by grp
+--Result--
+[(1, 1.0), (2, 23.0), (3, 456789.0)]
++--------------------+
+--Query--
+select grp, group_concat(a separator "")+0.0 from t1 group by grp
+--Result--
+[(1, 1.0), (2, 23.0), (3, 456789.0)]
++--------------------+
+--Query--
+select grp, ROUND(group_concat(a separator "")) from t1 group by grp
+--Result--
+[(1, 1.0), (2, 23.0), (3, 456789.0)]
++--------------------+
+--Query--
+select REQ_ID, Group_Concat(URL) as URL from t1, t2 where t2.URL_ID = t1.URL_ID group by REQ_ID
+--Result--
+[(1, 'www.host.com'), (5, 'www.host.com,www.help.com,www.google.com')]
++--------------------+
+--Query--
+select REQ_ID, Group_Concat(URL) as URL, Min(t1.URL_ID) urll, Max(t1.URL_ID) urlg from t1, t2 where t2.URL_ID = t1.URL_ID group by REQ_ID
+--Result--
+[(1, 'www.host.com', 4, 4), (5, 'www.host.com,www.help.com,www.google.com', 4, 5)]
++--------------------+
+--Query--
+select ifnull(group_concat(concat(t1.id, ':', t1.name)), 'shortname') as 'without distinct: how it should be' from t1
+--Result--
+[('1:longername,1:evenlongername',)]
++--------------------+
+--Query--
+select distinct ifnull(group_concat(concat(t1.id, ':', t1.name)), 'shortname') as 'with distinct: cutoff at length of shortname' from t1
+--Result--
+[('1:longername,1:evenlongername',)]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2 ORDER BY t1.id2 ASC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 AND t1.id1=1 GROUP BY t1.id1
+--Result--
+[(1, '1,2,3,4,5')]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2 ORDER BY t1.id2 ASC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 GROUP BY t1.id1
+--Result--
+[(1, '1,2,3,4,5'), (2, '1,2,3')]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2 ORDER BY t1.id2 DESC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 GROUP BY t1.id1
+--Result--
+[(1, '5,4,3,2,1'), (2, '3,2,1')]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2 ORDER BY 6-t1.id2 ASC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 GROUP BY t1.id1
+--Result--
+[(1, '5,4,3,2,1'), (2, '3,2,1')]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2,6-t1.id2 ORDER BY 6-t1.id2 ASC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 GROUP BY t1.id1
+--Result--
+[(1, '51,42,33,24,15'), (2, '33,24,15')]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2,6-t1.id2 ORDER BY 6-t1.id2 ASC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 GROUP BY t1.id1
+--Result--
+[(1, '51,42,33,24,15'), (2, '33,24,15')]
++--------------------+
+--Query--
+SELECT t1.id1, GROUP_CONCAT(t1.id2,"/",6-t1.id2 ORDER BY 1+0,6-t1.id2,t1.id2 ASC) AS concat_id FROM t1, t2 WHERE t1.id1 = t2.id1 GROUP BY t1.id1
+--Result--
+[(1, '5/1,4/2,3/3,2/4,1/5'), (2, '3/3,2/4,1/5')]
++--------------------+
+--Query--
+select group_concat(c order by (select c from t2 where t2.a=t1.a limit 1)) as grp from t1
+--Result--
+[('5,4,3,2',)]
++--------------------+
+--Query--
+select group_concat(c order by (select mid(group_concat(c order by a),1,5) from t2 where t2.a=t1.a)) as grp from t1
+--Result--
+[('5,4,3,2',)]
++--------------------+
+--Query--
+select group_concat(c order by (select mid(group_concat(c order by a),1,5) from t2 where t2.a=t1.a) desc) as grp from t1
+--Result--
+[('2,4,3,5',)]
++--------------------+
+--Query--
+select t1.a, group_concat(c order by (select c from t2 where t2.a=t1.a limit 1)) as grp from t1 group by 1
+--Result--
+[(1, '2'), (2, '4,3'), (3, '5')]
++--------------------+
+--Query--
+select t1.a, group_concat(c order by (select mid(group_concat(c order by a),1,5) from t2 where t2.a=t1.a)) as grp from t1 group by 1
+--Result--
+[(1, '2'), (2, '4,3'), (3, '5')]
++--------------------+
+--Query--
+select t1.a, group_concat(c order by (select mid(group_concat(c order by a),1,5) from t2 where t2.a=t1.a) desc) as grp from t1 group by 1
+--Result--
+[(1, '2'), (2, '4,3'), (3, '5')]
++--------------------+
+--Query--
+select group_concat(c order by (select concat(5-t1.c,group_concat(c order by a)) from t2 where t2.a=t1.a)) as grp from t1
+--Result--
+[('5,4,3,2',)]
++--------------------+
+--Query--
+select group_concat(c order by (select concat(t1.c,group_concat(c)) from t2 where a=t1.a)) as grp from t1
+--Result--
+[('2,3,4,5',)]
++--------------------+
+--Query--
+select a,c,(select group_concat(c order by a) from t2 where a=t1.a) as grp from t1 order by grp
+--Result--
+[(3, 5, '3,3'), (2, 3, '4'), (2, 4, '4'), (1, 2, '5')]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(t1.a*t2.a ORDER BY t2.a) FROM t1, t2 GROUP BY t1.a
+--Result--
+[('1,2',), ('2,4',)]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(a SEPARATOR '||') AS names FROM t1    HAVING names LIKE '%An%'
+--Result--
+[('John||Anna||Bill',)]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(a SEPARATOR '###') AS names FROM t1    HAVING LEFT(names, 1) ='J'
+--Result--
+[('John###Anna###Bill',)]
++--------------------+
+--Query--
+SELECT t1.A_ID, GROUP_CONCAT(t2.B_DESC) AS B_DESC FROM t1 LEFT JOIN t2 ON t1.A_ID=t2.A_ID GROUP BY t1.A_ID ORDER BY t1.A_DESC
+--Result--
+[(1, 'A,B'), (2, None), (3, 'F')]
++--------------------+
+--Query--
+select collation(a) from t1
+--Result--
+[('cp1250_general_ci',)]
++--------------------+
+--Query--
+SELECT a FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(id) AS gc FROM t1 HAVING gc IS NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select  b x, (select group_concat(b) from t2) from  t2
+--Result--
+[(1, '1,2'), (2, '1,2')]
++--------------------+
+--Query--
+select d,a,b from t1 order by a
+--Result--
+[(1, 1, 3), (2, 1, 4), (3, 1, 2), (5, 1, 1), (6, 1, 2), (4, 2, 7), (7, 2, 3), (8, 2, 3)]
++--------------------+
+--Query--
+SELECT COUNT(*), GROUP_CONCAT(DISTINCT t2.somename SEPARATOR ' |')   FROM t1 JOIN t2 ON t1.bID = t2.bID
+--Result--
+[(2, 'test')]
++--------------------+
+--Query--
+select * from (select group_concat('c') from DUAL) t
+--Result--
+[('c',)]
++--------------------+
+--Query--
+select * from (select group_concat(a) from t1) t2
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select count(distinct (f1+1)) from t1 group by f1 with rollup
+--Result--
+[(1,), (1,), (1,), (3,)]
++--------------------+
+--Query--
+select charset(a) from t2
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+SELECT a, CHAR_LENGTH(b) FROM t1
+--Result--
+[(1, 120000), (2, 120000)]
++--------------------+
+--Query--
+select @x:=group_concat(x) from t1 group by y
+--Result--
+[('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,',)]
++--------------------+
+--Query--
+select @@group_concat_max_len, length(@x), char_length(@x), right(@x,12), right(HEX(@x),12)
+--Result--
+[(1024, 1023, 1023, 'aaaaaaaaaaa,', '61616161612C')]
++--------------------+
+--Query--
+SELECT LENGTH( GROUP_CONCAT( DISTINCT a ) ) FROM t2
+--Result--
+[(1024,)]
++--------------------+
+--Query--
+SELECT s1.d1 FROM (  SELECT   t1.a as d1,   GROUP_CONCAT(DISTINCT t1.a) AS d2  FROM   t1 AS t1,   t1 AS t2  GROUP BY 1 ) AS s1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE t1.a NOT IN (   SELECT GROUP_CONCAT(DISTINCT t1.a)   FROM  t1 WHERE t1.a IN      (     SELECT b FROM t2   )    AND NOT t1.a >= (SELECT t1.a FROM t1 LIMIT 1)   GROUP BY t1.a )
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 FROM  (SELECT DISTINCT GROUP_CONCAT(td.f1) FROM t1,t1 AS td GROUP BY td.f1) AS d,t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+PREPARE stmt FROM "SELECT GROUP_CONCAT(t1.a ORDER BY t1.a) FROM t1 JOIN t1 t2 GROUP BY t1.a WITH ROLLUP"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SUBSTRING(GROUP_CONCAT(DISTINCT f1 ORDER BY f1 DESC), 1, 5) FROM t1
+--Result--
+[('ccccc',)]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(t.c) as c FROM t1 t
+--Result--
+[('abcdefghijk,pqrstuvwxyz,124567890,010011000111,abcdefghijk,pqrstuvwxyz,124567890,010011000111',)]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(t.c) as c FROM t1 t UNION SELECT '' as c
+--Result--
+[('abcdefghijk,pqrstuvwxyz,124567890,010011000111,abcdefghijk,pqrstuvwxyz,124567890,010011000111',), ('',)]
++--------------------+
+--Query--
+SELECT grp, GROUP_concat(a SEPARATOR "") + 1.0  FROM t2 GROUP BY grp
+--Result--
+[(1, 1.0), (2, 25.0), (3, 1.0)]
++--------------------+
+--Query--
+prepare s from 'DO GROUP_CONCAT((SELECT COUNT(1)) ORDER BY 1)'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare s
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from ' SELECT GROUP_CONCAT(a2.name ORDER BY a2.name) AS mbrcontains FROM v a1 JOIN v a2 ON MBRContains(a1.square, a2.square) WHERE a1.name = "center" GROUP BY a1.name'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT mc.c_id,        GROUP_CONCAT(e.emp_name order by e.emp_id separator ',') AS gc FROM customer AS mc LEFT JOIN employee AS e      ON mc.c_id = e.c_id AND e.seq_id = 2 WHERE mc.c_id = 2 GROUP BY mc.c_id
+--Result--
+[(2, None)]
++--------------------+
+--Query--
+PREPARE ps FROM "SELECT mc.c_id,        GROUP_CONCAT(e.emp_name order by e.emp_id separator ',') AS gc FROM customer AS mc LEFT JOIN employee AS e      ON mc.c_id = e.c_id AND e.seq_id = ? WHERE mc.c_id = ? GROUP BY mc.c_id"
+--Result--
+[]
++--------------------+

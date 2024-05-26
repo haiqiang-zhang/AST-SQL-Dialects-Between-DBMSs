@@ -11,8 +11,3 @@ PRAGMA profiling_output='__TEST_DIR__/test.json';
 PRAGMA enable_profiling='json';
 PRAGMA disable_profiling;
 PRAGMA profiling_output='__TEST_DIR__/test_2.json';
-EXPLAIN ANALYZE SELECT SUM(i) FROM integers;
-EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2);
-EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2);
-EXPLAIN ANALYZE SELECT SUM(i) FROM (SELECT * FROM integers i1, integers i2 UNION ALL SELECT * FROM integers i1, integers i2);
-EXPLAIN ANALYZE SELECT SUM(i) FROM integers;

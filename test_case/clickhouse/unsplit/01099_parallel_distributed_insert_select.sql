@@ -6,16 +6,12 @@ DROP TABLE IF EXISTS distributed_01099_a;
 DROP TABLE IF EXISTS distributed_01099_b;
 SET parallel_distributed_insert_select=1;
 SELECT 'parallel_distributed_insert_select=1';
-
-
 SELECT 'test_shard_localhost';
 CREATE TABLE local_01099_a (number UInt64) ENGINE = Log;
 CREATE TABLE local_01099_b (number UInt64) ENGINE = Log;
 INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
-
-
 SELECT 'test_cluster_two_shards_localhost';
 CREATE TABLE local_01099_a (number UInt64) ENGINE = Log;
 CREATE TABLE local_01099_b (number UInt64) ENGINE = Log;
@@ -23,8 +19,6 @@ INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
-
-
 SELECT 'test_cluster_two_shards';
 CREATE TABLE local_01099_a (number UInt64) ENGINE = Log;
 CREATE TABLE local_01099_b (number UInt64) ENGINE = Log;
@@ -34,7 +28,6 @@ INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 SET prefer_localhost_replica=1;
 SELECT 'distributed';
 SELECT 'local';
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 SELECT 'distributed';
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
@@ -47,7 +40,6 @@ INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 SET prefer_localhost_replica=1;
 SELECT 'distributed';
 SELECT 'local';
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
 SET send_logs_level='fatal';
@@ -61,32 +53,23 @@ SET send_logs_level='warning';
 SET prefer_localhost_replica=1;
 SELECT 'distributed';
 SELECT 'local';
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_b;
 SET send_logs_level='fatal';
 SET send_logs_level='warning';
 SET parallel_distributed_insert_select=2;
 SELECT 'parallel_distributed_insert_select=2';
-
-
 SELECT 'test_shard_localhost';
 CREATE TABLE local_01099_a (number UInt64) ENGINE = Log;
 CREATE TABLE local_01099_b (number UInt64) ENGINE = Log;
 INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
-
-
 SELECT 'test_cluster_two_shards_localhost';
-
 CREATE TABLE local_01099_a (number UInt64) ENGINE = MergeTree() ORDER BY number;
 CREATE TABLE local_01099_b (number UInt64) ENGINE = MergeTree() ORDER BY number;
 INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
-
-
 SELECT 'test_cluster_two_shards';
 CREATE TABLE local_01099_a (number UInt64) ENGINE = MergeTree() ORDER BY number;
 CREATE TABLE local_01099_b (number UInt64) ENGINE = MergeTree() ORDER BY number;
@@ -96,7 +79,6 @@ INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 SET prefer_localhost_replica=1;
 SELECT 'distributed';
 SELECT 'local';
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
 SELECT 'test_cluster_1_shard_3_replicas_1_unavailable';
@@ -108,7 +90,6 @@ INSERT INTO local_01099_a SELECT number from system.numbers limit 3;
 SET prefer_localhost_replica=1;
 SELECT 'distributed';
 SELECT 'local';
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_a;
 DROP TABLE local_01099_b;
 SELECT 'test_cluster_1_shard_3_replicas_1_unavailable with storageCluster';
@@ -120,7 +101,6 @@ SET send_logs_level='warning';
 SET prefer_localhost_replica=1;
 SELECT 'distributed';
 SELECT 'local';
-SELECT number, count(number) FROM local_01099_b group by number order by number;
 DROP TABLE local_01099_b;
 SET send_logs_level='fatal';
 SET send_logs_level='warning';

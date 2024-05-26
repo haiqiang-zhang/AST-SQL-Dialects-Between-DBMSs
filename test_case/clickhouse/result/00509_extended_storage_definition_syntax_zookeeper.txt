@@ -1,0 +1,40 @@
+--Query--
+SELECT '*** Replicated with sampling ***'
+--Result--
+[('*** Replicated with sampling ***',)]
++--------------------+
+--Query--
+SELECT '*** Replacing with implicit version ***'
+--Result--
+[('*** Replacing with implicit version ***',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE replacing PARTITION '2017-10-23' FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM replacing
+--Result--
+[(datetime.date(2017, 10, 23), 1, 'c')]
++--------------------+
+--Query--
+SELECT '*** Replicated Collapsing ***'
+--Result--
+[('*** Replicated Collapsing ***',)]
++--------------------+
+--Query--
+SELECT '*** Replicated VersionedCollapsing ***'
+--Result--
+[('*** Replicated VersionedCollapsing ***',)]
++--------------------+
+--Query--
+SELECT '*** Table definition with SETTINGS ***'
+--Result--
+[('*** Table definition with SETTINGS ***',)]
++--------------------+
+--Query--
+SELECT is_leader FROM system.replicas WHERE database = currentDatabase() AND table = 'with_settings'
+--Result--
+[]
++--------------------+

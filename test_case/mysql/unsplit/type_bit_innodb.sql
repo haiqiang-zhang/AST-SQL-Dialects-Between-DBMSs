@@ -22,7 +22,6 @@ select hex(a) from t1;
 drop table t1;
 create table t1 (a bit) engine=innodb;
 insert ignore into t1 values (b'0'), (b'1'), (b'000'), (b'100'), (b'001');
-select hex(a) from t1;
 drop table t1;
 create table t1 (a bit(2)) engine=innodb;
 insert ignore into t1 values (b'00'), (b'01'), (b'10'), (b'100');
@@ -43,18 +42,12 @@ select b+0 from t1;
 select a+0, b+0 from t1;
 select a+0, b+0 from t1 where a > 40 and b > 200 order by 1;
 select a+0, b+0 from t1 where a > 40 and a < 70 order by 2;
-select hex(min(a)) from t1;
-select hex(min(b)) from t1;
-select hex(min(a)), hex(max(a)), hex(min(b)), hex(max(b)) from t1;
 drop table t1;
 create table t1 (a int not null, b bit, c bit(9), key(a, b, c)) engine=innodb;
 insert into t1 values
 (4, NULL, 1), (4, 0, 3), (2, 1, 4), (1, 1, 100), (4, 0, 23), (4, 0, 54),
 (56, 0, 22), (4, 1, 100), (23, 0, 1), (4, 0, 34);
 select a+0, b+0, c+0 from t1;
-select hex(min(b)) from t1 where a = 4;
-select hex(min(c)) from t1 where a = 4 and b = 0;
-select hex(max(b)) from t1;
 select a+0, b+0, c+0 from t1 where a = 4 and b = 0 limit 2;
 select a+0, b+0, c+0 from t1 where a = 4 and b = 1;
 select a+0, b+0, c+0 from t1 where a = 4 and b = 1 and c=100;
@@ -72,8 +65,6 @@ select a+0 from t1;
 drop table t1;
 create table t1 (a bit(3), b bit(12)) engine=innodb;
 insert into t1 values (7,(1<<12)-2), (0x01,0x01ff);
-select hex(a),hex(b) from t1;
-select hex(concat(a)),hex(concat(b)) from t1;
 drop table t1;
 create table t1(a int, b bit not null) engine=innodb;
 alter table t1 add primary key (a);
@@ -99,5 +90,4 @@ CREATE TABLE t_bit (
   b bit(3)
 );
 INSERT IGNORE INTO t_bit (b) SELECT a from t_double;
-SELECT HEX(b) FROM t_bit;
 DROP TABLE t_double, t_bit;

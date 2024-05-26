@@ -49,7 +49,6 @@ LIFETIME(0);
 SHOW CREATE test_dictionary_10_shards_nullable;
 SYSTEM RELOAD DICTIONARY test_dictionary_10_shards_nullable;
 SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() AND name = 'test_dictionary_10_shards_nullable';
-SELECT count() FROM test_table_nullable WHERE dictGet('test_dictionary_10_shards_nullable', 'value', key) != value;
 DROP DICTIONARY test_dictionary_10_shards_nullable;
 DROP DICTIONARY IF EXISTS test_complex_dictionary_10_shards;
 CREATE DICTIONARY test_complex_dictionary_10_shards
@@ -64,7 +63,6 @@ LIFETIME(0);
 SYSTEM RELOAD DICTIONARY test_complex_dictionary_10_shards;
 SHOW CREATE test_complex_dictionary_10_shards;
 SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() and name = 'test_complex_dictionary_10_shards';
-SELECT count() FROM test_table_complex WHERE dictGet('test_complex_dictionary_10_shards', 'value', (key_1, key_2)) != value;
 DROP DICTIONARY test_complex_dictionary_10_shards;
 DROP DICTIONARY IF EXISTS test_dictionary_10_shards_string;
 CREATE DICTIONARY test_dictionary_10_shards_string

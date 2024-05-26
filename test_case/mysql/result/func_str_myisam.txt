@@ -1,0 +1,40 @@
+--Query--
+SELECT bugdesc, REPLACE(bugdesc, 'xxxxxxxxxxxxxxxxxxxx', 'bbbbbbbbbbbbbbbbbbbb') from t1 group by bugdesc
+--Result--
+[('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE tmp=AES_DECRYPT(tmp,"password")
+--Result--
+[]
++--------------------+
+--Query--
+SELECT elt(status_wnio,data_podp) FROM t1 GROUP BY wid
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT CONCAT("</a>",RPAD("",(55 - LENGTH(title)),".")) from t1
+--Result--
+[(None,), ('</a>..........................',)]
++--------------------+
+--Query--
+SELECT CONV('e251273eb74a8ee3', 16, 10)
+--Result--
+[('16307858876001849059',)]
++--------------------+
+--Query--
+SELECT id   FROM t1   WHERE a = 16307858876001849059
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT id   FROM t1   WHERE a = CONV('e251273eb74a8ee3', 16, 10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1 order by (oct(a))
+--Result--
+[('',), ('',)]
++--------------------+

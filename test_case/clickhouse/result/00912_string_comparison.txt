@@ -1,0 +1,30 @@
+--Query--
+WITH substring('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 1, number) AS prefix, prefix || 'x' AS a, prefix || 'y' AS b SELECT a = b, a < b, a > b, a <= b, a >= b FROM numbers(40)
+--Result--
+[(0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0), (0, 1, 0, 1, 0)]
++--------------------+
+--Query--
+WITH arrayJoin(['aaa', 'bbb']) AS a, 'aaa\0bbb' AS b SELECT a = b, a < b, a > b, a <= b, a >= b
+--Result--
+[(0, 1, 0, 1, 0), (0, 0, 1, 0, 1)]
++--------------------+
+--Query--
+WITH arrayJoin(['aaa', 'zzz']) AS a, 'aaa\0bbb' AS b SELECT a = b, a < b, a > b, a <= b, a >= b
+--Result--
+[(0, 1, 0, 1, 0), (0, 0, 1, 0, 1)]
++--------------------+
+--Query--
+WITH arrayJoin(['aaa', 'bbb']) AS a, materialize('aaa\0bbb') AS b SELECT a = b, a < b, a > b, a <= b, a >= b
+--Result--
+[(0, 1, 0, 1, 0), (0, 0, 1, 0, 1)]
++--------------------+
+--Query--
+WITH arrayJoin(['aaa', 'zzz']) AS a, materialize('aaa\0bbb') AS b SELECT a = b, a < b, a > b, a <= b, a >= b
+--Result--
+[(0, 1, 0, 1, 0), (0, 0, 1, 0, 1)]
++--------------------+
+--Query--
+SELECT empty(toFixedString('', 1 + randConstant() % 100))
+--Result--
+[(1,)]
++--------------------+

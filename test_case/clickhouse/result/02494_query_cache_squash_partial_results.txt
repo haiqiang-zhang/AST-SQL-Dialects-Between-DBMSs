@@ -1,0 +1,60 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM STOP MERGES t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- insert with enabled squashing'
+--Result--
+[('-- insert with enabled squashing',)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY c SETTINGS max_block_size = 3, use_query_cache = true, query_cache_squash_partial_results = true
+--Result--
+[('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',)]
++--------------------+
+--Query--
+SELECT '-- read from cache'
+--Result--
+[('-- read from cache',)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY c SETTINGS max_block_size = 3, use_query_cache = true
+--Result--
+[('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- insert with disabled squashing'
+--Result--
+[('-- insert with disabled squashing',)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY c SETTINGS max_block_size = 3, use_query_cache = true, query_cache_squash_partial_results = false
+--Result--
+[('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',)]
++--------------------+
+--Query--
+SELECT '-- read from cache'
+--Result--
+[('-- read from cache',)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY c SETTINGS max_block_size = 3, use_query_cache = true
+--Result--
+[('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('abc',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('def',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('ghi',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',), ('jkl',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

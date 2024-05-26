@@ -1,0 +1,20 @@
+--Query--
+SELECT toTypeName(first_value_respect_nullsState(dummy)), toTypeName(last_value_respect_nullsState(dummy)) from system.one
+--Result--
+[('AggregateFunction(any_respect_nulls, UInt8)', 'AggregateFunction(anyLast_respect_nulls, UInt8)')]
++--------------------+
+--Query--
+SELECT first_value_respect_nullsMerge(t) FROM (Select first_value_respect_nullsState(dummy) as t FROM system.one)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT last_value_respect_nullsMerge(t) FROM (Select last_value_respect_nullsState(dummy) as t FROM system.one)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT finalizeAggregation(CAST(unhex('01'), 'AggregateFunction(any_respect_nulls, UInt64)'))
+--Result--
+[(0,)]
++--------------------+

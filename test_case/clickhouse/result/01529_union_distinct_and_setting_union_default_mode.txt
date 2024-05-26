@@ -1,0 +1,145 @@
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+(((((((SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+(((((((SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 'a' UNION ALL SELECT 'a' UNION ALL SELECT 'a' UNION SELECT 'a'
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT 'a' UNION ALL (SELECT 'a' UNION ALL SELECT 'a' UNION SELECT 'a')
+--Result--
+[('a',), ('a',)]
++--------------------+
+--Query--
+SELECT 'a' UNION SELECT 'a' UNION SELECT 'a' UNION ALL SELECT'a'
+--Result--
+[('a',), ('a',)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 UNION SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 'all' UNION SELECT 'all' UNION ALL SELECT 'all'
+--Result--
+[('all',), ('all',)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT 1 UNION ALL SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1 UNION ALL SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 UNION  ALL (SELECT 1 UNION ALL SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1 UNION ALL SELECT 1)
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1)))))))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL SELECT 1)))))))
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 UNION ALL (SELECT 1 UNION SELECT 1 UNION ALL (SELECT 1 UNION ALL SELECT 1)))
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+(((((((SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1) UNION SELECT 1
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+(((((((SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1) UNION ALL SELECT 1
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 'a' UNION ALL SELECT 'a' UNION ALL SELECT 'a' UNION SELECT 'a'
+--Result--
+[('a',), ('a',), ('a',), ('a',)]
++--------------------+
+--Query--
+SELECT 'a' UNION ALL (SELECT 'a' UNION ALL SELECT 'a' UNION SELECT 'a')
+--Result--
+[('a',), ('a',), ('a',), ('a',)]
++--------------------+
+--Query--
+SELECT 'a' UNION SELECT 'a' UNION SELECT 'a' UNION ALL SELECT'a'
+--Result--
+[('a',), ('a',), ('a',), ('a',)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 UNION SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 'all' UNION SELECT 'all' UNION ALL SELECT 'all'
+--Result--
+[('all',), ('all',), ('all',)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT 1 UNION ALL SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1 UNION ALL SELECT 1)
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 UNION  ALL (SELECT 1 UNION ALL SELECT 1 UNION SELECT 1 UNION DISTINCT SELECT 1 UNION ALL SELECT 1)
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1 UNION (SELECT 1)))))))
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL (SELECT 1 UNION ALL(SELECT 1 UNION ALL (SELECT 1 UNION ALL SELECT 1)))))))
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 UNION ALL (SELECT 1 UNION SELECT 1 UNION ALL (SELECT 1 UNION ALL SELECT 1)))
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+

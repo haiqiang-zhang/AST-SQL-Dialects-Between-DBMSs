@@ -7,11 +7,8 @@ set force_optimize_skip_unused_shards=2;
 set optimize_skip_unused_shards=1;
 set optimize_skip_unused_shards_rewrite_in=0;
 set log_queries=1;
-
 select '(0, 2)';
 system flush logs;
-
-
 set optimize_skip_unused_shards_rewrite_in=1;
 select 'optimize_skip_unused_shards_rewrite_in(0, 2)';
 system flush logs;
@@ -22,10 +19,7 @@ system flush logs;
 select 'signed column';
 create table data_01756_signed (key Int) engine=Null;
 system flush logs;
-
 select 'errors';
-
---
 select 'others';
 select 'different types -- prohibited';
 create table data_01756_str (key String) engine=Memory();

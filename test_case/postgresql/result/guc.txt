@@ -434,11 +434,6 @@ DISCARD ALL
 []
 +--------------------+
 --Query--
-SELECT pg_listening_channels()
---Result--
-[]
-+--------------------+
---Query--
 SELECT name FROM pg_prepared_statements
 --Result--
 []
@@ -469,29 +464,9 @@ select current_schemas(false)
 [(['public'],)]
 +--------------------+
 --Query--
-select current_schemas(false)
---Result--
-[(['public', 'not_there_initially'],)]
-+--------------------+
---Query--
-select current_schemas(false)
---Result--
-[(['public'],)]
-+--------------------+
---Query--
 select report_guc('work_mem'), current_setting('work_mem')
 --Result--
 [('1MB', '3MB')]
-+--------------------+
---Query--
-select report_guc('work_mem'), current_setting('work_mem')
---Result--
-[('2MB', '3MB')]
-+--------------------+
---Query--
-select report_guc('work_mem'), current_setting('work_mem')
---Result--
-[('3MB', '3MB')]
 +--------------------+
 --Query--
 select current_setting('work_mem')
@@ -499,32 +474,7 @@ select current_setting('work_mem')
 [('3MB',)]
 +--------------------+
 --Query--
-select current_setting('nosuch.setting', true) is null
---Result--
-[(True,)]
-+--------------------+
---Query--
-select current_setting('nosuch.setting')
---Result--
-[('nada',)]
-+--------------------+
---Query--
-select current_setting('nosuch.setting', false)
---Result--
-[('nada',)]
-+--------------------+
---Query--
-select current_setting('nosuch.setting', true)
---Result--
-[('nada',)]
-+--------------------+
---Query--
 SELECT pg_settings_get_flags(NULL)
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT pg_settings_get_flags('does_not_exist')
 --Result--
 [(None,)]
 +--------------------+

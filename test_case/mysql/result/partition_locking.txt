@@ -1,0 +1,485 @@
+--Query--
+SELECT * FROM t3 ORDER BY a, b
+--Result--
+[(None, 'Only b 1'), (None, 'Only b 2'), (None, 'Only b 3'), (0, 'Test 0'), (0, 'Test 0'), (1, None), (1, 'Test 1'), (1, 'Test 1'), (2, None), (2, 'Test 2'), (2, 'Test 2'), (3, None), (3, 'Test 3'), (3, 'Test 3'), (4, None), (4, 'Test 4'), (4, 'Test 4'), (5, None), (5, 'Test 5'), (5, 'Test 5'), (6, None), (6, 'Test 6'), (6, 'Test 6'), (7, None), (7, 'Test 7'), (7, 'Test 7'), (8, None), (8, 'Test 8'), (8, 'Test 8'), (9, None), (9, 'Test 9'), (9, 'Test 9'), (10, None), (10, 'Test 10'), (10, 'Test 10')]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(-1, 'ZZZzzzz', 'yyyYYY', 0, 'Default-filler.filler.filler.'), (1, 'Full part', 'Full subpart', 1, 'Default-filler.filler.filler.'), (1, 'Full part', 'Half subpart', 9, 'Default-filler.filler.filler.'), (0, '', '', 0, None), (1, 'Default', 'Default', 9, 'Default-filler.filler.filler.'), (1, 'Part expr fulfilled', 'Default', 9, 'Default-filler.filler.filler.'), (10, 'Half part', 'Full subpart', 1, 'Default-filler.filler.filler.'), (10, 'Default', 'Default', 1, 'Default-filler.filler.filler.'), (10, 'Default', 'Default', 9, 'Default-filler.filler.filler.'), (10, 'Full part, half subpart', 'Default', 1, 'Default-filler.filler.filler.'), (10, 'Part expr fulfilled', 'Default', 9, 'Default-filler.filler.filler.'), (10, 'Default', 'Default', 2, 'Default-filler.filler.filler.'), (10, 'Default', 'Subpart expr fulfilled', 1, 'Default-filler.filler.filler.'), (12, 'Full part, half subpart', 'Default', 0, 'Default-filler.filler.filler.'), (12, 'Full part, half subpart', 'Default', 4, 'Default-filler.filler.filler.'), (12, 'Default', 'Half part, full subpart', 1, 'Default-filler.filler.filler.'), (12, 'Default', 'Half part, full subpart Default', 1, 'Default-filler.filler.filler.'), (12, 'Full part, half subpart', 'Default', 1, 'Default-filler.filler.filler.'), (12, 'Default', 'Half part, full subpartDefault', 1, 'Default-filler.filler.filler.'), (12, 'Full part, half subpart', 'Default', 2, 'Default-filler.filler.filler.'), (12, 'Full part, half subpart', 'Default', 3, 'Default-filler.filler.filler.')]
++--------------------+
+--Query--
+SELECT d, c FROM t3 PARTITION(`p11-100sp0`)
+--Result--
+[(0, 'Default'), (4, 'Default')]
++--------------------+
+--Query--
+LOCK TABLES t3 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE a = 10 AND b = "Default" AND c = "Default" AND d = 9
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3 PARTITION (p10)
+--Result--
+[(10, 'Half part', 'Full subpart', 1, 'Default-filler.filler.filler.'), (10, 'Default', 'Default', 1, 'Default-filler.filler.filler.'), (10, 'Full part, half subpart', 'Default', 1, 'Default-filler.filler.filler.'), (10, 'Not DEFAULT!', 'Default', 9, 'All default!, updated, updated2'), (10, 'Part expr fulfilled', 'Default', 9, 'Default-filler.filler.filler.'), (10, 'Default', 'Default', 2, 'Default-filler.filler.filler.'), (10, 'Default', 'Subpart expr fulfilled', 1, 'Default-filler.filler.filler.')]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT UNIX_TIMESTAMP('2011-01-01 00:00:00') as time_t,        UNIX_TIMESTAMP('2011-01-01 00:00:00') % 3 as part,        1234567890 % 3 as part2
+--Result--
+[(1293836400, 0, 0)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3'), (4, 'First row, p4'), (13, 'Second row, p0'), (26, 'Third row, p0'), (39, 'Fourth row, p0'), (52, 'Fifth row, p0'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (78, 'No duplicate'), (91, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (105, 'No duplicate')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, 1, 4, 13, 26) ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (4, 'First row, p4'), (13, 'Second row, p0'), (26, 'Third row, p0')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (13, 26, 39, 52)
+--Result--
+[(52, 'Fifth row, p0'), (39, 'Fourth row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 3
+--Result--
+[(3, 'First row, p3')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b LIKE 'First%' ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3'), (4, 'First row, p4')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = (SELECT a FROM t3)
+--Result--
+[(1, 'First row, p1')]
++--------------------+
+--Query--
+SELECT t1.a FROM t1 INNER JOIN t3 ON t1.a = t3.a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 1
+--Result--
+[(1, 'First row, p1')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = (SELECT COUNT(*) FROM t3)
+--Result--
+[(1, 'First row, p1')]
++--------------------+
+--Query--
+SELECT * FROM t4 WHERE a = (SELECT a FROM t3)
+--Result--
+[(1, 'First row, p1')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 WHERE a IN (0,2,3,13,26)) t3
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (2, 'First row, p2'), (3, 'First row, p3')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM t1 WHERE a IN (0,2,3,13,26)) t3) t4
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (2, 'First row, p2'), (3, 'First row, p3')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2
+--Result--
+[(52, 'Fifth row, p0'), (0, 'First row, p0'), (39, 'Fourth row, p0'), (78, 'No duplicate'), (104, 'No duplicate 104'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (91, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (105, 'No duplicate'), (2, 'First row, p2'), (3, 'First row, p3'), (4, 'First row, p4'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, 1, 13, 4, 26) UNION SELECT * FROM t2
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (4, 'First row, p4'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 WHERE a IN (0, 1, 13, 4, 26)) t3 UNION SELECT * FROM t2
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (4, 'First row, p4'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM t1 WHERE a IN (0, 1, 13, 4, 26) UNION SELECT * FROM t2) t3) t4
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (4, 'First row, p4'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM t1 WHERE a IN (0, 1, 13, 4, 26)) t3 UNION SELECT * FROM t2) t4
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (4, 'First row, p4'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM t1 WHERE a IN (0, 1, 13, 4, 26)) t3) t4 UNION SELECT * FROM t2
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (4, 'First row, p4'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM t1 WHERE a IN (0, 1, 13, 4, 26)) t3 UNION SELECT * FROM t2 WHERE a = 1) t4
+--Result--
+[(0, 'First row, p0'), (13, 'Second row, p0'), (26, 'Third row, p0'), (1, 'First row, p1'), (4, 'First row, p4')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3'), (4, 'First row, p4'), (13, 'Second row, p0'), (26, 'Third row, p0'), (39, 'Fourth row, p0'), (52, 'Fifth row, p0'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (78, 'No duplicate'), (91, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (105, 'No duplicate')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3, same as min(a) + 2 in t2'), (4, 'First row, p4'), (26, 'Third row, p0, updated 1'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (78, 'No duplicate'), (91, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (105, 'No duplicate'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1, 'First row, p1'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CHECK_OPTION, IS_UPDATABLE, VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME LIKE 'v1_%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 8
+--Result--
+[(8, 'Insert in v1_9 NO CHECK!')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 8
+--Result--
+[(8, 'Insert in v1_9 NO CHECK!')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 9
+--Result--
+[(9, 'Insert in v1_9')]
++--------------------+
+--Query--
+SELECT * FROM v1_9
+--Result--
+[(9, 'Insert in v1_9_check')]
++--------------------+
+--Query--
+SELECT * FROM v1_25
+--Result--
+[(2, 'First row, p2'), (18, 'Insert in v1_25'), (31, 'Insert in v1_25_check')]
++--------------------+
+--Query--
+SELECT * FROM v1_all
+--Result--
+[(52, 'Fifth row, p0, updated 1'), (0, 'First row, p0'), (39, 'Fourth row, p0, updated 1'), (78, 'No duplicate'), (104, 'No duplicate 104'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (91, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (26, 'Third row, p0, updated 1'), (1, 'First row, p1'), (105, 'No duplicate'), (2, 'First row, p2'), (3, 'First row, p3, same as min(a) + 2 in t2'), (4, 'First row, p4'), (18, 'Insert in v1_25'), (31, 'Insert in v1_25_check'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9'), (23, 'Insert in v1_all')]
++--------------------+
+--Query--
+SELECT * FROM t3 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (26, 'Third row, p0, updated 1'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t3 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3, same as min(a) + 2 in t2'), (4, 'First row, p4')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3, same as min(a) + 2 in t2'), (4, 'First row, p4'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (18, 'Insert in v1_25'), (23, 'Insert in v1_all'), (26, 'Third row, p0, updated 1'), (31, 'Insert in v1_25_check'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (78, 'No duplicate'), (91, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (105, 'No duplicate'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (1, 'First row, p1'), (2, 'First row, p2'), (3, 'First row, p3, same as min(a) + 2 in t2'), (4, 'First row, p4'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (18, 'Insert in v1_25'), (23, 'Insert in v1_all'), (26, 'Third row, p0, updated 1'), (31, 'Insert in v1_25_check'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1, 'First row, p1'), (2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (2, 'First row, p2'), (3, 'First row, p3, same as min(a) + 2 in t2'), (4, 'First row, p4'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (18, 'Insert in v1_25'), (23, 'Insert in v1_all'), (26, 'Third row, p0, updated 1'), (31, 'Insert in v1_25_check'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 2
+--Result--
+[(2, 'First row, p2, duplicate key 2')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 0
+--Result--
+[(0, 'First row, p0')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 0
+--Result--
+[(0, 'First row, p0')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 0
+--Result--
+[(0, 'First row, p0')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 2
+--Result--
+[(2, 'First row, p2, duplicate key 2, duplicate key 2')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 0
+--Result--
+[(0, 'First row, p0')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 3
+--Result--
+[(3, 'First row, p3, same as min(a) + 2 in t2')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 3
+--Result--
+[(3, 'First row, p3, same as min(a) + 2 in t2, UPDATED2')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (2, 'First row, p2, duplicate key 2, duplicate key 2'), (3, 'First row, p3, same as min(a) + 2 in t2, UPDATED2'), (4, 'First row, p4'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (11, 'First row, p11'), (12, 'First row, p12'), (18, 'Insert in v1_25'), (23, 'Insert in v1_all'), (26, 'Third row, p0, updated 1'), (31, 'Insert in v1_25_check'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0, 'First row, p0'), (2, 'First row, p2, duplicate key 2, duplicate key 2'), (3, 'First row, p3, same as min(a) + 2 in t2, UPDATED2'), (4, 'First row, p4'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (11, 'First row, p11'), (12, 'First row, p12'), (18, 'Insert in v1_25'), (23, 'Insert in v1_all'), (26, 'Third row, p0, updated 1'), (31, 'Insert in v1_25_check'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(2, 'Second auto-inc row'), (10, 'First row, p10, UPDATED')]
++--------------------+
+--Query--
+SELECT * FROM t3 ORDER BY new_a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1, 'First row, p0, duplicate key, Updated, a was 0'), (2, 'First row, p2, duplicate key 2, duplicate key 2'), (3, 'First row, p3, same as min(a) + 2 in t2, UPDATED2'), (4, 'First row, p4'), (5, 'first row, p0, duplicate key, Updated, dup key, Updated, dup key, Updated, dup key, Updated, a was 0'), (8, 'Insert in v1_9 NO CHECK!'), (9, 'Insert in v1_9_check'), (11, 'First row, p11'), (12, 'First row, p12'), (18, 'Insert in v1_25'), (23, 'Insert in v1_all'), (26, 'Third row, p0, updated 1'), (31, 'Insert in v1_25_check'), (39, 'Fourth row, p0, updated 1'), (52, 'Fifth row, p0, updated 1'), (65, 'No duplicate, INSERT_DUP_KEY_UPDATE'), (104, 'No duplicate 104'), (113, 'Second row, p0, updated 1, updated 2 -> p8, updated 3, updated 4 -> p9')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1, 'MultiUpdate1,(1) t2.b:MultiUpdate1'), (2, 'MultiUpdate2,(2) t2.b:MultiUpdate2')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1, 'MultiUpdate1,(1) t1.b:MultiUpdate1'), (2, 'MultiUpdate2,(2) t1.b:MultiUpdate2')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a AND t2.a = 1
+--Result--
+[(1, 'Const1', 1, 'Const1')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a AND t1.a = 1
+--Result--
+[(1, 'Const1', 1, 'Const1')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a AND (t2.a = 1 OR t2.a = 2)
+--Result--
+[(1, 'Const1', 1, 'Const1'), (2, 'Const2', 2, 'Const2')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a AND t1.a >= 1 AND t1.a <=3
+--Result--
+[(1, 'Const1', 1, 'Const1'), (2, 'Const2', 2, 'Const2'), (3, 'Const3', 3, 'Const3')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a AND t2.a >= 1
+--Result--
+[(1, 'Const1', 1, 'Const1'), (2, 'Const2', 2, 'Const2'), (3, 'Const3', 3, 'Const3')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a AND t2.a <= 1
+--Result--
+[(1, 'Const1', 1, 'Const1')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a = t2.a and t2.a IN (1, 3)
+--Result--
+[(1, 'Const1', 1, 'Const1'), (3, 'Const3', 3, 'Const3')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1, 'Const1, t2.b:Const1'), (2, 'Const2, t2.b:Const2, t2.b:Const2'), (3, 'Const3, t2.b:Const3')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1, 'Const1, t1.b:Const1'), (2, 'Const2, t1.b:Const2, t2.b:Const2'), (3, 'Const3')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(2, 'Const2, t2.b:Const2, t2.b:Const2'), (3, 'Const3, t2.b:Const3')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(3, 'Const3, t2.b:Const3')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1, 'Const1, t1.b:Const1'), (2, 'Const2, t1.b:Const2, t2.b:Const2'), (3, 'Const3')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(1, 'Const1, t1.b:Const1'), (2, 'Const2, t1.b:Const2, t2.b:Const2')]
++--------------------+
+--Query--
+SELECT @x
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @x
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @x
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @x, @y
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT @x, @y
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a, b
+--Result--
+[(0, 'Zero'), (2, 'Two'), (3, 'Three'), (5, 'Five'), (6, 'Six')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a, b
+--Result--
+[(0, 'Zero'), (2, 'Two'), (3, 'Three'), (5, 'Five'), (6, 'Six')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a, b
+--Result--
+[(0, 'Zero'), (2, 'Two'), (3, 'Three'), (5, 'Five'), (6, 'Six')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a, b
+--Result--
+[(0, 'Zero'), (2, 'Two'), (3, 'Three'), (5, 'Five'), (6, 'Six')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(1, 'One'), (4, 'Four'), (7, 'Seven')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(0, 'Zero'), (2, 'Two'), (3, 'Three'), (5, 'Five'), (6, 'Six'), (8, 'Eight'), (10, 'Ten'), (13, 'Thirteen'), (16, 'Sixteen')]
++--------------------+
+--Query--
+PREPARE stmt FROM 'UPDATE t1 AS P1 INNER JOIN (SELECT N FROM t1 GROUP BY N HAVING COUNT(M) > 1) AS P2 ON P1.N = P2.N SET P1.M = 2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY N, M
+--Result--
+[(1, 0), (1, 0), (2, 0), (2, 0), (3, 0)]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'SELECT * FROM t1 WHERE N = 2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=5 AND a=6
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 'test 1'), (2, 'subq: test 1')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a, b
+--Result--
+[(1, 0), (11, 1)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (7,), (2,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(3,), (9,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, '1'), (2, '2'), (8, '8')]
++--------------------+
+--Query--
+LOCK TABLES t1 read, t2 write
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, '1'), (2, '2'), (8, '8')]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

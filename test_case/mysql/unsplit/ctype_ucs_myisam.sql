@@ -65,8 +65,6 @@ SELECT @@collation_connection;
 CREATE TABLE t1 (a MEDIUMINT NULL) ENGINE=MYISAM;
 INSERT INTO t1 VALUES (1234567);
 SELECT GROUP_CONCAT(IFNULL(a,'')) FROM t1;
-SELECT GROUP_CONCAT(IF(a,a,'')) FROM t1;
-SELECT GROUP_CONCAT(CASE WHEN a THEN a ELSE '' END) FROM t1;
 SELECT COALESCE(a,'') FROM t1 GROUP BY 1;
 CREATE TABLE t2 AS
 SELECT
@@ -115,9 +113,7 @@ create table t1 (
 insert into t1 values (repeat(0x201f, 10));
 insert into t1 values (repeat(0x2020, 10));
 insert into t1 values (repeat(0x2021, 10));
-select hex(a) from t1 order by a;
 alter table t1 drop index a;
-select hex(a) from t1 order by a;
 drop table t1;
 CREATE TABLE t1(a TEXT CHARSET ucs2 COLLATE ucs2_unicode_ci) engine=MyISAM;
 INSERT INTO t1 VALUES('abcd');

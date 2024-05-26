@@ -1,0 +1,90 @@
+--Query--
+SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE   FROM information_schema.tables WHERE table_name='t1'
+--Result--
+[('test_db', 't1', 'BASE TABLE')]
++--------------------+
+--Query--
+LOCK TABLE t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE    FROM information_schema.tables WHERE table_name='t1'
+--Result--
+[('test_db', 't1', 'BASE TABLE')]
++--------------------+
+--Query--
+PREPARE st2 FROM   "SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE FROM    information_schema.tables WHERE table_name='t1'"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE st2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'abc'
+--Result--
+[('def', 'abc', 'memorytable', 'BASE TABLE', 'MEMORY', 10, 'Fixed', 0, 8, 0, 16777216, 0, 0, 1, datetime.datetime(2024, 5, 26, 3, 20, 32), None, None, 'utf8mb4_0900_ai_ci', None, '', '')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, ENGINE, TABLE_ROWS   INTO @v1, @v2, @v3   FROM INFORMATION_SCHEMA.TABLES WHERE table_name='t0'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, ENGINE, TABLE_ROWS   INTO @v1, @v2, @v3   FROM INFORMATION_SCHEMA.TABLES WHERE table_name='t0'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, ENGINE, TABLE_ROWS   INTO @v1, @v2, @v3   FROM INFORMATION_SCHEMA.TABLES WHERE table_name='t0'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, ENGINE, TABLE_ROWS   INTO @v1, @v2, @v3   FROM INFORMATION_SCHEMA.TABLES WHERE table_name='t0'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, ENGINE, TABLE_ROWS   INTO @v1, @v2, @v3   FROM INFORMATION_SCHEMA.TABLES WHERE table_name='t0'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, ENGINE, TABLE_ROWS   INTO @v1, @v2, @v3   FROM INFORMATION_SCHEMA.TABLES WHERE table_name='t0'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps1 FROM 'SELECT MAX(AUTO_INCREMENT) = ? FROM information_schema.tables WHERE table_schema = ? AND table_name = ?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT MAX(AUTO_INCREMENT) FROM information_schema.tables t WHERE table_schema = 'test' AND t.table_name = 't1'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE ps2 FROM 'SELECT DATA_FREE, FREE_EXTENTS, TOTAL_EXTENTS FROM information_schema.files WHERE TABLESPACE_NAME = ?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DATA_FREE, FREE_EXTENTS, TOTAL_EXTENTS FROM information_schema.files WHERE TABLESPACE_NAME = 'test/t2'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ps1
+--Result--
+[]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+select a, any(b), c, d from tab where b = 1 group by a, c, d order by c, d settings optimize_aggregation_in_order=1, query_plan_aggregation_in_order=1
+--Result--
+[(0, 1, 1, 20), (0, 1, 1, 200), (0, 1, 2, 20), (0, 1, 2, 200)]
++--------------------+
+--Query--
+select * from (explain actions = 1, sorting=1 select a, any(b), c, d from tab where b = 1 group by a, c, d settings optimize_aggregation_in_order=1, query_plan_aggregation_in_order=1) where explain like '%ReadFromMergeTree%' or explain like '%Aggregating%' or explain like '%Order:%' settings allow_experimental_analyzer=0
+--Result--
+[('  Aggregating',), ('  Order: a ASC, c ASC',), ('        ReadFromMergeTree (test.tab)',)]
++--------------------+
+--Query--
+select * from (explain actions = 1, sorting=1 select a, any(b), c, d from tab where b = 1 group by a, c, d settings optimize_aggregation_in_order=1, query_plan_aggregation_in_order=1) where explain like '%ReadFromMergeTree%' or explain like '%Aggregating%' or explain like '%Order:%' settings allow_experimental_analyzer=1
+--Result--
+[('  Aggregating',), ('  Order: __table1.a ASC, __table1.c ASC',), ('        ReadFromMergeTree (test.tab)',)]
++--------------------+

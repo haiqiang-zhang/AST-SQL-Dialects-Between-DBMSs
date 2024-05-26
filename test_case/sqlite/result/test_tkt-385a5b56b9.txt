@@ -1,0 +1,30 @@
+--Query--
+SELECT DISTINCT x, y FROM t1
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+SELECT DISTINCT x, y FROM t1
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN  SELECT DISTINCT x FROM t2
+--Result--
+[(3, 0, 0, 'SCAN t2 USING COVERING INDEX t2x')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN  SELECT DISTINCT y FROM t2
+--Result--
+[(3, 0, 0, 'SCAN t2 USING COVERING INDEX t2y')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN  SELECT DISTINCT x, y FROM t2 WHERE y=10
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING INDEX t2y (y=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN  SELECT DISTINCT x, y FROM t2 WHERE x=10
+--Result--
+[(4, 0, 0, 'SEARCH t2 USING INDEX t2x (x=?)')]
++--------------------+

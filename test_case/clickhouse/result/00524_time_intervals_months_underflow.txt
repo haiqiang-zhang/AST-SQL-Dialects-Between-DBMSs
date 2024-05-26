@@ -1,0 +1,40 @@
+--Query--
+SELECT toDateTime('2017-01-01 00:00:00') + INTERVAL 0 MONTH AS x
+--Result--
+[(datetime.datetime(2017, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT toDate('2017-01-01') + INTERVAL 0 MONTH AS x
+--Result--
+[(datetime.date(2017, 1, 1),)]
++--------------------+
+--Query--
+SELECT INTERVAL number - 15 MONTH + toDate('2017-01-01') AS x FROM system.numbers LIMIT 30
+--Result--
+[(datetime.date(2015, 10, 1),), (datetime.date(2015, 11, 1),), (datetime.date(2015, 12, 1),), (datetime.date(2016, 1, 1),), (datetime.date(2016, 2, 1),), (datetime.date(2016, 3, 1),), (datetime.date(2016, 4, 1),), (datetime.date(2016, 5, 1),), (datetime.date(2016, 6, 1),), (datetime.date(2016, 7, 1),), (datetime.date(2016, 8, 1),), (datetime.date(2016, 9, 1),), (datetime.date(2016, 10, 1),), (datetime.date(2016, 11, 1),), (datetime.date(2016, 12, 1),), (datetime.date(2017, 1, 1),), (datetime.date(2017, 2, 1),), (datetime.date(2017, 3, 1),), (datetime.date(2017, 4, 1),), (datetime.date(2017, 5, 1),), (datetime.date(2017, 6, 1),), (datetime.date(2017, 7, 1),), (datetime.date(2017, 8, 1),), (datetime.date(2017, 9, 1),), (datetime.date(2017, 10, 1),), (datetime.date(2017, 11, 1),), (datetime.date(2017, 12, 1),), (datetime.date(2018, 1, 1),), (datetime.date(2018, 2, 1),), (datetime.date(2018, 3, 1),)]
++--------------------+
+--Query--
+SELECT INTERVAL number - 15 YEAR + toDate('2017-01-01') AS x FROM system.numbers LIMIT 30
+--Result--
+[(datetime.date(2002, 1, 1),), (datetime.date(2003, 1, 1),), (datetime.date(2004, 1, 1),), (datetime.date(2005, 1, 1),), (datetime.date(2006, 1, 1),), (datetime.date(2007, 1, 1),), (datetime.date(2008, 1, 1),), (datetime.date(2009, 1, 1),), (datetime.date(2010, 1, 1),), (datetime.date(2011, 1, 1),), (datetime.date(2012, 1, 1),), (datetime.date(2013, 1, 1),), (datetime.date(2014, 1, 1),), (datetime.date(2015, 1, 1),), (datetime.date(2016, 1, 1),), (datetime.date(2017, 1, 1),), (datetime.date(2018, 1, 1),), (datetime.date(2019, 1, 1),), (datetime.date(2020, 1, 1),), (datetime.date(2021, 1, 1),), (datetime.date(2022, 1, 1),), (datetime.date(2023, 1, 1),), (datetime.date(2024, 1, 1),), (datetime.date(2025, 1, 1),), (datetime.date(2026, 1, 1),), (datetime.date(2027, 1, 1),), (datetime.date(2028, 1, 1),), (datetime.date(2029, 1, 1),), (datetime.date(2030, 1, 1),), (datetime.date(2031, 1, 1),)]
++--------------------+
+--Query--
+SELECT toDate32('2217-01-01') + INTERVAL number * 20 - 100 DAY AS x FROM system.numbers LIMIT 10
+--Result--
+[(datetime.date(2216, 9, 23),), (datetime.date(2216, 10, 13),), (datetime.date(2216, 11, 2),), (datetime.date(2216, 11, 22),), (datetime.date(2216, 12, 12),), (datetime.date(2217, 1, 1),), (datetime.date(2217, 1, 21),), (datetime.date(2217, 2, 10),), (datetime.date(2217, 3, 2),), (datetime.date(2217, 3, 22),)]
++--------------------+
+--Query--
+SELECT INTERVAL 100 - number * 20 DAY + toDate32('2217-01-01') AS x FROM system.numbers LIMIT 10
+--Result--
+[(datetime.date(2217, 4, 11),), (datetime.date(2217, 3, 22),), (datetime.date(2217, 3, 2),), (datetime.date(2217, 2, 10),), (datetime.date(2217, 1, 21),), (datetime.date(2217, 1, 1),), (datetime.date(2216, 12, 12),), (datetime.date(2216, 11, 22),), (datetime.date(2216, 11, 2),), (datetime.date(2216, 10, 13),)]
++--------------------+
+--Query--
+SELECT INTERVAL number * 4 - 20 MONTH + toDate32('2217-01-01') AS x FROM system.numbers LIMIT 10
+--Result--
+[(datetime.date(2215, 5, 1),), (datetime.date(2215, 9, 1),), (datetime.date(2216, 1, 1),), (datetime.date(2216, 5, 1),), (datetime.date(2216, 9, 1),), (datetime.date(2217, 1, 1),), (datetime.date(2217, 5, 1),), (datetime.date(2217, 9, 1),), (datetime.date(2218, 1, 1),), (datetime.date(2218, 5, 1),)]
++--------------------+
+--Query--
+SELECT INTERVAL number * 4 - 20 YEAR + toDate32('2217-01-01') AS x FROM system.numbers LIMIT 10
+--Result--
+[(datetime.date(2197, 1, 1),), (datetime.date(2201, 1, 1),), (datetime.date(2205, 1, 1),), (datetime.date(2209, 1, 1),), (datetime.date(2213, 1, 1),), (datetime.date(2217, 1, 1),), (datetime.date(2221, 1, 1),), (datetime.date(2225, 1, 1),), (datetime.date(2229, 1, 1),), (datetime.date(2233, 1, 1),)]
++--------------------+

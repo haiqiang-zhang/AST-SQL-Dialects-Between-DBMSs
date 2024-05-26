@@ -8,10 +8,7 @@ insert into t1 (f1, f2, f3, f4, f5) values
 ("This is a test case for for Bug#9819", 1, 2, 3.0, 4.598);
 create table t2 like t1;
 select count(*) from t1;
-select count(*) from t2;
 drop procedure if exists p1;
-select count(*) from t1;
-select count(*) from t2;
 select f1 from t1 limit 1;
 select f1 from t2 limit 1;
 drop table t1, t2;

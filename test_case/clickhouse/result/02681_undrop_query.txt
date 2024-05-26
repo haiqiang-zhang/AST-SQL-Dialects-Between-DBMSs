@@ -1,0 +1,120 @@
+--Query--
+select 'test MergeTree undrop'
+--Result--
+[('test MergeTree undrop',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_mergetree' limit 1
+--Result--
+[('02681_undrop_mergetree',)]
++--------------------+
+--Query--
+undrop table 02681_undrop_mergetree
+--Result--
+[]
++--------------------+
+--Query--
+select * from 02681_undrop_mergetree order by id
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select 'test detach'
+--Result--
+[('test detach',)]
++--------------------+
+--Query--
+detach table 02681_undrop_detach sync
+--Result--
+[]
++--------------------+
+--Query--
+attach table 02681_undrop_detach
+--Result--
+[]
++--------------------+
+--Query--
+select command from system.mutations where table='02681_undrop_detach' and database=currentDatabase() limit 1
+--Result--
+[('UPDATE num = 2 WHERE id = 1',)]
++--------------------+
+--Query--
+select 'test MergeTree with cluster'
+--Result--
+[('test MergeTree with cluster',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_uuid_on_cluster' limit 1
+--Result--
+[]
++--------------------+
+--Query--
+select 'test MergeTree without uuid on cluster'
+--Result--
+[('test MergeTree without uuid on cluster',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_no_uuid_on_cluster' limit 1
+--Result--
+[]
++--------------------+
+--Query--
+select 'test ReplicatedMergeTree undrop'
+--Result--
+[('test ReplicatedMergeTree undrop',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_replicatedmergetree' limit 1
+--Result--
+[]
++--------------------+
+--Query--
+select 'test Log undrop'
+--Result--
+[('test Log undrop',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_log' limit 1
+--Result--
+[('02681_undrop_log',)]
++--------------------+
+--Query--
+undrop table 02681_undrop_log
+--Result--
+[]
++--------------------+
+--Query--
+select * from 02681_undrop_log order by id
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select 'test Distributed undrop'
+--Result--
+[('test Distributed undrop',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_distributed' limit 1
+--Result--
+[]
++--------------------+
+--Query--
+select 'test MergeTree drop and undrop multiple times'
+--Result--
+[('test MergeTree drop and undrop multiple times',)]
++--------------------+
+--Query--
+select table from system.dropped_tables where table = '02681_undrop_multiple' limit 1
+--Result--
+[('02681_undrop_multiple',)]
++--------------------+
+--Query--
+undrop table 02681_undrop_multiple
+--Result--
+[]
++--------------------+
+--Query--
+select * from 02681_undrop_multiple order by id
+--Result--
+[(3,)]
++--------------------+

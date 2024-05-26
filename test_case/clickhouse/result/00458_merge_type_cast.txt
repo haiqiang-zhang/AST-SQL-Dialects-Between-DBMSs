@@ -1,0 +1,130 @@
+--Query--
+SELECT ' UInt32 | UInt64 '
+--Result--
+[(' UInt32 | UInt64 ',)]
++--------------------+
+--Query--
+select ' = 1:'
+--Result--
+[(' = 1:',)]
++--------------------+
+--Query--
+SELECT x FROM merge_32_64 WHERE x = 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select ' 1:'
+--Result--
+[(' 1:',)]
++--------------------+
+--Query--
+SELECT x FROM merge_32_64 WHERE x IN (1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select ' 4294967290:'
+--Result--
+[(' 4294967290:',)]
++--------------------+
+--Query--
+SELECT x FROM merge_32_64 WHERE x IN (4294967290)
+--Result--
+[(4294967290,), (4294967290,)]
++--------------------+
+--Query--
+select ' 4294967299:'
+--Result--
+[(' 4294967299:',)]
++--------------------+
+--Query--
+SELECT x FROM merge_32_64 WHERE x IN (4294967299)
+--Result--
+[(4294967299,)]
++--------------------+
+--Query--
+SELECT ' Int64 | UInt64 '
+--Result--
+[(' Int64 | UInt64 ',)]
++--------------------+
+--Query--
+select ' 1:'
+--Result--
+[(' 1:',)]
++--------------------+
+--Query--
+SELECT x FROM merge_s64_u64 WHERE x IN (1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select ' -1: '
+--Result--
+[(' -1: ',)]
++--------------------+
+--Query--
+SELECT x FROM merge_s64_u64 WHERE x IN (-1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ' Int32 | UInt64 '
+--Result--
+[(' Int32 | UInt64 ',)]
++--------------------+
+--Query--
+SELECT * FROM merge_one_two WHERE x IN (1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT x FROM merge_one_two WHERE x IN (2147483650)
+--Result--
+[(2147483650,)]
++--------------------+
+--Query--
+SELECT x FROM merge_one_two WHERE x IN (-1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ' String | FixedString(16) '
+--Result--
+[(' String | FixedString(16) ',)]
++--------------------+
+--Query--
+SELECT * FROM merge_one_two WHERE x IN ('1')
+--Result--
+[('1',), ('1',)]
++--------------------+
+--Query--
+SELECT ' DateTime | UInt64 '
+--Result--
+[(' DateTime | UInt64 ',)]
++--------------------+
+--Query--
+SELECT * FROM merge_one_two WHERE x IN (1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT '  Array(UInt32) | Array(UInt64) '
+--Result--
+[('  Array(UInt32) | Array(UInt64) ',)]
++--------------------+
+--Query--
+SELECT x, y FROM merge_one_two WHERE arrayExists(_ -> _ IN (1), x)
+--Result--
+[([1], [0]), ([1], [0])]
++--------------------+
+--Query--
+SELECT x, y FROM merge_one_two WHERE arrayExists(_ -> _ IN (4294967290), x)
+--Result--
+[([4294967290], [4294967290]), ([4294967290], [4294967290])]
++--------------------+
+--Query--
+SELECT x, y FROM merge_one_two WHERE arrayExists(_ -> _ IN (4294967299), x)
+--Result--
+[([4294967299], [4294967299])]
++--------------------+

@@ -1,0 +1,20 @@
+--Query--
+SELECT * FROM m PREWHERE a = 'OK' ORDER BY a, f
+--Result--
+[('OK', 1), ('OK', 2)]
++--------------------+
+--Query--
+SELECT * FROM m PREWHERE f = 1 ORDER BY a, f
+--Result--
+[('OK', 1)]
++--------------------+
+--Query--
+SELECT * FROM m WHERE f = 0 SETTINGS optimize_move_to_prewhere=0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM m WHERE f = 0 SETTINGS optimize_move_to_prewhere=1
+--Result--
+[]
++--------------------+

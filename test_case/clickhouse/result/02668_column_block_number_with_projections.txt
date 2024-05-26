@@ -1,0 +1,35 @@
+--Query--
+SELECT x FROM t GROUP BY x
+--Result--
+[(0,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+OPTIMIZE TABLE t FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '*** AFTER FIRST OPTIMIZE ***'
+--Result--
+[('*** AFTER FIRST OPTIMIZE ***',)]
++--------------------+
+--Query--
+SELECT x,_block_number FROM t
+--Result--
+[(0, 1), (1, 2), (1, 2), (2, 3), (3, 3)]
++--------------------+
+--Query--
+OPTIMIZE TABLE t FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '*** AFTER SECOND OPTIMIZE ***'
+--Result--
+[('*** AFTER SECOND OPTIMIZE ***',)]
++--------------------+
+--Query--
+SELECT x,_block_number FROM t
+--Result--
+[(0, 1), (1, 2), (1, 2), (2, 3), (3, 3), (4, 4), (5, 4), (6, 4)]
++--------------------+

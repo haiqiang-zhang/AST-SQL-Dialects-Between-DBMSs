@@ -1,0 +1,30 @@
+--Query--
+ATTACH '__TEST_DIR__/attach_enums.db' AS db1
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/attach_enums.db' AS db1 (READ_ONLY)
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/attach_enums_2.db' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT enum_range(NULL::db1.mood) AS my_enum_range
+--Result--
+[(['sad', 'ok', 'happy'],)]
++--------------------+
+--Query--
+SELECT enum_range(NULL::db1.main.mood) AS my_enum_range
+--Result--
+[(['sad', 'ok', 'happy'],)]
++--------------------+

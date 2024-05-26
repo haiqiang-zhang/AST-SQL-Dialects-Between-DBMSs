@@ -1,0 +1,135 @@
+--Query--
+SELECT * FROM t1 WHERE w BETWEEN 5 AND 6 ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE w BETWEEN 5 AND 6 ORDER BY +w
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1w (w>? AND w<?)'), (18, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE +w BETWEEN 5 AND 6 ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE +w BETWEEN 5 AND 6 ORDER BY +w
+--Result--
+[(3, 0, 0, 'SCAN t1'), (16, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE w BETWEEN 5 AND 65-y ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE w BETWEEN 5 AND 65-y ORDER BY +w
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1w (w>?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE +w BETWEEN 5 AND 65-y ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE +w BETWEEN 5 AND 65-y ORDER BY +w
+--Result--
+[(3, 0, 0, 'SCAN t1'), (18, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE w BETWEEN 41-y AND 6 ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE w BETWEEN 41-y AND 6 ORDER BY +w
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1w (w<?)'), (23, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE +w BETWEEN 41-y AND 6 ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE +w BETWEEN 41-y AND 6 ORDER BY +w
+--Result--
+[(3, 0, 0, 'SCAN t1'), (18, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE w BETWEEN 41-y AND 65-y ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE w BETWEEN 41-y AND 65-y ORDER BY +w
+--Result--
+[(3, 0, 0, 'SCAN t1'), (20, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 26 BETWEEN y AND z ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE 26 BETWEEN y AND z ORDER BY +w
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1zyx (z>?)'), (20, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 26 BETWEEN +y AND z ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE 26 BETWEEN +y AND z ORDER BY +w
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX i1zyx (z>?)'), (20, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE 26 BETWEEN y AND +z ORDER BY +w
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM t1 WHERE 26 BETWEEN y AND +z ORDER BY +w
+--Result--
+[(3, 0, 0, 'SCAN t1'), (17, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT x                BETWEEN 1 AND '5' FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x COLLATE binary BETWEEN 1 AND '5' FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x COLLATE nocase BETWEEN 1 AND '5' FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT y                  BETWEEN 'A' AND 'B' FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT y COLLATE nocase   BETWEEN 'A' AND 'B' FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT y COLLATE binary   BETWEEN 'A' AND 'B' FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (y COLLATE binary) BETWEEN 'A' AND 'B' FROM t1
+--Result--
+[]
++--------------------+

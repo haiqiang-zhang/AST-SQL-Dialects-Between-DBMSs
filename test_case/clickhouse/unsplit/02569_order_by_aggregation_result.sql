@@ -1,6 +1,3 @@
-
-
--- Queries that the original PR (https://github.com/ClickHouse/ClickHouse/pull/42827) tried to fix
 SELECT (number = 1) AND (number = 2) AS value, sum(value) OVER () FROM numbers(1) WHERE 1;
 SELECT time, round(exp_smooth, 10), bar(exp_smooth, -9223372036854775807, 1048575, 50) AS bar FROM (SELECT 2 OR (number = 0) OR (number >= 1) AS value, number AS time, exponentialTimeDecayedSum(2147483646)(value, time) OVER (RANGE BETWEEN CURRENT ROW AND CURRENT ROW) AS exp_smooth FROM numbers(1) WHERE 10) WHERE 25;
 CREATE TABLE ttttttt

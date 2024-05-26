@@ -1,9 +1,4 @@
 SELECT replaceRegexpAll(',,1,,', '^[,]*|[,]*$', '');
-SELECT replaceRegexpAll(',,1', '^[,]*|[,]*$', '');
-SELECT replaceRegexpAll('1,,', '^[,]*|[,]*$', '');
-SELECT replaceRegexpAll(materialize(',,1,,'), '^[,]*|[,]*$', '');
-SELECT replaceRegexpAll(materialize(',,1'), '^[,]*|[,]*$', '');
-SELECT replaceRegexpAll(materialize('1,,'), '^[,]*|[,]*$', '');
 SELECT replaceRegexpAll('a', 'z*', '') == 'a';
 SELECT replaceRegexpAll('aa', 'z*', '') == 'aa';
 SELECT replaceRegexpAll('aaq', 'z*', '') == 'aaq';

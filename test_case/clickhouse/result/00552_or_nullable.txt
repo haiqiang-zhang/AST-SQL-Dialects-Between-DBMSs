@@ -1,0 +1,25 @@
+--Query--
+SELECT     0 OR NULL,     1 OR NULL,     toNullable(0) OR NULL,     toNullable(1) OR NULL,     0.0 OR NULL,     0.1 OR NULL,     NULL OR 1 OR NULL,     0 OR NULL OR 1 OR NULL
+--Result--
+[(None, 1, None, 1, None, 1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM test
+--Result--
+[(1,), (0,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM test WHERE x != 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x FROM test WHERE x != 0 OR isNull(x)
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+SELECT x FROM test WHERE x != 1
+--Result--
+[(0,)]
++--------------------+

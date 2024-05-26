@@ -1,0 +1,10 @@
+--Query--
+SHOW CREATE TABLE mv_03002
+--Result--
+[('CREATE MATERIALIZED VIEW test.mv_03002 TO test.table_03002\n(\n    `ts` DateTime\n)\nAS SELECT ts\nFROM test.table_03002',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE mv_03002
+--Result--
+[('CREATE MATERIALIZED VIEW test.mv_03002 TO test.table_03002\n(\n    `ts` DateTime\n)\nAS WITH MY_CTE AS\n    (\n        SELECT ts\n        FROM test.table_03002\n    )\nSELECT *\nFROM MY_CTE',)]
++--------------------+

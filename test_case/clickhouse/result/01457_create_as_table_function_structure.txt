@@ -1,0 +1,35 @@
+--Query--
+SHOW CREATE TABLE test_01457.tf_numbers
+--Result--
+[('CREATE TABLE test_01457.tf_numbers\n(\n    `number` String\n) AS numbers(1)',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE test_01457.tf_merge
+--Result--
+[("CREATE TABLE test_01457.tf_merge\n(\n    `n` Int8\n) AS merge('test', 'tmp')",)]
++--------------------+
+--Query--
+DETACH DATABASE test_01457
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test_01457
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tmp
+--Result--
+[]
++--------------------+
+--Query--
+TRUNCATE TABLE tmp
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (*,).1 AS c, toTypeName(c) FROM tmp
+--Result--
+[]
++--------------------+

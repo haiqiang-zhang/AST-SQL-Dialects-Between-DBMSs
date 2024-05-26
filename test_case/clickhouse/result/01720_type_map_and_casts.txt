@@ -1,0 +1,110 @@
+--Query--
+SELECT 'Map(Int8, Int8)'
+--Result--
+[('Map(Int8, Int8)',)]
++--------------------+
+--Query--
+SELECT m FROM table_map_with_key_integer
+--Result--
+[({127: 1, 0: 1, -1: 1},), ({},)]
++--------------------+
+--Query--
+SELECT m[127], m[1], m[0], m[-1] FROM table_map_with_key_integer
+--Result--
+[(1, 0, 1, 1), (0, 0, 0, 0)]
++--------------------+
+--Query--
+SELECT m[toInt8(number - 2)] FROM table_map_with_key_integer ARRAY JOIN [0, 1, 2, 3, 4] AS number
+--Result--
+[(0,), (1,), (1,), (0,), (0,), (0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT count() FROM table_map_with_key_integer WHERE m = map()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'Map(Int32, UInt16)'
+--Result--
+[('Map(Int32, UInt16)',)]
++--------------------+
+--Query--
+SELECT m FROM table_map_with_key_integer
+--Result--
+[({-1: 1, 2147483647: 2, -2147483648: 3},)]
++--------------------+
+--Query--
+SELECT m[-1], m[2147483647], m[-2147483648] FROM table_map_with_key_integer
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT m[toInt32(number - 2)] FROM table_map_with_key_integer ARRAY JOIN [0, 1, 2, 3, 4] AS number
+--Result--
+[(0,), (1,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT 'Map(Date, Int32)'
+--Result--
+[('Map(Date, Int32)',)]
++--------------------+
+--Query--
+SELECT m FROM table_map_with_key_integer
+--Result--
+[({datetime.date(2020, 1, 1): 1, datetime.date(2020, 1, 2): 2, datetime.date(1970, 1, 2): 3},)]
++--------------------+
+--Query--
+SELECT m[toDate('2020-01-01')], m[toDate('2020-01-02')], m[toDate('2020-01-03')] FROM table_map_with_key_integer
+--Result--
+[(1, 2, 0)]
++--------------------+
+--Query--
+SELECT m[toDate(number)] FROM table_map_with_key_integer ARRAY JOIN [0, 1, 2] AS number
+--Result--
+[(0,), (3,), (0,)]
++--------------------+
+--Query--
+SELECT 'Map(UUID, UInt16)'
+--Result--
+[('Map(UUID, UInt16)',)]
++--------------------+
+--Query--
+SELECT m FROM table_map_with_key_integer
+--Result--
+[({UUID('00001192-0000-4000-8000-000000000001'): 1, UUID('00001192-0000-4000-7000-000000000001'): 2},)]
++--------------------+
+--Query--
+SELECT     m[toUUID('00001192-0000-4000-6000-000000000001')],     m[toUUID('00001192-0000-4000-7000-000000000001')],     m[toUUID('00001192-0000-4000-8000-000000000001')] FROM table_map_with_key_integer
+--Result--
+[(0, 2, 1)]
++--------------------+
+--Query--
+SELECT 'Map(Int128, String)'
+--Result--
+[('Map(Int128, String)',)]
++--------------------+
+--Query--
+SELECT m FROM table_map_with_key_integer
+--Result--
+[({-1: 'a', 0: 'b', 1234567898765432123456789: 'c', -1234567898765432123456789: 'd'},)]
++--------------------+
+--Query--
+SELECT m[toInt128(-1)], m[toInt128(0)], m[toInt128('1234567898765432123456789')], m[toInt128('-1234567898765432123456789')] FROM table_map_with_key_integer
+--Result--
+[('a', 'b', 'c', 'd')]
++--------------------+
+--Query--
+SELECT m[toInt128(number - 2)] FROM table_map_with_key_integer ARRAY JOIN [0, 1, 2, 3] AS number
+--Result--
+[('',), ('a',), ('b',), ('',)]
++--------------------+
+--Query--
+SELECT m[-1], m[0], m[toInt128('1234567898765432123456789')], m[toInt128('-1234567898765432123456789')] FROM table_map_with_key_integer
+--Result--
+[('a', 'b', 'c', 'd')]
++--------------------+
+--Query--
+SELECT m[toUInt64(0)], m[toInt64(0)], m[toUInt8(0)], m[toUInt16(0)] FROM table_map_with_key_integer
+--Result--
+[('b', 'b', 'b', 'b')]
++--------------------+

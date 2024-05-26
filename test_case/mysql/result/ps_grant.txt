@@ -1,0 +1,25 @@
+--Query--
+select '------ grant/revoke/drop affects a parallel session test ------'   as test_sequence
+--Result--
+[('------ grant/revoke/drop affects a parallel session test ------',)]
++--------------------+
+--Query--
+select current_user()
+--Result--
+[('tester@localhost',)]
++--------------------+
+--Query--
+prepare stmt3 from ' grant all on test.t1 to drop_user@localhost '
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt3 from ' revoke all privileges on test.t1 from  drop_user@localhost '
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt3 from ' drop user drop_user@localhost '
+--Result--
+[]
++--------------------+

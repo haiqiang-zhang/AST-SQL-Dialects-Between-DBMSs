@@ -1,0 +1,15 @@
+--Query--
+WITH     (SELECT [0, 1, 2, 3]) AS arr1 SELECT arraySort(arrayIntersect(argMax(seqs, create_time), arr1)) AS common, id FROM tags WHERE id LIKE 'id%' GROUP BY id ORDER BY id
+--Result--
+[([1, 2, 3], 'id1'), ([0, 2, 3], 'id2')]
++--------------------+
+--Query--
+SELECT column, (SELECT d from (select [1, 2, 3, 4] as d)) as d FROM TestTable where column == 'test' GROUP BY column
+--Result--
+[('test', [1, 2, 3, 4])]
++--------------------+
+--Query--
+with (select groupArray(id) from bbb) as ids select *   from aaa  where has(ids, id) order by id
+--Result--
+[(2, 'fre'), (3, 'jhg')]
++--------------------+

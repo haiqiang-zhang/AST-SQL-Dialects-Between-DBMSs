@@ -1,0 +1,25 @@
+--Query--
+SELECT base64Encode(val) FROM (select arrayJoin(['', 'f', 'fo', 'foo', 'foob', 'fooba', 'foobar']) val)
+--Result--
+[('',), ('Zg==',), ('Zm8=',), ('Zm9v',), ('Zm9vYg==',), ('Zm9vYmE=',), ('Zm9vYmFy',)]
++--------------------+
+--Query--
+SELECT base64Decode(val) FROM (select arrayJoin(['', 'Zg==', 'Zm8=', 'Zm9v', 'Zm9vYg==', 'Zm9vYmE=', 'Zm9vYmFy']) val)
+--Result--
+[('',), ('f',), ('fo',), ('foo',), ('foob',), ('fooba',), ('foobar',)]
++--------------------+
+--Query--
+SELECT tryBase64Decode(val) FROM (select arrayJoin(['', 'Zg==', 'Zm8=', 'Zm9v', 'Zm9vYg==', 'Zm9vYmE=', 'Zm9vYmFy']) val)
+--Result--
+[('',), ('f',), ('fo',), ('foo',), ('foob',), ('fooba',), ('foobar',)]
++--------------------+
+--Query--
+SELECT base64Decode(base64Encode('foo')) = 'foo', base64Encode(base64Decode('Zm9v')) == 'Zm9v'
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT tryBase64Decode(base64Encode('foo')) = 'foo', base64Encode(tryBase64Decode('Zm9v')) == 'Zm9v'
+--Result--
+[(1, 1)]
++--------------------+

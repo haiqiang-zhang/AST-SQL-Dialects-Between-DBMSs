@@ -1,0 +1,330 @@
+--Query--
+select 'joind columns from right table'
+--Result--
+[('joind columns from right table',)]
++--------------------+
+--Query--
+select a1 from tab1 any left join tab2 on b1 = a2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a1, b1 from tab1 any left join tab2 on b1 = a2
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select a1, a2 from tab1 any left join tab2 on b1 = a2
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select a1, b2 from tab1 any left join tab2 on b1 = a2
+--Result--
+[(1, 3)]
++--------------------+
+--Query--
+select a1, a2, b2 from tab1 any left join tab2 on b1 = a2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+select 'join on expression'
+--Result--
+[('join on expression',)]
++--------------------+
+--Query--
+select b1 from tab1 any left join tab2 on toInt32(a1 + 1) = a2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select b1, a2 from tab1 any left join tab2 on toInt32(a1 + 1) = a2
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+select b1, b2 from tab1 any left join tab2 on toInt32(a1 + 1) = a2
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a1 from tab1 any left join tab2 on b1 + 1 = a2 + 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a2 from tab1 any left join tab2 on b1 + 1 = a2 + 1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join tab2 on b1 + 1 = a2 + 1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, b1, a2, b2, a2 + 1 from tab1 any left join tab2 on b1 + 1 = a2 + 1
+--Result--
+[(1, 2, 2, 3, 3)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join tab2 on a1 + 4 = b2 + 2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select 'join on and chain'
+--Result--
+[('join on and chain',)]
++--------------------+
+--Query--
+select a2, b2 from tab2 any left join tab3 on a2 = a3 and b2 = b3
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a3, b3 from tab2 any left join tab3 on a2 = a3 and b2 = b3
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a2, b2, a3, b3 from tab2 any left join tab3 on a2 = a3 and b2 = b3
+--Result--
+[(2, 3, 2, 3)]
++--------------------+
+--Query--
+select a1 from tab1 any left join tab2 on b1 + 1 = a2 + 1 and a1 + 4 = b2 + 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a1, b2 from tab1 any left join tab2 on b1 + 1 = a2 + 1 and a1 + 4 = b2 + 2
+--Result--
+[(1, 3)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join tab2 on b1 + 1 = a2 + 1 and a1 + 4 = b2 + 2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a2, b2 + 1 from tab1 any left join tab2 on b1 + 1 = a2 + 1 and a1 + 4 = b2 + 2
+--Result--
+[(2, 4)]
++--------------------+
+--Query--
+select 'join on aliases'
+--Result--
+[('join on aliases',)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on first.b1 = second_.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on second_.a2 = first.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab1.b1 = tab2.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab2.a2 = tab1.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab1.b1 = tab2.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab2.a2 = tab1.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on first.b1 = tab2.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab2.a2 = first.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on first.b1 = tab2.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab2.a2 = first.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab1.b1 = second_.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on second_.a2 = tab1.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on tab1.b1 = second_.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join tab2 second_ on second_.a2 = tab1.b1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, first.b1, second_.b2 from tab1 first any left join tab2 second_ on b1 = a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, tab1.b1, tab2.b2 from tab1 first any left join tab2 second_ on b1 = a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, tab1.b1, tab2.b2 from tab1 first any left join tab2 second_ on b1 = a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select 'join on complex expression'
+--Result--
+[('join on complex expression',)]
++--------------------+
+--Query--
+select a2, b2 from tab2 any left join tab3 on a2 + b2 = a3 + b3
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a2, b2 from tab2 any left join tab3 on a3 + tab3.b3 = a2 + b2
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a2, b2 from tab2 second_ any left join tab3 on a3 + b3 = a2 + second_.b2
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a2, b2 from tab2 second_ any left join tab3 third on third.a3 + tab3.b3 = tab2.a2 + second_.b2
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select a2, b2 from tab2 second_ any left join tab3 third on third.a3 + tab3.b3 = tab2.a2 + second_.b2
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select 'duplicate column names'
+--Result--
+[('duplicate column names',)]
++--------------------+
+--Query--
+select 'subquery'
+--Result--
+[('subquery',)]
++--------------------+
+--Query--
+select a1 from tab1 any left join (select * from tab2) on b1 = a2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a1 from tab1 any left join (select a2 from tab2) on b1 = a2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a1, b1 from tab1 any left join (select * from tab2) on b1 = a2
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join (select * from tab2) on b1 = a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2 from tab1 any left join (select a2 from tab2) on b1 = a2
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select 'subquery expression'
+--Result--
+[('subquery expression',)]
++--------------------+
+--Query--
+select b1 from tab1 any left join (select * from tab2) on toInt32(a1 + 1) = a2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join (select * from tab2) on b1 + 1 = a2 + 1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, b1, a2 from tab1 any left join (select * from tab2) on b1 + 1 = a2 + 1
+--Result--
+[(1, 2, 2)]
++--------------------+
+--Query--
+select 'subquery column alias'
+--Result--
+[('subquery column alias',)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join (select *, a2 as z from tab2) on b1 + 1 = z + 1
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, b1, a2, b2 from tab1 any left join (select *, a2 + 1 as z from tab2) on b1 + 1 = z
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select 'subquery alias'
+--Result--
+[('subquery alias',)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join (select * from tab2) second_ on first.b1 = second_.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join (select *, a2 as z from tab2) second_ on first.b1 = second_.z
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select a1, a2, b1, b2 from tab1 first any left join (select *, a2 + 1 as z from tab2) second_ on first.b1 + 1 = second_.z
+--Result--
+[(1, 2, 2, 3)]
++--------------------+
+--Query--
+select tab1.a1, a2, tab1.b1, second_.b2 from tab1 first any left join (select * from tab2) second_ on first.b1 = second_.a2
+--Result--
+[(1, 2, 2, 3)]
++--------------------+

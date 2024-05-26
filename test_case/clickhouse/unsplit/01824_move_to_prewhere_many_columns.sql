@@ -13,8 +13,6 @@ ORDER BY partition;
 SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string);
 SELECT replaceRegexpAll(explain, '__table1\.', '') FROM (EXPLAIN actions=1 SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string)) WHERE explain LIKE '%Prewhere%' OR explain LIKE '%Filter%';
 DROP TABLE IF EXISTS t_move_to_prewhere;
-
-
 CREATE TABLE t_move_to_prewhere (id UInt32, a UInt8, b UInt8, c UInt8, fat_string String)
 ENGINE = MergeTree ORDER BY id PARTITION BY id
 SETTINGS min_rows_for_wide_part = 10000, min_bytes_for_wide_part = 100000000;
@@ -23,7 +21,5 @@ INSERT INTO t_move_to_prewhere SELECT 2, number % 2 = 0, number % 3 = 0, number 
 SELECT partition, part_type FROM system.parts
 WHERE table = 't_move_to_prewhere' AND database = currentDatabase()
 ORDER BY partition;
-SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string);
 EXPLAIN SYNTAX SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string);
-SELECT replaceRegexpAll(explain, '__table1\.', '') FROM (EXPLAIN actions=1 SELECT count() FROM t_move_to_prewhere WHERE a AND b AND c AND NOT ignore(fat_string)) WHERE explain LIKE '%Prewhere%' OR explain LIKE '%Filter%';
 DROP TABLE IF EXISTS t_move_to_prewhere;

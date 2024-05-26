@@ -1,0 +1,25 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT HEX(a) FROM t1 WHERE MATCH(a) AGAINST (0xA741ADCCA66EB6DC IN BOOLEAN MODE)
+--Result--
+[('A741ADCCA66EB6DC20A7DAADCCABDCA66E',)]
++--------------------+
+--Query--
+select hex(a) a, hex(@u:=convert(a using utf8mb3)) b, hex(convert(@u using big5)) c from t1 order by a
+--Result--
+[('F9D6', 'E7A281', 'F9D6'), ('F9D7', 'E98AB9', 'F9D7'), ('F9D8', 'E8A38F', 'F9D8'), ('F9D9', 'E5A2BB', 'F9D9'), ('F9DA', 'E68192', 'F9DA'), ('F9DB', 'E7B2A7', 'F9DB'), ('F9DC', 'E5ABBA', 'F9DC')]
++--------------------+
+--Query--
+select hex(a) from t1 where a = _big5 0xF9DC
+--Result--
+[('E5ABBA',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1
+--Result--
+[(28672,)]
++--------------------+

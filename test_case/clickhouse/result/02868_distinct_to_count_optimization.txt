@@ -1,0 +1,50 @@
+--Query--
+SELECT '1. test simple distinct'
+--Result--
+[('1. test simple distinct',)]
++--------------------+
+--Query--
+SELECT uniq(a) FROM (SELECT DISTINCT a FROM test_rewrite_uniq_to_count) settings allow_experimental_analyzer=0
+--Result--
+[(3,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT uniq(a) FROM (SELECT DISTINCT a FROM test_rewrite_uniq_to_count) settings allow_experimental_analyzer=0
+--Result--
+[('SELECT count()',), ('FROM',), ('(',), ('    SELECT DISTINCT a',), ('    FROM test_rewrite_uniq_to_count',), (')',), ('SETTINGS allow_experimental_analyzer = 0',)]
++--------------------+
+--Query--
+SELECT '2. test distinct with subquery alias'
+--Result--
+[('2. test distinct with subquery alias',)]
++--------------------+
+--Query--
+SELECT '3. test distinct with compound column name'
+--Result--
+[('3. test distinct with compound column name',)]
++--------------------+
+--Query--
+SELECT '4. test distinct with select expression alias'
+--Result--
+[('4. test distinct with select expression alias',)]
++--------------------+
+--Query--
+SELECT '5. test simple group by'
+--Result--
+[('5. test simple group by',)]
++--------------------+
+--Query--
+SELECT '6. test group by with subquery alias'
+--Result--
+[('6. test group by with subquery alias',)]
++--------------------+
+--Query--
+SELECT '7. test group by with compound column name'
+--Result--
+[('7. test group by with compound column name',)]
++--------------------+
+--Query--
+SELECT '8. test group by with select expression alias'
+--Result--
+[('8. test group by with select expression alias',)]
++--------------------+

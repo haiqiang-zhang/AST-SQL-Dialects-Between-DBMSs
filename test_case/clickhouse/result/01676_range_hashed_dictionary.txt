@@ -1,0 +1,135 @@
+--Query--
+SELECT 'Dictionary not nullable'
+--Result--
+[('Dictionary not nullable',)]
++--------------------+
+--Query--
+SELECT 'dictGet'
+--Result--
+[('dictGet',)]
++--------------------+
+--Query--
+SELECT dictGet('database_for_range_dict.range_dictionary', 'Tax', toUInt64(1), toDate('2019-05-15'))
+--Result--
+[(0.33,)]
++--------------------+
+--Query--
+SELECT dictGetOrDefault('database_for_range_dict.range_dictionary', 'Tax', toUInt64(2), toDate('2019-05-31'), 0.4)
+--Result--
+[(0.4,)]
++--------------------+
+--Query--
+SELECT 'dictHas'
+--Result--
+[('dictHas',)]
++--------------------+
+--Query--
+SELECT dictHas('database_for_range_dict.range_dictionary', toUInt64(1), toDate('2019-05-15'))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'select columns from dictionary'
+--Result--
+[('select columns from dictionary',)]
++--------------------+
+--Query--
+SELECT 'allColumns'
+--Result--
+[('allColumns',)]
++--------------------+
+--Query--
+SELECT * FROM database_for_range_dict.range_dictionary ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(1, datetime.date(2019, 5, 5), datetime.date(2019, 5, 20), 0.33), (1, datetime.date(2019, 5, 21), datetime.date(2019, 5, 30), 0.42), (2, datetime.date(2019, 5, 21), datetime.date(2019, 5, 30), 0.46)]
++--------------------+
+--Query--
+SELECT 'noColumns'
+--Result--
+[('noColumns',)]
++--------------------+
+--Query--
+SELECT 1 FROM database_for_range_dict.range_dictionary ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 'onlySpecificColumns'
+--Result--
+[('onlySpecificColumns',)]
++--------------------+
+--Query--
+SELECT CountryID, StartDate, Tax FROM database_for_range_dict.range_dictionary ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(1, datetime.date(2019, 5, 5), 0.33), (1, datetime.date(2019, 5, 21), 0.42), (2, datetime.date(2019, 5, 21), 0.46)]
++--------------------+
+--Query--
+SELECT 'onlySpecificColumn'
+--Result--
+[('onlySpecificColumn',)]
++--------------------+
+--Query--
+SELECT Tax FROM database_for_range_dict.range_dictionary ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(0.33,), (0.42,), (0.46,)]
++--------------------+
+--Query--
+SELECT 'Dictionary nullable'
+--Result--
+[('Dictionary nullable',)]
++--------------------+
+--Query--
+SELECT 'dictGet'
+--Result--
+[('dictGet',)]
++--------------------+
+--Query--
+SELECT 'dictHas'
+--Result--
+[('dictHas',)]
++--------------------+
+--Query--
+SELECT 'select columns from dictionary'
+--Result--
+[('select columns from dictionary',)]
++--------------------+
+--Query--
+SELECT 'allColumns'
+--Result--
+[('allColumns',)]
++--------------------+
+--Query--
+SELECT * FROM database_for_range_dict.range_dictionary_nullable ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(1, datetime.date(2019, 5, 5), datetime.date(2019, 5, 20), 0.33), (1, datetime.date(2019, 5, 21), datetime.date(2019, 5, 30), 0.42), (2, datetime.date(2019, 5, 21), datetime.date(2019, 5, 30), None)]
++--------------------+
+--Query--
+SELECT 'noColumns'
+--Result--
+[('noColumns',)]
++--------------------+
+--Query--
+SELECT 1 FROM database_for_range_dict.range_dictionary_nullable ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT 'onlySpecificColumns'
+--Result--
+[('onlySpecificColumns',)]
++--------------------+
+--Query--
+SELECT CountryID, StartDate, Tax FROM database_for_range_dict.range_dictionary_nullable ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(1, datetime.date(2019, 5, 5), 0.33), (1, datetime.date(2019, 5, 21), 0.42), (2, datetime.date(2019, 5, 21), None)]
++--------------------+
+--Query--
+SELECT 'onlySpecificColumn'
+--Result--
+[('onlySpecificColumn',)]
++--------------------+
+--Query--
+SELECT Tax FROM database_for_range_dict.range_dictionary_nullable ORDER BY CountryID, StartDate, EndDate
+--Result--
+[(0.33,), (0.42,), (None,)]
++--------------------+

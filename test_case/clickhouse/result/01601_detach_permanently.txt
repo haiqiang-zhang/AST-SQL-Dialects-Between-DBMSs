@@ -1,0 +1,425 @@
+--Query--
+SELECT 'database atomic tests'
+--Result--
+[('database atomic tests',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_atomic.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'can not create table with same name as detached permanently'
+--Result--
+[('can not create table with same name as detached permanently',)]
++--------------------+
+--Query--
+SELECT 'can not detach twice'
+--Result--
+[('can not detach twice',)]
++--------------------+
+--Query--
+SELECT 'can not drop detached'
+--Result--
+[('can not drop detached',)]
++--------------------+
+--Query--
+SELECT 'can not replace with the other table'
+--Result--
+[('can not replace with the other table',)]
++--------------------+
+--Query--
+SELECT 'can still show the create statement'
+--Result--
+[('can still show the create statement',)]
++--------------------+
+--Query--
+SELECT 'can not attach with bad uuid'
+--Result--
+[('can not attach with bad uuid',)]
++--------------------+
+--Query--
+SELECT 'can attach with short syntax'
+--Result--
+[('can attach with short syntax',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_atomic.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count() FROM test1601_detach_permanently_atomic.test_name_reuse
+--Result--
+[(100,)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_atomic.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'can not detach permanently the table which is already detached (temporary)'
+--Result--
+[('can not detach permanently the table which is already detached (temporary)',)]
++--------------------+
+--Query--
+DETACH DATABASE test1601_detach_permanently_atomic
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test1601_detach_permanently_atomic
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After database reattachement the table is back (it was detached temporary)'
+--Result--
+[('After database reattachement the table is back (it was detached temporary)',)]
++--------------------+
+--Query--
+SELECT 'And we can detach it permanently'
+--Result--
+[('And we can detach it permanently',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_atomic.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+DETACH DATABASE test1601_detach_permanently_atomic
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test1601_detach_permanently_atomic
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After database reattachement the table is still absent (it was detached permamently)'
+--Result--
+[('After database reattachement the table is still absent (it was detached permamently)',)]
++--------------------+
+--Query--
+SELECT 'And we can not detach it permanently'
+--Result--
+[('And we can not detach it permanently',)]
++--------------------+
+--Query--
+SELECT 'But we can attach it back'
+--Result--
+[('But we can attach it back',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_atomic.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'And detach permanently again to check how database drop will behave'
+--Result--
+[('And detach permanently again to check how database drop will behave',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_atomic.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DROP database'
+--Result--
+[('DROP database',)]
++--------------------+
+--Query--
+SELECT '-----------------------'
+--Result--
+[('-----------------------',)]
++--------------------+
+--Query--
+SELECT 'database ordinary tests'
+--Result--
+[('database ordinary tests',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_ordinary.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'can not create table with same name as detached permanently'
+--Result--
+[('can not create table with same name as detached permanently',)]
++--------------------+
+--Query--
+SELECT 'can not detach twice'
+--Result--
+[('can not detach twice',)]
++--------------------+
+--Query--
+SELECT 'can not drop detached'
+--Result--
+[('can not drop detached',)]
++--------------------+
+--Query--
+SELECT 'can not replace with the other table'
+--Result--
+[('can not replace with the other table',)]
++--------------------+
+--Query--
+SELECT 'can still show the create statement'
+--Result--
+[('can still show the create statement',)]
++--------------------+
+--Query--
+SELECT 'can attach with full syntax'
+--Result--
+[('can attach with full syntax',)]
++--------------------+
+--Query--
+SELECT 'can attach with short syntax'
+--Result--
+[('can attach with short syntax',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_ordinary.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_ordinary.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'can not detach permanently the table which is already detached (temporary)'
+--Result--
+[('can not detach permanently the table which is already detached (temporary)',)]
++--------------------+
+--Query--
+DETACH DATABASE test1601_detach_permanently_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test1601_detach_permanently_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After database reattachement the table is back (it was detached temporary)'
+--Result--
+[('After database reattachement the table is back (it was detached temporary)',)]
++--------------------+
+--Query--
+SELECT 'And we can detach it permanently'
+--Result--
+[('And we can detach it permanently',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_ordinary.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+DETACH DATABASE test1601_detach_permanently_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test1601_detach_permanently_ordinary
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After database reattachement the table is still absent (it was detached permamently)'
+--Result--
+[('After database reattachement the table is still absent (it was detached permamently)',)]
++--------------------+
+--Query--
+SELECT 'And we can not detach it permanently'
+--Result--
+[('And we can not detach it permanently',)]
++--------------------+
+--Query--
+SELECT 'But we can attach it back'
+--Result--
+[('But we can attach it back',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_ordinary.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'And detach permanently again to check how database drop will behave'
+--Result--
+[('And detach permanently again to check how database drop will behave',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_ordinary.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DROP database - Directory not empty error, but database detached'
+--Result--
+[('DROP database - Directory not empty error, but database detached',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_ordinary.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DROP database - now success'
+--Result--
+[('DROP database - now success',)]
++--------------------+
+--Query--
+SELECT '-----------------------'
+--Result--
+[('-----------------------',)]
++--------------------+
+--Query--
+SELECT 'database lazy tests'
+--Result--
+[('database lazy tests',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_lazy.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'can not create table with same name as detached permanently'
+--Result--
+[('can not create table with same name as detached permanently',)]
++--------------------+
+--Query--
+SELECT 'can not detach twice'
+--Result--
+[('can not detach twice',)]
++--------------------+
+--Query--
+SELECT 'can not drop detached'
+--Result--
+[('can not drop detached',)]
++--------------------+
+--Query--
+SELECT 'can not replace with the other table'
+--Result--
+[('can not replace with the other table',)]
++--------------------+
+--Query--
+SELECT 'can still show the create statement'
+--Result--
+[('can still show the create statement',)]
++--------------------+
+--Query--
+SELECT 'can attach with full syntax'
+--Result--
+[('can attach with full syntax',)]
++--------------------+
+--Query--
+SELECT 'can attach with short syntax'
+--Result--
+[('can attach with short syntax',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_lazy.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_lazy.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'can not detach permanently the table which is already detached (temporary)'
+--Result--
+[('can not detach permanently the table which is already detached (temporary)',)]
++--------------------+
+--Query--
+DETACH DATABASE test1601_detach_permanently_lazy
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test1601_detach_permanently_lazy
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After database reattachement the table is back (it was detached temporary)'
+--Result--
+[('After database reattachement the table is back (it was detached temporary)',)]
++--------------------+
+--Query--
+SELECT 'And we can detach it permanently'
+--Result--
+[('And we can detach it permanently',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_lazy.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+DETACH DATABASE test1601_detach_permanently_lazy
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE test1601_detach_permanently_lazy
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After database reattachement the table is still absent (it was detached permamently)'
+--Result--
+[('After database reattachement the table is still absent (it was detached permamently)',)]
++--------------------+
+--Query--
+SELECT 'And we can not detach it permanently'
+--Result--
+[('And we can not detach it permanently',)]
++--------------------+
+--Query--
+SELECT 'But we can attach it back'
+--Result--
+[('But we can attach it back',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_lazy.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'And detach permanently again to check how database drop will behave'
+--Result--
+[('And detach permanently again to check how database drop will behave',)]
++--------------------+
+--Query--
+DETACH table test1601_detach_permanently_lazy.test_name_reuse PERMANENTLY
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DROP database - Directory not empty error, but database deteched'
+--Result--
+[('DROP database - Directory not empty error, but database deteched',)]
++--------------------+
+--Query--
+ATTACH TABLE test1601_detach_permanently_lazy.test_name_reuse
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DROP database - now success'
+--Result--
+[('DROP database - now success',)]
++--------------------+

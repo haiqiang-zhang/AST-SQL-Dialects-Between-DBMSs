@@ -1,0 +1,20 @@
+--Query--
+select * from mt
+--Result--
+[(3, '3'), (4, '4')]
++--------------------+
+--Query--
+select table, partition_id, name, rows from system.parts where database=currentDatabase() and table in ('mt', 'rmt') and active=1 order by table, name
+--Result--
+[('mt', '0', '0_1_1_0', 2)]
++--------------------+
+--Query--
+select table, partition_id, name, rows from system.parts where database=currentDatabase() and table in ('mt', 'rmt') and active=1 order by table, name
+--Result--
+[('mt', '0', '0_1_1_0', 2)]
++--------------------+
+--Query--
+select mutation_id, command, parts_to_do_names, parts_to_do, is_done from system.mutations where database=currentDatabase() and table='rmt'
+--Result--
+[]
++--------------------+

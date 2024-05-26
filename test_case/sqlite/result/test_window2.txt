@@ -1,0 +1,25 @@
+--Query--
+SELECT c, sum(d) OVER (PARTITION BY b ORDER BY c) FROM t1
+--Result--
+[('four', 4), ('six', 10), ('two', 12), ('five', 5), ('one', 6), ('three', 9)]
++--------------------+
+--Query--
+SELECT count(*) OVER (ORDER BY b) FROM t1
+--Result--
+[(3,), (3,), (3,), (6,), (6,), (6,)]
++--------------------+
+--Query--
+SELECT count(distinct a) FILTER (WHERE b='odd') FROM t1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t0
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE        (0, t0.c0) IN (SELECT DENSE_RANK() OVER(), LAG(0) OVER() FROM t0)
+--Result--
+[]
++--------------------+

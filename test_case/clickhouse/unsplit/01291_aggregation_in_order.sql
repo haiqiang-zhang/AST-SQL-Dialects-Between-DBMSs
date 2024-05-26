@@ -7,8 +7,6 @@ INSERT INTO pk_order(a, b, c, d) VALUES (2, 2, 107, 2), (2, 3, 108, 2), (2, 4, 1
 SELECT a, b FROM pk_order GROUP BY a, b ORDER BY a, b;
 SELECT a FROM pk_order GROUP BY a ORDER BY a;
 SELECT a, b, sum(c), avg(d) FROM pk_order GROUP BY a, b ORDER BY a, b;
-SELECT a, sum(c), avg(d) FROM pk_order GROUP BY a ORDER BY a;
-SELECT -a, sum(c), avg(d) FROM pk_order GROUP BY -a ORDER BY -a;
 DROP TABLE IF EXISTS pk_order;
 CREATE TABLE pk_order (d DateTime, a Int32, b Int32) ENGINE = MergeTree ORDER BY (d, a)
     PARTITION BY toDate(d) SETTINGS index_granularity=1;

@@ -1,0 +1,140 @@
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT a, b, c FROM t1 WHERE a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT a, c, b FROM t1 WHERE a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT a, c, b FROM t1 WHERE a='xyz' COLLATE nocase
+--Result--
+[(3, 0, 0, 'SCAN t1'), (15, 0, 0, 'USE TEMP B-TREE FOR DISTINCT')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT a COLLATE nocase, c, b FROM t1 WHERE a='xyz'
+--Result--
+[(3, 0, 0, 'SCAN t1'), (15, 0, 0, 'USE TEMP B-TREE FOR DISTINCT')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT a COLLATE nocase, c, b FROM t1 WHERE a='xyz' COLLATE nocase
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT b, a, c FROM t1 WHERE a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT b, c, a FROM t1 WHERE a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT c, a, b FROM t1 WHERE a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT c, b, a FROM t1 WHERE a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT DISTINCT c, b, a FROM t1 WHERE +a=0
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc'), (17, 0, 0, 'USE TEMP B-TREE FOR DISTINCT')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t2 WHERE a=0 ORDER BY a, b, c
+--Result--
+[(4, 0, 0, 'SCAN t2 USING INDEX t2bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE likelihood(a=0, 0.03) ORDER BY a, b, c
+--Result--
+[(3, 0, 0, 'SCAN t1'), (20, 0, 0, 'USE TEMP B-TREE FOR RIGHT PART OF ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE +a=0 ORDER BY a, b, c
+--Result--
+[(3, 0, 0, 'SCAN t1'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE a=0 ORDER BY b, a, c
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE a=0 ORDER BY b, c, a
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX t1bc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE a=0 ORDER BY a, c, b
+--Result--
+[(3, 0, 0, 'SCAN t1'), (20, 0, 0, 'USE TEMP B-TREE FOR RIGHT PART OF ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE a=0 ORDER BY c, a, b
+--Result--
+[(3, 0, 0, 'SCAN t1'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t1 WHERE a=0 ORDER BY c, b, a
+--Result--
+[(3, 0, 0, 'SCAN t1'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t3 WHERE b=2 AND c=3 ORDER BY d DESC, e DESC, b, c, a DESC
+--Result--
+[(3, 0, 0, 'SEARCH t3 USING COVERING INDEX t3bcde (b=? AND c=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t3 WHERE b=2 AND c=3 ORDER BY d DESC, e DESC, b, c, a DESC
+--Result--
+[(3, 0, 0, 'SEARCH t3 USING COVERING INDEX t3bcde (b=? AND c=?)')]
++--------------------+
+--Query--
+SELECT * FROM t4 ORDER BY b COLLATE binary
+--Result--
+[('ABC',), ('aBC',), ('abc',)]
++--------------------+
+--Query--
+SELECT * FROM t4 WHERE b='abc' ORDER BY b COLLATE binary
+--Result--
+[('ABC',), ('aBC',), ('abc',)]
++--------------------+
+--Query--
+explain query plan   SELECT typeID, key, value FROM Records    WHERE typeID = 2 AND key = 'x'    ORDER BY key, value
+--Result--
+[(3, 0, 0, 'SEARCH Records USING COVERING INDEX RecordsIndex (typeID=? AND key=?)')]
++--------------------+
+--Query--
+explain query plan   SELECT typeID, key, value FROM Records    WHERE typeID = 2 AND (key = 'x' COLLATE binary)   ORDER BY key, value
+--Result--
+[(3, 0, 0, 'SEARCH Records USING COVERING INDEX RecordsIndex (typeID=?)')]
++--------------------+
+--Query--
+explain query plan   SELECT typeID, key, value FROM Records    WHERE typeID = 2    ORDER BY key, value
+--Result--
+[(3, 0, 0, 'SEARCH Records USING COVERING INDEX RecordsIndex (typeID=?)')]
++--------------------+
+--Query--
+SELECT DISTINCT *     FROM t1 LEFT JOIN t2 ON b=c AND b=(SELECT a FROM t1)    WHERE c>10
+--Result--
+[]
++--------------------+

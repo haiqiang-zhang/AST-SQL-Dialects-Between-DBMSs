@@ -1,0 +1,220 @@
+--Query--
+SELECT 'TWOX' == (b || 'x') FROM t1 WHERE (b || 'x')>'onex'
+--Result--
+[(0,), (0,)]
++--------------------+
+--Query--
+SELECT 'TWOX' == (b || 'x') COLLATE nocase  FROM t1 WHERE (b || 'x')>'onex'
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT a+1, quote(a+1) FROM t1 ORDER BY 1
+--Result--
+[(2, '2'), (3, '3'), (4, '4')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT b FROM t1 WHERE b IS NOT NULL AND a IS NULL    GROUP BY b COLLATE nocase   ORDER BY b COLLATE nocase
+--Result--
+[(7, 0, 0, 'SCAN t1'), (13, 0, 0, 'USE TEMP B-TREE FOR GROUP BY')]
++--------------------+
+--Query--
+SELECT x FROM t2 ORDER BY substr(x, 2) COLLATE nocase
+--Result--
+[('.ABC',), ('.abcd',), ('.DEF',), ('.defg',)]
++--------------------+
+--Query--
+SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE nocase
+--Result--
+[('.ABC1', 1), ('.abc2', 2), ('.ABC3', 3), ('.abc4', 4)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE nocase
+--Result--
+[(4, 0, 0, 'SCAN t4 USING INDEX i4')]
++--------------------+
+--Query--
+SELECT * FROM t5 WHERE abs(a)=2 or abs(b)=9
+--Result--
+[(2, 4), (3, 9)]
++--------------------+
+--Query--
+SELECT * FROM t5 WHERE abs(a)=2 or abs(b)=9
+--Result--
+[(2, 4), (3, 9)]
++--------------------+
+--Query--
+SELECT a, b FROM x1 WHERE CAST(b AS INTEGER) = 123
+--Result--
+[(1, 123), (2, '123'), (3, '123abc'), (4, 123.0)]
++--------------------+
+--Query--
+SELECT a, b FROM x1 WHERE CAST(b AS INTEGER) = 123
+--Result--
+[(1, 123), (2, '123'), (3, '123abc'), (4, 123.0)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT a, b FROM x1 WHERE CAST(b AS INTEGER) = 123
+--Result--
+[(3, 0, 0, 'SEARCH x1 USING INDEX x1i (<expr>=?)')]
++--------------------+
+--Query--
+SELECT a, b FROM x1 WHERE CAST(b AS TEXT) = 123
+--Result--
+[(1, 123), (2, '123')]
++--------------------+
+--Query--
+SELECT a, b FROM x1 WHERE CAST(b AS TEXT) = 123
+--Result--
+[(1, 123), (2, '123')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT a, b FROM x1 WHERE CAST(b AS TEXT) = 123
+--Result--
+[(3, 0, 0, 'SEARCH x1 USING INDEX x1i2 (<expr>=?)')]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE tbl_name = 't0'
+--Result--
+[('CREATE TABLE t0(c0)',)]
++--------------------+
+--Query--
+REINDEX
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE ~('' BETWEEN t0.c0 AND TRUE)
+--Result--
+[(-9223372036854775808,), (None,)]
++--------------------+
+--Query--
+SELECT ~('' BETWEEN t0.c0 AND TRUE) FROM t0
+--Result--
+[(-1,), (-1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  0  ==  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 0  ==  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1  !=  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1  !=  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE -1   <  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT (-1   <  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE -1  <=  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT (-1  <=  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1   >  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1   >  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1  >=  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1  >=  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1   -  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1   -  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE -1   +  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT (-1   +  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1   |  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1   |  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1  <<  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1  <<  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1  >>  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1  >>  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE  1  ||  (34 BETWEEN c0 AND 33) ORDER BY c0
+--Result--
+[(None,), (-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT ( 1  ||  (34 BETWEEN c0 AND 33)) IS TRUE FROM t0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 AS a0    WHERE (SELECT count(a0.b=+a0.b COLLATE NOCASE IN (b)) FROM t1 GROUP BY 2.5)    ORDER BY a0.b
+--Result--
+[(5, -5), (1, 2), (3, 4), (4, 4), (6, 6), (5, 20), (1, 'abcde'), (1, 'one'), (3, 'three'), (2, 'two')]
++--------------------+

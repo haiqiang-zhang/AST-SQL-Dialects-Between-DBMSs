@@ -1,0 +1,15 @@
+--Query--
+select * from data prewhere indexHint(_partition_id = '1')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count() from data prewhere indexHint(_partition_id = '1') settings optimize_use_implicit_projections = 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from data where indexHint(_partition_id = '1')
+--Result--
+[(1,)]
++--------------------+

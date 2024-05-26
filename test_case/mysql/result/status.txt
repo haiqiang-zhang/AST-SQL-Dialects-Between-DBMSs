@@ -1,0 +1,145 @@
+--Query--
+select * from performance_schema.session_status where variable_name like 'Table_lock%'
+--Result--
+[('Table_locks_immediate', '5073'), ('Table_locks_waited', '0')]
++--------------------+
+--Query--
+select get_lock('mysqltest_lock', 100)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select release_lock('mysqltest_lock')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1 where a=6
+--Result--
+[(6,), (6,), (6,), (6,), (6,)]
++--------------------+
+--Query--
+select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_status WHERE VARIABLE_NAME LIKE 'max_used_connections'
+--Result--
+[('Max_used_connections', '2')]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_status WHERE VARIABLE_NAME LIKE 'max_used_connections'
+--Result--
+[('Max_used_connections', '2')]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_status WHERE VARIABLE_NAME LIKE 'max_used_connections'
+--Result--
+[('Max_used_connections', '2')]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_status WHERE VARIABLE_NAME LIKE 'max_used_connections'
+--Result--
+[('Max_used_connections', '2')]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_status WHERE VARIABLE_NAME LIKE 'max_used_connections'
+--Result--
+[('Max_used_connections', '2')]
++--------------------+
+--Query--
+SELECT a FROM t1 LIMIT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION SELECT a FROM t1 ORDER BY a
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT a IN (SELECT a FROM t1) FROM t1 LIMIT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT a FROM t1 LIMIT 1) x FROM t1 LIMIT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 a, t1 b ORDER BY a.a, b.a LIMIT 1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0   FROM information_schema.processlist   WHERE  id in ('$root_connection_id','$user1_connection_id')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 as a, t2 as b, t1 as c, t2 as d, t1 as e, t2 as f
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 as a, t2 as b, t1 as c, t2 as d, t1 as e, t2 as f
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE y > 0
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE y > 0
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x > 0         UNION ALL         SELECT * FROM t1 WHERE y > 0
+--Result--
+[(1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x > 0         UNION DISTINCT         SELECT * FROM t1 WHERE y > 0
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+

@@ -1,0 +1,60 @@
+--Query--
+SELECT        * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT /*+ */ * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1, t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT /*+   BKA(t1@qb1)   BNL(@qb1 t1)   DUPSWEEDOUT   FIRSTMATCH   INTOEXISTS   LOOSESCAN   MATERIALIZATION   MRR(t1)   NO_BKA(t2)   NO_BNL(t2)   NO_ICP(t2)   NO_MRR(t2)   NO_RANGE_OPTIMIZATION(t2)   NO_SEMIJOIN(t2)   QB_NAME(qb1)   SEMIJOIN(t1)   SUBQUERY(t1) */ * FROM t1, t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2, t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT /*+ MAX_EXECUTION_TIME(4294967295) */ * FROM t2, t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT /*+ bad_hint_also_goes_to_digest */ 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT /*+ SET_VAR(foo = 1K) */ 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT /*+ SET_VAR(bar = 'baz') */ 1
+--Result--
+[(1,)]
++--------------------+

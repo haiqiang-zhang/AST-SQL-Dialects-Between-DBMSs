@@ -9,46 +9,6 @@ SELECT hobbies_r.name, (hobbies_r.equipment).name FROM hobbies_r
 [('skywalking', 'guts')]
 +--------------------+
 --Query--
-SELECT name(equipment(hobby_construct(text 'skywalking', text 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment(hobby_construct_named(text 'skywalking', text 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment_named(hobby_construct_named(text 'skywalking', text 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment_named_ambiguous_1a(hobby_construct_named(text 'skywalking', text 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment_named_ambiguous_1b(hobby_construct_named(text 'skywalking', text 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment_named_ambiguous_1c(hobby_construct_named(text 'skywalking', text 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment_named_ambiguous_2a(text 'skywalking'))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT name(equipment_named_ambiguous_2b(text 'skywalking'))
---Result--
-[('advil',), ("peet's coffee",), ('hightops',), ('guts',)]
-+--------------------+
---Query--
 SELECT hobbies_by_name('basketball')
 --Result--
 [(None,)]
@@ -57,16 +17,6 @@ SELECT hobbies_by_name('basketball')
 SELECT * FROM equipment(ROW('skywalking', 'mer'))
 --Result--
 [('guts', 'skywalking')]
-+--------------------+
---Query--
-SELECT name(equipment(ROW('skywalking', 'mer')))
---Result--
-[('guts',)]
-+--------------------+
---Query--
-SELECT *, name(equipment(h.*)) FROM hobbies_r h
---Result--
-[('skywalking', None, 'guts')]
 +--------------------+
 --Query--
 SELECT *, (equipment(CAST((h.*) AS hobbies_r))).name FROM hobbies_r h

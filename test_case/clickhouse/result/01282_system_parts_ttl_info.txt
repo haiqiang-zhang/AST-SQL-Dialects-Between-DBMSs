@@ -1,0 +1,25 @@
+--Query--
+SYSTEM STOP MERGES ttl
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rows, delete_ttl_info_min, delete_ttl_info_max, move_ttl_info.expression, move_ttl_info.min, move_ttl_info.max FROM system.parts WHERE database = currentDatabase() AND table = 'ttl'
+--Result--
+[(2, datetime.datetime(2000, 1, 11, 1, 2, 3), datetime.datetime(2000, 2, 13, 4, 5, 6), [], [], [])]
++--------------------+
+--Query--
+SYSTEM START MERGES ttl
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE ttl FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rows, toTimeZone(delete_ttl_info_min, 'UTC'), toTimeZone(delete_ttl_info_max, 'UTC'), move_ttl_info.expression, move_ttl_info.min, move_ttl_info.max FROM system.parts WHERE database = currentDatabase() AND table = 'ttl' AND active
+--Result--
+[(0, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), [], [], [])]
++--------------------+

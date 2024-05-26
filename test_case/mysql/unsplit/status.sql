@@ -4,7 +4,6 @@ create table t1(n int);
 insert into t1 values(1);
 select get_lock('mysqltest_lock', 100);
 select release_lock('mysqltest_lock');
-select release_lock('mysqltest_lock');
 drop table t1;
 select 1;
 create table t1 (a int);

@@ -1,0 +1,55 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM system.query_cache
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '-----'
+--Result--
+[('-----',)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, enable_writes_to_query_cache = false
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '-----'
+--Result--
+[('-----',)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '-----'
+--Result--
+[('-----',)]
++--------------------+
+--Query--
+SELECT 1 SETTINGS use_query_cache = true, enable_writes_to_query_cache = false
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

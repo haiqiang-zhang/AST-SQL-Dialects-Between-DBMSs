@@ -29,12 +29,6 @@ ALTER TABLE sqllt.table DROP COLUMN the_new_col;
 ALTER TABLE sqllt.table UPDATE i = i + 1 WHERE 1;
 ALTER TABLE sqllt.table DELETE WHERE i > 65535;
 
--- SAMPLE BY
--- INDEX
--- CONSTRAINT
--- TTL
--- USER
--- QUOTA
 -- ROLE
 -- ROW POLICY
 -- SETTINGS PROFILE
@@ -61,8 +55,6 @@ RENAME TABLE sqllt.table_new TO sqllt.table;
 TRUNCATE TABLE sqllt.table;
 DROP TABLE sqllt.table SYNC;
 SET log_comment='';
-
-
 SYSTEM FLUSH LOGS;
 SELECT 'ACTUAL LOG CONTENT:';
 SELECT 'DROP queries and also a cleanup after the test';

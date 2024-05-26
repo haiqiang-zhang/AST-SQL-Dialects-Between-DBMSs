@@ -1,0 +1,10 @@
+--Query--
+SELECT * FROM (VALUES ROW(1),ROW(1)) AS dt(a) WHERE EXISTS(   WITH RECURSIVE qn AS (SELECT a*0 AS b UNION ALL SELECT b+1 FROM qn WHERE b=0)   SELECT * FROM qn WHERE b=a   )
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (VALUES ROW(1),ROW(1)) AS dt(a) WHERE NOT EXISTS(   WITH RECURSIVE qn AS (SELECT a*0 AS b UNION ALL SELECT b+1 FROM qn WHERE b=0)   SELECT * FROM qn WHERE b=a   )
+--Result--
+[]
++--------------------+

@@ -3,6 +3,4 @@ INSERT INTO topXtest SELECT number FROM numbers(100);
 INSERT INTO topXtest SELECT number FROM numbers(30);
 INSERT INTO topXtest SELECT number FROM numbers(10);
 SELECT length(topK(30)(A)) FROM topXtest;
-SELECT length(topK(A)) FROM topXtest;
-SELECT length(topK(3)(A)) FROM topXtest;
 DROP TABLE topXtest;

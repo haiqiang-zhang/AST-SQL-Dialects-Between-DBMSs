@@ -1,0 +1,105 @@
+--Query--
+select IF(0,"ERROR","this"),IF(1,"is","ERROR"),IF(NULL,"ERROR","a"),IF(1,2,3)|0,IF(1,2.0,3.0)+0
+--Result--
+[('this', 'is', 'a', 2, 2.0)]
++--------------------+
+--Query--
+select if(1,st,st) s from t1 order by s
+--Result--
+[('a',), ('A',), ('a',), ('aa',), ('AA',), ('aaa',), ('BBB',)]
++--------------------+
+--Query--
+select if(u=1,st,st) s from t1 order by s
+--Result--
+[('a',), ('A',), ('a',), ('aa',), ('AA',), ('aaa',), ('BBB',)]
++--------------------+
+--Query--
+select if(u=1,binary st,st) s from t1 order by s
+--Result--
+[(b'A',), (b'AA',), (b'BBB',), (b'a',), (b'a',), (b'aa',), (b'aaa',)]
++--------------------+
+--Query--
+select if(u=1,st,binary st) s from t1 where st like "%a%" order by s
+--Result--
+[(b'A',), (b'AA',), (b'a',), (b'a',), (b'aa',), (b'aaa',)]
++--------------------+
+--Query--
+select nullif(u, 1) from t1
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (0,), (0,)]
++--------------------+
+--Query--
+select NULLIF(NULL,NULL), NULLIF(NULL,1), NULLIF(NULL,1.0), NULLIF(NULL,"test")
+--Result--
+[(None, None, None, None)]
++--------------------+
+--Query--
+select sum(if(num is null,0.00,num)) from t1
+--Result--
+[(144.54,)]
++--------------------+
+--Query--
+select min(if(y -x > 5,y,NULL)), max(if(y - x > 5,y,NULL)) from t1
+--Result--
+[(6, 56)]
++--------------------+
+--Query--
+SELECT id, IF(date IS NULL, '-', FROM_UNIXTIME(date, '%d-%m-%Y')) AS date_ord, text FROM t1 ORDER BY date_ord ASC
+--Result--
+[(1, '05-03-2005', 'Day 1'), (2, '16-03-2005', 'Day 2'), (3, '28-03-2005', 'Day 3')]
++--------------------+
+--Query--
+SELECT id, IF(date IS NULL, '-', FROM_UNIXTIME(date, '%d-%m-%Y')) AS date_ord, text FROM t1 ORDER BY date_ord DESC
+--Result--
+[(3, '28-03-2005', 'Day 3'), (2, '16-03-2005', 'Day 2'), (1, '05-03-2005', 'Day 1')]
++--------------------+
+--Query--
+select if(0, 18446744073709551610, 18446744073709551610)
+--Result--
+[(18446744073709551610,)]
++--------------------+
+--Query--
+SELECT t1.a,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,  IF((ROUND(t1.a,2)=1), 2,0)))))))))))))))))))))))))))))) + 1 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT MAX(IF(1, CAST(c AS UNSIGNED), 0)) FROM t1) AS te
+--Result--
+[(1.2345678901234567e+19,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT MAX(IFNULL(CAST(c AS UNSIGNED), 0)) FROM t1) AS te
+--Result--
+[(1.2345678901234567e+19,)]
++--------------------+
+--Query--
+SELECT IF(b, (SELECT a FROM t1 LIMIT 1), b) c FROM t1 GROUP BY c
+--Result--
+[(b'0',), (None,)]
++--------------------+
+--Query--
+SELECT g.calc_var, g.if_var, g.case_var FROM   (   SELECT unq_id,     IF ( var_fld  > 5000, (     1 / var_fld ) , 5000 ) calc_var,     IF ( var_fld  > 5000, ( 00001 / var_fld ) , 5000 ) if_var,     CASE  var_fld  > 5000 WHEN TRUE THEN ( 1 / var_fld ) ELSE 5000 END case_var   FROM     test_grids_1   ) g   JOIN     test_grid_dtl_1 d USING (unq_id) ORDER BY 1
+--Result--
+[(0.0002, 0.0002, 0.0002), (5000.0, 5000.0, 5000.0), (5000.0, 5000.0, 5000.0)]
++--------------------+
+--Query--
+SELECT JSON_ARRAYAGG(NULLIF(1,2))
+--Result--
+[('[1]',)]
++--------------------+
+--Query--
+PREPARE ps FROM 'INSERT INTO t SET t_date = NULLIF(?, '''')'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ps
+--Result--
+[]
++--------------------+
+--Query--
+SELECT AVG(NULLIF(YEAR('2001-01-01'),10))
+--Result--
+[(2001.0,)]
++--------------------+

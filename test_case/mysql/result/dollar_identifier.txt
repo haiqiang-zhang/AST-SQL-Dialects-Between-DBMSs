@@ -1,0 +1,40 @@
+--Query--
+select `$1`, `$$$`,`$$id`, '$someli$teral' from t where t.`$id` = 0
+--Result--
+[]
++--------------------+
+--Query--
+select * from t where t.`$id` = 0 or `$id2` = 0 or b$$lit$$ = 0
+--Result--
+[]
++--------------------+
+--Query--
+select id+$id+$id from t
+--Result--
+[]
++--------------------+
+--Query--
+select * from $view
+--Result--
+[]
++--------------------+
+--Query--
+prepare $stmt from 'select `$$id`, $id, `$$` from t'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) from t where @$myvar
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 8.0 $p, 8.4$p, .0$p, 8.$p, 8.p
+--Result--
+[(8.0, 8.4, 0.0, 8.0, 8.0)]
++--------------------+
+--Query--
+SELECT JSON_EXTRACT('{"id": "3", "$name": "Barney"}', "$.id")
+--Result--
+[('"3"',)]
++--------------------+

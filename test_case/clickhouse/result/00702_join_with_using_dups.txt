@@ -1,0 +1,80 @@
+--Query--
+select 'inner'
+--Result--
+[('inner',)]
++--------------------+
+--Query--
+select X.*, Y.* from X inner join Y using id order by X.id, Y.id, X.x_name, Y.y_name
+--Result--
+[(1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'inner subs'
+--Result--
+[('inner subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s inner join (select * from Y) as j using id order by s.id, s.id, s.x_name, j.y_name
+--Result--
+[(1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'left'
+--Result--
+[('left',)]
++--------------------+
+--Query--
+select X.*, Y.* from X left join Y using id order by X.id, Y.id, X.x_name, Y.y_name
+--Result--
+[(1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (5, 'G', 0, ''), (8, 'H', 0, ''), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'left subs'
+--Result--
+[('left subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s left join (select * from Y) as j using id order by s.id, j.id, s.x_name, j.y_name
+--Result--
+[(1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (5, 'G', 0, ''), (8, 'H', 0, ''), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'right'
+--Result--
+[('right',)]
++--------------------+
+--Query--
+select X.*, Y.* from X right join Y using id order by X.id, Y.id, X.x_name, Y.y_name
+--Result--
+[(0, '', 6, 'g'), (0, '', 7, 'h'), (1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'right subs'
+--Result--
+[('right subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s right join (select * from Y) as j using id order by s.id, j.id, s.x_name, j.y_name
+--Result--
+[(0, '', 6, 'g'), (0, '', 7, 'h'), (1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'full'
+--Result--
+[('full',)]
++--------------------+
+--Query--
+select X.*, Y.* from X full join Y using id order by X.id, Y.id, X.x_name, Y.y_name
+--Result--
+[(0, '', 6, 'g'), (0, '', 7, 'h'), (1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (5, 'G', 0, ''), (8, 'H', 0, ''), (9, 'I', 9, 'i')]
++--------------------+
+--Query--
+select 'full subs'
+--Result--
+[('full subs',)]
++--------------------+
+--Query--
+select s.*, j.* from (select * from X) as s full join (select * from Y) as j using id order by s.id, j.id, s.x_name, j.y_name
+--Result--
+[(0, '', 6, 'g'), (0, '', 7, 'h'), (1, 'A', 1, 'a'), (1, 'A', 1, 'b'), (2, 'B', 2, 'c'), (2, 'C', 2, 'c'), (3, 'D', 3, 'd'), (3, 'D', 3, 'e'), (4, 'E', 4, 'f'), (4, 'F', 4, 'f'), (5, 'G', 0, ''), (8, 'H', 0, ''), (9, 'I', 9, 'i')]
++--------------------+

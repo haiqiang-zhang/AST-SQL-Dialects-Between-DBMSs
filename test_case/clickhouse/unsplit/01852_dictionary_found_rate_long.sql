@@ -1,6 +1,3 @@
-
---
-
 DROP TABLE IF EXISTS simple_key_source_table_01862;
 CREATE TABLE simple_key_source_table_01862
 (
@@ -80,8 +77,6 @@ SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabas
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_cache_dictionary_01862';
 DROP DICTIONARY simple_key_cache_dictionary_01862;
 DROP TABLE simple_key_source_table_01862;
-
-
 DROP TABLE IF EXISTS complex_key_source_table_01862;
 CREATE TABLE complex_key_source_table_01862
 (
@@ -136,7 +131,6 @@ SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabas
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'complex_key_cache_dictionary_01862';
 DROP DICTIONARY complex_key_cache_dictionary_01862;
 DROP TABLE complex_key_source_table_01862;
-
 DROP TABLE IF EXISTS range_key_source_table_01862;
 CREATE TABLE range_key_source_table_01862
 (
@@ -165,7 +159,6 @@ SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabas
 SELECT name, found_rate FROM system.dictionaries WHERE database = currentDatabase() AND name = 'simple_key_range_hashed_dictionary_01862';
 DROP DICTIONARY simple_key_range_hashed_dictionary_01862;
 DROP TABLE range_key_source_table_01862;
-
 DROP TABLE IF EXISTS ip_trie_source_table_01862;
 CREATE TABLE ip_trie_source_table_01862
 (

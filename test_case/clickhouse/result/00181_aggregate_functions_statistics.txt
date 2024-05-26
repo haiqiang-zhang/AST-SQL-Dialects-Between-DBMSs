@@ -1,0 +1,75 @@
+--Query--
+SELECT varSamp(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT round(abs(res1 - res2), 6) FROM ( SELECT     varSamp(x_value) AS res1,     (sum(x_value * x_value) - ((sum(x_value) * sum(x_value)) / count())) / (count() - 1) AS res2 FROM series )
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT stddevSamp(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT skewSamp(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT kurtSamp(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT varPop(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT stddevPop(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT skewPop(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT kurtPop(x_value) FROM (SELECT x_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT covarSamp(x_value, y_value) FROM (SELECT x_value, y_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT covarPop(x_value, y_value) FROM (SELECT x_value, y_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT corr(x_value, y_value) FROM (SELECT x_value, y_value FROM series LIMIT 0)
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT '----quantile----'
+--Result--
+[('----quantile----',)]
++--------------------+
+--Query--
+SELECT quantileExactIf(number, number > 0) FROM numbers(90)
+--Result--
+[(45,)]
++--------------------+
+--Query--
+SELECT quantileIf(number, number > 100) FROM numbers(90)
+--Result--
+[(nan,)]
++--------------------+

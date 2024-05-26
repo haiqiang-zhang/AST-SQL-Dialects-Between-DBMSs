@@ -10,7 +10,3 @@ ATTACH '__TEST_DIR__/attach_enums_2.db' AS db2;
 INSERT INTO db2.person VALUES ('Moe', 'kkcry');
 SELECT enum_range(NULL::db1.mood) AS my_enum_range;
 SELECT enum_range(NULL::db1.main.mood) AS my_enum_range;
-select * from db1.person;
-select * from db1.person;
-select * from db1.person;
-select * from db2.person;

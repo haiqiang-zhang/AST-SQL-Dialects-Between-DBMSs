@@ -1,0 +1,40 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 + number from system.numbers LIMIT 1 SETTINGS use_query_cache = true
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count(*) FROM system.query_cache
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN PLAN SELECT 1 + number from system.numbers LIMIT 1
+--Result--
+[('Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('  Limit (preliminary LIMIT (without OFFSET))',), ('    ReadFromSystemNumbers',)]
++--------------------+
+--Query--
+EXPLAIN PLAN SELECT 1 + number from system.numbers LIMIT 1 SETTINGS use_query_cache = true
+--Result--
+[('Expression ((Project names + (Projection + Change column names to column identifiers)))',), ('  Limit (preliminary LIMIT (without OFFSET))',), ('    ReadFromSystemNumbers',)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT 1 + number from system.numbers LIMIT 1
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (ReadFromSystemNumbers)',), ('    NumbersRange 0 → 1',)]
++--------------------+
+--Query--
+EXPLAIN PIPELINE SELECT 1 + number from system.numbers LIMIT 1 SETTINGS use_query_cache = true
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (ReadFromSystemNumbers)',), ('    NumbersRange 0 → 1',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

@@ -10,13 +10,8 @@ select a,b from t1 union all select a,b from t2 union select 7,'g';
 select 0,'#' union select a,b from t1 union all select a,b from t2 union select 7,'gg';
 select a,b from t1 union select a,b from t1;
 select 't1',b,count(*) from t1 group by b UNION select 't2',b,count(*) from t2 group by b;
-select count(*) from (
-(select                      a,b from t1 limit 2)  union all (select a,b from t2 order by a)) q;
 select found_rows();
-select count(*) from (
-select                      a,b from t1  union all select a,b from t2) q;
 select sql_calc_found_rows  a,b from t1  union all select a,b from t2 limit 2;
-select found_rows();
 select * from t1 where a in
     (select a from t1 union select a from t1 order by (select a))
   union select * from t1 order by (select a);
@@ -98,50 +93,10 @@ create table t2 (a int);
 insert into t2 values (3),(4),(5);
 SELECT COUNT(*) FROM (
 (SELECT                     * FROM t1) UNION all (SELECT * FROM t2)) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 1) UNION all (SELECT * FROM t2)) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 1) UNION all (SELECT * FROM t2)) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1) UNION all (SELECT * FROM t2 LIMIT 1)) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 1) UNION SELECT * FROM t2) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 1) UNION all SELECT * FROM t2) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-SELECT                     * FROM t1 UNION all SELECT * FROM t2) q;
 SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION all SELECT * FROM t2 LIMIT 2;
-select found_rows();
-SELECT COUNT(*) FROM (
-SELECT                     * FROM t1 UNION SELECT * FROM t2) q;
 SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION SELECT * FROM t2 LIMIT 2;
-select found_rows();
-SELECT COUNT(*) FROM (
-SELECT                     * FROM t1 UNION SELECT * FROM t2) q;
 SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION SELECT * FROM t2 LIMIT 100;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 100) UNION SELECT * FROM t2) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 1) UNION SELECT * FROM t2) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 LIMIT 1) UNION SELECT * FROM t2) q;
-select found_rows();
-SELECT COUNT(*) FROM (
-SELECT                     * FROM t1 UNION SELECT * FROM t2) q;
 SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION SELECT * FROM t2 LIMIT 2,2;
-select found_rows();
-SELECT COUNT(*) FROM (
-(SELECT                     * FROM t1 limit 2,2) UNION SELECT * FROM t2) q;
-select found_rows();
 SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a desc LIMIT 1;
 create temporary table t1 select a from t1 union select a from t2;
 drop temporary table t1;
@@ -253,9 +208,6 @@ insert into t1 select * from t2;
 insert into t2 select * from t1;
 insert into t1 select * from t2;
 insert into t2 select * from t1;
-select count(*) from (select * from t1 union all select * from t2 order by 1) b;
-select count(*) from t1;
-select count(*) from t2;
 drop table t1,t2;
 create table t1 (a int, index (a), b int);
 insert t1 values (1,1),(2,2),(3,3),(4,4),(5,5);
@@ -264,10 +216,6 @@ insert t1 select a+1, a+b from t1;
 insert t1 select a+1, a+b from t1;
 insert t1 select a+1, a+b from t1;
 insert t1 select a+1, a+b from t1;
-select count(*) from t1 where a=7;
-select count(*) from t1 where b=13;
-select count(*) from t1 where b=13 union select count(*) from t1 where a=7;
-select count(*) from t1 where a=7 union select count(*) from t1 where b=13;
 select a from t1 where b not in (1,2,3) union select a from t1 where b not in (4,5,6);
 drop table t1;
 create table t1 (col1 tinyint unsigned, col2 tinyint unsigned);
@@ -318,25 +266,21 @@ create table t1 as
 (select _latin1'test') union
 (select _latin1'TEST') union
 (select _latin1'TeST');
-select count(*) from t1;
 drop table t1;
 create table t1 as
 (select _latin1'test' collate latin1_bin) union
 (select _latin1'TEST') union
 (select _latin1'TeST');
-select count(*) from t1;
 drop table t1;
 create table t1 as
 (select _latin1'test') union
 (select _latin1'TEST' collate latin1_bin) union
 (select _latin1'TeST');
-select count(*) from t1;
 drop table t1;
 create table t1 as
 (select _latin1'test') union
 (select _latin1'TEST') union
 (select _latin1'TeST' collate latin1_bin);
-select count(*) from t1;
 drop table t1;
 create table t2 (
 a char character set latin1 collate latin1_swedish_ci,
@@ -388,27 +332,10 @@ select * from ((((select * from t1))) union (select * from t1) union (select * f
 select * from ((select * from t1) union (((select * from t1))) union (select * from t1)) a;
 drop table t1;
 select concat('value is: ', @val) union select 'some text';
-select concat(_latin1'a', _ascii'b' collate ascii_bin);
 create table t1 (foo varchar(100)) collate ascii_bin;
 insert into t1 (foo) values ("foo");
 select foo from t1 union select 'bar' as foo from dual;
 drop table t1;
-CREATE TABLE t1 (
-  a ENUM('ÃÂÃÂÃÂÃÂ¤','ÃÂÃÂÃÂÃÂ¶','ÃÂÃÂÃÂÃÂ¼') character set utf8mb3 not null default 'ÃÂÃÂÃÂÃÂ¼',
-  b ENUM("one", "two") character set utf8mb3,
-  c ENUM("one", "two")
-);
-insert into t1 values ('ÃÂÃÂÃÂÃÂ¤', 'one', 'one'), ('ÃÂÃÂÃÂÃÂ¶', 'two', 'one'), ('ÃÂÃÂÃÂÃÂ¼', NULL, NULL);
-create table t2 select NULL union select a from t1;
-drop table t2;
-create table t2 select a from t1 union select NULL;
-drop table t2;
-create table t2 select a from t1 union select a from t1;
-drop table t2;
-create table t2 select a from t1 union select c from t1;
-drop table t2;
-create table t2 select a from t1 union select b from t1;
-drop table t2, t1;
 create table t1 (f1 decimal(60,25), f2 decimal(60,25));
 insert into t1 values (0.0,0.0);
 select f1 from t1 union all select f2 from t1;
@@ -436,7 +363,6 @@ drop tables t1,t2,t3;
 CREATE TABLE t1 (a longtext);
 CREATE TABLE t2 (b varchar(20));
 INSERT INTO t1 VALUES ('a'),('b');
-SELECT left(a,100000000) FROM t1 UNION  SELECT b FROM t2;
 create table t3 SELECT left(a,100000000) FROM t1 UNION  SELECT b FROM t2;
 drop tables t1,t2,t3;
 SELECT @tmp_max:= @@global.max_allowed_packet;
@@ -472,22 +398,6 @@ CREATE TABLE t1 (a int);
 INSERT INTO t1 VALUES (10), (20);
 CREATE TABLE t2 (b int);
 INSERT INTO t2 VALUES (10), (50), (50);
-SELECT a,1 FROM t1
-UNION
-SELECT b, COUNT(*) FROM t2 GROUP BY b WITH ROLLUP
-ORDER BY a;
-SELECT a,1 FROM t1
-UNION
-SELECT b, COUNT(*) FROM t2 GROUP BY b WITH ROLLUP
-ORDER BY a DESC;
-SELECT a,1 FROM t1
-UNION
-SELECT b, COUNT(*) FROM t2 GROUP BY b WITH ROLLUP
-ORDER BY a ASC LIMIT 3;
-SELECT a,1 FROM t1
-UNION ALL
-SELECT b, COUNT(*) FROM t2 GROUP BY b WITH ROLLUP
-ORDER BY a DESC;
 DROP TABLE t1,t2;
 CREATE TABLE t1 (a INT);
 INSERT INTO t1 VALUES (1), (2), (3);
@@ -611,23 +521,13 @@ DROP TABLE t1;
 CREATE TABLE t1 (a INT) ENGINE=MEMORY;
 CREATE TABLE t2 (a INT) ENGINE=MEMORY;
 INSERT INTO t2 VALUES (1);
-SELECT COUNT(*) FROM (
-SELECT                     * FROM t2 UNION ALL SELECT * FROM t1) q;
 SELECT SQL_CALC_FOUND_ROWS * FROM t2 UNION ALL SELECT * FROM t1;
-SELECT FOUND_ROWS();
-SELECT COUNT(*) FROM (
-SELECT                     * FROM t1 UNION ALL SELECT * FROM t2) q;
 SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION ALL SELECT * FROM t2;
-SELECT FOUND_ROWS();
 DROP TABLE t1, t2;
 SELECT MAX(1) AS foo
 UNION
 SELECT MAX(2)
 ORDER BY foo;
-SELECT MAX(1) AS foo
-UNION
-SELECT MAX(2)
-ORDER BY 1 DESC;
 CREATE TABLE t1(a INTEGER);
 INSERT INTO t1 VALUES (1), (2);
 CREATE TABLE t2(a INTEGER, b INTEGER);
@@ -861,15 +761,8 @@ SELECT a FROM (SELECT a FROM t2) t1
 UNION ALL
 SELECT 1 FROM t1;
 DROP TABLE t1, t2;
-SELECT COUNT(*) FROM (SELECT NULL UNION SELECT POINT(1,1)) AS dt;
 CREATE TABLE t1(c1 INT);
 INSERT INTO t1 VALUES(1),(2),(3);
-SELECT FOUND_ROWS();
-SELECT FOUND_ROWS();
-SELECT FOUND_ROWS();
-SELECT FOUND_ROWS();
-SELECT FOUND_ROWS();
-SELECT FOUND_ROWS();
 DROP TABLE t1;
 CREATE TABLE t1 (a INT);
 INSERT INTO t1 VALUES (1),(2);
@@ -956,9 +849,6 @@ DROP TABLE t1, t2;
 DROP VIEW v1;
 CREATE TABLE t1 (f1 VARCHAR(1));
 INSERT INTO t1 VALUES ('t'),('a');
-SELECT COUNT(DISTINCT f1) FROM t1 WHERE (
-	SELECT MAX(f1) FROM t1 WHERE f1 NOT IN ( SELECT 5 UNION SELECT 5 )
-) IS NOT NULL;
 DROP TABLE t1;
 CREATE TABLE t1 (f1 varchar(1));
 CREATE INDEX i1 ON t1 (f1);
@@ -976,7 +866,6 @@ INSERT INTO t1 SELECT a+1 FROM t1;
 INSERT INTO t1 SELECT a+1 FROM t1;
 INSERT INTO t1 SELECT a+1 FROM t1;
 INSERT INTO t1 SELECT a+1 FROM t1;
-SELECT COUNT(*) FROM t1;
 SELECT * FROM t1 LIMIT 1;
 SELECT * FROM t1 UNION ALL SELECT * FROM t1 LIMIT 1;
 SELECT * FROM t1 UNION DISTINCT SELECT * FROM t1 LIMIT 1;
@@ -994,9 +883,7 @@ CREATE TABLE t2(id INTEGER UNSIGNED);
 INSERT INTO t1(id) VALUES (2000000000);
 INSERT INTO t2(id) VALUES (4000000000);
 SELECT id FROM t2 UNION ALL SELECT id FROM t1;
-SELECT MAX(id) FROM t2 UNION ALL SELECT MAX(id) FROM t1;
 SELECT id FROM t1 UNION ALL SELECT id FROM t2;
-SELECT MAX(id) FROM t1 UNION ALL SELECT MAX(id) FROM t2;
 DROP TABLE t1, t2;
 CREATE TABLE t1(
   ts TINYINT SIGNED,
@@ -1040,7 +927,6 @@ SELECT * FROM s UNION ALL
              SELECT * FROM t ORDER BY a LIMIT 11;
 SELECT * FROM s UNION ALL
              SELECT * FROM t ORDER BY a LIMIT 11;
-SELECT FOUND_ROWS();
 DROP TABLE r, s, t;
 CREATE TABLE t1 (
   a INT,

@@ -6,8 +6,9 @@ from adapter.DBMSAdapter import DBMSAdapter
 from adapter.DuckDBAdapter import DuckDBAdapter
 from adapter.ClickHouseAdapter import ClickHouseAdapter
 import pandas as pd
-from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv
+from utils import clean_query, clean_test_garbage, first_init_dbmss, clean_query_postgresql, save_result_to_csv, append_result_to_csv, parse_result_file, get_test_result_path
 import decimal
+from sql_classifer import classify_sql
 
 
 test_case_path = './test_case'
@@ -34,6 +35,7 @@ setup_query_keyword = [
     # SET
     "set",
     "reset",
+    "pragma",
     # TRANSACTION
     "begin",
     "commit",
@@ -89,36 +91,52 @@ def run_test_in_all_dbms(test_paths:str, filename:str):
         sql_query = clean_query_postgresql(sql_query)
     else:
         sql_query = clean_query(sql_query)
+    print("Finish parsing SQL file: ", filename)
+
+    # get the result of the test case
+    
+    result_list = parse_result_file(get_test_result_path(test_paths))
 
 
     df = pd.DataFrame(columns=['DBMS', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number'])
-    df_verbose_all_result_one_file = pd.DataFrame(columns=['DBMS', 'SQL_Query', 'Result', 'ERROR_Type', 'Message'])
+    df_verbose_all_result_one_file = pd.DataFrame(columns=['DBMS', 'SQL_Query', 'SQL_Type', 'Result', 'ERROR_Type', 'Message'])
     
 
     for dbms in DBMS_ADAPTERS:
+        result_index_counter = 0
         db_adaptor = DBMS_ADAPTERS[dbms]()
         success_counter = 0
+        diff_counter = 0
         failure_counter = 0
         for query in sql_query:
-            result = db_adaptor.query(query, filename)
-            if not any(keyword.lower() in query.lower() for keyword in setup_query_keyword):
+            result = db_adaptor.query(query, filename, timeout_duration=10)
+
+            if not any(query.lower().startswith(keyword.lower()) for keyword in setup_query_keyword):
+                result_output = convert_decimals(result[1])
+                print(query)
+                is_same = str(result_output) == result_list[result_index_counter]
+                
                 query = query.replace('\n', ' ')
-                if result[0]:
+                if is_same:
                     success_counter += 1
-                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "SAME", 'ERROR_Type': None, 'Message': result[1]}, ignore_index=True)
+                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'SQL_Type':classify_sql(query), 'Result': "SAME", 'ERROR_Type': None, 'Message': result[1]}, ignore_index=True)
+                elif result[0]:
+                    diff_counter += 1
+                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query,'SQL_Type':classify_sql(query), 'Result': "DIFFERENT", 'ERROR_Type': None, 'Message': result[1]}, ignore_index=True)
                 else:
                     failure_counter += 1
                     error_message = result[1][1]
                     error_message = error_message.replace('\n', ' ')
                     error_message = error_message.replace('^', '')
                     error_message = error_message.strip()
-                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'Result': "ERROR", 'ERROR_Type': result[1][0], 'Message': error_message}, ignore_index=True)
-        df = df._append({'DBMS': dbms, 'SAME_Number': success_counter, 'DIFFERENT_Number': 0, 'ERROR_Number': failure_counter}, ignore_index=True)
+                    df_verbose_all_result_one_file = df_verbose_all_result_one_file._append({'DBMS': dbms, 'SQL_Query': query, 'SQL_Type':classify_sql(query), 'Result': "ERROR", 'ERROR_Type': result[1][0], 'Message': error_message}, ignore_index=True)
+                result_index_counter += 1
+        df = df._append({'DBMS': dbms, 'SAME_Number': success_counter, 'DIFFERENT_Number': diff_counter, 'ERROR_Number': failure_counter}, ignore_index=True)
         db_adaptor.close_connection()
         
 
     
-    return success_counter, failure_counter, df, df_verbose_all_result_one_file
+    return df, df_verbose_all_result_one_file
 
 
 def run_all(test_paths:str, filename:str, setup_paths:str=""):
@@ -132,9 +150,13 @@ def run_all(test_paths:str, filename:str, setup_paths:str=""):
 
 # Define a pd.DataFrame to store the test results
 df = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SAME_Number', 'DIFFERENT_Number', 'ERROR_Number', 'Total_Number_of_SQL_files'])
+df['SAME_RATE'] = df['SAME_Number'] / (df['SAME_Number'] + df['DIFFERENT_Number'] + df['ERROR_Number'])
+df['DIFFERENT_RATE'] = df['DIFFERENT_Number'] / (df['SAME_Number'] + df['DIFFERENT_Number'] + df['ERROR_Number'])
+df['ERROR_RATE'] = df['ERROR_Number'] / (df['SAME_Number'] + df['DIFFERENT_Number'] + df['ERROR_Number'])
 
-df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
+df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_Type', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
 save_result_to_csv(df_verbose_all_result, "init_result")
+save_result_to_csv(df, "summary_result")
 
 
 # Iterate over the test case files in the folder (it is a multi-level folder)
@@ -165,11 +187,10 @@ for dbms in os.listdir(test_case_path):
                 if os.path.getsize(test_paths) == 0:
                     continue
 
-                df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
-
+                df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_Type', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
                 
                 try:
-                    success_counter, failure_counter, df_one_file, df_verbose_all_result_one_file = run_all(test_paths, filename)
+                    df_one_file, df_verbose_all_result_one_file = run_all(test_paths, filename)
                     for i in range(len(df_one_file)):
                         # check DBMS_Base = dbms, DBMS_Tested = df_one_file[i]['DBMS'] exist or not
                         if df[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS'])].empty:
@@ -179,23 +200,37 @@ for dbms in os.listdir(test_case_path):
                             df.loc[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS']), 'DIFFERENT_Number'] += df_one_file.iloc[i]['DIFFERENT_Number']
                             df.loc[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS']), 'ERROR_Number'] += df_one_file.iloc[i]['ERROR_Number']
                             df.loc[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS']), 'Total_Number_of_SQL_files'] += 1
+                    
                     for i in range(len(df_verbose_all_result_one_file)):
-                        df_verbose_all_result = df_verbose_all_result._append({'DBMS_Base': dbms, 'DBMS_Tested': df_verbose_all_result_one_file.iloc[i]['DBMS'], 'SQL_Query': df_verbose_all_result_one_file.iloc[i]['SQL_Query'], 'SQL_File_Name': filename, 'Result': df_verbose_all_result_one_file.iloc[i]['Result'], 'ERROR_Type': df_verbose_all_result_one_file.iloc[i]['ERROR_Type'], 'Message': df_verbose_all_result_one_file.iloc[i]['Message']}, ignore_index=True)
+                        df_verbose_all_result = df_verbose_all_result._append({'DBMS_Base': dbms, 'DBMS_Tested': df_verbose_all_result_one_file.iloc[i]['DBMS'], 'SQL_Query': df_verbose_all_result_one_file.iloc[i]['SQL_Query'],  'SQL_Type':df_verbose_all_result_one_file.iloc[i]['SQL_Type'], 'SQL_File_Name': filename, 'Result': df_verbose_all_result_one_file.iloc[i]['Result'], 'ERROR_Type': df_verbose_all_result_one_file.iloc[i]['ERROR_Type'], 'Message': df_verbose_all_result_one_file.iloc[i]['Message']}, ignore_index=True)
                     file_counter += 1
                 except ValueError as e:
                     print(f"Error decode sql file '{filename}': {e}")
                     continue
 
+                df['SAME_RATE'] = df['SAME_Number'] / (df['SAME_Number'] + df['DIFFERENT_Number'] + df['ERROR_Number'])
+                df['DIFFERENT_RATE'] = df['DIFFERENT_Number'] / (df['SAME_Number'] + df['DIFFERENT_Number'] + df['ERROR_Number'])
+                df['ERROR_RATE'] = df['ERROR_Number'] / (df['SAME_Number'] + df['DIFFERENT_Number'] + df['ERROR_Number'])
+
                 append_result_to_csv(df_verbose_all_result, "init_result")
+                save_result_to_csv(df, "summary_result")
+
                 del df_verbose_all_result
 
 
     clean_test_garbage()
 
 
+# analyze the df
+
+# add columns: SAME RATE, DIFFERENT RATE, ERROR RATE 
+
+
+
 
 print()
 print(df)
+
 
     
             

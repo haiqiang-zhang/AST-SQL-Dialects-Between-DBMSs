@@ -1,0 +1,105 @@
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))',), ('CREATE TABLE t2(a, b)',), ('CREATE INDEX t2expr ON t2(a) WHERE t2.b>0',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))',), ('CREATE TABLE t2(a, b)',), ('CREATE INDEX t2expr ON t2(a) WHERE t2.b>0',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))',), ('CREATE TABLE t2(a, b)',), ('CREATE INDEX t2expr ON t2(a) WHERE t2.b>0',)]
++--------------------+
+--Query--
+SELECT * FROM vvv
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='vvv'
+--Result--
+[('CREATE VIEW vvv AS SELECT main.txx.a, txx.b, c FROM txx',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='uuu'
+--Result--
+[('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM txx AS one',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_temp_master WHERE name='ttt'
+--Result--
+[('CREATE VIEW ttt AS SELECT main.txx.a, txx.b, one.b, main.one.a FROM txx AS one, txx',)]
++--------------------+
+--Query--
+SELECT * FROM t10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT  *  FROM v
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM vv
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT  *  FROM vv
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'x2'
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db2' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM aux.sqlite_master WHERE name = 'c1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_temp_master
+--Result--
+[('CREATE VIEW ttt AS SELECT main.txx.a, txx.b, one.b, main.one.a FROM txx AS one, txx',), ('CREATE TABLE "t1234567890"(a, b, c)',), ('CREATE VIEW vv AS SELECT one.a, one.b, t2.a, t2.b FROM t1 AS one, t2',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type='trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, tbl_name FROM sqlite_temp_master
+--Result--
+[('ttt', 'ttt'), ('t1234567890', 't1234567890'), ('vv', 'vv')]
++--------------------+
+--Query--
+SELECT name, tbl_name FROM sqlite_temp_master
+--Result--
+[('ttt', 'ttt'), ('t1234567890', 't1234567890'), ('vv', 'vv')]
++--------------------+
+--Query--
+SELECT name, tbl_name FROM sqlite_temp_master
+--Result--
+[('ttt', 'ttt'), ('t1234567890', 't1234567890'), ('vv', 'vv')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2)]
++--------------------+

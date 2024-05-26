@@ -20,8 +20,6 @@ ORDER BY head;
 DROP TEMPORARY TABLE head, tail;
 UPDATE IGNORE t1 SET a=unhex(code) ORDER BY code;
 SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=1;
-SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=2;
 SELECT code, hex(upper(a)), hex(lower(a)),a, upper(a), lower(a) FROM t1
 WHERE hex(a)<>hex(upper(a)) OR hex(a)<>hex(lower(a))
 ORDER BY code;

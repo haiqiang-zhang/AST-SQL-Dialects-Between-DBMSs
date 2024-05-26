@@ -1,0 +1,135 @@
+--Query--
+EXPLAIN SYNTAX SELECT sum(n + 1), sum(1 + n), sum(n - 1), sum(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT',), ('    sum(n) + (1 * count(n)),',), ('    (1 * count(n)) + sum(n),',), ('    sum(n) - (1 * count(n)),',), ('    (1 * count(n)) - sum(n)',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT min(n + 1), min(1 + n), min(n - 1), min(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT',), ('    min(n) + 1,',), ('    1 + min(n),',), ('    min(n) - 1,',), ('    1 - max(n)',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT max(n + 1), max(1 + n), max(n - 1), max(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT',), ('    max(n) + 1,',), ('    1 + max(n),',), ('    max(n) - 1,',), ('    1 - min(n)',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sum(n + 1) + sum(1 + n) + sum(n - 1) + sum(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT (((sum(n) + (1 * count(n))) + ((1 * count(n)) + sum(n))) + (sum(n) - (1 * count(n)))) + ((1 * count(n)) - sum(n))',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sum(n * 2) + sum(2 * n) + sum(n / 2) + sum(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT (((sum(n) * 2) + (2 * sum(n))) + (sum(n) / 2)) + sum(1 / n)',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT min(n + 1) + min(1 + n) + min(n - 1) + min(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT (((min(n) + 1) + (1 + min(n))) + (min(n) - 1)) + (1 - max(n))',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT min(n * 2) + min(2 * n) + min(n / 2) + min(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT (((min(n) * 2) + (2 * min(n))) + (min(n) / 2)) + min(1 / n)',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT max(n + 1) + max(1 + n) + max(n - 1) + max(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT (((max(n) + 1) + (1 + max(n))) + (max(n) - 1)) + (1 - min(n))',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT max(n * 2) + max(2 * n) + max(n / 2) + max(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[('SELECT (((max(n) * 2) + (2 * max(n))) + (max(n) / 2)) + max(1 / n)',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+SELECT sum(n + 1), sum(1 + n), sum(n - 1), sum(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(55, 55, 35, -35)]
++--------------------+
+--Query--
+SELECT min(n + 1), min(1 + n), min(n - 1), min(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(1, 1, -1, -8)]
++--------------------+
+--Query--
+SELECT max(n + 1), max(1 + n), max(n - 1), max(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(10, 10, 8, 1)]
++--------------------+
+--Query--
+SELECT sum(n + 1) + sum(1 + n) + sum(n - 1) + sum(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(110,)]
++--------------------+
+--Query--
+SELECT sum(n * 2) + sum(2 * n) + sum(n / 2) + sum(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT min(n + 1) + min(1 + n) + min(n - 1) + min(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(-7,)]
++--------------------+
+--Query--
+SELECT min(n * 2) + min(2 * n) + min(n / 2) + min(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(0.1111111111111111,)]
++--------------------+
+--Query--
+SELECT max(n + 1) + max(1 + n) + max(n - 1) + max(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(29,)]
++--------------------+
+--Query--
+SELECT max(n * 2) + max(2 * n) + max(n / 2) + max(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT sum(number * -3) + min(2 * number * -3) - max(-1 * -2 * number * -3) FROM numbers(100)
+--Result--
+[(-15444,)]
++--------------------+
+--Query--
+SELECT max(log(2) * number) FROM numbers(100)
+--Result--
+[(68.62157087543459,)]
++--------------------+
+--Query--
+SELECT round(max(log(2) * 3 * sin(0.3) * number * 4)) FROM numbers(100)
+--Result--
+[(243.0,)]
++--------------------+
+--Query--
+SELECT sum(n + 1) + sum(1 + n) + sum(n - 1) + sum(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(110,)]
++--------------------+
+--Query--
+SELECT sum(n * 2) + sum(2 * n) + sum(n / 2) + sum(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(inf,)]
++--------------------+
+--Query--
+SELECT min(n + 1) + min(1 + n) + min(n - 1) + min(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(-7,)]
++--------------------+
+--Query--
+SELECT min(n * 2) + min(2 * n) + min(n / 2) + min(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(0.1111111111111111,)]
++--------------------+
+--Query--
+SELECT max(n + 1) + max(1 + n) + max(n - 1) + max(1 - n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(29,)]
++--------------------+
+--Query--
+SELECT max(n * 2) + max(2 * n) + max(n / 2) + max(1 / n) FROM (SELECT number n FROM numbers(10))
+--Result--
+[(inf,)]
++--------------------+

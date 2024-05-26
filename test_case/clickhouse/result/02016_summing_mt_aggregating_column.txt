@@ -1,0 +1,10 @@
+--Query--
+OPTIMIZE TABLE summing_mt_aggregating_column FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT Key, any(Value), any(ConcatArraySimple), groupArrayArrayMerge(ConcatArrayComplex) FROM summing_mt_aggregating_column GROUP BY Key
+--Result--
+[(1, 5, [333, 444, 555, 999], [33, 44, 55, 99])]
++--------------------+

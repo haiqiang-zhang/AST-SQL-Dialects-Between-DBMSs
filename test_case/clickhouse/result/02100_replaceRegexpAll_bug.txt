@@ -1,0 +1,60 @@
+--Query--
+SELECT 'aaaabb ' == trim(leading 'b ' FROM 'b aaaabb ') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'b aaaa' == trim(trailing 'b ' FROM 'b aaaabb ') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'aaaa' == trim(both 'b ' FROM 'b aaaabb ') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1' == replaceRegexpAll(',,1,,', '^[,]*|[,]*$', '') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1' == replaceRegexpAll(',,1', '^[,]*|[,]*$', '') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1' == replaceRegexpAll('1,,', '^[,]*|[,]*$', '') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1,,' == replaceRegexpOne(',,1,,', '^[,]*|[,]*$', '') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1' == replaceRegexpOne(',,1', '^[,]*|[,]*$', '') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1,,' == replaceRegexpOne('1,,', '^[,]*|[,]*$', '') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '5935,5998,6014' == trim(BOTH ', ' FROM '5935,5998,6014, ') x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '5935,5998,6014' == replaceRegexpAll('5935,5998,6014, ', concat('^[', regexpQuoteMeta(', '), ']*|[', regexpQuoteMeta(', '), ']*$'), '') AS x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT trim(BOTH '"' FROM '2') == '2'
+--Result--
+[(1,)]
++--------------------+

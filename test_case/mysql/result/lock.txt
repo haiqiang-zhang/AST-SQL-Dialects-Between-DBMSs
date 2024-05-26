@@ -1,0 +1,270 @@
+--Query--
+lock tables t1 write, t2 write, t3 write
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, t2 write, t3 write, t1 as t4 read
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+lock table v_bug5719 write
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from v_bug5719
+--Result--
+[(1,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables v_bug5719 write
+--Result--
+[]
++--------------------+
+--Query--
+select * from v_bug5719
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, v_bug5719 write
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE, t2 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 write
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, v1 write
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(33,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, v1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, t1 as a read, t1 as b read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 LOW_PRIORITY WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

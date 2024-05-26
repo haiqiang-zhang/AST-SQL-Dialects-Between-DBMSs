@@ -1,0 +1,385 @@
+--Query--
+select '-- Ensure ALIAS columns are not selected by asterisk'
+--Result--
+[('-- Ensure ALIAS columns are not selected by asterisk',)]
++--------------------+
+--Query--
+select * from aliases_test
+--Result--
+[(datetime.date(1970, 1, 1), 0, ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'])]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS arrays'
+--Result--
+[('-- select DEFAULT and ALIAS arrays',)]
++--------------------+
+--Query--
+select d1, a1, a2, a3, a4, a5, a6 from aliases_test
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS nested columns'
+--Result--
+[('-- select DEFAULT and ALIAS nested columns',)]
++--------------------+
+--Query--
+select struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select d1, a1 from aliases_test array join d1, a1
+--Result--
+[('zero', 'zero'), ('one', 'one'), ('two', 'two')]
++--------------------+
+--Query--
+select d1, a1 from aliases_test array join d1, a1 as a2
+--Result--
+[('zero', ['zero', 'one', 'two']), ('one', ['zero', 'one', 'two']), ('two', ['zero', 'one', 'two'])]
++--------------------+
+--Query--
+select d1, a1 from aliases_test array join d1 as d2, a1
+--Result--
+[(['zero', 'one', 'two'], 'zero'), (['zero', 'one', 'two'], 'one'), (['zero', 'one', 'two'], 'two')]
++--------------------+
+--Query--
+select '-- array join, but request the original columns'
+--Result--
+[('-- array join, but request the original columns',)]
++--------------------+
+--Query--
+select d1, a1 from aliases_test array join d1 as d2, a1 as a2
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two']), (['zero', 'one', 'two'], ['zero', 'one', 'two']), (['zero', 'one', 'two'], ['zero', 'one', 'two'])]
++--------------------+
+--Query--
+select '-- array join, do not use the result'
+--Result--
+[('-- array join, do not use the result',)]
++--------------------+
+--Query--
+select array from aliases_test array join d1, a1
+--Result--
+[(['zero', 'one', 'two'],), (['zero', 'one', 'two'],), (['zero', 'one', 'two'],)]
++--------------------+
+--Query--
+select array from aliases_test array join d1 as d2, a1 as a1
+--Result--
+[(['zero', 'one', 'two'],), (['zero', 'one', 'two'],), (['zero', 'one', 'two'],)]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS arrays, array joining one at a time'
+--Result--
+[('-- select DEFAULT and ALIAS arrays, array joining one at a time',)]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join d1
+--Result--
+[(['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a1
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a2
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a3
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a4
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '0', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '1', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '2', ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a5
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '0', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '1', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '2', ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a6
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS arrays, array joining one at a time and aliasing result with original name'
+--Result--
+[('-- select DEFAULT and ALIAS arrays, array joining one at a time and aliasing result with original name',)]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join d1 as d1
+--Result--
+[(['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a1 as a1
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a2 as a2
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a3 as a3
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a4 as a4
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '0', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '1', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '2', ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a5 as a5
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '0', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '1', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '2', ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6 from aliases_test array join a6 as a6
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS arrays and array join result, aliased as `joined`'
+--Result--
+[('-- select DEFAULT and ALIAS arrays and array join result, aliased as `joined`',)]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join d1 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join a1 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join a2 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join a3 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join a4 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join a5 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select array, d1, a1, a2, a3, a4, a5, a6, joined from aliases_test array join a6 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS nested columns, array joining one at a time'
+--Result--
+[('-- select DEFAULT and ALIAS nested columns, array joining one at a time',)]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.d1
+--Result--
+[(['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a1
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a2
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a3
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a4
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '0', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '1', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '2', ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a5
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '0', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '1', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '2', ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a6
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS nested columns, array joining one at a time and aliasing result with original name'
+--Result--
+[('-- select DEFAULT and ALIAS nested columns, array joining one at a time and aliasing result with original name',)]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.d1 as `struct.d1`
+--Result--
+[(['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a1 as `struct.a1`
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a2 as `struct.a2`
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a3 as `struct.a3`
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'zero', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'one', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], 'two', ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a4 as `struct.a4`
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '0', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '1', ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], '2', ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a5 as `struct.a5`
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '0', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '1', ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], '2', ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct.a6 as `struct.a6`
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select '-- select DEFAULT and ALIAS nested columns and array join result, aliased as `joined`'
+--Result--
+[('-- select DEFAULT and ALIAS nested columns and array join result, aliased as `joined`',)]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.d1 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.a1 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.a2 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.a3 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two')]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.a4 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.a5 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, joined from aliases_test array join struct.a6 as joined
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], '2')]
++--------------------+
+--Query--
+select '-- array join whole nested table'
+--Result--
+[('-- array join whole nested table',)]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct
+--Result--
+[(['zero', 'one', 'two'], 'zero', 'zero', 'zero', 'zero', '0', '0', '0'), (['zero', 'one', 'two'], 'one', 'one', 'one', 'one', '1', '1', '1'), (['zero', 'one', 'two'], 'two', 'two', 'two', 'two', '2', '2', '2')]
++--------------------+
+--Query--
+select '-- array join whole nested table not using the result'
+--Result--
+[('-- array join whole nested table not using the result',)]
++--------------------+
+--Query--
+select array from aliases_test array join struct
+--Result--
+[(['zero', 'one', 'two'],), (['zero', 'one', 'two'],), (['zero', 'one', 'two'],)]
++--------------------+
+--Query--
+select '-- array join whole nested table, aliasing with original name'
+--Result--
+[('-- array join whole nested table, aliasing with original name',)]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct as struct
+--Result--
+[(['zero', 'one', 'two'], 'zero', 'zero', 'zero', 'zero', '0', '0', '0'), (['zero', 'one', 'two'], 'one', 'one', 'one', 'one', '1', '1', '1'), (['zero', 'one', 'two'], 'two', 'two', 'two', 'two', '2', '2', '2')]
++--------------------+
+--Query--
+select '-- array join whole nested table, aliasing with original name not using the result'
+--Result--
+[('-- array join whole nested table, aliasing with original name not using the result',)]
++--------------------+
+--Query--
+select array from aliases_test array join struct as struct
+--Result--
+[(['zero', 'one', 'two'],), (['zero', 'one', 'two'],), (['zero', 'one', 'two'],)]
++--------------------+
+--Query--
+select '-- array join whole nested table, aliasing as `class`'
+--Result--
+[('-- array join whole nested table, aliasing as `class`',)]
++--------------------+
+--Query--
+select array, class.d1, class.a1, class.a2, class.a3, class.a4, class.a5, class.a6 from aliases_test array join struct as class
+--Result--
+[(['zero', 'one', 'two'], 'zero', 'zero', 'zero', 'zero', '0', '0', '0'), (['zero', 'one', 'two'], 'one', 'one', 'one', 'one', '1', '1', '1'), (['zero', 'one', 'two'], 'two', 'two', 'two', 'two', '2', '2', '2')]
++--------------------+
+--Query--
+select '-- array join whole nested table, aliasing as `class` and not using the result'
+--Result--
+[('-- array join whole nested table, aliasing as `class` and not using the result',)]
++--------------------+
+--Query--
+select array from aliases_test array join struct as class
+--Result--
+[(['zero', 'one', 'two'],), (['zero', 'one', 'two'],), (['zero', 'one', 'two'],)]
++--------------------+
+--Query--
+select '-- array join whole nested table, aliasing as `class` but requesting the original columns'
+--Result--
+[('-- array join whole nested table, aliasing as `class` but requesting the original columns',)]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6 from aliases_test array join struct as class
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'])]
++--------------------+
+--Query--
+select array, struct.d1, struct.a1, struct.a2, struct.a3, struct.a4, struct.a5, struct.a6, class.d1, class.a1, class.a2, class.a3, class.a4, class.a5, class.a6 from aliases_test array join struct as class
+--Result--
+[(['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'zero', 'zero', 'zero', 'zero', '0', '0', '0'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'one', 'one', 'one', 'one', '1', '1', '1'), (['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['zero', 'one', 'two'], ['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2'], 'two', 'two', 'two', 'two', '2', '2', '2')]
++--------------------+

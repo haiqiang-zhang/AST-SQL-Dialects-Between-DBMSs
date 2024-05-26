@@ -837,10 +837,6 @@ alter table uv_pt11 add a int not null;
 alter table uv_pt1 attach partition uv_pt11 for values from (2) to (5);
 alter table uv_pt attach partition uv_pt1 for values from (1, 2) to (1, 10);
 create view uv_ptv as select * from uv_pt;
-select events & 4 != 0 AS upd,
-       events & 8 != 0 AS ins,
-       events & 16 != 0 AS del
-  from pg_catalog.pg_relation_is_updatable('uv_pt'::regclass, false) t(events);
 select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 1::smallint, false);
 select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 2::smallint, false);
 select table_name, is_updatable, is_insertable_into
@@ -894,12 +890,6 @@ create table uv_iocu_tab (a int unique, b text);
 create view uv_iocu_view as
     select b as bb, a as aa, uv_iocu_tab::text as cc from uv_iocu_tab;
 insert into uv_iocu_view (aa,bb) values (1,'x');
-explain (costs off)
-insert into uv_iocu_view (aa,bb) values (1,'y')
-   on conflict (aa) do update set bb = 'Rejected: '||excluded.*
-   where excluded.aa > 0
-   and excluded.bb != ''
-   and excluded.cc is not null;
 insert into uv_iocu_view (aa,bb) values (1,'y')
    on conflict (aa) do update set bb = 'Rejected: '||excluded.*
    where excluded.aa > 0

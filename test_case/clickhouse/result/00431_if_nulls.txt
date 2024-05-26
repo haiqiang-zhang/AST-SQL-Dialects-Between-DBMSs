@@ -1,0 +1,425 @@
+--Query--
+SELECT '---------- constant_true ----------'
+--Result--
+[('---------- constant_true ----------',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_constant : constant_null AS res FROM nullable_00431
+--Result--
+[('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',), ('Hello',)]
++--------------------+
+--Query--
+SELECT constant_true ? constant_null : else_constant AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_true ? constant_null : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_true ? constant_null : else_non_constant AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_true ? constant_null : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant : constant_null AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant_nullable : else_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), (None,), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant_nullable : constant_null AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), (None,), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant_nullable : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), (None,), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT constant_true ? then_non_constant_nullable : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('2',), ('3',), ('4',), (None,), ('6',), ('7',), ('8',), ('9',)]
++--------------------+
+--Query--
+SELECT '---------- constant_false ----------'
+--Result--
+[('---------- constant_false ----------',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_false ? then_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? constant_null : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_false ? constant_null : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_false ? constant_null : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? constant_null : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant_nullable : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant_nullable : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant_nullable : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_false ? then_non_constant_nullable : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT '---------- constant_null ----------'
+--Result--
+[('---------- constant_null ----------',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_null ? then_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? constant_null : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_null ? constant_null : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_null ? constant_null : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? constant_null : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant_nullable : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant_nullable : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant_nullable : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), ('-5',), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT constant_null ? then_non_constant_nullable : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('-1',), ('-2',), ('-3',), ('-4',), (None,), ('-6',), ('-7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT '---------- cond_non_constant ----------'
+--Result--
+[('---------- cond_non_constant ----------',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('Hello',), ('World',), ('World',), ('Hello',), ('World',), ('World',), ('Hello',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), ('Hello',), (None,), (None,), ('Hello',), (None,), (None,), ('Hello',), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('Hello',), ('-2',), ('-3',), ('Hello',), ('-5',), ('-6',), ('Hello',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('Hello',), ('-2',), ('-3',), ('Hello',), (None,), ('-6',), ('Hello',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? constant_null : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), (None,), ('World',), ('World',), (None,), ('World',), ('World',), (None,), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? constant_null : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? constant_null : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), (None,), ('-2',), ('-3',), (None,), ('-5',), ('-6',), (None,), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? constant_null : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), (None,), ('-2',), ('-3',), (None,), (None,), ('-6',), (None,), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('1',), ('World',), ('World',), ('4',), ('World',), ('World',), ('7',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), ('1',), (None,), (None,), ('4',), (None,), (None,), ('7',), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), ('-5',), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), (None,), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant_nullable : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('1',), ('World',), ('World',), ('4',), ('World',), ('World',), ('7',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant_nullable : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), ('1',), (None,), (None,), ('4',), (None,), (None,), ('7',), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant_nullable : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), ('-5',), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant ? then_non_constant_nullable : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), (None,), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT '---------- cond_non_constant_nullable ----------'
+--Result--
+[('---------- cond_non_constant_nullable ----------',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('Hello',), ('World',), ('World',), ('Hello',), ('World',), ('World',), ('Hello',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), ('Hello',), (None,), (None,), ('Hello',), (None,), (None,), ('Hello',), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('Hello',), ('-2',), ('-3',), ('Hello',), ('-5',), ('-6',), ('Hello',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('Hello',), ('-2',), ('-3',), ('Hello',), (None,), ('-6',), ('Hello',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? constant_null : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), (None,), ('World',), ('World',), (None,), ('World',), ('World',), (None,), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? constant_null : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? constant_null : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), (None,), ('-2',), ('-3',), (None,), ('-5',), ('-6',), (None,), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? constant_null : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), (None,), ('-2',), ('-3',), (None,), (None,), ('-6',), (None,), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('1',), ('World',), ('World',), ('4',), ('World',), ('World',), ('7',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), ('1',), (None,), (None,), ('4',), (None,), (None,), ('7',), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), ('-5',), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), (None,), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant_nullable : else_constant AS res FROM nullable_00431
+--Result--
+[('World',), ('1',), ('World',), ('World',), ('4',), ('World',), ('World',), ('7',), ('World',), ('World',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant_nullable : constant_null AS res FROM nullable_00431
+--Result--
+[(None,), ('1',), (None,), (None,), ('4',), (None,), (None,), ('7',), (None,), (None,)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant_nullable : else_non_constant AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), ('-5',), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+
+--Query--
+SELECT cond_non_constant_nullable ? then_non_constant_nullable : else_non_constant_nullable AS res FROM nullable_00431
+--Result--
+[('0',), ('1',), ('-2',), ('-3',), ('4',), (None,), ('-6',), ('7',), ('-8',), ('-9',)]
++--------------------+

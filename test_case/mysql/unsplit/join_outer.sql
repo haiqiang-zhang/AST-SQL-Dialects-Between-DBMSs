@@ -83,7 +83,6 @@ INSERT INTO t1 VALUES (10363,'Tecniques de Comunicacio Oral i Escrita','Tecnicas
 INSERT INTO t1 VALUES (11403,'Projecte Fi de Carrera','Proyecto Fin de Carrera','Projecte Fi de Carrera','PFC',9.0,NULL,NULL,NULL);
 INSERT INTO t1 VALUES (11404,'+lgebra lineal','Algebra lineal','+lgebra lineal','+lgebra lineal',15.0,NULL,NULL,NULL);
 INSERT INTO t1 VALUES (11405,'+lgebra lineal','Algebra lineal','+lgebra lineal','+lgebra lineal',18.0,NULL,NULL,NULL);
-INSERT INTO t1 VALUES (11406,'Calcul Infinitesimal','CÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂlculo Infinitesimal','Calcul Infinitesimal','Calcul Infinitesimal',15.0,NULL,NULL,NULL);
 CREATE TABLE t2 (
   idAssignatura int(11) DEFAULT '0' NOT NULL,
   Grup int(11) DEFAULT '0' NOT NULL,
@@ -410,9 +409,6 @@ create table t2 (a int, c varchar(20));
 insert into t1 values (1,"aaaaaaaaaa"),(2,"bbbbbbbbbb");
 insert into t2 values (1,"cccccccccc"),(2,"dddddddddd");
 select group_concat(t1.b,t2.c) from t1 left join t2 using(a) group by t1.a;
-select group_concat(t1.b,t2.c) from t1 inner join t2 using(a) group by t1.a;
-select group_concat(t1.b,t2.c) from t1 left join t2 using(a) group by a;
-select group_concat(t1.b,t2.c) from t1 inner join t2 using(a) group by a;
 drop table t1, t2;
 create table t1 (gid smallint(5) unsigned not null, x int(11) not null, y int(11) not null, art int(11) not null, primary key  (gid,x,y));
 insert t1 values (1, -5, -8, 2), (1, 2, 2, 1), (1, 1, 1, 1);
@@ -527,15 +523,6 @@ CREATE TABLE t2 ( a INT, b INT );
 INSERT INTO t2 VALUES (1, 1),(1, 2),(1, 3),(2, 4),(2, 5);
 SELECT t1.a, COUNT( t2.b ), SUM( t2.b ), MAX( t2.b )
 FROM t1 LEFT JOIN t2 USING( a )
-GROUP BY t1.a WITH ROLLUP;
-SELECT t1.a, COUNT( t2.b ), SUM( t2.b ), MAX( t2.b )
-FROM t1 LEFT JOIN t2 USING( a )
-GROUP BY t1.a WITH ROLLUP;
-SELECT t1.a, COUNT( t2.b ), SUM( t2.b ), MAX( t2.b )
-FROM t1 JOIN t2 USING( a )
-GROUP BY t1.a WITH ROLLUP;
-SELECT t1.a, COUNT( t2.b ), SUM( t2.b ), MAX( t2.b )
-FROM t1 JOIN t2 USING( a )
 GROUP BY t1.a WITH ROLLUP;
 DROP TABLE t1, t2;
 CREATE TABLE t1(f1 INT, f2 INT, f3 INT);

@@ -1,0 +1,80 @@
+--Query--
+SELECT name, color, dense_rank() OVER (ORDER BY name) FROM fruits
+--Result--
+[('apple', 'RED', 1), ('APPLE', 'yellow', 1), ('pear', 'YELLOW', 2), ('PEAR', 'green', 2)]
++--------------------+
+--Query--
+SELECT c=='Abc' FROM t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT c=='Abc', rank() OVER (ORDER BY b) FROM t1
+--Result--
+[(1, 1), (1, 2)]
++--------------------+
+--Query--
+SELECT b=='2' FROM t1
+--Result--
+[(1,), (0,)]
++--------------------+
+--Query--
+SELECT EXISTS(SELECT 1 FROM t1 ORDER BY sum(a) OVER ()) FROM t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT sum(a) OVER () FROM t2    ORDER BY EXISTS(SELECT 1 FROM t2 ORDER BY sum(a) OVER ())
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b, b=count(*), '1,2'                   FROM t1 GROUP BY b
+--Result--
+[(2, 0, '1,2'), (4, 0, '1,2')]
++--------------------+
+--Query--
+SELECT b, b=count(*), group_concat(b) OVER () FROM t1 GROUP BY b
+--Result--
+[(2, 0, '2,4'), (4, 0, '2,4')]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE    EXISTS (     SELECT MIN(c0) OVER (), CUME_DIST() OVER () FROM t0   ) >=1 AND    EXISTS (     SELECT MIN(c0) OVER (), CUME_DIST() OVER () FROM t0   ) <=1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE EXISTS (     SELECT MIN(c0) OVER (), CUME_DIST() OVER () FROM t0   )    BETWEEN 1 AND 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT avg(x) OVER (ORDER BY y) AS z FROM t1 ORDER BY z
+--Result--
+[(7.2,), (8.75,), (10.0,), (11.0,), (15.0,)]
++--------------------+
+--Query--
+SELECT avg(x) OVER (ORDER BY y) z FROM t1 ORDER BY (z IS y)
+--Result--
+[(10.0,), (15.0,), (11.0,), (8.75,), (7.2,)]
++--------------------+
+--Query--
+SELECT avg(x) OVER (ORDER BY y) z FROM t1 ORDER BY (y IS z)
+--Result--
+[(10.0,), (15.0,), (11.0,), (8.75,), (7.2,)]
++--------------------+
+--Query--
+SELECT avg(x) OVER (ORDER BY y) z FROM t1 ORDER BY z + 0.0
+--Result--
+[(7.2,), (8.75,), (10.0,), (11.0,), (15.0,)]
++--------------------+
+--Query--
+SELECT min( max((SELECT x FROM v1)) ) OVER()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT(       SELECT x UNION        SELECT sum( avg((SELECT x FROM v1)) ) OVER()   )   FROM v1
+--Result--
+[(0.0,), (0.0,)]
++--------------------+

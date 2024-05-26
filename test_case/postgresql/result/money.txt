@@ -174,11 +174,6 @@ SELECT cash_words(m) FROM money_data
 [('One hundred twenty three dollars and zero cents',)]
 +--------------------+
 --Query--
-SELECT cash_words(m + '1.23') FROM money_data
---Result--
-[('One hundred twenty four dollars and twenty three cents',)]
-+--------------------+
---Query--
 SELECT * FROM money_data
 --Result--
 [('$123.45',)]
@@ -252,16 +247,6 @@ SELECT pg_input_is_valid('\x0001', 'money')
 SELECT * FROM pg_input_error_info('\x0001', 'money')
 --Result--
 [('invalid input syntax for type money: "\\x0001"', None, None, '22P02')]
-+--------------------+
---Query--
-SELECT pg_input_is_valid('192233720368547758.07', 'money')
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info('192233720368547758.07', 'money')
---Result--
-[('value "192233720368547758.07" is out of range for type money', None, None, '22003')]
 +--------------------+
 --Query--
 SELECT '-92233720368547758.08'::money

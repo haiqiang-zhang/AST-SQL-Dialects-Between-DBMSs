@@ -1,0 +1,25 @@
+--Query--
+SELECT     dictGet('null_dict', 'val', 1337),     dictGetOrNull('null_dict', 'val', 1337),     dictGetOrDefault('null_dict', 'val', 1337, 111),     dictGetUInt8('null_dict', 'val', 1337),     dictGetUInt8OrDefault('null_dict', 'val', 1337, 111)
+--Result--
+[(0, None, 111, 0, 111)]
++--------------------+
+--Query--
+SELECT     dictGet('null_dict', 'nullable_val', 1337),     dictGetOrNull('null_dict', 'nullable_val', 1337),     dictGetOrDefault('null_dict', 'nullable_val', 1337, 111)
+--Result--
+[(None, None, 111)]
++--------------------+
+--Query--
+SELECT val, nullable_val FROM null_dict
+--Result--
+[]
++--------------------+
+--Query--
+SELECT dictGet('null_ip_dict', 'val', toIPv4('127.0.0.1'))
+--Result--
+[(77,)]
++--------------------+
+--Query--
+SELECT network, val FROM null_ip_dict
+--Result--
+[]
++--------------------+

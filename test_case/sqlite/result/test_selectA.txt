@@ -1,0 +1,990 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(None, 'U', 'u'), ('mad', 'Z', 'z'), (b'hare', 'm', 'M'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y')]
++--------------------+
+--Query--
+SELECT count(*) FROM t3
+--Result--
+[(30,)]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT t1.a, t1.b, t1.c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY t1.a, t1.b, t1.c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY y COLLATE NOCASE,x,z
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY y COLLATE NOCASE DESC,x,z
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY z COLLATE BINARY DESC,x,y
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a,b,c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a,b,c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a DESC
+--Result--
+[(9.9, 'b', 'B'), (1, 'a', 'a'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a DESC
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a DESC
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a DESC
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a DESC
+--Result--
+[(9.9, 'b', 'B'), (1, 'a', 'a'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a DESC
+--Result--
+[(9.9, 'b', 'B'), (1, 'a', 'a'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY b, a DESC
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY b
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY b DESC, c
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY b, c DESC, a
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY b COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY b
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY c, a DESC
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY c COLLATE BINARY, b DESC, c, a, b, c, a, b, c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY c DESC, a
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY c COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY c COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t3     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t3 WHERE b<'d'     ORDER BY c DESC, a
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     ORDER BY c DESC, a
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     ORDER BY c COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d'     INTERSECT SELECT a,b,c FROM t1     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     INTERSECT SELECT a,b,c FROM t1     EXCEPT SELECT x,y,z FROM t2     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT y,x,z FROM t2     INTERSECT SELECT a,b,c FROM t1     EXCEPT SELECT c,b,a FROM t3     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY y COLLATE NOCASE,x,z
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY y COLLATE NOCASE DESC,x,z
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY z COLLATE BINARY DESC,x,y
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT c,b,a FROM t1     UNION SELECT a,b,c FROM t3     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT c,b,a FROM t1     UNION SELECT a,b,c FROM t3     ORDER BY y COLLATE NOCASE DESC,x,z
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT upper((SELECT c FROM t1 UNION SELECT z FROM t2 ORDER BY 1))
+--Result--
+[('A',)]
++--------------------+
+--Query--
+SELECT lower((SELECT c FROM t1 UNION ALL SELECT z FROM t2 ORDER BY 1))
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master WHERE type='index'
+--Result--
+[('t1a',), ('t1b',), ('t1c',), ('t2x',), ('t2y',), ('t2z',)]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT t1.a,b,t1.c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a,t1.b,t1.c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION ALL SELECT x,y,z FROM t2     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION ALL SELECT a,b,c FROM t1     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 UNION SELECT x,y,z FROM t2     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY y COLLATE NOCASE,x,z
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY y COLLATE NOCASE DESC,x,z
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t1     ORDER BY z COLLATE BINARY DESC,x,y
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a,b,c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a,b,c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a DESC
+--Result--
+[(9.9, 'b', 'B'), (1, 'a', 'a'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY a DESC
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a DESC
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a DESC
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY a DESC
+--Result--
+[(9.9, 'b', 'B'), (1, 'a', 'a'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY a DESC
+--Result--
+[(9.9, 'b', 'B'), (1, 'a', 'a'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY b, a DESC
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY b
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY b DESC, c
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY b, c DESC, a
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY b COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY b
+--Result--
+[(None, 'C', 'c'), (1, 'a', 'a'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY c, a DESC
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b>='d'     ORDER BY c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b>='d' INTERSECT SELECT a,b,c FROM t1     ORDER BY c COLLATE BINARY, b DESC, c, a, b, c, a, b, c
+--Result--
+[('hello', 'd', 'D'), (b'abc', 'e', 'e')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY c DESC, a
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY c COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     ORDER BY c COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t3     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t3 WHERE b<'d'     ORDER BY c DESC, a
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 EXCEPT SELECT a,b,c FROM t1 WHERE b<'d'     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     ORDER BY c DESC, a
+--Result--
+[(b'abc', 'e', 'e'), ('hello', 'd', 'D')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 INTERSECT SELECT a,b,c FROM t1 WHERE b<'d'     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     ORDER BY c COLLATE NOCASE
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d' INTERSECT SELECT a,b,c FROM t1     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b<'d'     INTERSECT SELECT a,b,c FROM t1     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT b,c,a FROM t3     INTERSECT SELECT a,b,c FROM t1     EXCEPT SELECT x,y,z FROM t2     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT y,x,z FROM t2     INTERSECT SELECT a,b,c FROM t1     EXCEPT SELECT c,b,a FROM t3     ORDER BY c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE,a,c
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY b COLLATE NOCASE DESC,a,c
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT a,b,c FROM t3 UNION SELECT x,y,z FROM t2     ORDER BY c COLLATE BINARY DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY a,b,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY a DESC,b,c
+--Result--
+[(b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('mad', 'Z', 'z'), ('hello', 'd', 'D'), (5200000.0, 'X', 'x'), (9.9, 'b', 'B'), (1, 'a', 'a'), (-23, 'Y', 'y'), (None, 'C', 'c'), (None, 'U', 'u')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY a,c,b
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (-23, 'Y', 'y'), (1, 'a', 'a'), (9.9, 'b', 'B'), (5200000.0, 'X', 'x'), ('hello', 'd', 'D'), ('mad', 'Z', 'z'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY b,a,c
+--Result--
+[(None, 'C', 'c'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z'), (1, 'a', 'a'), (9.9, 'b', 'B'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY y COLLATE NOCASE,x,z
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY y COLLATE NOCASE DESC,x,z
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY c,b,a
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY c,a,b
+--Result--
+[(1, 'a', 'a'), (9.9, 'b', 'B'), (None, 'C', 'c'), ('hello', 'd', 'D'), (b'abc', 'e', 'e'), (b'hare', 'm', 'M'), (None, 'U', 'u'), (5200000.0, 'X', 'x'), (-23, 'Y', 'y'), ('mad', 'Z', 'z')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY c DESC,a,b
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2 UNION SELECT a,b,c FROM t3     ORDER BY z COLLATE BINARY DESC,x,y
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'abc', 'e', 'e'), (None, 'C', 'c'), (1, 'a', 'a'), (b'hare', 'm', 'M'), ('hello', 'd', 'D'), (9.9, 'b', 'B')]
++--------------------+
+--Query--
+SELECT x,y,z FROM t2     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT c,b,a FROM t1     UNION SELECT a,b,c FROM t3     INTERSECT SELECT a,b,c FROM t3     EXCEPT SELECT c,b,a FROM t1     UNION SELECT a,b,c FROM t3     ORDER BY y COLLATE NOCASE DESC,x,z
+--Result--
+[('mad', 'Z', 'z'), (-23, 'Y', 'y'), (5200000.0, 'X', 'x'), (None, 'U', 'u'), (b'hare', 'm', 'M'), (b'abc', 'e', 'e'), ('hello', 'd', 'D'), (None, 'C', 'c'), (9.9, 'b', 'B'), (1, 'a', 'a')]
++--------------------+
+--Query--
+WITH RECURSIVE     xyz(n) AS (       SELECT upper((SELECT x FROM (         SELECT x,y,z FROM t2         INTERSECT SELECT a,b,c FROM t3         EXCEPT SELECT c,b,a FROM t1         UNION SELECT a,b,c FROM t3         INTERSECT SELECT a,b,c FROM t3         EXCEPT SELECT c,b,a FROM t1         UNION SELECT a,b,c FROM t3         ORDER BY y COLLATE NOCASE DESC,x,z)))       UNION ALL       SELECT n || '+' FROM xyz WHERE length(n)<5     )   SELECT n FROM xyz ORDER BY +n
+--Result--
+[('MAD',), ('MAD+',), ('MAD++',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION SELECT b FROM t2) WHERE a=a
+--Result--
+[('12345',)]
++--------------------+
+--Query--
+SELECT sum(d) OVER( PARTITION BY(SELECT 0 FROM c JOIN a WHERE b =(SELECT b INTERSECT SELECT d FROM c) AND b = 123)) FROM c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 INTERSECT SELECT b FROM t2
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 INTERSECT SELECT b FROM t2   ) WHERE a||'' = 'ABC'
+--Result--
+[]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+SELECT toDayOfYear(toDate('2018-09-13'))
+--Result--
+[(256,)]
++--------------------+
+--Query--
+SELECT toDate('2018-09-17') AS x, toDateTime(x) AS x_t, toISOWeek(x), toISOWeek(x_t), toISOYear(x), toISOYear(x_t), toStartOfISOYear(x), toStartOfISOYear(x_t)
+--Result--
+[(datetime.date(2018, 9, 17), datetime.datetime(2018, 9, 17, 0, 0), 38, 38, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1))]
++--------------------+
+--Query--
+SELECT toDate('2018-12-25') + number AS x, toDateTime(x) AS x_t, toISOWeek(x) AS w, toISOWeek(x_t) AS wt, toISOYear(x) AS y, toISOYear(x_t) AS yt, toStartOfISOYear(x) AS ys, toStartOfISOYear(x_t) AS yst, toDayOfYear(x) AS dy, toDayOfYear(x_t) AS dyt FROM system.numbers LIMIT 10
+--Result--
+[(datetime.date(2018, 12, 25), datetime.datetime(2018, 12, 25, 0, 0), 52, 52, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1), 359, 359), (datetime.date(2018, 12, 26), datetime.datetime(2018, 12, 26, 0, 0), 52, 52, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1), 360, 360), (datetime.date(2018, 12, 27), datetime.datetime(2018, 12, 27, 0, 0), 52, 52, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1), 361, 361), (datetime.date(2018, 12, 28), datetime.datetime(2018, 12, 28, 0, 0), 52, 52, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1), 362, 362), (datetime.date(2018, 12, 29), datetime.datetime(2018, 12, 29, 0, 0), 52, 52, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1), 363, 363), (datetime.date(2018, 12, 30), datetime.datetime(2018, 12, 30, 0, 0), 52, 52, 2018, 2018, datetime.date(2018, 1, 1), datetime.date(2018, 1, 1), 364, 364), (datetime.date(2018, 12, 31), datetime.datetime(2018, 12, 31, 0, 0), 1, 1, 2019, 2019, datetime.date(2018, 12, 31), datetime.date(2018, 12, 31), 365, 365), (datetime.date(2019, 1, 1), datetime.datetime(2019, 1, 1, 0, 0), 1, 1, 2019, 2019, datetime.date(2018, 12, 31), datetime.date(2018, 12, 31), 1, 1), (datetime.date(2019, 1, 2), datetime.datetime(2019, 1, 2, 0, 0), 1, 1, 2019, 2019, datetime.date(2018, 12, 31), datetime.date(2018, 12, 31), 2, 2), (datetime.date(2019, 1, 3), datetime.datetime(2019, 1, 3, 0, 0), 1, 1, 2019, 2019, datetime.date(2018, 12, 31), datetime.date(2018, 12, 31), 3, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT toDayOfWeek(toStartOfISOYear(toDateTime(1000000000 + rand64() % 1000000000))) FROM numbers(10000)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH toDateTime(1000000000 + rand64() % 1000000000) AS time SELECT max(abs(toYear(time) - toISOYear(time))) <= 1 FROM numbers(10000)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH toDateTime(1000000000 + rand64() % 1000000000) AS time SELECT DISTINCT toISOWeek(time) BETWEEN 1 AND 53 FROM numbers(1000000)
+--Result--
+[(1,)]
++--------------------+

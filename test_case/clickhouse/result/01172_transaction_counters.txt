@@ -1,0 +1,55 @@
+--Query--
+select transactionID()
+--Result--
+[((0, 0, UUID('00000000-0000-0000-0000-000000000000')),)]
++--------------------+
+--Query--
+system stop merges txn_counters
+--Result--
+[]
++--------------------+
+--Query--
+select 1, system.parts.name, txn_counters.creation_tid = system.parts.creation_tid from txn_counters join system.parts on txn_counters._part = system.parts.name where database=currentDatabase() and table='txn_counters' order by system.parts.name
+--Result--
+[(1, 'all_1_1_0', 0), (1, 'all_2_2_0', 0)]
++--------------------+
+--Query--
+select 2, name, creation_csn, removal_tid, removal_csn from system.parts where database=currentDatabase() and table='txn_counters' order by system.parts.name
+--Result--
+[(2, 'all_1_1_0', 0, (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0), (2, 'all_2_2_0', 0, (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0)]
++--------------------+
+--Query--
+select 3, system.parts.name, txn_counters.creation_tid = system.parts.creation_tid from txn_counters join system.parts on txn_counters._part = system.parts.name where database=currentDatabase() and table='txn_counters' order by system.parts.name
+--Result--
+[(3, 'all_1_1_0', 0), (3, 'all_2_2_0', 0), (3, 'all_3_3_0', 0)]
++--------------------+
+--Query--
+select 4, name, creation_csn, removal_tid, removal_csn from system.parts where database=currentDatabase() and table='txn_counters' order by system.parts.name
+--Result--
+[(4, 'all_1_1_0', 0, (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0), (4, 'all_2_2_0', 0, (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0), (4, 'all_3_3_0', 0, (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0)]
++--------------------+
+--Query--
+detach table txn_counters
+--Result--
+[]
++--------------------+
+--Query--
+attach table txn_counters
+--Result--
+[]
++--------------------+
+--Query--
+select 6, system.parts.name, txn_counters.creation_tid = system.parts.creation_tid from txn_counters join system.parts on txn_counters._part = system.parts.name where database=currentDatabase() and table='txn_counters' order by system.parts.name
+--Result--
+[(6, 'all_1_1_0', 0), (6, 'all_2_2_0', 0), (6, 'all_3_3_0', 0), (6, 'all_4_4_0', 0)]
++--------------------+
+--Query--
+select 7, name, removal_tid, removal_csn from system.parts where database=currentDatabase() and table='txn_counters' and active order by system.parts.name
+--Result--
+[(7, 'all_1_1_0', (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0), (7, 'all_2_2_0', (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0), (7, 'all_3_3_0', (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0), (7, 'all_4_4_0', (0, 0, UUID('00000000-0000-0000-0000-000000000000')), 0)]
++--------------------+
+--Query--
+system flush logs
+--Result--
+[]
++--------------------+

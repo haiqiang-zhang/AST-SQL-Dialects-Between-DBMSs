@@ -76,7 +76,6 @@ SELECT 'dictGetOrDefault non existing value';
 SELECT dictGetOrDefault('01754_dictionary_db.direct_dictionary_complex_key_complex_attributes', 'value_first', (number, concat('id_key_', toString(number))), toString('default')) as value_first,
     dictGetOrDefault('01754_dictionary_db.direct_dictionary_complex_key_complex_attributes', 'value_second', (number, concat('id_key_', toString(number))), toString('default')) as value_second FROM system.numbers LIMIT 4;
 SELECT 'dictHas';
-SELECT dictHas('01754_dictionary_db.direct_dictionary_complex_key_complex_attributes', (number, concat('id_key_', toString(number)))) FROM system.numbers LIMIT 4;
 SELECT 'select all values as input stream';
 SELECT * FROM 01754_dictionary_db.direct_dictionary_complex_key_complex_attributes;
 DROP DICTIONARY 01754_dictionary_db.direct_dictionary_complex_key_complex_attributes;

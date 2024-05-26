@@ -1,0 +1,45 @@
+--Query--
+SELECT '-- negative tests'
+--Result--
+[('-- negative tests',)]
++--------------------+
+--Query--
+SELECT '-- const UInt*'
+--Result--
+[('-- const UInt*',)]
++--------------------+
+--Query--
+SELECT sqidEncode(1) AS sqid, sqidDecode(sqid)
+--Result--
+[('Uk', [1])]
++--------------------+
+--Query--
+SELECT sqidEncode(toNullable(1), toLowCardinality(2)) AS sqid
+--Result--
+[('XMbT',)]
++--------------------+
+--Query--
+SELECT '-- non-const UInt*'
+--Result--
+[('-- non-const UInt*',)]
++--------------------+
+--Query--
+SELECT sqidEncode(toNullable(materialize(1)), toLowCardinality(materialize(2)))
+--Result--
+[('XMbT',)]
++--------------------+
+--Query--
+SELECT '-- invalid sqid'
+--Result--
+[('-- invalid sqid',)]
++--------------------+
+--Query--
+SELECT '-- alias'
+--Result--
+[('-- alias',)]
++--------------------+
+--Query--
+SELECT sqid(1, 2)
+--Result--
+[('XMbT',)]
++--------------------+

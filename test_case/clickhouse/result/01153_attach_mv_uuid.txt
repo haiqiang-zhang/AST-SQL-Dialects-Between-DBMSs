@@ -1,0 +1,90 @@
+--Query--
+SELECT * FROM mv ORDER BY n
+--Result--
+[(1, 1), (2, 4)]
++--------------------+
+--Query--
+DETACH TABLE mv
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE mv
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM mv ORDER BY n
+--Result--
+[(1, 1), (2, 4), (3, 9), (4, 16)]
++--------------------+
+--Query--
+ATTACH MATERIALIZED VIEW mv UUID 'e15f3ab5-6cae-4df3-b879-f40deafd82c2' (n Int32, n2 Int64) ENGINE = MergeTree PARTITION BY n % 10 ORDER BY n AS SELECT n, n * n AS n2 FROM src
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE mv
+--Result--
+[("CREATE MATERIALIZED VIEW test.mv UUID 'e15f3ab5-6cae-4df3-b879-f40deafd82c2'\n(\n    `n` Int32,\n    `n2` Int64\n)\nENGINE = MergeTree\nPARTITION BY n % 10\nORDER BY n\nAS SELECT\n    n,\n    n * n AS n2\nFROM test.src",)]
++--------------------+
+--Query--
+SELECT * FROM mv ORDER BY n
+--Result--
+[(1, 1), (2, 4)]
++--------------------+
+--Query--
+DETACH TABLE mv
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE mv
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE mv
+--Result--
+[("CREATE MATERIALIZED VIEW test.mv UUID 'e15f3ab5-6cae-4df3-b879-f40deafd82c2'\n(\n    `n` Int32,\n    `n2` Int64\n)\nENGINE = MergeTree\nPARTITION BY n % 10\nORDER BY n\nAS SELECT\n    n,\n    n * n AS n2\nFROM test.src",)]
++--------------------+
+--Query--
+SELECT * FROM mv ORDER BY n
+--Result--
+[(1, 1), (2, 4), (3, 9), (4, 16)]
++--------------------+
+--Query--
+ATTACH MATERIALIZED VIEW mv UUID 'e15f3ab5-6cae-4df3-b879-f40deafd82c2' TO INNER UUID '3bd68e3c-2693-4352-ad66-a66eba9e345e' (n Int32, n2 Int64) ENGINE = MergeTree PARTITION BY n % 10 ORDER BY n AS SELECT n, n * n AS n2 FROM src
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE mv
+--Result--
+[("CREATE MATERIALIZED VIEW test.mv UUID 'e15f3ab5-6cae-4df3-b879-f40deafd82c2' TO INNER UUID '3bd68e3c-2693-4352-ad66-a66eba9e345e'\n(\n    `n` Int32,\n    `n2` Int64\n)\nENGINE = MergeTree\nPARTITION BY n % 10\nORDER BY n\nAS SELECT\n    n,\n    n * n AS n2\nFROM test.src",)]
++--------------------+
+--Query--
+SELECT * FROM mv ORDER BY n
+--Result--
+[(1, 1), (2, 4)]
++--------------------+
+--Query--
+DETACH TABLE mv
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE mv
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE mv
+--Result--
+[("CREATE MATERIALIZED VIEW test.mv UUID 'e15f3ab5-6cae-4df3-b879-f40deafd82c2' TO INNER UUID '3bd68e3c-2693-4352-ad66-a66eba9e345e'\n(\n    `n` Int32,\n    `n2` Int64\n)\nENGINE = MergeTree\nPARTITION BY n % 10\nORDER BY n\nAS SELECT\n    n,\n    n * n AS n2\nFROM test.src",)]
++--------------------+
+--Query--
+SELECT * FROM mv ORDER BY n
+--Result--
+[(1, 1), (2, 4), (3, 9), (4, 16)]
++--------------------+

@@ -69,26 +69,6 @@ SELECT pr.snap_ts < pg_stat_get_snapshot_timestamp() as snapshot_newer FROM prev
 []
 +--------------------+
 --Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
 SAVEPOINT sp1
 --Result--
 []
@@ -97,11 +77,6 @@ SAVEPOINT sp1
 SAVEPOINT sp1
 --Result--
 []
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
 +--------------------+
 --Query--
 SELECT last_seq_scan, last_idx_scan FROM pg_stat_all_tables WHERE relid = 'test_last_scan'::regclass
@@ -111,7 +86,7 @@ SELECT last_seq_scan, last_idx_scan FROM pg_stat_all_tables WHERE relid = 'test_
 --Query--
 SELECT seq_scan, idx_scan FROM pg_stat_all_tables WHERE relid = 'test_last_scan'::regclass
 --Result--
-[(1, 0)]
+[(0, 0)]
 +--------------------+
 --Query--
 EXPLAIN (COSTS off) SELECT count(*) FROM test_last_scan WHERE noidx_col = 1
@@ -124,79 +99,14 @@ SELECT count(*) FROM test_last_scan WHERE noidx_col = 1
 [(1,)]
 +--------------------+
 --Query--
-EXPLAIN (COSTS off) SELECT count(*) FROM test_last_scan WHERE idx_col = 1
+SELECT (n_tup_ins + n_tup_upd) > 0 AS has_data FROM pg_stat_all_tables   WHERE relid = 'pg_shdescription'::regclass
 --Result--
-[('Aggregate',), ('  ->  Index Scan using test_last_scan_pkey on test_last_scan',), ('        Index Cond: (idx_col = 1)',)]
-+--------------------+
---Query--
-SELECT count(*) FROM test_last_scan WHERE idx_col = 1
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS off) SELECT count(*) FROM test_last_scan WHERE noidx_col = 1
---Result--
-[('Aggregate',), ('  ->  Seq Scan on test_last_scan',), ('        Filter: (noidx_col = 1)',)]
-+--------------------+
---Query--
-SELECT count(*) FROM test_last_scan WHERE noidx_col = 1
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS off) SELECT count(*) FROM test_last_scan WHERE idx_col = 1
---Result--
-[('Aggregate',), ('  ->  Index Scan using test_last_scan_pkey on test_last_scan',), ('        Index Cond: (idx_col = 1)',)]
-+--------------------+
---Query--
-SELECT count(*) FROM test_last_scan WHERE idx_col = 1
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS off) SELECT count(*) FROM test_last_scan WHERE idx_col = 1
---Result--
-[('Aggregate',), ('  ->  Bitmap Heap Scan on test_last_scan',), ('        Recheck Cond: (idx_col = 1)',), ('        ->  Bitmap Index Scan on test_last_scan_pkey',), ('              Index Cond: (idx_col = 1)',)]
-+--------------------+
---Query--
-SELECT count(*) FROM test_last_scan WHERE idx_col = 1
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
+[(False,)]
 +--------------------+
 --Query--
 SELECT (n_tup_ins + n_tup_upd) > 0 AS has_data FROM pg_stat_all_tables   WHERE relid = 'pg_shdescription'::regclass
 --Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT (n_tup_ins + n_tup_upd) > 0 AS has_data FROM pg_stat_all_tables   WHERE relid = 'pg_shdescription'::regclass
---Result--
-[(True,)]
+[(False,)]
 +--------------------+
 --Query--
 SELECT (current_schemas(true))[1] = ('pg_temp_' || beid::text) AS match FROM pg_stat_get_backend_idset() beid WHERE pg_stat_get_backend_pid(beid) = pg_backend_pid()
@@ -224,51 +134,6 @@ SELECT pg_stat_clear_snapshot()
 [('',)]
 +--------------------+
 --Query--
-SELECT pg_stat_get_snapshot_timestamp()
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_function_calls(0)
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_snapshot_timestamp() IS NOT NULL AS snapshot_ok
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_snapshot_timestamp() IS NOT NULL AS snapshot_ok
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_function_calls(0)
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_snapshot_timestamp() IS NOT NULL AS snapshot_ok
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_snapshot_timestamp() IS NOT NULL AS snapshot_ok
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_function_calls(0)
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT pg_stat_get_snapshot_timestamp() IS NOT NULL AS snapshot_ok
---Result--
-[(False,)]
-+--------------------+
---Query--
 select a from stats_test_tab1 where a = 3
 --Result--
 [(3,)]
@@ -289,44 +154,9 @@ SELECT pg_stat_get_subscription_stats(NULL)
 [(None,)]
 +--------------------+
 --Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
 SELECT pg_relation_size('test_io_local') / current_setting('block_size')::int8 > 100
 --Result--
 [(False,)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT pg_stat_force_next_flush()
---Result--
-[('',)]
 +--------------------+
 --Query--
 SELECT pg_stat_get_tuples_hot_updated('brin_hot'::regclass::oid)
@@ -349,17 +179,7 @@ EXPLAIN (COSTS OFF) SELECT * FROM brin_hot_2 WHERE a = 2 AND b = 100
 [('Bitmap Heap Scan on brin_hot_2',), ('  Recheck Cond: ((b = 100) AND (a = 2))',), ('  ->  Bitmap Index Scan on brin_hot_2_b_idx',), ('        Index Cond: (b = 100)',)]
 +--------------------+
 --Query--
-SELECT COUNT(*) FROM brin_hot_2 WHERE a = 2 AND b = 100
---Result--
-[(1,)]
-+--------------------+
---Query--
 EXPLAIN (COSTS OFF) SELECT * FROM brin_hot_3 WHERE a = 2
 --Result--
 [('Bitmap Heap Scan on brin_hot_3',), ('  Recheck Cond: (a = 2)',), ('  ->  Bitmap Index Scan on brin_hot_3_a_idx',), ('        Index Cond: (a = 2)',)]
-+--------------------+
---Query--
-SELECT COUNT(*) FROM brin_hot_3 WHERE a = 2
---Result--
-[(20,)]
 +--------------------+

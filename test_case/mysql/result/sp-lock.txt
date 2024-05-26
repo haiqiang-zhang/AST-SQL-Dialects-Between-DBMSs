@@ -1,0 +1,60 @@
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select get_lock("30977", 0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select release_lock("30977")
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select @var
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @exec_count
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @exec_count
+--Result--
+[(None,)]
++--------------------+

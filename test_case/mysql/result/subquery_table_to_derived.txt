@@ -1,0 +1,195 @@
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR ot.a IN (SELECT it.a+1 FROM t2 it)
+--Result--
+[(2, 20), (3, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR (ot.a,ot.a+1,ot.a+2)  IN (SELECT it.a+1 AS myname,it.a+2 AS myname,it.a+3 FROM t2 it      WHERE it.a+3=ot.a+2)
+--Result--
+[(2, 20), (3, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR EXISTS(SELECT * FROM t2 it WHERE ot.a=it.a+1)
+--Result--
+[(2, 20), (3, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR EXISTS(SELECT it.b FROM t2 it WHERE ot.a=it.a+1)
+--Result--
+[(2, 20), (3, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR EXISTS(SELECT it.b,ot.b FROM t2 it WHERE ot.a=it.a+1)
+--Result--
+[(2, 20), (3, 30)]
++--------------------+
+--Query--
+PREPARE s FROM "SELECT * FROM t1 ot WHERE ot.b<0 OR EXISTS(SELECT it.b FROM v2 it WHERE ot.a=it.a+1)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR (ot.b<0 AND (ot.b<0 OR ot.a IN (SELECT it.a+1 FROM t2 it)))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ot WHERE ot.b<0 OR ot.a IN (SELECT it.a+1 FROM (SELECT * FROM t2 LIMIT 1) it                          WHERE it.a+3=ot.a+1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 10), (200, 20), (300, 30)]
++--------------------+
+--Query--
+SELECT * FROM t1   WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a<>t2.b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1   WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a<>t2.b) OR t1.a>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a<>t2.b) AND t1.a>0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE EXISTS(SELECT * FROM t2 WHERE t1.a<>t2.b) AND t1.a>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a>=t2.b) AND t1.a>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a>t2.b) AND t1.a>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a<=t2.b) AND t1.a>0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE NOT EXISTS(SELECT * FROM t2 WHERE t1.a<t2.b) AND t1.a>0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE NOT EXISTS(SELECT * FROM t2 WHERE t2.b<t1.a) AND t1.a>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT *   FROM t1 LEFT JOIN t2 ON 2 IN (     SELECT COUNT(*) FROM t1     WHERE NOT EXISTS ( SELECT b FROM t3 )     GROUP BY pk   )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE NOT EXISTS (VALUES ROW(1),ROW(2))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE NOT EXISTS (VALUES ROW(1),ROW(2))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2))
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2))
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT 5) t1(c0) WHERE EXISTS (VALUES ROW(1),ROW(2))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT 1 OFFSET 0)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT 1 OFFSET 1)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT 1 OFFSET 2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT 0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT 1)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+PREPARE p FROM 'SELECT c0 FROM t1                 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT 1 OFFSET ?)'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM 'SELECT c0 FROM t1 WHERE EXISTS (VALUES ROW(1),ROW(2) LIMIT ?)'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col FROM t1 WHERE col >= (SELECT MAX(CONCAT('nz' COLLATE utf8mb4_la_0900_as_cs)) FROM t1)
+--Result--
+[]
++--------------------+

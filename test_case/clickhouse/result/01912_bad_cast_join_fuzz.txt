@@ -1,0 +1,5 @@
+--Query--
+SELECT     1023 + l,     * FROM (     SELECT toLowCardinality(toNullable(number)) AS l     FROM system.numbers     LIMIT 10 ) AS s1 ANY LEFT JOIN (     SELECT toLowCardinality(toNullable(number)) AS r     FROM system.numbers     LIMIT 7 ) AS s2 ON (l + 1023) = (r * 3) ORDER BY l, r
+--Result--
+[(1023, 0, None), (1024, 1, None), (1025, 2, None), (1026, 3, None), (1027, 4, None), (1028, 5, None), (1029, 6, None), (1030, 7, None), (1031, 8, None), (1032, 9, None)]
++--------------------+

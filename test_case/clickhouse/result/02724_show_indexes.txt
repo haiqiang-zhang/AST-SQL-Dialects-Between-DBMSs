@@ -1,0 +1,100 @@
+--Query--
+SELECT '--- Aliases of SHOW INDEX'
+--Result--
+[('--- Aliases of SHOW INDEX',)]
++--------------------+
+--Query--
+SHOW INDEX FROM tbl
+--Result--
+[('tbl', 1, 'blf_idx', 1, '', None, 0, None, None, None, 'BLOOM_FILTER', '', '', 'YES', 'd, b'), ('tbl', 1, 'mm1_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'a, c, d'), ('tbl', 1, 'mm2_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'c, d, e'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'PRIMARY', 2, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'set_idx', 1, '', None, 0, None, None, None, 'SET', '', '', 'YES', 'e')]
++--------------------+
+--Query--
+SHOW INDEXES FROM tbl
+--Result--
+[('tbl', 1, 'blf_idx', 1, '', None, 0, None, None, None, 'BLOOM_FILTER', '', '', 'YES', 'd, b'), ('tbl', 1, 'mm1_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'a, c, d'), ('tbl', 1, 'mm2_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'c, d, e'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'PRIMARY', 2, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'set_idx', 1, '', None, 0, None, None, None, 'SET', '', '', 'YES', 'e')]
++--------------------+
+--Query--
+SHOW INDICES FROM tbl
+--Result--
+[('tbl', 1, 'blf_idx', 1, '', None, 0, None, None, None, 'BLOOM_FILTER', '', '', 'YES', 'd, b'), ('tbl', 1, 'mm1_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'a, c, d'), ('tbl', 1, 'mm2_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'c, d, e'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'PRIMARY', 2, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'set_idx', 1, '', None, 0, None, None, None, 'SET', '', '', 'YES', 'e')]
++--------------------+
+--Query--
+SHOW KEYS FROM tbl
+--Result--
+[('tbl', 1, 'blf_idx', 1, '', None, 0, None, None, None, 'BLOOM_FILTER', '', '', 'YES', 'd, b'), ('tbl', 1, 'mm1_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'a, c, d'), ('tbl', 1, 'mm2_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'c, d, e'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'PRIMARY', 2, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'set_idx', 1, '', None, 0, None, None, None, 'SET', '', '', 'YES', 'e')]
++--------------------+
+--Query--
+SELECT '--- EXTENDED'
+--Result--
+[('--- EXTENDED',)]
++--------------------+
+--Query--
+SHOW EXTENDED INDEX FROM tbl
+--Result--
+[('tbl', 1, 'blf_idx', 1, '', None, 0, None, None, None, 'BLOOM_FILTER', '', '', 'YES', 'd, b'), ('tbl', 1, 'mm1_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'a, c, d'), ('tbl', 1, 'mm2_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'c, d, e'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'PRIMARY', 2, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'set_idx', 1, '', None, 0, None, None, None, 'SET', '', '', 'YES', 'e')]
++--------------------+
+--Query--
+SELECT '--- WHERE'
+--Result--
+[('--- WHERE',)]
++--------------------+
+--Query--
+SHOW INDEX FROM tbl WHERE index_type LIKE '%minmax%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--- Check with weird table names'
+--Result--
+[('--- Check with weird table names',)]
++--------------------+
+--Query--
+SHOW INDEX FROM `$4@^7`
+--Result--
+[('$4@^7', 1, 'PRIMARY', 1, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', '')]
++--------------------+
+--Query--
+SHOW INDEX FROM NULL
+--Result--
+[('NULL', 1, 'PRIMARY', 1, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', '')]
++--------------------+
+--Query--
+SHOW INDEX FROM `'` FROM `'`
+--Result--
+[("'", 1, 'PRIMARY', 1, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', '')]
++--------------------+
+--Query--
+SHOW INDEX FROM `'`.`'`
+--Result--
+[("'", 1, 'PRIMARY', 1, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', '')]
++--------------------+
+--Query--
+SELECT '--- Original table'
+--Result--
+[('--- Original table',)]
++--------------------+
+--Query--
+SHOW INDEX FROM tbl
+--Result--
+[('tbl', 1, 'blf_idx', 1, '', None, 0, None, None, None, 'BLOOM_FILTER', '', '', 'YES', 'd, b'), ('tbl', 1, 'mm1_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'a, c, d'), ('tbl', 1, 'mm2_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'c, d, e'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'PRIMARY', 2, 'c', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', ''), ('tbl', 1, 'set_idx', 1, '', None, 0, None, None, None, 'SET', '', '', 'YES', 'e')]
++--------------------+
+--Query--
+SELECT '--- Equally named table in other database'
+--Result--
+[('--- Equally named table in other database',)]
++--------------------+
+--Query--
+SHOW INDEX FROM tbl FROM database_123456789abcde
+--Result--
+[('tbl', 1, 'mmi_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'b'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', '')]
++--------------------+
+--Query--
+SELECT '--- Short form'
+--Result--
+[('--- Short form',)]
++--------------------+
+--Query--
+SHOW INDEX FROM database_123456789abcde.tbl
+--Result--
+[('tbl', 1, 'mmi_idx', 1, '', None, 0, None, None, None, 'MINMAX', '', '', 'YES', 'b'), ('tbl', 1, 'PRIMARY', 1, 'a', 'A', 0, None, None, None, 'PRIMARY', '', '', 'YES', '')]
++--------------------+

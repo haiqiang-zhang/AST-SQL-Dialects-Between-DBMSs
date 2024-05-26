@@ -1,0 +1,125 @@
+--Query--
+SELECT a, nest.* FROM test1 ARRAY JOIN nest
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, n.* FROM test1 ARRAY JOIN nest AS n
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, nest.* FROM test2 ARRAY JOIN nest
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, n.* FROM test2 ARRAY JOIN nest AS n
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 AS x, x, x + 1
+--Result--
+[(1, 1, 2)]
++--------------------+
+--Query--
+SELECT x, x + 1, 1 AS x
+--Result--
+[(1, 2, 1)]
++--------------------+
+--Query--
+SELECT x, 1 + (2 + (3 AS x))
+--Result--
+[(3, 6)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT 123 AS x FROM (SELECT a, x FROM (SELECT 1 AS a, 2 AS b))
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT 123 AS x, (SELECT x) AS y
+--Result--
+[(123, 123)]
++--------------------+
+--Query--
+SELECT 123 AS x, 123 IN (SELECT x)
+--Result--
+[(123, 1)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+WITH 123 AS x SELECT 555 FROM (SELECT a, x FROM (SELECT 1 AS a, 2 AS b))
+--Result--
+[(555,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT * FROM (SELECT 99 AS x) AS t)
+--Result--
+[(99,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT t.x FROM (SELECT 1 AS x) AS t
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x IN (SELECT 1 AS x) FROM (SELECT 1 AS x)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x + 1 AS x, x FROM (SELECT 1 AS x)
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT x, x + 1 AS x FROM (SELECT 1 AS x)
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> x + 1, [1, 2])
+--Result--
+[([2, 3],)]
++--------------------+

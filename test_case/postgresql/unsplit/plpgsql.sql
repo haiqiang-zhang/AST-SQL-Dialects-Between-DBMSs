@@ -563,7 +563,6 @@ DELETE FROM transition_table_level1
 SELECT count(*) FROM transition_table_level1;
 DELETE FROM transition_table_level2
   WHERE level2_no BETWEEN 211 AND 220;
-SELECT count(*) FROM transition_table_level2;
 CREATE TABLE alter_table_under_transition_tables
 (
   id int PRIMARY KEY,

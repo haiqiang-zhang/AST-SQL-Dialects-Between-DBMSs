@@ -1,0 +1,30 @@
+--Query--
+SELECT '127.0.0.1'::INET::VARCHAR
+--Result--
+[('127.0.0.1',)]
++--------------------+
+--Query--
+SELECT '127.0.0.1/17'::INET::VARCHAR
+--Result--
+[('127.0.0.1/17',)]
++--------------------+
+--Query--
+SELECT '127.0.0.1'::INET
+--Result--
+[({'ip_type': 1, 'address': 2130706433, 'mask': 32},)]
++--------------------+
+--Query--
+select '127.000.0000.1'::inet
+--Result--
+[({'ip_type': 1, 'address': 2130706433, 'mask': 32},)]
++--------------------+
+--Query--
+SELECT INET '0.0.0.0/0', INET '255.255.255.255/31'
+--Result--
+[({'ip_type': 1, 'address': 0, 'mask': 0}, {'ip_type': 1, 'address': 4294967295, 'mask': 31})]
++--------------------+
+--Query--
+SELECT typeof('127.0.0.1/17'::INET)
+--Result--
+[('INET',)]
++--------------------+

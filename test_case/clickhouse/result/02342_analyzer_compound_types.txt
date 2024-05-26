@@ -1,0 +1,370 @@
+--Query--
+SELECT 'Constant tuple'
+--Result--
+[('Constant tuple',)]
++--------------------+
+--Query--
+SELECT cast((1, 'Value'), 'Tuple (id UInt64, value String)') AS value, value.id, value.value
+--Result--
+[((1, 'Value'), 1, 'Value')]
++--------------------+
+--Query--
+SELECT cast((1, 'Value'), 'Tuple (id UInt64, value String)') AS value, value.* APPLY toString
+--Result--
+[((1, 'Value'), '1', 'Value')]
++--------------------+
+--Query--
+SELECT cast((1, 'Value'), 'Tuple (id UInt64, value String)') AS value, value.COLUMNS(id) APPLY toString
+--Result--
+[((1, 'Value'), '1')]
++--------------------+
+--Query--
+SELECT cast((1, 'Value'), 'Tuple (id UInt64, value String)') AS value, value.COLUMNS(value) APPLY toString
+--Result--
+[((1, 'Value'), 'Value')]
++--------------------+
+--Query--
+SELECT cast((1, 'Value'), 'Tuple (id UInt64, value String)') AS value, value.COLUMNS('i') APPLY toString
+--Result--
+[((1, 'Value'), '1')]
++--------------------+
+--Query--
+SELECT cast((1, 'Value'), 'Tuple (id UInt64, value String)') AS value, value.COLUMNS('v') APPLY toString
+--Result--
+[((1, 'Value'), 'Value')]
++--------------------+
+--Query--
+SELECT 'Tuple'
+--Result--
+[('Tuple',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT * FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'Tuple(\n    value_0_level_0 Tuple(\n        value_0_level_1 String,\n        value_1_level_1 String),\n    value_1_level_0 String)', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[(0, (('value_0_level_1', 'value_1_level_1'), 'value_1_level_0'))]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT id, value FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value', 'Tuple(\n    value_0_level_0 Tuple(\n        value_0_level_1 String,\n        value_1_level_1 String),\n    value_1_level_0 String)', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT id, value FROM test_table
+--Result--
+[(0, (('value_0_level_1', 'value_1_level_1'), 'value_1_level_0'))]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0, value.value_1_level_0 FROM test_table)
+--Result--
+[('value.value_0_level_0', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('value.value_1_level_0', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0, value.value_1_level_0 FROM test_table
+--Result--
+[(('value_0_level_1', 'value_1_level_1'), 'value_1_level_0')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value AS alias_value, alias_value.value_0_level_0, alias_value.value_1_level_0 FROM test_table)
+--Result--
+[('alias_value', 'Tuple(\n    value_0_level_0 Tuple(\n        value_0_level_1 String,\n        value_1_level_1 String),\n    value_1_level_0 String)', '', '', '', '', ''), ('alias_value.value_0_level_0', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('alias_value.value_1_level_0', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value AS alias_value, alias_value.value_0_level_0, alias_value.value_1_level_0 FROM test_table
+--Result--
+[((('value_0_level_1', 'value_1_level_1'), 'value_1_level_0'), ('value_0_level_1', 'value_1_level_1'), 'value_1_level_0')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value AS alias_value, alias_value.* FROM test_table)
+--Result--
+[('alias_value', 'Tuple(\n    value_0_level_0 Tuple(\n        value_0_level_1 String,\n        value_1_level_1 String),\n    value_1_level_0 String)', '', '', '', '', ''), ('alias_value.value_0_level_0', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('alias_value.value_1_level_0', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value AS alias_value, alias_value.* FROM test_table
+--Result--
+[((('value_0_level_1', 'value_1_level_1'), 'value_1_level_0'), ('value_0_level_1', 'value_1_level_1'), 'value_1_level_0')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value AS alias_value, alias_value.* APPLY toString FROM test_table)
+--Result--
+[('alias_value', 'Tuple(\n    value_0_level_0 Tuple(\n        value_0_level_1 String,\n        value_1_level_1 String),\n    value_1_level_0 String)', '', '', '', '', ''), ('toString(alias_value.value_0_level_0)', 'String', '', '', '', '', ''), ('toString(alias_value.value_1_level_0)', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value AS alias_value, alias_value.* APPLY toString FROM test_table
+--Result--
+[((('value_0_level_1', 'value_1_level_1'), 'value_1_level_0'), "('value_0_level_1','value_1_level_1')", 'value_1_level_0')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.* FROM test_table)
+--Result--
+[('value.value_0_level_0', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('value.value_1_level_0', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.* FROM test_table
+--Result--
+[(('value_0_level_1', 'value_1_level_1'), 'value_1_level_0')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.* APPLY toString FROM test_table)
+--Result--
+[('toString(value.value_0_level_0)', 'String', '', '', '', '', ''), ('toString(value.value_1_level_0)', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.* APPLY toString FROM test_table
+--Result--
+[("('value_0_level_1','value_1_level_1')", 'value_1_level_0')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0.value_0_level_1, value.value_0_level_0.value_1_level_1 FROM test_table)
+--Result--
+[('value.value_0_level_0.value_0_level_1', 'String', '', '', '', '', ''), ('value.value_0_level_0.value_1_level_1', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0.value_0_level_1, value.value_0_level_0.value_1_level_1 FROM test_table
+--Result--
+[('value_0_level_1', 'value_1_level_1')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0 AS alias_value, alias_value.value_0_level_1, alias_value.value_1_level_1 FROM test_table)
+--Result--
+[('alias_value', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('alias_value.value_0_level_1', 'String', '', '', '', '', ''), ('alias_value.value_1_level_1', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0 AS alias_value, alias_value.value_0_level_1, alias_value.value_1_level_1 FROM test_table
+--Result--
+[(('value_0_level_1', 'value_1_level_1'), 'value_0_level_1', 'value_1_level_1')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0 AS alias_value, alias_value.* FROM test_table)
+--Result--
+[('alias_value', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('alias_value.value_0_level_1', 'String', '', '', '', '', ''), ('alias_value.value_1_level_1', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0 AS alias_value, alias_value.* FROM test_table
+--Result--
+[(('value_0_level_1', 'value_1_level_1'), 'value_0_level_1', 'value_1_level_1')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0 AS alias_value, alias_value.* APPLY toString FROM test_table)
+--Result--
+[('alias_value', 'Tuple(\n    value_0_level_1 String,\n    value_1_level_1 String)', '', '', '', '', ''), ('toString(alias_value.value_0_level_1)', 'String', '', '', '', '', ''), ('toString(alias_value.value_1_level_1)', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0 AS alias_value, alias_value.* APPLY toString FROM test_table
+--Result--
+[(('value_0_level_1', 'value_1_level_1'), 'value_0_level_1', 'value_1_level_1')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0.* FROM test_table)
+--Result--
+[('value.value_0_level_0.value_0_level_1', 'String', '', '', '', '', ''), ('value.value_0_level_0.value_1_level_1', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0.* FROM test_table
+--Result--
+[('value_0_level_1', 'value_1_level_1')]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0.* APPLY toString FROM test_table)
+--Result--
+[('toString(value.value_0_level_0.value_0_level_1)', 'String', '', '', '', '', ''), ('toString(value.value_0_level_0.value_1_level_1)', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0.* APPLY toString FROM test_table
+--Result--
+[('value_0_level_1', 'value_1_level_1')]
++--------------------+
+--Query--
+SELECT 'Nested'
+--Result--
+[('Nested',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT * FROM test_table)
+--Result--
+[('id', 'UInt64', '', '', '', '', ''), ('value.value_0_level_0', 'Array(Nested(value_0_level_1 String, value_1_level_1 String))', '', '', '', '', ''), ('value.value_1_level_0', 'Array(String)', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[(0, [[('value_0_level_1', 'value_1_level_1')]], ['value_1_level_0'])]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0, value.value_1_level_0 FROM test_table)
+--Result--
+[('value.value_0_level_0', 'Array(Nested(value_0_level_1 String, value_1_level_1 String))', '', '', '', '', ''), ('value.value_1_level_0', 'Array(String)', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0, value.value_1_level_0 FROM test_table
+--Result--
+[([[('value_0_level_1', 'value_1_level_1')]], ['value_1_level_0'])]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0.value_0_level_1, value.value_0_level_0.value_1_level_1 FROM test_table)
+--Result--
+[('value.value_0_level_0.value_0_level_1', 'Array(Array(String))', '', '', '', '', ''), ('value.value_0_level_0.value_1_level_1', 'Array(Array(String))', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0.value_0_level_1, value.value_0_level_0.value_1_level_1 FROM test_table
+--Result--
+[([['value_0_level_1']], [['value_1_level_1']])]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0 AS value_alias, value_alias.value_0_level_1, value_alias.value_1_level_1 FROM test_table)
+--Result--
+[('value_alias', 'Array(Nested(value_0_level_1 String, value_1_level_1 String))', '', '', '', '', ''), ('value_alias.value_0_level_1', 'Array(Array(String))', '', '', '', '', ''), ('value_alias.value_1_level_1', 'Array(Array(String))', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0 AS value_alias, value_alias.value_0_level_1, value_alias.value_1_level_1 FROM test_table
+--Result--
+[([[('value_0_level_1', 'value_1_level_1')]], [['value_0_level_1']], [['value_1_level_1']])]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0 AS value_alias, value_alias.* FROM test_table)
+--Result--
+[('value_alias', 'Array(Nested(value_0_level_1 String, value_1_level_1 String))', '', '', '', '', ''), ('value_alias.value_0_level_1', 'Array(Array(String))', '', '', '', '', ''), ('value_alias.value_1_level_1', 'Array(Array(String))', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0 AS value_alias, value_alias.* FROM test_table
+--Result--
+[([[('value_0_level_1', 'value_1_level_1')]], [['value_0_level_1']], [['value_1_level_1']])]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0 AS value_alias, value_alias.* APPLY toString FROM test_table)
+--Result--
+[('value_alias', 'Array(Nested(value_0_level_1 String, value_1_level_1 String))', '', '', '', '', ''), ('toString(value_alias.value_0_level_1)', 'String', '', '', '', '', ''), ('toString(value_alias.value_1_level_1)', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0 AS value_alias, value_alias.* APPLY toString FROM test_table
+--Result--
+[([[('value_0_level_1', 'value_1_level_1')]], "[['value_0_level_1']]", "[['value_1_level_1']]")]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0.* FROM test_table)
+--Result--
+[('value.value_0_level_0.value_0_level_1', 'Array(Array(String))', '', '', '', '', ''), ('value.value_0_level_0.value_1_level_1', 'Array(Array(String))', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0.* FROM test_table
+--Result--
+[([['value_0_level_1']], [['value_1_level_1']])]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DESCRIBE (SELECT value.value_0_level_0.* APPLY toString FROM test_table)
+--Result--
+[('toString(value.value_0_level_0.value_0_level_1)', 'String', '', '', '', '', ''), ('toString(value.value_0_level_0.value_1_level_1)', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+SELECT value.value_0_level_0.* APPLY toString FROM test_table
+--Result--
+[("[['value_0_level_1']]", "[['value_1_level_1']]")]
++--------------------+

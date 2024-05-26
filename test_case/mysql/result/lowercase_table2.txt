@@ -1,0 +1,150 @@
+--Query--
+LOCK TABLE T2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE T2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from T1
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+SELECT LOCATION FROM T1 WHERE EVENT_ID=2 UNION ALL  SELECT LOCATION FROM T1 WHERE EVENT_ID=3
+--Result--
+[('Mic-5',), ('Mic-6',)]
++--------------------+
+--Query--
+SELECT LOCATION FROM T1 WHERE EVENT_ID=2 UNION ALL  SELECT LOCATION FROM T1 WHERE EVENT_ID=3
+--Result--
+[('Mic-5',), ('Mic-6',)]
++--------------------+
+--Query--
+SELECT LOCATION FROM T1 WHERE EVENT_ID=2 UNION ALL  SELECT LOCATION FROM T1 WHERE EVENT_ID=3
+--Result--
+[('Mic-5',), ('Mic-6',)]
++--------------------+
+--Query--
+select * from T1
+--Result--
+[(1, 'abc')]
++--------------------+
+--Query--
+select * from T1
+--Result--
+[(1, 'abc')]
++--------------------+
+--Query--
+select * from myUC
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select * from myUC
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select t1Aa.col1 from t1aA,t2Aa where t1Aa.col1 = t2aA.col1
+--Result--
+[]
++--------------------+
+--Query--
+select TABLE_SCHEMA,TABLE_NAME FROM information_schema.TABLES where TABLE_SCHEMA ='mysqltest_LC2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT trigger_schema, trigger_name, event_object_table FROM INFORMATION_SCHEMA.TRIGGERS   WHERE trigger_schema COLLATE utf8mb3_bin = 'BUP_XPFM_COMPAT_DB2'   ORDER BY trigger_schema, trigger_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_schema, table_name, table_comment from information_schema.tables   where table_schema like 'mysqltest_%' and table_name like 't_bug44738_%'   order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_schema, table_name, table_comment from information_schema.tables   where table_schema like 'mysqltest_%' and table_name like 't_bug44738_%'   order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_schema, table_name, table_comment from information_schema.tables   where table_schema = 'test' and table_name like 't_bug44738_%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM T1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.referential_constraints   WHERE table_name = 'T2' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.table_constraints   WHERE table_name = 'T2' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.referential_constraints   WHERE table_name = 'T3' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.table_constraints   WHERE table_name = 'T3' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.referential_constraints   WHERE table_name = 'T4' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.table_constraints   WHERE table_name = 'T4' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.referential_constraints   WHERE table_name = 'T2' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.table_constraints   WHERE table_name = 'T2' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.referential_constraints   WHERE table_name = 'T3' ORDER BY constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT constraint_name FROM information_schema.table_constraints   WHERE table_name = 'T3' ORDER BY constraint_name
+--Result--
+[]
++--------------------+

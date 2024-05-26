@@ -1,0 +1,60 @@
+--Query--
+SELECT 'NullableTuple with transform_null_in=0'
+--Result--
+[('NullableTuple with transform_null_in=0',)]
++--------------------+
+--Query--
+SELECT * FROM bloom_filter_nullable_index WHERE str IN     (SELECT '1048576', str FROM bloom_filter_nullable_index) SETTINGS transform_null_in = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM bloom_filter_nullable_index WHERE str IN     (SELECT '1048576', str FROM bloom_filter_nullable_index) SETTINGS transform_null_in = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'NullableTuple with transform_null_in=1'
+--Result--
+[('NullableTuple with transform_null_in=1',)]
++--------------------+
+--Query--
+SELECT 'NullableColumnFromCast with transform_null_in=0'
+--Result--
+[('NullableColumnFromCast with transform_null_in=0',)]
++--------------------+
+--Query--
+SELECT * FROM bloom_filter_nullable_index WHERE str IN     (SELECT cast('test', 'Nullable(String)')) SETTINGS transform_null_in = 0
+--Result--
+[(1, 'test')]
++--------------------+
+--Query--
+SELECT 'NullableColumnFromCast with transform_null_in=1'
+--Result--
+[('NullableColumnFromCast with transform_null_in=1',)]
++--------------------+
+--Query--
+SELECT * FROM bloom_filter_nullable_index WHERE str IN     (SELECT cast('test', 'Nullable(String)')) SETTINGS transform_null_in = 1
+--Result--
+[(1, 'test')]
++--------------------+
+--Query--
+SELECT 'NullableColumnFromTable with transform_null_in=0'
+--Result--
+[('NullableColumnFromTable with transform_null_in=0',)]
++--------------------+
+--Query--
+SELECT * FROM bloom_filter_nullable_index WHERE str IN     (SELECT value FROM nullable_string_value) SETTINGS transform_null_in = 0
+--Result--
+[(1, 'test')]
++--------------------+
+--Query--
+SELECT 'NullableColumnFromTable with transform_null_in=1'
+--Result--
+[('NullableColumnFromTable with transform_null_in=1',)]
++--------------------+
+--Query--
+SELECT * FROM bloom_filter_nullable_index WHERE str IN     (SELECT value FROM nullable_string_value) SETTINGS transform_null_in = 1
+--Result--
+[(1, 'test')]
++--------------------+

@@ -1,0 +1,260 @@
+--Query--
+SELECT tupleHammingDistance(tuple(1), tuple(1))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (1, 2) + tupleMultiply((3, 4), materialize((5, 1))) - (6, 3)
+--Result--
+[((10, 3),)]
++--------------------+
+--Query--
+SELECT vectorDifference(tuplePlus((1, 2), (3, 4)), (5, 6))
+--Result--
+[((-1, 0),)]
++--------------------+
+--Query--
+SELECT tupleMinus(materialize(vectorSum(tupleMultiply(materialize((1, 2)), (3, 4)), (5, 6))), (31, 41))
+--Result--
+[((-23, -27),)]
++--------------------+
+--Query--
+SELECT tupleDivide((5, 8, 11), (-2, 2, 4))
+--Result--
+[((-2.5, 4.0, 2.75),)]
++--------------------+
+--Query--
+SELECT tuple(1) + tuple(2)
+--Result--
+[((3,),)]
++--------------------+
+--Query--
+SELECT tupleNegate((1, 0, 3.5))
+--Result--
+[((-1, 0, -3.5),)]
++--------------------+
+--Query--
+SELECT -materialize((1, 2, 3))
+--Result--
+[((-1, -2, -3),)]
++--------------------+
+--Query--
+SELECT -tuple(1)
+--Result--
+[((-1,),)]
++--------------------+
+--Query--
+SELECT tupleMultiplyByNumber((1, 2, 3), 0.5)
+--Result--
+[((0.5, 1.0, 1.5),)]
++--------------------+
+--Query--
+SELECT tupleDivideByNumber((1, 2.5, 3), materialize(0.5))
+--Result--
+[((2.0, 5.0, 6.0),)]
++--------------------+
+--Query--
+SELECT materialize((1, 2.0, 3.1)) * 3
+--Result--
+[((3, 6.0, 9.3),)]
++--------------------+
+--Query--
+SELECT 5.5 * (2, 4)
+--Result--
+[((11.0, 22.0),)]
++--------------------+
+--Query--
+SELECT (1, 2) / 2
+--Result--
+[((0.5, 1.0),)]
++--------------------+
+--Query--
+SELECT tuple(1, 2, 3) * tuple(2, 3, 4)
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT dotProduct(materialize((-1, 2, 3.002)), materialize((2, 3.4, 4)))
+--Result--
+[(16.808,)]
++--------------------+
+--Query--
+SELECT scalarProduct(tuple(1), tuple(0))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT L1Norm((-1, 2, -3))
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT L2Norm((1, 1.0))
+--Result--
+[(1.4142135623730951,)]
++--------------------+
+--Query--
+SELECT L2SquaredNorm((1, 1.0))
+--Result--
+[(2.0,)]
++--------------------+
+--Query--
+SELECT max2(materialize(1), 1.5)
+--Result--
+[(1.5,)]
++--------------------+
+--Query--
+SELECT min2(-1, -3)
+--Result--
+[(-3.0,)]
++--------------------+
+--Query--
+SELECT LinfNorm((1, -2.3, 1.7))
+--Result--
+[(2.3,)]
++--------------------+
+--Query--
+SELECT LpNorm(tuple(-1), 3.3)
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT LpNorm((13, -84.4, 91, 63.1), 2) = L2Norm(tuple(13, -84.4, 91, 63.1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT LpNorm(materialize((13, -84.4, 91, 63.1)), 1) = L1Norm(tuple(13, -84.4, 91, 63.1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT L1Distance((1, 2, 3), (2, 3, 1))
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT L2Distance(materialize((1, 1)), (3, -1))
+--Result--
+[(2.8284271247461903,)]
++--------------------+
+--Query--
+SELECT L2SquaredDistance(materialize((1, 1)), (3, -1))
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT LinfDistance((1, 1), (1, 2))
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT LpDistance((1800, 1900), (18, 59), 12) - LpDistance(tuple(-22), tuple(1900), 12.)
+--Result--
+[(-4.413254828250501e-08,)]
++--------------------+
+--Query--
+SELECT L1Normalize(materialize((1, -4)))
+--Result--
+[((0.2, -0.8),)]
++--------------------+
+--Query--
+SELECT L2Normalize((3, 4))
+--Result--
+[((0.6, 0.8),)]
++--------------------+
+--Query--
+SELECT LinfNormalize((5, -5, 5.0))
+--Result--
+[((1.0, -1.0, 1.0),)]
++--------------------+
+--Query--
+SELECT LpNormalize((1, pow(31, 1 / 5)), 5.)
+--Result--
+[((0.4999999999999999, 0.9936703773322288),)]
++--------------------+
+--Query--
+SELECT cosineDistance(materialize((1, 1)), (2, 2))
+--Result--
+[(2.220446049250313e-16,)]
++--------------------+
+--Query--
+SELECT (NULL, 1) + (1, NULL)
+--Result--
+[((None, None),)]
++--------------------+
+--Query--
+SELECT (NULL, 1) * materialize((1, NULL))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 2 * (1, 2, NULL)
+--Result--
+[((2, 4, None),)]
++--------------------+
+--Query--
+SELECT (1, 1.0, NULL) / NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1, 1.0, NULL) / materialize(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT -(NULL, NULL, 1)
+--Result--
+[((None, None, -1),)]
++--------------------+
+--Query--
+SELECT (NULL, NULL) * NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT max2(NULL, 1) - min2(NULL, 1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (1, 2) * toDecimal32(3.1, 8)
+--Result--
+[((3.1, 6.2),)]
++--------------------+
+--Query--
+SELECT tuple(*, 1) + tuple(2, *) FROM numbers(3)
+--Result--
+[((2, 1),), ((3, 2),), ((4, 3),)]
++--------------------+
+--Query--
+SELECT cosineDistance(tuple(*, * + 1), tuple(1, 2)) FROM numbers(1, 3)
+--Result--
+[(2.220446049250313e-16,), (0.007722123286332261,), (0.01613008990009257,)]
++--------------------+
+--Query--
+SELECT -tuple(NULL, * * 2, *) FROM numbers(2)
+--Result--
+[((None, 0, 0),), ((None, -2, -1),)]
++--------------------+
+--Query--
+SELECT normL1((1, 1)), normL2((1, 1)), normLinf((1, 1)), normLp((1, 1), 1.)
+--Result--
+[(2, 1.4142135623730951, 1.0, 2.0)]
++--------------------+
+--Query--
+SELECT distanceL1((1, 1), (1, 1)), distanceL2((1, 1), (1, 1)), distanceLinf((1, 1), (1, 1)), distanceLp((1, 1), (1, 1), 1.)
+--Result--
+[(0, 0.0, 0.0, 0.0)]
++--------------------+
+--Query--
+SELECT normalizeL1((1, 1)), normalizeL2((1, 1)), normalizeLinf((1, 1)), normalizeLp((1, 1), 1.)
+--Result--
+[((0.5, 0.5), (0.7071067811865475, 0.7071067811865475), (1.0, 1.0), (0.5, 0.5))]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT -((3, 7, 3), 100)
+--Result--
+[('SELECT -((3, 7, 3), 100)',)]
++--------------------+

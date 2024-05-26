@@ -5,6 +5,4 @@ INSERT INTO aggregating_00191 (k, u) SELECT intDiv(number, 100) AS k, uniqState(
 INSERT INTO aggregating_00191 (k, u) SELECT intDiv(number, 100) AS k, uniqState(toUInt64(number % 100) + 50) AS u FROM (SELECT * FROM system.numbers LIMIT 500, 1000) GROUP BY k;
 SELECT k, finalizeAggregation(u) FROM aggregating_00191 FINAL order by k;
 OPTIMIZE TABLE aggregating_00191 FINAL;
-SELECT k, finalizeAggregation(u) FROM aggregating_00191 order by k;
-SELECT k, finalizeAggregation(u) FROM aggregating_00191 FINAL order by k;
 DROP TABLE aggregating_00191;

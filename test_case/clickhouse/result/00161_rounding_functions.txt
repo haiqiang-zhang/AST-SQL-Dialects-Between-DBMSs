@@ -1,0 +1,25 @@
+--Query--
+SELECT toUInt8(number) AS x, round(x), roundBankers(x), floor(x), ceil(x), trunc(x) FROM system.numbers LIMIT 20
+--Result--
+[(0, 0, 0, 0, 0, 0), (1, 1, 1, 1, 1, 1), (2, 2, 2, 2, 2, 2), (3, 3, 3, 3, 3, 3), (4, 4, 4, 4, 4, 4), (5, 5, 5, 5, 5, 5), (6, 6, 6, 6, 6, 6), (7, 7, 7, 7, 7, 7), (8, 8, 8, 8, 8, 8), (9, 9, 9, 9, 9, 9), (10, 10, 10, 10, 10, 10), (11, 11, 11, 11, 11, 11), (12, 12, 12, 12, 12, 12), (13, 13, 13, 13, 13, 13), (14, 14, 14, 14, 14, 14), (15, 15, 15, 15, 15, 15), (16, 16, 16, 16, 16, 16), (17, 17, 17, 17, 17, 17), (18, 18, 18, 18, 18, 18), (19, 19, 19, 19, 19, 19)]
++--------------------+
+--Query--
+SELECT 123456789 AS x, floor(x, -1), floor(x, -2), floor(x, -3), floor(x, -4), floor(x, -5), floor(x, -6), floor(x, -7), floor(x, -8), floor(x, -9), floor(x, -10)
+--Result--
+[(123456789, 123456780, 123456700, 123456000, 123450000, 123400000, 123000000, 120000000, 100000000, 0, 0)]
++--------------------+
+--Query--
+SELECT roundToExp2(100), roundToExp2(64), roundToExp2(3), roundToExp2(0), roundToExp2(-1)
+--Result--
+[(64, 64, 2, 0, 0)]
++--------------------+
+--Query--
+select round(2, 4) round2, round(20, 4) round20, round(200, 4) round200, round(5, 4) round5, round(50, 4) round50, round(500, 4) round500, round(toInt32(5), 4) roundInt5, round(toInt32(50), 4) roundInt50, round(toInt32(500), 4) roundInt500
+--Result--
+[(2, 20, 200, 5, 50, 500, 5, 50, 500)]
++--------------------+
+--Query--
+select roundBankers(2, 4) round2, roundBankers(20, 4) round20, roundBankers(200, 4) round200, roundBankers(5, 4) round5, roundBankers(50, 4) round50, roundBankers(500, 4) round500, roundBankers(toInt32(5), 4) roundInt5, roundBankers(toInt32(50), 4) roundInt50, roundBankers(toInt32(500), 4) roundInt500
+--Result--
+[(2, 20, 200, 5, 50, 500, 5, 50, 500)]
++--------------------+

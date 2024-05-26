@@ -1,0 +1,100 @@
+--Query--
+select str from lc_str_0
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select str from lc_str_1
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select str from lc_null_str_0
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select str from lc_null_str_1
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select val from lc_int8_0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select val from lc_int8_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select val from lc_null_int8_0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select val from lc_null_int8_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select str from lc_fix_str_0
+--Result--
+[('ab',)]
++--------------------+
+--Query--
+select str from lc_fix_str_1
+--Result--
+[('ab',)]
++--------------------+
+--Query--
+select str from lc_null_fix_str_0
+--Result--
+[('ab',)]
++--------------------+
+--Query--
+select str from lc_null_fix_str_1
+--Result--
+[('ab',)]
++--------------------+
+--Query--
+select '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT toLowCardinality('a') AS s, toTypeName(s), toTypeName(length(s)) from system.one
+--Result--
+[('a', 'LowCardinality(String)', 'LowCardinality(UInt64)')]
++--------------------+
+--Query--
+select toLowCardinality('a') as val group by val order by val
+--Result--
+[('a',)]
++--------------------+
+--Query--
+select (toLowCardinality('a') as val) || 'b' group by val order by val
+--Result--
+[('ab',)]
++--------------------+
+--Query--
+select toLowCardinality(z) as val from (select arrayJoin(['c', 'd']) as z) group by val order by val
+--Result--
+[('c',), ('d',)]
++--------------------+
+--Query--
+select (toLowCardinality(z) as val) || 'b'  from (select arrayJoin(['c', 'd']) as z) group by val order by val
+--Result--
+[('cb',), ('db',)]
++--------------------+
+--Query--
+select '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+select toUUID(str1), toUUID(str2), toUUID(str3) from lc_str_uuid
+--Result--
+[]
++--------------------+

@@ -1,0 +1,55 @@
+--Query--
+EXPLAIN AST SELECT false IS NOT DISTINCT FROM true IN (true, false)
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Literal Bool_0',), ('      Function in (children 1)',), ('       ExpressionList (children 2)',), ('        Literal Bool_1',), ('        Literal Tuple_(Bool_1, Bool_0)',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT 1 IS NOT DISTINCT FROM 1 + 1
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Literal UInt64_1',), ('      Function plus (children 1)',), ('       ExpressionList (children 2)',), ('        Literal UInt64_1',), ('        Literal UInt64_1',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT true IS NOT DISTINCT FROM 'x' LIKE 'a'
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Literal Bool_1',), ('      Function like (children 1)',), ('       ExpressionList (children 2)',), ("        Literal 'x'",), ("        Literal 'a'",)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT 'x' IS NOT DISTINCT FROM 'x' || 'a'
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ("      Literal 'x'",), ('      Function concat (children 1)',), ('       ExpressionList (children 2)',), ("        Literal 'x'",), ("        Literal 'a'",)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT 1 IS NOT DISTINCT FROM 1 :: integer
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Literal UInt64_1',), ('      Function CAST (children 1)',), ('       ExpressionList (children 2)',), ("        Literal '1'",), ("        Literal 'integer'",)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT NOT 1 IS NOT DISTINCT FROM 1
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function not (children 1)',), ('     ExpressionList (children 1)',), ('      Function isNotDistinctFrom (children 1)',), ('       ExpressionList (children 2)',), ('        Literal UInt64_1',), ('        Literal UInt64_1',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT - 1 IS NOT DISTINCT FROM 1
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Literal Int64_-1',), ('      Literal UInt64_1',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT false IS NOT DISTINCT FROM true OR true
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function or (children 1)',), ('     ExpressionList (children 2)',), ('      Function isNotDistinctFrom (children 1)',), ('       ExpressionList (children 2)',), ('        Literal Bool_0',), ('        Literal Bool_1',), ('      Literal Bool_1',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT NULL IS NULL IS NOT DISTINCT FROM NULL
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Function isNull (children 1)',), ('       ExpressionList (children 1)',), ('        Literal NULL',), ('      Literal NULL',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT 1 <=> 1 == 1
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function equals (children 1)',), ('     ExpressionList (children 2)',), ('      Function isNotDistinctFrom (children 1)',), ('       ExpressionList (children 2)',), ('        Literal UInt64_1',), ('        Literal UInt64_1',), ('      Literal UInt64_1',)]
++--------------------+
+--Query--
+EXPLAIN AST SELECT 1 == 1 <=> 1
+--Result--
+[('SelectWithUnionQuery (children 1)',), (' ExpressionList (children 1)',), ('  SelectQuery (children 1)',), ('   ExpressionList (children 1)',), ('    Function isNotDistinctFrom (children 1)',), ('     ExpressionList (children 2)',), ('      Function equals (children 1)',), ('       ExpressionList (children 2)',), ('        Literal UInt64_1',), ('        Literal UInt64_1',), ('      Literal UInt64_1',)]
++--------------------+

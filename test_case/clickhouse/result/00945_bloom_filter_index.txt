@@ -1,0 +1,15 @@
+--Query--
+SELECT COUNT() FROM single_column_bloom_filter WHERE i32 = 1 SETTINGS max_rows_to_read = 6
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH (1, 2) AS liter_prepared_set SELECT COUNT() FROM single_column_bloom_filter WHERE i32 IN liter_prepared_set SETTINGS max_rows_to_read = 6
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT count() FROM bloom_filter_array_offsets_lc_str WHERE has(str, 'value')
+--Result--
+[(5000,)]
++--------------------+

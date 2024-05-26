@@ -66,17 +66,9 @@ SYSTEM STOP MERGES checkouts;
 SYSTEM STOP MERGES logins;
 INSERT INTO logins SELECT number as id,    '2000-01-01 08:00:00' from numbers(50000);
 INSERT INTO checkouts SELECT number as id, '2000-01-01 10:00:00' from numbers(50000);
-
--- we expect to read not more than:
---      1000 rows read from numbers(1000) in the INSERT itself
---      1000 rows in the `IN (SELECT id FROM table)` in the mat views
---      (1000/128) marks per part * (3 + 2) parts * 128 granularity = 5120 rows
---      Total: 7120
 set max_rows_to_read = 7120;
 INSERT INTO logins    SELECT number as id, '2000-01-01 11:00:00' from numbers(1000);
 INSERT INTO checkouts SELECT number as id, '2000-01-01 11:10:00' from numbers(1000);
-
---      1 mark per part * (5 + 2) parts * 128 granularity + 1 (numbers(1)) = 897 rows
 set max_rows_to_read = 897;
 INSERT INTO logins    SELECT number+2 as id, '2001-01-01 11:10:01' from numbers(1);
 INSERT INTO checkouts SELECT number+2 as id, '2001-01-01 11:10:02' from numbers(1);

@@ -35,44 +35,4 @@ FROM
 )
 WHERE
     explain LIKE '%Granules: 1/%';
-SELECT count()
-FROM
-(
-    EXPLAIN PLAN indexes=1
-    SELECT * FROM test_table WHERE k >= 1 = 0
-)
-WHERE
-    explain LIKE '%Granules: 1/%';
-SELECT count()
-FROM
-(
-    EXPLAIN PLAN indexes=1
-    SELECT * FROM test_table WHERE k not in (100) = 0
-)
-WHERE
-    explain LIKE '%Granules: 1/%';
-SELECT count()
-FROM
-(
-    EXPLAIN PLAN indexes=1
-    SELECT * FROM test_table WHERE k > 1 = 0
-)
-WHERE
-    explain LIKE '%Granules: 1/%';
-SELECT count()
-FROM
-(
-    EXPLAIN PLAN indexes=1
-    SELECT * FROM test_table WHERE (NOT ((k not in (100) = 0) OR (k in (100) = 1))) = 0
-)
-WHERE
-    explain LIKE '%Granules: 1/%';
-SELECT count()
-FROM
-(
-    EXPLAIN PLAN indexes=1
-    SELECT * FROM test_table WHERE (NOT ((k in (101) = 0) OR (k in (100) = 1))) = 1
-)
-WHERE
-    explain LIKE '%Granules: 1/%';
 DROP TABLE test_table;

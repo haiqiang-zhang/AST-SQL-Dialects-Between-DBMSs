@@ -1,0 +1,30 @@
+--Query--
+SELECT id, regexp_replace(date, 'Sales [(]([0-9]+)/([0-9]+)/([0-9]+)[)]', '\3-\1-\2')::DATE AS date, sales FROM t1     UNPIVOT (sales FOR date IN ("Sales (05/19/2020)", "Sales (06/03/2020)", "Sales (10/23/2020)"))  ORDER BY ALL
+--Result--
+[(10629465, datetime.date(2020, 5, 19), 23), (10629465, datetime.date(2020, 6, 3), 47), (10629465, datetime.date(2020, 10, 23), 99), (98765432, datetime.date(2020, 5, 19), 10), (98765432, datetime.date(2020, 6, 3), 99), (98765432, datetime.date(2020, 10, 23), 33)]
++--------------------+
+--Query--
+SELECT id, regexp_replace(date, 'Sales [(]([0-9]+)/([0-9]+)/([0-9]+)[)]', '\3-\1-\2')::DATE AS date, sales FROM     (UNPIVOT t1 ON "Sales (05/19/2020)", "Sales (06/03/2020)", "Sales (10/23/2020)" INTO NAME date VALUE sales)  ORDER BY ALL
+--Result--
+[(10629465, datetime.date(2020, 5, 19), 23), (10629465, datetime.date(2020, 6, 3), 47), (10629465, datetime.date(2020, 10, 23), 99), (98765432, datetime.date(2020, 5, 19), 10), (98765432, datetime.date(2020, 6, 3), 99), (98765432, datetime.date(2020, 10, 23), 33)]
++--------------------+
+--Query--
+SELECT * FROM 	(UNPIVOT t1 ON "Sales (05/19/2020)" AS "2020-05-19", "Sales (06/03/2020)" AS "2020-06-03", "Sales (10/23/2020)" AS "2020-10-23" INTO NAME date VALUE sales) ORDER BY ALL
+--Result--
+[(10629465, '2020-05-19', 23), (10629465, '2020-06-03', 47), (10629465, '2020-10-23', 99), (98765432, '2020-05-19', 10), (98765432, '2020-06-03', 99), (98765432, '2020-10-23', 33)]
++--------------------+
+--Query--
+SELECT id, regexp_replace(date, 'Sales [(]([0-9]+)/([0-9]+)/([0-9]+)[)]', '\3-\1-\2')::DATE AS date, sales FROM t1     UNPIVOT (Sales FOR Date IN (COLUMNS('Sales.*')))  ORDER BY ALL
+--Result--
+[(10629465, datetime.date(2020, 5, 19), 23), (10629465, datetime.date(2020, 6, 3), 47), (10629465, datetime.date(2020, 10, 23), 99), (98765432, datetime.date(2020, 5, 19), 10), (98765432, datetime.date(2020, 6, 3), 99), (98765432, datetime.date(2020, 10, 23), 33)]
++--------------------+
+--Query--
+SELECT id, regexp_replace(date, 'Sales [(]([0-9]+)/([0-9]+)/([0-9]+)[)]', '\3-\1-\2')::DATE AS date, sales FROM 	(UNPIVOT t1 ON COLUMNS('Sales.*') INTO NAME date VALUE sales) ORDER BY ALL
+--Result--
+[(10629465, datetime.date(2020, 5, 19), 23), (10629465, datetime.date(2020, 6, 3), 47), (10629465, datetime.date(2020, 10, 23), 99), (98765432, datetime.date(2020, 5, 19), 10), (98765432, datetime.date(2020, 6, 3), 99), (98765432, datetime.date(2020, 10, 23), 33)]
++--------------------+
+--Query--
+SELECT id, regexp_replace(date, 'Sales [(]([0-9]+)/([0-9]+)/([0-9]+)[)]', '\3-\1-\2')::DATE AS date, sales FROM 	(UNPIVOT t1 ON * EXCLUDE (id) INTO NAME date VALUE sales) ORDER BY ALL
+--Result--
+[(10629465, datetime.date(2020, 5, 19), 23), (10629465, datetime.date(2020, 6, 3), 47), (10629465, datetime.date(2020, 10, 23), 99), (98765432, datetime.date(2020, 5, 19), 10), (98765432, datetime.date(2020, 6, 3), 99), (98765432, datetime.date(2020, 10, 23), 33)]
++--------------------+

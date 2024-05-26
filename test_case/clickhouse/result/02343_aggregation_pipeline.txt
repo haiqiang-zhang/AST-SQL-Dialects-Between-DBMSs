@@ -1,0 +1,30 @@
+--Query--
+explain pipeline select * from (select * from numbers(1e8) group by number) group by number
+--Result--
+[('(Expression)',), ('ExpressionTransform × 16',), ('  (Aggregating)',), ('  Resize 16 → 16',), ('    AggregatingTransform × 16',), ('      StrictResize 16 → 16',), ('        (Expression)',), ('        ExpressionTransform × 16',), ('          (Aggregating)',), ('          Resize 1 → 16',), ('            AggregatingTransform',), ('              (Expression)',), ('              ExpressionTransform',), ('                (ReadFromSystemNumbers)',), ('                NumbersRange 0 → 1',)]
++--------------------+
+--Query--
+explain pipeline select * from (select * from numbers_mt(1e8) group by number) group by number
+--Result--
+[('(Expression)',), ('ExpressionTransform × 16',), ('  (Aggregating)',), ('  Resize 16 → 16',), ('    AggregatingTransform × 16',), ('      StrictResize 16 → 16',), ('        (Expression)',), ('        ExpressionTransform × 16',), ('          (Aggregating)',), ('          Resize 16 → 16',), ('            AggregatingTransform × 16',), ('              (Expression)',), ('              ExpressionTransform × 16',), ('                (ReadFromSystemNumbers)',), ('                NumbersRange × 16 0 → 1',)]
++--------------------+
+--Query--
+explain pipeline select * from (select * from numbers_mt(1e8) group by number) order by number
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Sorting)',), ('  MergingSortedTransform 16 → 1',), ('    MergeSortingTransform × 16',), ('      LimitsCheckingTransform × 16',), ('        PartialSortingTransform × 16',), ('          (Expression)',), ('          ExpressionTransform × 16',), ('            (Aggregating)',), ('            Resize 16 → 16',), ('              AggregatingTransform × 16',), ('                (Expression)',), ('                ExpressionTransform × 16',), ('                  (ReadFromSystemNumbers)',), ('                  NumbersRange × 16 0 → 1',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE proj_agg_02343 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+system stop merges t
+--Result--
+[]
++--------------------+
+--Query--
+system stop merges dist_t
+--Result--
+[]
++--------------------+

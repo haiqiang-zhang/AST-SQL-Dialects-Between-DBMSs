@@ -1,0 +1,45 @@
+--Query--
+SHOW CREATE TABLE recompression_table
+--Result--
+[('CREATE TABLE test.recompression_table\n(\n    `dt` DateTime,\n    `key` UInt64,\n    `value` String\n)\nENGINE = MergeTree\nPARTITION BY key\nORDER BY tuple()\nTTL dt + toIntervalMonth(1) RECOMPRESS CODEC(ZSTD(17)), dt + toIntervalYear(1) RECOMPRESS CODEC(LZ4HC(10))\nSETTINGS min_rows_for_wide_part = 0, min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SYSTEM STOP TTL MERGES recompression_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT() FROM recompression_table
+--Result--
+[(3000,)]
++--------------------+
+--Query--
+SELECT substring(name, 1, length(name) - 2), default_compression_codec FROM system.parts WHERE table = 'recompression_table' and active = 1 and database = currentDatabase() ORDER BY name
+--Result--
+[('1_1_1', 'LZ4'), ('2_2_2', 'LZ4'), ('3_3_3', 'LZ4')]
++--------------------+
+--Query--
+OPTIMIZE TABLE recompression_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE recompression_table
+--Result--
+[('CREATE TABLE test.recompression_table\n(\n    `dt` DateTime,\n    `key` UInt64,\n    `value` String\n)\nENGINE = MergeTree\nPARTITION BY key\nORDER BY tuple()\nTTL dt + toIntervalDay(1) RECOMPRESS CODEC(ZSTD(12))\nSETTINGS min_rows_for_wide_part = 0, min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SYSTEM START TTL MERGES recompression_table
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE recompression_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM STOP TTL MERGES recompression_table_compact
+--Result--
+[]
++--------------------+

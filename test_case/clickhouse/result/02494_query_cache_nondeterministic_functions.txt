@@ -1,0 +1,50 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- query_cache_nondeterministic_function_handling = throw'
+--Result--
+[('-- query_cache_nondeterministic_function_handling = throw',)]
++--------------------+
+--Query--
+SELECT count(*) FROM system.query_cache
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- query_cache_nondeterministic_function_handling = save'
+--Result--
+[('-- query_cache_nondeterministic_function_handling = save',)]
++--------------------+
+--Query--
+SELECT count(now()) SETTINGS use_query_cache = true, query_cache_nondeterministic_function_handling = 'save'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- query_cache_nondeterministic_function_handling = ignore'
+--Result--
+[('-- query_cache_nondeterministic_function_handling = ignore',)]
++--------------------+
+--Query--
+SELECT count(now()) SETTINGS use_query_cache = true, query_cache_nondeterministic_function_handling = 'ignore'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

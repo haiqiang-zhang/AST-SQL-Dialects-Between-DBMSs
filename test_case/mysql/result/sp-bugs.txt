@@ -1,0 +1,55 @@
+--Query--
+SELECT DATABASE()
+--Result--
+[('test_db',)]
++--------------------+
+--Query--
+SELECT specific_name FROM INFORMATION_SCHEMA.ROUTINES WHERE specific_name LIKE 'testf_bug11763507'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT specific_name FROM INFORMATION_SCHEMA.ROUTINES WHERE specific_name LIKE 'TESTF_bug11763507'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT specific_name FROM INFORMATION_SCHEMA.ROUTINES WHERE specific_name='testf_bug11763507'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT specific_name FROM INFORMATION_SCHEMA.ROUTINES WHERE specific_name='TESTF_bug11763507'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SUBTIME('2006-07-16' , '05:05:02.040778')
+--Result--
+[('-04:44:56.040778',)]
++--------------------+
+--Query--
+SELECT abs('1bcd')
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT 1/0
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1/0
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'SELECT CONCAT(UNIX_TIMESTAMP(?))'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+

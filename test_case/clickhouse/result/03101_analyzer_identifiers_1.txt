@@ -1,0 +1,55 @@
+--Query--
+SELECT t.column FROM table AS t
+--Result--
+[]
++--------------------+
+--Query--
+USE default
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.x, t2.x, y FROM     (SELECT x, y FROM VALUES ('x UInt16, y UInt16', (0,1))) AS t1,     (SELECT x, z FROM VALUES ('x UInt16, z UInt16', (2,3))) AS t2
+--Result--
+[(0, 2, 1)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT one.dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT system.one.dummy
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT *
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT [1, 2, 3] AS arr) ARRAY JOIN arr
+--Result--
+[(1,), (2,), (3,)]
++--------------------+

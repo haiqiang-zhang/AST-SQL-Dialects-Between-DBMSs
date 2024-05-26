@@ -1,0 +1,190 @@
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select max(x) from (select sum(a) as x from t1 group by b) as teeone
+--Result--
+[(20.0,)]
++--------------------+
+--Query--
+select count(*) from t1
+--Result--
+[(24,)]
++--------------------+
+--Query--
+select sum(a) from t1
+--Result--
+[(6144.0,)]
++--------------------+
+--Query--
+select sum(a) + sum(b) from t1 group by b
+--Result--
+[(2048.0,), (None,), (4608.0,)]
++--------------------+
+--Query--
+select '012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890' as big_string
+--Result--
+[('012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890',)]
++--------------------+
+--Query--
+select * from information_schema.profiling
+--Result--
+[]
++--------------------+
+--Query--
+select query_id, state, duration from information_schema.profiling
+--Result--
+[]
++--------------------+
+--Query--
+select query_id, count(*), sum(duration) from information_schema.profiling group by query_id
+--Result--
+[]
++--------------------+
+--Query--
+select CPU_user, CPU_system, Context_voluntary, Context_involuntary, Block_ops_in, Block_ops_out, Messages_sent, Messages_received, Page_faults_major, Page_faults_minor, Swaps, Source_function, Source_file, Source_line from information_schema.profiling
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (2,), (3,), (1,), (2,), (3,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 'This p1 should show up in profiling'
+--Result--
+[('This p1 should show up in profiling',)]
++--------------------+
+--Query--
+select 'This p2 should show up in profiling'
+--Result--
+[('This p2 should show up in profiling',)]
++--------------------+
+--Query--
+select 'This p3 should show up in profiling'
+--Result--
+[('This p3 should show up in profiling',)]
++--------------------+
+--Query--
+select * from profile_log
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from profile_log
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from profile_log
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock table
+--Result--
+[]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling, @@autocommit
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@profiling
+--Result--
+[(0,)]
++--------------------+
+--Query--
+PREPARE s FROM 'DO 1'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+

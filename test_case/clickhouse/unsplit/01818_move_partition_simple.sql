@@ -97,14 +97,7 @@ FROM generateRandom(
     `update_time` DateTime', 10, 10, 10) 
 LIMIT 100;
 SELECT 'ALL tmp_table_01818', count() FROM tmp_table_01818;
-SELECT 'ALL main_table_01818', count() FROM main_table_01818;
-SELECT 'tmp_table_01818', count() FROM tmp_table_01818 WHERE `advertiser_id` = 'ClickHouse';
-SELECT 'main_table_01818', count() FROM main_table_01818 WHERE `advertiser_id` = 'ClickHouse';
 SELECT 'Executing ALTER TABLE MOVE PARTITION...';
 ALTER TABLE tmp_table_01818 MOVE PARTITION 'ClickHouse' TO TABLE main_table_01818;
-SELECT 'ALL tmp_table_01818', count() FROM tmp_table_01818;
-SELECT 'ALL main_table_01818', count() FROM main_table_01818;
-SELECT 'tmp_table_01818', count() FROM tmp_table_01818 WHERE `advertiser_id` = 'ClickHouse';
-SELECT 'main_table_01818', count() FROM main_table_01818 WHERE `advertiser_id` = 'ClickHouse';
 DROP TABLE IF EXISTS main_table_01818;
 DROP TABLE IF EXISTS tmp_table_01818;

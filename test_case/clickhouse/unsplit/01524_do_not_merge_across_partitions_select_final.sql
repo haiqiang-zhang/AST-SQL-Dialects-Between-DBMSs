@@ -20,6 +20,5 @@ INSERT INTO select_final SELECT toDate('2000-01-01'), number, '' FROM numbers(50
 OPTIMIZE TABLE select_final FINAL;
 SET local_filesystem_read_method = 'pread';
 set load_marks_asynchronously = 0;
-SELECT max(x) FROM select_final FINAL;
 SYSTEM FLUSH LOGS;
 DROP TABLE select_final;

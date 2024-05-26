@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x=1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE y=1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count(*) FROM sqlite_master
+--Result--
+[(6,)]
++--------------------+
+--Query--
+WITH s(i) AS (       SELECT 1 UNION ALL SELECT i+1 FROM s WHERE i<1000     )     INSERT INTO t1 SELECT i FROM s
+--Result--
+[]
++--------------------+

@@ -1,0 +1,40 @@
+--Query--
+SELECT table_name, cardinality  FROM INFORMATION_SCHEMA.STATISTICS   WHERE cardinality > 0 and table_schema='test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CREATE_OPTIONS FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME='t1'
+--Result--
+[('t1', '')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CREATE_OPTIONS FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME='t1'
+--Result--
+[('t1', '')]
++--------------------+
+--Query--
+PREPARE stmt FROM 'show events'
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SCHEMA_NAME, OPTIONS FROM INFORMATION_SCHEMA.SCHEMATA_EXTENSIONS   WHERE SCHEMA_NAME = 's'
+--Result--
+[('s', '')]
++--------------------+
+--Query--
+SELECT SCHEMA_NAME, OPTIONS FROM INFORMATION_SCHEMA.SCHEMATA_EXTENSIONS   WHERE SCHEMA_NAME = 's'
+--Result--
+[('s', '')]
++--------------------+

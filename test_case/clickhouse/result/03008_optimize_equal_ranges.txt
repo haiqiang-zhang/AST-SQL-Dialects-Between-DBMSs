@@ -1,0 +1,15 @@
+--Query--
+SELECT a, uniqExact(b) FROM t_optimize_equal_ranges GROUP BY a ORDER BY a SETTINGS max_threads = 16
+--Result--
+[(0, 30000), (1, 30000), (2, 30000)]
++--------------------+
+--Query--
+SELECT a, sum(c) FROM t_optimize_equal_ranges GROUP BY a ORDER BY a SETTINGS max_threads = 16
+--Result--
+[(0, 449985000), (1, 449985000), (2, 449985000)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

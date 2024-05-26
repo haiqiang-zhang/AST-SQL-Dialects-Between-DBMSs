@@ -1,0 +1,90 @@
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select schema_name from information_schema.schemata order by schema_name
+--Result--
+[('information_schema',), ('mysql',), ('mysqltest',), ('performance_schema',), ('sys',), ('test_db',)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select schema_name from information_schema.schemata order by schema_name
+--Result--
+[('information_schema',), ('mysql',), ('performance_schema',), ('sys',), ('test_db',)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for schema metadata lock" AND         info = "DROP DATABASE bug19573998"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

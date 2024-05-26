@@ -1,0 +1,75 @@
+--Query--
+SELECT toNullable(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT [toNullable(NULL)]
+--Result--
+[([None],)]
++--------------------+
+--Query--
+SELECT CAST(1 AS Nullable(UInt8))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT [[1], [-1]]
+--Result--
+[([[1], [-1]],)]
++--------------------+
+--Query--
+SELECT groupArray(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT [1, 2, 3][toInt8(1)]
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select arrayReduce('sumMerge', [sumState(y)]), finalizeAggregation(sumState(y)) from (select toNullable(42) as y)
+--Result--
+[(42, 42)]
++--------------------+
+--Query--
+SELECT arrayConcat([NULL, ''], [''], [NULL])
+--Result--
+[([None, '', '', None],)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> substring('abc', x), [1, 2, 3])
+--Result--
+[(['abc', 'bc', 'c'],)]
++--------------------+
+--Query--
+select 1 as x where 1 as x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 from (select 1) having count() > 0 as x
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a.1-1 FROM (SELECT (1, 2) AS a)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select a.1-1,a.1+1 FROM (SELECT (1, 2) AS a)
+--Result--
+[(0, 2)]
++--------------------+
+--Query--
+SELECT defaultValueOfArgumentType([1])[1]
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT groupArrayInsertAt([2, 2], 10)([1, 1], 2)
+--Result--
+[([[2, 2], [2, 2], [1, 1], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]],)]
++--------------------+

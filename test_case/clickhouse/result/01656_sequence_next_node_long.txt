@@ -1,0 +1,445 @@
+--Query--
+SELECT '(forward, head, A)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A)', 1, 'B'), ('(forward, head, A)', 2, None), ('(forward, head, A)', 3, 'B'), ('(forward, head, A)', 4, 'A'), ('(forward, head, A)', 5, 'B'), ('(forward, head, A)', 6, 'B')]
++--------------------+
+--Query--
+SELECT '(forward, head, B)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, B)', 1, None), ('(forward, head, B)', 2, 'B'), ('(forward, head, B)', 3, None), ('(forward, head, B)', 4, None), ('(forward, head, B)', 5, None), ('(forward, head, B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, C)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'C') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, C)', 1, None), ('(forward, head, C)', 2, None), ('(forward, head, C)', 3, None), ('(forward, head, C)', 4, None), ('(forward, head, C)', 5, None), ('(forward, head, C)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, D)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'D') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, D)', 1, None), ('(forward, head, D)', 2, None), ('(forward, head, D)', 3, None), ('(forward, head, D)', 4, None), ('(forward, head, D)', 5, None), ('(forward, head, D)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, E)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'E') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, E)', 1, None), ('(forward, head, E)', 2, None), ('(forward, head, E)', 3, None), ('(forward, head, E)', 4, None), ('(forward, head, E)', 5, None), ('(forward, head, E)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A)', 1, None), ('(backward, tail, A)', 2, None), ('(backward, tail, A)', 3, None), ('(backward, tail, A)', 4, None), ('(backward, tail, A)', 5, None), ('(backward, tail, A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, B)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, B)', 1, None), ('(backward, tail, B)', 2, None), ('(backward, tail, B)', 3, 'A'), ('(backward, tail, B)', 4, None), ('(backward, tail, B)', 5, None), ('(backward, tail, B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, C)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'C') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, C)', 1, None), ('(backward, tail, C)', 2, 'D'), ('(backward, tail, C)', 3, None), ('(backward, tail, C)', 4, 'B'), ('(backward, tail, C)', 5, 'A'), ('(backward, tail, C)', 6, 'B')]
++--------------------+
+--Query--
+SELECT '(backward, tail, D)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'D') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, D)', 1, 'C'), ('(backward, tail, D)', 2, None), ('(backward, tail, D)', 3, None), ('(backward, tail, D)', 4, None), ('(backward, tail, D)', 5, None), ('(backward, tail, D)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, E)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'E') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, E)', 1, None), ('(backward, tail, E)', 2, None), ('(backward, tail, E)', 3, None), ('(backward, tail, E)', 4, None), ('(backward, tail, E)', 5, None), ('(backward, tail, E)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A->B)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A->B)', 1, 'C'), ('(forward, head, A->B)', 2, None), ('(forward, head, A->B)', 3, None), ('(forward, head, A->B)', 4, None), ('(forward, head, A->B)', 5, 'A'), ('(forward, head, A->B)', 6, 'A')]
++--------------------+
+--Query--
+SELECT '(forward, head, A->C)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'C') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A->C)', 1, None), ('(forward, head, A->C)', 2, None), ('(forward, head, A->C)', 3, None), ('(forward, head, A->C)', 4, None), ('(forward, head, A->C)', 5, None), ('(forward, head, A->C)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, B->A)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, B->A)', 1, None), ('(forward, head, B->A)', 2, None), ('(forward, head, B->A)', 3, None), ('(forward, head, B->A)', 4, None), ('(forward, head, B->A)', 5, None), ('(forward, head, B->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A->B)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A->B)', 1, None), ('(backward, tail, A->B)', 2, None), ('(backward, tail, A->B)', 3, None), ('(backward, tail, A->B)', 4, None), ('(backward, tail, A->B)', 5, None), ('(backward, tail, A->B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A->C)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A', action = 'C') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A->C)', 1, None), ('(backward, tail, A->C)', 2, None), ('(backward, tail, A->C)', 3, None), ('(backward, tail, A->C)', 4, None), ('(backward, tail, A->C)', 5, None), ('(backward, tail, A->C)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, B->A)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, B->A)', 1, None), ('(backward, tail, B->A)', 2, None), ('(backward, tail, B->A)', 3, None), ('(backward, tail, B->A)', 4, None), ('(backward, tail, B->A)', 5, None), ('(backward, tail, B->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A->A->B)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A->A->B)', 1, None), ('(forward, head, A->A->B)', 2, None), ('(forward, head, A->A->B)', 3, None), ('(forward, head, A->A->B)', 4, None), ('(forward, head, A->A->B)', 5, None), ('(forward, head, A->A->B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, B->A->A)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B', action = 'A', action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, B->A->A)', 1, None), ('(forward, head, B->A->A)', 2, None), ('(forward, head, B->A->A)', 3, None), ('(forward, head, B->A->A)', 4, None), ('(forward, head, B->A->A)', 5, None), ('(forward, head, B->A->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A->A->B)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A', action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A->A->B)', 1, None), ('(backward, tail, A->A->B)', 2, None), ('(backward, tail, A->A->B)', 3, None), ('(backward, tail, A->A->B)', 4, None), ('(backward, tail, A->A->B)', 5, None), ('(backward, tail, A->A->B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, B->A->A)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'B', action = 'A', action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, B->A->A)', 1, None), ('(backward, tail, B->A->A)', 2, None), ('(backward, tail, B->A->A)', 3, None), ('(backward, tail, B->A->A)', 4, None), ('(backward, tail, B->A->A)', 5, None), ('(backward, tail, B->A->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode_Nullable WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, 'B')]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B', action = 'C') AS next_node FROM test_sequenceNextNode_Nullable WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'C') AS next_node FROM test_sequenceNextNode_Nullable WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A) id >= 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'D', action = 'C') AS next_node FROM test_sequenceNextNode_Nullable WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A) id >= 10', 10, 'B')]
++--------------------+
+--Query--
+SELECT '(backward, tail, A) id >= 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'D', action = 'C', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A) id >= 10', 10, 'A')]
++--------------------+
+--Query--
+SELECT '(0, A) id = 11', count() FROM (SELECT id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode_Nullable WHERE id = 11 GROUP BY id HAVING next_node  = 'B')
+--Result--
+[('(0, A) id = 11', 1)]
++--------------------+
+--Query--
+SELECT '(forward, head) id < 10', id, sequenceNextNode('forward', 'head')(dt, action, 1) AS next_node FROM test_sequenceNextNode_Nullable WHERE id < 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head) id < 10', 1, 'A'), ('(forward, head) id < 10', 2, 'B'), ('(forward, head) id < 10', 3, 'A'), ('(forward, head) id < 10', 4, 'A'), ('(forward, head) id < 10', 5, 'A'), ('(forward, head) id < 10', 6, 'A')]
++--------------------+
+--Query--
+SELECT '(backward, tail) id < 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1) AS next_node FROM test_sequenceNextNode_Nullable WHERE id < 10 GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail) id < 10', 1, 'D'), ('(backward, tail) id < 10', 2, 'C'), ('(backward, tail) id < 10', 3, 'B'), ('(backward, tail) id < 10', 4, 'C'), ('(backward, tail) id < 10', 5, 'C'), ('(backward, tail) id < 10', 6, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, A)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, A)', 1, 'B'), ('(forward, first_match, A)', 2, None), ('(forward, first_match, A)', 3, 'B'), ('(forward, first_match, A)', 4, 'A'), ('(forward, first_match, A)', 5, 'B'), ('(forward, first_match, A)', 6, 'B'), ('(forward, first_match, A)', 10, 'B'), ('(forward, first_match, A)', 11, 'B')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, A->B)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, A->B)', 1, 'C'), ('(forward, first_match, A->B)', 2, None), ('(forward, first_match, A->B)', 3, None), ('(forward, first_match, A->B)', 4, None), ('(forward, first_match, A->B)', 5, 'A'), ('(forward, first_match, A->B)', 6, 'A'), ('(forward, first_match, A->B)', 10, 'C'), ('(forward, first_match, A->B)', 11, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, A->B->C)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'A', action = 'B', action = 'C') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, A->B->C)', 1, 'D'), ('(forward, first_match, A->B->C)', 2, None), ('(forward, first_match, A->B->C)', 3, None), ('(forward, first_match, A->B->C)', 4, None), ('(forward, first_match, A->B->C)', 5, None), ('(forward, first_match, A->B->C)', 6, None), ('(forward, first_match, A->B->C)', 10, 'D'), ('(forward, first_match, A->B->C)', 11, 'D')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, B)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, B)', 1, 'C'), ('(forward, first_match, B)', 2, 'B'), ('(forward, first_match, B)', 3, None), ('(forward, first_match, B)', 4, 'C'), ('(forward, first_match, B)', 5, 'A'), ('(forward, first_match, B)', 6, 'A'), ('(forward, first_match, B)', 10, 'C'), ('(forward, first_match, B)', 11, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, B->B)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'B', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, B->B)', 1, None), ('(forward, first_match, B->B)', 2, 'D'), ('(forward, first_match, B->B)', 3, None), ('(forward, first_match, B->B)', 4, None), ('(forward, first_match, B->B)', 5, None), ('(forward, first_match, B->B)', 6, None), ('(forward, first_match, B->B)', 10, None), ('(forward, first_match, B->B)', 11, None)]
++--------------------+
+--Query--
+SELECT '(forward, first_match, B->A)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, B->A)', 1, None), ('(forward, first_match, B->A)', 2, None), ('(forward, first_match, B->A)', 3, None), ('(forward, first_match, B->A)', 4, None), ('(forward, first_match, B->A)', 5, 'C'), ('(forward, first_match, B->A)', 6, 'B'), ('(forward, first_match, B->A)', 10, None), ('(forward, first_match, B->A)', 11, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, A)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, A)', 1, None), ('(backward, first_match, A)', 2, None), ('(backward, first_match, A)', 3, None), ('(backward, first_match, A)', 4, None), ('(backward, first_match, A)', 5, None), ('(backward, first_match, A)', 6, None), ('(backward, first_match, A)', 10, None), ('(backward, first_match, A)', 11, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, B)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, B)', 1, 'A'), ('(backward, first_match, B)', 2, None), ('(backward, first_match, B)', 3, 'A'), ('(backward, first_match, B)', 4, 'A'), ('(backward, first_match, B)', 5, 'A'), ('(backward, first_match, B)', 6, 'A'), ('(backward, first_match, B)', 10, 'A'), ('(backward, first_match, B)', 11, 'A')]
++--------------------+
+--Query--
+SELECT '(backward, first_match, B->A)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, B->A)', 1, None), ('(backward, first_match, B->A)', 2, None), ('(backward, first_match, B->A)', 3, None), ('(backward, first_match, B->A)', 4, 'A'), ('(backward, first_match, B->A)', 5, None), ('(backward, first_match, B->A)', 6, None), ('(backward, first_match, B->A)', 10, None), ('(backward, first_match, B->A)', 11, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, B->B)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'B', action = 'B') AS next_node FROM test_sequenceNextNode_Nullable GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, B->B)', 1, None), ('(backward, first_match, B->B)', 2, None), ('(backward, first_match, B->B)', 3, None), ('(backward, first_match, B->B)', 4, None), ('(backward, first_match, B->B)', 5, None), ('(backward, first_match, B->B)', 6, None), ('(backward, first_match, B->B)', 10, None), ('(backward, first_match, B->B)', 11, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A)', 1, 'B'), ('(forward, head, A)', 2, None), ('(forward, head, A)', 3, 'B'), ('(forward, head, A)', 4, 'A'), ('(forward, head, A)', 5, 'B'), ('(forward, head, A)', 6, 'B')]
++--------------------+
+--Query--
+SELECT '(forward, head, B)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, B)', 1, None), ('(forward, head, B)', 2, 'B'), ('(forward, head, B)', 3, None), ('(forward, head, B)', 4, None), ('(forward, head, B)', 5, None), ('(forward, head, B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, C)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'C') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, C)', 1, None), ('(forward, head, C)', 2, None), ('(forward, head, C)', 3, None), ('(forward, head, C)', 4, None), ('(forward, head, C)', 5, None), ('(forward, head, C)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, D)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'D') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, D)', 1, None), ('(forward, head, D)', 2, None), ('(forward, head, D)', 3, None), ('(forward, head, D)', 4, None), ('(forward, head, D)', 5, None), ('(forward, head, D)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, E)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'E') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, E)', 1, None), ('(forward, head, E)', 2, None), ('(forward, head, E)', 3, None), ('(forward, head, E)', 4, None), ('(forward, head, E)', 5, None), ('(forward, head, E)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A)', 1, None), ('(backward, tail, A)', 2, None), ('(backward, tail, A)', 3, None), ('(backward, tail, A)', 4, None), ('(backward, tail, A)', 5, None), ('(backward, tail, A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, B)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, B)', 1, None), ('(backward, tail, B)', 2, None), ('(backward, tail, B)', 3, 'A'), ('(backward, tail, B)', 4, None), ('(backward, tail, B)', 5, None), ('(backward, tail, B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, C)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'C') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, C)', 1, None), ('(backward, tail, C)', 2, 'D'), ('(backward, tail, C)', 3, None), ('(backward, tail, C)', 4, 'B'), ('(backward, tail, C)', 5, 'A'), ('(backward, tail, C)', 6, 'B')]
++--------------------+
+--Query--
+SELECT '(backward, tail, D)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'D') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, D)', 1, 'C'), ('(backward, tail, D)', 2, None), ('(backward, tail, D)', 3, None), ('(backward, tail, D)', 4, None), ('(backward, tail, D)', 5, None), ('(backward, tail, D)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, E)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'E') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, E)', 1, None), ('(backward, tail, E)', 2, None), ('(backward, tail, E)', 3, None), ('(backward, tail, E)', 4, None), ('(backward, tail, E)', 5, None), ('(backward, tail, E)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A->B)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A->B)', 1, 'C'), ('(forward, head, A->B)', 2, None), ('(forward, head, A->B)', 3, None), ('(forward, head, A->B)', 4, None), ('(forward, head, A->B)', 5, 'A'), ('(forward, head, A->B)', 6, 'A')]
++--------------------+
+--Query--
+SELECT '(forward, head, A->C)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'C') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A->C)', 1, None), ('(forward, head, A->C)', 2, None), ('(forward, head, A->C)', 3, None), ('(forward, head, A->C)', 4, None), ('(forward, head, A->C)', 5, None), ('(forward, head, A->C)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, B->A)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, B->A)', 1, None), ('(forward, head, B->A)', 2, None), ('(forward, head, B->A)', 3, None), ('(forward, head, B->A)', 4, None), ('(forward, head, B->A)', 5, None), ('(forward, head, B->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A->B)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A->B)', 1, None), ('(backward, tail, A->B)', 2, None), ('(backward, tail, A->B)', 3, None), ('(backward, tail, A->B)', 4, None), ('(backward, tail, A->B)', 5, None), ('(backward, tail, A->B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A->C)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A', action = 'C') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A->C)', 1, None), ('(backward, tail, A->C)', 2, None), ('(backward, tail, A->C)', 3, None), ('(backward, tail, A->C)', 4, None), ('(backward, tail, A->C)', 5, None), ('(backward, tail, A->C)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, B->A)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, B->A)', 1, None), ('(backward, tail, B->A)', 2, None), ('(backward, tail, B->A)', 3, None), ('(backward, tail, B->A)', 4, None), ('(backward, tail, B->A)', 5, None), ('(backward, tail, B->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A->A->B)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A->A->B)', 1, None), ('(forward, head, A->A->B)', 2, None), ('(forward, head, A->A->B)', 3, None), ('(forward, head, A->A->B)', 4, None), ('(forward, head, A->A->B)', 5, None), ('(forward, head, A->A->B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, B->A->A)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B', action = 'A', action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, B->A->A)', 1, None), ('(forward, head, B->A->A)', 2, None), ('(forward, head, B->A->A)', 3, None), ('(forward, head, B->A->A)', 4, None), ('(forward, head, B->A->A)', 5, None), ('(forward, head, B->A->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A->A->B)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'A', action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A->A->B)', 1, None), ('(backward, tail, A->A->B)', 2, None), ('(backward, tail, A->A->B)', 3, None), ('(backward, tail, A->A->B)', 4, None), ('(backward, tail, A->A->B)', 5, None), ('(backward, tail, A->A->B)', 6, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, B->A->A)', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'B', action = 'A', action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, B->A->A)', 1, None), ('(backward, tail, B->A->A)', 2, None), ('(backward, tail, B->A->A)', 3, None), ('(backward, tail, B->A->A)', 4, None), ('(backward, tail, B->A->A)', 5, None), ('(backward, tail, B->A->A)', 6, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, 'B')]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = 'B', action = 'C') AS next_node FROM test_sequenceNextNode WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id >= 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'C') AS next_node FROM test_sequenceNextNode WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, A) id >= 10', 10, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, A) id >= 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'D', action = 'C') AS next_node FROM test_sequenceNextNode WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A) id >= 10', 10, 'B')]
++--------------------+
+--Query--
+SELECT '(backward, tail, A) id >= 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1, action = 'D', action = 'C', action = 'B') AS next_node FROM test_sequenceNextNode WHERE id >= 10 GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, A) id >= 10', 10, 'A')]
++--------------------+
+--Query--
+SELECT '(forward, head) id < 10', id, sequenceNextNode('forward', 'head')(dt, action, 1) AS next_node FROM test_sequenceNextNode WHERE id < 10 GROUP BY id ORDER BY id
+--Result--
+[('(forward, head) id < 10', 1, 'A'), ('(forward, head) id < 10', 2, 'B'), ('(forward, head) id < 10', 3, 'A'), ('(forward, head) id < 10', 4, 'A'), ('(forward, head) id < 10', 5, 'A'), ('(forward, head) id < 10', 6, 'A')]
++--------------------+
+--Query--
+SELECT '(backward, tail) id < 10', id, sequenceNextNode('backward', 'tail')(dt, action, 1) AS next_node FROM test_sequenceNextNode WHERE id < 10 GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail) id < 10', 1, 'D'), ('(backward, tail) id < 10', 2, 'C'), ('(backward, tail) id < 10', 3, 'B'), ('(backward, tail) id < 10', 4, 'C'), ('(backward, tail) id < 10', 5, 'C'), ('(backward, tail) id < 10', 6, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, A)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, A)', 1, 'B'), ('(forward, first_match, A)', 2, None), ('(forward, first_match, A)', 3, 'B'), ('(forward, first_match, A)', 4, 'A'), ('(forward, first_match, A)', 5, 'B'), ('(forward, first_match, A)', 6, 'B'), ('(forward, first_match, A)', 10, 'B'), ('(forward, first_match, A)', 11, 'B')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, A->B)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'A', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, A->B)', 1, 'C'), ('(forward, first_match, A->B)', 2, None), ('(forward, first_match, A->B)', 3, None), ('(forward, first_match, A->B)', 4, None), ('(forward, first_match, A->B)', 5, 'A'), ('(forward, first_match, A->B)', 6, 'A'), ('(forward, first_match, A->B)', 10, 'C'), ('(forward, first_match, A->B)', 11, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, A->B->C)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'A', action = 'B', action = 'C') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, A->B->C)', 1, 'D'), ('(forward, first_match, A->B->C)', 2, None), ('(forward, first_match, A->B->C)', 3, None), ('(forward, first_match, A->B->C)', 4, None), ('(forward, first_match, A->B->C)', 5, None), ('(forward, first_match, A->B->C)', 6, None), ('(forward, first_match, A->B->C)', 10, 'D'), ('(forward, first_match, A->B->C)', 11, 'D')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, B)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, B)', 1, 'C'), ('(forward, first_match, B)', 2, 'B'), ('(forward, first_match, B)', 3, None), ('(forward, first_match, B)', 4, 'C'), ('(forward, first_match, B)', 5, 'A'), ('(forward, first_match, B)', 6, 'A'), ('(forward, first_match, B)', 10, 'C'), ('(forward, first_match, B)', 11, 'C')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, B->B)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'B', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, B->B)', 1, None), ('(forward, first_match, B->B)', 2, 'D'), ('(forward, first_match, B->B)', 3, None), ('(forward, first_match, B->B)', 4, None), ('(forward, first_match, B->B)', 5, None), ('(forward, first_match, B->B)', 6, None), ('(forward, first_match, B->B)', 10, None), ('(forward, first_match, B->B)', 11, None)]
++--------------------+
+--Query--
+SELECT '(forward, first_match, B->A)', id, sequenceNextNode('forward', 'first_match')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, B->A)', 1, None), ('(forward, first_match, B->A)', 2, None), ('(forward, first_match, B->A)', 3, None), ('(forward, first_match, B->A)', 4, None), ('(forward, first_match, B->A)', 5, 'C'), ('(forward, first_match, B->A)', 6, 'B'), ('(forward, first_match, B->A)', 10, None), ('(forward, first_match, B->A)', 11, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, A)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, A)', 1, None), ('(backward, first_match, A)', 2, None), ('(backward, first_match, A)', 3, None), ('(backward, first_match, A)', 4, None), ('(backward, first_match, A)', 5, None), ('(backward, first_match, A)', 6, None), ('(backward, first_match, A)', 10, None), ('(backward, first_match, A)', 11, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, B)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, B)', 1, 'A'), ('(backward, first_match, B)', 2, None), ('(backward, first_match, B)', 3, 'A'), ('(backward, first_match, B)', 4, 'A'), ('(backward, first_match, B)', 5, 'A'), ('(backward, first_match, B)', 6, 'A'), ('(backward, first_match, B)', 10, 'A'), ('(backward, first_match, B)', 11, 'A')]
++--------------------+
+--Query--
+SELECT '(backward, first_match, B->A)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'B', action = 'A') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, B->A)', 1, None), ('(backward, first_match, B->A)', 2, None), ('(backward, first_match, B->A)', 3, None), ('(backward, first_match, B->A)', 4, 'A'), ('(backward, first_match, B->A)', 5, None), ('(backward, first_match, B->A)', 6, None), ('(backward, first_match, B->A)', 10, None), ('(backward, first_match, B->A)', 11, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, B->B)', id, sequenceNextNode('backward', 'first_match')(dt, action, 1, action = 'B', action = 'B') AS next_node FROM test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, B->B)', 1, None), ('(backward, first_match, B->B)', 2, None), ('(backward, first_match, B->B)', 3, None), ('(backward, first_match, B->B)', 4, None), ('(backward, first_match, B->B)', 5, None), ('(backward, first_match, B->B)', 6, None), ('(backward, first_match, B->B)', 10, None), ('(backward, first_match, B->B)', 11, None)]
++--------------------+
+--Query--
+SELECT '(max_args)', id, sequenceNextNode('forward', 'head')(dt, action, 1, action = '0', action = '1', action = '2', action = '3', action = '4', action = '5', action = '6', action = '7', action = '8', action = '9', action = '10', action = '11', action = '12', action = '13', action = '14', action = '15', action = '16', action = '17', action = '18', action = '19', action = '20', action = '21', action = '22', action = '23', action = '24', action = '25', action = '26', action = '27', action = '28', action = '29', action = '30', action = '31', action = '32', action = '33', action = '34', action = '35', action = '36', action = '37', action = '38', action = '39', action = '40', action = '41', action = '42', action = '43', action = '44', action = '45', action = '46', action = '47', action = '48', action = '49', action = '50', action = '51', action = '52', action = '53', action = '54', action = '55', action = '56', action = '57', action = '58', action = '59', action = '60', action = '61', action = '62', action = '63') from test_sequenceNextNode GROUP BY id ORDER BY id
+--Result--
+[('(max_args)', 1, None), ('(max_args)', 2, None), ('(max_args)', 3, None), ('(max_args)', 4, None), ('(max_args)', 5, None), ('(max_args)', 6, None), ('(max_args)', 10, None), ('(max_args)', 11, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, A) id = 12', sequenceNextNode('forward', 'head')(dt, action, 1, action = 'A') AS next_node FROM test_sequenceNextNode WHERE id = 12
+--Result--
+[('(forward, head, A) id = 12', 'A')]
++--------------------+
+--Query--
+SELECT '(forward, head, 1)', id, sequenceNextNode('forward', 'head')(dt, action, referrer = '1') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, 1)', 1, 'A'), ('(forward, head, 1)', 2, None), ('(forward, head, 1)', 3, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, 1, A)', id, sequenceNextNode('forward', 'head')(dt, action, referrer = '1', action = 'A') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, 1, A)', 1, 'B'), ('(forward, head, 1, A)', 2, None), ('(forward, head, 1, A)', 3, None)]
++--------------------+
+--Query--
+SELECT '(forward, head, 1, A->B)', id, sequenceNextNode('forward', 'head')(dt, action, referrer = '1', action = 'A', action = 'B') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(forward, head, 1, A->B)', 1, 'C'), ('(forward, head, 1, A->B)', 2, None), ('(forward, head, 1, A->B)', 3, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, 1)', id, sequenceNextNode('backward', 'tail')(dt, action, referrer = '1') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, 1)', 1, None), ('(backward, tail, 1)', 2, 'A'), ('(backward, tail, 1)', 3, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, 1, A)', id, sequenceNextNode('backward', 'tail')(dt, action, referrer = '1', action = 'A') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, 1, A)', 1, None), ('(backward, tail, 1, A)', 2, 'B'), ('(backward, tail, 1, A)', 3, None)]
++--------------------+
+--Query--
+SELECT '(backward, tail, 1, A->B)', id, sequenceNextNode('backward', 'tail')(dt, action, referrer = '1', action = 'A', action = 'B') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(backward, tail, 1, A->B)', 1, None), ('(backward, tail, 1, A->B)', 2, 'C'), ('(backward, tail, 1, A->B)', 3, None)]
++--------------------+
+--Query--
+SELECT '(forward, first_match, 1, B)', id, sequenceNextNode('forward', 'first_match')(dt, action, referrer = '2', action = 'B') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, 1, B)', 1, 'C'), ('(forward, first_match, 1, B)', 2, 'A'), ('(forward, first_match, 1, B)', 3, 'D')]
++--------------------+
+--Query--
+SELECT '(forward, first_match, 1, B->C)', id, sequenceNextNode('forward', 'first_match')(dt, action, referrer = '2', action = 'B', action = 'C') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(forward, first_match, 1, B->C)', 1, 'D'), ('(forward, first_match, 1, B->C)', 2, None), ('(forward, first_match, 1, B->C)', 3, None)]
++--------------------+
+--Query--
+SELECT '(backward, first_match, 1, B)', id, sequenceNextNode('backward', 'first_match')(dt, action, referrer = '2', action = 'B') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, 1, B)', 1, 'A'), ('(backward, first_match, 1, B)', 2, 'C'), ('(backward, first_match, 1, B)', 3, 'B')]
++--------------------+
+--Query--
+SELECT '(backward, first_match, 1, B->C)', id, sequenceNextNode('backward', 'first_match')(dt, action, referrer = '2', action = 'B', action = 'A') AS next_node FROM test_base_condition GROUP BY id ORDER BY id
+--Result--
+[('(backward, first_match, 1, B->C)', 1, None), ('(backward, first_match, 1, B->C)', 2, None), ('(backward, first_match, 1, B->C)', 3, None)]
++--------------------+

@@ -1,0 +1,65 @@
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'affinity!' FROM t1 CROSS JOIN t2 WHERE t2.c = '14'
+--Result--
+[('affinity!',)]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'result' FROM t1, t2, t3    WHERE t2.c=t1.b AND t2.d!='silly'     AND t3.e=t1.b AND t3.f!='silly'
+--Result--
+[('result',)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM t0, v0 WHERE x='b '
+--Result--
+[(3,)]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0 LEFT JOIN t1 LEFT JOIN t2 ON (b NOTNULL)==(c IN ()) WHERE c
+--Result--
+[('xyz', None, 14, 'fourteen'), ('xyz', None, 123, 'one')]
++--------------------+

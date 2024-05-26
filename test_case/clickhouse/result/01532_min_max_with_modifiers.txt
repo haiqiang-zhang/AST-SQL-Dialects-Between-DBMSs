@@ -1,0 +1,30 @@
+--Query--
+SELECT 'totals'
+--Result--
+[('totals',)]
++--------------------+
+--Query--
+SELECT number % 3 + 1 AS n, min(n), max(n) FROM numbers(100) GROUP BY n WITH TOTALS
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3), (0, 1, 3)]
++--------------------+
+--Query--
+SELECT 'rollup'
+--Result--
+[('rollup',)]
++--------------------+
+--Query--
+SELECT 'cube'
+--Result--
+[('cube',)]
++--------------------+
+--Query--
+SELECT '======='
+--Result--
+[('=======',)]
++--------------------+
+--Query--
+SELECT     x,     min(x) AS lower,     max(x) + 1 AS upper,     upper - lower AS range FROM (     SELECT arrayJoin([1, 2]) AS x )  GROUP BY x WITH ROLLUP
+--Result--
+[(1, 1, 2, 1), (2, 2, 3, 1), (0, 1, 3, 2)]
++--------------------+

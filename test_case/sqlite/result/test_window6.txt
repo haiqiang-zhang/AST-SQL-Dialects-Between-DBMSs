@@ -1,0 +1,55 @@
+--Query--
+SELECT group_concat(x, '.') OVER (ORDER BY y) FROM t1
+--Result--
+[('1',), ('1.2',), ('1.2.3',), ('1.2.3.4',), ('1.2.3.4.5',)]
++--------------------+
+--Query--
+SELECT sum(x) OVER w FROM t1 WINDOW w AS (ORDER BY y)
+--Result--
+[(1,), (3,), (6,), (10,), (15,)]
++--------------------+
+--Query--
+SELECT * FROM t4 window, t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) OVER win FROM over   WINDOW win AS (ORDER BY x ROWS BETWEEN +2 FOLLOWING AND +3 FOLLOWING)
+--Result--
+[(2,), (2,), (2,), (2,), (2,), (2,), (2,), (2,), (2,), (2,), (1,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT LIKE('!', '', '!') x WHERE x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT LIKE("!","","!")""WHeRE""
+--Result--
+[]
++--------------------+
+--Query--
+SELECT "counter", "value", RANK() OVER w AS "rank"    FROM "sample"   WINDOW w AS (PARTITION BY "counter" ORDER BY "value" DESC)    ORDER BY "counter", RANK() OVER w
+--Result--
+[(1, 20.0, 1), (1, 10.0, 2), (2, 3.0, 1), (2, 1.0, 2), (3, 100.0, 1)]
++--------------------+
+--Query--
+SELECT "counter", "value", SUM("value") OVER    (ORDER BY "id" ROWS 2 PRECEDING)      FROM "sample"    ORDER BY "id"
+--Result--
+[(1, 10.0, 10.0), (1, 20.0, 30.0), (2, 1.0, 31.0), (2, 3.0, 24.0), (3, 100.0, 104.0)]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<5)   SELECT x, group_concat(x) OVER (ORDER BY x ROWS 2 PRECEDING)   FROM c
+--Result--
+[(1, '1'), (2, '1,2'), (3, '1,2,3'), (4, '2,3,4'), (5, '3,4,5')]
++--------------------+
+--Query--
+WITH t1(a,b) AS (VALUES(1,2))   SELECT count() FILTER (where b<>5) OVER w1     FROM t1     WINDOW w1 AS (ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH t1(a,b) AS ( VALUES(1, 2), (2, 3), (3, 4) )     SELECT nth_value(b, 1) OVER (ORDER BY a) FROM t1
+--Result--
+[(2,), (2,), (2,)]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+SELECT sum(A) FROM (SELECT multiIf(1, 1, NULL) as A)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(multiIf(number = NULL, 65536, 3))  FROM numbers(3)
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT multiIf(NULL, 65536 :: UInt32, 3 :: Int32)
+--Result--
+[(3,)]
++--------------------+

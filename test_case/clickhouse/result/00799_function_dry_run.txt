@@ -1,0 +1,5 @@
+--Query--
+WITH     (         SELECT arrayCumSum(groupArray(amount))         FROM         (             SELECT                 amount             FROM bm             ORDER BY business_dttm         )     ) AS arr,     1 + rowNumberInAllBlocks() AS id,     3 AS window_size SELECT     amount,     business_dttm,     if(id < window_size, NULL, round(arr[id] - arr[id - window_size], 4)) AS moving_sum FROM (     SELECT         amount,         business_dttm     FROM bm     ORDER BY business_dttm ) ORDER BY business_dttm
+--Result--
+[(0.30000001192092896, datetime.datetime(2018, 11, 19, 13, 0), None), (0.30000001192092896, datetime.datetime(2018, 11, 19, 13, 5), None), (0.4000000059604645, datetime.datetime(2018, 11, 19, 13, 10), 1.0), (0.5, datetime.datetime(2018, 11, 19, 13, 15), 1.2), (0.6000000238418579, datetime.datetime(2018, 11, 19, 13, 20), 1.5), (0.699999988079071, datetime.datetime(2018, 11, 19, 13, 25), 1.8), (0.800000011920929, datetime.datetime(2018, 11, 19, 13, 30), 2.1), (0.8999999761581421, datetime.datetime(2018, 11, 19, 13, 45), 2.4), (0.5, datetime.datetime(2018, 11, 19, 13, 50), 2.2)]
++--------------------+

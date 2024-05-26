@@ -1,0 +1,70 @@
+--Query--
+SELECT * APPLY(sum) from columns_transformers
+--Result--
+[(220, 18, 347)]
++--------------------+
+--Query--
+SELECT * APPLY sum from columns_transformers
+--Result--
+[(220, 18, 347)]
++--------------------+
+--Query--
+SELECT COLUMNS('[jk]') APPLY(toString) APPLY(length) from columns_transformers
+--Result--
+[(2, 3), (1, 2)]
++--------------------+
+--Query--
+SELECT * EXCEPT(i) APPLY(sum) from columns_transformers
+--Result--
+[(18, 347)]
++--------------------+
+--Query--
+SELECT * EXCEPT STRICT i from columns_transformers
+--Result--
+[(10, 324), (8, 23)]
++--------------------+
+--Query--
+SELECT * EXCEPT STRICT (i, j) from columns_transformers
+--Result--
+[(324,), (23,)]
++--------------------+
+--Query--
+SELECT * REPLACE STRICT i + 1 AS i from columns_transformers
+--Result--
+[(101, 10, 324), (121, 8, 23)]
++--------------------+
+--Query--
+SELECT * REPLACE(i + 1 AS i) APPLY(sum) from columns_transformers
+--Result--
+[(222, 18, 347)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * APPLY(sum) from columns_transformers
+--Result--
+[('SELECT',), ('    sum(i),',), ('    sum(j),',), ('    sum(k)',), ('FROM columns_transformers',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT COLUMNS('[jk]') APPLY(toString) APPLY(length) from columns_transformers
+--Result--
+[('SELECT',), ('    length(toString(j)),',), ('    length(toString(k))',), ('FROM columns_transformers',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * EXCEPT(i) APPLY(sum) from columns_transformers
+--Result--
+[('SELECT',), ('    sum(j),',), ('    sum(k)',), ('FROM columns_transformers',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * REPLACE(i + 1 AS i) APPLY(sum) from columns_transformers
+--Result--
+[('SELECT',), ('    sum(i) + (1 * count(i)),',), ('    sum(j),',), ('    sum(k)',), ('FROM columns_transformers',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sum(i + 1 AS m) from columns_transformers
+--Result--
+[('SELECT sum(i) + (1 * count(i))',), ('FROM columns_transformers',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * REPLACE(i + 1 AS i) REPLACE(i + 1 AS i) from columns_transformers
+--Result--
+[('SELECT',), ('    (i + 1) + 1 AS i,',), ('    j,',), ('    k',), ('FROM columns_transformers',)]
++--------------------+

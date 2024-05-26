@@ -1,0 +1,5 @@
+--Query--
+SELECT     visitorId,     orderId,     groupUniqArray(sessionId) FROM sessions ASOF INNER JOIN orders ON (sessions.visitorId = orders.visitorId) AND (sessions.date <= orders.date) GROUP BY     visitorId,     orderId ORDER BY     visitorId ASC,     orderId ASC
+--Result--
+[('v1', 'o1', ['s2', 's1']), ('v1', 'o2', ['s4']), ('v2', 'o3', ['s5', 's3'])]
++--------------------+

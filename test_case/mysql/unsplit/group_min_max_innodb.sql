@@ -71,7 +71,6 @@ DROP TABLE t1;
 CREATE TABLE t1 (a CHAR(1) NOT NULL, b CHAR(1) NOT NULL, UNIQUE KEY (a,b))
 charset utf8mb4 ENGINE=InnoDB;
 INSERT INTO t1 VALUES ('a', 'b'), ('c', 'd');
-SELECT COUNT(DISTINCT a) FROM t1 WHERE b = 'b';
 DROP TABLE t1;
 CREATE TABLE t0 (
   i1 INTEGER NOT NULL
@@ -107,22 +106,6 @@ SELECT TRACE RLIKE 'minmax_keypart_in_disjunctive_query'
 AS OK FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE;
 SELECT c1, max(i2) FROM t1 WHERE (c1 = 'C' AND i2 = 17) OR ( c1 = 'F')
 GROUP BY c1;
-SELECT c1, max(i2) FROM t1 WHERE (c1 = 'C' OR ( c1 = 'F' AND i2 = 17))
-GROUP BY c1;
-SELECT c1, max(i2) FROM t1 WHERE (c1 = 'C' OR c1 = 'F' ) AND ( i2 = 17 )
-GROUP BY c1;
-SELECT c1, max(i2) FROM t1 
-WHERE ((c1 = 'C' AND (i2 = 40 OR i2 = 30)) OR ( c1 = 'F' AND (i2 = 40 )))
-GROUP BY c1;
-SELECT c1, i1, max(i2) FROM t2
-WHERE (c1 = 'C' OR ( c1 = 'F' AND i1 < 35)) AND ( i2 = 17 )
-GROUP BY c1,i1;
-SELECT c1, i1, max(i2) FROM t2 
-WHERE (((c1 = 'C' AND i1 < 40) OR ( c1 = 'F' AND i1 < 35)) AND ( i2 = 17 ))
-GROUP BY c1,i1;
-SELECT c1, i1, max(i2) FROM t2 
-WHERE ((c1 = 'C' AND i1 < 40) OR ( c1 = 'F' AND i1 < 35) OR ( i2 = 17 ))
-GROUP BY c1,i1;
 DROP TABLE t0,t1,t2;
 CREATE TABLE t1 (
   pk_col INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,15 +128,6 @@ INSERT INTO t2 (pk_col1, pk_col2, a1, a2) VALUES (1,1,'a','b'),(1,2,'a','b'),
 SELECT DISTINCT a1
 FROM t1
 WHERE (pk_col = 2 OR pk_col = 22) AND a1 = 'a';
-SELECT COUNT(DISTINCT a1)
-FROM t1
-GROUP BY a1,pk_col;
-SELECT COUNT(DISTINCT a1)
-FROM t2
-GROUP BY a1,pk_col1;
-SELECT COUNT(DISTINCT a1)
-FROM t2
-GROUP BY a1,a2;
 DROP TABLE t1, t2;
 CREATE TABLE t1 (
 id int NOT NULL,
@@ -205,9 +179,6 @@ INSERT IGNORE INTo t1(pk, c1, c2)
 SELECT * FROM t1 WHERE pk = 1 OR pk = 231;
 SELECT DISTINCT c1
 FROM t1 FORCE INDEX(ukey)
-WHERE pk IN (1,231) and c1 IS NOT NULL;
-SELECT DISTINCT c1
-FROM t1 IGNORE INDEX(ukey)
 WHERE pk IN (1,231) and c1 IS NOT NULL;
 DROP TABLE t1;
 CREATE TABLE t1 (

@@ -1,0 +1,710 @@
+--Query--
+select a,b from t1 union distinct select a,b from t2
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e')]
++--------------------+
+--Query--
+select a,b from t1 union all select a,b from t2
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (3, 'c'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e')]
++--------------------+
+--Query--
+select a,b from t1 union all select a,b from t2 order by b
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (3, 'c'), (3, 'c'), (4, 'd'), (6, 'e'), (5, 'f')]
++--------------------+
+--Query--
+select a,b from t1 union all select a,b from t2 union select 7,'g'
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e'), (7, 'g')]
++--------------------+
+--Query--
+select 0,'#' union select a,b from t1 union all select a,b from t2 union select 7,'gg'
+--Result--
+[(0, '#'), (1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e'), (7, 'gg')]
++--------------------+
+--Query--
+select a,b from t1 union select a,b from t1
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+select 't1',b,count(*) from t1 group by b UNION select 't2',b,count(*) from t2 group by b
+--Result--
+[('t1', 'a', 1), ('t1', 'b', 1), ('t1', 'c', 2), ('t2', 'c', 1), ('t2', 'd', 1), ('t2', 'f', 1), ('t2', 'e', 1)]
++--------------------+
+--Query--
+select found_rows()
+--Result--
+[(7,)]
++--------------------+
+--Query--
+select sql_calc_found_rows  a,b from t1  union all select a,b from t2 limit 2
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+select * from t1 where a in     (select a from t1 union select a from t1 order by (select a))   union select * from t1 order by (select a)
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+select 1 as a,(select a union select a)
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT @a:=1 UNION SELECT @a:=@a+1
+--Result--
+[(1.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT t4.uid, t5.rl, t3.gn as g1, t4.cid, t4.gid as gg FROM t3, t6, t1, t4 left join t5 on t5.rid = t4.rid left join t2 on t2.cid = t4.cid WHERE t3.gid=t4.gid AND t6.uid = t4.uid AND t6.uc  = t1.cid AND t1.cv = "dummy" AND t6.un = "test"
+--Result--
+[(1, None, 'V1', None, 1)]
++--------------------+
+--Query--
+SELECT t4.uid, t5.rl, t3.gn as g1, t4.cid, t4.gid as gg FROM t3, t6, t1, t4 left join t5 on t5.rid = t4.rid left join t2 on t2.cid = t4.cid WHERE t3.gid=t4.gid AND t6.uid = t4.uid AND t3.must IS NOT NULL AND t6.uc  = t1.cid AND t1.cv = "dummy" AND t6.un = "test"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e'), (1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+select * from t4
+--Result--
+[(1, 'a'), (2, 'b'), (1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'f'), (6, 'e')]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM ( (SELECT                     * FROM t1) UNION all (SELECT * FROM t2)) q
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION all SELECT * FROM t2 LIMIT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION SELECT * FROM t2 LIMIT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION SELECT * FROM t2 LIMIT 100
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION SELECT * FROM t2 LIMIT 2,2
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a desc LIMIT 1
+--Result--
+[(5,)]
++--------------------+
+--Query--
+select length(version()) > 1 as `*` UNION select 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select 1 'is_in_group', a.user_name, c.group_name, b.id from `groups` a, t3 b, users c where a.id = b.user_id and b.group_id = c.id UNION  select 0 'is_in_group', a.user_name, c.group_name, null from `groups` a, users c
+--Result--
+[(1, 'Tester', 'Group A', 1), (0, 'Tester', 'Group A', None), (0, 'Tester', 'Group B', None)]
++--------------------+
+--Query--
+SELECT mp.pla_id, MIN(m1.matintnum) AS matintnum FROM t2 mp INNER JOIN t1 m1 ON mp.mat_id=m1.mat_id GROUP BY mp.pla_id union SELECT 0, 0
+--Result--
+[(100, 'a'), (101, 'a'), (102, 'a'), (103, 'b'), (104, 'b'), (105, 'c'), (0, '0')]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('a',), ('aa',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('12',), ('aa',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(12.0,), (12.2,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(3.0,), (1.5,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1.5,), (2.5,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(4.0,), (1.5,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(4.0,), (2.5,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1.5,), (1972.0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('1.5',), ('1972-10-22',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('1972',), ('1972-10-22',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('1972',), ('1972-10-22 11:50:00',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(datetime.datetime(1972, 10, 22, 0, 0),), (datetime.datetime(1972, 10, 22, 11, 50),)]
++--------------------+
+--Query--
+select trim(dt) from t1
+--Result--
+[('1972-10-22 11:50:00',), ('testc',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('1972-10-22 11:50:00',), ('testv',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('testc',), ('testv',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(b'1972-10-22 11:50:00',), (b'tetetetetest',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(b'testv',), (b'tetetetetest',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(b'3',), (b'2.5',), (b'tetetetetest',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('testv',), ('teeeeeeeeeeeest',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(b'tetetetetest',), (b'teeeeeeeeeeeest',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (-1,)]
++--------------------+
+--Query--
+select a from t1 where b not in (1,2,3) union select a from t1 where b not in (4,5,6)
+--Result--
+[(4,), (5,), (3,), (6,), (7,), (8,), (9,), (10,), (1,), (2,)]
++--------------------+
+--Query--
+select col1 n from t1 union select col2 n from t1 order by n
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+select col1 n from t1 union select col2 n from t1 order by n
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+select * from t1 UNION select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1 UNION ALL select * from t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select * from t1 UNION select * from t1 UNION ALL select * from t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select 1 as a union all select 1 union all select 2 union select 1 union all select 2
+--Result--
+[(1,), (2,), (2,)]
++--------------------+
+--Query--
+select 1 union select 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select a from t1 union select a from t2 order by a
+--Result--
+[(1,), (100,)]
++--------------------+
+--Query--
+select a from t1 union select a from t2 order by a
+--Result--
+[(1,), (100,)]
++--------------------+
+--Query--
+SELECT 'a' UNION SELECT uid FROM t1
+--Result--
+[('a',), ('150',)]
++--------------------+
+--Query--
+select "1" as a union select a from t1
+--Result--
+[('1',), ('No',)]
++--------------------+
+--Query--
+select a as a from t1 union select "1"
+--Result--
+[('No',), ('1',)]
++--------------------+
+--Query--
+select a as a from t2 union select a from t1
+--Result--
+[('bbb',), ('No',)]
++--------------------+
+--Query--
+select "1" as a union select a from t3
+--Result--
+[('1',), ('Yes',)]
++--------------------+
+--Query--
+select a as a from t3 union select "1"
+--Result--
+[('Yes',), ('1',)]
++--------------------+
+--Query--
+select a as a from t4 union select a from t3
+--Result--
+[('aaa,bbb',), ('Yes',)]
++--------------------+
+--Query--
+select a as a from t1 union select a from t4
+--Result--
+[('No',), ('aaa,bbb',)]
++--------------------+
+--Query--
+select * from ((select * from t1 limit 1)) a
+--Result--
+[(1, 'a')]
++--------------------+
+--Query--
+select * from ((select * from t1 limit 1) union (select * from t1 limit 1)) a
+--Result--
+[(1, 'a')]
++--------------------+
+--Query--
+select * from ((select * from t1 limit 1) union (select * from t1 limit 1) union (select * from t1 limit 1)) a
+--Result--
+[(1, 'a')]
++--------------------+
+--Query--
+select * from ((((select * from t1))) union (select * from t1) union (select * from t1)) a
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+select * from ((select * from t1) union (((select * from t1))) union (select * from t1)) a
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c')]
++--------------------+
+--Query--
+select concat('value is: ', @val) union select 'some text'
+--Result--
+[(None,), ('some text',)]
++--------------------+
+--Query--
+select foo from t1 union select 'bar' as foo from dual
+--Result--
+[('foo',), ('bar',)]
++--------------------+
+--Query--
+select f1 from t1 union all select f2 from t1
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+select 'XXXXXXXXXXXXXXXXXXXX' as description, f1 from t1 union all select 'YYYYYYYYYYYYYYYYYYYY' as description, f2 from t1
+--Result--
+[('XXXXXXXXXXXXXXXXXXXX', 0.0), ('YYYYYYYYYYYYYYYYYYYY', 0.0)]
++--------------------+
+--Query--
+select f1 from t1 union all select f2 from t1
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+select 'XXXXXXXXXXXXXXXXXXXX' as description, f1 from t1 union all select 'YYYYYYYYYYYYYYYYYYYY' as description, f2 from t1
+--Result--
+[('XXXXXXXXXXXXXXXXXXXX', 0.0), ('YYYYYYYYYYYYYYYYYYYY', 0.0)]
++--------------------+
+--Query--
+select row_format from information_schema.TABLES where table_schema="test" and table_name="t2"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT left(a,100000000) FROM t1 UNION  SELECT b FROM t2
+--Result--
+[('a',), ('b',)]
++--------------------+
+--Query--
+SELECT @tmp_max:= @@global.max_allowed_packet
+--Result--
+[(67108864,)]
++--------------------+
+--Query--
+select 99 union all select id from t1 order by 1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (99,)]
++--------------------+
+--Query--
+select id from t1 union all select 99 order by 1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (99,)]
++--------------------+
+--Query--
+select _utf8mb3'12' union select _latin1'12345'
+--Result--
+[('12',), ('12345',)]
++--------------------+
+--Query--
+SELECT a FROM (SELECT a FROM t1 UNION SELECT a FROM t1 ORDER BY a) AS test
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+select @var
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION SELECT a FROM t1 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a INTO @v FROM (   SELECT a FROM t1   UNION   SELECT a FROM t1 ) alias
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION SELECT a INTO @v FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ( SELECT a UNION SELECT a ) INTO @v FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t1 ORDER BY a + 12
+--Result--
+[('1',), ('2',)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t1 ORDER BY a + 12
+--Result--
+[('1',), ('2',)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t1   ORDER BY (SELECT a FROM t2 WHERE b = 12)
+--Result--
+[('1',), ('2',)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t1   ORDER BY (SELECT a FROM t2 WHERE b = 12)
+--Result--
+[('1',), ('2',)]
++--------------------+
+--Query--
+SELECT * FROM t2 UNION SELECT * FROM t2   ORDER BY (SELECT * FROM t1 WHERE MATCH(a) AGAINST ('+abc' IN BOOLEAN MODE))
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY c2, c1
+--Result--
+[('t1a', 1), ('t1b', 1), ('t2a', 1), ('t2b', 1), ('t1a', 2), ('t1b', 2), ('t2a', 2), ('t2b', 2), ('t1a', 3), ('t2a', 3)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION (SELECT * FROM t2) ORDER BY c2, c1
+--Result--
+[('t1a', 1), ('t1b', 1), ('t2a', 1), ('t2b', 1), ('t1a', 2), ('t1b', 2), ('t2a', 2), ('t2b', 2), ('t1a', 3), ('t2a', 3)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION (SELECT * FROM t2 ORDER BY c2, c1)
+--Result--
+[('t1a', 1), ('t1a', 2), ('t1a', 3), ('t1b', 2), ('t1b', 1), ('t2a', 1), ('t2a', 2), ('t2a', 3), ('t2b', 2), ('t2b', 1)]
++--------------------+
+--Query--
+SELECT c1, c2 FROM (   SELECT c1, c2 FROM t1   UNION   (SELECT c1, c2 FROM t2)   ORDER BY c2, c1 ) AS res
+--Result--
+[('t1a', 1), ('t1b', 1), ('t2a', 1), ('t2b', 1), ('t1a', 2), ('t1b', 2), ('t2a', 2), ('t2b', 2), ('t1a', 3), ('t2a', 3)]
++--------------------+
+--Query--
+SELECT c1, c2 FROM (   SELECT c1, c2 FROM t1   UNION   (SELECT c1, c2 FROM t2)   ORDER BY c2 DESC, c1 LIMIT 1 ) AS res
+--Result--
+[('t1a', 3)]
++--------------------+
+--Query--
+SELECT c1, c2 FROM (   SELECT c1, c2 FROM t1   UNION   (SELECT c1, c2 FROM t2 ORDER BY c2 DESC, c1 LIMIT 1) ) AS res
+--Result--
+[('t1a', 1), ('t1a', 2), ('t1a', 3), ('t1b', 2), ('t1b', 1), ('t2a', 3)]
++--------------------+
+--Query--
+SELECT c1, c2 FROM (   SELECT c1, c2 FROM t1   UNION   SELECT c1, c2 FROM t2   ORDER BY c2 DESC, c1 DESC LIMIT 1 ) AS res
+--Result--
+[('t2a', 3)]
++--------------------+
+--Query--
+SELECT c1, c2 FROM (   (    (SELECT c1, c2 FROM t1)    UNION    (SELECT c1, c2 FROM t2)   )   ORDER BY c2 DESC, c1 ASC LIMIT 1 ) AS res
+--Result--
+[('t1a', 3)]
++--------------------+
+--Query--
+select b as z from t1 union select b from t1 order by z
+--Result--
+[]
++--------------------+
+--Query--
+select b as z from t1 union select b from t1 order by (select z)
+--Result--
+[]
++--------------------+
+--Query--
+select b as z from t1 union (select b from t1) order by (select z)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT column_name, column_type FROM information_schema.columns WHERE TABLE_NAME='t3'
+--Result--
+[('a', 'datetime')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a IN (SELECT 'r' FROM t1 UNION ALL SELECT 'j')
+--Result--
+[('j',), ('r',), ('r',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('j',), ('r',), ('r',)]
++--------------------+
+--Query--
+SELECT FOUND_ROWS()
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t2 UNION ALL SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 UNION ALL SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT MAX(1) AS foo UNION SELECT MAX(2) ORDER BY foo
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT ST_AsText(a) FROM (SELECT p AS a FROM t1 UNION SELECT l FROM t1) t
+--Result--
+[('POINT(1 1)',), ('LINESTRING(0 0,1 1,2 2)',)]
++--------------------+
+--Query--
+SELECT a FROM (SELECT a FROM t2) t1 UNION ALL SELECT 1 FROM t1
+--Result--
+[('a',), ('1',)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t1
+--Result--
+[(1,), (2,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (2,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (2,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 UNION DISTINCT SELECT 2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.date(2017, 3, 2),), (datetime.date(2017, 6, 22),)]
++--------------------+
+--Query--
+SELECT @@SQL_MODE
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ST_GEOMFROMTEXT('POINT(0 0)') UNION SELECT * FROM (SELECT NULL) AS a
+--Result--
+[(b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',), (None,)]
++--------------------+
+--Query--
+SELECT _utf8mb4 'a' UNION SELECT a FROM t
+--Result--
+[('a',)]
++--------------------+
+--Query--
+PREPARE stmt FROM "SELECT 'foo' UNION ALL SELECT ?"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'SELECT "foo", "foo2" UNION SELECT CONVERT("bar" USING utf8mb3), "bar2" UNION SELECT "foobar", CONVERT("foobar2" USING utf8mb3)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.f1 FROM t1 LEFT JOIN t2 ON EXISTS ( SELECT * FROM t1, t2 ) UNION ALL SELECT t1.f1 FROM t1
+--Result--
+[('d',), ('d',)]
++--------------------+
+--Query--
+SELECT * FROM t1 LIMIT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t1 LIMIT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION DISTINCT SELECT * FROM t1 LIMIT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM ( SELECT * FROM t1 WHERE pk=1 UNION SELECT * FROM t1 WHERE FALSE ) d1
+--Result--
+[(1, b'')]
++--------------------+
+--Query--
+SELECT id FROM t2 UNION ALL SELECT id FROM t1
+--Result--
+[(4000000000,), (2000000000,)]
++--------------------+
+--Query--
+SELECT id FROM t1 UNION ALL SELECT id FROM t2
+--Result--
+[(2000000000,), (4000000000,)]
++--------------------+
+--Query--
+SELECT ts, ss, ms, ls, bs, tu, su, mu, lu, bu,        ts AS a, ss AS b, ms AS c, ls AS d, bs AS e,        tu AS f, su AS g, mu AS h, lu AS i, bu AS j FROM t1 UNION ALL SELECT ts, ss, ms, ls, bs, tu, su, mu, lu, bu,        tu, su, mu, lu, bu, ts, ss, ms, ls, bs FROM t1
+--Result--
+[(-128, -32768, -8388608, -2147483648, -9223372036854775808, 0, 0, 0, 0, 0, -128, -32768, -8388608, -2147483648, -9.223372036854776e+18, 0, 0, 0, 0, 0.0), (127, 32767, 8388607, 2147483647, 9223372036854775807, 255, 65535, 16777215, 4294967295, 18446744073709551615, 127, 32767, 8388607, 2147483647, 9.223372036854776e+18, 255, 65535, 16777215, 4294967295, 1.8446744073709552e+19), (-128, -32768, -8388608, -2147483648, -9223372036854775808, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, -128, -32768, -8388608, -2147483648, -9.223372036854776e+18), (127, 32767, 8388607, 2147483647, 9223372036854775807, 255, 65535, 16777215, 4294967295, 18446744073709551615, 255, 65535, 16777215, 4294967295, 1.8446744073709552e+19, 127, 32767, 8388607, 2147483647, 9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM s UNION ALL              SELECT * FROM t
+--Result--
+[(1,), (10,), (20,), (-10,), (-20,), (10,), (100,), (200,), (-100,), (-200,)]
++--------------------+
+--Query--
+SELECT * FROM s UNION ALL              SELECT * FROM t ORDER BY a
+--Result--
+[(-200,), (-100,), (-20,), (-10,), (1,), (10,), (10,), (20,), (100,), (200,)]
++--------------------+
+--Query--
+SELECT * FROM s UNION ALL              SELECT * FROM t ORDER BY a
+--Result--
+[(-200,), (-100,), (-20,), (-10,), (1,), (10,), (10,), (20,), (100,), (200,)]
++--------------------+
+--Query--
+SELECT * FROM s UNION ALL              SELECT * FROM t ORDER BY a LIMIT 11
+--Result--
+[(-200,), (-100,), (-20,), (-10,), (1,), (10,), (10,), (20,), (100,), (200,)]
++--------------------+
+--Query--
+SELECT * FROM s UNION ALL              SELECT * FROM t ORDER BY a LIMIT 11
+--Result--
+[(-200,), (-100,), (-20,), (-10,), (1,), (10,), (10,), (20,), (100,), (200,)]
++--------------------+

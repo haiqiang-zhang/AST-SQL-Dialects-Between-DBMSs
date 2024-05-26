@@ -1,0 +1,30 @@
+--Query--
+SYSTEM STOP MERGES tbl
+--Result--
+[]
++--------------------+
+--Query--
+select count() from replacing_mt
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select left_table.id,val_left, val_middle, val_right from left_table                                                               inner join middle_table on left_table.id = middle_table.id                                                               inner join right_table on middle_table.id = right_table.id ORDER BY left_table.id, val_left, val_middle, val_right
+--Result--
+[(1, 'c', 'a', 'c'), (1, 'c', 'b', 'c')]
++--------------------+
+--Query--
+explain syntax select left_table.id,val_left, val_middle, val_right from left_table                                                                              inner join middle_table on left_table.id = middle_table.id                                                                              inner join right_table on middle_table.id = right_table.id                ORDER BY left_table.id, val_left, val_middle, val_right
+--Result--
+[('SELECT',), ('    `_--left_table.id` AS `left_table.id`,',), ('    val_left,',), ('    val_middle,',), ('    val_right',), ('FROM',), ('(',), ('    SELECT',), ('        val_left,',), ('        id AS `_--left_table.id`,',), ('        val_middle,',), ('        middle_table.id AS `_--middle_table.id`',), ('    FROM left_table',), ('    FINAL',), ('    ALL INNER JOIN',), ('    (',), ('        SELECT',), ('            id,',), ('            val_middle',), ('        FROM middle_table',), ('    ) AS middle_table ON `_--left_table.id` = `_--middle_table.id`',), (') AS `--.s`',), ('ALL INNER JOIN',), ('(',), ('    SELECT',), ('        val_right,',), ('        id AS `_--right_table.id`',), ('    FROM right_table',), ('    FINAL',), (') AS `--.t` ON `_--middle_table.id` = `_--right_table.id`',), ('ORDER BY',), ('    `_--left_table.id` ASC,',), ('    val_left ASC,',), ('    val_middle ASC,',), ('    val_right ASC',)]
++--------------------+
+--Query--
+select left_table.id,val_left, val_middle, val_right from left_table                                                               inner join middle_table on left_table.id = middle_table.id                                                               inner join (SELECT * FROM right_table WHERE id = 1) r on middle_table.id = r.id ORDER BY left_table.id, val_left, val_middle, val_right
+--Result--
+[(1, 'c', 'a', 'c'), (1, 'c', 'b', 'c')]
++--------------------+
+--Query--
+SELECT * FROM merge_table ORDER BY id, val
+--Result--
+[(1, 'c'), (2, 'a'), (2, 'b'), (3, 'c')]
++--------------------+

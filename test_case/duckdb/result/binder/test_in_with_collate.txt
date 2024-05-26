@@ -1,0 +1,20 @@
+--Query--
+select * from tbl where str in ('AbCdE')
+--Result--
+[]
++--------------------+
+--Query--
+select * from tbl where str collate nocase in ('abcde')
+--Result--
+[('ABCDE',), ('aBcDe',)]
++--------------------+
+--Query--
+select * from tbl where str collate noaccent in ('abcde')
+--Result--
+[]
++--------------------+
+--Query--
+select * from tbl where str collate nocase.noaccent in ('abcde')
+--Result--
+[('ABCDE',), ('aBcDe',)]
++--------------------+

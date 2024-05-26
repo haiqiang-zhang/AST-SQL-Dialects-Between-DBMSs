@@ -264,24 +264,16 @@ VACUUM brintest;
 UPDATE brintest SET int8col = int8col * int4col;
 UPDATE brintest SET textcol = '' WHERE textcol IS NOT NULL;
 SELECT brin_summarize_new_values('brinidx');
-SELECT brin_desummarize_range('brinidx', 0);
-SELECT brin_desummarize_range('brinidx', 0);
-SELECT brin_desummarize_range('brinidx', 100000000);
 CREATE TABLE brin_summarize (
     value int
 ) WITH (fillfactor=10, autovacuum_enabled=false);
 CREATE INDEX brin_summarize_idx ON brin_summarize USING brin (value) WITH (pages_per_range=2);
 SELECT brin_summarize_range('brin_summarize_idx', 0);
-SELECT brin_summarize_range('brin_summarize_idx', 1);
-SELECT brin_summarize_range('brin_summarize_idx', 2);
-SELECT brin_summarize_range('brin_summarize_idx', 4294967295);
 CREATE TABLE brintest_2 (n numrange);
 CREATE INDEX brinidx_2 ON brintest_2 USING brin (n);
 INSERT INTO brintest_2 VALUES ('empty');
 INSERT INTO brintest_2 VALUES (numrange(0, 2^1000::numeric));
 INSERT INTO brintest_2 VALUES ('(-1, 0)');
-SELECT brin_desummarize_range('brinidx', 0);
-SELECT brin_summarize_range('brinidx', 0);
 DROP TABLE brintest_2;
 CREATE TABLE brin_test (a INT, b INT);
 INSERT INTO brin_test SELECT x/100,x%100 FROM generate_series(1,10000) x(x);

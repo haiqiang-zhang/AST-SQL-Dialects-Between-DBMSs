@@ -1,0 +1,40 @@
+--Query--
+system stop replicated sends rmt_master
+--Result--
+[]
++--------------------+
+--Query--
+system stop pulling replication log rmt_slave
+--Result--
+[]
++--------------------+
+--Query--
+system start pulling replication log rmt_slave
+--Result--
+[]
++--------------------+
+--Query--
+system flush logs
+--Result--
+[]
++--------------------+
+--Query--
+select 'before'
+--Result--
+[('before',)]
++--------------------+
+--Query--
+system start replicated sends rmt_master
+--Result--
+[]
++--------------------+
+--Query--
+system flush logs
+--Result--
+[]
++--------------------+
+--Query--
+select 'after'
+--Result--
+[('after',)]
++--------------------+

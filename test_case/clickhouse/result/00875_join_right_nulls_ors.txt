@@ -1,0 +1,50 @@
+--Query--
+SELECT 'on with or'
+--Result--
+[('on with or',)]
++--------------------+
+--Query--
+SELECT 'n rj n', t1.x, t2.x FROM nt AS t1 RIGHT JOIN ntxy AS t2 ON t1.x = t2.x OR t1.x = t2.y ORDER BY t1.x
+--Result--
+[('n rj n', '1', '1'), ('n rj n', 'id', 'id'), ('n rj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n a rj n', t1.x, t2.x FROM nt AS t1 ANY RIGHT JOIN ntxy AS t2 ON t1.x = t2.x OR t1.x = t2.y ORDER BY t1.x
+--Result--
+[('n a rj n', '1', '1'), ('n a rj n', 'id', 'id'), ('n a rj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n fj n', t1.x, t2.x FROM nt AS t1 FULL JOIN ntxy AS t2 ON t1.x = t2.x OR t1.x = t2.y ORDER BY t1.x
+--Result--
+[('n fj n', '1', '1'), ('n fj n', 'id', 'id'), ('n fj n', None, None), ('n fj n', None, None)]
++--------------------+
+--Query--
+SELECT 't rj n', t1.x, t2.x FROM t AS t1 RIGHT JOIN ntxy AS t2 ON t1.x = t2.x OR t1.x = t2.y ORDER BY t1.x
+--Result--
+[('t rj n', '1', '1'), ('t rj n', 'id', 'id'), ('t rj n', None, None)]
++--------------------+
+--Query--
+SELECT 't fj n', t1.x, t2.x FROM t AS t1 FULL JOIN ntxy AS t2 ON t1.x = t2.x OR t1.x = t2.y ORDER BY t1.x
+--Result--
+[('t fj n', '1', '1'), ('t fj n', 'id', 'id'), ('t fj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n rj t', t1.x, t2.x FROM ntxy AS t1 RIGHT JOIN t AS t2 ON t1.x = t2.x OR t1.y = t2.x  ORDER BY t1.x
+--Result--
+[('n rj t', '1', '1'), ('n rj t', 'id', 'id')]
++--------------------+
+--Query--
+SELECT 'n a rj t', t1.x, t2.x FROM ntxy AS t1 ANY RIGHT JOIN t AS t2 ON t1.x = t2.x OR t1.y = t2.x  ORDER BY t1.x
+--Result--
+[('n a rj t', '1', '1'), ('n a rj t', 'id', 'id')]
++--------------------+
+--Query--
+SELECT 'n fj t', t1.x, t2.x FROM ntxy AS t1 FULL JOIN t AS t2 ON t1.x = t2.x OR t2.x = t1.y ORDER BY t1.x
+--Result--
+[('n fj t', '1', '1'), ('n fj t', 'id', 'id'), ('n fj t', None, None)]
++--------------------+
+--Query--
+SELECT 'n fj t', t1.x, t2.x FROM ntxy AS t1 FULL JOIN t AS t2 ON t2.x = t1.y OR t1.x = t2.x ORDER BY t1.x
+--Result--
+[('n fj t', '1', '1'), ('n fj t', 'id', 'id'), ('n fj t', None, None)]
++--------------------+

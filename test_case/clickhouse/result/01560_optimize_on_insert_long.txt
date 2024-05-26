@@ -1,0 +1,65 @@
+--Query--
+SELECT 'Replacing Merge Tree'
+--Result--
+[('Replacing Merge Tree',)]
++--------------------+
+--Query--
+SELECT * FROM replacing_merge_tree ORDER BY key
+--Result--
+[(1, datetime.datetime(2020, 1, 1, 0, 0)), (2, datetime.datetime(2020, 1, 2, 0, 0))]
++--------------------+
+--Query--
+SELECT 'Collapsing Merge Tree'
+--Result--
+[('Collapsing Merge Tree',)]
++--------------------+
+--Query--
+SELECT * FROM collapsing_merge_tree ORDER BY key
+--Result--
+[(1, 1, datetime.datetime(2020, 1, 1, 0, 0))]
++--------------------+
+--Query--
+SELECT 'Versioned Collapsing Merge Tree'
+--Result--
+[('Versioned Collapsing Merge Tree',)]
++--------------------+
+--Query--
+SELECT * FROM versioned_collapsing_merge_tree ORDER BY key
+--Result--
+[(1, 1, 2, datetime.datetime(2020, 1, 1, 0, 0))]
++--------------------+
+--Query--
+SELECT 'Summing Merge Tree'
+--Result--
+[('Summing Merge Tree',)]
++--------------------+
+--Query--
+SELECT * FROM summing_merge_tree ORDER BY key
+--Result--
+[(1, 6, datetime.datetime(2020, 1, 1, 0, 0)), (2, 6, datetime.datetime(2020, 1, 2, 0, 0))]
++--------------------+
+--Query--
+SELECT 'Aggregating Merge Tree'
+--Result--
+[('Aggregating Merge Tree',)]
++--------------------+
+--Query--
+SELECT * FROM aggregating_merge_tree ORDER BY key
+--Result--
+[(1, 5, datetime.datetime(2020, 1, 1, 0, 0)), (2, 5, datetime.datetime(2020, 1, 2, 0, 0))]
++--------------------+
+--Query--
+SELECT 'Check creating empty parts'
+--Result--
+[('Check creating empty parts',)]
++--------------------+
+--Query--
+SELECT * FROM empty ORDER BY key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table, partition, active FROM system.parts where table = 'empty' and active = 1 and database = currentDatabase()
+--Result--
+[]
++--------------------+

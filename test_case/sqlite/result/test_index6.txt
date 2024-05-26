@@ -1,0 +1,315 @@
+--Query--
+SELECT count(a), count(b) FROM t1
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT idx, stat FROM sqlite_stat1 ORDER BY idx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT * FROM t2 WHERE a=5
+--Result--
+[(3, 0, 0, 'SEARCH t2 USING INDEX t2a1 (a=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN       SELECT * FROM t2 WHERE a IS NOT NULL AND a>0
+--Result--
+[(3, 0, 0, 'SEARCH t2 USING INDEX t2a1 (a>?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN     SELECT * FROM t2 WHERE a IS NULL
+--Result--
+[(2, 0, 0, 'SCAN t2')]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=15
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=15
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t2 WHERE a=15
+--Result--
+[(2, 0, 0, 'SCAN t2')]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=15 AND a<100
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t2 WHERE a=15 AND a<100
+--Result--
+[(5, 0, 0, 'SEARCH t2 USING INDEX t2a2 (a=?)')]
++--------------------+
+--Query--
+SELECT b FROM t2 WHERE a=515 AND a>200
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT b FROM t2 WHERE a=515 AND a>200
+--Result--
+[(5, 0, 0, 'SEARCH t2 USING INDEX t2a2 (a=?)')]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT stat+0 FROM sqlite_stat1 WHERE idx='t3b'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(123, 456)]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(123, 789)]
++--------------------+
+--Query--
+SELECT * FROM t7a LEFT JOIN t7b ON (x=99) ORDER BY x
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+SELECT * FROM t7a JOIN t7b ON (x=99) ORDER BY x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t7a LEFT JOIN t7b ON (x=99) ORDER BY x
+--Result--
+[(1, None), (99, 2)]
++--------------------+
+--Query--
+SELECT * FROM t7a JOIN t7b ON (x=99) ORDER BY x
+--Result--
+[(99, 2)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM t7a JOIN t7b ON (x=99) ORDER BY x
+--Result--
+[(4, 0, 0, 'SEARCH t7a USING COVERING INDEX t7ax (x=?)'), (8, 0, 0, 'SCAN t7b')]
++--------------------+
+--Query--
+SELECT * FROM t8a LEFT JOIN t8b ON (x = 'value' AND y = a)
+--Result--
+[(1, 'one', 'value', 1), (2, 'two', None, None), (3, 'three', 'value', 3)]
++--------------------+
+--Query--
+SELECT a,b,c,'|' FROM t9 ORDER BY a
+--Result--
+[(None, 7, 3, '|'), (1, 1, 9, '|'), (10, 35, 35, '|'), (11, 15, 82, '|'), (20, 5, 5, '|')]
++--------------------+
+--Query--
+SELECT a,b,c,'|' FROM t9 ORDER BY a
+--Result--
+[(1, 1, 9, '|'), (10, 35, 35, '|'), (11, 15, 82, '|'), (20, 5, 5, '|')]
++--------------------+
+--Query--
+SELECT e FROM t10 WHERE a=1 AND b=2 AND c=3 ORDER BY d
+--Result--
+[(5,), (9,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT e FROM t10 WHERE a=1 AND b=2 AND c=3 ORDER BY d
+--Result--
+[(4, 0, 0, 'SCAN t10 USING INDEX t10x')]
++--------------------+
+--Query--
+SELECT e FROM t10 WHERE c=3 AND 2=b AND a=1 ORDER BY d DESC
+--Result--
+[(9,), (5,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT e FROM t10 WHERE c=3 AND 2=b AND a=1 ORDER BY d DESC
+--Result--
+[(4, 0, 0, 'SCAN t10 USING INDEX t10x')]
++--------------------+
+--Query--
+SELECT e FROM t10 WHERE a=1 AND b=2 ORDER BY d DESC
+--Result--
+[(9,), (5,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT e FROM t10 WHERE a=1 AND b=2 ORDER BY d DESC
+--Result--
+[(3, 0, 0, 'SCAN t10'), (14, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT a FROM t11 WHERE b<>99
+--Result--
+[(3, 0, 0, 'SCAN t11 USING INDEX t11x')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT a FROM t11 WHERE b<>99 AND c<>98
+--Result--
+[(3, 0, 0, 'SCAN t11 USING INDEX t11x')]
++--------------------+
+--Query--
+SELECT 'one', * FROM t2 WHERE x NOT IN (SELECT a FROM t1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'two', * FROM t2 WHERE x NOT IN (SELECT a FROM t1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x IN (SELECT a FROM t1) ORDER BY +x
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE c0 OR 1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE t0.c0 IS NOT 1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE CASE c0 WHEN 0 THEN 0 ELSE 1 END
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE (t0.c0 IS FALSE) IS FALSE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE (t0.c0 IS FALSE) BETWEEN FALSE AND TRUE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE TRUE BETWEEN (t0.c0 IS FALSE) AND TRUE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE FALSE BETWEEN FALSE AND (t0.c0 IS FALSE)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE (c0 IS FALSE) IN (FALSE)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT c1 <= c0, c0 >= c1 FROM t0
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+SELECT 2 FROM t0 WHERE c0 >= c1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 3 FROM t0 WHERE c1 <= c0
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t0 WHERE t0.c0 GLOB t0.c0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IS NOT NULL
+--Result--
+[(1, 1), (2, 2), (10, 10)]
++--------------------+

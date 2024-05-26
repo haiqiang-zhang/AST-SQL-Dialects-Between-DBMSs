@@ -1,0 +1,65 @@
+--Query--
+SELECT '===Ordinary case==='
+--Result--
+[('===Ordinary case===',)]
++--------------------+
+--Query--
+SELECT data_uncompressed_bytes FROM system.columns WHERE (database = currentDatabase()) AND (table = 'clear_column') AND (name = 'num')
+--Result--
+[(16,)]
++--------------------+
+--Query--
+SELECT num, str FROM clear_column ORDER BY num
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+SELECT num, str FROM clear_column ORDER BY num
+--Result--
+[(0, 'a'), (2, 'b')]
++--------------------+
+--Query--
+SELECT data_uncompressed_bytes FROM system.columns WHERE (database = currentDatabase()) AND (table = 'clear_column') AND (name = 'num')
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT data_compressed_bytes, data_uncompressed_bytes FROM system.columns WHERE (database = currentDatabase()) AND (table = 'clear_column') AND (name = 'num')
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT '===Replicated case==='
+--Result--
+[('===Replicated case===',)]
++--------------------+
+--Query--
+SELECT 'all'
+--Result--
+[('all',)]
++--------------------+
+--Query--
+SELECT 'w/o i 1'
+--Result--
+[('w/o i 1',)]
++--------------------+
+--Query--
+SELECT 'w/o is 1'
+--Result--
+[('w/o is 1',)]
++--------------------+
+--Query--
+SELECT 'w/o is 12'
+--Result--
+[('w/o is 12',)]
++--------------------+
+--Query--
+SELECT 'sizes'
+--Result--
+[('sizes',)]
++--------------------+
+--Query--
+SELECT sum(data_uncompressed_bytes) FROM system.columns WHERE database=currentDatabase() AND table LIKE 'clear_column_' AND (name = 'i' OR name = 's') GROUP BY table
+--Result--
+[]
++--------------------+

@@ -1,0 +1,80 @@
+--Query--
+SELECT pad_attribute FROM information_schema.collations     WHERE collation_name = 'utf8mb4_0900_ai_ci'
+--Result--
+[('NO PAD',)]
++--------------------+
+--Query--
+SELECT pad_attribute FROM information_schema.collations     WHERE collation_name = 'utf8mb4_general_ci'
+--Result--
+[('PAD SPACE',)]
++--------------------+
+--Query--
+SELECT f1, COUNT(*) FROM table_varchar_no_pad GROUP BY f1
+--Result--
+[('ABC  ', 1), ('XYZ', 1), ('XYZ ', 1), ('ABC ', 1)]
++--------------------+
+--Query--
+SELECT TRIM(f1), COUNT(*) FROM table_varchar_pad_space GROUP BY f1
+--Result--
+[('ABC', 2), ('XYZ', 2)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_varchar_no_pad) AS dt WHERE f1 = 'ABC'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_char_no_pad) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC',), ('ABC',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_varchar_pad_space) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC  ',), ('ABC ',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_char_pad_space) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC',), ('ABC',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_varchar_no_pad) AS dt WHERE f1 = 'ABC'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_char_no_pad) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC',), ('ABC',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_varchar_pad_space) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC  ',), ('ABC ',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_char_pad_space) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC',), ('ABC',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_varchar_no_pad) AS dt WHERE f1 = 'ABC'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_char_no_pad) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC',), ('ABC',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_varchar_pad_space) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC  ',), ('ABC ',)]
++--------------------+
+--Query--
+SELECT f1 FROM (SELECT * FROM table_char_pad_space) AS dt WHERE f1 = 'ABC'
+--Result--
+[('ABC',), ('ABC',)]
++--------------------+

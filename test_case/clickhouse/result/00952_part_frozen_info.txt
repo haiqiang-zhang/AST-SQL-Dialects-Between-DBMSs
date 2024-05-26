@@ -1,0 +1,35 @@
+--Query--
+SELECT name, is_frozen FROM system.parts WHERE `database` = currentDatabase() AND `table` = 'part_info'
+--Result--
+[('19701001_1_1_0', 0), ('19701002_2_2_0', 0), ('19701003_3_3_0', 0)]
++--------------------+
+--Query--
+SELECT 'freeze one'
+--Result--
+[('freeze one',)]
++--------------------+
+--Query--
+SELECT name, is_frozen FROM system.parts WHERE `database` = currentDatabase() AND `table` = 'part_info'
+--Result--
+[('19701001_1_1_0', 0), ('19701002_2_2_0', 1), ('19701003_3_3_0', 0)]
++--------------------+
+--Query--
+SELECT 'freeze all'
+--Result--
+[('freeze all',)]
++--------------------+
+--Query--
+SELECT name, is_frozen FROM system.parts WHERE `database` = currentDatabase() AND `table` = 'part_info'
+--Result--
+[('19701001_1_1_0', 1), ('19701002_2_2_0', 1), ('19701003_3_3_0', 1)]
++--------------------+
+--Query--
+select * from part_info order by t
+--Result--
+[(datetime.datetime(1970, 10, 1, 0, 0, 1),), (datetime.datetime(1970, 10, 2, 0, 0, 1),), (datetime.datetime(1970, 10, 2, 0, 0, 2),), (datetime.datetime(1970, 10, 3, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT name, is_frozen FROM system.parts WHERE `database` = currentDatabase() AND `table` = 'part_info'
+--Result--
+[('19701001_1_1_0', 1), ('19701002_2_2_0', 1), ('19701002_4_4_0', 0), ('19701003_3_3_0', 1)]
++--------------------+

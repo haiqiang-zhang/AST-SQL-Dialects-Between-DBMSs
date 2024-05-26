@@ -1,0 +1,125 @@
+--Query--
+select lcase('FOO')
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+select ucase('foo')
+--Result--
+[('FOO',)]
++--------------------+
+--Query--
+select LOWER('Foo')
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+select UPPER('Foo')
+--Result--
+[('FOO',)]
++--------------------+
+--Query--
+select REPLACE('bar', 'r', 'z')
+--Result--
+[('baz',)]
++--------------------+
+--Query--
+select REGEXP_REPLACE('bar', '.', 'z')
+--Result--
+[('zzz',)]
++--------------------+
+--Query--
+select SUBSTRING('foo', 1, 2)
+--Result--
+[('fo',)]
++--------------------+
+--Query--
+select Substr('foo', 2)
+--Result--
+[('oo',)]
++--------------------+
+--Query--
+select mid('foo', 3)
+--Result--
+[('o',)]
++--------------------+
+--Query--
+select IF(3>2, 1, 0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select substring('foo' from 1 + 1)
+--Result--
+[('oo',)]
++--------------------+
+--Query--
+select left('foo', 2)
+--Result--
+[('fo',)]
++--------------------+
+--Query--
+select LEFT('foo', 123)
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+select RIGHT('bar', 1)
+--Result--
+[('r',)]
++--------------------+
+--Query--
+select right('bar', 123)
+--Result--
+[('bar',)]
++--------------------+
+--Query--
+select ltrim('') || rtrim('') || trim('')
+--Result--
+[('',)]
++--------------------+
+--Query--
+select ltrim('   foo')
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+select RTRIM('   foo   ')
+--Result--
+[('   foo',)]
++--------------------+
+--Query--
+select trim(TRAILING 'x' FROM 'xxfooxx')
+--Result--
+[('xxfoo',)]
++--------------------+
+--Query--
+select Trim(LEADING 'ab' FROM 'abbafooabba')
+--Result--
+[('fooabba',)]
++--------------------+
+--Query--
+select TRIM(both 'ab' FROM 'abbafooabbafooabba')
+--Result--
+[('fooabbafoo',)]
++--------------------+
+--Query--
+select DATE_DIFF(MONTH, toDate('2018-12-18'), toDate('2018-01-01'))
+--Result--
+[(-11,)]
++--------------------+
+--Query--
+select DATE_ADD(YEAR, 3, toDate('2018-01-01'))
+--Result--
+[(datetime.date(2021, 1, 1),)]
++--------------------+
+--Query--
+select timestamp_sub(SQL_TSI_MONTH, 5, toDateTime('2018-12-18 01:02:03'))
+--Result--
+[(datetime.datetime(2018, 7, 18, 1, 2, 3),)]
++--------------------+
+--Query--
+select timestamp_ADD(toDate('2018-01-01'), INTERVAL 3 MONTH)
+--Result--
+[(datetime.date(2018, 4, 1),)]
++--------------------+

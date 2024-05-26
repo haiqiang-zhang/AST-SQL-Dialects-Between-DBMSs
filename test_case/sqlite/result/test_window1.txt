@@ -1,0 +1,365 @@
+--Query--
+SELECT sum(b) OVER () FROM t1
+--Result--
+[(18,), (18,), (18,)]
++--------------------+
+--Query--
+SELECT a, 4 + sum(b) OVER () FROM t1
+--Result--
+[(1, 22), (5, 22), (9, 22)]
++--------------------+
+--Query--
+SELECT a + 4 + sum(b) OVER () FROM t1
+--Result--
+[(23,), (27,), (31,)]
++--------------------+
+--Query--
+SELECT sum(b) FILTER (WHERE a>0) OVER (PARTITION BY d ORDER BY c) FROM t1
+--Result--
+[(2,), (6,), (10,)]
++--------------------+
+--Query--
+SELECT a,      sum(a) OVER (ORDER BY a),      avg(a) OVER (ORDER BY a)    FROM t2 ORDER BY a
+--Result--
+[(0, 0, 0.0), (1, 1, 0.5), (2, 3, 1.0), (3, 6, 1.5), (4, 10, 2.0), (5, 15, 2.5), (6, 21, 3.0)]
++--------------------+
+--Query--
+SELECT a,      count() OVER (ORDER BY a DESC),     string_agg(a, '.') OVER (ORDER BY a DESC)    FROM t2 ORDER BY a DESC
+--Result--
+[(6, 1, '6'), (5, 2, '6.5'), (4, 3, '6.5.4'), (3, 4, '6.5.4.3'), (2, 5, '6.5.4.3.2'), (1, 6, '6.5.4.3.2.1'), (0, 7, '6.5.4.3.2.1.0')]
++--------------------+
+--Query--
+SELECT a,      count(*) OVER (ORDER BY a DESC),     group_concat(a, '.') OVER (ORDER BY a DESC)    FROM t2 ORDER BY a DESC
+--Result--
+[(6, 1, '6'), (5, 2, '6.5'), (4, 3, '6.5.4'), (3, 4, '6.5.4.3'), (2, 5, '6.5.4.3.2'), (1, 6, '6.5.4.3.2.1'), (0, 7, '6.5.4.3.2.1.0')]
++--------------------+
+--Query--
+SELECT ntile(1) OVER (ORDER BY a) FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+WITH s(i) AS ( VALUES(1) UNION ALL SELECT i+1 FROM s WHERE i<6 )   INSERT INTO t3 SELECT i, i, i FROM s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1, 1, 1), (3, 1, 2), (6, 1, 3), (10, 1, 4), (15, 1, 5), (21, 1, 6)]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1, 1, 1), (3, 1, 2), (6, 1, 3), (10, 1, 4), (15, 1, 5), (21, 1, 6)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1, 1, 1), (3, 1, 2), (6, 1, 3), (10, 1, 4), (15, 1, 5), (21, 1, 6)]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1, 1, 1), (3, 1, 2), (6, 1, 3), (10, 1, 4), (15, 1, 5), (21, 1, 6)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT emp, region, total FROM (     SELECT        emp, region, total,       row_number() OVER (PARTITION BY region ORDER BY total DESC) AS rank     FROM sales   ) WHERE rank<=2 ORDER BY region, total DESC
+--Result--
+[('Horace', 'East', 1), ('Charles', 'North', 45), ('Alice', 'North', 34), ('Elizabeth', 'South', 99), ('Grant', 'South', 23)]
++--------------------+
+--Query--
+SELECT emp, region, (     SELECT sum(total) OVER (       ORDER BY total RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING     ) || outer.emp FROM sales   ) FROM sales AS outer
+--Result--
+[('Alice', 'North', '254Alice'), ('Frank', 'South', '254Frank'), ('Charles', 'North', '254Charles'), ('Darrell', 'South', '254Darrell'), ('Grant', 'South', '254Grant'), ('Brad', 'North', '254Brad'), ('Elizabeth', 'South', '254Elizabeth'), ('Horace', 'East', '254Horace')]
++--------------------+
+--Query--
+SELECT emp, region, (     SELECT sum(total) FILTER (WHERE sales.emp!=outer.emp) OVER (       ORDER BY total RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING     ) FROM sales   ) FROM sales AS outer
+--Result--
+[('Alice', 'North', 220), ('Frank', 'South', 232), ('Charles', 'North', 209), ('Darrell', 'South', 246), ('Grant', 'South', 231), ('Brad', 'North', 232), ('Elizabeth', 'South', 155), ('Horace', 'East', 253)]
++--------------------+
+--Query--
+SELECT id, b, lead(c,1) OVER(ORDER BY c) AS x      FROM t1 WHERE id>1    ORDER BY b LIMIT 1
+--Result--
+[(2, 'B', 'two')]
++--------------------+
+--Query--
+SELECT id, b, lead(c,1) OVER(ORDER BY c) AS x     FROM t1 WHERE id>1    ORDER BY b LIMIT 2
+--Result--
+[(2, 'B', 'two'), (3, 'C', 'three')]
++--------------------+
+--Query--
+SELECT a, rank() OVER(ORDER BY b) FROM t1
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+SELECT * FROM(     SELECT * FROM (SELECT 1 AS c) WHERE c IN (         SELECT (row_number() OVER()) FROM (VALUES (0))     )   )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x, (     SELECT sum(b)       OVER (PARTITION BY a ROWS BETWEEN UNBOUNDED PRECEDING                                     AND UNBOUNDED FOLLOWING)     FROM t2 WHERE b<x   ) FROM t1
+--Result--
+[('a', 3), ('b', 3), ('c', 3)]
++--------------------+
+--Query--
+SELECT(     WITH c AS(       VALUES(1)     ) SELECT '' FROM c,c   ) x WHERE x+x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 10+sum(a) OVER (ORDER BY a)    FROM t8    ORDER BY 10+sum(a) OVER (ORDER BY a) DESC
+--Result--
+[(16,), (13,), (11,)]
++--------------------+
+--Query--
+SELECT string_agg(c, '.') OVER (PARTITION BY b ORDER BY c)   FROM t1
+--Result--
+[('four',), ('four.six',), ('four.six.two',), ('five',), ('five.one',), ('five.one.three',)]
++--------------------+
+--Query--
+SELECT group_concat(c, '.') OVER (win1 ORDER BY c)   FROM t1   WINDOW win1 AS (PARTITION BY b)
+--Result--
+[('four',), ('four.six',), ('four.six.two',), ('five',), ('five.one',), ('five.one.three',)]
++--------------------+
+--Query--
+SELECT     current, exclude, filter, following, groups, no, others, over,     partition, preceding, range, ties, unbounded, window   FROM keyword_tab
+--Result--
+[]
++--------------------+
+--Query--
+WITH a(x, y) AS ( VALUES(1, 2) )     SELECT sum(x) OVER (       ORDER BY y RANGE BETWEEN 4.5 PRECEDING AND UNBOUNDED FOLLOWING     ) FROM a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT lead(44) OVER ()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ( SELECT row_number() OVER () FROM ( SELECT c FROM t1 ) ) FROM t2
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT a, b, c, quote(d), group_concat(b,'') OVER w1, '|' FROM t1     WINDOW w1 AS     (ORDER BY d DESC RANGE BETWEEN 7.0 PRECEDING AND 2.5 PRECEDING)     ORDER BY c, d, a
+--Result--
+[(10, 'J', 'cc', 'NULL', 'JM', '|'), (13, 'M', 'cc', 'NULL', 'JM', '|'), (11, 'K', 'cc', "'xyz'", 'K', '|')]
++--------------------+
+--Query--
+SELECT     count () OVER win1 NOT BETWEEN 'a' AND 'mmm',     count () OVER win3   FROM t1   WINDOW win1 AS (ORDER BY a GROUPS BETWEEN 4 PRECEDING AND 1 FOLLOWING                   EXCLUDE CURRENT ROW),          win2 AS (PARTITION BY b ORDER BY a),          win3 AS (win2 RANGE BETWEEN 5.2 PRECEDING AND true PRECEDING )
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT avg(a) OVER (       ORDER BY (SELECT sum(b) OVER ()         FROM t1 ORDER BY (           SELECT total(d) OVER (ORDER BY c)           FROM (SELECT 1 AS d) ORDER BY 1           )         )       )   FROM t1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+VALUES(count(*)OVER())
+--Result--
+[(1,)]
++--------------------+
+--Query--
+VALUES(count(*)OVER()),(2)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+VALUES(2),(count(*)OVER())
+--Result--
+[(2,), (1,)]
++--------------------+
+--Query--
+VALUES(2),(3),(count(*)OVER()),(4),(5)
+--Result--
+[(2,), (3,), (1,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT c FROM v0 WHERE c BETWEEN 10 AND 20
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM v0 WHERE c BETWEEN -10 AND 20
+--Result--
+[]
++--------------------+
+--Query--
+SELECT FIRST_VALUE(0) OVER()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT min(c) OVER (     ORDER BY a RANGE BETWEEN 5.2 PRECEDING AND 0.1 PRECEDING   ) FROM t1
+--Result--
+[(355,), (399,), (158,), (574,), (929,)]
++--------------------+
+--Query--
+SELECT min(c) OVER (     ORDER BY a RANGE BETWEEN 5.2 PRECEDING AND 0.1 PRECEDING   ) << 100 FROM t1
+--Result--
+[(0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT     min(c) OVER win3 << first_value(c) OVER win3,     min(c) OVER win3 << first_value(c) OVER win3   FROM t1   WINDOW win3 AS (     PARTITION BY 6 ORDER BY a RANGE BETWEEN 5.2 PRECEDING AND 0.1 PRECEDING   )
+--Result--
+[(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (0, 0) IN ( SELECT count(*), 0 FROM t1 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (2, 0) IN ( SELECT count(*), 0 FROM t1 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*), max(a) OVER () FROM t1 GROUP BY c
+--Result--
+[(1, 'GG'), (1, 'GG'), (1, 'GG'), (1, 'GG'), (1, 'GG'), (1, 'GG'), (1, 'GG')]
++--------------------+
+--Query--
+SELECT sum(a), max(b) OVER () FROM t1
+--Result--
+[(3.0, 'aa')]
++--------------------+
+--Query--
+SELECT a, sum(b) OVER (ORDER BY a) AS abc FROM t1 ORDER BY 2
+--Result--
+[(None, 0.0), (1, 11.0), (1, 11.0), (4, 18.0), (3, 23.0), (6, 27.0), ('BB', 27.0), ('CC', 27.0), ('FF', 27.0), ('GG', 27.0), (2, 28.0), (2, 28.0), (5, 38.0)]
++--------------------+
+--Query--
+SELECT a, sum(b) OVER (ORDER BY a) AS abc FROM t1 ORDER BY abc
+--Result--
+[(None, 0.0), (1, 11.0), (1, 11.0), (4, 18.0), (3, 23.0), (6, 27.0), ('BB', 27.0), ('CC', 27.0), ('FF', 27.0), ('GG', 27.0), (2, 28.0), (2, 28.0), (5, 38.0)]
++--------------------+
+--Query--
+SELECT a, sum(b) OVER (ORDER BY a) AS abc FROM t1 ORDER BY abc+5
+--Result--
+[(None, 0.0), (1, 11.0), (1, 11.0), (4, 18.0), (3, 23.0), (6, 27.0), ('BB', 27.0), ('CC', 27.0), ('FF', 27.0), ('GG', 27.0), (2, 28.0), (2, 28.0), (5, 38.0)]
++--------------------+
+--Query--
+SELECT (SELECT sum(a) OVER(ORDER BY a)) FROM t1
+--Result--
+[(None,), (1,), (1,), (2,), (2,), (3,), (4,), (5,), (6,), (0.0,), (0.0,), (0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT sum(a) OVER(ORDER BY a))
+--Result--
+[(1, 1, 1), (2, 2, 2), (1, 10, None), (2, 15, None), (3, -5, None), (4, -5, None), (5, 20, None), (6, -11, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 NATURAL JOIN t1     WHERE a=1     OR ((SELECT sum(a)OVER(ORDER BY a)) AND a<=10)
+--Result--
+[(1, 1, 1), (2, 2, 2)]
++--------------------+
+--Query--
+SELECT (SELECT max(x)OVER(ORDER BY x) + min(x)OVER(ORDER BY x))     FROM (SELECT (SELECT sum(a) FROM t1) AS x FROM t1)
+--Result--
+[(48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,), (48.0,)]
++--------------------+
+--Query--
+SELECT (SELECT max(x)OVER(ORDER BY x) + min(x)OVER(ORDER BY x))     FROM (SELECT (SELECT sum(a) FROM t1 GROUP BY a) AS x FROM t1)
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT b AS c FROM (     SELECT a AS b FROM (       SELECT a FROM t1 WHERE a=1 OR (SELECT sum(a) OVER ())     )      WHERE b=1 OR b<10   )    WHERE c=1 OR c>=10
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a%1 OR (SELECT sum(a) OVER (ORDER BY a%2))
+--Result--
+[(1, 1, 1), (2, 2, 2), (1, 10, None), (2, 15, None), (3, -5, None), (4, -5, None), (5, 20, None), (6, -11, None)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT * FROM t1 WHERE a%1 OR (SELECT sum(a) OVER (ORDER BY a%2))   )    WHERE a=1 OR ( (SELECT sum(a) OVER (ORDER BY a%4)) AND a<=10 )
+--Result--
+[(1, 1, 1), (1, 10, None), (2, 2, 2), (2, 15, None), (3, -5, None), (4, -5, None), (5, 20, None), (6, -11, None)]
++--------------------+
+--Query--
+SELECT a FROM (     SELECT * FROM (       SELECT * FROM t1 WHERE a%1 OR (SELECT sum(a) OVER (ORDER BY a%2))     )      WHERE a=1 OR ( (SELECT sum(a) OVER (ORDER BY a%4)) AND a<=10 )   )    WHERE a=1 OR a=10.0
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT a FROM (     SELECT * FROM (       SELECT * FROM t1 WHERE a%1 OR (SELECT sum(a) OVER (ORDER BY a%2))     )      WHERE a=1 OR ( (SELECT sum(a) OVER (ORDER BY a%4)) AND a<=10 )   )    WHERE a=1 OR ((SELECT sum(a) OVER(ORDER BY a%8)) AND 10<=a)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT     count() OVER win1,     sum(c) OVER win2,      first_value(c) OVER win2,     count(a) OVER (ORDER BY b)       FROM t1       WINDOW       win1 AS (ORDER BY a),     win2 AS (PARTITION BY 6 ORDER BY a         RANGE BETWEEN 5 PRECEDING AND 0 PRECEDING )
+--Result--
+[(1, 355, 355, 16), (3, 1, 1, 4), (3, 1, 1, 6), (5, 3, 1, 5), (5, 3, 1, 7), (6, 3, 1, 3), (7, 3, 1, 3), (8, 3, 1, 8), (9, 3, 1, 1), (10, 356, 356, 16), (12, 798, 399, 13), (12, 798, 399, 13), (14, 316, 158, 13), (14, 316, 158, 13), (16, 1512, 574, 9), (16, 1512, 574, 16), (17, 929, 929, 16)]
++--------------------+
+--Query--
+SELECT * FROM (      SELECT sum(b) OVER() AS c FROM t1        UNION     SELECT b AS c FROM t1   ) WHERE c>10
+--Result--
+[(15,), (20,), (27.0,), ('Rb',), ('aa',), ('bb',)]
++--------------------+
+--Query--
+SELECT * FROM (      SELECT sum(b) OVER() AS c FROM t1        UNION     SELECT b AS c FROM t1   ) WHERE c>10
+--Result--
+[(15,), (20,), (27.0,), ('Rb',), ('aa',), ('bb',)]
++--------------------+
+--Query--
+SELECT      sum(a),     min(b) OVER (),     count(c) OVER (ORDER BY b)   FROM t1
+--Result--
+[(24.0, 'aa', 1)]
++--------------------+
+--Query--
+SELECT EXISTS(SELECT count(*) OVER() FROM t1 ORDER BY sum(x) OVER())
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT() OVER () LIKE lead(102030) OVER(       ORDER BY sum('abcdef' COLLATE nocase) IN (SELECT 54321)    )   FROM t1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT total(a) OVER ( ORDER BY a RANGE BETWEEN 0.3 PRECEDING AND 10 FOLLOWING ) FROM t2 ORDER BY a
+--Result--
+[(1.0,), (0.0,), (0.0,), (0.0,), (0.0,), (0.0,), (0.0,), (0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE true
+--Result--
+[(1, 1, 1), (3, 1, 2), (6, 1, 3), (10, 1, 4), (15, 1, 5), (21, 1, 6)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('A', None), ('B', None), (1, 1), ('a', 1), ('a', 2), ('a', 3), ('b', 4), ('b', 5), ('b', 6)]
++--------------------+
+--Query--
+SELECT *, nth_value(15,2) OVER() FROM t2, t1 WHERE b=4
+--Result--
+[('b', 4, 99, 15), ('b', 4, 3029012920382354029, 15), ('b', 4, 3578824042033200656, 15)]
++--------------------+
+--Query--
+SELECT (     SELECT count( a ) FROM t2 LIMIT 1   )   FROM t1
+--Result--
+[(11,), (11,), (11,)]
++--------------------+
+--Query--
+/* Original test case reported in https://sqlite.org/forum/forumpost/bad532820c   CREATE TABLE v0 (c1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c, (SELECT c + sum(1) OVER ()) AS "res"     FROM t2 LEFT JOIN (SELECT +a AS c FROM t1) AS v1 ON true    GROUP BY c    ORDER by c
+--Result--
+[(111, 112), (118, 119)]
++--------------------+

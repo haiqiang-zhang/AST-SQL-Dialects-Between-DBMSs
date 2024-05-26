@@ -1,0 +1,50 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Run SELECT with quota that current user may use only 1 byte in the query cache', 1 SETTINGS use_query_cache = true
+--Result--
+[('Run SELECT with quota that current user may use only 1 byte in the query cache', 1)]
++--------------------+
+--Query--
+SELECT 'Expect no entries in the query cache', count(*) FROM system.query_cache
+--Result--
+[('Expect no entries in the query cache', 0)]
++--------------------+
+--Query--
+SELECT 'Run SELECT again but w/o quota', 1 SETTINGS use_query_cache = true
+--Result--
+[('Run SELECT again but w/o quota', 1)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Run SELECT which writes its result in the query cache', 1 SETTINGS use_query_cache = true
+--Result--
+[('Run SELECT which writes its result in the query cache', 1)]
++--------------------+
+--Query--
+SELECT 'Run another SELECT with quota that current user may write only 1 entry in the query cache', 1 SETTINGS use_query_cache = true
+--Result--
+[('Run another SELECT with quota that current user may write only 1 entry in the query cache', 1)]
++--------------------+
+--Query--
+SELECT 'Run another SELECT w/o quota', 1 SETTINGS use_query_cache = true
+--Result--
+[('Run another SELECT w/o quota', 1)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

@@ -1,0 +1,145 @@
+--Query--
+SELECT @@session.session_track_system_variables INTO @old_track_list
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@session.session_track_state_change INTO @old_track_enable
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@session.session_track_transaction_info INTO @old_track_tx
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL INTO @x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t1
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT f1 FROM t2
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL INTO @dummy
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT f1 FROM t2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT f1*2 FROM t1
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CONVERT_TZ('2004-01-01 12:00:00','GMT','MET')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1  FROM DUAL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT f1 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t1 WHERE f1 > 2
+--Result--
+[(3,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t1 WHERE f1 > 2
+--Result--
+[(3,), (3,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

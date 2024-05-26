@@ -1,0 +1,20 @@
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_modify_to_nullable' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_0', 'String', 'Default'), ('2_2_2_0', 'String', 'Sparse')]
++--------------------+
+--Query--
+SELECT count(s), countIf(s != ''), arraySort(groupUniqArray(s)) FROM t_modify_to_nullable
+--Result--
+[(20000, 10435, ['', 'bar', 'foo'])]
++--------------------+
+--Query--
+SELECT name, type, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_modify_to_nullable' AND column = 's' AND active ORDER BY name
+--Result--
+[('1_1_1_0_3', 'String', 'Default'), ('2_2_2_0_3', 'Nullable(String)', 'Default')]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

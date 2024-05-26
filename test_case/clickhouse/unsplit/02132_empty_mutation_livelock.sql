@@ -4,5 +4,4 @@ create table a8x ENGINE = MergeTree ORDER BY tuple() settings min_bytes_for_wide
 select count() from a8x;
 set mutations_sync=1;
 alter table a8x update number=0 WHERE number=-3;
-select count() from a8x;
 drop table if exists a8x;

@@ -1,0 +1,220 @@
+--Query--
+SELECT '== Test SELECT ... FINAL - no is_deleted =='
+--Result--
+[('== Test SELECT ... FINAL - no is_deleted ==',)]
++--------------------+
+--Query--
+select * from test FINAL order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+SELECT '== Test SELECT ... FINAL - no is_deleted SETTINGS clean_deleted_rows=Always =='
+--Result--
+[('== Test SELECT ... FINAL - no is_deleted SETTINGS clean_deleted_rows=Always ==',)]
++--------------------+
+--Query--
+select * from test FINAL order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+SELECT '== Test SELECT ... FINAL =='
+--Result--
+[('== Test SELECT ... FINAL ==',)]
++--------------------+
+--Query--
+select * from test FINAL order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0)]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+SELECT '== Insert backups =='
+--Result--
+[('== Insert backups ==',)]
++--------------------+
+--Query--
+select * from test FINAL order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0)]
++--------------------+
+--Query--
+SELECT '== Insert a second batch with overlaping data =='
+--Result--
+[('== Insert a second batch with overlaping data ==',)]
++--------------------+
+--Query--
+select * from test FINAL order by uid
+--Result--
+[('d1', 5, 0), ('d2', 3, 0), ('d3', 3, 0), ('d4', 3, 0), ('d5', 1, 0)]
++--------------------+
+--Query--
+SELECT '== Only last version remains after OPTIMIZE W/ CLEANUP =='
+--Result--
+[('== Only last version remains after OPTIMIZE W/ CLEANUP ==',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 1, 0), ('d5', 1, 0), ('d6', 3, 0)]
++--------------------+
+--Query--
+SELECT '== OPTIMIZE W/ CLEANUP (remove d6) =='
+--Result--
+[('== OPTIMIZE W/ CLEANUP (remove d6) ==',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 1, 0), ('d5', 1, 0)]
++--------------------+
+--Query--
+SELECT '== Test of the SETTINGS clean_deleted_rows as Always =='
+--Result--
+[('== Test of the SETTINGS clean_deleted_rows as Always ==',)]
++--------------------+
+--Query--
+select * from test FINAL order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0)]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+select * from test where is_deleted=0 order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0)]
++--------------------+
+--Query--
+SELECT '== Test of the SETTINGS clean_deleted_rows as Never =='
+--Result--
+[('== Test of the SETTINGS clean_deleted_rows as Never ==',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 3, 0), ('d5', 1, 0), ('d6', 2, 1)]
++--------------------+
+--Query--
+SELECT '== (Replicas) Test optimize =='
+--Result--
+[('== (Replicas) Test optimize ==',)]
++--------------------+
+--Query--
+SELECT '== (Replicas) Test settings =='
+--Result--
+[('== (Replicas) Test settings ==',)]
++--------------------+
+--Query--
+select 'no cleanup 1', * from test FINAL order by uid
+--Result--
+[('no cleanup 1', 'd1', 5, 0), ('no cleanup 1', 'd2', 1, 0), ('no cleanup 1', 'd3', 1, 0), ('no cleanup 1', 'd4', 3, 0), ('no cleanup 1', 'd5', 1, 0)]
++--------------------+
+--Query--
+select 'no cleanup 2', * from test order by uid
+--Result--
+[('no cleanup 2', 'd1', 5, 0), ('no cleanup 2', 'd2', 1, 0), ('no cleanup 2', 'd3', 1, 0), ('no cleanup 2', 'd4', 3, 0), ('no cleanup 2', 'd5', 1, 0), ('no cleanup 2', 'd6', 2, 1)]
++--------------------+
+--Query--
+SELECT '== Check cleanup & settings for other merge trees =='
+--Result--
+[('== Check cleanup & settings for other merge trees ==',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE testMT FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM testMT order by uid
+--Result--
+[('d1', 1, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE testSummingMT FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM testSummingMT order by uid
+--Result--
+[('d1', 1, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE testAggregatingMT FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM testAggregatingMT order by uid
+--Result--
+[('d1', 1, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE testCollapsingMT FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM testCollapsingMT order by uid
+--Result--
+[('d1', 1, 1, 1)]
++--------------------+
+--Query--
+OPTIMIZE TABLE testVersionedCMT FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM testVersionedCMT order by uid
+--Result--
+[('d1', 1, 1, 1)]
++--------------------+

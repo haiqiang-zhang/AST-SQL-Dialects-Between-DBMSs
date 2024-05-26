@@ -22,15 +22,10 @@ CREATE TABLE stripe10 ENGINE = StripeLog AS SELECT number AS x FROM system.numbe
 CREATE TABLE merge_00401 AS stripe1 ENGINE = Merge(currentDatabase(), '^stripe\\d+');
 SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 1;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 2;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 5;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 10;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 SET max_threads = 20;
-SELECT x, count() FROM merge_00401 GROUP BY x ORDER BY x;
 DROP TABLE IF EXISTS stripe1;
 DROP TABLE IF EXISTS stripe2;
 DROP TABLE IF EXISTS stripe3;

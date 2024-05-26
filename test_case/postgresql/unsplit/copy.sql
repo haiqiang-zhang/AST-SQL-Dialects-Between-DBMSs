@@ -37,8 +37,6 @@ select tableoid::regclass,count(*),sum(a) from parted_copytest
 group by tableoid order by tableoid::regclass::name;
 truncate parted_copytest;
 end;
-select tableoid::regclass,count(*),sum(a) from parted_copytest
-group by tableoid order by tableoid::regclass::name;
 truncate table parted_copytest;
 create index on parted_copytest (b);
 select * from parted_copytest where b = 2;

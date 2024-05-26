@@ -1,0 +1,30 @@
+--Query--
+SELECT a, b FROM pk_order GROUP BY a, b ORDER BY a, b
+--Result--
+[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 1), (2, 2), (2, 3), (2, 4)]
++--------------------+
+--Query--
+SELECT a FROM pk_order GROUP BY a ORDER BY a
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT a, b, sum(c), avg(d) FROM pk_order GROUP BY a, b ORDER BY a, b
+--Result--
+[(1, 1, 101, 1.0), (1, 2, 102, 1.0), (1, 3, 103, 1.0), (1, 4, 104, 1.0), (1, 5, 104, 1.0), (1, 6, 105, 1.0), (2, 1, 213, 2.0), (2, 2, 107, 2.0), (2, 3, 108, 2.0), (2, 4, 109, 2.0)]
++--------------------+
+--Query--
+SELECT d, max(b) FROM pk_order GROUP BY d, a ORDER BY d, a LIMIT 5
+--Result--
+[(datetime.datetime(2019, 5, 5, 0, 0), -45363190), (datetime.datetime(2019, 5, 5, 0, 0), -1249512288), (datetime.datetime(2019, 5, 5, 0, 0), 345522721), (datetime.datetime(2019, 5, 5, 0, 0), 486601715), (datetime.datetime(2019, 5, 5, 0, 0), 1449669396)]
++--------------------+
+--Query--
+SELECT toString(d), avg(a) FROM pk_order GROUP BY toString(d) ORDER BY toString(d) LIMIT 5
+--Result--
+[('2019-05-05 00:00:00', 45.0), ('2019-05-06 00:00:00', 46.0), ('2019-05-07 00:00:00', 47.0), ('2019-05-08 00:00:00', 48.0), ('2019-05-09 00:00:00', 49.0)]
++--------------------+
+--Query--
+SELECT toStartOfHour(d) as d1, min(a), max(b) FROM pk_order GROUP BY d1 ORDER BY d1 LIMIT 5
+--Result--
+[(datetime.datetime(2019, 5, 5, 0, 0), 0, 1900940608), (datetime.datetime(2019, 5, 6, 0, 0), 1, 1857737272), (datetime.datetime(2019, 5, 7, 0, 0), 2, 1996614413), (datetime.datetime(2019, 5, 8, 0, 0), 3, 1873725230), (datetime.datetime(2019, 5, 9, 0, 0), 4, 1831412253)]
++--------------------+

@@ -1,0 +1,65 @@
+--Query--
+select 0<=>0,0.0<=>0.0,0E0=0E0,"A"<=>"A",NULL<=>NULL
+--Result--
+[(1, 1, 1, 1, 1)]
++--------------------+
+--Query--
+select 1<=>0,0<=>NULL,NULL<=>0
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+select 1.0<=>0.0,0.0<=>NULL,NULL<=>0.0
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+select "A"<=>"B","A"<=>NULL,NULL<=>"A"
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+select 0<=>0.0, 0.0<=>0E0, 0E0<=>"0", 10.0<=>1E1, 10<=>10.0, 10<=>1E1
+--Result--
+[(1, 1, 1, 1, 1, 1)]
++--------------------+
+--Query--
+select 1.0<=>0E1,10<=>NULL,NULL<=>0.0, NULL<=>0E0
+--Result--
+[(0, 0, 0, 0)]
++--------------------+
+--Query--
+select t1.*, t2.*, t1.value<=>t2.value from t1, t2 where t1.id=t2.id and t1.id=1
+--Result--
+[(1, None, 1, None, 1)]
++--------------------+
+--Query--
+select * from t1 where id <=>id
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+select * from t1 where value <=> value
+--Result--
+[(1, None)]
++--------------------+
+--Query--
+select * from t1 where id <=> value or value<=>id
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a = '4828532208463511553'
+--Result--
+[(4828532208463511553,)]
++--------------------+
+--Query--
+select * from t1 where a in ('4828532208463511553')
+--Result--
+[(4828532208463511553,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, datetime.datetime(2022, 1, 1, 0, 0)), (2, None), (None, datetime.datetime(2022, 1, 1, 0, 0)), (1, datetime.datetime(2022, 1, 1, 0, 0)), (2, None), (None, datetime.datetime(2022, 1, 1, 0, 0))]
++--------------------+

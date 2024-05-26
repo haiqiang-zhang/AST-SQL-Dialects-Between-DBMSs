@@ -1,0 +1,25 @@
+--Query--
+unpivot (select 42 as col1, 'woot' as col2)     on col1::VARCHAR, col2
+--Result--
+[('col1', '42'), ('col2', 'woot')]
++--------------------+
+--Query--
+unpivot (select 42 as col1, 'woot' as col2)     on COLUMNS(*)::VARCHAR
+--Result--
+[('col1', '42'), ('col2', 'woot')]
++--------------------+
+--Query--
+unpivot (select 42 as col1, 'woot' as col2)     on (col1 + 100)::VARCHAR, col2
+--Result--
+[('col1', '142'), ('col2', 'woot')]
++--------------------+
+--Query--
+unpivot (select 42 as col1, 'woot' as col2)     on (col1 + 100)::VARCHAR AS c, col2
+--Result--
+[('c', '142'), ('col2', 'woot')]
++--------------------+
+--Query--
+select * from (select 42 as col1, 'woot' as col2) UNPIVOT ("value" FOR "name" IN (col1::VARCHAR, col2))
+--Result--
+[('col1', '42'), ('col2', 'woot')]
++--------------------+

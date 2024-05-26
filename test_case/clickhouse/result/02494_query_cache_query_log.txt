@@ -1,0 +1,65 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- Run a query with query cache not enabled'
+--Result--
+[('-- Run a query with query cache not enabled',)]
++--------------------+
+--Query--
+SELECT 124437993
+--Result--
+[(124437993,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- Run a query with query cache enabled'
+--Result--
+[('-- Run a query with query cache enabled',)]
++--------------------+
+--Query--
+SELECT 124437994 SETTINGS use_query_cache = 1
+--Result--
+[(124437994,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- Run the same query with query cache enabled'
+--Result--
+[('-- Run the same query with query cache enabled',)]
++--------------------+
+--Query--
+SELECT 124437994 SETTINGS use_query_cache = 1
+--Result--
+[(124437994,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- Throw exception with query cache enabled'
+--Result--
+[('-- Throw exception with query cache enabled',)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

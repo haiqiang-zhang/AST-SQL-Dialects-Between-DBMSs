@@ -1,0 +1,30 @@
+--Query--
+SELECT bitCount(number) FROM numbers(10)
+--Result--
+[(0,), (1,), (1,), (2,), (1,), (2,), (2,), (3,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT avg(bitCount(number)) FROM numbers(256)
+--Result--
+[(4.0,)]
++--------------------+
+--Query--
+SELECT bitCount(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT x, bitCount(x), hex(reinterpretAsString(x)) FROM VALUES ('x Float64', (1), (-1), (inf))
+--Result--
+[(1.0, 10, '000000000000F03F'), (-1.0, 11, '000000000000F0BF'), (inf, 11, '000000000000F07F')]
++--------------------+
+--Query--
+SELECT length(replaceAll(bin('clickhouse cloud'), '0', ''))
+--Result--
+[(67,)]
++--------------------+
+--Query--
+SELECT length(replaceAll(bin('clickhouse cloud'), '0', '')) = bitCount('clickhouse cloud')
+--Result--
+[(1,)]
++--------------------+

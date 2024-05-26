@@ -1,0 +1,45 @@
+--Query--
+SELECT 'Normal SELECT does not see deleted rows'
+--Result--
+[('Normal SELECT does not see deleted rows',)]
++--------------------+
+--Query--
+SELECT *, _row_exists FROM test_apply_deleted_mask
+--Result--
+[(1, '1', 1), (3, '3', 1)]
++--------------------+
+--Query--
+SELECT 'With the setting disabled the deleted rows are visible'
+--Result--
+[('With the setting disabled the deleted rows are visible',)]
++--------------------+
+--Query--
+SELECT *, _row_exists FROM test_apply_deleted_mask SETTINGS apply_deleted_mask = 0
+--Result--
+[(0, '0', 0), (1, '1', 1), (2, '2', 0), (3, '3', 1), (4, '4', 0)]
++--------------------+
+--Query--
+SELECT 'With the setting disabled the deleted rows are visible but still can be filterd out'
+--Result--
+[('With the setting disabled the deleted rows are visible but still can be filterd out',)]
++--------------------+
+--Query--
+SELECT * FROM test_apply_deleted_mask WHERE _row_exists SETTINGS apply_deleted_mask = 0
+--Result--
+[(1, '1'), (3, '3')]
++--------------------+
+--Query--
+OPTIMIZE TABLE test_apply_deleted_mask FINAL SETTINGS mutations_sync=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Read the data after OPTIMIZE, all deleted rwos should be physically removed now'
+--Result--
+[('Read the data after OPTIMIZE, all deleted rwos should be physically removed now',)]
++--------------------+
+--Query--
+SELECT *, _row_exists FROM test_apply_deleted_mask SETTINGS apply_deleted_mask = 0
+--Result--
+[(1, '1', 1), (3, '3', 1), (5, '5', 1)]
++--------------------+

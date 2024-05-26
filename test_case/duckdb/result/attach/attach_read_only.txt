@@ -1,0 +1,30 @@
+--Query--
+ATTACH '__TEST_DIR__/attach_read_only.db' AS db1 (READONLY 1)
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH '__TEST_DIR__/attach_read_only.db' AS db1 (READONLY 1)
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH ':memory:' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SUM(i) FROM db1.integers
+--Result--
+[(45,)]
++--------------------+
+--Query--
+SELECT SUM(i) FROM db2.integers
+--Result--
+[(45,)]
++--------------------+

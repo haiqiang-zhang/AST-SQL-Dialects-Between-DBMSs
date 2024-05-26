@@ -1,4 +1,3 @@
-
 SET allow_experimental_analyzer = 1;
 DROP DATABASE IF EXISTS db1_03101;
 DROP DATABASE IF EXISTS db2_03101;

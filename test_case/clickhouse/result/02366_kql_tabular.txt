@@ -1,0 +1,140 @@
+--Query--
+print '-- test Query only has table name: --'
+--Result--
+[('-- test Query only has table name: --',)]
++--------------------+
+--Query--
+Customers
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual', 'Bachelors', 28), ('Stephanie', 'Cox', 'Management', 'Bachelors', 33), ('Peter', 'Nara', 'Skilled Manual', 'Graduate Degree', 26), ('Latoya', 'Shen', 'Professional', 'Graduate Degree', 25), ('Joshua', 'Lee', 'Professional', 'Partial College', 26), ('Edward', 'Hernandez', 'Skilled Manual', 'High School', 36), ('Dalton', 'Wood', 'Professional', 'Partial College', 42), ('Christine', 'Nara', 'Skilled Manual', 'Partial College', 33), ('Cameron', 'Rodriguez', 'Professional', 'Partial College', 28), ('Angel', 'Stewart', 'Professional', 'Partial College', 46)]
++--------------------+
+--Query--
+print '-- Query has Column Selection --'
+--Result--
+[('-- Query has Column Selection --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual'), ('Stephanie', 'Cox', 'Management'), ('Peter', 'Nara', 'Skilled Manual'), ('Latoya', 'Shen', 'Professional'), ('Joshua', 'Lee', 'Professional'), ('Edward', 'Hernandez', 'Skilled Manual'), ('Dalton', 'Wood', 'Professional'), ('Christine', 'Nara', 'Skilled Manual'), ('Cameron', 'Rodriguez', 'Professional'), ('Angel', 'Stewart', 'Professional')]
++--------------------+
+--Query--
+print '-- Query has limit --'
+--Result--
+[('-- Query has limit --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation | take 5
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual'), ('Stephanie', 'Cox', 'Management'), ('Peter', 'Nara', 'Skilled Manual'), ('Latoya', 'Shen', 'Professional'), ('Joshua', 'Lee', 'Professional')]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation | limit 5
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual'), ('Stephanie', 'Cox', 'Management'), ('Peter', 'Nara', 'Skilled Manual'), ('Latoya', 'Shen', 'Professional'), ('Joshua', 'Lee', 'Professional')]
++--------------------+
+--Query--
+print '-- Query has second limit with bigger value --'
+--Result--
+[('-- Query has second limit with bigger value --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation | take 5 | take 7
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual'), ('Stephanie', 'Cox', 'Management'), ('Peter', 'Nara', 'Skilled Manual'), ('Latoya', 'Shen', 'Professional'), ('Joshua', 'Lee', 'Professional')]
++--------------------+
+--Query--
+print '-- Query has second limit with smaller value --'
+--Result--
+[('-- Query has second limit with smaller value --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation | take 5 | take 3
+--Result--
+[('Theodore', 'Diaz', 'Skilled Manual'), ('Stephanie', 'Cox', 'Management'), ('Peter', 'Nara', 'Skilled Manual')]
++--------------------+
+--Query--
+print '-- Query has second Column selection --'
+--Result--
+[('-- Query has second Column selection --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation | take 3 | project FirstName,LastName
+--Result--
+[('Theodore', 'Diaz'), ('Stephanie', 'Cox'), ('Peter', 'Nara')]
++--------------------+
+--Query--
+print '-- Query has second Column selection with extra column --'
+--Result--
+[('-- Query has second Column selection with extra column --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education | where Education !in  ('Bachelors','High School')
+--Result--
+[('Peter', 'Nara', 'Skilled Manual', 'Graduate Degree'), ('Latoya', 'Shen', 'Professional', 'Graduate Degree'), ('Joshua', 'Lee', 'Professional', 'Partial College'), ('Dalton', 'Wood', 'Professional', 'Partial College'), ('Christine', 'Nara', 'Skilled Manual', 'Partial College'), ('Cameron', 'Rodriguez', 'Professional', 'Partial College'), ('Angel', 'Stewart', 'Professional', 'Partial College')]
++--------------------+
+--Query--
+print '-- Test Filter using common string operations (contains_cs) --'
+--Result--
+[('-- Test Filter using common string operations (contains_cs) --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education | where Education contains_cs 'Coll'
+--Result--
+[('Joshua', 'Lee', 'Professional', 'Partial College'), ('Dalton', 'Wood', 'Professional', 'Partial College'), ('Christine', 'Nara', 'Skilled Manual', 'Partial College'), ('Cameron', 'Rodriguez', 'Professional', 'Partial College'), ('Angel', 'Stewart', 'Professional', 'Partial College')]
++--------------------+
+--Query--
+print '-- Test Filter using common string operations (startswith_cs) --'
+--Result--
+[('-- Test Filter using common string operations (startswith_cs) --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education | where Occupation startswith_cs 'Prof'
+--Result--
+[('Latoya', 'Shen', 'Professional', 'Graduate Degree'), ('Joshua', 'Lee', 'Professional', 'Partial College'), ('Dalton', 'Wood', 'Professional', 'Partial College'), ('Cameron', 'Rodriguez', 'Professional', 'Partial College'), ('Angel', 'Stewart', 'Professional', 'Partial College')]
++--------------------+
+--Query--
+print '-- Test Filter using common string operations (endswith_cs) --'
+--Result--
+[('-- Test Filter using common string operations (endswith_cs) --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education | where FirstName endswith_cs 'a'
+--Result--
+[('Latoya', 'Shen', 'Professional', 'Graduate Degree'), ('Joshua', 'Lee', 'Professional', 'Partial College')]
++--------------------+
+--Query--
+print '-- Test Filter using numerical equal (==) --'
+--Result--
+[('-- Test Filter using numerical equal (==) --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education,Age | where Age == 26
+--Result--
+[('Peter', 'Nara', 'Skilled Manual', 'Graduate Degree', 26), ('Joshua', 'Lee', 'Professional', 'Partial College', 26)]
++--------------------+
+--Query--
+print '-- Test Filter using numerical great and less (> , <) --'
+--Result--
+[('-- Test Filter using numerical great and less (> , <) --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education,Age | where Age > 30 and Age < 40
+--Result--
+[('Stephanie', 'Cox', 'Management', 'Bachelors', 33), ('Edward', 'Hernandez', 'Skilled Manual', 'High School', 36), ('Christine', 'Nara', 'Skilled Manual', 'Partial College', 33)]
++--------------------+
+--Query--
+print '-- Test Filter using multi where --'
+--Result--
+[('-- Test Filter using multi where --',)]
++--------------------+
+--Query--
+Customers | project FirstName,LastName,Occupation,Education,Age | where Age > 30 | where Occupation == 'Professional'
+--Result--
+[('Dalton', 'Wood', 'Professional', 'Partial College', 42), ('Angel', 'Stewart', 'Professional', 'Partial College', 46)]
++--------------------+
+--Query--
+print '-- Complex query with unknown function --'
+--Result--
+[('-- Complex query with unknown function --',)]
++--------------------+

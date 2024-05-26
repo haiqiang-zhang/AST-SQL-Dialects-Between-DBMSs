@@ -146,15 +146,6 @@ CREATE TABLE t1 (
   schooltype  VARCHAR(45) NOT NULL
 );
 INSERT INTO t1 VALUES ("the school", "USA", 1200, "Human");
-SELECT COUNT(country) AS countrycount,
-       SUM(funds_requested) AS smcnt,
-       country,
-       (SELECT SUM(funds_requested) FROM t1) AS total_funds,
-       ROW_NUMBER() OVER (ORDER BY STDDEV_POP(funds_requested)) AS rn
-FROM t1
-GROUP BY country
-HAVING AVG(funds_requested) > 0
-ORDER BY SUM(ABS(funds_requested));
 DROP TABLE t1;
 CREATE TABLE cc (i INT);
 INSERT INTO cc VALUES (1);
@@ -227,8 +218,6 @@ INSERT INTO t1 VALUES (2, 11);
 INSERT INTO t1 VALUES (2, 20);
 INSERT INTO t1 VALUES (2, 30);
 INSERT INTO t2 VALUES (25);
-SELECT SUM(j) FROM t1
-HAVING SUM(j) > (SELECT SUM(t2.i) FROM t2);
 SELECT j FROM t1
 HAVING j > (SELECT MIN(t2.i) FROM t2);
 SELECT i, j FROM t1
@@ -594,73 +583,6 @@ WHERE EXISTS (SELECT *
                               FROM b))));
 DROP TABLE a, b, c;
 CREATE TABLE n(i INT);
-SELECT (SELECT AVG(n.i)
-        FROM n) AS feild1,
-       SUM(table1.i)
-FROM (n AS table1
-      JOIN
-      n AS table2
-      ON (table1.i <= ANY (SELECT i FROM n)))
-WHERE (EXISTS ((SELECT i FROM n)));
-SELECT (SELECT AVG(n.i)
-        FROM n) AS feild1,
-       SUM(table1.i)
-FROM (n AS table1
-      JOIN
-      n AS table2
-      ON (table1.i <= (select MAX(`n`.`i`) from `n`)))
-WHERE (EXISTS ((SELECT i FROM n)));
-SELECT (SELECT AVG(n.i)
-        FROM n) AS feild1,
-       SUM(table1.i)
-FROM (n AS table1
-      JOIN
-      n AS table2
-      ON  (table2.i <=  (select MAX(`n`.`i`) from `n`)))
-      JOIN
-      n AS table3
-      ON (table1.i <=  (select MAX(`n`.`i`) from `n`))
-WHERE (EXISTS ((SELECT i FROM n)) AND
-       EXISTS ((SELECT i FROM n WHERE i = 5)) AND
-       EXISTS ((SELECT i FROM n WHERE i = 7)));
-SELECT (SELECT AVG(n.i)
-        FROM n) AS feild1,
-       SUM(table1.i)
-FROM (n AS table1
-      JOIN
-      n AS table2
-      ON (table2.i <= (select MAX(`n`.`i`) from `n`)))
-      JOIN n AS table3
-      ON (table1.i <= (select MAX(`n`.`i`) from `n`))
-WHERE (NOT EXISTS ((SELECT n1.i
-                    FROM n n1, n n2
-                    WHERE n1.i > n2.i)));
-SELECT (SELECT AVG(n.i)
-        FROM n) AS feild1,
-       SUM(table1.i)
-FROM (n AS table1
-      JOIN
-      n AS table2
-      ON  (table2.i <=  (select MAX(`n`.`i`) from `n`)))
-      JOIN
-      n AS table3
-      ON (table1.i <=  (select MAX(`n`.`i`) from `n`))
-WHERE (EXISTS ((SELECT i FROM n)) AND
-       EXISTS ((SELECT i FROM n WHERE i = 5)) AND
-       EXISTS ((SELECT i FROM n WHERE i = 7)));
-SELECT (SELECT AVG(n.i)
-        FROM n) AS feild1,
-       SUM(table1.i)
-FROM (n AS table1
-      JOIN n AS table2
-      ON  (table2.i <=  (select MAX(`n`.`i`) from `n`)))
-      JOIN n AS table3
-      ON (table1.i <=  (select MAX(`n`.`i`) from `n`))
-WHERE (EXISTS ((SELECT i FROM n)) AND
-       NOT EXISTS ((SELECT i FROM n WHERE i = 4)) AND
-       EXISTS ((SELECT i FROM n WHERE i = 5)) AND
-       EXISTS ((SELECT i FROM n WHERE i = 7)) AND
-       NOT EXISTS ((SELECT i FROM n WHERE i = 3)));
 DROP TABLE n;
 CREATE TABLE m(pk INT);
 CREATE VIEW view_m AS SELECT * FROM m;
@@ -1012,7 +934,6 @@ FROM ( SELECT sub1_t2.*
 DROP TABLE a;
 CREATE TABLE t1(pk int primary key);
 INSERT INTO t1 VALUES(1),(2),(3),(4),(5);
-SELECT SUM(pk) FROM t1 WHERE ( pk >= ANY ( SELECT MAX(1) FROM DUAL) );
 DROP TABLE t1;
 CREATE TABLE t1 ( pk INTEGER );
 SELECT

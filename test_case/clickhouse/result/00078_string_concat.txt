@@ -1,0 +1,805 @@
+--Query--
+select '{ key: fn, value: concat }' == concat('{ key: ', toFixedString('fn', 2), ', value: ', 'concat', ' }')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', 'b') == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b')) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b') == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b')) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1)) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1))) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1)) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1))) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b') == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b')) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b') == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b')) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1)) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1))) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1)) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1))) == 'ab'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', 'b') == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b')) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b') == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b')) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1)) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1))) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1)) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1))) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b') == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b')) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b') == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b')) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1)) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1))) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1)) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1))) == 'ab' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', 'b', 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', 'b', materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', 'b', toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', 'b', materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), 'c') == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), materialize('c')) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('a', 'b', 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', 'b', materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', 'b', toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', 'b', materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize('b'), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), 'b', materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize('b'), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat('a', materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize('a'), materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), 'b', materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize('b'), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), 'b', materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize('b'), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), 'c') == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), materialize('c')) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(toFixedString('a', 1), materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), toFixedString('b', 1), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), toFixedString('c', 1)) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select concat(materialize(toFixedString('a', 1)), materialize(toFixedString('b', 1)), materialize(toFixedString('c', 1))) == 'abc' from system.numbers limit 5
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+

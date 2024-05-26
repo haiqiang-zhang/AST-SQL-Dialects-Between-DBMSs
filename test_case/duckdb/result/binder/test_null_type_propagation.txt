@@ -1,0 +1,127 @@
+--Query--
+SELECT NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT NULL
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT NULL UNION ALL SELECT NULL UNION ALL SELECT NULL UNION ALL SELECT NULL UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (None,), (None,), (None,), (True,)]
++--------------------+
+--Query--
+SELECT (SELECT NULL) UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT NULL) tbl(i) UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT (SELECT NULL) UNION ALL SELECT CAST(1 AS BOOLEAN)) tbl(i)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT NULL) tbl(i) UNION ALL SELECT NULL
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT bool_and(i) FROM (SELECT * FROM (SELECT NULL) tbl(i) UNION ALL SELECT CAST(1 as BOOLEAN)) tbl(i)
+--Result--
+[(True,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT NULL) tbl(i), (SELECT NULL) tbl2(j)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT bool_and(i), bool_and(j) FROM (SELECT NULL) tbl(i), (SELECT NULL) tbl2(j)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM tbl
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT typeof(#1) FROM tbl LIMIT 1
+--Result--
+[('INTEGER',)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM v1 UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+SELECT typeof(#1) FROM v1
+--Result--
+[('NULL',)]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM v2 UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (None,), (True,)]
++--------------------+
+--Query--
+SELECT typeof(#1) FROM v2 LIMIT 1
+--Result--
+[('NULL',)]
++--------------------+
+--Query--
+SELECT [NULL]
+--Result--
+[([None],)]
++--------------------+
+--Query--
+SELECT [NULL] UNION ALL SELECT [True]
+--Result--
+[([None],), ([True],)]
++--------------------+
+--Query--
+SELECT {'x': NULL}
+--Result--
+[({'x': None},)]
++--------------------+
+--Query--
+SELECT {'x': NULL} UNION ALL SELECT {'x': True}
+--Result--
+[({'x': None},), ({'x': True},)]
++--------------------+
+--Query--
+WITH cte AS (SELECT NULL)
+SELECT * FROM cte
+--Result--
+[(None,)]
++--------------------+
+--Query--
+WITH cte AS (SELECT NULL)
+SELECT * FROM cte UNION ALL SELECT CAST(1 AS BOOLEAN)
+--Result--
+[(None,), (True,)]
++--------------------+

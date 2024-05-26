@@ -1,0 +1,30 @@
+--Query--
+EXPLAIN QUERY PLAN SELECT 5 UNION ALL SELECT 3 ORDER BY 1
+--Result--
+[(1, 0, 0, 'MERGE (UNION ALL)'), (3, 1, 0, 'LEFT'), (5, 3, 0, 'SCAN CONSTANT ROW'), (10, 1, 0, 'RIGHT'), (12, 10, 0, 'SCAN CONSTANT ROW')]
++--------------------+
+--Query--
+SELECT 5 UNION ALL SELECT 3 ORDER BY 1
+--Result--
+[(3,), (5,)]
++--------------------+
+--Query--
+SELECT 986 AS x GROUP BY X ORDER BY X
+--Result--
+[(986,)]
++--------------------+
+--Query--
+SELECT (     SELECT 'hardware' FROM (        SELECT 'software' ORDER BY 'firmware' ASC, 'sportswear' DESC      ) GROUP BY 1 HAVING length(b)   )   FROM abc
+--Result--
+[('hardware',), ('hardware',), ('hardware',)]
++--------------------+
+--Query--
+SELECT (SELECT x||y FROM t2, t1 ORDER BY x, y)
+--Result--
+[('13',)]
++--------------------+
+--Query--
+SELECT b, rowid, '^' FROM t10 ORDER BY b, a LIMIT 4
+--Result--
+[(2, 1, '^'), (4, 3, '^'), (4, 4, '^'), (7, 5, '^')]
++--------------------+

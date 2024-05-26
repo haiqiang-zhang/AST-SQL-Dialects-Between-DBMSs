@@ -1,0 +1,35 @@
+--Query--
+SELECT 'dictGet'
+--Result--
+[('dictGet',)]
++--------------------+
+--Query--
+SELECT tuple(x, y) as key,     dictGet('01760_db.dict_array', 'name', key),     dictGet('01760_db.dict_array', 'value', key),     dictGet('01760_db.dict_array', 'value_nullable', key) FROM 01760_db.points ORDER BY x, y
+--Result--
+[((-0.1, 0.0), 'Click South', 423, 423), ((0.0, -1.1), 'Click West', 424, None), ((0.0, 1.1), 'Click North', 422, None), ((0.1, 0.0), 'Click East', 421, 421), ((3.0, 3.0), 'qqq', 10, 20)]
++--------------------+
+--Query--
+SELECT 'dictGetOrDefault'
+--Result--
+[('dictGetOrDefault',)]
++--------------------+
+--Query--
+SELECT tuple(x, y) as key,     dictGetOrDefault('01760_db.dict_array', 'name', key, 'DefaultName'),     dictGetOrDefault('01760_db.dict_array', 'value', key, 30),     dictGetOrDefault('01760_db.dict_array', 'value_nullable', key, 40) FROM 01760_db.points ORDER BY x, y
+--Result--
+[((-0.1, 0.0), 'Click South', 423, 423), ((0.0, -1.1), 'Click West', 424, None), ((0.0, 1.1), 'Click North', 422, None), ((0.1, 0.0), 'Click East', 421, 421), ((3.0, 3.0), 'DefaultName', 30, 40)]
++--------------------+
+--Query--
+SELECT 'dictHas'
+--Result--
+[('dictHas',)]
++--------------------+
+--Query--
+SELECT tuple(x, y) as key,     dictHas('01760_db.dict_array', key),     dictHas('01760_db.dict_array', key),     dictHas('01760_db.dict_array', key) FROM 01760_db.points ORDER BY x, y
+--Result--
+[((-0.1, 0.0), 1, 1, 1), ((0.0, -1.1), 1, 1, 1), ((0.0, 1.1), 1, 1, 1), ((0.1, 0.0), 1, 1, 1), ((3.0, 3.0), 0, 0, 0)]
++--------------------+
+--Query--
+SELECT 'check NaN or infinite point input'
+--Result--
+[('check NaN or infinite point input',)]
++--------------------+

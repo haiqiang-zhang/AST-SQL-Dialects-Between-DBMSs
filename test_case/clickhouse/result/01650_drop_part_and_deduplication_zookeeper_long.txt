@@ -1,0 +1,45 @@
+--Query--
+SYSTEM STOP MERGES partitioned_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '~~~~source parts~~~~~'
+--Result--
+[('~~~~source parts~~~~~',)]
++--------------------+
+--Query--
+SELECT partition_id, name FROM system.parts WHERE table = 'partitioned_table' AND database = currentDatabase() and active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '~~~~parts after deduplication~~~~~'
+--Result--
+[('~~~~parts after deduplication~~~~~',)]
++--------------------+
+--Query--
+SELECT partition_id, name FROM system.parts WHERE table = 'partitioned_table' AND database = currentDatabase() and active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '~~~~parts after drop 3_1_1_0~~~~~'
+--Result--
+[('~~~~parts after drop 3_1_1_0~~~~~',)]
++--------------------+
+--Query--
+SELECT partition_id, name FROM system.parts WHERE table = 'partitioned_table' AND database = currentDatabase() and active ORDER BY name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '~~~~parts after new part without deduplication~~~~~'
+--Result--
+[('~~~~parts after new part without deduplication~~~~~',)]
++--------------------+
+--Query--
+SELECT partition_id, name FROM system.parts WHERE table = 'partitioned_table' AND database = currentDatabase() and active ORDER BY name
+--Result--
+[]
++--------------------+

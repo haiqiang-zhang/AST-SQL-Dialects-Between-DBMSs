@@ -1,0 +1,40 @@
+--Query--
+SELECT * FROM strings WHERE 'Goethe' > s ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+select chr(2*16*256+1*256+2*16+11) collate da  =chr(12*16+5) collate da
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select icu_sort_key(chr(2*16*256+1*256+2*16+11),'da')=icu_sort_key(chr(12*16+5),'da')
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select chr(2*16*256+1*256+2*16+11) collate da > chr(12*16+5) collate da
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select chr(2*16*256+1*256+2*16+11) collate da > chr(12*16+5) collate da
+--Result--
+[(False,)]
++--------------------+
+--Query--
+select count(*) from (select chr(2*16*256+1*256+2*16+11) union select chr(12*16+5)) as t(s) group by s collate da
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select nfc_normalize(chr(2*16*256+1*256+2*16+11))=nfc_normalize(chr(12*16+5))
+--Result--
+[(True,)]
++--------------------+
+--Query--
+select count(*) from (select chr(2*16*256+1*256+2*16+11) union select chr(12*16+5)) as t(s) group by s collate nfc
+--Result--
+[(2,)]
++--------------------+

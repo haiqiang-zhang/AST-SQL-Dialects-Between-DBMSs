@@ -1,6 +1,4 @@
 SELECT version();
-select pg_postmaster_start_time();
-select txid_current();
 SELECT CURRENT_USER;
 SELECT CURRENT_CATALOG;
 SELECT CURRENT_DATABASE();

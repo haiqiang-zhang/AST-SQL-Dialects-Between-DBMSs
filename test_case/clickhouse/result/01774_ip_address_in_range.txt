@@ -1,0 +1,90 @@
+--Query--
+SELECT '# Invocation with constants'
+--Result--
+[('# Invocation with constants',)]
++--------------------+
+--Query--
+SELECT isIPAddressInRange('127.0.0.1', '127.0.0.0/8')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '# Invocation with non-constant addresses'
+--Result--
+[('# Invocation with non-constant addresses',)]
++--------------------+
+--Query--
+WITH arrayJoin(['192.168.99.255', '192.168.100.1', '192.168.103.255', '192.168.104.0']) as addr, '192.168.100.0/22' as prefix SELECT addr, prefix, isIPAddressInRange(addr, prefix)
+--Result--
+[('192.168.99.255', '192.168.100.0/22', 0), ('192.168.100.1', '192.168.100.0/22', 1), ('192.168.103.255', '192.168.100.0/22', 1), ('192.168.104.0', '192.168.100.0/22', 0)]
++--------------------+
+--Query--
+SELECT '# Invocation with non-constant prefixes'
+--Result--
+[('# Invocation with non-constant prefixes',)]
++--------------------+
+--Query--
+SELECT '# Invocation with non-constants'
+--Result--
+[('# Invocation with non-constants',)]
++--------------------+
+--Query--
+SELECT '# Check with dense table'
+--Result--
+[('# Check with dense table',)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('0.0.0.0', cidr)) == 1 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('127.0.0.0', cidr)) == 1 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('128.0.0.0', cidr)) == 2 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('255.0.0.0', cidr)) == 9 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('255.0.0.1', cidr)) == 9 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('255.0.0.255', cidr)) == 9 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('255.255.255.255', cidr)) == 33 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(isIPAddressInRange('255.255.255.254', cidr)) == 32 FROM test_data
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '# Mismatching IP versions is not an error.'
+--Result--
+[('# Mismatching IP versions is not an error.',)]
++--------------------+
+--Query--
+SELECT '# Unparsable arguments'
+--Result--
+[('# Unparsable arguments',)]
++--------------------+
+--Query--
+SELECT '# Wrong argument types'
+--Result--
+[('# Wrong argument types',)]
++--------------------+

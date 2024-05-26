@@ -49,24 +49,9 @@ SELECT pg_input_is_valid('12:00:00', 'time')
 [(True,)]
 +--------------------+
 --Query--
-SELECT pg_input_is_valid('25:00:00', 'time')
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT pg_input_is_valid('15:36:39 America/New_York', 'time')
---Result--
-[(False,)]
-+--------------------+
---Query--
 SELECT * FROM pg_input_error_info('25:00:00', 'time')
 --Result--
 [('date/time field value out of range: "25:00:00"', None, None, '22008')]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info('15:36:39 America/New_York', 'time')
---Result--
-[('invalid input syntax for type time: "15:36:39 America/New_York"', None, None, '22007')]
 +--------------------+
 --Query--
 SELECT EXTRACT(MICROSECOND FROM TIME '2020-05-26 13:30:25.575401')
@@ -74,47 +59,7 @@ SELECT EXTRACT(MICROSECOND FROM TIME '2020-05-26 13:30:25.575401')
 [(25575401.0,)]
 +--------------------+
 --Query--
-SELECT EXTRACT(MILLISECOND FROM TIME '2020-05-26 13:30:25.575401')
---Result--
-[(25575.401,)]
-+--------------------+
---Query--
-SELECT EXTRACT(SECOND      FROM TIME '2020-05-26 13:30:25.575401')
---Result--
-[(25.575401,)]
-+--------------------+
---Query--
-SELECT EXTRACT(MINUTE      FROM TIME '2020-05-26 13:30:25.575401')
---Result--
-[(30.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(HOUR        FROM TIME '2020-05-26 13:30:25.575401')
---Result--
-[(13.0,)]
-+--------------------+
---Query--
-SELECT EXTRACT(EPOCH       FROM TIME '2020-05-26 13:30:25.575401')
---Result--
-[(48625.575401,)]
-+--------------------+
---Query--
 SELECT date_part('microsecond', TIME '2020-05-26 13:30:25.575401')
 --Result--
 [(25575401.0,)]
-+--------------------+
---Query--
-SELECT date_part('millisecond', TIME '2020-05-26 13:30:25.575401')
---Result--
-[(25575.401,)]
-+--------------------+
---Query--
-SELECT date_part('second',      TIME '2020-05-26 13:30:25.575401')
---Result--
-[(25.575401,)]
-+--------------------+
---Query--
-SELECT date_part('epoch',       TIME '2020-05-26 13:30:25.575401')
---Result--
-[(48625.575401,)]
 +--------------------+

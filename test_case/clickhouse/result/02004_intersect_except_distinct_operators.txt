@@ -1,0 +1,155 @@
+--Query--
+select 1 intersect select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 intersect select 1
+--Result--
+[]
++--------------------+
+--Query--
+select 1 except select 1
+--Result--
+[]
++--------------------+
+--Query--
+select 2 except select 1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 5 from numbers(20) intersect select number from numbers(5, 5)
+--Result--
+[(5,)]
++--------------------+
+--Query--
+select 1 except select 2 intersect select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 except select 2 intersect select 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 intersect select 1 except select 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 intersect select 1 except select 1
+--Result--
+[]
++--------------------+
+--Query--
+select 1 intersect select 1 except select 2 intersect select 1 except select 3 intersect select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 intersect select 1 except select 2 intersect select 1 except select 3 intersect select 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 intersect select 1 except select 2 intersect select 1 except select 3 intersect select 2 except select 1
+--Result--
+[]
++--------------------+
+--Query--
+select * from (select 1 intersect select 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+with (select number from numbers(10) intersect select 5) as a select a * 10
+--Result--
+[(50,)]
++--------------------+
+--Query--
+with (select 5 except select 1) as a select a except select 5
+--Result--
+[]
++--------------------+
+--Query--
+with (select number from numbers(10) intersect select 5) as a select a intersect select 1
+--Result--
+[]
++--------------------+
+--Query--
+with (select number from numbers(10) intersect select 5) as a select a except select 1
+--Result--
+[(5,)]
++--------------------+
+--Query--
+select count() from (select number from numbers(10) except select 5)
+--Result--
+[(9,)]
++--------------------+
+--Query--
+with (select count() from (select 1 union distinct select 2 except select 1)) as max select count() from (select 1 union all select max) limit 100
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 1 union all select 1 intersect select 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select 1 union all select 1 intersect select 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from (select 1 union all select 2 union all select 3 union all select 4 except select 3 union all select 5) order by 1
+--Result--
+[(1,), (2,), (4,), (5,)]
++--------------------+
+--Query--
+select * from (select 1 union all select 2 union all select 3 union all select 4 intersect select 3 union all select 5) order by 1
+--Result--
+[(1,), (2,), (3,), (5,)]
++--------------------+
+--Query--
+select * from (select 1 union all select 2 union all select 3 union all select 4 intersect select 3 union all select 5 except select 1) order by 1
+--Result--
+[(2,), (3,), (5,)]
++--------------------+
+--Query--
+select 1 intersect (select 1 except select 2)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 union all select 2  except (select 2 except select 1 union all select 1) except select 4
+--Result--
+[]
++--------------------+
+--Query--
+explain syntax select 1 intersect select 1
+--Result--
+[('SELECT 1',), ('INTERSECT DISTINCT',), ('SELECT 1',)]
++--------------------+
+--Query--
+explain syntax select 1 except select 1
+--Result--
+[('SELECT 1',), ('EXCEPT DISTINCT',), ('SELECT 1',)]
++--------------------+
+--Query--
+explain syntax select 1 union all select 2  except (select 2 except select 1 union all select 1) except select 4
+--Result--
+[('SELECT 1',), ('UNION ALL',), ('SELECT 2',), ('EXCEPT DISTINCT',), ('SELECT 2',), ('EXCEPT DISTINCT',), ('SELECT 1',), ('UNION ALL',), ('SELECT 1',), ('EXCEPT DISTINCT',), ('SELECT 4',)]
++--------------------+
+--Query--
+select 1 intersect select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+(((select 1) intersect select 1))
+--Result--
+[(1,)]
++--------------------+

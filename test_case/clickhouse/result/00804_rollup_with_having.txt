@@ -1,0 +1,10 @@
+--Query--
+SELECT a, b, count(*) as count FROM rollup_having GROUP BY a, b WITH ROLLUP HAVING a IS NOT NULL ORDER BY a, b, count
+--Result--
+[('a', 'b', 1), ('a', None, 1), ('a', None, 2)]
++--------------------+
+--Query--
+SELECT a, b, count(*) as count FROM rollup_having GROUP BY a, b WITH ROLLUP HAVING a IS NOT NULL and b IS NOT NULL ORDER BY a, b, count
+--Result--
+[('a', 'b', 1)]
++--------------------+

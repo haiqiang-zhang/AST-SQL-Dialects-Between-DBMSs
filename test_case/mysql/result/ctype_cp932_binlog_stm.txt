@@ -1,0 +1,30 @@
+--Query--
+SELECT hex(a), hex(lower(a)), hex(upper(a)) FROM t1 ORDER BY binary(a)
+--Result--
+[('8352835E', '8352835E', '8352835E'), ('8372835E', '8372835E', '8372835E')]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1
+--Result--
+[(14623,)]
++--------------------+
+--Query--
+SELECT code, hex(upper(a)), hex(lower(a)),a, upper(a), lower(a) FROM t1 WHERE hex(a)<>hex(upper(a)) OR hex(a)<>hex(lower(a)) ORDER BY code
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE HEX(CAST(LOWER(a) AS CHAR CHARACTER SET utf8mb3)) <>       HEX(LOWER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE HEX(CAST(UPPER(a) AS CHAR CHARACTER SET utf8mb3)) <>       HEX(UPPER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code
+--Result--
+[]
++--------------------+
+--Query--
+SELECT HEX(a), HEX(CONVERT(a USING utf8mb3)) as b FROM t1 WHERE a<>'' HAVING b<>'3F' ORDER BY code
+--Result--
+[]
++--------------------+

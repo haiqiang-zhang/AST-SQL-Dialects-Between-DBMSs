@@ -1,0 +1,20 @@
+--Query--
+SELECT @@GLOBAL.table_open_cache_instances
+--Result--
+[(16,)]
++--------------------+
+--Query--
+SELECT id,        tr1 = connection_id() AS "tr1 valid",        tr2 = connection_id() AS "tr2 valid" FROM t1 WHERE id=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT id,        tr1 = connection_id() AS "tr1 valid",         tr2 = connection_id() AS "tr2 valid" FROM t1 WHERE id=2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(DISTINCT tr1), COUNT(DISTINCT tr2) FROM t1
+--Result--
+[(0, 0)]
++--------------------+

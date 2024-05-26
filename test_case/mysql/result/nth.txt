@@ -1,0 +1,75 @@
+--Query--
+SELECT NTH_VALUE(6,1)    OVER ()
+--Result--
+[(6,)]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT id, sex, NTH_VALUE(id, ?) OVER () FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w, sex, NTH_VALUE(d, 2) OVER w FROM t1 WINDOW w as (PARTITION BY SEX ORDER BY D ROWS 2 PRECEDING)
+--Result--
+[(10.0, 10.0, None, None), (10.0, 20.0, None, 10.0), (11.0, 31.0, None, 10.0), (2.0, 2.0, 'F', None), (3.0, 5.0, 'F', 3.0), (4.0, 9.0, 'F', 3.0), (None, None, 'M', None), (1.0, 1.0, 'M', 1.0), (5.0, 6.0, 'M', 1.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w, COUNT(*) OVER w, NTH_VALUE(d, 2) OVER w FROM t1 WINDOW w as (ORDER BY D ROWS 2 PRECEDING)
+--Result--
+[(None, None, 1, None), (1.0, 1.0, 2, 1.0), (2.0, 3.0, 3, 1.0), (3.0, 6.0, 3, 2.0), (4.0, 9.0, 3, 3.0), (5.0, 12.0, 3, 4.0), (10.0, 19.0, 3, 5.0), (10.0, 25.0, 3, 10.0), (11.0, 31.0, 3, 10.0)]
++--------------------+
+--Query--
+SELECT id, COUNT(*) OVER w, NTH_VALUE(id, 2) OVER w FROM t1 WINDOW w as (ORDER BY ID ROWS 2 PRECEDING)
+--Result--
+[(None, 1, None), (1, 2, 1), (2, 3, 1), (3, 3, 2), (4, 3, 3), (5, 3, 4), (10, 3, 5), (10, 3, 10), (11, 3, 10)]
++--------------------+
+--Query--
+SELECT id, COUNT(*) OVER w,        NTH_VALUE(id, 3) OVER w,        FIRST_VALUE(id) OVER w,        NTH_VALUE(id, 1) OVER w,        NTH_VALUE(id, 2) OVER w FROM t1   WINDOW w AS (ORDER BY id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+--Result--
+[(None, 1, None, None, None, None), (1, 2, None, None, None, 1), (2, 3, 2, None, None, 1), (3, 3, 3, 1, 1, 2), (4, 3, 4, 2, 2, 3), (5, 3, 5, 3, 3, 4), (10, 3, 10, 4, 4, 5), (10, 3, 10, 5, 5, 10), (11, 3, 11, 10, 10, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(d) OVER w, COUNT(*) OVER w,        NTH_VALUE(id, 3) OVER w,        FIRST_VALUE(id) OVER w,        NTH_VALUE(id, 1) OVER w,        NTH_VALUE(id, 2) OVER w FROM t1   WINDOW w AS (ORDER BY id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+--Result--
+[(None, None, 1, None, None, None, None), (1, 1.0, 2, None, None, None, 1), (2, 3.0, 3, 2, None, None, 1), (3, 6.0, 3, 3, 1, 1, 2), (4, 9.0, 3, 4, 2, 2, 3), (5, 12.0, 3, 5, 3, 3, 4), (10, 19.0, 3, 10, 4, 4, 5), (10, 25.0, 3, 10, 5, 5, 10), (11, 31.0, 3, 11, 10, 10, 10)]
++--------------------+
+--Query--
+SELECT dt, NTH_VALUE(dt, 3) OVER w1 nth,            CAST(NTH_VALUE(ge, 3) OVER w1 AS JSON) ge     FROM test WHERE `pk` = 2 WINDOW w1 AS ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT dt, NTH_VALUE(dt, 3) OVER w1 nth,            CAST(NTH_VALUE(ge, 3) OVER w1 AS JSON) ge     FROM test WHERE `pk` > 3 WINDOW w1 AS ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1+NTH_VALUE(SUM(c/d), 1) OVER (ORDER BY a)  FROM t GROUP BY a,b
+--Result--
+[(2.0,), (2.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER () rn,        1+NTH_VALUE(SUM(c/d), 1) OVER (ORDER BY a) plus_fv,        1+NTH_VALUE(SUM(c/d), 2) OVER (ORDER BY a) plus_lv FROM t GROUP BY a,b
+--Result--
+[(1, 2.0, None), (2, 2.0, 3.0), (3, 2.0, 3.0)]
++--------------------+
+--Query--
+SELECT ((MAKETIME(((QUARTER('| !*c>*{/'))<=>                (NTH_VALUE(JSON_OBJECTAGG('key4',0x067c13d0d0d7d8c8d768aef7)                     ,1)OVER())),'9236-05-27',0xe2a7d4))^(0x1109))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ((NTH_VALUE(JSON_MERGE_PATCH(1.755913e+308,'{ }'),246)OVER())<=(1))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ((QUOTE(JSON_KEYS(NTH_VALUE(JSON_KEYS(EXP(-15676),ABS('d0')),                           162)OVER())))>=(CONNECTION_ID()))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT JSON_LENGTH(NTH_VALUE(JSON_OBJECTAGG('key2','*B'),172)OVER())
+--Result--
+[(None,)]
++--------------------+

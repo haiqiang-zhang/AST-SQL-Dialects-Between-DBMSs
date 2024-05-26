@@ -1,0 +1,55 @@
+--Query--
+select if(number > 0, intDiv(number + 100, number), throwIf(number)) from numbers(10)
+--Result--
+[(0,), (101,), (51,), (34,), (26,), (21,), (17,), (15,), (13,), (12,)]
++--------------------+
+--Query--
+select multiIf(number == 0, 0, number == 1, intDiv(1, number), number == 2, intDiv(1, number - 1), number == 3, intDiv(1, number - 2), intDiv(1, number - 3)) from numbers(10)
+--Result--
+[(0,), (1,), (1,), (1,), (1,), (0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+select number != 0 and intDiv(1, number) == 0 and number != 2 and intDiv(1, number - 2) == 0 from numbers(10)
+--Result--
+[(0,), (0,), (0,), (0,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select count() from (select if(number >= 0, number, sleep(1)) from numbers(10000000))
+--Result--
+[(10000000,)]
++--------------------+
+--Query--
+select number > 0 and 5 and intDiv(100, number) from numbers(5)
+--Result--
+[(0,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select sum(number) FROM numbers(10) WHERE number != 0 and 3 % number and number != 1 and intDiv(1, number - 1) > 0
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select toTypeName(toString(number)) from numbers(5)
+--Result--
+[('String',), ('String',), ('String',), ('String',), ('String',)]
++--------------------+
+--Query--
+select toColumnTypeName(toString(number)) from numbers(5)
+--Result--
+[('String',), ('String',), ('String',), ('String',), ('String',)]
++--------------------+
+--Query--
+select Null or isNull(intDiv(number, 1)) from numbers(5)
+--Result--
+[(None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+select if(isNull(x), Null, 42 / x) from (select CAST(materialize(Null), 'Nullable(Decimal32(2))') as x)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select number % 2 and toLowCardinality(number) from numbers(5)
+--Result--
+[(0,), (1,), (0,), (1,), (0,)]
++--------------------+

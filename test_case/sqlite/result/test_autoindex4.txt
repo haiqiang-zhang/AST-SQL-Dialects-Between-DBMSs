@@ -1,0 +1,65 @@
+--Query--
+SELECT *, '|' FROM t1, t2 WHERE a=234 AND x=987 ORDER BY +b
+--Result--
+[(234, 'def', 987, 'rqp', '|'), (234, 'def', 987, 'zyx', '|'), (234, 'ghi', 987, 'rqp', '|'), (234, 'ghi', 987, 'zyx', '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1, t2 WHERE a=234 AND x=555
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 LEFT JOIN t2 ON a=234 AND x=555
+--Result--
+[(123, 'abc', None, None, '|'), (234, 'def', None, None, '|'), (234, 'ghi', None, None, '|'), (345, 'jkl', None, None, '|')]
++--------------------+
+--Query--
+SELECT t1.*, t2.*, '|' FROM t2 RIGHT JOIN t1 ON a=234 AND x=555
+--Result--
+[(123, 'abc', None, None, '|'), (234, 'def', None, None, '|'), (234, 'ghi', None, None, '|'), (345, 'jkl', None, None, '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 LEFT JOIN t2 ON x=555 WHERE a=234
+--Result--
+[(234, 'def', None, None, '|'), (234, 'ghi', None, None, '|')]
++--------------------+
+--Query--
+SELECT t1.*, t2.*, '|' FROM t2 RIGHT JOIN t1 ON x=555 WHERE a=234
+--Result--
+[(234, 'def', None, None, '|'), (234, 'ghi', None, None, '|')]
++--------------------+
+--Query--
+SELECT *, '|' FROM t1 LEFT JOIN t2 WHERE a=234 AND x=555
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.*, t2.*, '|' FROM t2 RIGHT JOIN t1 WHERE a=234 AND x=555
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (SELECT count(*) FROM t1, t2 WHERE a=e AND x=f), e, f, '|'     FROM t3    ORDER BY rowid
+--Result--
+[(1, 123, 654, '|'), (0, 555, 444, '|'), (4, 234, 987, '|')]
++--------------------+
+--Query--
+SELECT Items.ItemName     FROM Items       LEFT JOIN A ON (A.Name = Items.ItemName and Items.ItemName = 'dummy')       LEFT JOIN B ON (B.Name = Items.ItemName)     WHERE Items.Name = 'Parent'     ORDER BY Items.ItemName
+--Result--
+[('Item1',), ('Item2',)]
++--------------------+
+--Query--
+SELECT Items.ItemName     FROM A       RIGHT JOIN Items ON (A.Name = Items.ItemName and Items.ItemName = 'dummy')       LEFT JOIN B ON (B.Name = Items.ItemName)     WHERE Items.Name = 'Parent'     ORDER BY Items.ItemName
+--Result--
+[('Item1',), ('Item2',)]
++--------------------+
+--Query--
+SELECT Items.ItemName     FROM Items       LEFT JOIN A ON (A.Name = Items.ItemName and Items.ItemName = 'dummy')       LEFT JOIN B ON (B.Name = Items.ItemName)     WHERE Items.Name = 'Parent'     ORDER BY Items.ItemName
+--Result--
+[('Item1',), ('Item2',)]
++--------------------+
+--Query--
+SELECT Items.ItemName     FROM A       RIGHT JOIN Items ON (A.Name = Items.ItemName and Items.ItemName = 'dummy')       LEFT JOIN B ON (B.Name = Items.ItemName)     WHERE Items.Name = 'Parent'     ORDER BY Items.ItemName
+--Result--
+[('Item1',), ('Item2',)]
++--------------------+

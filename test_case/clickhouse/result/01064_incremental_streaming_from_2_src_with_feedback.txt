@@ -1,0 +1,35 @@
+--Query--
+SYSTEM STOP MERGES target_table
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM STOP MERGES checkouts
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM STOP MERGES logins
+--Result--
+[]
++--------------------+
+--Query--
+select '-- unmerged state'
+--Result--
+[('-- unmerged state',)]
++--------------------+
+--Query--
+select    id,    finalizeAggregation(latest_login_time) as current_latest_login_time,    finalizeAggregation(latest_checkout_time) as current_latest_checkout_time,    finalizeAggregation(fastest_session)  as current_fastest_session,    finalizeAggregation(biggest_inactivity_period)  as current_biggest_inactivity_period from target_table where id in (1,2) ORDER BY id, current_latest_login_time, current_latest_checkout_time
+--Result--
+[(1, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 0), (1, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(2000, 1, 1, 10, 0, tzinfo=<UTC>), 7200, 0), (1, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(2000, 1, 1, 11, 10, tzinfo=<UTC>), 600, 0), (1, datetime.datetime(2000, 1, 1, 8, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 0), (1, datetime.datetime(2000, 1, 1, 11, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 3600), (2, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 0), (2, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(2000, 1, 1, 10, 0, tzinfo=<UTC>), 7200, 0), (2, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(2000, 1, 1, 11, 10, tzinfo=<UTC>), 600, 0), (2, datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), datetime.datetime(2001, 1, 1, 11, 10, 2, tzinfo=<UTC>), 1, 0), (2, datetime.datetime(2000, 1, 1, 8, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 0), (2, datetime.datetime(2000, 1, 1, 11, 0, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 3600), (2, datetime.datetime(2001, 1, 1, 11, 10, 1, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>), 18446744073709551615, 31622401)]
++--------------------+
+--Query--
+select '-- merged state'
+--Result--
+[('-- merged state',)]
++--------------------+
+--Query--
+SELECT      id,      maxMerge(latest_login_time) as current_latest_login_time,      maxMerge(latest_checkout_time) as current_latest_checkout_time,      minMerge(fastest_session) as current_fastest_session,      maxMerge(biggest_inactivity_period) as current_biggest_inactivity_period FROM target_table where id in (1,2) GROUP BY id ORDER BY id
+--Result--
+[(1, datetime.datetime(2000, 1, 1, 11, 0, tzinfo=<UTC>), datetime.datetime(2000, 1, 1, 11, 10, tzinfo=<UTC>), 600, 3600), (2, datetime.datetime(2001, 1, 1, 11, 10, 1, tzinfo=<UTC>), datetime.datetime(2001, 1, 1, 11, 10, 2, tzinfo=<UTC>), 1, 31622401)]
++--------------------+

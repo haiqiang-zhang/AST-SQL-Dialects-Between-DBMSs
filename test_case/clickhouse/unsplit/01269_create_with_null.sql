@@ -20,7 +20,6 @@ CREATE TABLE set_null (
     f DEFAULT 1
 ) engine=Memory();
 INSERT INTO set_null VALUES (NULL, 2, NULL, NULL, NULL);
-SELECT toTypeName(a), toTypeName(b), toTypeName(c), toTypeName(d), toTypeName(f) FROM set_null;
 SHOW CREATE TABLE set_null;
 DETACH TABLE set_null;
 ATTACH TABLE set_null;

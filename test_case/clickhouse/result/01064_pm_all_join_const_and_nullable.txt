@@ -1,0 +1,20 @@
+--Query--
+SELECT count(1), uniqExact(1) FROM ( SELECT k FROM (SELECT materialize(1) AS k FROM numbers(1)) nums JOIN (SELECT materialize(1) AS k, number n FROM numbers(100000)) j USING k)
+--Result--
+[(100000, 1)]
++--------------------+
+--Query--
+SELECT 'first nullable'
+--Result--
+[('first nullable',)]
++--------------------+
+--Query--
+SELECT 'second nullable'
+--Result--
+[('second nullable',)]
++--------------------+
+--Query--
+SELECT 'both nullable'
+--Result--
+[('both nullable',)]
++--------------------+

@@ -1,0 +1,55 @@
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(0) UNION ALL SELECT x+1 FROM c WHERE x<99)     INSERT INTO t1(a,b,c) SELECT x, x/10, x%10 FROM c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b>9 OR b=9 ORDER BY +a
+--Result--
+[(90,), (91,), (92,), (93,), (94,), (95,), (96,), (97,), (98,), (99,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b>9 OR b=9 ORDER BY +a
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1bc (b>?)'), (17, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b>8 OR (b=8 AND c>7) ORDER BY +a
+--Result--
+[(88,), (89,), (90,), (91,), (92,), (93,), (94,), (95,), (96,), (97,), (98,), (99,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b>8 OR (b=8 AND c>7) ORDER BY +a
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1bc (b>?)'), (19, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE (b=8 AND c>7) OR b>8 ORDER BY +a
+--Result--
+[(88,), (89,), (90,), (91,), (92,), (93,), (94,), (95,), (96,), (97,), (98,), (99,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE (b=8 AND c>7) OR b>8 ORDER BY +a
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1bc (b>?)'), (19, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE (b=8 AND c>7) OR 8<b ORDER BY +a
+--Result--
+[(88,), (89,), (90,), (91,), (92,), (93,), (94,), (95,), (96,), (97,), (98,), (99,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE (b=8 AND c>7) OR 8<b ORDER BY +a
+--Result--
+[(4, 0, 0, 'SEARCH t1 USING INDEX t1bc (b>?)'), (19, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE (b=8 AND c>7) OR (b>8 AND c NOT IN (4,5,6))    ORDER BY +a
+--Result--
+[(88,), (89,), (90,), (91,), (92,), (93,), (97,), (98,), (99,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE (b=8 AND c>7) OR (b>8 AND c NOT IN (4,5,6))    ORDER BY +a
+--Result--
+[(5, 0, 0, 'MULTI-INDEX OR'), (6, 5, 0, 'INDEX 1'), (13, 6, 0, 'SEARCH t1 USING INDEX t1bc (b=? AND c>?)'), (18, 5, 0, 'INDEX 2'), (50, 18, 0, 'SEARCH t1 USING INDEX t1bc (b>?)'), (61, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+

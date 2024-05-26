@@ -1,0 +1,150 @@
+--Query--
+select count(*) from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[(5,), (6,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1,), (1,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1,), (1,), (3,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE v1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1,), (1,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1,), (1,), (3,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE, t2 WRITE, v1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1,), (1,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1,), (1,), (3,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

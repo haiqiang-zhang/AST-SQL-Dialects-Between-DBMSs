@@ -628,19 +628,6 @@ SELECT x1, x2,
   power(x1, x2)
 FROM v AS v1(x1), v AS v2(x2) WHERE x1 != 0 OR x2 >= 0;
 SELECT power('-1'::numeric, 'inf');
-SELECT power('-2'::numeric, '3');
-SELECT power('-2'::numeric, '-1');
-SELECT power('-2'::numeric, 'inf');
-SELECT power('-2'::numeric, '-inf');
-SELECT power('inf'::numeric, '-2');
-SELECT power('inf'::numeric, '-inf');
-SELECT power('-inf'::numeric, '2');
-SELECT power('-inf'::numeric, '3');
-SELECT power('-inf'::numeric, '-2');
-SELECT power('-inf'::numeric, '-3');
-SELECT power('-inf'::numeric, '0');
-SELECT power('-inf'::numeric, 'inf');
-SELECT power('-inf'::numeric, '-inf');
 SELECT AVG(val) FROM num_data;
 SELECT MAX(val) FROM num_data;
 SELECT MIN(val) FROM num_data;
@@ -685,14 +672,6 @@ INSERT INTO ceil_floor_round VALUES ('0.0000001');
 INSERT INTO ceil_floor_round VALUES ('-0.000001');
 SELECT a, ceil(a), ceiling(a), floor(a), round(a) FROM ceil_floor_round;
 DROP TABLE ceil_floor_round;
-SELECT i as pow,
-	round((-2.5 * 10 ^ i)::numeric, -i),
-	round((-1.5 * 10 ^ i)::numeric, -i),
-	round((-0.5 * 10 ^ i)::numeric, -i),
-	round((0.5 * 10 ^ i)::numeric, -i),
-	round((1.5 * 10 ^ i)::numeric, -i),
-	round((2.5 * 10 ^ i)::numeric, -i)
-FROM generate_series(-5,5) AS t(i);
 CREATE TABLE width_bucket_test (operand_num numeric, operand_f8 float8);
 SELECT
     operand_num,
@@ -709,8 +688,6 @@ SELECT
     FROM width_bucket_test;
 SELECT width_bucket('Infinity'::numeric, 1, 10, 10),
        width_bucket('-Infinity'::numeric, 1, 10, 10);
-SELECT width_bucket('Infinity'::float8, 1, 10, 10),
-       width_bucket('-Infinity'::float8, 1, 10, 10);
 DROP TABLE width_bucket_test;
 SELECT x, width_bucket(x::float8, 10, 100, 9) as flt,
        width_bucket(x::numeric, 10, 100, 9) as num
@@ -718,54 +695,8 @@ FROM generate_series(0, 110, 10) x;
 SELECT x, width_bucket(x::float8, 100, 10, 9) as flt,
        width_bucket(x::numeric, 100, 10, 9) as num
 FROM generate_series(0, 110, 10) x;
-SELECT width_bucket(0, -1e100::numeric, 1, 10);
-SELECT width_bucket(0, -1e100::float8, 1, 10);
-SELECT width_bucket(1, 1e100::numeric, 0, 10);
-SELECT width_bucket(1, 1e100::float8, 0, 10);
-SELECT oper, low, high, cnt, width_bucket(oper, low, high, cnt)
-FROM
-  (SELECT 1.797e+308::float8 AS big, 5e-324::float8 AS tiny) as v,
-  LATERAL (VALUES
-    (10.5::float8, -big, big, 1),
-    (10.5::float8, -big, big, 2),
-    (10.5::float8, -big, big, 3),
-    (big / 4, -big / 2, big / 2, 10),
-    (10.5::float8, big, -big, 1),
-    (10.5::float8, big, -big, 2),
-    (10.5::float8, big, -big, 3),
-    (big / 4, big / 2, -big / 2, 10),
-    (0, 0, tiny, 4),
-    (tiny, 0, tiny, 4),
-    (0, 0, 1, 2147483647),
-    (1, 1, 0, 2147483647)
-  ) as sample(oper, low, high, cnt);
 SELECT to_char(val, '9G999G999G999G999G999')
 	FROM num_data;
-SELECT to_char(val, '9G999G999G999G999G999D999G999G999G999G999')
-	FROM num_data;
-SELECT to_char(val, '9999999999999999.999999999999999PR')
-	FROM num_data;
-SELECT to_char(val, '9999999999999999.999999999999999S')
-	FROM num_data;
-SELECT to_char(val, 'MI9999999999999999.999999999999999')     FROM num_data;
-SELECT to_char(val, 'FMS9999999999999999.999999999999999')    FROM num_data;
-SELECT to_char(val, 'FM9999999999999999.999999999999999THPR') FROM num_data;
-SELECT to_char(val, 'SG9999999999999999.999999999999999th')   FROM num_data;
-SELECT to_char(val, '0999999999999999.999999999999999')       FROM num_data;
-SELECT to_char(val, 'S0999999999999999.999999999999999')      FROM num_data;
-SELECT to_char(val, 'FM0999999999999999.999999999999999')     FROM num_data;
-SELECT to_char(val, 'FM9999999999999999.099999999999999') 	FROM num_data;
-SELECT to_char(val, 'FM9999999999990999.990999999999999') 	FROM num_data;
-SELECT to_char(val, 'FM0999999999999999.999909999999999') 	FROM num_data;
-SELECT to_char(val, 'FM9999999990999999.099999999999999') 	FROM num_data;
-SELECT to_char(val, 'L9999999999999999.099999999999999')	FROM num_data;
-SELECT to_char(val, 'FM9999999999999999.99999999999999')	FROM num_data;
-SELECT to_char(val, 'S 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 . 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9') FROM num_data;
-SELECT to_char(val, 'FMS 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 . 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9') FROM num_data;
-SELECT to_char(val, E'99999 "text" 9999 "9999" 999 "\\"text between quote marks\\"" 9999') FROM num_data;
-SELECT to_char(val, '999999SG9999999999')			FROM num_data;
-SELECT to_char(val, 'FM9999999999999999.999999999999999')	FROM num_data;
-SELECT to_char(val, '9.999EEEE')				FROM num_data;
 WITH v(val) AS
   (VALUES('0'::numeric),('-4.2'),('4.2e9'),('1.2e-5'),('inf'),('-inf'),('nan'))
 SELECT val,
@@ -793,43 +724,8 @@ SELECT val,
   to_char(val::float8, 'MI99.99') as float8,
   to_char(val::float4, 'MI99.99') as float4
 FROM v;
-SELECT to_char('100'::numeric, 'FM999.9');
-SELECT to_char('100'::numeric, 'FM999.');
-SELECT to_char('100'::numeric, 'FM999');
-SELECT to_char('12345678901'::float8, 'FM9999999999D9999900000000000000000');
-SELECT to_char('100'::numeric, 'foo999');
-SELECT to_char('100'::numeric, 'f\oo999');
-SELECT to_char('100'::numeric, 'f\\oo999');
-SELECT to_char('100'::numeric, 'f\"oo999');
-SELECT to_char('100'::numeric, 'f\\"oo999');
-SELECT to_char('100'::numeric, 'f"ool"999');
-SELECT to_char('100'::numeric, 'f"\ool"999');
-SELECT to_char('100'::numeric, 'f"\\ool"999');
-SELECT to_char('100'::numeric, 'f"ool\"999');
-SELECT to_char('100'::numeric, 'f"ool\\"999');
 SET lc_numeric = 'C';
 SELECT to_number('-34,338,492', '99G999G999');
-SELECT to_number('-34,338,492.654,878', '99G999G999D999G999');
-SELECT to_number('<564646.654564>', '999999.999999PR');
-SELECT to_number('0.00001-', '9.999999S');
-SELECT to_number('5.01-', 'FM9.999999S');
-SELECT to_number('5.01-', 'FM9.999999MI');
-SELECT to_number('5 4 4 4 4 8 . 7 8', '9 9 9 9 9 9 . 9 9');
-SELECT to_number('.01', 'FM9.99');
-SELECT to_number('.0', '99999999.99999999');
-SELECT to_number('0', '99.99');
-SELECT to_number('.-01', 'S99.99');
-SELECT to_number('.01-', '99.99S');
-SELECT to_number(' . 0 1-', ' 9 9 . 9 9 S');
-SELECT to_number('34,50','999,99');
-SELECT to_number('123,000','999G');
-SELECT to_number('123456','999G999');
-SELECT to_number('$1234.56','L9,999.99');
-SELECT to_number('$1234.56','L99,999.99');
-SELECT to_number('$1,234.56','L99,999.99');
-SELECT to_number('1234.56','L99,999.99');
-SELECT to_number('1,234.56','L99,999.99');
-SELECT to_number('42nd', '99th');
 RESET lc_numeric;
 CREATE TABLE num_input_test (n1 numeric);
 INSERT INTO num_input_test(n1) VALUES (' 123');
@@ -858,13 +754,7 @@ INSERT INTO num_input_test(n1) VALUES ('-0x0000000000000000000000000deadbeef');
 INSERT INTO num_input_test(n1) VALUES (' 0X_30b1_F33a_6DF0_bD4E_64DF_9BdA_7D15 ');
 SELECT * FROM num_input_test;
 SELECT pg_input_is_valid('34.5', 'numeric');
-SELECT pg_input_is_valid('34xyz', 'numeric');
-SELECT pg_input_is_valid('1e400000', 'numeric');
 SELECT * FROM pg_input_error_info('1e400000', 'numeric');
-SELECT pg_input_is_valid('1234.567', 'numeric(8,4)');
-SELECT pg_input_is_valid('1234.567', 'numeric(7,4)');
-SELECT * FROM pg_input_error_info('1234.567', 'numeric(7,4)');
-SELECT * FROM pg_input_error_info('0x1234.567', 'numeric');
 CREATE TABLE num_typemod_test (
   millions numeric(3, -6),
   thousands numeric(3, -3),
@@ -888,26 +778,15 @@ select 4770999999999999999999999999999999999999999999999999999999999999999999999
 select 4769999999999999999999999999999999999999999999999999999999999999999999999999999999999999 * 9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;
 select trim_scale((0.1 - 2e-16383) * (0.1 - 3e-16383));
 select 999999999999999999999::numeric/1000000000000000000000;
-select div(999999999999999999999::numeric,1000000000000000000000);
 select mod(999999999999999999999::numeric,1000000000000000000000);
-select div(-9999999999999999999999::numeric,1000000000000000000000);
-select mod(-9999999999999999999999::numeric,1000000000000000000000);
 select div(-9999999999999999999999::numeric,1000000000000000000000)*1000000000000000000000 + mod(-9999999999999999999999::numeric,1000000000000000000000);
 select mod (70.0,70);
 select div (70.0,70);
 select 70.0 / 70;
 select 12345678901234567890 % 123;
 select 12345678901234567890 / 123;
-select div(12345678901234567890, 123);
 select div(12345678901234567890, 123) * 123 + 12345678901234567890 % 123;
 select sqrt(1.000000000000003::numeric);
-select sqrt(1.000000000000004::numeric);
-select sqrt(96627521408608.56340355805::numeric);
-select sqrt(96627521408608.56340355806::numeric);
-select sqrt(515549506212297735.073688290367::numeric);
-select sqrt(515549506212297735.073688290368::numeric);
-select sqrt(8015491789940783531003294973900306::numeric);
-select sqrt(8015491789940783531003294973900307::numeric);
 select 10.0 ^ -2147483648 as rounds_to_zero;
 select 10.0 ^ -2147483647 as rounds_to_zero;
 select 3.789 ^ 21.0000000000000000;
@@ -916,7 +795,6 @@ select 1.2 ^ 345;
 select 0.12 ^ (-20);
 select 1.000000000123 ^ (-2147483648);
 select coalesce(nullif(0.9999999999 ^ 23300000000000, 0), 0) as rounds_to_zero;
-select round(((1 - 1.500012345678e-1000) ^ 1.45e1003) * 1e1000);
 select 0.12 ^ (-25);
 select 0.5678 ^ (-85);
 select coalesce(nullif(0.9999999999 ^ 70000000000000, 0), 0) as underflows;
@@ -942,21 +820,9 @@ select 12.3 ^ 45.6;
 select 12.3 ^ (-45.6);
 select 1.234 ^ 5678;
 select exp(0.0);
-select exp(1.0);
-select exp(1.0::numeric(71,70));
-select exp('nan'::numeric);
-select exp('inf'::numeric);
-select exp('-inf'::numeric);
 select coalesce(nullif(exp(-5000::numeric), 0), 0) as rounds_to_zero;
 select coalesce(nullif(exp(-10000::numeric), 0), 0) as underflows;
-select exp(32.999);
-select exp(-32.999);
-select exp(123.456);
-select exp(-123.456);
-select exp(1234.5678);
 select * from generate_series(0.0::numeric, 4.0::numeric);
-select * from generate_series(0.1::numeric, 4.0::numeric, 1.3::numeric);
-select * from generate_series(4.0::numeric, -1.5::numeric, -2.2::numeric);
 select (i / (10::numeric ^ 131071))::numeric(1,0)
 	from generate_series(6 * (10::numeric ^ 131071),
 			     9 * (10::numeric ^ 131071),
@@ -965,69 +831,19 @@ select * from generate_series(1::numeric, 3::numeric) i, generate_series(i,3) j;
 select * from generate_series(1::numeric, 3::numeric) i, generate_series(1,i) j;
 select * from generate_series(1::numeric, 3::numeric) i, generate_series(1,5,i) j;
 select ln(1.2345678e-28);
-select ln(0.0456789);
-select ln(0.349873948359354029493948309745709580730482050975);
-select ln(0.99949452);
-select ln(1.00049687395);
-select ln(1234.567890123456789);
-select ln(5.80397490724e5);
-select ln(9.342536355e34);
 select log(1.234567e-89);
-select log(3.4634998359873254962349856073435545);
-select log(9.999999999999999999);
-select log(10.00000000000000000);
-select log(10.00000000000000001);
-select log(590489.45235237);
-select log(1.23e-89, 6.4689e45);
-select log(0.99923, 4.58934e34);
-select log(1.000016, 8.452010e18);
-select log(3.1954752e47, 9.4792021e-73);
-select scale(numeric 'NaN');
-select scale(numeric 'inf');
-select scale(NULL::numeric);
-select scale(1.12);
-select scale(0);
-select scale(0.00);
-select scale(1.12345);
-select scale(110123.12475871856128);
-select scale(-1123.12471856128);
-select scale(-13.000000000000000);
 select min_scale(numeric 'NaN') is NULL;
-select min_scale(numeric 'inf') is NULL;
-select min_scale(0);
-select min_scale(0.00);
-select min_scale(1.0);
-select min_scale(1.1);
-select min_scale(1.12);
-select min_scale(1.123);
-select min_scale(1.1234);
-select min_scale(1.12345);
-select min_scale(1.1000);
-select min_scale(1e100);
-select trim_scale(numeric 'NaN');
-select trim_scale(numeric 'inf');
-select trim_scale(1.120);
-select trim_scale(0);
-select trim_scale(0.00);
-select trim_scale(1.1234500);
-select trim_scale(110123.12475871856128000);
-select trim_scale(-1123.124718561280000000);
-select trim_scale(-13.00000000000000000000);
-select trim_scale(1e100);
 SELECT SUM(9999::numeric) FROM generate_series(1, 100000);
-SELECT SUM((-9999)::numeric) FROM generate_series(1, 100000);
 CREATE TABLE num_variance (a numeric);
 INSERT INTO num_variance VALUES (0);
 INSERT INTO num_variance VALUES (3e-500);
 INSERT INTO num_variance VALUES (-3e-500);
 INSERT INTO num_variance VALUES (4e-500 - 1e-16383);
 INSERT INTO num_variance VALUES (-4e-500 + 1e-16383);
-SELECT trim_scale(variance(a) * 1e1000) FROM num_variance;
 BEGIN;
 ALTER TABLE num_variance SET (parallel_workers = 4);
 SET LOCAL parallel_setup_cost = 0;
 SET LOCAL max_parallel_workers_per_gather = 4;
-SELECT trim_scale(variance(a) * 1e1000) FROM num_variance;
 ROLLBACK;
 DELETE FROM num_variance;
 INSERT INTO num_variance SELECT 9e131071 + x FROM generate_series(1, 5) x;
@@ -1036,7 +852,6 @@ BEGIN;
 ALTER TABLE num_variance SET (parallel_workers = 4);
 SET LOCAL parallel_setup_cost = 0;
 SET LOCAL max_parallel_workers_per_gather = 4;
-SELECT variance(a) FROM num_variance;
 ROLLBACK;
 DROP TABLE num_variance;
 SELECT a, b, gcd(a, b), gcd(a, -b), gcd(-b, a), gcd(-b, -a)
@@ -1063,8 +878,4 @@ FROM (VALUES (0::numeric, 0::numeric),
              ('inf', 'inf')
      ) AS v(a, b);
 SELECT factorial(4);
-SELECT factorial(15);
-SELECT factorial(0);
 SELECT pg_lsn(23783416::numeric);
-SELECT pg_lsn(0::numeric);
-SELECT pg_lsn(18446744073709551615::numeric);

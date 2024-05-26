@@ -1,0 +1,25 @@
+--Query--
+SELECT     sum(ASD) AS asd,     intDiv(toInt64(asd), abs(toInt64(asd))) AS int_div_with_abs,     intDiv(toInt64(asd), toInt64(asd)) AS int_div_without_abs FROM (     SELECT ASD     FROM     (         SELECT [-1000, -1000] AS asds     )     ARRAY JOIN asds AS ASD )
+--Result--
+[(-2000, -1, 1)]
++--------------------+
+--Query--
+SELECT  intDivOrZero( CAST(-1000, 'Int64')   , CAST(1000, 'UInt64') )
+--Result--
+[(-1,)]
++--------------------+
+--Query--
+SELECT intDiv(-1, number) FROM numbers(1, 10)
+--Result--
+[(-1,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT intDivOrZero(-1, number) FROM numbers(1, 10)
+--Result--
+[(-1,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT -1 DIV number FROM numbers(1, 10)
+--Result--
+[(-1,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,)]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+select * from xy where intHash64(x) % 2 = intHash64(2) % 2
+--Result--
+[(2, 3), (9, 5)]
++--------------------+
+--Query--
+select * from xy where x = 8
+--Result--
+[(8, 4)]
++--------------------+
+--Query--
+select * from xyz where y = 2
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+select * from test where d != '2020-01-01'
+--Result--
+[(datetime.date(2020, 1, 2), 1, '')]
++--------------------+
+--Query--
+// This row should be returned INSERT INTO myTable (myDay, myOrder) VALUES ('2021-01-03', 3)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM myTable mt WHERE myDay = '2021-01-02'
+--Result--
+[(datetime.date(2021, 1, 2), 2, '')]
++--------------------+

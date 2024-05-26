@@ -29,44 +29,47 @@ class MySQLAdapter(DBMSAdapter):
 
     @staticmethod
     def init_dbms():
-        command = ["rm -rf /opt/homebrew/var/mysql/", 
-                   "mysqld --initialize-insecure",
-                   "brew services restart mysql"]
-        
-        for cmd in command:
-            response = os.system(cmd)
-            if response != 0:
-                print(f"Error executing command: {cmd}")
-                return False
-        
-        sleep(2)
+
+        try:
+            command = ["rm -rf /opt/homebrew/var/mysql/", 
+                    "mysqld --initialize-insecure",
+                    "brew services restart mysql"]
+            
+            for cmd in command:
+                response = os.system(cmd)
+                if response != 0:
+                    print(f"Error executing command: {cmd}")
+                    return False
+            
+            sleep(2)
 
 
-        conn = mysql.connector.connect(host='localhost', user='root')
-        cursor = conn.cursor()
-        cursor.execute("alter user 'root'@'localhost' identified by '123456';")
-        cursor.execute("CREATE USER 'tester'@'localhost' IDENTIFIED BY '123456';")
-        cursor.execute("CREATE DATABASE test_db")
-        cursor.execute("GRANT ALL PRIVILEGES on test_db.* TO 'tester'@'localhost';")
-        cursor.execute("GRANT CREATE, DROP, ALTER, CREATE TABLESPACE, PROCESS, BACKUP_ADMIN, FILE  on *.* TO 'tester'@'localhost';")
-        cursor.execute("FLUSH PRIVILEGES")
+            conn = mysql.connector.connect(host='localhost', user='root')
+            cursor = conn.cursor()
+            cursor.execute("alter user 'root'@'localhost' identified by '123456';")
+            cursor.execute("CREATE USER 'tester'@'localhost' IDENTIFIED BY '123456';")
+            cursor.execute("CREATE DATABASE test_db")
+            cursor.execute("GRANT ALL PRIVILEGES on test_db.* TO 'tester'@'localhost';")
+            cursor.execute("GRANT CREATE, DROP, ALTER, CREATE TABLESPACE, PROCESS, BACKUP_ADMIN, FILE  on *.* TO 'tester'@'localhost';")
+            cursor.execute("FLUSH PRIVILEGES")
 
-        # cursor.execute("GRANT ALL PRIVILEGES on *.* TO 'root'@'localhost' WITH GRANT OPTION;")
-        conn.commit()
-        conn.close()
+            # cursor.execute("GRANT ALL PRIVILEGES on *.* TO 'root'@'localhost' WITH GRANT OPTION;")
+            conn.commit()
+            conn.close()
 
-        # Grant required privileges to the tester user
-        # conn = mysql.connector.connect(**config_root)
-        # cursor = conn.cursor()
-        # # cursor.execute("GRANT ALL PRIVILEGES on *.* TO 'tester'@'localhost';")
-        # # cursor.execute("REVOKE ALL PRIVILEGES on information_schema.* FROM 'tester'@'localhost';")
-        # # cursor.execute("REVOKE ALL PRIVILEGES on performance_schema.* FROM 'tester'@'localhost';")
-        # # cursor.execute("REVOKE ALL PRIVILEGES on sys.* FROM 'tester'@'localhost';")
-        # # cursor.execute("REVOKE ALL PRIVILEGES FROM 'tester'@'localhost';")
-        # cursor.execute("FLUSH PRIVILEGES")
-        # conn.commit()
-        # conn.close()
-
+            # Grant required privileges to the tester user
+            # conn = mysql.connector.connect(**config_root)
+            # cursor = conn.cursor()
+            # # cursor.execute("GRANT ALL PRIVILEGES on *.* TO 'tester'@'localhost';")
+            # # cursor.execute("REVOKE ALL PRIVILEGES on information_schema.* FROM 'tester'@'localhost';")
+            # # cursor.execute("REVOKE ALL PRIVILEGES on performance_schema.* FROM 'tester'@'localhost';")
+            # # cursor.execute("REVOKE ALL PRIVILEGES on sys.* FROM 'tester'@'localhost';")
+            # # cursor.execute("REVOKE ALL PRIVILEGES FROM 'tester'@'localhost';")
+            # cursor.execute("FLUSH PRIVILEGES")
+            # conn.commit()
+            # conn.close()
+        except Exception as e:
+            MySQLAdapter.init_dbms()
             
         return True
         
@@ -147,7 +150,6 @@ class MySQLAdapter(DBMSAdapter):
             if timeout_occurred.is_set():
                 sleep(2)
                 self.connection(config)
-            self.conn.rollback()
             error_type = e.__class__.__name__  
             combined_result = (False, [error_type, f"{e}"])
             if ECHO_ERR:

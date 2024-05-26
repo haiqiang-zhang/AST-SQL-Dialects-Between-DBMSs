@@ -1,0 +1,55 @@
+--Query--
+SYSTEM STOP merges wide_to_comp
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, part_type FROM system.parts WHERE table = 'wide_to_comp' AND database = currentDatabase() AND active ORDER BY name
+--Result--
+[('all_1_1_0', 'Wide'), ('all_2_2_0', 'Wide'), ('all_3_3_0', 'Wide')]
++--------------------+
+--Query--
+SYSTEM START merges wide_to_comp
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE wide_to_comp FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, part_type FROM system.parts WHERE table = 'wide_to_comp' AND database = currentDatabase() AND active ORDER BY name
+--Result--
+[('all_1_3_1', 'Wide')]
++--------------------+
+--Query--
+SELECT count() FROM wide_to_comp WHERE not ignore(*)
+--Result--
+[(300000,)]
++--------------------+
+--Query--
+SYSTEM STOP merges wide_to_comp
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, part_type FROM system.parts WHERE table = 'wide_to_comp' AND database = currentDatabase() AND active ORDER BY name
+--Result--
+[('all_1_3_1', 'Wide'), ('all_4_4_0', 'Compact')]
++--------------------+
+--Query--
+SYSTEM START merges wide_to_comp
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE wide_to_comp FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, part_type FROM system.parts WHERE table = 'wide_to_comp' AND database = currentDatabase() AND active ORDER BY name
+--Result--
+[('all_1_4_2', 'Wide')]
++--------------------+

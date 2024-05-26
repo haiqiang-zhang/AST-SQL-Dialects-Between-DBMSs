@@ -1,0 +1,155 @@
+--Query--
+SELECT 0.1::Decimal(38, 38) AS c
+--Result--
+[(0.1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 0.1::Decimal(38, 38) AS c
+--Result--
+[("SELECT CAST('0.1', 'Decimal(38, 38)') AS c",)]
++--------------------+
+--Query--
+SELECT [1, 2, 3]::Array(UInt32) AS c
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT [1, 2, 3]::Array(UInt32) AS c
+--Result--
+[("SELECT CAST('[1, 2, 3]', 'Array(UInt32)') AS c",)]
++--------------------+
+--Query--
+SELECT 'abc'::FixedString(3) AS c
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 'abc'::FixedString(3) AS c
+--Result--
+[("SELECT CAST('abc', 'FixedString(3)') AS c",)]
++--------------------+
+--Query--
+SELECT 123::String AS c
+--Result--
+[('123',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 123::String AS c
+--Result--
+[("SELECT CAST('123', 'String') AS c",)]
++--------------------+
+--Query--
+SELECT 1::Int8 AS c
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1::Int8 AS c
+--Result--
+[("SELECT CAST('1', 'Int8') AS c",)]
++--------------------+
+--Query--
+SELECT [1, 1 + 1, 1 + 2]::Array(UInt32) AS c
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT [1, 1 + 1, 1 + 2]::Array(UInt32) AS c
+--Result--
+[("SELECT CAST([1, 1 + 1, 1 + 2], 'Array(UInt32)') AS c",)]
++--------------------+
+--Query--
+SELECT '2010-10-10'::Date AS c
+--Result--
+[(datetime.date(2010, 10, 10),)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT '2010-10-10'::Date AS c
+--Result--
+[("SELECT CAST('2010-10-10', 'Date') AS c",)]
++--------------------+
+--Query--
+SELECT '2010-10-10'::DateTime('UTC') AS c
+--Result--
+[(datetime.datetime(2010, 10, 10, 0, 0, tzinfo=<UTC>),)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT '2010-10-10'::DateTime('UTC') AS c
+--Result--
+[("SELECT CAST('2010-10-10', 'DateTime(\\'UTC\\')') AS c",)]
++--------------------+
+--Query--
+SELECT ['2010-10-10', '2010-10-10']::Array(Date) AS c
+--Result--
+[([datetime.date(2010, 10, 10), datetime.date(2010, 10, 10)],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT ['2010-10-10', '2010-10-10']::Array(Date)
+--Result--
+[("SELECT CAST('[\\'2010-10-10\\', \\'2010-10-10\\']', 'Array(Date)')",)]
++--------------------+
+--Query--
+SELECT (1 + 2)::UInt32 AS c
+--Result--
+[(3,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT (1 + 2)::UInt32 AS c
+--Result--
+[("SELECT CAST(1 + 2, 'UInt32') AS c",)]
++--------------------+
+--Query--
+SELECT (0.1::Decimal(4, 4) * 5)::Float64 AS c
+--Result--
+[(0.5,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT (0.1::Decimal(4, 4) * 5)::Float64 AS c
+--Result--
+[("SELECT CAST(CAST('0.1', 'Decimal(4, 4)') * 5, 'Float64') AS c",)]
++--------------------+
+--Query--
+SELECT number::UInt8 AS c, toTypeName(c) FROM numbers(1)
+--Result--
+[(0, 'UInt8')]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT number::UInt8 AS c, toTypeName(c) FROM numbers(1)
+--Result--
+[('SELECT',), ("    CAST(number, 'UInt8') AS c,",), ('    toTypeName(c)',), ('FROM numbers(1)',)]
++--------------------+
+--Query--
+SELECT (0 + 1 + 2 + 3 + 4)::Date AS c
+--Result--
+[(datetime.date(1970, 1, 11),)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT (0 + 1 + 2 + 3 + 4)::Date AS c
+--Result--
+[("SELECT CAST((((0 + 1) + 2) + 3) + 4, 'Date') AS c",)]
++--------------------+
+--Query--
+SELECT (0.1::Decimal(4, 4) + 0.2::Decimal(4, 4) + 0.3::Decimal(4, 4))::Decimal(4, 4) AS c
+--Result--
+[(0.6,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT (0.1::Decimal(4, 4) + 0.2::Decimal(4, 4) + 0.3::Decimal(4, 4))::Decimal(4, 4) AS c
+--Result--
+[("SELECT CAST((CAST('0.1', 'Decimal(4, 4)') + CAST('0.2', 'Decimal(4, 4)')) + CAST('0.3', 'Decimal(4, 4)'), 'Decimal(4, 4)') AS c",)]
++--------------------+
+--Query--
+SELECT [[1][1]]::Array(UInt32)
+--Result--
+[([1],)]
++--------------------+
+--Query--
+SELECT [[1, 2, 3], [], [1]]::Array(Array(UInt32))
+--Result--
+[([[1, 2, 3], [], [1]],)]
++--------------------+
+--Query--
+SELECT [[], []]::Array(Array(UInt32))
+--Result--
+[([[], []],)]
++--------------------+

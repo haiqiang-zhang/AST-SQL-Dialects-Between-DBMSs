@@ -1,0 +1,30 @@
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_alter' AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('s', 'Sparse'), ('u', 'Sparse')]
++--------------------+
+--Query--
+SELECT uniqExact(u), uniqExact(s) FROM t_sparse_alter
+--Result--
+[(182, 155)]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_alter' AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('t', 'Sparse')]
++--------------------+
+--Query--
+DETACH TABLE t_sparse_alter
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE t_sparse_alter
+--Result--
+[]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_alter' AND active ORDER BY column
+--Result--
+[('id', 'Default'), ('t', 'Sparse')]
++--------------------+

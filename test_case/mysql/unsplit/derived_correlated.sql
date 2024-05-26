@@ -274,17 +274,6 @@ CREATE TABLE t0008 (
 CREATE TABLE t0009 (
   c0000 time NOT NULL
 );
-SELECT (SELECT c0009
-        FROM (SELECT 1 AS c0003
-              FROM t0009 INNER JOIN t0008
-                   ON t0008.c0005
-              WHERE t0007.c0008
-             ) AS t0005
-        GROUP BY c0008
-       ),
-       COUNT(c0009)
-FROM t0007
-GROUP BY 1, 1;
 DROP TABLE t0007, t0008, t0009;
 CREATE TABLE t1 (id INTEGER);
 CREATE TABLE t2 (id INTEGER);

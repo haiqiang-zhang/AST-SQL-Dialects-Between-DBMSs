@@ -8,8 +8,3 @@ select col, prop, pg_index_column_has_property(o, col, prop)   from (values ('fo
 --Result--
 [(1, 'orderable', True), (1, 'asc', False), (1, 'desc', True), (1, 'nulls_first', True), (1, 'nulls_last', False), (1, 'bogus', None), (2, 'orderable', True), (2, 'asc', True), (2, 'desc', False), (2, 'nulls_first', False), (2, 'nulls_last', True), (2, 'bogus', None), (3, 'orderable', True), (3, 'asc', True), (3, 'desc', False), (3, 'nulls_first', True), (3, 'nulls_last', False), (3, 'bogus', None), (4, 'orderable', True), (4, 'asc', True), (4, 'desc', False), (4, 'nulls_first', False), (4, 'nulls_last', True), (4, 'bogus', None)]
 +--------------------+
---Query--
-select col, prop, pg_index_column_has_property(o, col, prop)   from (values ('foocover'::regclass)) v1(o),        (values (1,'orderable'),(2,'asc'),(3,'desc'),                (4,'nulls_first'),(5,'nulls_last'),                (6,'distance_orderable'),(7,'returnable'),                (8, 'bogus')) v2(idx,prop),        generate_series(1,3) col  order by col, idx
---Result--
-[(1, 'orderable', True), (1, 'asc', True), (1, 'desc', False), (1, 'nulls_first', False), (1, 'nulls_last', True), (1, 'distance_orderable', False), (1, 'returnable', True), (1, 'bogus', None), (2, 'orderable', False), (2, 'asc', None), (2, 'desc', None), (2, 'nulls_first', None), (2, 'nulls_last', None), (2, 'distance_orderable', False), (2, 'returnable', True), (2, 'bogus', None), (3, 'orderable', False), (3, 'asc', None), (3, 'desc', None), (3, 'nulls_first', None), (3, 'nulls_last', None), (3, 'distance_orderable', False), (3, 'returnable', True), (3, 'bogus', None)]
-+--------------------+

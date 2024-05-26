@@ -1,0 +1,105 @@
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE cityHash64(a) = 1
+--Result--
+[('SELECT',), ('    (cityHash64(a) AS `cityHash64(a)`) + 10 AS `plus(cityHash64(a), 10)`,',), ('    (cityHash64(a) AS b) + 3 AS `plus(b, 3)`',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 1',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE cityHash64(a) = 1 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('    plus(b, 3) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      FUNCTION id: 9, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 10, nodes: 2',), ('            FUNCTION id: 11, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 12, nodes: 1',), ('                  COLUMN id: 13, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 14, constant_value: UInt64_3, constant_value_type: UInt8',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 15, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 16, nodes: 2',), ('          FUNCTION id: 17, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 18, nodes: 1',), ('                COLUMN id: 19, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 20, constant_value: UInt64_1, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test PREWHERE cityHash64(a) = 1
+--Result--
+[('SELECT',), ('    cityHash64(a) + 10,',), ('    b + 3',), ('FROM column_swap_test_test',), ('PREWHERE cityHash64(a) = 1',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test PREWHERE cityHash64(a) = 1 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('    plus(b, 3) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      FUNCTION id: 9, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 10, nodes: 2',), ('            FUNCTION id: 11, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 12, nodes: 1',), ('                  COLUMN id: 13, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 14, constant_value: UInt64_3, constant_value_type: UInt8',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  PREWHERE',), ('    FUNCTION id: 15, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 16, nodes: 2',), ('          FUNCTION id: 17, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 18, nodes: 1',), ('                COLUMN id: 19, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 20, constant_value: UInt64_1, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE cityHash64(a) = 0
+--Result--
+[('SELECT',), ('    (cityHash64(a) AS `cityHash64(a)`) + 10 AS `plus(cityHash64(a), 10)`,',), ('    (cityHash64(a) AS b) + 3 AS `plus(b, 3)`',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 0',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE cityHash64(a) = 0 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('    plus(b, 3) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      FUNCTION id: 9, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 10, nodes: 2',), ('            FUNCTION id: 11, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 12, nodes: 1',), ('                  COLUMN id: 13, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 14, constant_value: UInt64_3, constant_value_type: UInt8',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 15, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 16, nodes: 2',), ('          FUNCTION id: 17, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 18, nodes: 1',), ('                COLUMN id: 19, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 20, constant_value: UInt64_0, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE b = 0
+--Result--
+[('SELECT',), ('    (cityHash64(a) AS `cityHash64(a)`) + 10 AS `plus(cityHash64(a), 10)`,',), ('    (cityHash64(a) AS b) + 3 AS `plus(b, 3)`',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 0',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE b = 0 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('    plus(b, 3) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      FUNCTION id: 9, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 10, nodes: 2',), ('            FUNCTION id: 11, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 12, nodes: 1',), ('                  COLUMN id: 13, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 14, constant_value: UInt64_3, constant_value_type: UInt8',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 15, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 16, nodes: 2',), ('          FUNCTION id: 17, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 18, nodes: 1',), ('                COLUMN id: 19, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 20, constant_value: UInt64_0, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE b = 1
+--Result--
+[('SELECT',), ('    (cityHash64(a) AS `cityHash64(a)`) + 10 AS `plus(cityHash64(a), 10)`,',), ('    (cityHash64(a) AS b) + 3 AS `plus(b, 3)`',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 1',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10, b + 3 FROM column_swap_test_test WHERE b = 1 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('    plus(b, 3) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      FUNCTION id: 9, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 10, nodes: 2',), ('            FUNCTION id: 11, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 12, nodes: 1',), ('                  COLUMN id: 13, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 14, constant_value: UInt64_3, constant_value_type: UInt8',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 15, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 16, nodes: 2',), ('          FUNCTION id: 17, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 18, nodes: 1',), ('                COLUMN id: 19, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 20, constant_value: UInt64_1, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10 FROM column_swap_test_test WHERE cityHash64(a) = 0
+--Result--
+[('SELECT (cityHash64(a) AS `cityHash64(a)`) + 10 AS `plus(cityHash64(a), 10)`',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 0',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10 FROM column_swap_test_test WHERE cityHash64(a) = 0 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 1',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 9, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 10, nodes: 2',), ('          FUNCTION id: 11, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 12, nodes: 1',), ('                COLUMN id: 13, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 14, constant_value: UInt64_0, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT cityHash64(a) + 10, a FROM column_swap_test_test WHERE cityHash64(a) = 0
+--Result--
+[('SELECT',), ('    (cityHash64(a) AS `cityHash64(a)`) + 10 AS `plus(cityHash64(a), 10)`,',), ('    a AS a',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 0',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT cityHash64(a) + 10, a FROM column_swap_test_test WHERE cityHash64(a) = 0 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(cityHash64(a), 10) UInt64',), ('    a String',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      COLUMN id: 9, column_name: a, result_type: String, source_id: 7',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 10, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 11, nodes: 2',), ('          FUNCTION id: 12, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 13, nodes: 1',), ('                COLUMN id: 14, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 15, constant_value: UInt64_0, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT b + 10, a FROM column_swap_test_test WHERE b = 0
+--Result--
+[('SELECT',), ('    (cityHash64(a) AS b) + 10 AS `plus(b, 10)`,',), ('    a AS a',), ('FROM column_swap_test_test',), ('WHERE cityHash64(a) = 0',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT b + 10, a FROM column_swap_test_test WHERE b = 0 SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    plus(b, 10) UInt64',), ('    a String',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: plus, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            FUNCTION id: 4, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: a, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_10, constant_value_type: UInt8',), ('      COLUMN id: 9, column_name: a, result_type: String, source_id: 7',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 10, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 11, nodes: 2',), ('          FUNCTION id: 12, function_name: cityHash64, function_type: ordinary, result_type: UInt64',), ('            ARGUMENTS',), ('              LIST id: 13, nodes: 1',), ('                COLUMN id: 14, column_name: a, result_type: String, source_id: 7',), ('          CONSTANT id: 15, constant_value: UInt64_0, constant_value_type: UInt8',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT substring(reverse(b), 1, 1), a FROM column_swap_test_test WHERE a = 'c'
+--Result--
+[('SELECT',), ('    substring(reverse(b), 1, 1),',), ('    a',), ('FROM column_swap_test_test',), ("WHERE a = 'c'",)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT substring(reverse(b), 1, 1) AS t1, a AS t2 FROM column_swap_test_test WHERE substring(reverse(b), 1, 1) = 'c'
+--Result--
+[('SELECT',), ('    substring(reverse(b), 1, 1) AS t1,',), ('    a AS t2',), ('FROM column_swap_test_test',), ("WHERE substring(reverse(b), 1, 1) = 'c'",)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT substring(reverse(b), 1, 1) AS t1, a AS t2 FROM column_swap_test_test WHERE substring(reverse(b), 1, 1) = 'c' SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    t1 String',), ('    t2 String',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: substring, function_type: ordinary, result_type: String',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 3',), ('            FUNCTION id: 4, function_name: reverse, function_type: ordinary, result_type: String',), ('              ARGUMENTS',), ('                LIST id: 5, nodes: 1',), ('                  COLUMN id: 6, column_name: b, result_type: String, source_id: 7',), ('            CONSTANT id: 8, constant_value: UInt64_1, constant_value_type: UInt8',), ('            CONSTANT id: 9, constant_value: UInt64_1, constant_value_type: UInt8',), ('      COLUMN id: 10, column_name: a, result_type: String, source_id: 7',), ('  JOIN TREE',), ('    TABLE id: 7, alias: __table1, table_name: test.column_swap_test_test',), ('  WHERE',), ('    FUNCTION id: 11, function_name: equals, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 12, nodes: 2',), ('          FUNCTION id: 13, function_name: substring, function_type: ordinary, result_type: String',), ('            ARGUMENTS',), ('              LIST id: 14, nodes: 3',), ('                FUNCTION id: 15, function_name: reverse, function_type: ordinary, result_type: String',), ('                  ARGUMENTS',), ('                    LIST id: 16, nodes: 1',), ('                      COLUMN id: 17, column_name: b, result_type: String, source_id: 7',), ('                CONSTANT id: 18, constant_value: UInt64_1, constant_value_type: UInt8',), ('                CONSTANT id: 19, constant_value: UInt64_1, constant_value_type: UInt8',), ("          CONSTANT id: 20, constant_value: 'c', constant_value_type: String",), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT a FROM t_bad_constraint
+--Result--
+[('SELECT a',), ('FROM t_bad_constraint',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT a FROM t_bad_constraint SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    a UInt32',), ('  PROJECTION',), ('    LIST id: 1, nodes: 1',), ('      COLUMN id: 2, column_name: a, result_type: UInt32, source_id: 3',), ('  JOIN TREE',), ('    TABLE id: 3, alias: __table1, table_name: test.t_bad_constraint',), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+

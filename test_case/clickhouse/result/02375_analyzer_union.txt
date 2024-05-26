@@ -1,0 +1,140 @@
+--Query--
+SELECT 'Union constants'
+--Result--
+[('Union constants',)]
++--------------------+
+--Query--
+SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT 1 UNION DISTINCT SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT 1 INTERSECT SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT 1 EXCEPT SELECT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM (SELECT 1 AS id UNION ALL SELECT 1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 'Union non constants'
+--Result--
+[('Union non constants',)]
++--------------------+
+--Query--
+SELECT value FROM (SELECT 1 as value UNION ALL SELECT 1 UNION ALL SELECT 1)
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM test_table UNION ALL SELECT id FROM test_table
+--Result--
+[(0,), (0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM test_table UNION DISTINCT SELECT id FROM test_table
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM test_table INTERSECT SELECT id FROM test_table
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM test_table EXCEPT SELECT id FROM test_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM (SELECT id FROM test_table UNION ALL SELECT id FROM test_table)
+--Result--
+[(0,), (0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM (SELECT id FROM test_table UNION DISTINCT SELECT id FROM test_table)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM (SELECT id FROM test_table INTERSECT SELECT id FROM test_table)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT id FROM (SELECT id FROM test_table EXCEPT SELECT id FROM test_table)
+--Result--
+[]
++--------------------+

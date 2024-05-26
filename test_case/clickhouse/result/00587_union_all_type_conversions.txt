@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM (SELECT 1 as x UNION ALL SELECT -1) ORDER BY x DESC
+--Result--
+[(1,), (-1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT x, toTypeName(x) FROM (SELECT 1 AS x UNION ALL SELECT -1)) ORDER BY x DESC
+--Result--
+[(1, 'Int16'), (-1, 'Int16')]
++--------------------+
+--Query--
+SELECT x FROM (SELECT 1 as x UNION ALL SELECT NULL) ORDER BY x DESC
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT x, toTypeName(x) FROM (SELECT 1 AS x UNION ALL SELECT NULL)) ORDER BY x DESC
+--Result--
+[(1, 'Nullable(UInt8)'), (None, 'Nullable(UInt8)')]
++--------------------+
+--Query--
+SELECT x FROM (SELECT 1 AS x UNION ALL SELECT NULL UNION ALL SELECT 1.0) ORDER BY x DESC
+--Result--
+[(1.0,), (1.0,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT x, toTypeName(x), count() FROM (SELECT 1 AS x UNION ALL SELECT NULL UNION ALL SELECT 1.0) GROUP BY x) ORDER BY x DESC
+--Result--
+[(1.0, 'Nullable(Float64)', 2), (None, 'Nullable(Float64)', 1)]
++--------------------+
+--Query--
+SELECT res FROM (SELECT arrayJoin(x) AS res FROM (SELECT [1, 2, 3] AS x UNION ALL SELECT [nan, NULL]) ORDER BY res) ORDER BY res DESC
+--Result--
+[(3.0,), (2.0,), (1.0,), (nan,), (None,)]
++--------------------+

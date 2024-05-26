@@ -1,0 +1,215 @@
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i LIMIT 1
+--Result--
+[(None, 11)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i
+--Result--
+[(None, 12), (None, 13), (None, 14), (None, 15), (None, 16), (None, 17), (None, 18)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i LIMIT 1
+--Result--
+[(None, '11')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i
+--Result--
+[(None, '12'), (None, '13'), (None, '14'), (None, '15'), (None, '16'), (None, '17'), (None, '18')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 12
+--Result--
+[(10, 10, 10, None)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 12
+--Result--
+[(10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 1
+--Result--
+[('10', '10', '10', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 5
+--Result--
+[('10', '10', '10', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE key1 < 13 or key2 < 14 ORDER BY key1
+--Result--
+[(None, 10, 10), (None, 11, 11), (None, 12, 12), (None, 13, 13)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE key1 < 13 or key2 < 14 ORDER BY key1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i DESC LIMIT 1
+--Result--
+[(None, 18)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i
+--Result--
+[(None, 11), (None, 12), (None, 13), (None, 14), (None, 15), (None, 16), (None, 17)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a, b DESC LIMIT 5
+--Result--
+[('10', '10', '10'), ('11', '11', '11'), ('12', '12', '12'), ('13', '13', '13'), ('14', '14', '14')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a, b DESC
+--Result--
+[('15', '15', '15'), ('16', '16', '16'), ('17', '17', '17'), ('18', '18', '18'), ('19', '19', '19'), ('20', '20', '20'), ('21', '21', '21'), ('22', '22', '22'), ('23', '23', '23'), ('24', '24', '24'), ('25', '25', '25'), ('26', '26', '26'), ('27', '27', '27'), ('28', '28', '28'), ('29', '29', '29'), ('30', '30', '30'), ('31', '31', '31'), ('32', '32', '32'), ('33', '33', '33'), ('34', '34', '34'), ('35', '35', '35')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a, b LIMIT 5
+--Result--
+[('10', '10', None), ('10', '10', None), ('10', '10', None), ('10', '10', None), ('10', '10', None)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a DESC, b DESC LIMIT 5
+--Result--
+[('35', '35', None), ('35', '35', None), ('35', '35', None), ('35', '35', None), ('35', '35', None)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE c = 10 ORDER BY a DESC, b DESC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i LIMIT 1
+--Result--
+[(None, 11)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i
+--Result--
+[(10, 11), (None, 12), (None, 13), (None, 14), (None, 15), (None, 16), (None, 17), (None, 18)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i LIMIT 5
+--Result--
+[(None, '11'), (None, '12'), (None, '13'), (None, '14'), (None, '15')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i
+--Result--
+[(10, '11'), (10, '12'), (10, '13'), (10, '14'), (10, '15'), (None, '16'), (None, '17'), (None, '18')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 12
+--Result--
+[(10, 10, 10, None)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t2 WHERE b = 10 AND d = 10 ORDER BY a, c
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 12
+--Result--
+[(10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None), (10, 10, 10, None)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 5
+--Result--
+[('10', '10', '10', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c
+--Result--
+[('10', '10', '10', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c LIMIT 5
+--Result--
+[('10', '10', '10', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE b = 10 ORDER BY a, c
+--Result--
+[('10', '10', '10', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE key1 < 13 or key2 < 14 ORDER BY key1
+--Result--
+[(None, 10, 10), (None, 11, 11), (None, 12, 12), (None, 13, 13)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE key1 < 13 or key2 < 14 ORDER BY key1
+--Result--
+[(123, 10, 10), (123, 11, 11), (123, 12, 12), (123, 13, 13)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i DESC LIMIT 1
+--Result--
+[(None, 18)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE i > 10 AND i <= 18 ORDER BY i
+--Result--
+[(None, 11), (None, 12), (None, 13), (None, 14), (None, 15), (None, 16), (None, 17), (10, 18)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a, b DESC LIMIT 5
+--Result--
+[('10', '10', '10'), ('11', '11', '11'), ('12', '12', '12'), ('13', '13', '13'), ('14', '14', '14')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE c = 10 ORDER BY a, b DESC
+--Result--
+[('10', '10', '10'), ('11', '11', '10'), ('12', '12', '10'), ('13', '13', '10'), ('14', '14', '10')]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a, b LIMIT 5
+--Result--
+[('10', '10', None), ('10', '10', None), ('10', '10', None), ('10', '10', None), ('10', '10', None)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a DESC, b DESC LIMIT 5
+--Result--
+[('35', '35', None), ('35', '35', None), ('35', '35', None), ('35', '35', None), ('35', '35', None)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE c = 10 ORDER BY a DESC, b DESC
+--Result--
+[('35', '35', '10'), ('35', '35', '10'), ('35', '35', '10'), ('35', '35', '10'), ('35', '35', '10')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1_idx = 'y' ORDER BY pk DESC LIMIT 2
+--Result--
+[(4, 'y', None), (3, 'y', None)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1_idx = 'y' ORDER BY pk DESC LIMIT 2
+--Result--
+[(4, 'y', 0), (3, 'y', 0)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1_idx = 'y' ORDER BY pk DESC
+--Result--
+[(4, 'y', 0), (3, 'y', 0), (2, 'y', None), (1, 'y', None)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1_idx = 'y' ORDER BY pk DESC
+--Result--
+[(2, 'y', None), (1, 'y', None)]
++--------------------+

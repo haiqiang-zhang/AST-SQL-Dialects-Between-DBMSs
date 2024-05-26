@@ -1,0 +1,90 @@
+--Query--
+select CAST(CAST(NULL, 'Nullable(String)'), 'Nullable(Bool)')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select toBool(CAST(NULL, 'Nullable(String)'))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select toIPv4(CAST(NULL, 'Nullable(String)'))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select IPv4StringToNum(CAST(NULL, 'Nullable(String)'))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select toIPv6(CAST(NULL, 'Nullable(String)'))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select IPv6StringToNum(CAST(NULL, 'Nullable(String)'))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select CAST(number % 2 ? 'true' : NULL, 'Nullable(Bool)') from numbers(2)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+select toBool(number % 2 ? 'true' : NULL) from numbers(2)
+--Result--
+[(None,), (True,)]
++--------------------+
+--Query--
+select toIPv4(number % 2 ? '0.0.0.0' : NULL) from numbers(2)
+--Result--
+[(None,), (IPv4Address('0.0.0.0'),)]
++--------------------+
+--Query--
+select toIPv4OrDefault(number % 2 ? '' : NULL) from numbers(2)
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+select toIPv4OrNull(number % 2 ? '' : NULL) from numbers(2)
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+select IPv4StringToNum(number % 2 ? '0.0.0.0' : NULL) from numbers(2)
+--Result--
+[(None,), (0,)]
++--------------------+
+--Query--
+select toIPv6(number % 2 ? '0000:0000:0000:0000:0000:0000:0000:0000' : NULL) from numbers(2)
+--Result--
+[(None,), (IPv6Address('::'),)]
++--------------------+
+--Query--
+select toIPv6OrDefault(number % 2 ? '' : NULL) from numbers(2)
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+select toIPv6OrNull(number % 2 ? '' : NULL) from numbers(2)
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+select IPv6StringToNum(number % 2 ? '0000:0000:0000:0000:0000:0000:0000:0000' : NULL) from numbers(2)
+--Result--
+[(None,), ('',)]
++--------------------+
+--Query--
+select 'fuzzer issue'
+--Result--
+[('fuzzer issue',)]
++--------------------+
+--Query--
+SELECT accurateCastOrNull(if(number % 2, NULL, 'truex'), 'Bool') FROM numbers(4)
+--Result--
+[(None,), (None,), (None,), (None,)]
++--------------------+

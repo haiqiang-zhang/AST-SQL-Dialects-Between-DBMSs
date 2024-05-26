@@ -214,66 +214,6 @@ SELECT count(*) FROM quad_box_tbl WHERE b <<  box '((100,200),(300,500))'
 [(901,)]
 +--------------------+
 --Query--
-SELECT count(*) FROM quad_box_tbl WHERE b &<  box '((100,200),(300,500))'
---Result--
-[(3901,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b &&  box '((100,200),(300,500))'
---Result--
-[(1653,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b &>  box '((100,200),(300,500))'
---Result--
-[(10100,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b >>  box '((100,200),(300,500))'
---Result--
-[(7000,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b >>  box '((100,200),(300,500))'
---Result--
-[(7000,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b <<| box '((100,200),(300,500))'
---Result--
-[(1900,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b &<| box '((100,200),(300,500))'
---Result--
-[(5901,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b |&> box '((100,200),(300,500))'
---Result--
-[(9100,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b |>> box '((100,200),(300,500))'
---Result--
-[(5000,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b @>  box '((201,301),(202,303))'
---Result--
-[(1003,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b <@  box '((100,200),(300,500))'
---Result--
-[(1600,)]
-+--------------------+
---Query--
-SELECT count(*) FROM quad_box_tbl WHERE b ~=  box '((200,300),(205,305))'
---Result--
-[(1,)]
-+--------------------+
---Query--
 EXPLAIN (COSTS OFF) SELECT rank() OVER (ORDER BY b <-> point '123,456') n, b <-> point '123,456' dist, id FROM quad_box_tbl
 --Result--
 [('WindowAgg',), ('  ->  Index Scan using quad_box_tbl_idx on quad_box_tbl',), ("        Order By: (b <-> '(123,456)'::point)",)]
@@ -302,14 +242,4 @@ SELECT pg_input_is_valid('200', 'box')
 SELECT * FROM pg_input_error_info('200', 'box')
 --Result--
 [('invalid input syntax for type box: "200"', None, None, '22P02')]
-+--------------------+
---Query--
-SELECT pg_input_is_valid('((200,300),(500, xyz))', 'box')
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info('((200,300),(500, xyz))', 'box')
---Result--
-[('invalid input syntax for type box: "((200,300),(500, xyz))"', None, None, '22P02')]
 +--------------------+

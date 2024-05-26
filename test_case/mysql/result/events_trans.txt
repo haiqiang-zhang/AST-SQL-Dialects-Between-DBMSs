@@ -1,0 +1,90 @@
+--Query--
+select @@autocommit
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: create event',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: alter event',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: alter event rename',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: drop event',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: drop event if exists',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: create event if not exists',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: create event: event already exists',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: alter event rename: rename to same name',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: alter event rename: destination exists',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: create event: database does not exist',)]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where db='events_test' and command = 'Connect' and user=current_user()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+select @@autocommit
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: create event: insufficient privileges',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: alter event: insufficient privileges',)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('OK: drop event: insufficient privileges',)]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where db='events_test' and command = 'Connect' and user=current_user()
+--Result--
+[(1,)]
++--------------------+

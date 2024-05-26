@@ -1,0 +1,260 @@
+--Query--
+LOCK TABLE t1 write
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where misc > 5 and bool is null
+--Result--
+[(None, 'c', 6), (None, 'd', 7)]
++--------------------+
+--Query--
+select * from t1 where misc > 5 and bool is null
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 'apple'), (2, 'apple')]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 'apple')]
++--------------------+
+--Query--
+select * from t11
+--Result--
+[(0, 10), (1, 11), (2, 12)]
++--------------------+
+--Query--
+select * from t12
+--Result--
+[(0, 11), (2, 12), (33, 10)]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[(1, 21), (2, 12), (3, 23)]
++--------------------+
+--Query--
+select * from t11
+--Result--
+[(0, 10), (1, 11), (2, 12)]
++--------------------+
+--Query--
+select * from t12
+--Result--
+[(0, 11), (2, 12), (33, 10)]
++--------------------+
+--Query--
+select * from t11
+--Result--
+[(0, 10), (1, 11)]
++--------------------+
+--Query--
+select * from t12
+--Result--
+[(0, 11), (33, 10)]
++--------------------+
+--Query--
+select * from t11
+--Result--
+[(0, 10), (1, 11), (2, 12)]
++--------------------+
+--Query--
+select * from t11
+--Result--
+[(0, 10), (1, 11)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(7, 7)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(0,), (2,)]
++--------------------+
+--Query--
+select @a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1,t2,t3 where t1.a=t2.a AND t2.b=t3.a and t1.b=t3.b order by t1.a,t1.b
+--Result--
+[(1, 1, 1, 1, 1, 1), (1, 3, 1, 1, 1, 3), (2, 1, 2, 2, 2, 1)]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a is null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ROW_COUNT()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stm FROM 'CALL p1()'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stm
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (5,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (5,)]
++--------------------+
+--Query--
+SELECT a,b FROM t1
+--Result--
+[(10000, 'foobar'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'e'), (10000, 'foobar'), (1, 'a'), (2, 'b'), (3, 'c'), (4, 'd'), (5, 'e')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+PREPARE s FROM 'DELETE t1 FROM t1, (SELECT 1 FROM DUAL) AS dt'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(-1,), (0,), (1,), (100,), (1000,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(-2, 0), (101, 2), (1001, 0)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(-1,), (0,), (1,), (100,), (1000,)]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(-2, -1), (3, -1), (101, 2), (1001, -1)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(1, 1, None), (2, 2, None)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(2, 2, None)]
++--------------------+

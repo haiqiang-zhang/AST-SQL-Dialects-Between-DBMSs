@@ -1,0 +1,125 @@
+--Query--
+PREPARE check_view_columns FROM   'SELECT table_name, column_name, column_type FROM information_schema.columns    WHERE table_name= ? ORDER BY table_name, column_name'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE check_view_status FROM   'SELECT table_name, table_comment FROM information_schema.tables WHERE    table_name= ?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_schema, table_name, is_updatable FROM information_schema.views   WHERE table_name='v2'
+--Result--
+[('test_db', 'v2', 'YES')]
++--------------------+
+--Query--
+SELECT table_schema, table_name, is_updatable FROM information_schema.views   WHERE table_name='v2' OR table_name='vw'
+--Result--
+[('test_db', 'v2', 'NO'), ('test_db', 'vw', 'NO')]
++--------------------+
+--Query--
+SELECT table_schema, table_name, is_updatable FROM information_schema.views   WHERE table_name='v2' OR table_name='vw'
+--Result--
+[('test_db', 'v2', 'YES'), ('test_db', 'vw', 'YES')]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE check_view_columns
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE check_view_status
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name, view_definition FROM information_schema.views                                    WHERE table_name='v2'
+--Result--
+[('v2', 'select `test_db`.`t2`.`f2` AS `f2` from `test_db`.`t2`')]
++--------------------+
+--Query--
+SELECT table_name, view_definition FROM information_schema.views                                    WHERE table_name='v2'
+--Result--
+[('v2', 'select `test_db`.`t2`.`f2` AS `f2` from `test_db`.`t2`')]
++--------------------+

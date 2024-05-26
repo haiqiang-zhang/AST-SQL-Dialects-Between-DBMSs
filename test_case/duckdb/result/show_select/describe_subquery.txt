@@ -1,0 +1,30 @@
+--Query--
+(DESCRIBE SELECT 42 AS a)
+--Result--
+[('a', 'INTEGER', 'YES', None, None, None)]
++--------------------+
+--Query--
+FROM (SHOW databases) t
+--Result--
+[('duckdb',)]
++--------------------+
+--Query--
+SELECT column_name FROM (DESCRIBE SELECT 42 AS a)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT t.column_name FROM (DESCRIBE SELECT 42 AS a) t
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT t.column_name FROM (DESCRIBE t) t
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT column_name FROM (DESCRIBE ( DESCRIBE SELECT * FROM (SELECT 32 as a)))
+--Result--
+[('column_name',), ('column_type',), ('null',), ('key',), ('default',), ('extra',)]
++--------------------+

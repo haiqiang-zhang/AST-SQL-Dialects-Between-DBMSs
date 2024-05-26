@@ -37,7 +37,6 @@ create table t2(id2 int not null, t char(12));
 create table t3(id3 int not null, t char(12), index(id3));
 select count(*) from t2;
 insert into  t2 select t1.* from t1, t2 t, t3 where  t1.id1 = t.id2 and t.id2 = t3.id3;
-select count(*) from t2;
 drop table t1,t2,t3;
 CREATE TABLE t1(a INTEGER, b INTEGER);
 INSERT INTO t1 VALUES(1, 1);
@@ -52,13 +51,8 @@ create table t1 (id int primary key, data int);
 insert into t1 values (1, 1), (2, 2), (3, 3);
 select row_count();
 insert ignore into t1 values (1, 1);
-select row_count();
-select row_count();
-select row_count();
 insert into t1 values (2, 2) on duplicate key update data= data + 10;
-select row_count();
 insert into t1 values (5, 5) on duplicate key update data= data + 10;
-select row_count();
 drop table t1;
 create table t1 (f1 int unique, f2 int);
 create table t2 (f3 int, f4 int);
@@ -373,42 +367,6 @@ PREPARE stmt FROM
 DEALLOCATE PREPARE stmt;
 DROP VIEW v1;
 DROP TABLE t1, t2;
-CREATE TABLE t1 (
-  ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ INTEGER,
-  N INTEGER,
-  a INTEGER,
-  b INTEGER,
-  c INTEGER,
-  d INTEGER,
-  e INTEGER,
-  f INTEGER,
-  g INTEGER,
-  h INTEGER,
-  i INTEGER,
-  j INTEGER,
-  k INTEGER,
-  l INTEGER,
-  m INTEGER,
-  na INTEGER,
-  o INTEGER,
-  p INTEGER,
-  q INTEGER,
-  r INTEGER,
-  s INTEGER,
-  t INTEGER,
-  u INTEGER,
-  v INTEGER,
-  w INTEGER,
-  x INTEGER,
-  y INTEGER,
-  z INTEGER,
-  aa INTEGER,
-  ab INTEGER,
-  ac INTEGER,
-  ad INTEGER
-);
-INSERT INTO t1 (ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ, N) VALUES (1, 2);
-DROP TABLE t1;
 CREATE TABLE t1 (f1 INTEGER, KEY k1 ((1)));
 INSERT INTO t1 VALUES() AS f2 ON DUPLICATE KEY UPDATE f1=1;
 CREATE VIEW v1 AS SELECT * FROM t1;

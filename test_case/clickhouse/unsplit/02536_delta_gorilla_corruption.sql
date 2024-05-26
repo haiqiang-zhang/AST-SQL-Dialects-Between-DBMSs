@@ -10,12 +10,6 @@ as (select 0 from numbers(30000000));
 select count(*)
 from bug_delta_gorilla
 where 0 <> value_bug;
-select count(*)
-from bug_delta_gorilla
-where 0 <> value_bug;
-select count(*)
-from bug_delta_gorilla
-where 0 <> value_bug;
 drop table if exists bug_delta_gorilla;
 select 'The same issue in a much smaller repro happens also in Debug builds';
 create table bug_delta_gorilla (val UInt64 codec (Delta, Gorilla))

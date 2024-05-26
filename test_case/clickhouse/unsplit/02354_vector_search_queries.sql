@@ -1,7 +1,3 @@
-
-
--- This file tests various simple approximate nearest neighborhood (ANN) queries that utilize vector search indexes.
-
 SET allow_experimental_annoy_index = 1;
 SET allow_experimental_usearch_index = 1;
 SELECT 'ARRAY, 10 rows, index_granularity = 8192, GRANULARITY = 1 million --> 1 granule, 1 indexed block';

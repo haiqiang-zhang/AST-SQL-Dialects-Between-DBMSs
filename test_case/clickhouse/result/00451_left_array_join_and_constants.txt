@@ -1,0 +1,15 @@
+--Query--
+SELECT arr, element FROM (SELECT [1] AS arr) LEFT ARRAY JOIN arr AS element
+--Result--
+[([1], 1)]
++--------------------+
+--Query--
+SELECT arr, element FROM (SELECT emptyArrayUInt8() AS arr) LEFT ARRAY JOIN arr AS element
+--Result--
+[([], 0)]
++--------------------+
+--Query--
+SELECT arr, element FROM (SELECT arrayJoin([emptyArrayUInt8(), [1], [2, 3]]) AS arr) LEFT ARRAY JOIN arr AS element
+--Result--
+[([], 0), ([1], 1), ([2, 3], 2), ([2, 3], 3)]
++--------------------+

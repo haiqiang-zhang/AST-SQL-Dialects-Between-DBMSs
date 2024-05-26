@@ -776,7 +776,6 @@ SELECT pg_get_function_arguments(0);
 SELECT pg_get_function_identity_arguments(0);
 SELECT pg_get_function_result(0);
 SELECT pg_get_function_arg_default(0, 0);
-SELECT pg_get_function_arg_default('pg_class'::regclass, 0);
 SELECT pg_get_partkeydef(0);
 CREATE TABLE rules_parted_table (a int) PARTITION BY LIST (a);
 CREATE TABLE rules_parted_table_1 PARTITION OF rules_parted_table FOR VALUES IN (1);

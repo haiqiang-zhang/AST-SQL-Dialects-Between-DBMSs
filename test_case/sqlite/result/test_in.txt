@@ -1,0 +1,505 @@
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b BETWEEN 10 AND 50 ORDER BY a
+--Result--
+[(4,), (5,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b NOT BETWEEN 10 AND 50 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b BETWEEN a AND a*5 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b NOT BETWEEN a AND a*5 ORDER BY a
+--Result--
+[(5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b BETWEEN a AND a*5 OR b=512 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,), (9,)]
++--------------------+
+--Query--
+SELECT a+ 100*(a BETWEEN 1 and 3) FROM t1 ORDER BY b
+--Result--
+[(101,), (102,), (103,), (4,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b IN (8,12,16,24,32) ORDER BY a
+--Result--
+[(3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b NOT IN (8,12,16,24,32) ORDER BY a
+--Result--
+[(1,), (2,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b IN (8,12,16,24,32) OR b=512 ORDER BY a
+--Result--
+[(3,), (4,), (5,), (9,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b NOT IN (8,12,16,24,32) OR b=512 ORDER BY a
+--Result--
+[(1,), (2,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a+100*(b IN (8,16,24)) FROM t1 ORDER BY b
+--Result--
+[(1,), (2,), (103,), (104,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b IN (b+8,64)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b IN (max(5,10,b),20)
+--Result--
+[(4,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b IN (8*2,64/2) ORDER BY b
+--Result--
+[(4,), (5,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b IN (max(5,10),20)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE min(0,b IN (a,30))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1     WHERE b IN (SELECT b FROM t1 WHERE a<5)     ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1     WHERE b IN (SELECT b FROM t1 WHERE a<5) OR b==512     ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,), (9,)]
++--------------------+
+--Query--
+SELECT a + 100*(b IN (SELECT b FROM t1 WHERE a<5)) FROM t1 ORDER BY b
+--Result--
+[(101,), (102,), (103,), (104,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+SELECT b FROM t1 ORDER BY b
+--Result--
+[(2,), (4,), (8,), (16,), (32,), (64,), (128,), (256,), (1024,), (2048,)]
++--------------------+
+--Query--
+SELECT a FROM t1 ORDER BY a
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT a FROM t1 ORDER BY a
+--Result--
+[(5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM t1     WHERE a IN (        'Do','an','IN','with','a','constant','RHS','but','where','the',        'has','many','elements','We','need','to','test','that',        'collisions','hash','table','are','resolved','properly',        'This','in-set','contains','thirty','one','entries','hello')
+--Result--
+[('hello', 'world')]
++--------------------+
+--Query--
+SELECT * FROM ta WHERE a<10
+--Result--
+[(1, 1), (2, 2), (3, 3), (4, 4), (6, 6), (8, 8)]
++--------------------+
+--Query--
+SELECT * FROM tb WHERE a<10
+--Result--
+[(1, 1), (2, 2), (3, 3), (5, 5), (7, 7), (9, 9)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE b IN (SELECT a FROM tb)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE b NOT IN (SELECT a FROM tb)
+--Result--
+[(4,), (6,), (8,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE b IN (SELECT b FROM tb)
+--Result--
+[(1,), (2,), (3,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE b NOT IN (SELECT b FROM tb)
+--Result--
+[(4,), (6,), (8,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE a IN (SELECT a FROM tb)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE a NOT IN (SELECT a FROM tb)
+--Result--
+[(4,), (6,), (8,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE a IN (SELECT b FROM tb)
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE a NOT IN (SELECT b FROM tb)
+--Result--
+[(4,), (6,), (8,), (10,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a IN ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a IN (5)
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a NOT IN () ORDER BY a
+--Result--
+[(5,), (6,), (7,), (8,), ('hello',)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a IN (5) AND b IN ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a IN (5) AND b NOT IN ()
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE a IN ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM ta WHERE a NOT IN ()
+--Result--
+[(1,), (2,), (3,), (4,), (6,), (8,), (10,)]
++--------------------+
+--Query--
+SELECT * FROM ta LEFT JOIN tb ON (ta.b=tb.b) WHERE ta.a IN ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a IN ('hello','there')
+--Result--
+[('world',)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a IN ("hello",'there')
+--Result--
+[('world',)]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(1,), (2,), (3,), (5,), (7,), (9,), (11,)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a IN t4
+--Result--
+[(32,), (128,)]
++--------------------+
+--Query--
+SELECT b FROM t1 WHERE a NOT IN t4
+--Result--
+[(64,), (256,), ('world',)]
++--------------------+
+--Query--
+SELECT * FROM t5
+--Result--
+[(111,)]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE b IN (2)
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE b IN ('2')
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE +b IN ('2')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE a IN ('2')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE a IN (2)
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t6 WHERE +a IN ('2')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT      1 IN (NULL, 1, 2),     -- The value 1 is a member of the set, return true.     3 IN (NULL, 1, 2),     -- Ambiguous, return NULL.     1 NOT IN (NULL, 1, 2), -- The value 1 is a member of the set, return false.     3 NOT IN (NULL, 1, 2)  -- Ambiguous, return NULL.
+--Result--
+[(1, None, 0, None)]
++--------------------+
+--Query--
+SELECT 2 IN (SELECT a FROM t7)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 6 IN (SELECT a FROM t7)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 2 IN (SELECT b FROM t7)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 6 IN (SELECT b FROM t7)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 2 IN (SELECT c FROM t7)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 6 IN (SELECT c FROM t7)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT       2 NOT IN (SELECT a FROM t7),       6 NOT IN (SELECT a FROM t7),       2 NOT IN (SELECT b FROM t7),       6 NOT IN (SELECT b FROM t7),       2 NOT IN (SELECT c FROM t7),       6 NOT IN (SELECT c FROM t7)
+--Result--
+[(0, None, 0, 1, 0, 1)]
++--------------------+
+--Query--
+SELECT b IN (       SELECT inside.a        FROM t7 AS inside        WHERE inside.b BETWEEN outside.b+1 AND outside.b+2     )     FROM t7 AS outside ORDER BY b
+--Result--
+[(0,), (None,), (None,), (None,), (0,)]
++--------------------+
+--Query--
+SELECT b NOT IN (       SELECT inside.a        FROM t7 AS inside        WHERE inside.b BETWEEN outside.b+1 AND outside.b+2     )     FROM t7 AS outside ORDER BY b
+--Result--
+[(1,), (None,), (None,), (None,), (1,)]
++--------------------+
+--Query--
+SELECT       2 IN (SELECT a FROM t7),       6 IN (SELECT a FROM t7),       2 IN (SELECT b FROM t7),       6 IN (SELECT b FROM t7),       2 IN (SELECT c FROM t7),       6 IN (SELECT c FROM t7)
+--Result--
+[(1, None, 1, 0, 1, 0)]
++--------------------+
+--Query--
+SELECT       2 NOT IN (SELECT a FROM t7),       6 NOT IN (SELECT a FROM t7),       2 NOT IN (SELECT b FROM t7),       6 NOT IN (SELECT b FROM t7),       2 NOT IN (SELECT c FROM t7),       6 NOT IN (SELECT c FROM t7)
+--Result--
+[(0, None, 0, 1, 0, 1)]
++--------------------+
+--Query--
+SELECT * FROM a WHERE id NOT IN (SELECT id FROM b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM a WHERE id NOT IN (SELECT id FROM b)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE a IN (SELECT a FROM c1) ORDER BY 1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a.id FROM t1 AS a JOIN t1 AS b ON a.id=b.id WHERE a.id IN (1,2,3)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b, a IN (3,4,5) FROM t2 ORDER BY b
+--Result--
+[(11, 0), (22, 0), (33, 1)]
++--------------------+
+--Query--
+SELECT CASE WHEN x NOT IN (5,6,7) THEN 'yes' ELSE 'no' END FROM t3
+--Result--
+[('yes',)]
++--------------------+
+--Query--
+SELECT CASE WHEN x NOT IN (NULL,6,7) THEN 'yes' ELSE 'no' END FROM t3
+--Result--
+[('no',)]
++--------------------+
+--Query--
+SELECT CASE WHEN x NOT IN (5,6,7) OR x=0 THEN 'yes' ELSE 'no' END FROM t3
+--Result--
+[('yes',)]
++--------------------+
+--Query--
+SELECT CASE WHEN x NOT IN (NULL,6,7) OR x=0 THEN 'yes' ELSE 'no' END FROM t3
+--Result--
+[('no',)]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<20)     INSERT INTO t4(a,b) SELECT x, x+100 FROM c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t4 WHERE a IN (3,null,8) ORDER BY +b
+--Result--
+[(103,), (108,)]
++--------------------+
+--Query--
+SELECT b FROM t4 WHERE a NOT IN (3,null,8)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a.*     FROM t5 AS 'a' JOIN t5 AS 'b' ON b.id=a.id    WHERE b.id IN (           SELECT t6.t5_id             FROM t6            WHERE name='Bob'              AND t6.t5_id IS NOT NULL              AND t6.id IN (                   SELECT id                     FROM (SELECT t6.id, count(*) AS x                             FROM t6                            WHERE name='Bob'                          ) AS 't'                    WHERE x=1                  )              AND t6.id IN (1,id)          )
+--Result--
+[(1, 'Alice')]
++--------------------+
+--Query--
+SELECT * FROM x1    WHERE a IN (SELECT a FROM x1 WHERE (a%2)==0)    ORDER BY a DESC, b
+--Result--
+[(6, None), (4, None), (2, None)]
++--------------------+
+--Query--
+SELECT * FROM x1    WHERE a IN (SELECT a FROM x1 WHERE (a%7)==0)    ORDER BY a DESC, b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 IN ('1')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 IN ('1' COLLATE nocase)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 IN (CAST('1' AS text))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 IN (CAST('1' AS text) COLLATE nocase)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE '1' IN (t0.c0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE c0 IN ('2.0625')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT c0 IN ('2.0625') FROM t0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT c0 = ('2.0625') FROM t0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT c0 = ('0.20625e+01') FROM t0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT c0 IN ('2.0625',2,3) FROM t0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (1 IN (2 IS TRUE))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t0 ORDER BY (t0.c0 IN ())
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<8)     INSERT INTO t1(x,y) SELECT x, x*100 FROM c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x IN (SELECT a FROM t2)
+--Result--
+[(2, 200), (4, 400), (6, 600)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x IN ((SELECT a FROM t2))
+--Result--
+[(2, 200), (4, 400), (6, 600)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x IN (((SELECT a FROM t2)))
+--Result--
+[(2, 200), (4, 400), (6, 600)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE x IN ((((((SELECT a FROM t2))))))
+--Result--
+[(2, 200), (4, 400), (6, 600)]
++--------------------+
+--Query--
+SELECT a0.a, group_concat(a1.a) AS b     FROM t4 AS a0 JOIN t4 AS a1    GROUP BY a0.a   HAVING (SELECT sum( (a1.a == +a0.a COLLATE NOCASE) IN (SELECT b FROM t4)))
+--Result--
+[('ABC', 'abc,ABC,def'), ('abc', 'abc,ABC,def'), ('def', 'abc,ABC,def')]
++--------------------+
+--Query--
+SELECT a0.a, group_concat(a1.a) AS b     FROM t4 AS a0 JOIN t4 AS a1    GROUP BY a0.a   HAVING (SELECT sum( (a1.a GLOB +a0.a COLLATE NOCASE) IN (SELECT b FROM t4)))
+--Result--
+[('ABC', 'abc,ABC,def'), ('abc', 'abc,ABC,def'), ('def', 'abc,ABC,def')]
++--------------------+
+--Query--
+SELECT * FROM t5
+--Result--
+[(1, 'Alice'), (2, 'Emma')]
++--------------------+

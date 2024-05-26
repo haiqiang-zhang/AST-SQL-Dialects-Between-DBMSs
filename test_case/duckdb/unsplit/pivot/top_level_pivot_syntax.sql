@@ -20,7 +20,6 @@ INSERT INTO monthly_sales VALUES
 ALTER TABLE monthly_sales ADD COLUMN status VARCHAR;
 UPDATE monthly_sales SET status=CASE WHEN amount >= 10000 THEN 'important' ELSE 'regular' END;
 CREATE VIEW v1 AS PIVOT monthly_sales ON MONTH IN ('1-JAN', '2-FEB', '3-MAR', '4-APR') USING SUM(AMOUNT) GROUP BY empid ORDER BY ALL;
-PIVOT monthly_sales ON MONTH USING SUM(AMOUNT);
 FROM (PIVOT monthly_sales ON MONTH USING SUM(AMOUNT));
 PIVOT monthly_sales ON MONTH USING SUM(AMOUNT) GROUP BY empid;
 PIVOT monthly_sales ON MONTH IN ('1-JAN', '2-FEB', '3-MAR', '4-APR') USING SUM(AMOUNT) GROUP BY empid;

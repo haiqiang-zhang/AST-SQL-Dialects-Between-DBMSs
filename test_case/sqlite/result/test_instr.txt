@@ -1,0 +1,20 @@
+--Query--
+SELECT coalesce(instr(NULL,'abc'), 999)
+--Result--
+[(999,)]
++--------------------+
+--Query--
+SELECT instr(X'', 'abc')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t0 WHERE INSTR(x'aabb', t0.c0) ORDER BY t0.c0, t0.c1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT quote(c0) FROM t0 WHERE INSTR(x'aabb', t0.c0) ORDER BY t0.c0, t0.c1
+--Result--
+[("X'BB'",)]
++--------------------+

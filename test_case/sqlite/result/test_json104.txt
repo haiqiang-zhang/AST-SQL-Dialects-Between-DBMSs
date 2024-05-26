@@ -1,0 +1,25 @@
+--Query--
+SELECT json_patch('{        "a": "b",        "c": {          "d": "e",          "f": "g"        }      }','{        "a":"z",        "c": {          "f": null        }      }')
+--Result--
+[('{"a":"z","c":{"d":"e"}}',)]
++--------------------+
+--Query--
+SELECT coalesce(json_patch(null,'{"a":"c"}'), 'real-null')
+--Result--
+[('real-null',)]
++--------------------+
+--Query--
+SELECT * FROM obj
+--Result--
+[('{"a":1,"b":2}',)]
++--------------------+
+--Query--
+SELECT * FROM obj
+--Result--
+[('{"a":1,"b":2,"c":3}',)]
++--------------------+
+--Query--
+SELECT json_extract(x, '$.b') FROM obj
+--Result--
+[(2,)]
++--------------------+

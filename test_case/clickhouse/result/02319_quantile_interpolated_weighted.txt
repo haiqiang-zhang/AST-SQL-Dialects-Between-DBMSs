@@ -1,0 +1,25 @@
+--Query--
+SELECT 'quantileInterpolatedWeighted'
+--Result--
+[('quantileInterpolatedWeighted',)]
++--------------------+
+--Query--
+SELECT medianInterpolatedWeighted(a, 1), medianInterpolatedWeighted(b, 2), medianInterpolatedWeighted(c, 3) as x, toTypeName(x) FROM decimal
+--Result--
+[(0.0, 0.0, 0.0, 'Decimal(38, 8)')]
++--------------------+
+--Query--
+SELECT quantileInterpolatedWeighted(a, 1), quantileInterpolatedWeighted(b, 2), quantileInterpolatedWeighted(c, 3) as x, toTypeName(x) FROM decimal WHERE a < 0
+--Result--
+[(-25.5, -8.49999999, -5.1, 'Decimal(38, 8)')]
++--------------------+
+--Query--
+SELECT quantileInterpolatedWeighted(0.0)(a, 1), quantileInterpolatedWeighted(0.0)(b, 2), quantileInterpolatedWeighted(0.0)(c, 3) FROM decimal WHERE a >= 0
+--Result--
+[(0.0, 0.0, 0.0)]
++--------------------+
+--Query--
+SELECT quantilesInterpolatedWeighted(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)(a, 1) FROM decimal
+--Result--
+[([-50.0, -40.4, -30.3, -20.2, -10.1, 0.0, 10.1, 20.2, 30.3, 40.4, 50.0],)]
++--------------------+

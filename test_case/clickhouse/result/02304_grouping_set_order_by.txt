@@ -1,0 +1,5 @@
+--Query--
+SELECT toStartOfHour(time) AS timex, id, count() FROM (     SELECT         concat('id', toString(number % 3)) AS id,         toDateTime('2020-01-01') + (number * 60) AS time     FROM numbers(100) ) GROUP BY     GROUPING SETS ( (timex, id), (timex)) ORDER BY timex ASC, id
+--Result--
+[(datetime.datetime(2020, 1, 1, 0, 0), '', 60), (datetime.datetime(2020, 1, 1, 0, 0), 'id0', 20), (datetime.datetime(2020, 1, 1, 0, 0), 'id1', 20), (datetime.datetime(2020, 1, 1, 0, 0), 'id2', 20), (datetime.datetime(2020, 1, 1, 1, 0), '', 40), (datetime.datetime(2020, 1, 1, 1, 0), 'id0', 14), (datetime.datetime(2020, 1, 1, 1, 0), 'id1', 13), (datetime.datetime(2020, 1, 1, 1, 0), 'id2', 13)]
++--------------------+

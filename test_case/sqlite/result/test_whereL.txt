@@ -1,0 +1,55 @@
+--Query--
+SELECT * FROM c3 WHERE x=y AND y=z AND z='abc'
+--Result--
+[('ABC', 'ABC', 'abc')]
++--------------------+
+--Query--
+SELECT * FROM c3 WHERE x='abc' AND y='abc' AND z='abc'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1     FROM A,          (SELECT id,xx,yy,zz FROM C) subq,          B    WHERE A.id='1'      AND A.id=subq.yy      AND B.id=subq.zz
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1     FROM A,          (SELECT id,xx,yy,zz FROM C) subq,          B    WHERE A.id=1      AND A.id=subq.yy      AND B.id=subq.zz
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1     FROM A,          (SELECT id,yy,zz FROM C) subq,          B    WHERE A.id='1'      AND A.id=subq.yy      AND B.id=subq.zz
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT x.a FROM x JOIN y ON x.c = y.a WHERE x.b = 1 AND x.b = 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 200, * FROM t0, v0 WHERE 0 = t0.c0 AND t0.c0 = v0.c0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 200, * FROM t0, v0 WHERE t0.c0 = 0 AND t0.c0 = v0.c0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 200, * FROM t0, v0 WHERE 0 = t0.c0 AND v0.c0 = t0.c0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 200, * FROM t0, v0 WHERE t0.c0 = 0 AND v0.c0 = t0.c0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT *    FROM (         SELECT *         FROM tableA         WHERE RunYearMonth = 202004     ) AS A     INNER JOIN (         SELECT *         FROM tableB         WHERE RunYearMonth = 202004     ) AS B     ON A.ID = B.ID     AND A.RunYearMonth = B.RunYearMonth
+--Result--
+[(4, 202004, 4, 202004), (5, 202004, 5, 202004)]
++--------------------+

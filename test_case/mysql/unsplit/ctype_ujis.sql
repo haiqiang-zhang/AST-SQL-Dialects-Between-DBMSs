@@ -4,24 +4,9 @@ insert into t1 values (0xa4a2),(0xa4a3);
 select hex(left(c,1)) from t1 group by c;
 drop table t1;
 select locate(0xa2a1,0xa1a2a1a3);
-select locate(_ujis 0xa2a1,_ujis 0xa1a2a1a3);
-select locate(_ujis 0xa2a1,_ujis 0xa1a2a1a3 collate ujis_bin);
-select locate('he','hello');
-select locate('he','hello',2);
-select locate('lo','hello',2);
-select locate('HE','hello');
-select locate('HE','hello',2);
-select locate('LO','hello',2);
-select locate(_ujis 0xa1a3,_ujis 0xa1a2a1a3);
 select 0xa1a2a1a3 like concat(_binary'%',0xa2a1,_binary'%');
-select _ujis 0xa1a2a1a3 like concat(_ujis'%',_ujis 0xa2a1, _ujis'%');
-select _ujis 0xa1a2a1a3 like concat(_ujis'%',_ujis 0xa2a1, _ujis'%') collate ujis_bin;
 select 'a' like 'a';
 select 'A' like 'a';
-select hex(@utf81:= CONVERT(@ujis1 USING utf8mb3));
-select hex(@utf82:= CONVERT(@ujis2 USING utf8mb3));
-select hex(@utf83:= CONVERT(@ujis3 USING utf8mb3));
-select hex(@utf84:= CONVERT(@ujis4 USING utf8mb3));
 select @ujis1 = CONVERT(@utf81 USING ujis);
 select @ujis2 = CONVERT(@utf82 USING ujis);
 select @ujis3 = CONVERT(@utf83 USING ujis);
@@ -34,11 +19,6 @@ create index idx_c1 on t1(c1);
 select c1 as 'using index' from t1 where c1 like cast(concat(0xA4A2, '%') as char character set ujis);
 select c1 as 'no index' from t1 where c1 like cast(concat('%',0xA4A2, '%') as char character set ujis);
 drop table t1;
-CREATE TABLE t1 (
-  a char(1) NOT NULL default '',
-  b enum('ÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂ¢','ÃÂÃÂÃÂÃÂ¤ÃÂÃÂÃÂÃÂ¤') default NULL
-) CHARACTER SET ujis;
-DROP TABLE t1;
 CREATE TABLE t1
 (
   a INTEGER NOT NULL,
@@ -1073,15 +1053,12 @@ INSERT INTO t1 VALUES(0xF4FD);
 INSERT INTO t1 VALUES(0xF4FE);
 SELECT HEX(c) FROM t1 ORDER BY BINARY c;
 DROP TABLE t1;
-select hex(convert(_ujis 0xA5FE41 using ucs2));
-select hex(convert(_ujis 0x8FABF841 using ucs2));
 DROP TABLE IF EXISTS t1, t2;
 DROP PROCEDURE IF EXISTS sp1;
 CREATE TABLE t1(c1 char(2)) default charset = ujis;
 CREATE TABLE t2(c2 char(2)) default charset = ujis;
 INSERT INTO t1 VALUES(_ujis 0xA4A2);
 SELECT c1,c2 FROM t1,t2;
-SELECT hex(convert(_latin1 0xA4A2 using ujis)),hex(c2) FROM t1,t2;
 DROP TABLE t1;
 DROP TABLE t2;
 SELECT CONVERT(REPLACE(EXPORT_SET('a','a','a','','a'),'00','') USING ujis);
@@ -1106,9 +1083,6 @@ ORDER BY head, tail;
 DROP TEMPORARY TABLE head, tail;
 UPDATE IGNORE t1 SET a=unhex(code) ORDER BY code;
 SELECT COUNT(*) FROM t1;
-SELECT COUNT(*) FROM t1 WHERE a<>'';
-SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=2;
-SELECT COUNT(*) FROM t1 WHERE a<>'' AND OCTET_LENGTH(a)=3;
 SELECT code, hex(upper(a)), hex(lower(a)),a, upper(a), lower(a) FROM t1 WHERE hex(a)<>hex(upper(a)) OR hex(a)<>hex(lower(a)) ORDER BY code;
 SELECT * FROM t1
 WHERE HEX(CAST(LOWER(a) AS CHAR CHARACTER SET utf8mb3)) <>
@@ -1116,6 +1090,4 @@ WHERE HEX(CAST(LOWER(a) AS CHAR CHARACTER SET utf8mb3)) <>
 SELECT * FROM t1
 WHERE HEX(CAST(UPPER(a) AS CHAR CHARACTER SET utf8mb3)) <>
       HEX(UPPER(CAST(a AS CHAR CHARACTER SET utf8mb3))) ORDER BY code;
-SELECT HEX(a), HEX(CONVERT(a USING utf8mb3)) as b FROM t1
-WHERE a<>'' HAVING b<>'3F' ORDER BY code;
 DROP TABLE t1;

@@ -1,0 +1,280 @@
+--Query--
+SELECT * FROM t1, t2 LEFT JOIN t3 ON q=x WHERE p=2 AND a=q
+--Result--
+[(222, 'two', 2, 222, None, None)]
++--------------------+
+--Query--
+SELECT parent1.parent1key, child1.value, child2.value     FROM parent1     LEFT OUTER JOIN child1 ON child1.child1key = parent1.child1key     INNER JOIN child2 ON child2.child2key = parent1.child2key
+--Result--
+[(1, 'Value for C1.1', 'Value for C2.1'), (2, None, 'Value for C2.2'), (3, 'Value for C1.3', 'Value for C2.3')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND bpk=ax
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND bpk=ax
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON cx=dpk      WHERE cpk=bx AND bpk=ax
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON cx=dpk      WHERE cpk=bx AND bpk=ax
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON cx=dpk      WHERE bx=cpk AND bpk=ax
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON cx=dpk      WHERE bx=cpk AND bpk=ax
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON cx=dpk      WHERE bx=cpk AND ax=bpk
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON cx=dpk      WHERE bx=cpk AND ax=bpk
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE bx=cpk AND ax=bpk
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE bx=cpk AND ax=bpk
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND ax=bpk
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND ax=bpk
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND apk=bx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND apk=bx
+--Result--
+[(5, 0, 0, 'SCAN tB'), (7, 0, 0, 'SEARCH tA USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND apk=bx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND apk=bx
+--Result--
+[(5, 0, 0, 'SCAN tB'), (7, 0, 0, 'SEARCH tA USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE apk=cx AND bpk=ax
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE apk=cx AND bpk=ax
+--Result--
+[(5, 0, 0, 'SCAN tC'), (7, 0, 0, 'SEARCH tA USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=ax AND bpk=cx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=ax AND bpk=cx
+--Result--
+[(5, 0, 0, 'SCAN tA'), (7, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE bpk=cx AND apk=bx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE bpk=cx AND apk=bx
+--Result--
+[(5, 0, 0, 'SCAN tC'), (7, 0, 0, 'SEARCH tB USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tA USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND apk=cx
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT * FROM tA, tB, tC LEFT JOIN tD ON dpk=cx      WHERE cpk=bx AND apk=cx
+--Result--
+[(5, 0, 0, 'SCAN tB'), (7, 0, 0, 'SEARCH tC USING INTEGER PRIMARY KEY (rowid=?)'), (10, 0, 0, 'SEARCH tA USING INTEGER PRIMARY KEY (rowid=?)'), (13, 0, 0, 'SEARCH tD USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t301 WHERE c=3 AND a IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t301 WHERE c=3 AND a IS NOT NULL
+--Result--
+[(1, 2, 3), (2, 2, 3)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 WHERE y2 IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 WHERE y2 IS NOT NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 AND y2 IS NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 AND y2 IS NOT NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x3 FROM t73 LEFT JOIN t72 ON x2=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT DISTINCT x3 FROM t73 LEFT JOIN t72 ON x2=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x3 FROM t73 LEFT JOIN t74 ON x4=y3
+--Result--
+[(123,), (123,)]
++--------------------+
+--Query--
+SELECT DISTINCT x3 FROM t73 LEFT JOIN t74 ON x4=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 WHERE y2 IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 WHERE y2 IS NOT NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 AND y2 IS NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 AND y2 IS NOT NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x3 FROM t73 LEFT JOIN t72 ON x2=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT DISTINCT x3 FROM t73 LEFT JOIN t72 ON x2=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x3 FROM t73 LEFT JOIN t74 ON x4=y3
+--Result--
+[(123,), (123,)]
++--------------------+
+--Query--
+SELECT DISTINCT x3 FROM t73 LEFT JOIN t74 ON x4=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 WHERE y2 IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 WHERE y2 IS NOT NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 AND y2 IS NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x1 FROM t71 LEFT JOIN t72 ON x2=y1 AND y2 IS NOT NULL
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x3 FROM t73 LEFT JOIN t72 ON x2=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT DISTINCT x3 FROM t73 LEFT JOIN t72 ON x2=y3
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT x3 FROM t73 LEFT JOIN t74 ON x4=y3
+--Result--
+[(123,), (123,)]
++--------------------+
+--Query--
+SELECT DISTINCT x3 FROM t73 LEFT JOIN t74 ON x4=y3
+--Result--
+[(123,)]
++--------------------+

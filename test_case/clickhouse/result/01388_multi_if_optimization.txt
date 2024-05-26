@@ -1,0 +1,10 @@
+--Query--
+EXPLAIN SYNTAX SELECT number = 1 ? 'hello' : (number = 2 ? 'world' : 'xyz') FROM numbers(10)
+--Result--
+[("SELECT if(number = 1, 'hello', if(number = 2, 'world', 'xyz'))",), ('FROM numbers(10)',)]
++--------------------+
+--Query--
+SELECT now64(if(Null, NULL, if(Null, nan, toFloat64(number))), Null) FROM numbers(2)
+--Result--
+[(None,), (None,)]
++--------------------+

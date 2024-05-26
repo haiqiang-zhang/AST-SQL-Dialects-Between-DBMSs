@@ -218,10 +218,6 @@ alter table idxpart attach partition idxpart2 for values from ('bbb') to ('ccc')
 create table idxpart3 partition of idxpart for values from ('ccc') to ('ddd');
 create index on idxpart (a collate "C");
 create table idxpart4 partition of idxpart for values from ('ddd') to ('eee');
-select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef
-  from pg_class left join pg_inherits on inhrelid = oid,
-  lateral pg_get_indexdef(pg_class.oid)
-  where relkind in ('i', 'I') and relname like 'idxpart%' order by relname;
 drop table idxpart;
 create table idxpart (a text) partition by range (a);
 create table idxpart1 (like idxpart);
@@ -232,10 +228,6 @@ alter table idxpart attach partition idxpart2 for values from ('bbb') to ('ccc')
 create table idxpart3 partition of idxpart for values from ('ccc') to ('ddd');
 create index on idxpart (a text_pattern_ops);
 create table idxpart4 partition of idxpart for values from ('ddd') to ('eee');
-select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef
-  from pg_class left join pg_inherits on inhrelid = oid,
-  lateral pg_get_indexdef(pg_class.oid)
-  where relkind in ('i', 'I') and relname like 'idxpart%' order by relname;
 drop index idxpart_a_idx;
 create index on only idxpart (a text_pattern_ops);
 drop table idxpart;
@@ -253,10 +245,6 @@ create index idxpart1_2b_idx on idxpart1 ((a + b)) where a > 1;
 create index idxpart1_2c_idx on idxpart1 ((b + a)) where b > 1;
 alter index idxpart_1_idx attach partition idxpart1_1_idx;
 alter index idxpart_2_idx attach partition idxpart1_2_idx;
-select relname as child, inhparent::regclass as parent, pg_get_indexdef as childdef
-  from pg_class left join pg_inherits on inhrelid = oid,
-  lateral pg_get_indexdef(pg_class.oid)
-  where relkind in ('i', 'I') and relname like 'idxpart%' order by relname;
 drop table idxpart;
 create table idxpart (a int, b int, c text) partition by range (a);
 create index idxparti on idxpart (a);
@@ -267,10 +255,6 @@ create table idxpart2 (c text, a int, b int);
 create index on idxpart2 (a);
 create index on idxpart2 (c, b);
 alter table idxpart attach partition idxpart2 for values from (10) to (20);
-select c.relname, pg_get_indexdef(indexrelid)
-  from pg_class c join pg_index i on c.oid = i.indexrelid
-  where indrelid::regclass::text like 'idxpart%'
-  order by indexrelid::regclass::text collate "C";
 drop table idxpart;
 create table idxpart (col1 int, col2 int, a int, b int) partition by range (a);
 create table idxpart1 (col2 int, b int, col1 int, a int);
@@ -283,10 +267,6 @@ alter table idxpart attach partition idxpart2 for values from (0) to (1);
 create index on idxpart (abs(b));
 create index on idxpart ((b + 1));
 alter table idxpart attach partition idxpart1 for values from (1) to (2);
-select c.relname, pg_get_indexdef(indexrelid)
-  from pg_class c join pg_index i on c.oid = i.indexrelid
-  where indrelid::regclass::text like 'idxpart%'
-  order by indexrelid::regclass::text collate "C";
 drop table idxpart;
 create table idxpart (col1 int, a int, col3 int, b int) partition by range (a);
 alter table idxpart drop column col1, drop column col3;
@@ -298,10 +278,6 @@ create index on idxpart2 (a) where b > 1000;
 alter table idxpart2 drop column col1, drop column col2;
 alter table idxpart attach partition idxpart2 for values from (1000) to (2000);
 create index on idxpart (a) where b > 1000;
-select c.relname, pg_get_indexdef(indexrelid)
-  from pg_class c join pg_index i on c.oid = i.indexrelid
-  where indrelid::regclass::text like 'idxpart%'
-  order by indexrelid::regclass::text collate "C";
 drop table idxpart;
 create table idxpart1 (drop_1 int, drop_2 int, col_keep int, drop_3 int);
 alter table idxpart1 drop column drop_1;

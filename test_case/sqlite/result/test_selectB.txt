@@ -1,0 +1,685 @@
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2) ORDER BY 1
+--Result--
+[(2,), (3,), (8,), (12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 ORDER BY 1
+--Result--
+[(2,), (3,), (8,), (12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM        (SELECT a FROM t1 UNION ALL SELECT d FROM t2)      WHERE a>10 ORDER BY 1
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>10 UNION ALL SELECT d FROM t2 WHERE d>10 ORDER BY 1
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM        (SELECT a FROM t1 UNION ALL SELECT d FROM t2)      WHERE a>10 ORDER BY a
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>10        UNION ALL      SELECT d FROM t2 WHERE d>10      ORDER BY a
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM        (SELECT a FROM t1 UNION ALL SELECT d FROM t2 WHERE d > 12)      WHERE a>10 ORDER BY a
+--Result--
+[(14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>10       UNION ALL      SELECT d FROM t2 WHERE d>12 AND d>10     ORDER BY a
+--Result--
+[(14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2) ORDER BY 1      LIMIT 2
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 ORDER BY 1 LIMIT 2
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2) ORDER BY 1      LIMIT 2 OFFSET 3
+--Result--
+[(12,), (14,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 ORDER BY 1 LIMIT 2 OFFSET 3
+--Result--
+[(12,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     )
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,), (6,), (12,), (18,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,), (6,), (12,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     ) ORDER BY 1
+--Result--
+[(2,), (3,), (6,), (8,), (12,), (12,), (14,), (18,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     ORDER BY 1
+--Result--
+[(2,), (3,), (6,), (8,), (12,), (12,), (14,), (18,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     ) WHERE a>=10 ORDER BY 1 LIMIT 3
+--Result--
+[(12,), (12,), (14,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>=10 UNION ALL SELECT d FROM t2 WHERE d>=10     UNION ALL SELECT c FROM t1 WHERE c>=10     ORDER BY 1 LIMIT 3
+--Result--
+[(12,), (12,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 2)
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 2
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2) ORDER BY 1
+--Result--
+[(2,), (3,), (8,), (12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 ORDER BY 1
+--Result--
+[(2,), (3,), (8,), (12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM        (SELECT a FROM t1 UNION ALL SELECT d FROM t2)      WHERE a>10 ORDER BY 1
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>10 UNION ALL SELECT d FROM t2 WHERE d>10 ORDER BY 1
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM        (SELECT a FROM t1 UNION ALL SELECT d FROM t2)      WHERE a>10 ORDER BY a
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>10        UNION ALL      SELECT d FROM t2 WHERE d>10      ORDER BY a
+--Result--
+[(12,), (14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM        (SELECT a FROM t1 UNION ALL SELECT d FROM t2 WHERE d > 12)      WHERE a>10 ORDER BY a
+--Result--
+[(14,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>10       UNION ALL      SELECT d FROM t2 WHERE d>12 AND d>10     ORDER BY a
+--Result--
+[(14,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2) ORDER BY 1      LIMIT 2
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 ORDER BY 1 LIMIT 2
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2) ORDER BY 1      LIMIT 2 OFFSET 3
+--Result--
+[(12,), (14,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 ORDER BY 1 LIMIT 2 OFFSET 3
+--Result--
+[(12,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     )
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,), (6,), (12,), (18,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1
+--Result--
+[(2,), (8,), (14,), (3,), (12,), (21,), (6,), (12,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     ) ORDER BY 1
+--Result--
+[(2,), (3,), (6,), (8,), (12,), (12,), (14,), (18,), (21,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     ORDER BY 1
+--Result--
+[(2,), (3,), (6,), (8,), (12,), (12,), (14,), (18,), (21,)]
++--------------------+
+--Query--
+SELECT * FROM (       SELECT a FROM t1 UNION ALL SELECT d FROM t2 UNION ALL SELECT c FROM t1     ) WHERE a>=10 ORDER BY 1 LIMIT 3
+--Result--
+[(12,), (12,), (14,)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a>=10 UNION ALL SELECT d FROM t2 WHERE d>=10     UNION ALL SELECT c FROM t1 WHERE c>=10     ORDER BY 1 LIMIT 3
+--Result--
+[(12,), (12,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 2)
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 2
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2)        ORDER BY 1
+--Result--
+[(6,), (12,), (15,), (18,), (24,)]
++--------------------+
+--Query--
+SELECT c, count(*) FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2)        GROUP BY c ORDER BY 1
+--Result--
+[(6, 2), (12, 1), (15, 1), (18, 1), (24, 1)]
++--------------------+
+--Query--
+SELECT t4.c, t3.a FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3       WHERE t3.a=14       ORDER BY 1
+--Result--
+[(6, 14), (6, 14), (12, 14), (15, 14), (18, 14), (24, 14)]
++--------------------+
+--Query--
+SELECT d FROM t2        EXCEPT        SELECT a FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)       EXCEPT        SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t1       EXCEPT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)
+--Result--
+[(12,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1
+--Result--
+[(9,), (15,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (15,), (9,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (18,), (15,), (12,), (9,), (6,)]
++--------------------+
+--Query--
+SELECT c FROM t1       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1 UNION SELECT e FROM t2 UNION ALL SELECT f FROM t2       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT c FROM t1       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4       ) LIMIT 2
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4 OFFSET 2       ) LIMIT 2
+--Result--
+[(14,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,), (1,), (0,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 UNION ALL SELECT * FROM t2) ORDER BY a+b
+--Result--
+[(2, 4, 6), (3, 6, 9), (8, 10, 12), (12, 15, 18), (14, 16, 18), (21, 24, 27)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 345 UNION ALL SELECT d FROM t2) ORDER BY 1
+--Result--
+[(3,), (12,), (21,), (345,)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (80.1, 180.1), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (20.1, None), (80.1, 180.1), (140.1, None), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x+y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) WHERE y+x NOT NULL ORDER BY 1
+--Result--
+[(6,), (18,), (30,), (260.2,), (600,), (1800,), (3000,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2)        ORDER BY 1
+--Result--
+[(6,), (12,), (15,), (18,), (24,)]
++--------------------+
+--Query--
+SELECT t4.c, t3.a FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3       WHERE t3.a=14       ORDER BY 1
+--Result--
+[(6, 14), (6, 14), (12, 14), (15, 14), (18, 14), (24, 14)]
++--------------------+
+--Query--
+SELECT d FROM t2        EXCEPT        SELECT a FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)       EXCEPT        SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t1       EXCEPT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)
+--Result--
+[(12,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1
+--Result--
+[(9,), (15,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (15,), (9,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (18,), (15,), (12,), (9,), (6,)]
++--------------------+
+--Query--
+SELECT c FROM t1       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1 UNION SELECT e FROM t2 UNION ALL SELECT f FROM t2       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT c FROM t1       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4       ) LIMIT 2
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4 OFFSET 2       ) LIMIT 2
+--Result--
+[(14,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,), (1,), (0,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 UNION ALL SELECT * FROM t2) ORDER BY a+b
+--Result--
+[(2, 4, 6), (3, 6, 9), (8, 10, 12), (12, 15, 18), (14, 16, 18), (21, 24, 27)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 345 UNION ALL SELECT d FROM t2) ORDER BY 1
+--Result--
+[(3,), (12,), (21,), (345,)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (80.1, 180.1), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (20.1, None), (80.1, 180.1), (140.1, None), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x+y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) WHERE y+x NOT NULL ORDER BY 1
+--Result--
+[(6,), (18,), (30,), (260.2,), (600,), (1800,), (3000,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2)        ORDER BY 1
+--Result--
+[(6,), (12,), (15,), (18,), (24,)]
++--------------------+
+--Query--
+SELECT t4.c, t3.a FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3       WHERE t3.a=14       ORDER BY 1
+--Result--
+[(6, 14), (6, 14), (12, 14), (15, 14), (18, 14), (24, 14)]
++--------------------+
+--Query--
+SELECT d FROM t2        EXCEPT        SELECT a FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)       EXCEPT        SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t1       EXCEPT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)
+--Result--
+[(12,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1
+--Result--
+[(9,), (15,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (15,), (9,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (18,), (15,), (12,), (9,), (6,)]
++--------------------+
+--Query--
+SELECT c FROM t1       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1 UNION SELECT e FROM t2 UNION ALL SELECT f FROM t2       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT c FROM t1       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4       ) LIMIT 2
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4 OFFSET 2       ) LIMIT 2
+--Result--
+[(14,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,), (1,), (0,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 UNION ALL SELECT * FROM t2) ORDER BY a+b
+--Result--
+[(2, 4, 6), (3, 6, 9), (8, 10, 12), (12, 15, 18), (14, 16, 18), (21, 24, 27)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 345 UNION ALL SELECT d FROM t2) ORDER BY 1
+--Result--
+[(3,), (12,), (21,), (345,)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (80.1, 180.1), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (20.1, None), (80.1, 180.1), (140.1, None), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x+y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) WHERE y+x NOT NULL ORDER BY 1
+--Result--
+[(6,), (18,), (30,), (260.2,), (600,), (1800,), (3000,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2)        ORDER BY 1
+--Result--
+[(6,), (12,), (15,), (18,), (24,)]
++--------------------+
+--Query--
+SELECT t4.c, t3.a FROM          (SELECT c FROM t1 UNION ALL SELECT e FROM t2) AS t4, t1 AS t3       WHERE t3.a=14       ORDER BY 1
+--Result--
+[(6, 14), (6, 14), (12, 14), (15, 14), (18, 14), (24, 14)]
++--------------------+
+--Query--
+SELECT d FROM t2        EXCEPT        SELECT a FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)       EXCEPT        SELECT * FROM (SELECT a FROM t1 UNION ALL SELECT d FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c FROM t1       EXCEPT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)
+--Result--
+[(12,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1
+--Result--
+[(9,), (15,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       EXCEPT        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (15,), (9,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT c FROM t1       ORDER BY c DESC
+--Result--
+[(27,), (24,), (18,), (15,), (12,), (9,), (6,)]
++--------------------+
+--Query--
+SELECT c FROM t1       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1 UNION SELECT e FROM t2 UNION ALL SELECT f FROM t2       ORDER BY c
+--Result--
+[(6,), (9,), (12,), (15,), (18,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       UNION        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT c FROM t1       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT c FROM t1       ORDER BY 1
+--Result--
+[(6,), (18,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       INTERSECT        SELECT * FROM (SELECT e FROM t2 UNION ALL SELECT f FROM t2)       ORDER BY 1
+--Result--
+[(6,), (9,), (15,), (18,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4       ) LIMIT 2
+--Result--
+[(2,), (8,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT a FROM t1 UNION ALL SELECT d FROM t2 LIMIT 4 OFFSET 2       ) LIMIT 2
+--Result--
+[(14,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,), (1,), (0,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (         SELECT DISTINCT (a/10) FROM t1 UNION ALL SELECT DISTINCT(d%2) FROM t2       )
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 UNION ALL SELECT * FROM t2) ORDER BY a+b
+--Result--
+[(2, 4, 6), (3, 6, 9), (8, 10, 12), (12, 15, 18), (14, 16, 18), (21, 24, 27)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 345 UNION ALL SELECT d FROM t2) ORDER BY 1
+--Result--
+[(3,), (12,), (21,), (345,)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (80.1, 180.1), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x, y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) ORDER BY 1
+--Result--
+[(2, 4), (8, 10), (14, 16), (20.1, None), (80.1, 180.1), (140.1, None), (200, 400), (800, 1000), (1400, 1600)]
++--------------------+
+--Query--
+SELECT x+y FROM (         SELECT a AS x, b AS y FROM t1         UNION ALL         SELECT a*10 + 0.1, f*10 + 0.1 FROM t1 LEFT JOIN t2 ON (c=d)         UNION ALL         SELECT a*100, b*100 FROM t1       ) WHERE y+x NOT NULL ORDER BY 1
+--Result--
+[(6,), (18,), (30,), (260.2,), (600,), (1800,), (3000,)]
++--------------------+

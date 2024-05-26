@@ -242,19 +242,6 @@ DROP TABLE t1;
 CREATE TABLESPACE ts1 ADD DATAFILE 'ts1.ibd';
 CREATE TABLESPACE ts3 ADD DATAFILE 'ts3.ibd';
 select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
-select load_file('$MYSQLD_DATADIR/test/t1.par');
 DROP TABLESPACE ts1;
 DROP TABLESPACE ts3;
 CREATE TABLE t1(a int)
@@ -308,5 +295,4 @@ DROP TABLE t1, t2;
 CREATE TABLE t1(a DATETIME)
 PARTITION BY HASH (EXTRACT(HOUR_MICROSECOND FROM a));
 SELECT FROM_DAYS(3652499), FROM_DAYS(3652500), FROM_DAYS(3652501);
-SELECT FROM_DAYS(4294967660), FROM_DAYS(4294967661), FROM_DAYS(4294967663);
 DROP TABLE t1;

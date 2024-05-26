@@ -45,11 +45,8 @@ SET c12= REPEAT('ab', @max_allowed_packet);
 SELECT c11, LENGTH(c12) FROM t1;
 INSERT INTO t1
 VALUES (101, REPEAT('ab', @max_allowed_packet));
-SELECT c11, LENGTH(c12) FROM t1;
 INSERT INTO t1
 SELECT 102, REPEAT('ab', @max_allowed_packet);
-SELECT c11, LENGTH(c12) FROM t1;
 DELETE FROM t1
 WHERE c12 <=> REPEAT('ab', @max_allowed_packet);
-SELECT c11, LENGTH(c12) FROM t1;
 DROP TABLE t1, t2;

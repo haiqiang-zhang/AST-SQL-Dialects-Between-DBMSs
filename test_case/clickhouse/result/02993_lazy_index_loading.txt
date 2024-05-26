@@ -1,0 +1,25 @@
+--Query--
+SELECT round(primary_key_bytes_in_memory, -7), round(primary_key_bytes_in_memory_allocated, -7) FROM system.parts WHERE database = currentDatabase() AND table = 'test'
+--Result--
+[(100000000, 140000000)]
++--------------------+
+--Query--
+DETACH TABLE test
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT primary_key_bytes_in_memory, primary_key_bytes_in_memory_allocated FROM system.parts WHERE database = currentDatabase() AND table = 'test'
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT s != '' FROM test LIMIT 1
+--Result--
+[(1,)]
++--------------------+

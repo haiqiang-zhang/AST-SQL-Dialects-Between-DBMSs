@@ -1,0 +1,30 @@
+--Query--
+explain syntax select min((n as a) + (1 as b)) c from (select number n from numbers(10)) where a > 0 and b > 0 having c > 0
+--Result--
+[('SELECT min(n AS a) + (1 AS b) AS c',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), ('    WHERE (1 > 0) AND (n > 0)',), (')',), ('WHERE (a > 0) AND (b > 0)',), ('HAVING c > 0',)]
++--------------------+
+--Query--
+select min((n as a) + (1 as b)) c from (select number n from numbers(10)) where a > 0 and b > 0 having c > 0
+--Result--
+[(2,)]
++--------------------+
+--Query--
+explain syntax select min((n + 1) as a) c from (select number n from numbers(10)) where a > 0 having c > 0
+--Result--
+[('SELECT min(n) + 1 AS c',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), ('    WHERE (n + 1) > 0',), (')',), ('WHERE ((n + 1) AS a) > 0',), ('HAVING c > 0',)]
++--------------------+
+--Query--
+select min((n + 1) as a) c from (select number n from numbers(10)) where a > 0 having c > 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+explain syntax select min(n + 1) as c from (select number n from numbers(10)) having c > 0
+--Result--
+[('SELECT min(n) + 1 AS c',), ('FROM',), ('(',), ('    SELECT number AS n',), ('    FROM numbers(10)',), (')',), ('HAVING c > 0',)]
++--------------------+
+--Query--
+select min(n + 1) c from (select number n from numbers(10)) having c > 0
+--Result--
+[(1,)]
++--------------------+

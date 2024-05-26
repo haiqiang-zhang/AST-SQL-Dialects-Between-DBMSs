@@ -1,0 +1,10 @@
+--Query--
+select if(0, y, 42) from test
+--Result--
+[(42,)]
++--------------------+
+--Query--
+explain syntax select x, if((select hasColumnInTable(currentDatabase(), 'test', 'y')), y, x || '_')  from test
+--Result--
+[('SELECT',), ('    x,',), ("    concat(x, '_')",), ('FROM test',)]
++--------------------+

@@ -1,0 +1,40 @@
+--Query--
+SELECT murmurHash2_32(123456)
+--Result--
+[(623211862,)]
++--------------------+
+--Query--
+SELECT murmurHash2_32(2) = bitXor(toUInt32(0x5bd1e995 * bitXor(toUInt32(3 * 0x5bd1e995) AS a, bitShiftRight(a, 13))) AS b, bitShiftRight(b, 15))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT murmurHash2_32('\x02') = bitXor(toUInt32(0x5bd1e995 * bitXor(toUInt32(3 * 0x5bd1e995) AS a, bitShiftRight(a, 13))) AS b, bitShiftRight(b, 15))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT murmurHash2_64('foo')
+--Result--
+[(14834356025302342401,)]
++--------------------+
+--Query--
+SELECT murmurHash3_32('foo')
+--Result--
+[(4138058784,)]
++--------------------+
+--Query--
+SELECT murmurHash3_64('foo')
+--Result--
+[(11303473983767132390,)]
++--------------------+
+--Query--
+SELECT gccMurmurHash('foo')
+--Result--
+[(9631199822919835226,)]
++--------------------+
+--Query--
+SELECT hex(murmurHash3_128('foo'))
+--Result--
+[('6145F501578671E2877DBA2BE487AF7E',)]
++--------------------+

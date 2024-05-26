@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, b FROM t1
+--Result--
+[(1, datetime.date(1960, 1, 1))]
++--------------------+
+--Query--
+SELECT id, name FROM t1
+--Result--
+[(30, 'aaa')]
++--------------------+
+--Query--
+SELECT id, name FROM t1
+--Result--
+[(60, 'aaa')]
++--------------------+
+--Query--
+SELECT id, name FROM t1
+--Result--
+[(60, 'aaa')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, COLUMN_NAME, EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='t1'
+--Result--
+[('t1', 'f1', 'INVISIBLE'), ('t1', 'f2', 'INVISIBLE'), ('t1', 'f3', '')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME='t1'
+--Result--
+[('t1', 'f2', 'f2', None), ('t1', 'PRIMARY', 'f1', None), ('t1', 't1_ibfk_1', 'f2', 'f1')]
++--------------------+

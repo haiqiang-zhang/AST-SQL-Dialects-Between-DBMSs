@@ -1,0 +1,60 @@
+--Query--
+SELECT NOT x, isZeroOrNull(x) FROM (SELECT arrayJoin([1, 2, 3, NULL]) = 3 AS x)
+--Result--
+[(1, 1), (1, 1), (0, 0), (None, 1)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM test WHERE x != 'xyz'
+--Result--
+[('hello',), ('world',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM test WHERE NOT x = 'xyz'
+--Result--
+[('hello',), ('world',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM test WHERE isZeroOrNull(x = 'xyz')
+--Result--
+[('hello',), ('world',), (None,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT count() FROM (     SELECT * FROM test WHERE x != 'xyz'     UNION ALL     SELECT * FROM test WHERE NOT x != 'xyz' )
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+select count(), count(a), max(a), min(a), avg(a), sum(a), any(a) from (select cast(Null,'Nullable(Float64)') a)
+--Result--
+[(1, 0, None, None, None, None, None)]
++--------------------+
+--Query--
+select countMerge(cnts), countMerge(cntsa), maxMerge(maxs), minMerge(mins), avgMerge(avgs), sumMerge(sums), anyMerge(anys) from ( select countState() cnts, countState(a) cntsa, maxState(a) maxs, minState(a) mins, avgState(a) avgs, sumState(a) sums, anyState(a) anys from (select cast(Null,'Nullable(Float64)') a))
+--Result--
+[(1, 0, None, None, None, None, None)]
++--------------------+
+--Query--
+select '--- empty resultset ---'
+--Result--
+[('--- empty resultset ---',)]
++--------------------+

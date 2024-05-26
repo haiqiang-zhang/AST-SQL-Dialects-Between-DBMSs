@@ -1,0 +1,115 @@
+--Query--
+select b from test where a = 12
+--Result--
+[(21,)]
++--------------------+
+--Query--
+SELECT b FROM test ORDER BY a DESC
+--Result--
+[(22,), (21,), (22,)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY a
+--Result--
+[(11, 22), (12, 21), (13, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY a DESC
+--Result--
+[(13, 22), (12, 21), (11, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY b, a
+--Result--
+[(12, 21), (11, 22), (13, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY 2, 1
+--Result--
+[(12, 21), (11, 22), (13, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY b DESC, a
+--Result--
+[(11, 22), (13, 22), (12, 21)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY b, a DESC
+--Result--
+[(12, 21), (13, 22), (11, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY b, a DESC LIMIT 1
+--Result--
+[(12, 21)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY b, a DESC LIMIT 1 OFFSET 1
+--Result--
+[(13, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test ORDER BY b, a DESC OFFSET 1
+--Result--
+[(13, 22), (11, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test WHERE a < 13 ORDER BY b
+--Result--
+[(12, 21), (11, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test WHERE a < 13 ORDER BY 2
+--Result--
+[(12, 21), (11, 22)]
++--------------------+
+--Query--
+SELECT a, b FROM test WHERE a < 13 ORDER BY b DESC
+--Result--
+[(11, 22), (12, 21)]
++--------------------+
+--Query--
+SELECT b, a FROM test WHERE a < 13 ORDER BY b DESC
+--Result--
+[(22, 11), (21, 12)]
++--------------------+
+--Query--
+SELECT b % 2 AS f, SUM(a) FROM test GROUP BY f ORDER BY b % 2
+--Result--
+[(0, 24), (1, 12)]
++--------------------+
+--Query--
+SELECT b % 2 AS f, a FROM test ORDER BY b % 2, a
+--Result--
+[(0, 11), (0, 13), (1, 12)]
++--------------------+
+--Query--
+SELECT b % 2 AS f, SUM(a) FROM test GROUP BY f ORDER BY f
+--Result--
+[(0, 24), (1, 12)]
++--------------------+
+--Query--
+SELECT b % 2 AS f, SUM(a) FROM test GROUP BY f ORDER BY 1
+--Result--
+[(0, 24), (1, 12)]
++--------------------+
+--Query--
+SELECT a-10 AS k FROM test UNION SELECT a-10 AS l FROM test ORDER BY k
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT a-10 AS k FROM test UNION SELECT a-10 AS l FROM test ORDER BY l
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT a-10 AS k FROM test UNION SELECT a-10 AS l FROM test ORDER BY a-10
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT a-10 AS k FROM test UNION SELECT a-11 AS l FROM test ORDER BY a-11
+--Result--
+[(0,), (1,), (2,), (3,)]
++--------------------+

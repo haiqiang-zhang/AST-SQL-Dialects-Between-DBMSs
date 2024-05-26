@@ -1,0 +1,60 @@
+--Query--
+SELECT sum(b) OVER win FROM t1     WINDOW win AS (  ORDER BY a RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING  )
+--Result--
+[(6,), (6,), (6,)]
++--------------------+
+--Query--
+SELECT json_group_array(json(j)) FROM testjson
+--Result--
+[('[{"a":1},{"b":2},{"c":3},{"d":4}]',)]
++--------------------+
+--Query--
+SELECT j FROM testjson
+--Result--
+[('{"a":1,"e":9}',), ('{"b":2,"e":9}',), ('{"c":3,"e":9}',), ('{"d":4,"e":9}',)]
++--------------------+
+--Query--
+SELECT group_concat(x,'') OVER (       ORDER BY id ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING     ) FROM testjson ORDER BY id
+--Result--
+[('bc',), ('cd',), ('d',), (None,)]
++--------------------+
+--Query--
+SELECT json_group_object(x,json(j)) OVER (       ORDER BY id ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING     ) FROM testjson
+--Result--
+[('{"b":{"b":2,"e":9},"c":{"c":3,"e":9}}',), ('{"c":{"c":3,"e":9},"d":{"d":4,"e":9}}',), ('{"d":{"d":4,"e":9}}',), ('{}',)]
++--------------------+
+--Query--
+SELECT group_concat(x,'') FILTER (WHERE id!=2) OVER (       ORDER BY id ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING     ) FROM testjson
+--Result--
+[(None,), ('a',), ('a',), ('c',)]
++--------------------+
+--Query--
+SELECT json_group_array(json(j)) FILTER (WHERE id!=2) OVER (       ORDER BY id ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING     ) FROM testjson
+--Result--
+[('[]',), ('[{"a":1,"e":9}]',), ('[{"a":1,"e":9}]',), ('[{"c":3,"e":9}]',)]
++--------------------+
+--Query--
+SELECT json_group_object(x,json(j)) FILTER (WHERE id!=2) OVER (       ORDER BY id ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING     ) FROM testjson
+--Result--
+[('{}',), ('{"a":{"a":1,"e":9}}',), ('{"a":{"a":1,"e":9}}',), ('{"c":{"c":3,"e":9}}',)]
++--------------------+
+--Query--
+WITH y AS (       SELECT Row_Number() OVER (win) FROM x WINDOW win AS (PARTITION BY a)   )   SELECT * FROM y
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 1 WINDOW win AS (PARTITION BY fake_column)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT value FROM json_each('[1,2,3,4,5]')
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT sum(value) OVER (ORDER BY rowid) FROM json_each('[1,2,3,4,5]')
+--Result--
+[(1,), (3,), (6,), (10,), (15,)]
++--------------------+

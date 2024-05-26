@@ -1,0 +1,1095 @@
+--Query--
+select table_name, data_type, column_type from information_schema.columns  where column_name = 'numeric_precision' and table_schema = 'information_schema'
+--Result--
+[('COLUMNS', 'bigint', 'bigint unsigned'), ('PARAMETERS', 'int', 'int unsigned'), ('ROUTINES', 'int', 'int unsigned')]
++--------------------+
+--Query--
+select * from information_schema.SCHEMATA where schema_name > 'm' ORDER BY SCHEMA_NAME
+--Result--
+[('def', 'mysql', 'utf8mb4', 'utf8mb4_0900_ai_ci', None, 'NO'), ('def', 'mysqltest', 'utf8mb4', 'utf8mb4_0900_ai_ci', None, 'NO'), ('def', 'mysqltest_3', 'utf8mb4', 'utf8mb4_0900_ai_ci', None, 'NO'), ('def', 'performance_schema', 'utf8mb4', 'utf8mb4_0900_ai_ci', None, 'NO'), ('def', 'sys', 'utf8mb4', 'utf8mb4_0900_ai_ci', None, 'NO'), ('def', 'test_db', 'utf8mb4', 'utf8mb4_0900_ai_ci', None, 'NO')]
++--------------------+
+--Query--
+select schema_name from information_schema.schemata ORDER BY schema_name
+--Result--
+[('information_schema',), ('mysql',), ('mysqltest',), ('mysqltest_3',), ('performance_schema',), ('sys',), ('test_db',)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('CHARACTER_SETS',), ('CHECK_CONSTRAINTS',), ('COLLATIONS',), ('COLLATION_CHARACTER_SET_APPLICABILITY',), ('COLUMNS',), ('COLUMNS_EXTENSIONS',), ('COLUMN_STATISTICS',), ('EVENTS',), ('FILES',), ('KEY_COLUMN_USAGE',), ('KEYWORDS',), ('PARAMETERS',), ('PARTITIONS',), ('REFERENTIAL_CONSTRAINTS',), ('RESOURCE_GROUPS',), ('ROUTINES',), ('SCHEMATA',), ('SCHEMATA_EXTENSIONS',), ('ST_SPATIAL_REFERENCE_SYSTEMS',), ('ST_UNITS_OF_MEASURE',), ('ST_GEOMETRY_COLUMNS',), ('STATISTICS',), ('TABLE_CONSTRAINTS',), ('TABLE_CONSTRAINTS_EXTENSIONS',), ('TABLES',), ('TABLES_EXTENSIONS',), ('TABLESPACES_EXTENSIONS',), ('TRIGGERS',), ('VIEW_ROUTINE_USAGE',), ('VIEW_TABLE_USAGE',), ('VIEWS',), ('COLUMN_PRIVILEGES',), ('ENGINES',), ('OPTIMIZER_TRACE',), ('PLUGINS',), ('PROCESSLIST',), ('PROFILING',), ('SCHEMA_PRIVILEGES',), ('TABLESPACES',), ('TABLE_PRIVILEGES',), ('USER_PRIVILEGES',), ('db',), ('user',), ('default_roles',), ('role_edges',), ('global_grants',), ('password_history',), ('func',), ('plugin',), ('help_topic',), ('help_category',), ('help_relation',), ('servers',), ('tables_priv',), ('columns_priv',), ('help_keyword',), ('time_zone_name',), ('time_zone',), ('time_zone_transition',), ('time_zone_transition_type',), ('time_zone_leap_second',), ('procs_priv',), ('general_log',), ('slow_log',), ('component',), ('slave_relay_log_info',), ('slave_master_info',), ('slave_worker_info',), ('gtid_executed',), ('replication_asynchronous_connection_failover',), ('replication_asynchronous_connection_failover_managed',), ('replication_group_member_actions',), ('replication_group_configuration_version',), ('server_cost',), ('engine_cost',), ('proxies_priv',), ('ENABLED_ROLES',), ('APPLICABLE_ROLES',), ('ADMINISTRABLE_ROLE_AUTHORIZATIONS',), ('ROLE_COLUMN_GRANTS',), ('ROLE_ROUTINE_GRANTS',), ('ROLE_TABLE_GRANTS',), ('USER_ATTRIBUTES',), ('t1',), ('t2',), ('t4',)]
++--------------------+
+--Query--
+select c,table_name from v1 inner join information_schema.TABLES v2 on (v1.c=v2.table_name) where v1.c rlike "t[1-5]{1}$" order by c
+--Result--
+[('t1', 't1'), ('t2', 't2'), ('t4', 't4')]
++--------------------+
+--Query--
+select c,table_name from v1 left join information_schema.TABLES v2 on (v1.c=v2.table_name) where v1.c rlike "t[1-5]{1}$" order by c
+--Result--
+[('t1', 't1'), ('t2', 't2'), ('t4', 't4')]
++--------------------+
+--Query--
+select c, v2.table_name from v1 right join information_schema.TABLES v2 on (v1.c=v2.table_name) where v1.c rlike "t[1-5]{1}$" order by c
+--Result--
+[('t1', 't1'), ('t2', 't2'), ('t4', 't4')]
++--------------------+
+--Query--
+select table_name from information_schema.TABLES where table_schema = "mysqltest" and table_name rlike "t[1-5]{1}$" order by table_name
+--Result--
+[('t1',), ('t2',), ('t4',)]
++--------------------+
+--Query--
+select * from information_schema.STATISTICS where TABLE_SCHEMA = "mysqltest" order by table_name, index_name
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.COLUMNS where table_name="t1" and column_name= "a" order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_name, column_name, privileges from information_schema.columns where table_schema = 'mysqltest' and table_name = 't1' order by table_name, column_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_name, column_name, privileges from information_schema.columns where table_schema = 'mysqltest' and table_name = 'v1' order by table_name, column_name
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.CHARACTER_SETS where CHARACTER_SET_NAME like 'latin1%' order by character_set_name
+--Result--
+[('latin1', 'latin1_swedish_ci', 'cp1252 West European', 1)]
++--------------------+
+--Query--
+select * from information_schema.COLLATIONS where COLLATION_NAME like 'latin1%' order by collation_name
+--Result--
+[('latin1_bin', 'latin1', 47, '', 'Yes', 1, 'PAD SPACE'), ('latin1_danish_ci', 'latin1', 15, '', 'Yes', 1, 'PAD SPACE'), ('latin1_general_ci', 'latin1', 48, '', 'Yes', 1, 'PAD SPACE'), ('latin1_general_cs', 'latin1', 49, '', 'Yes', 1, 'PAD SPACE'), ('latin1_german1_ci', 'latin1', 5, '', 'Yes', 1, 'PAD SPACE'), ('latin1_german2_ci', 'latin1', 31, '', 'Yes', 2, 'PAD SPACE'), ('latin1_spanish_ci', 'latin1', 94, '', 'Yes', 1, 'PAD SPACE'), ('latin1_swedish_ci', 'latin1', 8, 'Yes', 'Yes', 1, 'PAD SPACE')]
++--------------------+
+--Query--
+select * from information_schema.COLLATION_CHARACTER_SET_APPLICABILITY where COLLATION_NAME like 'latin1%' ORDER BY COLLATION_NAME
+--Result--
+[('latin1_bin', 'latin1'), ('latin1_danish_ci', 'latin1'), ('latin1_general_ci', 'latin1'), ('latin1_general_cs', 'latin1'), ('latin1_german1_ci', 'latin1'), ('latin1_german2_ci', 'latin1'), ('latin1_spanish_ci', 'latin1'), ('latin1_swedish_ci', 'latin1')]
++--------------------+
+--Query--
+select parameter_style, sql_data_access, dtd_identifier from information_schema.routines where routine_schema='test'
+--Result--
+[]
++--------------------+
+--Query--
+select a.ROUTINE_NAME from information_schema.ROUTINES a, information_schema.SCHEMATA b where a.ROUTINE_SCHEMA = b.SCHEMA_NAME AND b.SCHEMA_NAME='test' ORDER BY a.ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) from information_schema.ROUTINES where routine_schema='test'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('ADMINISTRABLE_ROLE_AUTHORIZATIONS',), ('APPLICABLE_ROLES',), ('CHARACTER_SETS',), ('CHECK_CONSTRAINTS',), ('COLLATION_CHARACTER_SET_APPLICABILITY',), ('COLLATIONS',), ('COLUMN_PRIVILEGES',), ('COLUMN_STATISTICS',), ('COLUMNS',), ('COLUMNS_EXTENSIONS',), ('ENABLED_ROLES',), ('ENGINES',), ('EVENTS',), ('FILES',), ('KEY_COLUMN_USAGE',), ('KEYWORDS',), ('OPTIMIZER_TRACE',), ('PARAMETERS',), ('PARTITIONS',), ('PLUGINS',), ('PROCESSLIST',), ('PROFILING',), ('REFERENTIAL_CONSTRAINTS',), ('RESOURCE_GROUPS',), ('ROLE_COLUMN_GRANTS',), ('ROLE_ROUTINE_GRANTS',), ('ROLE_TABLE_GRANTS',), ('ROUTINES',), ('SCHEMA_PRIVILEGES',), ('SCHEMATA',), ('SCHEMATA_EXTENSIONS',), ('ST_GEOMETRY_COLUMNS',), ('ST_SPATIAL_REFERENCE_SYSTEMS',), ('ST_UNITS_OF_MEASURE',), ('STATISTICS',), ('TABLE_CONSTRAINTS',), ('TABLE_CONSTRAINTS_EXTENSIONS',), ('TABLE_PRIVILEGES',), ('TABLES',), ('TABLES_EXTENSIONS',), ('TABLESPACES',), ('TABLESPACES_EXTENSIONS',), ('TRIGGERS',), ('USER_ATTRIBUTES',), ('USER_PRIVILEGES',), ('VIEW_ROUTINE_USAGE',), ('VIEW_TABLE_USAGE',), ('VIEWS',), ('columns_priv',), ('component',), ('db',), ('default_roles',), ('engine_cost',), ('func',), ('general_log',), ('global_grants',), ('gtid_executed',), ('help_category',), ('help_keyword',), ('help_relation',), ('help_topic',), ('password_history',), ('plugin',), ('procs_priv',), ('proxies_priv',), ('replication_asynchronous_connection_failover',), ('replication_asynchronous_connection_failover_managed',), ('replication_group_configuration_version',), ('replication_group_member_actions',), ('role_edges',), ('server_cost',), ('servers',), ('slave_master_info',), ('slave_relay_log_info',), ('slave_worker_info',), ('slow_log',), ('tables_priv',), ('time_zone',), ('time_zone_leap_second',), ('time_zone_name',), ('time_zone_transition',), ('time_zone_transition_type',), ('user',)]
++--------------------+
+--Query--
+select ROUTINE_NAME, ROUTINE_DEFINITION from information_schema.ROUTINES WHERE ROUTINE_SCHEMA='test' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select ROUTINE_NAME, ROUTINE_DEFINITION from information_schema.ROUTINES WHERE ROUTINE_SCHEMA='test' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select ROUTINE_NAME, ROUTINE_DEFINITION from information_schema.ROUTINES WHERE ROUTINE_SCHEMA='test' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select ROUTINE_NAME, ROUTINE_DEFINITION from information_schema.ROUTINES WHERE ROUTINE_SCHEMA='test' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select * from v0
+--Result--
+[('information_schema',), ('mysql',), ('mysqltest_3',), ('performance_schema',), ('sys',), ('test_db',)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('v1',)]
++--------------------+
+--Query--
+select * from v2
+--Result--
+[('c',)]
++--------------------+
+--Query--
+select * from v3
+--Result--
+[('latin1',)]
++--------------------+
+--Query--
+select * from v4
+--Result--
+[('latin1_bin',), ('latin1_danish_ci',), ('latin1_general_ci',), ('latin1_general_cs',), ('latin1_german1_ci',), ('latin1_german2_ci',), ('latin1_spanish_ci',), ('latin1_swedish_ci',)]
++--------------------+
+--Query--
+select * from information_schema.views where TABLE_SCHEMA != 'sys' and TABLE_NAME rlike "v[0-4]{1}$" order by table_name
+--Result--
+[('def', 'test_db', 'v0', 'select `information_schema`.`schemata`.`SCHEMA_NAME` AS `schema_name` from `information_schema`.`SCHEMATA` order by `information_schema`.`schemata`.`SCHEMA_NAME`', 'NONE', 'NO', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'v1', "select `information_schema`.`tables`.`TABLE_NAME` AS `table_name` from `information_schema`.`TABLES` where (`information_schema`.`tables`.`TABLE_NAME` = 'v1') order by `information_schema`.`tables`.`TABLE_NAME`", 'NONE', 'NO', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'v2', "select `information_schema`.`columns`.`COLUMN_NAME` AS `column_name` from `information_schema`.`COLUMNS` where (`information_schema`.`columns`.`TABLE_NAME` = 'v2') order by `information_schema`.`columns`.`COLUMN_NAME`", 'NONE', 'NO', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'v3', "select `information_schema`.`character_sets`.`CHARACTER_SET_NAME` AS `CHARACTER_SET_NAME` from `information_schema`.`CHARACTER_SETS` where (`information_schema`.`character_sets`.`CHARACTER_SET_NAME` like 'latin1%') order by `information_schema`.`character_sets`.`CHARACTER_SET_NAME`", 'NONE', 'NO', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'v4', "select `information_schema`.`collations`.`COLLATION_NAME` AS `COLLATION_NAME` from `information_schema`.`COLLATIONS` where (`information_schema`.`collations`.`COLLATION_NAME` like 'latin1%') order by `information_schema`.`collations`.`COLLATION_NAME`", 'NONE', 'NO', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci')]
++--------------------+
+--Query--
+select * from information_schema.USER_PRIVILEGES where grantee like '%mysqltest_1%'
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.SCHEMA_PRIVILEGES where grantee like '%mysqltest_1%'
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.TABLE_PRIVILEGES where grantee like '%mysqltest_1%'
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.COLUMN_PRIVILEGES where grantee like '%mysqltest_1%'
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.TABLE_CONSTRAINTS where TABLE_SCHEMA= "test" order by constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.key_column_usage where TABLE_SCHEMA= "test" order by constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_name from information_schema.TABLES where table_schema like "test%" order by table_name
+--Result--
+[('t1',), ('t3',), ('t5',)]
++--------------------+
+--Query--
+select table_name,column_name from information_schema.COLUMNS where table_schema like "test%" order by table_name, column_name
+--Result--
+[('t1', 'a'), ('t3', 'a'), ('t5', 'id')]
++--------------------+
+--Query--
+SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA != 'sys' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.views where table_schema != 'sys' order by table_name
+--Result--
+[('def', 'test_db', 'v1', 'select `test_db`.`t1`.`a` AS `a` from `test_db`.`t1`', 'CASCADED', 'YES', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'v2', 'select `test_db`.`t1`.`a` AS `a` from `test_db`.`t1`', 'LOCAL', 'YES', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci'), ('def', 'test_db', 'v3', 'select `test_db`.`t1`.`a` AS `a` from `test_db`.`t1`', 'CASCADED', 'YES', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci')]
++--------------------+
+--Query--
+select * from INFORMATION_SCHEMA.COLUMN_PRIVILEGES WHERE table_schema != 'sys'
+--Result--
+[]
++--------------------+
+--Query--
+select * from INFORMATION_SCHEMA.TABLE_PRIVILEGES WHERE table_schema NOT IN ('sys','mysql')
+--Result--
+[]
++--------------------+
+--Query--
+select sql_mode from information_schema.ROUTINES where ROUTINE_SCHEMA != 'sys'
+--Result--
+[]
++--------------------+
+--Query--
+select AUTO_INCREMENT from information_schema.tables where table_name = 't1'
+--Result--
+[(5,)]
++--------------------+
+--Query--
+select s1 from t1 where s1 in (select version from information_schema.tables) union select version from information_schema.tables
+--Result--
+[(10,), (None,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('latin1', 'latin1_swedish_ci', 'cp1252 West European', 1)]
++--------------------+
+--Query--
+select COLUMN_NAME,COLUMN_TYPE, CHARACTER_MAXIMUM_LENGTH,  CHARACTER_OCTET_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE from information_schema.columns where table_name= 't1'
+--Result--
+[('a', 'decimal(5,3)', None, None, 5, 3), ('b', 'decimal(5,1)', None, None, 5, 1), ('c', 'float(5,2)', None, None, 5, 2), ('d', 'decimal(6,4)', None, None, 6, 4), ('e', 'float', None, None, 12, None), ('f', 'decimal(6,3)', None, None, 6, 3), ('g', 'int', None, None, 10, 0), ('h', 'double(10,3)', None, None, 10, 3), ('i', 'double', None, None, 22, None)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('user',)]
++--------------------+
+--Query--
+select * from information_schema.TABLE_CONSTRAINTS where TABLE_NAME= "vo"
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.key_column_usage where TABLE_NAME= "vo"
+--Result--
+[]
++--------------------+
+--Query--
+select TABLE_NAME,TABLE_TYPE,ENGINE from information_schema.tables where table_schema='information_schema' order by table_name COLLATE utf8mb3_general_ci limit 2
+--Result--
+[('ADMINISTRABLE_ROLE_AUTHORIZATIONS', 'SYSTEM VIEW', None), ('APPLICABLE_ROLES', 'SYSTEM VIEW', None)]
++--------------------+
+--Query--
+select table_name from information_schema.views where table_schema='test' order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+select table_name from information_schema.views where table_schema='test' order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where table_schema='test' order by column_name
+--Result--
+[]
++--------------------+
+--Query--
+select index_name from information_schema.statistics where table_schema='test' order by index_name
+--Result--
+[]
++--------------------+
+--Query--
+select constraint_name from information_schema.table_constraints where table_schema='test' order by constraint_name
+--Result--
+[]
++--------------------+
+--Query--
+select column_type from information_schema.columns where table_schema="information_schema" and table_name="COLUMNS" and (column_name="character_set_name" or column_name="collation_name")
+--Result--
+[('varchar(64)',), ('varchar(64)',)]
++--------------------+
+--Query--
+select TABLE_ROWS from information_schema.tables where table_schema="information_schema" and table_name="COLUMNS"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select table_type from information_schema.tables where table_schema="mysql" and table_name="user"
+--Result--
+[('BASE TABLE',)]
++--------------------+
+--Query--
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
+--Result--
+[('innodb_table_stats',), ('innodb_index_stats',), ('CHARACTER_SETS',), ('CHECK_CONSTRAINTS',), ('COLLATIONS',), ('COLLATION_CHARACTER_SET_APPLICABILITY',), ('COLUMNS',), ('COLUMNS_EXTENSIONS',), ('COLUMN_STATISTICS',), ('EVENTS',), ('FILES',), ('INNODB_DATAFILES',), ('INNODB_FOREIGN',), ('INNODB_FOREIGN_COLS',), ('INNODB_FIELDS',), ('INNODB_TABLESPACES_BRIEF',), ('KEY_COLUMN_USAGE',), ('KEYWORDS',), ('PARAMETERS',), ('PARTITIONS',), ('REFERENTIAL_CONSTRAINTS',), ('RESOURCE_GROUPS',), ('ROUTINES',), ('SCHEMATA',), ('SCHEMATA_EXTENSIONS',), ('ST_SPATIAL_REFERENCE_SYSTEMS',), ('ST_UNITS_OF_MEASURE',), ('ST_GEOMETRY_COLUMNS',), ('STATISTICS',), ('TABLE_CONSTRAINTS',), ('TABLE_CONSTRAINTS_EXTENSIONS',), ('TABLES',), ('TABLES_EXTENSIONS',), ('TABLESPACES_EXTENSIONS',), ('TRIGGERS',), ('VIEW_ROUTINE_USAGE',), ('VIEW_TABLE_USAGE',), ('VIEWS',), ('COLUMN_PRIVILEGES',), ('ENGINES',), ('OPTIMIZER_TRACE',), ('PLUGINS',), ('PROCESSLIST',), ('PROFILING',), ('SCHEMA_PRIVILEGES',), ('TABLESPACES',), ('TABLE_PRIVILEGES',), ('USER_PRIVILEGES',), ('cond_instances',), ('error_log',), ('events_waits_current',), ('events_waits_history',), ('events_waits_history_long',), ('events_waits_summary_by_host_by_event_name',), ('events_waits_summary_by_instance',), ('events_waits_summary_by_thread_by_event_name',), ('events_waits_summary_by_user_by_event_name',), ('events_waits_summary_by_account_by_event_name',), ('events_waits_summary_global_by_event_name',), ('file_instances',), ('file_summary_by_event_name',), ('file_summary_by_instance',), ('host_cache',), ('mutex_instances',), ('objects_summary_global_by_type',), ('performance_timers',), ('processlist',), ('rwlock_instances',), ('setup_actors',), ('setup_consumers',), ('setup_instruments',), ('setup_meters',), ('setup_metrics',), ('setup_objects',), ('setup_threads',), ('table_io_waits_summary_by_index_usage',), ('table_io_waits_summary_by_table',), ('table_lock_waits_summary_by_table',), ('threads',), ('events_stages_current',), ('events_stages_history',), ('events_stages_history_long',), ('events_stages_summary_by_thread_by_event_name',), ('events_stages_summary_by_account_by_event_name',), ('events_stages_summary_by_user_by_event_name',), ('events_stages_summary_by_host_by_event_name',), ('events_stages_summary_global_by_event_name',), ('events_statements_current',), ('events_statements_history',), ('events_statements_history_long',), ('events_statements_summary_by_thread_by_event_name',), ('events_statements_summary_by_account_by_event_name',), ('events_statements_summary_by_user_by_event_name',), ('events_statements_summary_by_host_by_event_name',), ('events_statements_summary_global_by_event_name',), ('events_statements_summary_by_digest',), ('events_statements_summary_by_program',), ('events_statements_histogram_global',), ('events_statements_histogram_by_digest',), ('events_transactions_current',), ('events_transactions_history',), ('events_transactions_history_long',), ('events_transactions_summary_by_thread_by_event_name',), ('events_transactions_summary_by_account_by_event_name',), ('events_transactions_summary_by_user_by_event_name',), ('events_transactions_summary_by_host_by_event_name',), ('events_transactions_summary_global_by_event_name',), ('events_errors_summary_by_user_by_error',), ('events_errors_summary_by_host_by_error',), ('events_errors_summary_by_account_by_error',), ('events_errors_summary_by_thread_by_error',), ('events_errors_summary_global_by_error',), ('users',), ('accounts',), ('hosts',), ('socket_instances',), ('socket_summary_by_instance',), ('socket_summary_by_event_name',), ('session_connect_attrs',), ('session_account_connect_attrs',), ('keyring_keys',), ('memory_summary_global_by_event_name',), ('memory_summary_by_account_by_event_name',), ('memory_summary_by_host_by_event_name',), ('memory_summary_by_thread_by_event_name',), ('memory_summary_by_user_by_event_name',), ('table_handles',), ('metadata_locks',), ('data_locks',), ('data_lock_waits',), ('replication_connection_configuration',), ('replication_group_members',), ('replication_connection_status',), ('replication_applier_configuration',), ('replication_applier_status',), ('replication_applier_status_by_coordinator',), ('replication_applier_status_by_worker',), ('replication_group_member_stats',), ('replication_applier_filters',), ('replication_applier_global_filters',), ('replication_asynchronous_connection_failover',), ('replication_asynchronous_connection_failover_managed',), ('log_status',), ('prepared_statements_instances',), ('user_variables_by_thread',), ('status_by_account',), ('status_by_host',), ('status_by_thread',), ('status_by_user',), ('global_status',), ('session_status',), ('variables_by_thread',), ('global_variables',), ('session_variables',), ('variables_info',), ('persisted_variables',), ('user_defined_functions',), ('binary_log_transaction_compression_stats',), ('tls_channel_status',), ('keyring_component_status',), ('db',), ('user',), ('default_roles',), ('role_edges',), ('global_grants',), ('password_history',), ('func',), ('plugin',), ('help_topic',), ('help_category',), ('help_relation',), ('servers',), ('tables_priv',), ('columns_priv',), ('help_keyword',), ('time_zone_name',), ('time_zone',), ('time_zone_transition',), ('time_zone_transition_type',), ('time_zone_leap_second',), ('procs_priv',), ('general_log',), ('slow_log',), ('component',), ('slave_relay_log_info',), ('slave_master_info',), ('slave_worker_info',), ('gtid_executed',), ('replication_asynchronous_connection_failover',), ('replication_asynchronous_connection_failover_managed',), ('replication_group_member_actions',), ('replication_group_configuration_version',), ('server_cost',), ('engine_cost',), ('proxies_priv',), ('version',), ('sys_config',), ('innodb_buffer_stats_by_schema',), ('x$innodb_buffer_stats_by_schema',), ('innodb_buffer_stats_by_table',), ('x$innodb_buffer_stats_by_table',), ('schema_object_overview',), ('schema_auto_increment_columns',), ('x$schema_flattened_keys',), ('schema_redundant_indexes',), ('ps_check_lost_instrumentation',), ('latest_file_io',), ('x$latest_file_io',), ('io_by_thread_by_latency',), ('x$io_by_thread_by_latency',), ('io_global_by_file_by_bytes',), ('x$io_global_by_file_by_bytes',), ('io_global_by_file_by_latency',), ('x$io_global_by_file_by_latency',), ('io_global_by_wait_by_bytes',), ('x$io_global_by_wait_by_bytes',), ('io_global_by_wait_by_latency',), ('x$io_global_by_wait_by_latency',), ('innodb_lock_waits',), ('x$innodb_lock_waits',), ('memory_by_user_by_current_bytes',), ('x$memory_by_user_by_current_bytes',), ('memory_by_host_by_current_bytes',), ('x$memory_by_host_by_current_bytes',), ('memory_by_thread_by_current_bytes',), ('x$memory_by_thread_by_current_bytes',), ('memory_global_by_current_bytes',), ('x$memory_global_by_current_bytes',), ('memory_global_total',), ('x$memory_global_total',), ('schema_index_statistics',), ('x$schema_index_statistics',), ('x$ps_schema_table_statistics_io',), ('schema_table_statistics',), ('x$schema_table_statistics',), ('schema_table_statistics_with_buffer',), ('x$schema_table_statistics_with_buffer',), ('schema_tables_with_full_table_scans',), ('x$schema_tables_with_full_table_scans',), ('schema_unused_indexes',), ('schema_table_lock_waits',), ('x$schema_table_lock_waits',), ('statement_analysis',), ('x$statement_analysis',), ('statements_with_errors_or_warnings',), ('x$statements_with_errors_or_warnings',), ('statements_with_full_table_scans',), ('x$statements_with_full_table_scans',), ('x$ps_digest_avg_latency_distribution',), ('x$ps_digest_95th_percentile_by_avg_us',), ('statements_with_runtimes_in_95th_percentile',), ('x$statements_with_runtimes_in_95th_percentile',), ('statements_with_sorting',), ('x$statements_with_sorting',), ('statements_with_temp_tables',), ('x$statements_with_temp_tables',), ('user_summary_by_file_io_type',), ('x$user_summary_by_file_io_type',), ('user_summary_by_file_io',), ('x$user_summary_by_file_io',), ('user_summary_by_statement_type',), ('x$user_summary_by_statement_type',), ('user_summary_by_statement_latency',), ('x$user_summary_by_statement_latency',), ('user_summary_by_stages',), ('x$user_summary_by_stages',), ('user_summary',), ('x$user_summary',), ('host_summary_by_file_io_type',), ('x$host_summary_by_file_io_type',), ('host_summary_by_file_io',), ('x$host_summary_by_file_io',), ('host_summary_by_statement_type',), ('x$host_summary_by_statement_type',), ('host_summary_by_statement_latency',), ('x$host_summary_by_statement_latency',), ('host_summary_by_stages',), ('x$host_summary_by_stages',), ('host_summary',), ('x$host_summary',), ('wait_classes_global_by_avg_latency',), ('x$wait_classes_global_by_avg_latency',), ('wait_classes_global_by_latency',), ('x$wait_classes_global_by_latency',), ('waits_by_user_by_latency',), ('x$waits_by_user_by_latency',), ('waits_by_host_by_latency',), ('x$waits_by_host_by_latency',), ('waits_global_by_latency',), ('x$waits_global_by_latency',), ('metrics',), ('processlist',), ('x$processlist',), ('session',), ('x$session',), ('session_ssl_status',), ('ENABLED_ROLES',), ('APPLICABLE_ROLES',), ('ADMINISTRABLE_ROLE_AUTHORIZATIONS',), ('ROLE_COLUMN_GRANTS',), ('ROLE_ROUTINE_GRANTS',), ('ROLE_TABLE_GRANTS',), ('USER_ATTRIBUTES',), ('INNODB_SESSION_TEMP_TABLESPACES',), ('INNODB_VIRTUAL',), ('INNODB_TABLESPACES',), ('INNODB_INDEXES',), ('INNODB_FT_INDEX_CACHE',), ('INNODB_CACHED_INDEXES',), ('INNODB_FT_INDEX_TABLE',), ('INNODB_COLUMNS',), ('INNODB_CMP_PER_INDEX',), ('INNODB_BUFFER_PAGE_LRU',), ('INNODB_FT_CONFIG',), ('INNODB_BUFFER_POOL_STATS',), ('INNODB_CMP_RESET',), ('INNODB_CMP_PER_INDEX_RESET',), ('INNODB_BUFFER_PAGE',), ('INNODB_FT_BEING_DELETED',), ('INNODB_TABLES',), ('INNODB_CMPMEM_RESET',), ('INNODB_TEMP_TABLE_INFO',), ('INNODB_METRICS',), ('INNODB_TRX',), ('INNODB_CMPMEM',), ('INNODB_FT_DEFAULT_STOPWORD',), ('INNODB_TABLESTATS',), ('INNODB_FT_DELETED',), ('INNODB_CMP',), ('innodb_redo_log_files',), ('t3',), ('t5',), ('t_crashme',), ('a1',), ('a2',)]
++--------------------+
+--Query--
+select table_schema, table_name, column_name from information_schema.columns where table_schema not in ('performance_schema', 'sys', 'mysql')   and data_type = 'longtext' order by table_name, column_name
+--Result--
+[('information_schema', 'CHECK_CONSTRAINTS', 'CHECK_CLAUSE'), ('information_schema', 'COLUMNS', 'DATA_TYPE'), ('information_schema', 'COLUMNS', 'GENERATION_EXPRESSION'), ('information_schema', 'EVENTS', 'EVENT_DEFINITION'), ('information_schema', 'PARAMETERS', 'DATA_TYPE'), ('information_schema', 'ROUTINES', 'DATA_TYPE'), ('information_schema', 'ROUTINES', 'DTD_IDENTIFIER'), ('information_schema', 'ROUTINES', 'ROUTINE_DEFINITION'), ('information_schema', 'ST_GEOMETRY_COLUMNS', 'GEOMETRY_TYPE_NAME'), ('information_schema', 'STATISTICS', 'EXPRESSION'), ('information_schema', 'TRIGGERS', 'ACTION_STATEMENT'), ('information_schema', 'USER_ATTRIBUTES', 'ATTRIBUTE'), ('information_schema', 'VIEWS', 'VIEW_DEFINITION')]
++--------------------+
+--Query--
+select table_name, column_name, data_type from information_schema.columns where table_schema not in ('performance_schema', 'sys')   and data_type = 'datetime'   and table_name COLLATE utf8mb3_general_ci not like 'innodb_%' order by table_name, column_name
+--Result--
+[('EVENTS', 'ENDS', 'datetime'), ('EVENTS', 'EXECUTE_AT', 'datetime'), ('EVENTS', 'LAST_EXECUTED', 'datetime'), ('EVENTS', 'STARTS', 'datetime'), ('PARTITIONS', 'CHECK_TIME', 'datetime'), ('PARTITIONS', 'UPDATE_TIME', 'datetime'), ('TABLES', 'CHECK_TIME', 'datetime'), ('TABLES', 'UPDATE_TIME', 'datetime')]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES A WHERE NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS B   WHERE A.TABLE_SCHEMA = B.TABLE_SCHEMA   AND A.TABLE_NAME = B.TABLE_NAME)
+--Result--
+[(251,)]
++--------------------+
+--Query--
+SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH, CHARACTER_OCTET_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME= 't1' ORDER BY COLUMN_NAME
+--Result--
+[('x_bigint', None, None), ('x_decimal', None, None), ('x_double_precision', None, None), ('x_float', None, None), ('x_integer', None, None), ('x_numeric', None, None), ('x_real', None, None), ('x_smallint', None, None)]
++--------------------+
+--Query--
+SELECT TABLE_NAME, COLUMN_NAME, PRIVILEGES FROM INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='TABLE_NAME' ORDER BY TABLE_NAME COLLATE utf8mb3_GENERAL_CI
+--Result--
+[('COLUMNS', 'TABLE_NAME', 'select'), ('COLUMNS_EXTENSIONS', 'TABLE_NAME', 'select'), ('COLUMN_PRIVILEGES', 'TABLE_NAME', 'select'), ('COLUMN_STATISTICS', 'TABLE_NAME', 'select'), ('FILES', 'TABLE_NAME', 'select'), ('INNODB_BUFFER_PAGE', 'TABLE_NAME', 'select'), ('INNODB_BUFFER_PAGE_LRU', 'TABLE_NAME', 'select'), ('INNODB_CMP_PER_INDEX', 'table_name', 'select'), ('INNODB_CMP_PER_INDEX_RESET', 'table_name', 'select'), ('KEY_COLUMN_USAGE', 'TABLE_NAME', 'select'), ('PARTITIONS', 'TABLE_NAME', 'select'), ('REFERENTIAL_CONSTRAINTS', 'TABLE_NAME', 'select'), ('ROLE_COLUMN_GRANTS', 'TABLE_NAME', 'select'), ('ROLE_TABLE_GRANTS', 'TABLE_NAME', 'select'), ('STATISTICS', 'TABLE_NAME', 'select'), ('ST_GEOMETRY_COLUMNS', 'TABLE_NAME', 'select'), ('TABLES', 'TABLE_NAME', 'select'), ('TABLES_EXTENSIONS', 'TABLE_NAME', 'select'), ('TABLE_CONSTRAINTS', 'TABLE_NAME', 'select'), ('TABLE_CONSTRAINTS_EXTENSIONS', 'TABLE_NAME', 'select'), ('TABLE_PRIVILEGES', 'TABLE_NAME', 'select'), ('VIEWS', 'TABLE_NAME', 'select'), ('VIEW_ROUTINE_USAGE', 'TABLE_NAME', 'select'), ('VIEW_TABLE_USAGE', 'TABLE_NAME', 'select')]
++--------------------+
+--Query--
+select * from information_schema.triggers where trigger_schema in ('mysql', 'information_schema', 'test', 'mysqltest') order by trigger_name
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.column_privileges order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.table_privileges order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.schema_privileges order by grantee
+--Result--
+[("'tester'@'localhost'", 'def', 'test_db', 'SELECT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'INSERT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'UPDATE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'DELETE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'DROP', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'REFERENCES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'INDEX', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'ALTER', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE TEMPORARY TABLES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'LOCK TABLES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'EXECUTE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE VIEW', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'SHOW VIEW', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE ROUTINE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'ALTER ROUTINE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'EVENT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'TRIGGER', 'NO')]
++--------------------+
+--Query--
+select * from information_schema.user_privileges order by grantee
+--Result--
+[("'tester'@'localhost'", 'def', 'CREATE', 'NO'), ("'tester'@'localhost'", 'def', 'DROP', 'NO'), ("'tester'@'localhost'", 'def', 'PROCESS', 'NO'), ("'tester'@'localhost'", 'def', 'FILE', 'NO'), ("'tester'@'localhost'", 'def', 'ALTER', 'NO'), ("'tester'@'localhost'", 'def', 'CREATE TABLESPACE', 'NO'), ("'tester'@'localhost'", 'def', 'BACKUP_ADMIN', 'NO')]
++--------------------+
+--Query--
+select * from information_schema.column_privileges order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.table_privileges order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.schema_privileges order by grantee
+--Result--
+[("'tester'@'localhost'", 'def', 'test_db', 'SELECT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'INSERT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'UPDATE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'DELETE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'DROP', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'REFERENCES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'INDEX', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'ALTER', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE TEMPORARY TABLES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'LOCK TABLES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'EXECUTE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE VIEW', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'SHOW VIEW', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE ROUTINE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'ALTER ROUTINE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'EVENT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'TRIGGER', 'NO')]
++--------------------+
+--Query--
+select * from information_schema.user_privileges order by grantee
+--Result--
+[("'tester'@'localhost'", 'def', 'CREATE', 'NO'), ("'tester'@'localhost'", 'def', 'DROP', 'NO'), ("'tester'@'localhost'", 'def', 'PROCESS', 'NO'), ("'tester'@'localhost'", 'def', 'FILE', 'NO'), ("'tester'@'localhost'", 'def', 'ALTER', 'NO'), ("'tester'@'localhost'", 'def', 'CREATE TABLESPACE', 'NO'), ("'tester'@'localhost'", 'def', 'BACKUP_ADMIN', 'NO')]
++--------------------+
+--Query--
+select * from information_schema.column_privileges order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.table_privileges order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.schema_privileges order by grantee
+--Result--
+[("'tester'@'localhost'", 'def', 'test_db', 'SELECT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'INSERT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'UPDATE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'DELETE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'DROP', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'REFERENCES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'INDEX', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'ALTER', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE TEMPORARY TABLES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'LOCK TABLES', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'EXECUTE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE VIEW', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'SHOW VIEW', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'CREATE ROUTINE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'ALTER ROUTINE', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'EVENT', 'NO'), ("'tester'@'localhost'", 'def', 'test_db', 'TRIGGER', 'NO')]
++--------------------+
+--Query--
+select * from information_schema.user_privileges order by grantee
+--Result--
+[("'tester'@'localhost'", 'def', 'CREATE', 'NO'), ("'tester'@'localhost'", 'def', 'DROP', 'NO'), ("'tester'@'localhost'", 'def', 'PROCESS', 'NO'), ("'tester'@'localhost'", 'def', 'FILE', 'NO'), ("'tester'@'localhost'", 'def', 'ALTER', 'NO'), ("'tester'@'localhost'", 'def', 'CREATE TABLESPACE', 'NO'), ("'tester'@'localhost'", 'def', 'BACKUP_ADMIN', 'NO')]
++--------------------+
+--Query--
+select * from information_schema.column_privileges where grantee like '%user%' order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.table_privileges where grantee like '%user%' and table_schema !='mysql' order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.schema_privileges where grantee like '%user%' and table_schema !='performance_schema' order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.user_privileges where grantee like '%user%' and grantee not like '%session%' order by grantee
+--Result--
+[]
++--------------------+
+--Query--
+select sql_data_access from information_schema.routines where specific_name like 'p%' and ROUTINE_SCHEMA != 'sys'
+--Result--
+[('MODIFIES SQL DATA',), ('CONTAINS SQL',)]
++--------------------+
+--Query--
+select column_name,data_type,CHARACTER_OCTET_LENGTH,        CHARACTER_MAXIMUM_LENGTH from information_schema.columns where table_name='t1' order by column_name
+--Result--
+[('f1', 'longblob', 4294967295, 4294967295), ('f2', 'longtext', 4294967295, 4294967295)]
++--------------------+
+--Query--
+select column_name, NUMERIC_PRECISION, NUMERIC_SCALE from information_schema.columns where table_name='t1' order by column_name
+--Result--
+[('f1', 3, 0), ('f2', 5, 0), ('f3', 7, 0), ('f4', 10, 0), ('f5', 19, 0), ('f6', 1, None), ('f7', 64, None)]
++--------------------+
+--Query--
+select database()
+--Result--
+[('test_db',)]
++--------------------+
+--Query--
+select table_type from information_schema.tables where table_name="v1"
+--Result--
+[('VIEW',)]
++--------------------+
+--Query--
+select character_maximum_length, character_octet_length from information_schema.columns where table_name='t1'
+--Result--
+[(32, 32), (64, 64)]
++--------------------+
+--Query--
+SELECT column_type, GROUP_CONCAT(table_schema, '.', table_name ORDER BY table_name), COUNT(*) AS num FROM information_schema.columns WHERE table_schema='information_schema' AND (column_type = 'varchar(7)' OR column_type = 'varchar(20)'  OR column_type = 'varchar(30)') GROUP BY column_type ORDER BY num, column_type
+--Result--
+[('varchar(30)', 'information_schema.PROFILING,information_schema.PROFILING', 2), ('varchar(7)', 'information_schema.INNODB_TABLESPACES_BRIEF,information_schema.ST_UNITS_OF_MEASURE,information_schema.VIEWS', 3), ('varchar(20)', 'information_schema.PLUGINS,information_schema.PLUGINS,information_schema.PLUGINS,information_schema.PROFILING', 4)]
++--------------------+
+--Query--
+select CHARACTER_MAXIMUM_LENGTH, CHARACTER_OCTET_LENGTH from information_schema.columns where table_schema='test' and table_name = 't1'
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.views where table_name='v1' or table_name='v2'
+--Result--
+[('def', 'test_db', 'v1', 'select `test_db`.`t1`.`id` AS `id` from `test_db`.`t1`', 'NONE', 'YES', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci')]
++--------------------+
+--Query--
+select concat(@a, table_name), @a, table_name from information_schema.tables where table_schema = 'test' order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ROUTINE_NAME, ROUTINE_DEFINITION FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='test' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ROUTINE_NAME, ROUTINE_DEFINITION FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='test' ORDER BY ROUTINE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT MAX(table_name)   FROM information_schema.tables   WHERE table_schema IN ('mysql', 'information_schema', 'test')
+--Result--
+[('VIEWS',)]
++--------------------+
+--Query--
+SELECT table_name FROM information_schema.tables   WHERE table_name=(SELECT MAX(table_name)                       FROM information_schema.tables WHERE                       table_schema IN ('mysql',                                        'information_schema',                                        'test')) order by table_name
+--Result--
+[('VIEWS',)]
++--------------------+
+--Query--
+SELECT COLUMN_NAME, SHA2(COLUMN_DEFAULT, 0), LENGTH(COLUMN_DEFAULT)   FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='bug23037'   ORDER BY COLUMN_NAME
+--Result--
+[]
++--------------------+
+--Query--
+select table_name from information_schema.tables where table_schema = 'test' and table_name not in (select table_name from information_schema.columns  where table_schema = 'test' and column_name = 'f3') order by table_name
+--Result--
+[]
++--------------------+
+--Query--
+select 1 as f1 from information_schema.tables  where "COLUMN_PRIVILEGES"= (select cast(table_name as char)  from information_schema.tables  where table_schema != 'performance_schema' order by table_name limit 1) limit 1
+--Result--
+[]
++--------------------+
+--Query--
+select t.table_name, group_concat(t.table_schema, '.', t.table_name),        count(*) as num1 from information_schema.tables t inner join information_schema.columns c1 on t.table_schema = c1.table_schema AND t.table_name = c1.table_name where t.table_name not like 'ndb%' and       t.table_schema = 'information_schema' and         c1.ordinal_position =         (select isnull(c2.column_type) -          isnull(group_concat(c2.table_schema, '.', c2.table_name)) +          count(*) as num          from information_schema.columns c2 where          c2.table_schema='information_schema' and          (c2.column_type = 'varchar(7)' or c2.column_type = 'varchar(20)')           group by c2.column_type order by num limit 1)         and t.table_name not like 'INNODB_%' group by t.table_name order by num1, t.table_name COLLATE utf8mb3_general_ci
+--Result--
+[('ADMINISTRABLE_ROLE_AUTHORIZATIONS', 'information_schema.ADMINISTRABLE_ROLE_AUTHORIZATIONS', 1), ('APPLICABLE_ROLES', 'information_schema.APPLICABLE_ROLES', 1), ('CHARACTER_SETS', 'information_schema.CHARACTER_SETS', 1), ('CHECK_CONSTRAINTS', 'information_schema.CHECK_CONSTRAINTS', 1), ('COLLATIONS', 'information_schema.COLLATIONS', 1), ('COLUMNS', 'information_schema.COLUMNS', 1), ('COLUMNS_EXTENSIONS', 'information_schema.COLUMNS_EXTENSIONS', 1), ('COLUMN_PRIVILEGES', 'information_schema.COLUMN_PRIVILEGES', 1), ('COLUMN_STATISTICS', 'information_schema.COLUMN_STATISTICS', 1), ('ENABLED_ROLES', 'information_schema.ENABLED_ROLES', 1), ('ENGINES', 'information_schema.ENGINES', 1), ('EVENTS', 'information_schema.EVENTS', 1), ('FILES', 'information_schema.FILES', 1), ('KEY_COLUMN_USAGE', 'information_schema.KEY_COLUMN_USAGE', 1), ('OPTIMIZER_TRACE', 'information_schema.OPTIMIZER_TRACE', 1), ('PARAMETERS', 'information_schema.PARAMETERS', 1), ('PARTITIONS', 'information_schema.PARTITIONS', 1), ('PLUGINS', 'information_schema.PLUGINS', 1), ('PROCESSLIST', 'information_schema.PROCESSLIST', 1), ('PROFILING', 'information_schema.PROFILING', 1), ('REFERENTIAL_CONSTRAINTS', 'information_schema.REFERENTIAL_CONSTRAINTS', 1), ('RESOURCE_GROUPS', 'information_schema.RESOURCE_GROUPS', 1), ('ROLE_COLUMN_GRANTS', 'information_schema.ROLE_COLUMN_GRANTS', 1), ('ROLE_ROUTINE_GRANTS', 'information_schema.ROLE_ROUTINE_GRANTS', 1), ('ROLE_TABLE_GRANTS', 'information_schema.ROLE_TABLE_GRANTS', 1), ('ROUTINES', 'information_schema.ROUTINES', 1), ('SCHEMATA', 'information_schema.SCHEMATA', 1), ('SCHEMATA_EXTENSIONS', 'information_schema.SCHEMATA_EXTENSIONS', 1), ('SCHEMA_PRIVILEGES', 'information_schema.SCHEMA_PRIVILEGES', 1), ('STATISTICS', 'information_schema.STATISTICS', 1), ('ST_GEOMETRY_COLUMNS', 'information_schema.ST_GEOMETRY_COLUMNS', 1), ('ST_SPATIAL_REFERENCE_SYSTEMS', 'information_schema.ST_SPATIAL_REFERENCE_SYSTEMS', 1), ('ST_UNITS_OF_MEASURE', 'information_schema.ST_UNITS_OF_MEASURE', 1), ('TABLES', 'information_schema.TABLES', 1), ('TABLESPACES', 'information_schema.TABLESPACES', 1), ('TABLES_EXTENSIONS', 'information_schema.TABLES_EXTENSIONS', 1), ('TABLE_CONSTRAINTS', 'information_schema.TABLE_CONSTRAINTS', 1), ('TABLE_CONSTRAINTS_EXTENSIONS', 'information_schema.TABLE_CONSTRAINTS_EXTENSIONS', 1), ('TABLE_PRIVILEGES', 'information_schema.TABLE_PRIVILEGES', 1), ('TRIGGERS', 'information_schema.TRIGGERS', 1), ('USER_ATTRIBUTES', 'information_schema.USER_ATTRIBUTES', 1), ('USER_PRIVILEGES', 'information_schema.USER_PRIVILEGES', 1), ('VIEWS', 'information_schema.VIEWS', 1), ('VIEW_ROUTINE_USAGE', 'information_schema.VIEW_ROUTINE_USAGE', 1), ('VIEW_TABLE_USAGE', 'information_schema.VIEW_TABLE_USAGE', 1)]
++--------------------+
+--Query--
+select table_name, is_updatable from information_schema.views where table_schema != 'sys' order by table_name
+--Result--
+[('v1', 'NO'), ('v2', 'YES')]
++--------------------+
+--Query--
+select trigger_name from information_schema.triggers where event_object_table='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where table_name='t1' order by column_name
+--Result--
+[]
++--------------------+
+--Query--
+select trigger_name from information_schema.triggers where event_object_table='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select column_default from information_schema.columns where table_name= 't1'
+--Result--
+[(None,), (None,), ('',), (None,), (None,), ('10',), (None,), ('2006-01-01 00:00:00',)]
++--------------------+
+--Query--
+select * from information_schema.engines WHERE ENGINE="MyISAM"
+--Result--
+[('MyISAM', 'YES', 'MyISAM storage engine', 'NO', 'NO', 'NO')]
++--------------------+
+--Query--
+select user,db from information_schema.processlist
+--Result--
+[('tester', 'test_db'), ('event_scheduler', None)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE user = 'event_scheduler' AND command = 'Daemon'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'mysqltest'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ''
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS where TABLE_NAME = 'v1'
+--Result--
+[('select `information_schema`.`tables`.`TABLE_CATALOG` AS `TABLE_CATALOG`,`information_schema`.`tables`.`TABLE_SCHEMA` AS `TABLE_SCHEMA`,`information_schema`.`tables`.`TABLE_NAME` AS `TABLE_NAME`,`information_schema`.`tables`.`TABLE_TYPE` AS `TABLE_TYPE`,`information_schema`.`tables`.`ENGINE` AS `ENGINE`,`information_schema`.`tables`.`VERSION` AS `VERSION`,`information_schema`.`tables`.`ROW_FORMAT` AS `ROW_FORMAT`,`information_schema`.`tables`.`TABLE_ROWS` AS `TABLE_ROWS`,`information_schema`.`tables`.`AVG_ROW_LENGTH` AS `AVG_ROW_LENGTH`,`information_schema`.`tables`.`DATA_LENGTH` AS `DATA_LENGTH`,`information_schema`.`tables`.`MAX_DATA_LENGTH` AS `MAX_DATA_LENGTH`,`information_schema`.`tables`.`INDEX_LENGTH` AS `INDEX_LENGTH`,`information_schema`.`tables`.`DATA_FREE` AS `DATA_FREE`,`information_schema`.`tables`.`AUTO_INCREMENT` AS `AUTO_INCREMENT`,`information_schema`.`tables`.`CREATE_TIME` AS `CREATE_TIME`,`information_schema`.`tables`.`UPDATE_TIME` AS `UPDATE_TIME`,`information_schema`.`tables`.`CHECK_TIME` AS `CHECK_TIME`,`information_schema`.`tables`.`TABLE_COLLATION` AS `TABLE_COLLATION`,`information_schema`.`tables`.`CHECKSUM` AS `CHECKSUM`,`information_schema`.`tables`.`CREATE_OPTIONS` AS `CREATE_OPTIONS`,`information_schema`.`tables`.`TABLE_COMMENT` AS `TABLE_COMMENT` from `information_schema`.`TABLES`',)]
++--------------------+
+--Query--
+SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME ='information_schema'
+--Result--
+[('information_schema',)]
++--------------------+
+--Query--
+SELECT TABLE_COLLATION FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='mysql' and TABLE_NAME= 'db'
+--Result--
+[('utf8mb3_bin',)]
++--------------------+
+--Query--
+select * from information_schema.columns where table_schema = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`COLUMNS` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`key_column_usage` where `TABLE_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`key_column_usage` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`PARTITIONS` where `TABLE_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`PARTITIONS` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`REFERENTIAL_CONSTRAINTS` where `CONSTRAINT_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`REFERENTIAL_CONSTRAINTS` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.schemata where schema_name = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`STATISTICS` where `TABLE_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`STATISTICS` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.tables where table_schema = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.tables where table_catalog = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from information_schema.tables where table_name = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`TABLE_CONSTRAINTS` where `TABLE_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`TABLE_CONSTRAINTS` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`TRIGGERS` where `EVENT_OBJECT_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`TRIGGERS` where `EVENT_OBJECT_TABLE` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`VIEWS` where `TABLE_SCHEMA` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from `information_schema`.`VIEWS` where `TABLE_NAME` = NULL
+--Result--
+[]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name='init_connect'
+--Result--
+[('init_connect', '')]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select a.VARIABLE_VALUE - b.VARIABLE_VALUE from t0 b, performance_schema.global_status a    where a.VARIABLE_NAME = b.VARIABLE_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CREATE_OPTIONS FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='t1'
+--Result--
+[('KEY_BLOCK_SIZE=1',)]
++--------------------+
+--Query--
+SELECT 'OK' AS TEST_RESULT FROM INFORMATION_SCHEMA.PROCESSLIST WHERE time < 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COLUMN_DEFAULT, TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE information_schema.COLUMNS.TABLE_NAME = 'variables'
+--Result--
+[(None, 'variables')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, COLUMN_NAME, NUMERIC_PRECISION    FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='ubig'
+--Result--
+[('ubig', 'a', 19), ('ubig', 'b', 20)]
++--------------------+
+--Query--
+SELECT length(CAST(b AS CHAR)) FROM ubig
+--Result--
+[(20,)]
++--------------------+
+--Query--
+select * from information_schema.parameters where specific_schema='test'
+--Result--
+[]
++--------------------+
+--Query--
+select data_type, character_maximum_length,        character_octet_length, numeric_precision,        numeric_scale, character_set_name,        collation_name, dtd_identifier from information_schema.routines where routine_schema='test'
+--Result--
+[]
++--------------------+
+--Query--
+lock table t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info like "rename table t2 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select table_name, column_name, data_type from information_schema.columns   where table_schema = 'test' and table_name in ('t1', 't2')
+--Result--
+[]
++--------------------+
+--Query--
+select table_name, auto_increment from information_schema.tables   where table_schema = 'test' and table_name in ('t1', 't2')
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select routine_name, routine_type from information_schema.routines where routine_schema = 'test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.key_column_usage LEFT JOIN INFORMATION_SCHEMA.COLUMNS USING (TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME) WHERE COLUMNS.TABLE_SCHEMA = 'test' AND COLUMNS.TABLE_NAME = 't1'
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist     where state = "Waiting for table flush" and           info = "flush tables"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from information_schema.views   where table_schema != 'sys' order by table_schema, table_name
+--Result--
+[('def', 'test_db', 'v1', 'select `test_db`.`t1`.`a` AS `a`,`test_db`.`t1`.`b` AS `b` from `test_db`.`t1`', 'NONE', 'YES', 'tester@localhost', 'DEFINER', 'utf8mb4', 'utf8mb4_0900_ai_ci')]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t3, t2 to t1, t3 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "select event_object_table, trigger_name from information_schema.triggers where event_object_schema='mysqltest'"
+--Result--
+[(1,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select TABLE_NAME,COLUMN_NAME,DATA_TYPE,DATETIME_PRECISION from information_schema.columns where TABLE_SCHEMA='mysqltest' order by table_name, column_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLES
+--Result--
+[('def', 'mysql', 'innodb_table_stats', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 3, 5461, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 1, 18, 34), datetime.datetime(2024, 5, 26, 3, 19, 45), None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', ''), ('def', 'mysql', 'innodb_index_stats', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 9, 1820, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 1, 18, 34), datetime.datetime(2024, 5, 26, 3, 19, 45), None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', ''), ('def', 'information_schema', 'CHARACTER_SETS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'CHECK_CONSTRAINTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'COLLATIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'COLLATION_CHARACTER_SET_APPLICABILITY', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'COLUMNS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'COLUMNS_EXTENSIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'COLUMN_STATISTICS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'EVENTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'FILES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_DATAFILES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FOREIGN', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FOREIGN_COLS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FIELDS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_TABLESPACES_BRIEF', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'KEY_COLUMN_USAGE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'KEYWORDS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'PARAMETERS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'PARTITIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'REFERENTIAL_CONSTRAINTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'RESOURCE_GROUPS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ROUTINES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'SCHEMATA', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'SCHEMATA_EXTENSIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ST_SPATIAL_REFERENCE_SYSTEMS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ST_UNITS_OF_MEASURE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ST_GEOMETRY_COLUMNS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'STATISTICS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLE_CONSTRAINTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLE_CONSTRAINTS_EXTENSIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLES_EXTENSIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLESPACES_EXTENSIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TRIGGERS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'VIEW_ROUTINE_USAGE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'VIEW_TABLE_USAGE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'VIEWS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'COLUMN_PRIVILEGES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ENGINES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'OPTIMIZER_TRACE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'PLUGINS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'PROCESSLIST', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'PROFILING', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'SCHEMA_PRIVILEGES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLESPACES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'TABLE_PRIVILEGES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'USER_PRIVILEGES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'performance_schema', 'cond_instances', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'error_log', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 14, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_current', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1536, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_history', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 2560, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_history_long', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10000, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_summary_by_host_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 88832, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_summary_by_instance', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 11776, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_summary_by_thread_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 177664, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_summary_by_user_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 88832, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_summary_by_account_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 88832, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_waits_summary_global_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 694, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'file_instances', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 4096, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'file_summary_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 80, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'file_summary_by_instance', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 4096, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'host_cache', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 279, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'mutex_instances', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 4096, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'objects_summary_global_by_type', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 5120, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'performance_timers', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 5, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'processlist', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'rwlock_instances', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 3072, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_actors', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_consumers', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 16, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_instruments', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1561, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_meters', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 12, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_metrics', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 424, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_objects', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'setup_threads', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 100, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'table_io_waits_summary_by_index_usage', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 8192, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'table_io_waits_summary_by_table', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 4096, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'table_lock_waits_summary_by_table', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 4096, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'threads', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_current', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_history', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 2560, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_history_long', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10000, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_summary_by_thread_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 44800, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_summary_by_account_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 22400, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_summary_by_user_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 22400, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_summary_by_host_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 22400, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_stages_summary_global_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 175, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_current', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 2560, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_history', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 2560, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_history_long', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10000, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_by_thread_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 56320, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_by_account_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 28160, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_by_user_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 28160, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_by_host_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 28160, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_global_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 220, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_by_digest', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10000, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_summary_by_program', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1024, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_histogram_global', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 450, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_statements_histogram_by_digest', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10000, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_current', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_history', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 2560, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_history_long', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10000, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_summary_by_thread_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_summary_by_account_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_summary_by_user_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_summary_by_host_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_transactions_summary_global_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_errors_summary_by_user_by_error', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 222848, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_errors_summary_by_host_by_error', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 222848, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_errors_summary_by_account_by_error', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 222848, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_errors_summary_by_thread_by_error', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 445696, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'events_errors_summary_global_by_error', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 5490, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'users', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'accounts', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'hosts', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 128, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'socket_instances', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'socket_summary_by_instance', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'socket_summary_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 10, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'session_connect_attrs', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 131072, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_bin', None, '', ''), ('def', 'performance_schema', 'session_account_connect_attrs', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 131072, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_bin', None, '', ''), ('def', 'performance_schema', 'keyring_keys', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 72, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_bin', None, '', ''), ('def', 'performance_schema', 'memory_summary_global_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 470, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'memory_summary_by_account_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 60160, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'memory_summary_by_host_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 60160, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'memory_summary_by_thread_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 120320, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'memory_summary_by_user_by_event_name', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 60160, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'table_handles', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1024, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'metadata_locks', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1024, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'data_locks', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 99999, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'data_lock_waits', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 99999, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_connection_configuration', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_group_members', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_connection_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_applier_configuration', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_applier_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_applier_status_by_coordinator', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 256, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_applier_status_by_worker', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 8192, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_group_member_stats', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_applier_filters', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_applier_global_filters', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_asynchronous_connection_failover', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Fixed', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'replication_asynchronous_connection_failover_managed', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'log_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'prepared_statements_instances', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 1024, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'user_variables_by_thread', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 2560, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'status_by_account', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 33536, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'status_by_host', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 33536, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'status_by_thread', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 67072, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'status_by_user', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 33536, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'global_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 262, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'session_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 262, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'variables_by_thread', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 171520, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'global_variables', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 670, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'session_variables', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 670, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'variables_info', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 670, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'persisted_variables', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'user_defined_functions', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 16, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'binary_log_transaction_compression_stats', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'tls_channel_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 72, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'performance_schema', 'keyring_component_status', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 48, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'mysql', 'db', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 3, 5461, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), datetime.datetime(2024, 5, 26, 3, 18, 43), None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Database privileges'), ('def', 'mysql', 'user', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 5, 3276, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), datetime.datetime(2024, 5, 26, 3, 18, 43), None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Users and global privileges'), ('def', 'mysql', 'default_roles', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Default roles'), ('def', 'mysql', 'role_edges', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Role hierarchy and role grants'), ('def', 'mysql', 'global_grants', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 50, 983, 49152, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), datetime.datetime(2024, 5, 26, 3, 18, 43), None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Extended global grants'), ('def', 'mysql', 'password_history', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Password history for user accounts'), ('def', 'mysql', 'func', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'User defined functions'), ('def', 'mysql', 'plugin', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'MySQL plugins'), ('def', 'mysql', 'help_topic', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 1115, 1425, 1589248, 0, 98304, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'help topics'), ('def', 'mysql', 'help_category', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 53, 309, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'help categories'), ('def', 'mysql', 'help_relation', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 2957, 38, 114688, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'keyword-topic relation'), ('def', 'mysql', 'servers', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'MySQL Foreign Servers table'), ('def', 'mysql', 'tables_priv', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 2, 8192, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Table privileges'), ('def', 'mysql', 'columns_priv', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Column privileges'), ('def', 'mysql', 'help_keyword', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 1219, 107, 131072, 0, 147456, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'help keywords'), ('def', 'mysql', 'time_zone_name', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Time zone names'), ('def', 'mysql', 'time_zone', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, 1, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Time zones'), ('def', 'mysql', 'time_zone_transition', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Time zone transitions'), ('def', 'mysql', 'time_zone_transition_type', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Time zone transition types'), ('def', 'mysql', 'time_zone_leap_second', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Leap seconds information for time zones'), ('def', 'mysql', 'procs_priv', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'Procedure privileges'), ('def', 'mysql', 'general_log', 'BASE TABLE', 'CSV', 10, 'Dynamic', 2, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, '', 'General log'), ('def', 'mysql', 'slow_log', 'BASE TABLE', 'CSV', 10, 'Dynamic', 2, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, '', 'Slow log'), ('def', 'mysql', 'component', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, 1, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC', 'Components'), ('def', 'mysql', 'slave_relay_log_info', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Relay Log Information'), ('def', 'mysql', 'slave_master_info', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Master Information'), ('def', 'mysql', 'slave_worker_info', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'Worker Information'), ('def', 'mysql', 'gtid_executed', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, 'row_format=DYNAMIC stats_persistent=0', ''), ('def', 'mysql', 'replication_asynchronous_connection_failover', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'The source configuration details'), ('def', 'mysql', 'replication_asynchronous_connection_failover_managed', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'The managed source configuration details'), ('def', 'mysql', 'replication_group_member_actions', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 2, 8192, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'The member actions configuration.'), ('def', 'mysql', 'replication_group_configuration_version', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 1, 16384, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, 'row_format=DYNAMIC stats_persistent=0', 'The group configuration version.'), ('def', 'mysql', 'server_cost', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 6, 2730, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', ''), ('def', 'mysql', 'engine_cost', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 2, 8192, 16384, 0, 0, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_general_ci', None, 'row_format=DYNAMIC stats_persistent=0', ''), ('def', 'mysql', 'proxies_priv', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 1, 16384, 16384, 0, 16384, 6291456, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb3_bin', None, 'row_format=DYNAMIC stats_persistent=0', 'User proxy privileges'), ('def', 'sys', 'version', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'sys_config', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 6, 2730, 16384, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'sys', 'innodb_buffer_stats_by_schema', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$innodb_buffer_stats_by_schema', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'innodb_buffer_stats_by_table', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$innodb_buffer_stats_by_table', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_object_overview', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_auto_increment_columns', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$schema_flattened_keys', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_redundant_indexes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'ps_check_lost_instrumentation', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'latest_file_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$latest_file_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'io_by_thread_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$io_by_thread_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'io_global_by_file_by_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$io_global_by_file_by_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'io_global_by_file_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$io_global_by_file_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'io_global_by_wait_by_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$io_global_by_wait_by_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'io_global_by_wait_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$io_global_by_wait_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'innodb_lock_waits', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$innodb_lock_waits', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'memory_by_user_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$memory_by_user_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'memory_by_host_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$memory_by_host_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'memory_by_thread_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$memory_by_thread_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'memory_global_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$memory_global_by_current_bytes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'memory_global_total', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$memory_global_total', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_index_statistics', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$schema_index_statistics', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$ps_schema_table_statistics_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_table_statistics', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$schema_table_statistics', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_table_statistics_with_buffer', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$schema_table_statistics_with_buffer', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_tables_with_full_table_scans', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$schema_tables_with_full_table_scans', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_unused_indexes', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'schema_table_lock_waits', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$schema_table_lock_waits', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'statement_analysis', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$statement_analysis', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'statements_with_errors_or_warnings', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$statements_with_errors_or_warnings', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'statements_with_full_table_scans', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$statements_with_full_table_scans', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$ps_digest_avg_latency_distribution', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$ps_digest_95th_percentile_by_avg_us', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'statements_with_runtimes_in_95th_percentile', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$statements_with_runtimes_in_95th_percentile', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'statements_with_sorting', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$statements_with_sorting', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'statements_with_temp_tables', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$statements_with_temp_tables', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'user_summary_by_file_io_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$user_summary_by_file_io_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'user_summary_by_file_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$user_summary_by_file_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'user_summary_by_statement_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$user_summary_by_statement_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'user_summary_by_statement_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$user_summary_by_statement_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'user_summary_by_stages', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$user_summary_by_stages', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'user_summary', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$user_summary', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'host_summary_by_file_io_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$host_summary_by_file_io_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'host_summary_by_file_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$host_summary_by_file_io', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'host_summary_by_statement_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$host_summary_by_statement_type', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'host_summary_by_statement_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$host_summary_by_statement_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'host_summary_by_stages', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$host_summary_by_stages', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'host_summary', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$host_summary', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'wait_classes_global_by_avg_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$wait_classes_global_by_avg_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'wait_classes_global_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$wait_classes_global_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'waits_by_user_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$waits_by_user_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'waits_by_host_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$waits_by_host_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'waits_global_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$waits_global_by_latency', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'metrics', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'processlist', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$processlist', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'session', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'x$session', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'sys', 'session_ssl_status', 'VIEW', None, None, None, None, None, None, None, None, None, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, None, 'VIEW'), ('def', 'information_schema', 'ENABLED_ROLES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'APPLICABLE_ROLES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ADMINISTRABLE_ROLE_AUTHORIZATIONS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ROLE_COLUMN_GRANTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ROLE_ROUTINE_GRANTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'ROLE_TABLE_GRANTS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'USER_ATTRIBUTES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 34), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_SESSION_TEMP_TABLESPACES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_VIRTUAL', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_TABLESPACES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_INDEXES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FT_INDEX_CACHE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CACHED_INDEXES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FT_INDEX_TABLE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_COLUMNS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CMP_PER_INDEX', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_BUFFER_PAGE_LRU', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FT_CONFIG', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_BUFFER_POOL_STATS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CMP_RESET', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CMP_PER_INDEX_RESET', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_BUFFER_PAGE', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FT_BEING_DELETED', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_TABLES', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CMPMEM_RESET', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_TEMP_TABLE_INFO', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_METRICS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_TRX', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CMPMEM', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FT_DEFAULT_STOPWORD', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_TABLESTATS', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_FT_DELETED', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'information_schema', 'INNODB_CMP', 'SYSTEM VIEW', None, 10, None, 0, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, None, None, '', ''), ('def', 'performance_schema', 'innodb_redo_log_files', 'BASE TABLE', 'PERFORMANCE_SCHEMA', 10, 'Dynamic', 28, 0, 0, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 18, 42), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'test_db', 't5', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 1, 16384, 16384, 0, 0, 0, 11, datetime.datetime(2024, 5, 26, 3, 20, 31), datetime.datetime(2024, 5, 26, 3, 20, 31), None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'test_db', 't2', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 0, 1, datetime.datetime(2024, 5, 26, 3, 20, 31), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'test_db', 't0', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 20, 31), None, None, 'utf8mb4_0900_ai_ci', None, '', ''), ('def', 'test_db', 't1', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 20, 31), None, None, 'utf8mb4_0900_ai_ci', None, '', '')]
++--------------------+
+--Query--
+SELECT VARIABLE_VALUE INTO @val1 FROM performance_schema.global_status WHERE   VARIABLE_NAME LIKE 'Opened_tables'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ENGINE FROM INFORMATION_SCHEMA.TABLES
+--Result--
+[('InnoDB',), ('InnoDB',), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('PERFORMANCE_SCHEMA',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('CSV',), ('CSV',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',), (None,), ('InnoDB',), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), ('PERFORMANCE_SCHEMA',), ('InnoDB',), ('InnoDB',), ('InnoDB',), ('InnoDB',)]
++--------------------+
+--Query--
+SELECT VARIABLE_VALUE INTO @val2 FROM performance_schema.global_status WHERE   VARIABLE_NAME LIKE 'Opened_tables'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @val1 = @val2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ENGINE, SUPPORT, TRANSACTIONS FROM INFORMATION_SCHEMA.ENGINES WHERE SUPPORT IN ( SELECT DISTINCT SUPPORT FROM INFORMATION_SCHEMA.ENGINES WHERE ENGINE IN ( SELECT DISTINCT ENGINE FROM INFORMATION_SCHEMA.ENGINES WHERE ENGINE IN ('MEMORY'))) ORDER BY ENGINE LIMIT 1
+--Result--
+[('ARCHIVE', 'YES', 'NO')]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL WHERE (SELECT 1 FROM information_schema.tables         WHERE table_schema         ORDER BY table_name         LIMIT 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 AS F1 FROM information_schema.tables WHERE "COLUMN_PRIVILEGES"=       (SELECT CAST(TABLE_NAME AS CHAR)       FROM information_schema.tables       WHERE table_schema != 'PERFORMANCE_SCHEMA'       ORDER BY table_name LIMIT 1) LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT user,db FROM information_schema.processlist
+--Result--
+[('tester', 'test_db'), ('event_scheduler', None)]
++--------------------+
+--Query--
+SELECT user,db FROM information_schema.processlist
+--Result--
+[('tester', 'test_db'), ('event_scheduler', None)]
++--------------------+
+--Query--
+LOCK TABLE v1 READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST   WHERE state = "Waiting for table flush" AND   info = "flush tables"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[('users',)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT schema_name FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'ndbinfo'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'ndbinfo'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COLUMN_NAME, IS_NULLABLE,        DATA_TYPE, COLLATION_NAME, COLUMN_KEY   FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_SCHEMA='test' ORDER BY COLUMN_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLES where table_name='t1'
+--Result--
+[('def', 'test_db', 't1', 'BASE TABLE', 'InnoDB', 10, 'Dynamic', 0, 0, 16384, 0, 0, 0, None, datetime.datetime(2024, 5, 26, 3, 20, 31), None, None, 'utf8mb4_0900_ai_ci', None, '', '')]
++--------------------+
+--Query--
+SELECT t.table_schema, t.table_name, c.column_name   FROM INFORMATION_SCHEMA.TABLES t,        INFORMATION_SCHEMA.COLUMNS c        WHERE t.table_schema = c.table_schema        AND t.table_name = c.table_name        AND t.table_name = 't1' limit 1
+--Result--
+[('test_db', 't1', 'f1')]
++--------------------+
+--Query--
+SELECT * FROM information_schema.ST_GEOMETRY_COLUMNS   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.ST_GEOMETRY_COLUMNS   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1'   ORDER BY COLUMN_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.`REFERENTIAL_CONSTRAINTS`
+--Result--
+[]
++--------------------+
+--Query--
+SELECT INDEX_NAME FROM INFORMATION_SCHEMA.`STATISTICS` WHERE `TABLE_NAME` = 'innodb_table_stats' AND Cardinality
+--Result--
+[('PRIMARY',), ('PRIMARY',)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.CHARACTER_SETS WHERE DESCRIPTION LIKE '%japanese%'
+--Result--
+[('ujis', 'ujis_japanese_ci', 'EUC-JP Japanese', 3), ('sjis', 'sjis_japanese_ci', 'Shift-JIS Japanese', 2), ('cp932', 'cp932_japanese_ci', 'SJIS for Windows Japanese', 2), ('eucjpms', 'eucjpms_japanese_ci', 'UJIS for Windows Japanese', 3)]
++--------------------+
+--Query--
+SELECT create_options, UPPER(create_options),        table_comment, UPPER(table_comment)   FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1'
+--Result--
+[('max_rows=10', 'MAX_ROWS=10', 'testing a fix', 'TESTING A FIX')]
++--------------------+
+--Query--
+SELECT t.table_name, c1.column_name   FROM information_schema.tables t        INNER JOIN        information_schema.columns c1        ON t.table_schema = c1.table_schema AND           t.table_name = c1.table_name   WHERE t.table_schema = 'information_schema' AND         c1.ordinal_position =         ( SELECT COALESCE(MIN(c2.ordinal_position),1)             FROM information_schema.columns c2             WHERE c2.table_schema = t.table_schema AND                   c2.table_name = t.table_name AND                   c2.column_name LIKE '%SCHEMA%'         )   AND t.table_name NOT LIKE 'ndb%'   AND t.table_name NOT LIKE 'INNODB%'   ORDER BY t.table_name COLLATE utf8mb3_general_ci,            c1.column_name COLLATE utf8mb3_general_ci
+--Result--
+[('ADMINISTRABLE_ROLE_AUTHORIZATIONS', 'USER'), ('APPLICABLE_ROLES', 'USER'), ('CHARACTER_SETS', 'CHARACTER_SET_NAME'), ('CHECK_CONSTRAINTS', 'CONSTRAINT_SCHEMA'), ('COLLATIONS', 'COLLATION_NAME'), ('COLLATION_CHARACTER_SET_APPLICABILITY', 'COLLATION_NAME'), ('COLUMNS', 'TABLE_SCHEMA'), ('COLUMNS_EXTENSIONS', 'TABLE_SCHEMA'), ('COLUMN_PRIVILEGES', 'TABLE_SCHEMA'), ('COLUMN_STATISTICS', 'SCHEMA_NAME'), ('ENABLED_ROLES', 'ROLE_NAME'), ('ENGINES', 'ENGINE'), ('EVENTS', 'EVENT_SCHEMA'), ('FILES', 'TABLE_SCHEMA'), ('KEYWORDS', 'WORD'), ('KEY_COLUMN_USAGE', 'CONSTRAINT_SCHEMA'), ('OPTIMIZER_TRACE', 'QUERY'), ('PARAMETERS', 'SPECIFIC_SCHEMA'), ('PARTITIONS', 'TABLE_SCHEMA'), ('PLUGINS', 'PLUGIN_NAME'), ('PROCESSLIST', 'ID'), ('PROFILING', 'QUERY_ID'), ('REFERENTIAL_CONSTRAINTS', 'CONSTRAINT_SCHEMA'), ('RESOURCE_GROUPS', 'RESOURCE_GROUP_NAME'), ('ROLE_COLUMN_GRANTS', 'TABLE_SCHEMA'), ('ROLE_ROUTINE_GRANTS', 'SPECIFIC_SCHEMA'), ('ROLE_TABLE_GRANTS', 'TABLE_SCHEMA'), ('ROUTINES', 'ROUTINE_SCHEMA'), ('SCHEMATA', 'SCHEMA_NAME'), ('SCHEMATA_EXTENSIONS', 'SCHEMA_NAME'), ('SCHEMA_PRIVILEGES', 'TABLE_SCHEMA'), ('STATISTICS', 'TABLE_SCHEMA'), ('ST_GEOMETRY_COLUMNS', 'TABLE_SCHEMA'), ('ST_SPATIAL_REFERENCE_SYSTEMS', 'SRS_NAME'), ('ST_UNITS_OF_MEASURE', 'UNIT_NAME'), ('TABLES', 'TABLE_SCHEMA'), ('TABLESPACES', 'TABLESPACE_NAME'), ('TABLESPACES_EXTENSIONS', 'TABLESPACE_NAME'), ('TABLES_EXTENSIONS', 'TABLE_SCHEMA'), ('TABLE_CONSTRAINTS', 'CONSTRAINT_SCHEMA'), ('TABLE_CONSTRAINTS_EXTENSIONS', 'CONSTRAINT_SCHEMA'), ('TABLE_PRIVILEGES', 'TABLE_SCHEMA'), ('TRIGGERS', 'TRIGGER_SCHEMA'), ('USER_ATTRIBUTES', 'USER'), ('USER_PRIVILEGES', 'GRANTEE'), ('VIEWS', 'TABLE_SCHEMA'), ('VIEW_ROUTINE_USAGE', 'TABLE_SCHEMA'), ('VIEW_TABLE_USAGE', 'VIEW_SCHEMA')]
++--------------------+
+--Query--
+SELECT t.table_name, c1.column_name   FROM information_schema.tables t        INNER JOIN        information_schema.columns c1        ON t.table_schema = c1.table_schema AND           t.table_name = c1.table_name   WHERE t.table_schema = 'information_schema' AND         c1.ordinal_position =         ( SELECT COALESCE(MIN(c2.ordinal_position),1)             FROM information_schema.columns c2             WHERE c2.table_schema = 'information_schema' AND                   c2.table_name = t.table_name AND                   c2.column_name LIKE '%SCHEMA%'         )   AND t.table_name NOT LIKE 'ndb%'   AND t.table_name NOT LIKE 'INNODB%'   ORDER BY t.table_name COLLATE utf8mb3_general_ci,            c1.column_name COLLATE utf8mb3_general_ci
+--Result--
+[('ADMINISTRABLE_ROLE_AUTHORIZATIONS', 'USER'), ('APPLICABLE_ROLES', 'USER'), ('CHARACTER_SETS', 'CHARACTER_SET_NAME'), ('CHECK_CONSTRAINTS', 'CONSTRAINT_SCHEMA'), ('COLLATIONS', 'COLLATION_NAME'), ('COLLATION_CHARACTER_SET_APPLICABILITY', 'COLLATION_NAME'), ('COLUMNS', 'TABLE_SCHEMA'), ('COLUMNS_EXTENSIONS', 'TABLE_SCHEMA'), ('COLUMN_PRIVILEGES', 'TABLE_SCHEMA'), ('COLUMN_STATISTICS', 'SCHEMA_NAME'), ('ENABLED_ROLES', 'ROLE_NAME'), ('ENGINES', 'ENGINE'), ('EVENTS', 'EVENT_SCHEMA'), ('FILES', 'TABLE_SCHEMA'), ('KEYWORDS', 'WORD'), ('KEY_COLUMN_USAGE', 'CONSTRAINT_SCHEMA'), ('OPTIMIZER_TRACE', 'QUERY'), ('PARAMETERS', 'SPECIFIC_SCHEMA'), ('PARTITIONS', 'TABLE_SCHEMA'), ('PLUGINS', 'PLUGIN_NAME'), ('PROCESSLIST', 'ID'), ('PROFILING', 'QUERY_ID'), ('REFERENTIAL_CONSTRAINTS', 'CONSTRAINT_SCHEMA'), ('RESOURCE_GROUPS', 'RESOURCE_GROUP_NAME'), ('ROLE_COLUMN_GRANTS', 'TABLE_SCHEMA'), ('ROLE_ROUTINE_GRANTS', 'SPECIFIC_SCHEMA'), ('ROLE_TABLE_GRANTS', 'TABLE_SCHEMA'), ('ROUTINES', 'ROUTINE_SCHEMA'), ('SCHEMATA', 'SCHEMA_NAME'), ('SCHEMATA_EXTENSIONS', 'SCHEMA_NAME'), ('SCHEMA_PRIVILEGES', 'TABLE_SCHEMA'), ('STATISTICS', 'TABLE_SCHEMA'), ('ST_GEOMETRY_COLUMNS', 'TABLE_SCHEMA'), ('ST_SPATIAL_REFERENCE_SYSTEMS', 'SRS_NAME'), ('ST_UNITS_OF_MEASURE', 'UNIT_NAME'), ('TABLES', 'TABLE_SCHEMA'), ('TABLESPACES', 'TABLESPACE_NAME'), ('TABLESPACES_EXTENSIONS', 'TABLESPACE_NAME'), ('TABLES_EXTENSIONS', 'TABLE_SCHEMA'), ('TABLE_CONSTRAINTS', 'CONSTRAINT_SCHEMA'), ('TABLE_CONSTRAINTS_EXTENSIONS', 'CONSTRAINT_SCHEMA'), ('TABLE_PRIVILEGES', 'TABLE_SCHEMA'), ('TRIGGERS', 'TRIGGER_SCHEMA'), ('USER_ATTRIBUTES', 'USER'), ('USER_PRIVILEGES', 'GRANTEE'), ('VIEWS', 'TABLE_SCHEMA'), ('VIEW_ROUTINE_USAGE', 'TABLE_SCHEMA'), ('VIEW_TABLE_USAGE', 'VIEW_SCHEMA')]
++--------------------+
+--Query--
+SELECT COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME= 't1'
+--Result--
+[('0x61',), ('0xAA',), ('0x0A',), ('0x09',), ('0x61',), ('0xAA',), ('0x0A',), ('0x09',)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT file_name, initial_size!=0 FROM information_schema.files   WHERE tablespace_name='test/t1'
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_rows FROM information_schema.tables   WHERE table_name='t1'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT table_rows FROM information_schema.tables   WHERE table_name='t1' AND table_rows>=0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT table_rows FROM information_schema.tables WHERE table_name='t1'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0   FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS rcons   LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tcons   ON tcons.constraint_catalog = rcons.constraint_catalog AND   tcons.constraint_schema = rcons.constraint_schema AND   tcons.constraint_name = rcons.unique_constraint_name
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) > 0 FROM INFORMATION_SCHEMA.KEYWORDS
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SUB_PART FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_NAME = "t1"
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT SUB_PART FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_NAME = "t1"
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT SUB_PART FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_NAME = "t1"
+--Result--
+[(33,)]
++--------------------+
+--Query--
+SELECT SUB_PART FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_NAME = "t1"
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME = 't1' ORDER BY TABLE_SCHEMA
+--Result--
+[('123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__100_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__200_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__300_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__400_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__500_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__600_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__700_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__800_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234__900_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1000_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1100_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1200_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1300_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1400_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1500_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1600_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1700_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1800_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_1900_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_1234_2000_123456789_123456789_123456789_123456789_123_2048',)]
++--------------------+
+--Query--
+SELECT TABLE_NAME, LENGTH(VIEW_DEFINITION) > 0   FROM INFORMATION_SCHEMA.VIEWS   WHERE TABLE_SCHEMA='test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, LENGTH(VIEW_DEFINITION) > 0   FROM INFORMATION_SCHEMA.VIEWS   WHERE TABLE_SCHEMA='test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, TABLE_COMMENT   FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_SCHEMA='test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, TABLE_COMMENT   FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_SCHEMA='test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME, COLUMN_NAME, EXTRA FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_NAME='t1'
+--Result--
+[('t1', 'f1', 'NOT SECONDARY')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, COLUMN_NAME, EXTRA FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_NAME='t1'
+--Result--
+[('t1', 'f1', '')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, COLUMN_NAME, EXTRA FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_NAME='t1'
+--Result--
+[('t1', 'f1', 'NOT SECONDARY')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CREATE_OPTIONS   FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME = 't1'
+--Result--
+[('t1', 'SECONDARY_ENGINE="myisam" SECONDARY_LOAD="0"')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CREATE_OPTIONS FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME = 't1'
+--Result--
+[('t1', '')]
++--------------------+
+--Query--
+SELECT TABLE_NAME, CREATE_OPTIONS FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME = 't1'
+--Result--
+[('t1', 'SECONDARY_ENGINE="myisam" SECONDARY_LOAD="0"')]
++--------------------+
+--Query--
+SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE, TABLE_COMMENT   FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_SCHEMA = 'sys' AND TABLE_NAME = 'sys_config'
+--Result--
+[('sys', 'sys_config', 'BASE TABLE', '')]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 'v1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.ST_GEOMETRY_COLUMNS
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.APPLICABLE_ROLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.CHARACTER_SETS WHERE CHARACTER_SET_NAME LIKE 'utf8%' ORDER BY character_set_name
+--Result--
+[('utf8mb3', 'utf8mb3_general_ci', 'UTF-8 Unicode', 3), ('utf8mb4', 'utf8mb4_0900_ai_ci', 'UTF-8 Unicode', 4)]
++--------------------+
+--Query--
+SELECT * FROM information_schema.COLLATIONS WHERE COLLATION_NAME LIKE "utf8\_%" ORDER BY collation_name
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM information_schema.COLLATIONS WHERE COLLATION_NAME LIKE "utf8mb3\_%" ORDER BY collation_name
+--Result--
+[('utf8mb3_bin', 'utf8mb3', 83, '', 'Yes', 1, 'PAD SPACE'), ('utf8mb3_croatian_ci', 'utf8mb3', 213, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_czech_ci', 'utf8mb3', 202, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_danish_ci', 'utf8mb3', 203, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_esperanto_ci', 'utf8mb3', 209, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_estonian_ci', 'utf8mb3', 198, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_general_ci', 'utf8mb3', 33, 'Yes', 'Yes', 1, 'PAD SPACE'), ('utf8mb3_general_mysql500_ci', 'utf8mb3', 223, '', 'Yes', 1, 'PAD SPACE'), ('utf8mb3_german2_ci', 'utf8mb3', 212, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_hungarian_ci', 'utf8mb3', 210, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_icelandic_ci', 'utf8mb3', 193, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_latvian_ci', 'utf8mb3', 194, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_lithuanian_ci', 'utf8mb3', 204, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_persian_ci', 'utf8mb3', 208, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_polish_ci', 'utf8mb3', 197, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_romanian_ci', 'utf8mb3', 195, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_roman_ci', 'utf8mb3', 207, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_sinhala_ci', 'utf8mb3', 211, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_slovak_ci', 'utf8mb3', 205, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_slovenian_ci', 'utf8mb3', 196, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_spanish2_ci', 'utf8mb3', 206, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_spanish_ci', 'utf8mb3', 199, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_swedish_ci', 'utf8mb3', 200, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_tolower_ci', 'utf8mb3', 76, '', 'Yes', 1, 'PAD SPACE'), ('utf8mb3_turkish_ci', 'utf8mb3', 201, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_unicode_520_ci', 'utf8mb3', 214, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_unicode_ci', 'utf8mb3', 192, '', 'Yes', 8, 'PAD SPACE'), ('utf8mb3_vietnamese_ci', 'utf8mb3', 215, '', 'Yes', 8, 'PAD SPACE')]
++--------------------+

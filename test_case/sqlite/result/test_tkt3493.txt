@@ -1,0 +1,95 @@
+--Query--
+SELECT        CASE           WHEN B.val = 1 THEN 'XYZ'           ELSE A.val        END AS Col1     FROM B       LEFT OUTER JOIN A_B ON B.id = A_B.B_id       LEFT OUTER JOIN A ON A.id = A_B.A_id     ORDER BY Col1 ASC
+--Result--
+[('456',), ('XYZ',)]
++--------------------+
+--Query--
+SELECT DISTINCT       CASE           WHEN B.val = 1 THEN 'XYZ'           ELSE A.val        END AS Col1     FROM B       LEFT OUTER JOIN A_B ON B.id = A_B.B_id       LEFT OUTER JOIN A ON A.id = A_B.A_id     ORDER BY Col1 ASC
+--Result--
+[('456',), ('XYZ',)]
++--------------------+
+--Query--
+SELECT b.val, CASE WHEN b.val = 1 THEN 'xyz' ELSE b.val END AS col1 FROM b
+--Result--
+[('1', 'xyz'), ('2', '2')]
++--------------------+
+--Query--
+SELECT DISTINCT        b.val,        CASE WHEN b.val = 1 THEN 'xyz' ELSE b.val END AS col1      FROM b
+--Result--
+[('1', 'xyz'), ('2', '2')]
++--------------------+
+--Query--
+SELECT DISTINCT        b.val,        CASE WHEN b.val = '1' THEN 'xyz' ELSE b.val END AS col1      FROM b
+--Result--
+[('1', 'xyz'), ('2', '2')]
++--------------------+
+--Query--
+SELECT a=123 FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a=123 FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a='123' FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count(*), a=123 FROM t1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT b='456' FROM t1 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b='456' FROM t1 GROUP BY b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b='456' FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT typeof(a), a FROM t1 GROUP BY a HAVING a=123
+--Result--
+[('text', '123')]
++--------------------+
+--Query--
+SELECT a='abc' FROM t2 GROUP BY a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a='abc' FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a>b FROM t2 GROUP BY a, b
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a>b COLLATE BINARY FROM t2 GROUP BY a, b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b>a FROM t2 GROUP BY a, b
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT b>a COLLATE NOCASE FROM t2 GROUP BY a, b
+--Result--
+[(1,)]
++--------------------+

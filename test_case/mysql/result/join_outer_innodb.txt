@@ -1,0 +1,15 @@
+--Query--
+SELECT COUNT(*) FROM t2 LEFT JOIN t1 ON t2.fkey = t1.id    WHERE t1.name LIKE 'A%'
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT t1.pk FROM t2 LEFT JOIN t1 ON t2.pk = t1.col_int WHERE t1.col_int_key BETWEEN 5 AND 6        AND t1.pk IS NULL OR t1.pk IN (5) ORDER BY pk
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON t1.c2=t2.c2 AND t2.c1=1 FOR UPDATE
+--Result--
+[(1, 2, 3, 1, 2, 3), (2, 3, 4, None, None, None), (3, 4, 5, None, None, None)]
++--------------------+

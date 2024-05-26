@@ -1,0 +1,55 @@
+--Query--
+SELECT arrayJoin([0,0,0,0,0,0,0,0,0,0,0,1,2,2,3,4,12,NULL]) AS x ORDER BY x
+--Result--
+[(0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (1,), (2,), (2,), (3,), (4,), (12,), (None,)]
++--------------------+
+--Query--
+SELECT arrayJoin([0,0,0,0,0,0,0,0,0,0,0,1,2,2,3,4,12,NULL]) AS x ORDER BY x DESC
+--Result--
+[(12,), (4,), (3,), (2,), (2,), (1,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (0,), (None,)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x
+--Result--
+[(1,), (2,), (4,), (5,), (7,), (8,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x DESC
+--Result--
+[(8,), (7,), (5,), (4,), (2,), (1,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x
+--Result--
+[(1,), (2,), (4,), (5,), (7,), (8,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x DESC
+--Result--
+[(8,), (7,), (5,), (4,), (2,), (1,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x, number AS y FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x, y
+--Result--
+[(1, 1), (2, 2), (4, 4), (5, 5), (7, 7), (8, 8), (None, 0), (None, 3), (None, 6), (None, 9)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x, number AS y FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x DESC, y
+--Result--
+[(8, 8), (7, 7), (5, 5), (4, 4), (2, 2), (1, 1), (None, 0), (None, 3), (None, 6), (None, 9)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x, number AS y FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x, y
+--Result--
+[(1, 1), (2, 2), (4, 4), (5, 5), (7, 7), (8, 8), (None, 0), (None, 3), (None, 6), (None, 9)]
++--------------------+
+--Query--
+SELECT nullIf(number, number % 3 = 0 ? number : 0) AS x, number AS y FROM (SELECT * FROM system.numbers LIMIT 10) ORDER BY x DESC, y
+--Result--
+[(8, 8), (7, 7), (5, 5), (4, 4), (2, 2), (1, 1), (None, 0), (None, 3), (None, 6), (None, 9)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT toNullable(number) AS x FROM system.numbers LIMIT 3) ORDER BY x DESC LIMIT 10
+--Result--
+[(2,), (1,), (0,)]
++--------------------+

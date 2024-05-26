@@ -1,0 +1,70 @@
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '1st run:'
+--Result--
+[('1st run:',)]
++--------------------+
+--Query--
+SELECT key, sum(agg) FROM tbl GROUP BY key WITH totals ORDER BY key SETTINGS use_query_cache = 1
+--Result--
+[(1, 8), (2, 2), (0, 10)]
++--------------------+
+--Query--
+SELECT '2nd run:'
+--Result--
+[('2nd run:',)]
++--------------------+
+--Query--
+SELECT count(*) FROM system.query_cache
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '1st run:'
+--Result--
+[('1st run:',)]
++--------------------+
+--Query--
+SELECT '2nd run:'
+--Result--
+[('2nd run:',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '1st run:'
+--Result--
+[('1st run:',)]
++--------------------+
+--Query--
+SELECT '2nd run:'
+--Result--
+[('2nd run:',)]
++--------------------+
+--Query--
+SYSTEM DROP QUERY CACHE
+--Result--
+[]
++--------------------+

@@ -11,5 +11,4 @@ CREATE TABLE foo (
   ORDER BY id;
 INSERT INTO foo VALUES (1, 0.5, 0.2, 0.3, 0.8);
 SELECT divide(sum(a) + sum(b), nullIf(sum(c) + sum(d), 0)) FROM foo;
-SELECT divide(sum(a) + sum(b), nullIf(sum(c) + sum(d), 0)) FROM foo;
 DROP TABLE foo;

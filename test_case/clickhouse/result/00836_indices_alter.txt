@@ -1,0 +1,55 @@
+--Query--
+SHOW CREATE TABLE minmax_idx
+--Result--
+[('CREATE TABLE test.minmax_idx\n(\n    `u64` UInt64,\n    `i32` Int32,\n    INDEX idx1 u64 * i32 TYPE minmax GRANULARITY 10,\n    INDEX idx3 u64 - i32 TYPE minmax GRANULARITY 10,\n    INDEX idx2 u64 + i32 TYPE minmax GRANULARITY 10\n)\nENGINE = MergeTree\nORDER BY u64\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM minmax_idx WHERE u64 * i32 = 2
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM minmax_idx WHERE u64 * i32 = 2
+--Result--
+[(1, 2), (1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
++--------------------+
+--Query--
+SHOW CREATE TABLE minmax_idx
+--Result--
+[('CREATE TABLE test.minmax_idx\n(\n    `u64` UInt64,\n    `i32` Int32,\n    INDEX idx3 u64 - i32 TYPE minmax GRANULARITY 10,\n    INDEX idx2 u64 + i32 TYPE minmax GRANULARITY 10\n)\nENGINE = MergeTree\nORDER BY u64\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM minmax_idx WHERE u64 * i32 = 2
+--Result--
+[(1, 2), (1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
++--------------------+
+--Query--
+SHOW CREATE TABLE minmax_idx
+--Result--
+[('CREATE TABLE test.minmax_idx\n(\n    `u64` UInt64,\n    `i32` Int32\n)\nENGINE = MergeTree\nORDER BY u64\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE minmax_idx
+--Result--
+[('CREATE TABLE test.minmax_idx\n(\n    `u64` UInt64,\n    `i32` Int32,\n    INDEX idx1 u64 * i32 TYPE minmax GRANULARITY 10\n)\nENGINE = MergeTree\nORDER BY u64\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM minmax_idx WHERE u64 * i32 = 2
+--Result--
+[(1, 2), (1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
++--------------------+
+--Query--
+SELECT * FROM minmax_idx2 WHERE u64 * i32 = 2
+--Result--
+[(1, 2), (1, 2)]
++--------------------+
+--Query--
+SHOW CREATE TABLE minmax_idx2
+--Result--
+[('CREATE TABLE test.minmax_idx2\n(\n    `u64` UInt64,\n    `i32` Int32\n)\nENGINE = MergeTree\nORDER BY u64\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM minmax_idx2 WHERE u64 * i32 = 2
+--Result--
+[(1, 2), (1, 2)]
++--------------------+

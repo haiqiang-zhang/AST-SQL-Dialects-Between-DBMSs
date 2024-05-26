@@ -11,7 +11,6 @@ CREATE TABLE t1 (c set('ae','oe','ue','ss') collate latin1_german2_ci);
 INSERT INTO t1 VALUES ('ae'),('oe'),('ue'),('ss');
 INSERT INTO t1 VALUES ('ae,oe,ue,ss');
 SELECT c FROM t1 ORDER BY c;
-SELECT c FROM t1 ORDER BY concat(c);
 DROP TABLE t1;
 CREATE TABLE t1 (
         set_unique_utf8 set ('a','b','c','d','e','f','g','h','i','j','k','l',

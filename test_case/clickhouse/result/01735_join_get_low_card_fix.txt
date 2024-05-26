@@ -1,0 +1,30 @@
+--Query--
+SELECT joinGet('join_tbl', 'name', 'xxx') == 'yyy'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT joinGet('join_tbl', 'name', toLowCardinality('xxx')) == 'yyy'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT joinGet('join_tbl', 'name', toLowCardinality(materialize('xxx'))) == 'yyy'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT joinGet('join_tbl', 'lcname', 'xxx') == 'yyy'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT joinGet('join_tbl', 'lcname', toLowCardinality('xxx')) == 'yyy'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT joinGet('join_tbl', 'lcname', toLowCardinality(materialize('xxx'))) == 'yyy'
+--Result--
+[(1,)]
++--------------------+

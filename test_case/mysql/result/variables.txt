@@ -1,0 +1,985 @@
+--Query--
+select @test, @`test`, @TEST, @`TEST`, @"teSt"
+--Result--
+[(None, None, None, None, None)]
++--------------------+
+--Query--
+select @test, @`test`, @TEST, @`TEST`, @"teSt"
+--Result--
+[(None, None, None, None, None)]
++--------------------+
+--Query--
+select @test, @`test`, @TEST, @`TEST`, @"teSt"
+--Result--
+[(None, None, None, None, None)]
++--------------------+
+--Query--
+select @test, @`test`, @TEST, @`TEST`, @"teSt"
+--Result--
+[(None, None, None, None, None)]
++--------------------+
+--Query--
+select @`teST`:=5
+--Result--
+[(5,)]
++--------------------+
+--Query--
+select @test, @`test`, @TEST, @`TEST`, @"teSt"
+--Result--
+[(5, 5, 5, 5, 5)]
++--------------------+
+--Query--
+select @`select`,@not_used
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+select @test_int,@test_double,@test_string,@test_string2,@select
+--Result--
+[(None, None, None, None, None)]
++--------------------+
+--Query--
+select @test_int,@test_double,@test_string,@test_string2
+--Result--
+[(None, None, None, None)]
++--------------------+
+--Query--
+select @test_int,@test_double,@test_string,@test_string2
+--Result--
+[(None, None, None, None)]
++--------------------+
+--Query--
+select @test_int,@test_double,@test_string,@test_string2
+--Result--
+[(None, None, None, None)]
++--------------------+
+--Query--
+select @t1:=(@t2:=1)+@t3:=4,@t1,@t2,@t3
+--Result--
+[(5, '5', '1', '4')]
++--------------------+
+--Query--
+select @t5
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @min_cid:=min(c_id), @max_cid:=max(c_id) from t1
+--Result--
+[(1, 4)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c_id=@min_cid OR c_id=@max_cid
+--Result--
+[(1, 'Bozo', 'USA'), (4, 'Mr. Floppy', 'GB')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c_id=@min_cid OR c_id=@max_cid OR c_id=666
+--Result--
+[(1, 'Bozo', 'USA'), (4, 'Mr. Floppy', 'GB')]
++--------------------+
+--Query--
+select * from t1 where c_id=@min_cid OR c_id=@max_cid
+--Result--
+[(1, 'Bozo', 'USA'), (4, 'Mr. Floppy', 'GB')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'max_join_size'
+--Result--
+[('max_join_size', '18446744073709551615')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'max_join_size'
+--Result--
+[('max_join_size', '18446744073709551615')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'max_join_size'
+--Result--
+[('max_join_size', '18446744073709551615')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'max_join_size'
+--Result--
+[('max_join_size', '18446744073709551615')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'max_join_size'
+--Result--
+[('max_join_size', '18446744073709551615')]
++--------------------+
+--Query--
+select @@local.max_join_size, @@global.max_join_size
+--Result--
+[(18446744073709551615, 18446744073709551615)]
++--------------------+
+--Query--
+select @@identity,  length(@@version)>0
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+select @@VERSION=version()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select last_insert_id(345)
+--Result--
+[(345,)]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'concurrent_insert'
+--Result--
+[('concurrent_insert', 'AUTO')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'concurrent_insert'
+--Result--
+[('concurrent_insert', 'AUTO')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'concurrent_insert'
+--Result--
+[('concurrent_insert', 'AUTO')]
++--------------------+
+--Query--
+select @@concurrent_insert
+--Result--
+[('AUTO',)]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'default_storage_engine'
+--Result--
+[('default_storage_engine', 'InnoDB')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'default_storage_engine'
+--Result--
+[('default_storage_engine', 'InnoDB')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'myisam_max_sort_file_size'
+--Result--
+[('myisam_max_sort_file_size', '9223372036853727232')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'myisam_max_sort_file_size'
+--Result--
+[('myisam_max_sort_file_size', '9223372036853727232')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'net_%' order by 1
+--Result--
+[('net_buffer_length', '16384'), ('net_read_timeout', '30'), ('net_retry_count', '10'), ('net_write_timeout', '60')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'net_%' order by 1
+--Result--
+[('net_buffer_length', '16384'), ('net_read_timeout', '30'), ('net_retry_count', '10'), ('net_write_timeout', '60')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'net_%' order by 1
+--Result--
+[('net_buffer_length', '16384'), ('net_read_timeout', '30'), ('net_retry_count', '10'), ('net_write_timeout', '60')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'net_buffer_length'
+--Result--
+[('net_buffer_length', '16384')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'net_buffer_length'
+--Result--
+[('net_buffer_length', '16384')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'character_set_client'
+--Result--
+[('character_set_client', 'utf8mb4')]
++--------------------+
+--Query--
+select @@timestamp>0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_variables WHERE variable_name IN ('range_alloc_block_size', 'query_alloc_block_size', 'query_prealloc_size', 'transaction_alloc_block_size', 'transaction_prealloc_size') ORDER BY 1
+--Result--
+[('query_alloc_block_size', '8192'), ('query_prealloc_size', '8192'), ('range_alloc_block_size', '4096'), ('transaction_alloc_block_size', '8192'), ('transaction_prealloc_size', '4096')]
++--------------------+
+--Query--
+select @@query_alloc_block_size
+--Result--
+[(8192,)]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_variables WHERE variable_name IN ('range_alloc_block_size', 'query_alloc_block_size', 'query_prealloc_size', 'transaction_alloc_block_size', 'transaction_prealloc_size') ORDER BY 1
+--Result--
+[('query_alloc_block_size', '8192'), ('query_prealloc_size', '8192'), ('range_alloc_block_size', '4096'), ('transaction_alloc_block_size', '8192'), ('transaction_prealloc_size', '4096')]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_variables WHERE variable_name IN ('range_alloc_block_size', 'query_alloc_block_size', 'query_prealloc_size', 'transaction_alloc_block_size', 'transaction_prealloc_size') ORDER BY 1
+--Result--
+[('query_alloc_block_size', '8192'), ('query_prealloc_size', '8192'), ('range_alloc_block_size', '4096'), ('transaction_alloc_block_size', '8192'), ('transaction_prealloc_size', '4096')]
++--------------------+
+--Query--
+SELECT @@version LIKE 'non-existent'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@version_compile_os LIKE 'non-existent'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@autocommit, @@big_tables
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+select @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+select @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+select @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+select @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+select @@long_query_time
+--Result--
+[(10.0,)]
++--------------------+
+--Query--
+select @@long_query_time
+--Result--
+[(10.0,)]
++--------------------+
+--Query--
+select @@max_user_connections
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@max_sp_recursion_depth
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@max_sp_recursion_depth
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@sql_auto_is_null
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@sql_auto_is_null
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@session.insert_id
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@session.insert_id
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@session.insert_id
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@session.last_insert_id
+--Result--
+[(345,)]
++--------------------+
+--Query--
+select @@session.insert_id
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@session.insert_id
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select @@key_buffer_size
+--Result--
+[(8388608,)]
++--------------------+
+--Query--
+select * from t1 where a=2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select * from t2 where a=3
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select max(a) +1, max(a) +2 into @xx,@yy from t1
+--Result--
+[]
++--------------------+
+--Query--
+select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'myisam_max_sort_file_size'
+--Result--
+[('myisam_max_sort_file_size', '9223372036853727232')]
++--------------------+
+--Query--
+select @@global.max_user_connections,@@local.max_join_size
+--Result--
+[(0, 18446744073709551615)]
++--------------------+
+--Query--
+select @@global.max_user_connections,@@local.max_join_size
+--Result--
+[(0, 18446744073709551615)]
++--------------------+
+--Query--
+select @@global.max_user_connections,@@local.max_join_size
+--Result--
+[(0, 18446744073709551615)]
++--------------------+
+--Query--
+select @@global.max_user_connections,@@local.max_join_size
+--Result--
+[(0, 18446744073709551615)]
++--------------------+
+--Query--
+select @@global.max_user_connections,@@local.max_join_size
+--Result--
+[(0, 18446744073709551615)]
++--------------------+
+--Query--
+select @a, @b
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_variables WHERE VARIABLE_NAME LIKE 'MYISAM_DATA_POINTER_SIZE'
+--Result--
+[('myisam_data_pointer_size', '6')]
++--------------------+
+--Query--
+SELECT * FROM performance_schema.session_variables WHERE VARIABLE_NAME LIKE 'table_open_cache'
+--Result--
+[('table_open_cache', '4000')]
++--------------------+
+--Query--
+select ifnull(@@character_set_results,"really null")
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@lc_time_names
+--Result--
+[('en_US',)]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@global.lc_time_names, @@lc_time_names
+--Result--
+[('en_US', 'en_US')]
++--------------------+
+--Query--
+select @@query_prealloc_size = @test
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select a into @x from t1
+--Result--
+[]
++--------------------+
+--Query--
+select @@max_heap_table_size > 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select @@max_heap_table_size > 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select @@max_heap_table_size > 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select @@character_set_system
+--Result--
+[('utf8mb3',)]
++--------------------+
+--Query--
+select @@character_set_filesystem
+--Result--
+[('binary',)]
++--------------------+
+--Query--
+select @@character_set_filesystem
+--Result--
+[('binary',)]
++--------------------+
+--Query--
+select @@character_set_filesystem
+--Result--
+[('binary',)]
++--------------------+
+--Query--
+select @@global.character_set_filesystem
+--Result--
+[('binary',)]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'sql_big_selects'
+--Result--
+[('sql_big_selects', 'ON')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'sql_notes'
+--Result--
+[('sql_notes', 'ON')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'sql_warnings'
+--Result--
+[('sql_warnings', 'OFF')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'sql_notes'
+--Result--
+[('sql_notes', 'ON')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'sql_warnings'
+--Result--
+[('sql_warnings', 'OFF')]
++--------------------+
+--Query--
+select @@system_time_zone
+--Result--
+[('CEST',)]
++--------------------+
+--Query--
+select @@version, @@version_comment, @@version_compile_machine,        @@version_compile_os
+--Result--
+[('8.3.0', 'Homebrew', 'arm64', 'macos14.2')]
++--------------------+
+--Query--
+select @@basedir, @@datadir, @@tmpdir
+--Result--
+[('/opt/homebrew/Cellar/mysql/8.3.0_1/', '/opt/homebrew/var/mysql/', '/var/folders/k8/k4rk101n20j_wh1rsxypsm_w0000gn/T/')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'basedir'
+--Result--
+[('basedir', '/opt/homebrew/Cellar/mysql/8.3.0_1/')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'datadir'
+--Result--
+[('datadir', '/opt/homebrew/var/mysql/')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'tmpdir'
+--Result--
+[('tmpdir', '/var/folders/k8/k4rk101n20j_wh1rsxypsm_w0000gn/T/')]
++--------------------+
+--Query--
+select @@ssl_ca, @@ssl_capath, @@ssl_cert, @@ssl_cipher, @@ssl_key
+--Result--
+[('ca.pem', None, 'server-cert.pem', None, 'server-key.pem')]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'ssl%' order by 1
+--Result--
+[('ssl_ca', 'ca.pem'), ('ssl_capath', ''), ('ssl_cert', 'server-cert.pem'), ('ssl_cipher', ''), ('ssl_crl', ''), ('ssl_crlpath', ''), ('ssl_fips_mode', 'OFF'), ('ssl_key', 'server-key.pem'), ('ssl_session_cache_mode', 'ON'), ('ssl_session_cache_timeout', '300')]
++--------------------+
+--Query--
+select @@log_queries_not_using_indexes
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from performance_schema.session_variables where variable_name like 'log_queries_not_using_indexes'
+--Result--
+[('log_queries_not_using_indexes', 'OFF')]
++--------------------+
+--Query--
+select @@hostname
+--Result--
+[('student-net-cx-3269.intern.ethz.ch',)]
++--------------------+
+--Query--
+SELECT UTC_DATE()
+--Result--
+[(datetime.date(2024, 5, 26),)]
++--------------------+
+--Query--
+SELECT @@global.ft_max_word_len
+--Result--
+[(84,)]
++--------------------+
+--Query--
+SELECT @@global.ft_min_word_len
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT @@global.ft_query_expansion_limit
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT @@global.ft_stopword_file
+--Result--
+[('(built-in)',)]
++--------------------+
+--Query--
+SELECT @@global.back_log
+--Result--
+[(151,)]
++--------------------+
+--Query--
+SELECT @@global.large_files_support
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.character_sets_dir
+--Result--
+[('/opt/homebrew/Cellar/mysql/8.3.0_1/share/mysql/charsets/',)]
++--------------------+
+--Query--
+SELECT @@global.init_file
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @@global.lc_messages_dir
+--Result--
+[('/opt/homebrew/Cellar/mysql/8.3.0_1/share/mysql/',)]
++--------------------+
+--Query--
+SELECT @@global.large_page_size
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.large_pages
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.log_bin
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.log_error
+--Result--
+[('./student-net-cx-3269.intern.ethz.ch.err',)]
++--------------------+
+--Query--
+SELECT @@global.lower_case_file_system
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.lower_case_table_names
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT @@global.myisam_recover_options
+--Result--
+[('OFF',)]
++--------------------+
+--Query--
+SELECT @@global.open_files_limit
+--Result--
+[(8161,)]
++--------------------+
+--Query--
+SELECT @@global.pid_file
+--Result--
+[('student-net-cx-3269.intern.ethz.ch.pid',)]
++--------------------+
+--Query--
+SELECT @@global.plugin_dir
+--Result--
+[('/opt/homebrew/opt/mysql/lib/plugin/',)]
++--------------------+
+--Query--
+SELECT @@global.port
+--Result--
+[(3306,)]
++--------------------+
+--Query--
+SELECT @@global.protocol_version
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT @@global.skip_external_locking
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.skip_networking
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.skip_show_database
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.thread_stack
+--Result--
+[(1048576,)]
++--------------------+
+--Query--
+select @@default_storage_engine
+--Result--
+[('InnoDB',)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.server_id
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.server_id
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.server_id
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.server_id
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.server_id
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.INIT_FILE, @@GLOBAL.INIT_FILE IS NULL
+--Result--
+[(None, 1)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.max_binlog_cache_size
+--Result--
+[(18446744073709547520,)]
++--------------------+
+--Query--
+SELECT @@skip_name_resolve
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 GROUP BY @a:= (SELECT ROUND(f1) FROM t1 WHERE @a=f1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sql_notes
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sql_notes
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sql_notes
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@delay_key_write
+--Result--
+[('ON',)]
++--------------------+
+--Query--
+SELECT @@sql_safe_updates
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@sql_safe_updates
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@sql_safe_updates
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@foreign_key_checks
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@foreign_key_checks
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@foreign_key_checks
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@unique_checks
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@unique_checks
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@unique_checks
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sql_buffer_result
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@sql_buffer_result
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@sql_buffer_result
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@sql_quote_show_create
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sql_quote_show_create
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@sql_quote_show_create
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'log_slow_admin_statements'
+--Result--
+[('log_slow_admin_statements', 'OFF')]
++--------------------+
+--Query--
+select * from performance_schema.global_variables where variable_name like 'log_slow_replica_statements'
+--Result--
+[('log_slow_replica_statements', 'OFF')]
++--------------------+
+--Query--
+SELECT @@global.log_replica_updates
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT @@global.relay_log
+--Result--
+[('student-net-cx-3269-relay-bin',)]
++--------------------+
+--Query--
+SELECT @@global.relay_log_basename
+--Result--
+[('/opt/homebrew/var/mysql/student-net-cx-3269-relay-bin',)]
++--------------------+
+--Query--
+SELECT @@global.log_bin_basename
+--Result--
+[('/opt/homebrew/var/mysql/binlog',)]
++--------------------+
+--Query--
+SELECT @@global.relay_log_index
+--Result--
+[('/opt/homebrew/var/mysql/student-net-cx-3269-relay-bin.index',)]
++--------------------+
+--Query--
+SELECT @@global.log_bin_index
+--Result--
+[('/opt/homebrew/var/mysql/binlog.index',)]
++--------------------+
+--Query--
+SELECT @@global.relay_log_space_limit
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.replica_load_tmpdir
+--Result--
+[('/var/folders/k8/k4rk101n20j_wh1rsxypsm_w0000gn/T/',)]
++--------------------+
+--Query--
+SELECT @@global.replica_skip_errors
+--Result--
+[('OFF',)]
++--------------------+
+--Query--
+SELECT LENGTH(a) FROM t1
+--Result--
+[(6000,)]
++--------------------+
+--Query--
+PREPARE s FROM "set character_set_client = ?"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+

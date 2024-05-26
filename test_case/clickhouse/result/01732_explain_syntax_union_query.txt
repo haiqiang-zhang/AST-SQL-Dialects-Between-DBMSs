@@ -1,0 +1,60 @@
+--Query--
+EXPLAIN SYNTAX SELECT 1 UNION ALL (     SELECT 1     UNION ALL     (         SELECT 1         UNION ALL         SELECT 1     )     UNION ALL     SELECT 1 )
+--Result--
+[('SELECT 1',), ('UNION ALL',), ('SELECT 1',), ('UNION ALL',), ('SELECT 1',), ('UNION ALL',), ('SELECT 1',), ('UNION ALL',), ('SELECT 1',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1 UNION ALL (     SELECT 1     UNION DISTINCT     (         SELECT 1         UNION ALL         SELECT 1     )     UNION ALL     SELECT 1 )
+--Result--
+[('SELECT 1',), ('UNION ALL',), ('(',), ('    SELECT 1',), ('    UNION DISTINCT',), ('    SELECT 1',), ('    UNION DISTINCT',), ('    SELECT 1',), (')',), ('UNION ALL',), ('SELECT 1',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT x FROM (     SELECT 1 AS x     UNION ALL     (         SELECT 1         UNION DISTINCT         (             SELECT 1             UNION ALL             SELECT 1         )         UNION ALL         SELECT 1     ) )
+--Result--
+[('SELECT x',), ('FROM',), ('(',), ('    SELECT 1 AS x',), ('    UNION ALL',), ('    (',), ('        SELECT 1',), ('        UNION DISTINCT',), ('        SELECT 1',), ('        UNION DISTINCT',), ('        SELECT 1',), ('    )',), ('    UNION ALL',), ('    SELECT 1',), (')',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT x FROM (     SELECT 1 AS x     UNION ALL     (         SELECT 1         UNION ALL         SELECT 1     ) )
+--Result--
+[('SELECT x',), ('FROM',), ('(',), ('    SELECT 1 AS x',), ('    UNION ALL',), ('    SELECT 1',), ('    UNION ALL',), ('    SELECT 1',), (')',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 1 UNION ALL SELECT 1 UNION DISTINCT SELECT 1
+--Result--
+[('SELECT 1',), ('UNION DISTINCT',), ('SELECT 1',), ('UNION DISTINCT',), ('SELECT 1',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX (((((((((((((((SELECT 1)))))))))))))))
+--Result--
+[('SELECT 1',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+

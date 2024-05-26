@@ -1,0 +1,130 @@
+--Query--
+SELECT 'TOTAL rows', count() FROM source_data
+--Result--
+[('TOTAL rows', 4)]
++--------------------+
+--Query--
+SELECT 'OLD DEDUPLICATE'
+--Result--
+[('OLD DEDUPLICATE',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE full_duplicates FINAL DEDUPLICATE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM full_duplicates
+--Result--
+[(0, 0, 0, 1), (1, 1, 2, 1), (1, 1, 3, 1)]
++--------------------+
+--Query--
+TRUNCATE full_duplicates
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY *'
+--Result--
+[('DEDUPLICATE BY *',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE full_duplicates FINAL DEDUPLICATE BY *
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM full_duplicates
+--Result--
+[(0, 0, 0, 1), (1, 1, 2, 1), (1, 1, 3, 1)]
++--------------------+
+--Query--
+TRUNCATE full_duplicates
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY * EXCEPT mat'
+--Result--
+[('DEDUPLICATE BY * EXCEPT mat',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE full_duplicates FINAL DEDUPLICATE BY * EXCEPT mat
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM full_duplicates
+--Result--
+[(0, 0, 0, 1), (1, 1, 2, 1), (1, 1, 3, 1)]
++--------------------+
+--Query--
+TRUNCATE full_duplicates
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY pk,sk,val,mat,partition_key'
+--Result--
+[('DEDUPLICATE BY pk,sk,val,mat,partition_key',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE full_duplicates FINAL DEDUPLICATE BY pk,sk,val,mat,partition_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM full_duplicates
+--Result--
+[(0, 0, 0, 1), (1, 1, 2, 1), (1, 1, 3, 1)]
++--------------------+
+--Query--
+TRUNCATE full_duplicates
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Can not remove full duplicates'
+--Result--
+[('Can not remove full duplicates',)]
++--------------------+
+--Query--
+SELECT 'OLD DEDUPLICATE'
+--Result--
+[('OLD DEDUPLICATE',)]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY pk,sk,val,mat'
+--Result--
+[('DEDUPLICATE BY pk,sk,val,mat',)]
++--------------------+
+--Query--
+SELECT 'Remove partial duplicates'
+--Result--
+[('Remove partial duplicates',)]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY *'
+--Result--
+[('DEDUPLICATE BY *',)]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY * EXCEPT mat'
+--Result--
+[('DEDUPLICATE BY * EXCEPT mat',)]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY COLUMNS("*") EXCEPT mat'
+--Result--
+[('DEDUPLICATE BY COLUMNS("*") EXCEPT mat',)]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY pk,sk'
+--Result--
+[('DEDUPLICATE BY pk,sk',)]
++--------------------+
+--Query--
+SELECT 'DEDUPLICATE BY COLUMNS(".*k")'
+--Result--
+[('DEDUPLICATE BY COLUMNS(".*k")',)]
++--------------------+

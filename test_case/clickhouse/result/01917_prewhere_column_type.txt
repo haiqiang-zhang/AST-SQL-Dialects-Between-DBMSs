@@ -1,0 +1,25 @@
+--Query--
+SELECT s FROM t1 WHERE f AND (e = 1)
+--Result--
+[('111',)]
++--------------------+
+--Query--
+SELECT s FROM t1 WHERE f AND (e = 1) SETTINGS optimize_move_to_prewhere=true
+--Result--
+[('111',)]
++--------------------+
+--Query--
+SELECT s FROM t1 WHERE f AND (e = 1) SETTINGS optimize_move_to_prewhere=false
+--Result--
+[('111',)]
++--------------------+
+--Query--
+SELECT s FROM t1 PREWHERE f AND (e = 1)
+--Result--
+[('111',)]
++--------------------+
+--Query--
+SELECT s FROM t1 WHERE e AND (e = 1)
+--Result--
+[('111',)]
++--------------------+

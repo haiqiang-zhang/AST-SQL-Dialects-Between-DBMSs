@@ -1,0 +1,40 @@
+--Query--
+SELECT n.x FROM table_for_rename_nested WHERE key = 7
+--Result--
+[([8, 9, 10],)]
++--------------------+
+--Query--
+SELECT n.y FROM table_for_rename_nested WHERE key = 7
+--Result--
+[(['a', 'b', 'c'],)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_for_rename_nested
+--Result--
+[('CREATE TABLE test.table_for_rename_nested\n(\n    `date` Date,\n    `key` UInt64,\n    `n.x` Array(UInt32),\n    `n.y` Array(String),\n    `value1` Array(Array(LowCardinality(String)))\n)\nENGINE = MergeTree\nPARTITION BY date\nORDER BY key\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_for_rename_nested
+--Result--
+[('CREATE TABLE test.table_for_rename_nested\n(\n    `date` Date,\n    `key` UInt64,\n    `n.renamed_x` Array(UInt32),\n    `n.renamed_y` Array(String),\n    `value1` Array(Array(LowCardinality(String)))\n)\nENGINE = MergeTree\nPARTITION BY date\nORDER BY key\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT key, n.renamed_x FROM table_for_rename_nested WHERE key = 7
+--Result--
+[(7, [8, 9, 10])]
++--------------------+
+--Query--
+SELECT key, n.renamed_y FROM table_for_rename_nested WHERE key = 7
+--Result--
+[(7, ['a', 'b', 'c'])]
++--------------------+
+--Query--
+SELECT renamed_value1 FROM table_for_rename_nested WHERE key = 7
+--Result--
+[([['7']],)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_for_rename_nested
+--Result--
+[('CREATE TABLE test.table_for_rename_nested\n(\n    `date` Date,\n    `key` UInt64,\n    `n.renamed_x` Array(UInt32),\n    `n.renamed_y` Array(String),\n    `renamed_value1` Array(Array(LowCardinality(String)))\n)\nENGINE = MergeTree\nPARTITION BY date\nORDER BY key\nSETTINGS index_granularity = 8192',)]
++--------------------+

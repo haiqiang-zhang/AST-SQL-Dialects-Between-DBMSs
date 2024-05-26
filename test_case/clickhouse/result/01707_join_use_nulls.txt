@@ -1,0 +1,30 @@
+--Query--
+SELECT Y.id - 1 FROM X RIGHT JOIN Y ON (X.id + 1) = Y.id SETTINGS join_use_nulls=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT Y.id - 1 FROM X RIGHT JOIN Y ON (X.id + 1) = toInt64(Y.id) SETTINGS join_use_nulls=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 2+1 FROM system.one X RIGHT JOIN system.one Y ON X.dummy+1 = Y.dummy SETTINGS join_use_nulls = 1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT 2+1 FROM system.one X RIGHT JOIN system.one Y ON X.dummy+1 = toUInt16(Y.dummy) SETTINGS join_use_nulls = 1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT X.dummy+1 FROM system.one X RIGHT JOIN system.one Y ON X.dummy = Y.dummy SETTINGS join_use_nulls = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT Y.dummy+1 FROM system.one X RIGHT JOIN system.one Y ON X.dummy = Y.dummy SETTINGS join_use_nulls = 1
+--Result--
+[(1,)]
++--------------------+

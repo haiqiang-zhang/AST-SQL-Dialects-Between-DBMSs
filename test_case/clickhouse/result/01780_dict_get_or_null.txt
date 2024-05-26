@@ -1,0 +1,20 @@
+--Query--
+SELECT 'Simple key dictionary dictGetOrNull'
+--Result--
+[('Simple key dictionary dictGetOrNull',)]
++--------------------+
+--Query--
+SELECT     number,     dictHas('simple_key_dictionary', number),     dictGetOrNull('simple_key_dictionary', 'value', number),     dictGetOrNull('simple_key_dictionary', 'value_nullable', number),     dictGetOrNull('simple_key_dictionary', ('value', 'value_nullable'), number) FROM system.numbers LIMIT 5
+--Result--
+[(0, 0, None, None, (None, None)), (1, 1, 'First', 'First', ('First', 'First')), (2, 1, 'Second', None, ('Second', None)), (3, 1, 'Third', 'Third', ('Third', 'Third')), (4, 0, None, None, (None, None))]
++--------------------+
+--Query--
+SELECT 'Complex key dictionary dictGetOrNull'
+--Result--
+[('Complex key dictionary dictGetOrNull',)]
++--------------------+
+--Query--
+SELECT 'Range key dictionary dictGetOrNull'
+--Result--
+[('Range key dictionary dictGetOrNull',)]
++--------------------+

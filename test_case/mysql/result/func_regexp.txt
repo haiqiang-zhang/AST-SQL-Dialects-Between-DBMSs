@@ -1,0 +1,130 @@
+--Query--
+select * from t1 where xxx regexp('is a test of some long text to')
+--Result--
+[('this is a test of some long text to see what happens',)]
++--------------------+
+--Query--
+select * from t1 where xxx regexp('is a test of some long text to ')
+--Result--
+[('this is a test of some long text to see what happens',)]
++--------------------+
+--Query--
+select * from t1 where xxx regexp('is a test of some long text to s')
+--Result--
+[('this is a test of some long text to see what happens',)]
++--------------------+
+--Query--
+select * from t1 where xxx regexp('is a test of some long text to se')
+--Result--
+[('this is a test of some long text to see what happens',)]
++--------------------+
+--Query--
+select _latin1 0xFF regexp _latin1 '[[:lower:]]' COLLATE latin1_bin
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select _koi8r  0xFF regexp _koi8r  '[[:lower:]]' COLLATE koi8r_bin
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select _latin1 0xFF regexp _latin1 '[[:upper:]]' COLLATE latin1_bin
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select _koi8r  0xFF regexp _koi8r  '[[:upper:]]' COLLATE koi8r_bin
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select _latin1 0xF7 regexp _latin1 '[[:alpha:]]'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select _koi8r  0xF7 regexp _koi8r  '[[:alpha:]]'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select _latin1'a' regexp _latin1'A' collate latin1_general_ci
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select _latin1'a' regexp _latin1'A' collate latin1_bin
+--Result--
+[(0,)]
++--------------------+
+--Query--
+prepare stmt1 from 'select a from t1 where a rlike ? order by a'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 REGEXP NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT NULL REGEXP BINARY NULL
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE stmt1 FROM "SELECT a FROM t1 WHERE a=1 AND '7.0' REGEXP b LIMIT 1"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ' '  REGEXP '[[:blank:]]'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '\t' REGEXP '[[:blank:]]'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT ' '  REGEXP '[[:space:]]'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '\t' REGEXP '[[:space:]]'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT REGEXP_INSTR(e, 'pattern') FROM (VALUES ROW('Find pattern'), ROW(NULL), ROW('Find pattern')) AS v(e)
+--Result--
+[(6,), (None,), (6,)]
++--------------------+
+--Query--
+SELECT REGEXP_LIKE(e, 'pattern') FROM (VALUES ROW('Find pattern'), ROW(NULL), ROW('Find pattern')) AS v(e)
+--Result--
+[(1,), (None,), (1,)]
++--------------------+
+--Query--
+SELECT REGEXP_REPLACE(e, 'pattern', 'xyz') FROM (VALUES ROW('Find pattern'), ROW(NULL), ROW('Find pattern')) AS v(e)
+--Result--
+[('Find xyz',), (None,), ('Find xyz',)]
++--------------------+
+--Query--
+SELECT REGEXP_SUBSTR(e, 'pattern') FROM (VALUES ROW('Find pattern'), ROW(NULL), ROW('Find pattern')) AS v(e)
+--Result--
+[('pattern',), (None,), ('pattern',)]
++--------------------+

@@ -1,0 +1,10 @@
+--Query--
+system stop merges t
+--Result--
+[]
++--------------------+
+--Query--
+explain pipeline select * from t limit 100
+--Result--
+[('(Expression)',), ('ExpressionTransform',), ('  (Limit)',), ('  Limit',), ('    (ReadFromMergeTree)',), ('    Concat 3 → 1',), ('      MergeTreeSelect(pool: ReadPoolInOrder, algorithm: InOrder) × 3 0 → 1',)]
++--------------------+

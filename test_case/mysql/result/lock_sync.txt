@@ -1,0 +1,65 @@
+--Query--
+select @@global.concurrent_insert
+--Result--
+[('AUTO',)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock"    AND info = "ALTER TABLE t1 ADD COLUMN j INT"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT event_name FROM information_schema.events, performance_schema.global_variables   WHERE definer = VARIABLE_VALUE
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1, t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "RENAME TABLE t1 TO t3, t2 TO t1, t3 TO t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

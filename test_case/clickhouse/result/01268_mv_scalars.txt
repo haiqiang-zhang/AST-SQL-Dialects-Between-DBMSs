@@ -1,0 +1,40 @@
+--Query--
+select * from dst_mv order by number
+--Result--
+[(0, 2), (0, 2), (0, 2), (1, 2), (1, 2), (1, 2)]
++--------------------+
+--Query--
+select 'the rows get inserted'
+--Result--
+[('the rows get inserted',)]
++--------------------+
+--Query--
+select * from dest_table order by Date, Id, Units
+--Result--
+[(datetime.date(2020, 1, 1), 0, 0.0), (datetime.date(2020, 1, 1), 0, 2.0), (datetime.date(2020, 1, 1), 0, 4.0)]
++--------------------+
+--Query--
+select 'no new rows'
+--Result--
+[('no new rows',)]
++--------------------+
+--Query--
+select * from dest_table order by Date, Id, Units
+--Result--
+[(datetime.date(2020, 1, 1), 0, 0.0), (datetime.date(2020, 1, 1), 0, 2.0), (datetime.date(2020, 1, 1), 0, 4.0)]
++--------------------+
+--Query--
+truncate table left_table
+--Result--
+[]
++--------------------+
+--Query--
+select 'the rows get inserted'
+--Result--
+[('the rows get inserted',)]
++--------------------+
+--Query--
+select * from dest_table order by Date, Id, Units
+--Result--
+[(datetime.date(2020, 1, 1), 0, 0.0), (datetime.date(2020, 1, 1), 0, 2.0), (datetime.date(2020, 1, 1), 0, 4.0), (datetime.date(2020, 1, 6), 5, 0.0), (datetime.date(2020, 1, 6), 5, 2.0), (datetime.date(2020, 1, 6), 5, 4.0)]
++--------------------+

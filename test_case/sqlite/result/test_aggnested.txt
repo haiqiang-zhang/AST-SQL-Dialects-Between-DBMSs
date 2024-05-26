@@ -1,0 +1,100 @@
+--Query--
+SELECT (SELECT sum(x+(SELECT y)) FROM bb) FROM aa
+--Result--
+[(579,)]
++--------------------+
+--Query--
+SELECT (SELECT sum(x+y) FROM bb) FROM aa
+--Result--
+[(579,)]
++--------------------+
+--Query--
+SELECT min((SELECT count(y) FROM ty)) FROM tx
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT max((SELECT a FROM (SELECT count(*) AS a FROM ty) AS s)) FROM tx
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT ( SELECT total( (SELECT b FROM x1) ) ) FROM x2
+--Result--
+[(2.0,), (2.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT ( SELECT total( (SELECT 2 FROM x1) ) ) FROM x2
+--Result--
+[(2.0,), (2.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT(     SELECT max(b) LIMIT (       SELECT total( (SELECT a FROM t1) )     )   )   FROM t2
+--Result--
+[(None,)]
++--------------------+
+--Query--
+WITH c AS(SELECT a)     SELECT(SELECT(SELECT string_agg(b, b)           LIMIT(SELECT 0.100000 *             AVG(DISTINCT(SELECT 0 FROM a ORDER BY b, b, b))))         FROM a GROUP BY b,         b, b) FROM a EXCEPT SELECT b FROM a ORDER BY b,     b, b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (      SELECT t2.b FROM (SELECT t2.b AS c FROM t1) GROUP BY 1 HAVING t2.b   )   FROM t2 GROUP BY 'constant_string'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (      SELECT c FROM (SELECT t2.b AS c FROM t1) GROUP BY c HAVING t2.b   )   FROM t2 GROUP BY 'constant_string'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (      SELECT t2.b FROM (SELECT t2.b AS c FROM t1) GROUP BY 1 HAVING t2.b   )   FROM t2 GROUP BY 'constant_string'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (      SELECT c FROM (SELECT t2.b AS c FROM t1) GROUP BY c HAVING t2.b   )   FROM t2 GROUP BY 'constant_string'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT sum(amount), name     from invoice   group by name   having (select v > 6 from (select sum(amount) v) t)
+--Result--
+[(15.0, 'Bara'), (8.0, 'Michael')]
++--------------------+
+--Query--
+SELECT (select 1 from (select sum(amount))) FROM invoice
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH out(i, j, k) AS (        VALUES(1234, 5678, 9012)    )   SELECT (     SELECT (       SELECT min(abc) = ( SELECT ( SELECT 1234 fROM (SELECT abc) ) )        FROM (         SELECT sum( out.i ) + ( SELECT sum( out.i ) ) AS abc FROM (SELECT out.j)       )     )    ) FROM out
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (      SELECT min(y) + (SELECT x) FROM (       SELECT sum(a) AS x, b AS y FROM t2     )   )   FROM t1
+--Result--
+[(129.0,)]
++--------------------+
+--Query--
+SELECT (      SELECT min(y) + (SELECT (SELECT x)) FROM (       SELECT sum(a) AS x, b AS y FROM t2     )   )   FROM t1
+--Result--
+[(129.0,)]
++--------------------+
+--Query--
+SELECT (     SELECT (SELECT x) FROM (       SELECT sum(a) AS x, b AS y FROM t2       ) GROUP BY y     )   FROM t1
+--Result--
+[(129.0,)]
++--------------------+
+--Query--
+SELECT (     SELECT (SELECT (SELECT x)) FROM (       SELECT sum(a) AS x, b AS y FROM t2       ) GROUP BY y     )   FROM t1
+--Result--
+[(129.0,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE EXISTS (SELECT 1 FROM t1 GROUP BY c3 HAVING ( SELECT count(*) FROM (SELECT 1 UNION ALL SELECT sum(DISTINCT c1) ) ) ) BETWEEN 1 AND 1
+--Result--
+[(1, 2)]
++--------------------+

@@ -1,0 +1,145 @@
+--Query--
+SELECT a   >= B FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'a' >= 'B' COLLATE NOCASE
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v4
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v5
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT B   < a FROM t2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'B' COLLATE NOCASE < 'a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT B   < a FROM v2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT B   < a FROM v3
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a  < B FROM v4
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a  < B FROM v5
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT xyz==b FROM ( SELECT a, 'xyz' AS xyz FROM t5 ), t5
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'xyz'==b FROM ( SELECT a, 'xyz' AS xyz FROM t5 ), t5
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SUM(count) FROM (       SELECT v2.c1 BETWEEN v2.c0 AND v2.c1 as count FROM v2     )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT v2.c1 BETWEEN v2.c0 AND v2.c1 as count FROM v2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM t2
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT 'a' >= 'B' COLLATE NOCASE
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v4
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a   >= B FROM v5
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT B   < a FROM t2
+--Result--
+[(0,), (0,)]
++--------------------+
+--Query--
+SELECT 'B' COLLATE NOCASE < 'a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT B   < a FROM v3
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a  < B FROM v4
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a  < B FROM v5
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT xyz==b FROM ( SELECT a, 'xyz' AS xyz FROM t5 ), t5
+--Result--
+[(0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT 'xyz'==b FROM ( SELECT a, 'xyz' AS xyz FROM t5 ), t5
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT v2.c1 BETWEEN v2.c0 AND v2.c1 as count FROM v2
+--Result--
+[(1,)]
++--------------------+

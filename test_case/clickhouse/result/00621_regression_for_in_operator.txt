@@ -1,0 +1,10 @@
+--Query--
+SELECT count() FROM regression_for_in_operator_view WHERE g = '5'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE SELECT count() FROM regression_for_in_operator_view WHERE g = '5' OR g = '6' SETTINGS allow_experimental_analyzer = 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    count() UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 1',), ('      FUNCTION id: 2, function_name: count, function_type: aggregate, result_type: UInt64',), ('  JOIN TREE',), ('    TABLE id: 3, alias: __table1, table_name: test.regression_for_in_operator_view',), ('  WHERE',), ('    FUNCTION id: 4, function_name: in, function_type: ordinary, result_type: UInt8',), ('      ARGUMENTS',), ('        LIST id: 5, nodes: 2',), ('          COLUMN id: 6, column_name: g, result_type: String, source_id: 3',), ("          CONSTANT id: 7, constant_value: Tuple_('5', '6'), constant_value_type: Tuple(String, String)",), ('  SETTINGS allow_experimental_analyzer=1',)]
++--------------------+

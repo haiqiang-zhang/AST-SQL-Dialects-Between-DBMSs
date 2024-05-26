@@ -1,0 +1,75 @@
+--Query--
+SELECT '--------read--------'
+--Result--
+[('--------read--------',)]
++--------------------+
+--Query--
+SELECT * from join_any_inner ORDER BY k
+--Result--
+[('abc', [0], 1), ('def', [1, 2], 2)]
++--------------------+
+--Query--
+SELECT * from join_any_left ORDER BY k
+--Result--
+[('abc', [0], 1), ('def', [1, 2], 2)]
++--------------------+
+--Query--
+SELECT * from join_all_inner ORDER BY k
+--Result--
+[('abc', [0], 1), ('def', [1, 2], 2)]
++--------------------+
+--Query--
+SELECT * from join_all_left ORDER BY k
+--Result--
+[('abc', [0], 1), ('def', [1, 2], 2)]
++--------------------+
+--Query--
+SELECT '--------joinGet--------'
+--Result--
+[('--------joinGet--------',)]
++--------------------+
+--Query--
+SELECT joinGet('join_any_left', 's', number) FROM numbers(3)
+--Result--
+[('',), ('abc',), ('def',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT joinGet('join_string_key', 'x', 'abc'), joinGet('join_string_key', 'k', 'abc')
+--Result--
+[([0], 1)]
++--------------------+
+--Query--
+USE default
+--Result--
+[]
++--------------------+
+--Query--
+USE system
+--Result--
+[]
++--------------------+
+--Query--
+USE default
+--Result--
+[]
++--------------------+

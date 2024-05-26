@@ -1,0 +1,40 @@
+--Query--
+SELECT * FROM t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(1, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(1, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT i1 FROM t
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT i2 FROM t
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT r FROM t LEFT JOIN (SELECT RAND(0) AS r) AS dt ON TRUE
+--Result--
+[(0.15522042769493574,), (0.15522042769493574,), (0.15522042769493574,)]
++--------------------+
+--Query--
+SELECT r FROM t LEFT JOIN LATERAL (SELECT i, RAND(0) AS r) AS dt ON TRUE
+--Result--
+[(0.15522042769493574,), (0.620881741513388,), (0.6387474552157777,)]
++--------------------+

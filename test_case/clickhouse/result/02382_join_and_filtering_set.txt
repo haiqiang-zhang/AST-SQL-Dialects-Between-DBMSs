@@ -1,0 +1,25 @@
+--Query--
+SELECT count() FROM t1 JOIN t2 ON t1.x = t2.x
+--Result--
+[(106,)]
++--------------------+
+--Query--
+SELECT 'bug with constant columns in join keys'
+--Result--
+[('bug with constant columns in join keys',)]
++--------------------+
+--Query--
+SELECT * FROM ( SELECT 'a' AS key ) AS t1 INNER JOIN ( SELECT 'a' AS key ) AS t2 ON t1.key = t2.key
+--Result--
+[('a', 'a')]
++--------------------+
+--Query--
+SELECT count() > 1 FROM (EXPLAIN PIPELINE     SELECT * FROM ( SELECT materialize('a') AS key ) AS t1     INNER JOIN ( SELECT materialize('a') AS key ) AS t2     ON t1.key = t2.key ) WHERE explain ilike '%FilterBySetOnTheFlyTransform%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count() == 0 FROM (EXPLAIN PIPELINE     SELECT * FROM ( SELECT 'a' AS key ) AS t1     INNER JOIN ( SELECT 'a' AS key ) AS t2     ON t1.key = t2.key ) WHERE explain ilike '%FilterBySetOnTheFlyTransform%'
+--Result--
+[(1,)]
++--------------------+

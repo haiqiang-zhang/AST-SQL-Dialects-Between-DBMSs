@@ -1,5 +1,3 @@
-
-
 drop table if exists t;
 drop table if exists t_mv;
 create table t (a UInt64) Engine = Null;

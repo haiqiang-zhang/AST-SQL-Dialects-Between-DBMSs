@@ -1,0 +1,515 @@
+--Query--
+select floor(5.5),floor(-5.5)
+--Result--
+[(5, -6)]
++--------------------+
+--Query--
+select ceiling(5.5),ceiling(-5.5)
+--Result--
+[(6, -5)]
++--------------------+
+--Query--
+select truncate(52.64,1),truncate(52.64,2),truncate(52.64,-1),truncate(52.64,-2), truncate(-52.64,1),truncate(-52.64,-1)
+--Result--
+[(52.6, 52.64, 50.0, 0.0, -52.6, -50.0)]
++--------------------+
+--Query--
+select round(5.5),round(-5.5)
+--Result--
+[(6.0, -6.0)]
++--------------------+
+--Query--
+select abs(-10), sign(-5), sign(5), sign(0)
+--Result--
+[(10, -1, 1, 0)]
++--------------------+
+--Query--
+select log(exp(10)),exp(log(sqrt(10))*2),log(-1),log(NULL),log(1,1),log(3,9),log(-1,2),log(NULL,2)
+--Result--
+[(10.0, 10.000000000000002, None, None, None, 2.0, None, None)]
++--------------------+
+--Query--
+select ln(exp(10)),exp(ln(sqrt(10))*2),ln(-1),ln(0),ln(NULL)
+--Result--
+[(10.0, 10.000000000000002, None, None, None)]
++--------------------+
+--Query--
+select log2(8),log2(15),log2(-2),log2(0),log2(NULL)
+--Result--
+[(3.0, 3.9068905956085187, None, None, None)]
++--------------------+
+--Query--
+select log10(100),log10(18),log10(-4),log10(0),log10(NULL)
+--Result--
+[(2.0, 1.255272505103306, None, None, None)]
++--------------------+
+--Query--
+select pow(10,log10(10)),power(2,4)
+--Result--
+[(10.0, 16.0)]
++--------------------+
+--Query--
+select pi(),format(sin(pi()/2),6),format(cos(pi()/2),6),format(abs(tan(pi())),6),format(cot(1),6),format(asin(1),6),format(acos(0),6),format(atan(1),6)
+--Result--
+[(3.141593, '1.000000', '0.000000', '0.000000', '0.642093', '1.570796', '1.570796', '0.785398')]
++--------------------+
+--Query--
+select degrees(pi()),radians(360)
+--Result--
+[(180.0, 6.283185307179586)]
++--------------------+
+--Query--
+select format(atan(-2, 2), 6)
+--Result--
+[('-0.785398',)]
++--------------------+
+--Query--
+SELECT ACOS(1.0)
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT ASIN(1.0)
+--Result--
+[(1.5707963267948966,)]
++--------------------+
+--Query--
+select ceil(0.09)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select abs(-2) * -2
+--Result--
+[(-4,)]
++--------------------+
+--Query--
+SELECT CAST(RAND(2) * 1000 AS UNSIGNED), CAST(RAND(a) * 1000 AS UNSIGNED)    FROM t1
+--Result--
+[(656, 405), (122, 405), (645, 405), (858, 656)]
++--------------------+
+--Query--
+PREPARE stmt FROM    "SELECT CAST(RAND(2) * 1000 AS UNSIGNED), CAST(RAND(?) * 1000 AS UNSIGNED)     FROM t1 WHERE a = 1"
+--Result--
+[]
++--------------------+
+--Query--
+select a from t1 where a='http://www.foo.com/' order by abs(timediff(ts, 0))
+--Result--
+[('http://www.foo.com/',)]
++--------------------+
+--Query--
+select ln(-1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select log(2,-1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select cast(-2 as unsigned), 18446744073709551614, -2
+--Result--
+[(18446744073709551614, 18446744073709551614, -2)]
++--------------------+
+--Query--
+select sqrt(cast(-2 as unsigned)), sqrt(18446744073709551614), sqrt(-2)
+--Result--
+[(4294967296.0, 4294967296.0, None)]
++--------------------+
+--Query--
+select round(10000000000000000000, -19), truncate(10000000000000000000, -19)
+--Result--
+[(10000000000000000000, 10000000000000000000)]
++--------------------+
+--Query--
+select mod(cast(-2 as unsigned), 3), mod(18446744073709551614, 3), mod(-2, 3)
+--Result--
+[(2, 2, -2)]
++--------------------+
+--Query--
+select pow(cast(-2 as unsigned), 5), pow(18446744073709551614, 5), pow(-2, 5)
+--Result--
+[(2.13598703592091e+96, 2.13598703592091e+96, -32.0)]
++--------------------+
+--Query--
+SELECT a DIV 900 y FROM t1 GROUP BY y
+--Result--
+[(22201025555,), (22255916666,)]
++--------------------+
+--Query--
+SELECT DISTINCT a DIV 900 y FROM t1
+--Result--
+[(22201025555,), (22255916666,)]
++--------------------+
+--Query--
+SELECT b DIV 900 y FROM t1 GROUP BY y
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT c DIV 900 y FROM t1 GROUP BY y
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT DISTINCT (a DIV 254576881) FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (a DIV 254576881) FROM t1 UNION ALL    SELECT (a DIV 254576881) FROM t1
+--Result--
+[(0,), (0,), (0,), (0,), (0,), (0,)]
++--------------------+
+--Query--
+SELECT a DIV 2 FROM t1 UNION SELECT a DIV 2 FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a, ROUND(a) FROM t1
+--Result--
+[(-1.1, -1.0), (1.1, 1.0), (-1.5, -2.0), (1.5, 2.0), (-1.9, -2.0), (1.9, 2.0), (-2.1, -2.0), (2.1, 2.0), (-2.5, -2.0), (2.5, 2.0), (-2.9, -3.0), (2.9, 3.0), (-1e+16, -1e+16), (1e+16, 1e+16), (-1.0000000000000002e+16, -1.0000000000000002e+16), (1.0000000000000002e+16, 1.0000000000000002e+16)]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT ROUND(f1) AS a FROM t1) AS s WHERE a LIKE 'a'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT ROUND(f1, f1) AS a FROM t1) AS s WHERE a LIKE 'a'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT RAND(a) FROM v1
+--Result--
+[(0.15522042769493574,)]
++--------------------+
+--Query--
+SELECT -9223372036854775808 MOD -1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT -9223372036854775808999 MOD -1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT CASE(('')) WHEN (CONVERT(1, CHAR(1))) THEN (('' / 1)) END
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT SUM(DISTINCT (TRUNCATE((.1), NULL)))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 18446744073709551615 - 1
+--Result--
+[(18446744073709551614,)]
++--------------------+
+--Query--
+SELECT 18446744073709551615 - CAST(1 AS UNSIGNED)
+--Result--
+[(18446744073709551614,)]
++--------------------+
+--Query--
+SELECT 18446744073709551614 - (-1)
+--Result--
+[(18446744073709551615,)]
++--------------------+
+--Query--
+SELECT @a + @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @a * @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT -@a - @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @a / 0.5
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT COT(1/0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT -1 + 9223372036854775808
+--Result--
+[(9223372036854775807,)]
++--------------------+
+--Query--
+SELECT 2 DIV -2
+--Result--
+[(-1,)]
++--------------------+
+--Query--
+SELECT -(1 DIV 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT -9223372036854775808 MOD -1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT floor(log10(format(concat_ws(5445796E25, 5306463, 30837), -358821))) as foo
+--Result--
+[(2.0,)]
++--------------------+
+--Query--
+SELECT ((@a:=@b:=1.0) div (@b:=@a:=get_format(datetime, 'usa')))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 div null
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (1.175494351E-37 div 1.7976931348623157E+308)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 5 div 2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 5.0 div 2.0
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 5.0 div 2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 5 div 2.0
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select 5.9 div 2, 1.23456789e3 DIV 2, 1.23456789e9 DIV 2, 1.23456789e19 DIV 2
+--Result--
+[(2, 617, 617283945, 6172839450000000000)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(0.0,), (0.0,)]
++--------------------+
+--Query--
+SELECT CRC32(NULL), CRC32(''), CRC32('MySQL'), CRC32('mysql')
+--Result--
+[(None, 0, 3259397556, 2501908538)]
++--------------------+
+--Query--
+SELECT crc32(SUM(a)) FROM t
+--Result--
+[(1790921346,)]
++--------------------+
+--Query--
+SELECT a,b,concat(a,b),crc32(concat(a,b)) FROM t ORDER BY crc32(concat(a,b))
+--Result--
+[(2, 'qw', '2qw', 552289476), (1, 'a', '1a', 3174122627), (1, 't', '1t', 3505168488), (3, 't', '3t', 3805987562)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(2707236321,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @val
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'SELECT CRC32(?)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT HEX(a), CRC32(a) from t1
+--Result--
+[]
++--------------------+
+--Query--
+select cast(pow(2,63)-1024 as signed) as pp
+--Result--
+[(9223372036854774784,)]
++--------------------+
+--Query--
+select cast(1-pow(2,63) as signed) as qq
+--Result--
+[(-9223372036854775808,)]
++--------------------+
+--Query--
+select -9223372036854775808 * 0 as result
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 0 * -9223372036854775808 as result
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select -9223372036854775808 * 1 as result
+--Result--
+[(-9223372036854775808,)]
++--------------------+
+--Query--
+select 1 * -9223372036854775808 as result
+--Result--
+[(-9223372036854775808,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(18446744073709551615, 18446744073709551615)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(1.8446744073709553e+18, 1.8446744073709553e+18)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(-9.223372036854776e+18, -9.223372036854776e+18)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(184467440737095516, 184467440737095516)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(-922337203685477580, -922337203685477580)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(100000000000000000, -100000000000000000)]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(1e+18, -1e+18)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE CAST(COALESCE(t0.c0, -1) AS UNSIGNED)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE CAST(IFNULL(t0.c0, -1) AS UNSIGNED)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE st1 FROM "INSERT INTO t VALUES (? + ?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i,iu,b,bu FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b,bu FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b,bu FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT i,b FROM t1
+--Result--
+[(1, 1), (1, 1)]
++--------------------+
+--Query--
+SELECT iu,bu FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 5.0 + 96 DIV 1
+--Result--
+[(101.0,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT -TRUE AS a, --TRUE AS b) AS dt
+--Result--
+[(-1, 1.0)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(-1,)]
++--------------------+

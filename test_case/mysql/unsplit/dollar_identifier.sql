@@ -25,5 +25,4 @@ drop schema `$s`;
 select count(*) from t where @$myvar;
 select 8.0 $p, 8.4$p, .0$p, 8.$p, 8.p;
 SELECT JSON_EXTRACT('{"id": "3", "$name": "Barney"}', "$.id");
-SELECT JSON_EXTRACT('{"id": "3", "$name": "$Barney"}', "$.$name");
 drop table t;

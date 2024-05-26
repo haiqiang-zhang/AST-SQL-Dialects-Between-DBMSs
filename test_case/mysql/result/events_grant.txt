@@ -1,0 +1,60 @@
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_SCHEMA, EVENT_NAME
+--Result--
+[('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', '')]
++--------------------+
+--Query--
+select "NEW CONNECTION"
+--Result--
+[('NEW CONNECTION',)]
++--------------------+
+--Query--
+SELECT USER(), DATABASE()
+--Result--
+[('tester@localhost', 'test_db')]
++--------------------+
+--Query--
+SELECT CONCAT("Let's create some new events from the name of ", USER())
+--Result--
+[("Let's create some new events from the name of tester@localhost",)]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_SCHEMA, EVENT_NAME
+--Result--
+[('def', 'test_db', 'four_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'three_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'PRESERVE', 'three event'), ('def', 'test_db', 'two_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'two event')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_SCHEMA, EVENT_NAME
+--Result--
+[('def', 'test_db', 'four_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'three_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'PRESERVE', 'three event'), ('def', 'test_db', 'two_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'two event')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_SCHEMA, EVENT_NAME
+--Result--
+[('def', 'test_db', 'five_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'four_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'three_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'PRESERVE', 'three event'), ('def', 'test_db', 'two_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'two event')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_SCHEMA, EVENT_NAME
+--Result--
+[('def', 'test_db', 'five_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'four_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'three_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'PRESERVE', 'three event'), ('def', 'test_db', 'two_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'two event')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS WHERE EVENT_NAME='one_event'
+--Result--
+[('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', '')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS WHERE EVENT_NAME='one_event'
+--Result--
+[('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'comment')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS WHERE EVENT_NAME='one_event'
+--Result--
+[('def', 'test_db', 'one_event', 'tester@localhost', 'SQL', 'SELECT 12', 'RECURRING', None, '10', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'comment')]
++--------------------+
+--Query--
+SELECT EVENT_CATALOG, EVENT_SCHEMA, EVENT_NAME, DEFINER, EVENT_BODY, EVENT_DEFINITION, EVENT_TYPE, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STATUS,ON_COMPLETION, EVENT_COMMENT FROM INFORMATION_SCHEMA.EVENTS ORDER BY EVENT_SCHEMA, EVENT_NAME
+--Result--
+[('def', 'test_db', 'five_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'four_event', 'tester@localhost', 'SQL', 'SELECT 42', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', ''), ('def', 'test_db', 'three_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'PRESERVE', 'three event'), ('def', 'test_db', 'two_event', 'tester@localhost', 'SQL', 'SELECT 123', 'RECURRING', None, '20', 'SECOND', 'ENABLED', 'NOT PRESERVE', 'two event')]
++--------------------+

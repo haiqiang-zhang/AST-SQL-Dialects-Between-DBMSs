@@ -1,0 +1,20 @@
+--Query--
+SHOW CREATE TABLE multiword_types
+--Result--
+[("CREATE TABLE test.multiword_types\n(\n    `a` Float64,\n    `b` Float64,\n    `c` String DEFAULT 'str',\n    `d` String,\n    `e` String COMMENT 'comment',\n    `f` String,\n    `g` String,\n    `h` String DEFAULT toString(a) COMMENT 'comment',\n    `i` String,\n    `j` String,\n    `k` String,\n    `l` String,\n    `m` String,\n    `n` String,\n    `o` String,\n    `p` String\n)\nENGINE = Memory",)]
++--------------------+
+--Query--
+SELECT toTypeName((*,)) FROM multiword_types
+--Result--
+[('Tuple(Float64, Float64, String, String, String, String, String, String, String, String, String, String, String, String, String, String)',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE unsigned_types
+--Result--
+[('CREATE TABLE test.unsigned_types\n(\n    `a` Int8,\n    `b` Int8,\n    `c` Int16,\n    `d` Int32,\n    `e` Int32,\n    `f` Int64,\n    `g` UInt8,\n    `h` UInt8,\n    `i` UInt16,\n    `j` UInt32,\n    `k` UInt32,\n    `l` UInt64\n)\nENGINE = Memory',)]
++--------------------+
+--Query--
+SELECT CAST('42' AS DOUBLE PRECISION), CAST(42, 'NATIONAL CHARACTER VARYING'), CAST(-1 AS tinyint  UnSiGnEd), CAST(65535, ' sMaLlInT  signed ')
+--Result--
+[(42.0, '42', 255, -1)]
++--------------------+

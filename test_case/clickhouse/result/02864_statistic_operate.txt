@@ -1,0 +1,65 @@
+--Query--
+SHOW CREATE TABLE t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `a` Float64 STATISTIC(tdigest),\n    `b` Int64 STATISTIC(tdigest),\n    `pk` String\n)\nENGINE = MergeTree\nORDER BY pk\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT 'After insert'
+--Result--
+[('After insert',)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(explain, '__table1\.|_UInt8', '') FROM (EXPLAIN actions=1 SELECT count(*) FROM t1 WHERE b < 10 and a < 10) WHERE explain LIKE '%Prewhere%' OR explain LIKE '%Filter column%'
+--Result--
+[('        Prewhere info',), ('          Prewhere filter',), ('          Prewhere filter column: and(less(a, 10), less(b, 10)) (removed)',)]
++--------------------+
+--Query--
+SELECT count(*) FROM t1 WHERE b < 10 and a < 10
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT 'After drop statistic'
+--Result--
+[('After drop statistic',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `a` Float64,\n    `b` Int64,\n    `pk` String\n)\nENGINE = MergeTree\nORDER BY pk\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT 'After add statistic'
+--Result--
+[('After add statistic',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `a` Float64 STATISTIC(tdigest),\n    `b` Int64 STATISTIC(tdigest),\n    `pk` String\n)\nENGINE = MergeTree\nORDER BY pk\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT 'After materialize statistic'
+--Result--
+[('After materialize statistic',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE t1 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After merge'
+--Result--
+[('After merge',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE t1
+--Result--
+[('CREATE TABLE test.t1\n(\n    `a` Float64 STATISTIC(tdigest),\n    `c` Int64 STATISTIC(tdigest),\n    `pk` String\n)\nENGINE = MergeTree\nORDER BY pk\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT 'After rename'
+--Result--
+[('After rename',)]
++--------------------+

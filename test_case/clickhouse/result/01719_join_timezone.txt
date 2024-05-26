@@ -1,0 +1,15 @@
+--Query--
+SELECT     toTimeZone(timestamp, 'America/Sao_Paulo') AS converted,     timestamp AS original FROM test LEFT JOIN (SELECT 2 AS x) AS anything ON x = i WHERE timestamp >= toDateTime('2020-05-13T00:00:00', 'America/Sao_Paulo')
+--Result--
+[(datetime.datetime(2020, 5, 13, 13, 38, 45, tzinfo=<DstTzInfo 'America/Sao_Paulo' -03-1 day, 21:00:00 STD>), datetime.datetime(2020, 5, 13, 16, 38, 45, tzinfo=<UTC>))]
++--------------------+
+--Query--
+SELECT     toTimeZone(timestamp, 'America/Sao_Paulo') AS converted,     timestamp AS original FROM test -- LEFT JOIN (SELECT 2 AS x) AS anything ON x = i -- Removing the join fixes the issue. WHERE timestamp >= toDateTime('2020-05-13T00:00:00', 'America/Sao_Paulo')
+--Result--
+[(datetime.datetime(2020, 5, 13, 13, 38, 45, tzinfo=<DstTzInfo 'America/Sao_Paulo' -03-1 day, 21:00:00 STD>), datetime.datetime(2020, 5, 13, 16, 38, 45, tzinfo=<UTC>))]
++--------------------+
+--Query--
+SELECT     toTimeZone(timestamp, 'America/Sao_Paulo') AS converted,     timestamp AS original FROM test LEFT JOIN (SELECT 2 AS x) AS anything ON x = i WHERE timestamp >= '2020-05-13T00:00:00'
+--Result--
+[(datetime.datetime(2020, 5, 13, 13, 38, 45, tzinfo=<DstTzInfo 'America/Sao_Paulo' -03-1 day, 21:00:00 STD>), datetime.datetime(2020, 5, 13, 16, 38, 45, tzinfo=<UTC>))]
++--------------------+

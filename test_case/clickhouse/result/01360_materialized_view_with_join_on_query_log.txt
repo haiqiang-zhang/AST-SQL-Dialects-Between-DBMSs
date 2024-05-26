@@ -1,0 +1,45 @@
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 /* QUERY_GROUP_ID:main_dashboard_top_query */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 /* QUERY_GROUP_ID:main_dashboard_bottom_query */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 WHERE not ignore(sleep(0.520)) /* QUERY_GROUP_ID:main_dashboard_top_query */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 WHERE not ignore(sleep(0.520)) /* QUERY_GROUP_ID:main_dashboard_bottom_query */
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '=== system.query_log ==='
+--Result--
+[('=== system.query_log ===',)]
++--------------------+
+--Query--
+SELECT '=== slowlog ==='
+--Result--
+[('=== slowlog ===',)]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+WITH 	toDateTime64('2019-09-16 19:20:12.345678910', 3) AS dt64 SELECT 	dt64, 	fromUnixTimestamp64Milli(toUnixTimestamp64Milli(dt64)), 	fromUnixTimestamp64Micro(toUnixTimestamp64Micro(dt64)), 	fromUnixTimestamp64Nano(toUnixTimestamp64Nano(dt64))
+--Result--
+[(datetime.datetime(2019, 9, 16, 19, 20, 12, 345000), datetime.datetime(2019, 9, 16, 19, 20, 12, 345000), datetime.datetime(2019, 9, 16, 19, 20, 12, 345000), datetime.datetime(2019, 9, 16, 19, 20, 12, 345000))]
++--------------------+
+--Query--
+SELECT 'with explicit timezone'
+--Result--
+[('with explicit timezone',)]
++--------------------+
+--Query--
+WITH 	'UTC' as timezone, 	toDateTime64('2019-09-16 19:20:12.345678910', 3, timezone) AS dt64 SELECT 	dt64, 	fromUnixTimestamp64Milli(toUnixTimestamp64Milli(dt64), timezone), 	fromUnixTimestamp64Micro(toUnixTimestamp64Micro(dt64), timezone), 	fromUnixTimestamp64Nano(toUnixTimestamp64Nano(dt64), timezone) AS v, 	toTypeName(v)
+--Result--
+[(datetime.datetime(2019, 9, 16, 19, 20, 12, 345000, tzinfo=<UTC>), datetime.datetime(2019, 9, 16, 19, 20, 12, 345000, tzinfo=<UTC>), datetime.datetime(2019, 9, 16, 19, 20, 12, 345000, tzinfo=<UTC>), datetime.datetime(2019, 9, 16, 19, 20, 12, 345000, tzinfo=<UTC>), "DateTime64(9, 'UTC')")]
++--------------------+
+--Query--
+WITH 	CAST(1234567891011 AS Int64) AS val SELECT 	val, 	toUnixTimestamp64Milli(fromUnixTimestamp64Milli(val)), 	toUnixTimestamp64Micro(fromUnixTimestamp64Micro(val)), 	toUnixTimestamp64Nano(fromUnixTimestamp64Nano(val))
+--Result--
+[(1234567891011, 1234567891011, 1234567891011, 1234567891011)]
++--------------------+
+--Query--
+SELECT 'with explicit timezone'
+--Result--
+[('with explicit timezone',)]
++--------------------+
+--Query--
+WITH 	'UTC' as timezone, 	CAST(1234567891011 AS Int64) AS val SELECT 	val, 	toUnixTimestamp64Milli(fromUnixTimestamp64Milli(val, timezone)), 	toUnixTimestamp64Micro(fromUnixTimestamp64Micro(val, timezone)), 	toUnixTimestamp64Nano(fromUnixTimestamp64Nano(val, timezone)) AS v, 	toTypeName(v)
+--Result--
+[(1234567891011, 1234567891011, 1234567891011, 1234567891011, 'Int64')]
++--------------------+

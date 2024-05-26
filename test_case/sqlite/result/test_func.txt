@@ -1,0 +1,230 @@
+--Query--
+SELECT t1 FROM tbl1 ORDER BY t1
+--Result--
+[('free',), ('is',), ('program',), ('software',), ('this',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (None,), (345,), (None,), (67890,)]
++--------------------+
+--Query--
+SELECT length(t1) FROM tbl1 ORDER BY t1
+--Result--
+[(4,), (2,), (7,), (8,), (4,)]
++--------------------+
+--Query--
+SELECT octet_length(t1) FROM tbl1 ORDER BY t1
+--Result--
+[(4,), (2,), (7,), (8,), (4,)]
++--------------------+
+--Query--
+SELECT length(t1), count(*) FROM tbl1 GROUP BY length(t1)            ORDER BY length(t1)
+--Result--
+[(2, 1), (4, 2), (7, 1), (8, 1)]
++--------------------+
+--Query--
+SELECT coalesce(length(a),-1) FROM t2
+--Result--
+[(1,), (-1,), (3,), (-1,), (5,)]
++--------------------+
+--Query--
+WITH c(x) AS (VALUES(char(350,351,352,353,354)))   SELECT length(x), octet_length(x) FROM c
+--Result--
+[(5, 10)]
++--------------------+
+--Query--
+SELECT substr(t1,1,2) FROM tbl1 ORDER BY t1
+--Result--
+[('fr',), ('is',), ('pr',), ('so',), ('th',)]
++--------------------+
+--Query--
+SELECT t1 FROM tbl1
+--Result--
+[('this',), ('program',), ('is',), ('free',), ('software',)]
++--------------------+
+--Query--
+SELECT abs(b) FROM t1 ORDER BY a
+--Result--
+[(2,), (1.2345678901234,), (2,)]
++--------------------+
+--Query--
+SELECT round(b,2) FROM t1 ORDER BY b
+--Result--
+[(-2.0,), (1.23,), (2.0,)]
++--------------------+
+--Query--
+SELECT 'x' || round(c,a) || 'y' FROM t1 ORDER BY a
+--Result--
+[('x3.0y',), ('x-12345.68y',), ('x-5.0y',)]
++--------------------+
+--Query--
+SELECT typeof(round(5.1,1))
+--Result--
+[('real',)]
++--------------------+
+--Query--
+SELECT upper(t1) FROM tbl1
+--Result--
+[('THIS',), ('PROGRAM',), ('IS',), ('FREE',), ('SOFTWARE',)]
++--------------------+
+--Query--
+SELECT lower(upper(t1)) FROM tbl1
+--Result--
+[('this',), ('program',), ('is',), ('free',), ('software',)]
++--------------------+
+--Query--
+SELECT upper(a), lower(a) FROM t2
+--Result--
+[('1', '1'), (None, None), ('345', '345'), (None, None), ('67890', '67890')]
++--------------------+
+--Query--
+SELECT last_insert_rowid()
+--Result--
+[(3,)]
++--------------------+
+--Query--
+EXPLAIN SELECT sum(a) FROM t2
+--Result--
+[(0, 'Init', 0, 11, 0, None, 0, None), (1, 'Null', 0, 1, 2, None, 0, None), (2, 'OpenRead', 0, 3, 0, '1', 0, None), (3, 'Rewind', 0, 7, 0, None, 0, None), (4, 'Column', 0, 0, 3, None, 0, None), (5, 'AggStep', 0, 3, 2, 'sum(1)', 1, None), (6, 'Next', 0, 4, 0, None, 1, None), (7, 'AggFinal', 2, 1, 0, 'sum(1)', 0, None), (8, 'Copy', 2, 4, 0, None, 0, None), (9, 'ResultRow', 4, 1, 0, None, 0, None), (10, 'Halt', 0, 0, 0, None, 0, None), (11, 'Transaction', 0, 0, 3, '0', 1, None), (12, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+SELECT sum(a), count(a), round(avg(a),2), min(a), max(a), count(*) FROM t2
+--Result--
+[(68236, 3, 22745.33, 1, 67890, 5)]
++--------------------+
+--Query--
+SELECT max('z+'||a||'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP') FROM t2
+--Result--
+[('z+67890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP',)]
++--------------------+
+--Query--
+SELECT min('z+'||a||'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP') FROM t3
+--Result--
+[('z+1abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP',)]
++--------------------+
+--Query--
+SELECT sum(x) FROM (SELECT '9223372036' || '854775807' AS x                           UNION ALL SELECT -9223372036854775807)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT sum(x)>0.0 FROM (SELECT '9223372036' || '854775808' AS x                           UNION ALL SELECT -9223372036850000000)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT hex(x'00112233445566778899aAbBcCdDeEfF')
+--Result--
+[('00112233445566778899AABBCCDDEEFF',)]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (      VALUES(1)      UNION ALL      SELECT x+1 FROM c WHERE x<1040   )   SELECT      count(*),     sum(length(replace(printf('abc%.*cxyz',x,'m'),'m','nnnn'))-(6+x*4))   FROM c
+--Result--
+[(1040, 0)]
++--------------------+
+--Query--
+SELECT sqlite_version(*)
+--Result--
+[('3.45.1',)]
++--------------------+
+--Query--
+SELECT quote(a), quote(b) FROM tbl2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sum(x), total(x) FROM t5
+--Result--
+[(None, 0.0)]
++--------------------+
+--Query--
+SELECT sum(x) - ((1<<62)+1) from t6
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT total(x) - ((1<<62)*2.0+1) FROM t6
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT match(a,b) FROM t1 WHERE 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT replace('This is the main test string', 'main', 'ALT')
+--Result--
+[('This is the ALT test string',)]
++--------------------+
+--Query--
+SELECT trim('  hi  ')
+--Result--
+[('hi',)]
++--------------------+
+--Query--
+SELECT ltrim('  hi  ')
+--Result--
+[('hi  ',)]
++--------------------+
+--Query--
+SELECT rtrim('  hi  ')
+--Result--
+[('  hi',)]
++--------------------+
+--Query--
+SELECT group_concat(t1), string_agg(t1,',') FROM tbl1
+--Result--
+[('this,program,is,free,software', 'this,program,is,free,software')]
++--------------------+
+--Query--
+SELECT group_concat(t1,' ' || rowid || ' ') FROM tbl1
+--Result--
+[('this 2 program 3 is 4 free 5 software',)]
++--------------------+
+--Query--
+SELECT 'BEGIN-'||group_concat(t1) FROM tbl1
+--Result--
+[('BEGIN-this,program,is,free,software',)]
++--------------------+
+--Query--
+SELECT unicode('$')
+--Result--
+[(36,)]
++--------------------+
+--Query--
+SELECT char(36,162,8364)
+--Result--
+[('$¢€',)]
++--------------------+
+--Query--
+SELECT char(), length(char()), typeof(char())
+--Result--
+[('', 0, 'text')]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='r1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2.5, 'xyz', b'\xe0\xc1\xb2\xa3', None), (1, None, None, None, None), (2, None, None, None, None)]
++--------------------+
+--Query--
+SELECT 123 -> 456
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 123 ->> 456
+--Result--
+[(None,)]
++--------------------+
+--Query--
+WITH t1(x) AS (VALUES(9e+999)) SELECT sum(x), avg(x), total(x) FROM t1
+--Result--
+[(inf, inf, inf)]
++--------------------+

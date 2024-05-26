@@ -1,0 +1,135 @@
+--Query--
+Select number, first_value (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, First_value (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, FIRST_VALUE (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, first_value_respect_nulls (number) over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, any (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, any_value (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, last_value (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, Last_value (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, LAST_VALUE (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, last_value_respect_nulls (number) over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select number, anyLast (number) RESPECT NULLS over (order by number) from numbers(1)
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+Select first_value_respect_nulls (number) IGNORE NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+Select FIRST_VALUE_respect_nulls (number) IGNORE NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+Select last_value_respect_nulls (number) IGNORE NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(9,)]
++--------------------+
+--Query--
+Select LAST_VALUE_respect_nulls (number) IGNORE NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT first_valueIf (number, NOT isNull(number) AND (assumeNotNull(number) > 5)) RESPECT NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT last_valueIf (number, NOT isNull(number) AND (assumeNotNull(number) > 5)) RESPECT NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT toTypeName(first_valueIfState(number, isNull(number)) RESPECT NULLS) from (SELECT if(number > 8, NULL, number) as number FROM numbers(10))
+--Result--
+[('AggregateFunction(any_respect_nullsIf, Nullable(UInt64), UInt8)',)]
++--------------------+
+--Query--
+SELECT FIRST_VALUEIf (number, NOT isNull(number) AND (assumeNotNull(number) > 5)) RESPECT NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT LAST_VALUEIf (number, NOT isNull(number) AND (assumeNotNull(number) > 5)) RESPECT NULLS from (SELECT if(number < 2, NULL, number) as number FROM numbers(10))
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT anyIf (number, isNull(number)) RESPECT NULLS from (SELECT if(number > 8, NULL, number) as number FROM numbers(10))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT anyLastIf (number, isNull(number)) RESPECT NULLS from (SELECT if(number > 8, NULL, number) as number FROM numbers(10))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT toTypeName(any(number) RESPECT NULLS) from numbers(1)
+--Result--
+[('UInt64',)]
++--------------------+
+--Query--
+SELECT any(number) RESPECT NULLS from numbers(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT anyOrNull(number) RESPECT NULLS from numbers(0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT any(number) RESPECT NULLS from (Select NULL::Nullable(UInt8) as number FROM numbers(10))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT anyOrNull(number) RESPECT NULLS from (Select NULL::Nullable(UInt8) as number FROM numbers(10))
+--Result--
+[(None,)]
++--------------------+

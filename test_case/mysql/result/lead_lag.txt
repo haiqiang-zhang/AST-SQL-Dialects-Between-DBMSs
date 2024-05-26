@@ -1,0 +1,630 @@
+--Query--
+SELECT LEAD(6, 0)    OVER ()
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT LAG(6, 0)    OVER ()
+--Result--
+[(6,)]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT id, sex, LEAD(id, ?) OVER () FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE p FROM "SELECT id, sex, LEAD(id+?, ?, ?) RESPECT NULLS OVER () FROM t1"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT n, id, LEAD(id, 1, 3) OVER     (ORDER BY id DESC, n ASC ROWS BETWEEN  CURRENT ROW AND 2 FOLLOWING) L FROM t1
+--Result--
+[(9, 11, 10), (7, 10, 10), (8, 10, 5), (5, 5, 4), (4, 4, 3), (3, 3, 2), (2, 2, 1), (1, 1, None), (6, None, 3)]
++--------------------+
+--Query--
+SELECT n, id,  LAG(id, 0, n*n) OVER     (ORDER BY id DESC, n ASC ROWS BETWEEN  CURRENT ROW AND 2 FOLLOWING) L FROM t1
+--Result--
+[(9, 11, 11), (7, 10, 10), (8, 10, 10), (5, 5, 5), (4, 4, 4), (3, 3, 3), (2, 2, 2), (1, 1, 1), (6, None, None)]
++--------------------+
+--Query--
+SELECT n, id,  LAG(id, 1, n*n) OVER     (ORDER BY id DESC, n ASC ROWS BETWEEN  CURRENT ROW AND 2 FOLLOWING) L FROM t1
+--Result--
+[(9, 11, 81), (7, 10, 11), (8, 10, 10), (5, 5, 10), (4, 4, 5), (3, 3, 4), (2, 2, 3), (1, 1, 2), (6, None, 1)]
++--------------------+
+--Query--
+SELECT n, id,  LEAD(id, 1, n*n) OVER     (ORDER BY id DESC, n ASC ROWS BETWEEN  CURRENT ROW AND 2 FOLLOWING) L FROM t1
+--Result--
+[(9, 11, 10), (7, 10, 10), (8, 10, 5), (5, 5, 4), (4, 4, 3), (3, 3, 2), (2, 2, 1), (1, 1, None), (6, None, 36)]
++--------------------+
+--Query--
+SELECT c1, c2, LEAD(c1, 0, c2) OVER () l0 FROM t
+--Result--
+[('A', '1', 'A'), ('A', '3', 'A'), ('🐬', None, '🐬'), ('A', None, 'A'), (None, '0', None)]
++--------------------+
+--Query--
+SELECT c1, c2, LEAD(c1, 1, c2) OVER () l1 FROM t
+--Result--
+[('A', '1', 'A'), ('A', '3', '🐬'), ('🐬', None, 'A'), ('A', None, None), (None, '0', '0')]
++--------------------+
+--Query--
+SELECT c1, c2, LEAD(c2, 1, c1) OVER () l1 FROM t
+--Result--
+[('A', '1', '3'), ('A', '3', None), ('🐬', None, None), ('A', None, '0'), (None, '0', None)]
++--------------------+
+--Query--
+SELECT LEAD(c1, 100, j1) OVER () lcj, IFNULL(c1, j1) ifn_cj FROM t
+--Result--
+[('[6]', '[6]'), (None, '7'), ('[8]', '8'), ('[9]', '9'), ('[0]', '0'), ('[1]', '1'), ('[2]', '2'), ('[3]', '3')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, j1) OVER () lcj, IFNULL(c1, j1) ifn_cj FROM t
+--Result--
+[('[6]', '[6]'), (None, '7'), ('[8]', '8'), ('[9]', '9'), ('[0]', '0'), ('[1]', '1'), ('[2]', '2'), ('[3]', '3')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(c1, 100, g1) OVER ()) lcg, IFNULL(c1, g1) ifn_cg FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('0000000001010000000000000000001C400000000000001C40', b'7'), (None, b'8'), ('00000000010100000000000000000022400000000000002240', b'9'), ('00000000010100000000000000000000000000000000000000', b'0'), ('000000000101000000000000000000F03F000000000000F03F', b'1'), ('00000000010100000000000000000000400000000000000040', b'2'), ('00000000010100000000000000000008400000000000000840', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(c1, 100, i1) OVER () lci, IFNULL(c1, i1) ifn_ci FROM t
+--Result--
+[('6', '6'), ('7', '7'), ('7', '8'), (None, '9'), ('0', '0'), ('1', '1'), ('2', '2'), ('3', '3')]
++--------------------+
+--Query--
+SELECT LEAD(c1, 100, b1) OVER () lcb, IFNULL(c1, b1) ifn_cb FROM t
+--Result--
+[(b'6', b'6'), (b'7', b'7'), (b'8', b'8'), (b'9', b'9'), (None, b'0'), (b'1', b'1'), (b'2', b'2'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(c1, 100, d1) OVER () lcd, IFNULL(c1, d1) ifn_cd FROM t
+--Result--
+[('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('0', '0'), (None, '1'), ('2', '2'), ('3', '3')]
++--------------------+
+--Query--
+SELECT LEAD(c1, 100, e1) OVER () lce1, IFNULL(c1, e1) ifn_ce1 FROM t
+--Result--
+[('3.3333', '3.3333'), ('3.3333', '7'), ('3.3333', '8'), ('3.3333', '9'), ('3.3333', '0'), ('3.3333', '1'), (None, '2'), ('3.3333', '3')]
++--------------------+
+--Query--
+SELECT LEAD(c1, 100, e2) OVER () lce2, IFNULL(c1, e2) ifn_ce2 FROM t
+--Result--
+[('6.67', '6.67'), ('6.67', '7'), ('6.67', '8'), ('6.67', '9'), ('6.67', '0'), ('6.67', '1'), ('6.67', '2'), (None, '3')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, c1) OVER () ljc, IFNULL(j1, c1) ifn_jc FROM t
+--Result--
+[(None, '[6]'), ('7', '7'), ('8', '[8]'), ('9', '[9]'), ('0', '[0]'), ('1', '[1]'), ('2', '[2]'), ('3', '[3]')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(j1, 100, g1) OVER ()) ljg, IFNULL(j1, g1) ifn_jg FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'[6]'), ('0000000001010000000000000000001C400000000000001C40', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), (None, b'[8]'), ('00000000010100000000000000000022400000000000002240', b'[9]'), ('00000000010100000000000000000000000000000000000000', b'[0]'), ('000000000101000000000000000000F03F000000000000F03F', b'[1]'), ('00000000010100000000000000000000400000000000000040', b'[2]'), ('00000000010100000000000000000008400000000000000840', b'[3]')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, i1) OVER () lji, IFNULL(j1, i1) ifn_ji FROM t
+--Result--
+[('6', '[6]'), ('7', '7'), ('7', '[8]'), (None, '[9]'), ('0', '[0]'), ('1', '[1]'), ('2', '[2]'), ('3', '[3]')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, b1) OVER () ljb, IFNULL(j1, b1) ifn_jb FROM t
+--Result--
+[(b'6', b'[6]'), (b'7', b'7'), (b'8', b'[8]'), (b'9', b'[9]'), (None, b'[0]'), (b'1', b'[1]'), (b'2', b'[2]'), (b'3', b'[3]')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, d1) OVER () ljd, IFNULL(j1, d1) ifn_jd FROM t
+--Result--
+[('6', '[6]'), ('7', '7'), ('8', '[8]'), ('9', '[9]'), ('0', '[0]'), (None, '[1]'), ('2', '[2]'), ('3', '[3]')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, e1) OVER () lje1, IFNULL(j1, e1) ifn_je1 FROM t
+--Result--
+[('3.3333', '[6]'), ('3.3333', '3.3333'), ('3.3333', '[8]'), ('3.3333', '[9]'), ('3.3333', '[0]'), ('3.3333', '[1]'), (None, '[2]'), ('3.3333', '[3]')]
++--------------------+
+--Query--
+SELECT LEAD(j1, 100, e2) OVER () lje2, IFNULL(j1, e2) ifn_je2 FROM t
+--Result--
+[('6.67', '[6]'), ('6.67', '6.67'), ('6.67', '[8]'), ('6.67', '[9]'), ('6.67', '[0]'), ('6.67', '[1]'), ('6.67', '[2]'), (None, '[3]')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, c1) OVER ()) lgc, IFNULL(g1, c1) ifn_gc FROM t
+--Result--
+[(None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('37', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('38', b'8'), ('39', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('30', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('31', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('32', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('33', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, j1) OVER ()) lgj, IFNULL(g1, j1) ifn_gj FROM t
+--Result--
+[('5B365D', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), (None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('5B385D', b'[8]'), ('5B395D', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('5B305D', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('5B315D', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('5B325D', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('5B335D', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, i1) OVER ()) lgi, IFNULL(g1, i1) ifn_gi FROM t
+--Result--
+[('36', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('37', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('37', b'7'), (None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('30', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('31', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('32', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('33', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, b1) OVER ()) lgb, IFNULL(g1, b1) ifn_gb FROM t
+--Result--
+[('36', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('37', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('38', b'8'), ('39', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), (None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('31', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('32', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('33', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, d1) OVER ()) lgd, IFNULL(g1, d1) ifn_gd FROM t
+--Result--
+[('36', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('37', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('38', b'8'), ('39', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('30', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), (None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('32', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('33', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, e1) OVER ()) lge1, IFNULL(g1, e1) ifn_ge1 FROM t
+--Result--
+[('332E33333333', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('332E33333333', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('332E33333333', b'3.3333'), ('332E33333333', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('332E33333333', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('332E33333333', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), (None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('332E33333333', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(g1, 100, e2) OVER ()) lge2, IFNULL(g1, e2) ifn_ge2 FROM t
+--Result--
+[('362E3637', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18@\x00\x00\x00\x00\x00\x00\x18@'), ('362E3637', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c@\x00\x00\x00\x00\x00\x00\x1c@'), ('362E3637', b'6.67'), ('362E3637', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('362E3637', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('362E3637', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('362E3637', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), (None, b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT LEAD(i1, 100, c1) OVER () lic, IFNULL(i1, c1) ifn_ic FROM t
+--Result--
+[(None, '6'), ('7', '7'), ('8', '7'), ('9', '9'), ('0', '0'), ('1', '1'), ('2', '2'), ('3', '3')]
++--------------------+
+--Query--
+SELECT LEAD(i1, 100, j1) OVER () lij, IFNULL(i1, j1) ifn_ij FROM t
+--Result--
+[('[6]', '6'), (None, '7'), ('[8]', '7'), ('[9]', '[9]'), ('[0]', '0'), ('[1]', '1'), ('[2]', '2'), ('[3]', '3')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(i1, 100, g1) OVER ()) lig, IFNULL(i1, g1) ifn_ig FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'6'), ('0000000001010000000000000000001C400000000000001C40', b'7'), (None, b'7'), ('00000000010100000000000000000022400000000000002240', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"@\x00\x00\x00\x00\x00\x00"@'), ('00000000010100000000000000000000000000000000000000', b'0'), ('000000000101000000000000000000F03F000000000000F03F', b'1'), ('00000000010100000000000000000000400000000000000040', b'2'), ('00000000010100000000000000000008400000000000000840', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(i1, 100, b1) OVER () lib, IFNULL(i1, b1) ifn_ib FROM t
+--Result--
+[(b'6', b'6'), (b'7', b'7'), (b'8', b'7'), (b'9', b'9'), (None, b'0'), (b'1', b'1'), (b'2', b'2'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(i1, 100, d1) OVER () lid, IFNULL(i1, d1) ifn_id FROM t
+--Result--
+[(6.0, 6.0), (7.0, 7.0), (8.0, 7.0), (9.0, 9.0), (0.0, 0.0), (None, 1.0), (2.0, 2.0), (3.0, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(i1, 100, e1) OVER () lie1, IFNULL(i1, e1) ifn_ie1 FROM t
+--Result--
+[(3.3333, 6.0), (3.3333, 7.0), (3.3333, 7.0), (3.3333, 3.3333), (3.3333, 0.0), (3.3333, 1.0), (None, 2.0), (3.3333, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(i1, 100, e2) OVER () lie2, IFNULL(i1, e2) ifn_ie2 FROM t
+--Result--
+[(6.67, 6.0), (6.67, 7.0), (6.67, 7.0), (6.67, 6.67), (6.67, 0.0), (6.67, 1.0), (6.67, 2.0), (None, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(b1, 100, c1) OVER () lbc, IFNULL(b1, c1) ifn_bc FROM t
+--Result--
+[(None, b'6'), (b'7', b'7'), (b'8', b'8'), (b'9', b'9'), (b'0', b'0'), (b'1', b'1'), (b'2', b'2'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(b1, 100, j1) OVER () lbj, IFNULL(b1, j1) ifn_bj FROM t
+--Result--
+[(b'[6]', b'6'), (None, b'7'), (b'[8]', b'8'), (b'[9]', b'9'), (b'[0]', b'[0]'), (b'[1]', b'1'), (b'[2]', b'2'), (b'[3]', b'3')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(b1, 100, g1) OVER ()) lbg, IFNULL(b1, g1) ifn_bg FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'6'), ('0000000001010000000000000000001C400000000000001C40', b'7'), (None, b'8'), ('00000000010100000000000000000022400000000000002240', b'9'), ('00000000010100000000000000000000000000000000000000', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'), ('000000000101000000000000000000F03F000000000000F03F', b'1'), ('00000000010100000000000000000000400000000000000040', b'2'), ('00000000010100000000000000000008400000000000000840', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(b1, 100, i1) OVER () lbi, IFNULL(b1, i1) ifn_bi FROM t
+--Result--
+[(b'6', b'6'), (b'7', b'7'), (b'7', b'8'), (None, b'9'), (b'0', b'0'), (b'1', b'1'), (b'2', b'2'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(b1, 100, d1) OVER () lbd, IFNULL(b1, d1) ifn_bd FROM t
+--Result--
+[(b'6', b'6'), (b'7', b'7'), (b'8', b'8'), (b'9', b'9'), (b'0', b'0'), (None, b'1'), (b'2', b'2'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(b1, 100, e1) OVER () lbe1, IFNULL(b1, e1) ifn_be1 FROM t
+--Result--
+[(b'3.3333', b'6'), (b'3.3333', b'7'), (b'3.3333', b'8'), (b'3.3333', b'9'), (b'3.3333', b'3.3333'), (b'3.3333', b'1'), (None, b'2'), (b'3.3333', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(b1, 100, e2) OVER () lbe2, IFNULL(b1, e2) ifn_be2 FROM t
+--Result--
+[(b'6.67', b'6'), (b'6.67', b'7'), (b'6.67', b'8'), (b'6.67', b'9'), (b'6.67', b'6.67'), (b'6.67', b'1'), (b'6.67', b'2'), (None, b'3')]
++--------------------+
+--Query--
+SELECT LEAD(d1, 100, c1) OVER () ldc, IFNULL(d1, c1) ifn_dc FROM t
+--Result--
+[(None, '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('0', '0'), ('1', '1'), ('2', '2'), ('3', '3')]
++--------------------+
+--Query--
+SELECT LEAD(d1, 100, j1) OVER () ldj, IFNULL(d1, j1) ifn_dj FROM t
+--Result--
+[('[6]', '6'), (None, '7'), ('[8]', '8'), ('[9]', '9'), ('[0]', '0'), ('[1]', '[1]'), ('[2]', '2'), ('[3]', '3')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(d1, 100, g1) OVER ()) ldg, IFNULL(d1, g1) ifn_dg FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'6'), ('0000000001010000000000000000001C400000000000001C40', b'7'), (None, b'8'), ('00000000010100000000000000000022400000000000002240', b'9'), ('00000000010100000000000000000000000000000000000000', b'0'), ('000000000101000000000000000000F03F000000000000F03F', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?'), ('00000000010100000000000000000000400000000000000040', b'2'), ('00000000010100000000000000000008400000000000000840', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(d1, 100, i1) OVER () ldi, IFNULL(d1, i1) ifn_di FROM t
+--Result--
+[(6.0, 6.0), (7.0, 7.0), (7.0, 8.0), (None, 9.0), (0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(d1, 100, b1) OVER () ldd, IFNULL(d1, b1) ifn_db FROM t
+--Result--
+[(b'6', b'6'), (b'7', b'7'), (b'8', b'8'), (b'9', b'9'), (None, b'0'), (b'1', b'1'), (b'2', b'2'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(d1, 100, e1) OVER () lde1, IFNULL(d1, e1) ifn_de1 FROM t
+--Result--
+[(3.3333, 6.0), (3.3333, 7.0), (3.3333, 8.0), (3.3333, 9.0), (3.3333, 0.0), (3.3333, 3.3333), (None, 2.0), (3.3333, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(d1, 100, e2) OVER () lde2, IFNULL(d1, e2) ifn_de2 FROM t
+--Result--
+[(6.67, 6.0), (6.67, 7.0), (6.67, 8.0), (6.67, 9.0), (6.67, 0.0), (6.67, 6.67), (6.67, 2.0), (None, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(e1, 100, c1) OVER () le1c, IFNULL(e1, c1) ifn_e1c FROM t
+--Result--
+[(None, '3.3333'), ('7', '3.3333'), ('8', '3.3333'), ('9', '3.3333'), ('0', '3.3333'), ('1', '3.3333'), ('2', '2'), ('3', '3.3333')]
++--------------------+
+--Query--
+SELECT LEAD(e1, 100, j1) OVER () le1j, IFNULL(e1, j1) ifn_e1j FROM t
+--Result--
+[('[6]', '3.3333'), (None, '3.3333'), ('[8]', '3.3333'), ('[9]', '3.3333'), ('[0]', '3.3333'), ('[1]', '3.3333'), ('[2]', '[2]'), ('[3]', '3.3333')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(e1, 100, g1) OVER ()) le1g, IFNULL(e1, g1) ifn_e1g FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'3.3333'), ('0000000001010000000000000000001C400000000000001C40', b'3.3333'), (None, b'3.3333'), ('00000000010100000000000000000022400000000000002240', b'3.3333'), ('00000000010100000000000000000000000000000000000000', b'3.3333'), ('000000000101000000000000000000F03F000000000000F03F', b'3.3333'), ('00000000010100000000000000000000400000000000000040', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00@'), ('00000000010100000000000000000008400000000000000840', b'3.3333')]
++--------------------+
+--Query--
+SELECT LEAD(e1, 100, i1) OVER () le1i, IFNULL(e1, i1) ifn_e1i FROM t
+--Result--
+[(6.0, 3.3333), (7.0, 3.3333), (7.0, 3.3333), (None, 3.3333), (0.0, 3.3333), (1.0, 3.3333), (2.0, 2.0), (3.0, 3.3333)]
++--------------------+
+--Query--
+SELECT LEAD(e1, 100, b1) OVER () le1d, IFNULL(e1, b1) ifn_e1d FROM t
+--Result--
+[(b'6', b'3.3333'), (b'7', b'3.3333'), (b'8', b'3.3333'), (b'9', b'3.3333'), (None, b'3.3333'), (b'1', b'3.3333'), (b'2', b'2'), (b'3', b'3.3333')]
++--------------------+
+--Query--
+SELECT LEAD(e1, 100, d1) OVER () le1d, IFNULL(e1, d1) ifn_e1d FROM t
+--Result--
+[(6.0, 3.3333), (7.0, 3.3333), (8.0, 3.3333), (9.0, 3.3333), (0.0, 3.3333), (None, 3.3333), (2.0, 2.0), (3.0, 3.3333)]
++--------------------+
+--Query--
+SELECT LEAD(e1, 100, e2) OVER () le1e2, IFNULL(e1, e2) ifn_e1e2 FROM t
+--Result--
+[(6.67, 3.3333), (6.67, 3.3333), (6.67, 3.3333), (6.67, 3.3333), (6.67, 3.3333), (6.67, 3.3333), (6.67, 6.67), (None, 3.3333)]
++--------------------+
+--Query--
+SELECT LEAD(e2, 100, c1) OVER () le2c, IFNULL(e2, c1) ifn_e2c FROM t
+--Result--
+[(None, '6.67'), ('7', '6.67'), ('8', '6.67'), ('9', '6.67'), ('0', '6.67'), ('1', '6.67'), ('2', '6.67'), ('3', '3')]
++--------------------+
+--Query--
+SELECT LEAD(e2, 100, j1) OVER () le2j, IFNULL(e2, j1) ifn_e2j FROM t
+--Result--
+[('[6]', '6.67'), (None, '6.67'), ('[8]', '6.67'), ('[9]', '6.67'), ('[0]', '6.67'), ('[1]', '6.67'), ('[2]', '6.67'), ('[3]', '[3]')]
++--------------------+
+--Query--
+SELECT HEX(LEAD(e2, 100, g1) OVER ()) le2g, IFNULL(e2, g1) ifn_e2g FROM t
+--Result--
+[('00000000010100000000000000000018400000000000001840', b'6.67'), ('0000000001010000000000000000001C400000000000001C40', b'6.67'), (None, b'6.67'), ('00000000010100000000000000000022400000000000002240', b'6.67'), ('00000000010100000000000000000000000000000000000000', b'6.67'), ('000000000101000000000000000000F03F000000000000F03F', b'6.67'), ('00000000010100000000000000000000400000000000000040', b'6.67'), ('00000000010100000000000000000008400000000000000840', b'\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x08@')]
++--------------------+
+--Query--
+SELECT LEAD(e2, 100, i1) OVER () le2i, IFNULL(e2, i1) ifn_e2i FROM t
+--Result--
+[(6.0, 6.67), (7.0, 6.67), (7.0, 6.67), (None, 6.67), (0.0, 6.67), (1.0, 6.67), (2.0, 6.67), (3.0, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(e2, 100, b1) OVER () le2d, IFNULL(e2, b1) ifn_e2d FROM t
+--Result--
+[(b'6', b'6.67'), (b'7', b'6.67'), (b'8', b'6.67'), (b'9', b'6.67'), (None, b'6.67'), (b'1', b'6.67'), (b'2', b'6.67'), (b'3', b'3')]
++--------------------+
+--Query--
+SELECT LEAD(e2, 100, d1) OVER () le2d, IFNULL(e2, d1) ifn_e2d FROM t
+--Result--
+[(6.0, 6.67), (7.0, 6.67), (8.0, 6.67), (9.0, 6.67), (0.0, 6.67), (None, 6.67), (2.0, 6.67), (3.0, 3.0)]
++--------------------+
+--Query--
+SELECT LEAD(e2, 100, e1) OVER () le2e1, IFNULL(e2, e1) ifn_e2e1 FROM t
+--Result--
+[(3.3333, 6.67), (3.3333, 6.67), (3.3333, 6.67), (3.3333, 6.67), (3.3333, 6.67), (3.3333, 6.67), (None, 6.67), (3.3333, 3.3333)]
++--------------------+
+--Query--
+SELECT id, sex, COUNT(*) OVER w cnt, NTILE(3) OVER w `ntile`,        LEAD(id, 1) OVER w le1,        LAG(id, 1) OVER w la1,        LEAD(id, 100) OVER w le100,        LAG(id, 2, 777) OVER w la2 FROM t1        WINDOW w AS (ORDER BY id)
+--Result--
+[(None, 'M', 1, 1, 1, None, None, 777), (1, 'M', 2, 1, 2, None, None, 777), (2, 'F', 3, 1, 3, 1, None, None), (3, 'F', 4, 2, 4, 2, None, 1), (4, 'F', 5, 2, 5, 3, None, 2), (5, 'M', 6, 2, 10, 4, None, 3), (10, None, 8, 3, 10, 5, None, 4), (10, None, 8, 3, 11, 10, None, 5), (11, None, 9, 3, None, 10, None, 10)]
++--------------------+
+--Query--
+SELECT id, sex, COUNT(*) OVER w cnt, NTH_VALUE(id, 2) OVER w nth,        LEAD(id, 1) OVER w le1,        LAG(id, 1) OVER w la1,        LEAD(id, 100) OVER w le100,        LAG(id, 2, 777) OVER w la2 FROM t1        WINDOW w as (PARTITION BY sex ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+--Result--
+[(10, None, 3, 10, 10, None, None, 777), (10, None, 3, 10, 11, 10, None, 777), (11, None, 3, 10, None, 10, None, 10), (2, 'F', 3, 3, 3, None, None, 777), (3, 'F', 3, 3, 4, 2, None, 777), (4, 'F', 3, 3, None, 3, None, 2), (None, 'M', 3, 1, 1, None, None, 777), (1, 'M', 3, 1, 5, None, None, 777), (5, 'M', 3, 1, None, 1, None, None)]
++--------------------+
+--Query--
+SELECT id, sex, COUNT(*) OVER w cnt, NTH_VALUE(id, 2) OVER w nth,        LEAD(id, 1) OVER w le1,        LAG(id, 1) OVER w la1,        LEAD(id, 100) OVER w le100,        LAG(id, 2, 777) OVER w la2 FROM t1        WINDOW w as (PARTITION BY id ORDER BY sex ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+--Result--
+[(None, 'M', 1, None, None, None, None, 777), (1, 'M', 1, None, None, None, None, 777), (2, 'F', 1, None, None, None, None, 777), (3, 'F', 1, None, None, None, None, 777), (4, 'F', 1, None, None, None, None, 777), (5, 'M', 1, None, None, None, None, 777), (10, None, 2, 10, 10, None, None, 777), (10, None, 2, 10, None, 10, None, 777), (11, None, 1, None, None, None, None, 777)]
++--------------------+
+--Query--
+SELECT id, sex, COUNT(*) OVER w cnt,        LEAD(id, 1) OVER w le1,        LAG(id, 1) OVER w la1,        LEAD(id, 100) OVER w le100,        LAG(id, 2, 777) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY ID ROWS UNBOUNDED PRECEDING)
+--Result--
+[(10, None, 1, 10, None, None, 777), (10, None, 2, 11, 10, None, 777), (11, None, 3, None, 10, None, 10), (2, 'F', 1, 3, None, None, 777), (3, 'F', 2, 4, 2, None, 777), (4, 'F', 3, None, 3, None, 2), (None, 'M', 1, 1, None, None, 777), (1, 'M', 2, 5, None, None, 777), (5, 'M', 3, None, 1, None, None)]
++--------------------+
+--Query--
+SELECT id, sex, COUNT(*) OVER w cnt, NTH_VALUE(id, 2) OVER w nth,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY ID RANGE UNBOUNDED PRECEDING)
+--Result--
+[(10, None, 2, 10, 11, None), (10, None, 2, 10, None, None), (11, None, 3, 10, None, 10), (2, 'F', 1, None, 4, None), (3, 'F', 2, 3, None, None), (4, 'F', 3, 3, None, 2), (None, 'M', 1, None, 5, None), (1, 'M', 2, 1, None, None), (5, 'M', 3, 1, None, None)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY d ROWS 2 PRECEDING)
+--Result--
+[(10.0, 10.0, None, 11.0, None), (10.0, 20.0, None, None, None), (11.0, 31.0, None, None, 10.0), (2.0, 2.0, 'F', 4.0, None), (3.0, 5.0, 'F', None, None), (4.0, 9.0, 'F', None, 2.0), (None, None, 'M', 5.0, None), (1.0, 1.0, 'M', None, None), (5.0, 6.0, 'M', None, None)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY d RANGE 2 PRECEDING)
+--Result--
+[(10.0, 20.0, None, 11.0, None), (10.0, 20.0, None, None, None), (11.0, 31.0, None, None, 10.0), (2.0, 2.0, 'F', 4.0, None), (3.0, 5.0, 'F', None, None), (4.0, 9.0, 'F', None, 2.0), (None, None, 'M', 5.0, None), (1.0, 1.0, 'M', None, None), (5.0, 5.0, 'M', None, None)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d ROWS 2 PRECEDING)
+--Result--
+[(None, None, 1, 2.0, None), (1.0, 1.0, 2, 3.0, None), (2.0, 3.0, 3, 4.0, None), (3.0, 6.0, 3, 5.0, 1.0), (4.0, 9.0, 3, 10.0, 2.0), (5.0, 12.0, 3, 10.0, 3.0), (10.0, 19.0, 3, 11.0, 4.0), (10.0, 25.0, 3, None, 5.0), (11.0, 31.0, 3, None, 10.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d ASC ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING)
+--Result--
+[(None, None, 0, 2.0, None), (1.0, None, 1, 3.0, None), (2.0, 1.0, 2, 4.0, None), (3.0, 3.0, 2, 5.0, 1.0), (4.0, 5.0, 2, 10.0, 2.0), (5.0, 7.0, 2, 10.0, 3.0), (10.0, 9.0, 2, 11.0, 4.0), (10.0, 15.0, 2, None, 5.0), (11.0, 20.0, 2, None, 10.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d ASC ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(None, 3.0, 2, 2.0, None), (1.0, 5.0, 2, 3.0, None), (2.0, 7.0, 2, 4.0, None), (3.0, 9.0, 2, 5.0, 1.0), (4.0, 15.0, 2, 10.0, 2.0), (5.0, 20.0, 2, 10.0, 3.0), (10.0, 21.0, 2, 11.0, 4.0), (10.0, 11.0, 1, None, 5.0), (11.0, None, 0, None, 10.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d RANGE 2 PRECEDING)
+--Result--
+[(None, None, 1, 2.0, None), (1.0, 1.0, 1, 3.0, None), (2.0, 3.0, 2, 4.0, None), (3.0, 6.0, 3, 5.0, 1.0), (4.0, 9.0, 3, 10.0, 2.0), (5.0, 12.0, 3, 10.0, 3.0), (10.0, 20.0, 2, 11.0, 4.0), (10.0, 20.0, 2, None, 5.0), (11.0, 31.0, 3, None, 10.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING)
+--Result--
+[(None, None, 1, 2.0, None), (1.0, 3.0, 2, 3.0, None), (2.0, 6.0, 3, 4.0, None), (3.0, 9.0, 3, 5.0, 1.0), (4.0, 12.0, 3, 10.0, 2.0), (5.0, 9.0, 2, 10.0, 3.0), (10.0, 31.0, 3, 11.0, 4.0), (10.0, 31.0, 3, None, 5.0), (11.0, 31.0, 3, None, 10.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d RANGE BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(None, None, 1, 2.0, None), (1.0, 5.0, 2, 3.0, None), (2.0, 7.0, 2, 4.0, None), (3.0, 9.0, 2, 5.0, 1.0), (4.0, 5.0, 1, 10.0, 2.0), (5.0, None, 0, 10.0, 3.0), (10.0, 11.0, 1, 11.0, 4.0), (10.0, 11.0, 1, None, 5.0), (11.0, None, 0, None, 10.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY d DESC ROWS 2 PRECEDING)
+--Result--
+[(11.0, 11.0, 1, None, 10.0, None), (10.0, 21.0, 2, None, None, None), (10.0, 31.0, 3, None, None, 11.0), (4.0, 4.0, 1, 'F', 2.0, None), (3.0, 7.0, 2, 'F', None, None), (2.0, 9.0, 3, 'F', None, 4.0), (5.0, 5.0, 1, 'M', None, None), (1.0, 6.0, 2, 'M', None, None), (None, 6.0, 3, 'M', None, 5.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY d DESC RANGE 2 PRECEDING)
+--Result--
+[(11.0, 11.0, 1, None, 10.0, None), (10.0, 31.0, 3, None, None, None), (10.0, 31.0, 3, None, None, 11.0), (4.0, 4.0, 1, 'F', 2.0, None), (3.0, 7.0, 2, 'F', None, None), (2.0, 9.0, 3, 'F', None, 4.0), (5.0, 5.0, 1, 'M', None, None), (1.0, 1.0, 1, 'M', None, None), (None, None, 1, 'M', None, 5.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d DESC ROWS 2 PRECEDING)
+--Result--
+[(11.0, 11.0, 1, None, 10.0, None), (10.0, 21.0, 2, None, 5.0, None), (10.0, 31.0, 3, None, 4.0, 11.0), (5.0, 25.0, 3, 'M', 3.0, 10.0), (4.0, 19.0, 3, 'F', 2.0, 10.0), (3.0, 12.0, 3, 'F', 1.0, 5.0), (2.0, 9.0, 3, 'F', None, 4.0), (1.0, 6.0, 3, 'M', None, 3.0), (None, 3.0, 3, 'M', None, 2.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d DESC ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING)
+--Result--
+[(11.0, None, 0, None, 10.0, None), (10.0, 11.0, 1, None, 5.0, None), (10.0, 21.0, 2, None, 4.0, 11.0), (5.0, 20.0, 2, 'M', 3.0, 10.0), (4.0, 15.0, 2, 'F', 2.0, 10.0), (3.0, 9.0, 2, 'F', 1.0, 5.0), (2.0, 7.0, 2, 'F', None, 4.0), (1.0, 5.0, 2, 'M', None, 3.0), (None, 3.0, 2, 'M', None, 2.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d DESC ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(11.0, 20.0, 2, None, 10.0, None), (10.0, 15.0, 2, None, 5.0, None), (10.0, 9.0, 2, None, 4.0, 11.0), (5.0, 7.0, 2, 'M', 3.0, 10.0), (4.0, 5.0, 2, 'F', 2.0, 10.0), (3.0, 3.0, 2, 'F', 1.0, 5.0), (2.0, 1.0, 2, 'F', None, 4.0), (1.0, None, 1, 'M', None, 3.0), (None, None, 0, 'M', None, 2.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d DESC RANGE 2 PRECEDING)
+--Result--
+[(11.0, 11.0, 1, None, 10.0, None), (10.0, 31.0, 3, None, 5.0, None), (10.0, 31.0, 3, None, 4.0, 11.0), (5.0, 5.0, 1, 'M', 3.0, 10.0), (4.0, 9.0, 2, 'F', 2.0, 10.0), (3.0, 12.0, 3, 'F', 1.0, 5.0), (2.0, 9.0, 3, 'F', None, 4.0), (1.0, 6.0, 3, 'M', None, 3.0), (None, None, 1, 'M', None, 2.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d DESC RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING)
+--Result--
+[(11.0, 31.0, 3, None, 10.0, None), (10.0, 31.0, 3, None, 5.0, None), (10.0, 31.0, 3, None, 4.0, 11.0), (5.0, 9.0, 2, 'M', 3.0, 10.0), (4.0, 12.0, 3, 'F', 2.0, 10.0), (3.0, 9.0, 3, 'F', 1.0, 5.0), (2.0, 6.0, 3, 'F', None, 4.0), (1.0, 3.0, 2, 'M', None, 3.0), (None, None, 1, 'M', None, 2.0)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY d DESC RANGE BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(11.0, 20.0, 2, None, 10.0, None), (10.0, None, 0, None, 5.0, None), (10.0, None, 0, None, 4.0, 11.0), (5.0, 7.0, 2, 'M', 3.0, 10.0), (4.0, 5.0, 2, 'F', 2.0, 10.0), (3.0, 3.0, 2, 'F', 1.0, 5.0), (2.0, 1.0, 1, 'F', None, 4.0), (1.0, None, 0, 'M', None, 3.0), (None, None, 1, 'M', None, 2.0)]
++--------------------+
+--Query--
+SELECT id, sex, COUNT(*) OVER w cnt, NTILE(3) OVER w `ntile`,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1 WINDOW w as (ORDER BY id)
+--Result--
+[(None, 'M', 1, 1, 2, None), (1, 'M', 2, 1, 3, None), (2, 'F', 3, 1, 4, None), (3, 'F', 4, 2, 5, 1), (4, 'F', 5, 2, 10, 2), (5, 'M', 6, 2, 10, 3), (10, None, 8, 3, 11, 4), (10, None, 8, 3, None, 5), (11, None, 9, 3, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY id ROWS 2 PRECEDING)
+--Result--
+[(10, 10.0, None, 11, None), (10, 20.0, None, None, None), (11, 31.0, None, None, 10), (2, 2.0, 'F', 4, None), (3, 5.0, 'F', None, None), (4, 9.0, 'F', None, 2), (None, None, 'M', 5, None), (1, 1.0, 'M', None, None), (5, 6.0, 'M', None, None)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY id RANGE 2 PRECEDING)
+--Result--
+[(10, 20.0, None, 11, None), (10, 20.0, None, None, None), (11, 31.0, None, None, 10), (2, 2.0, 'F', 4, None), (3, 5.0, 'F', None, None), (4, 9.0, 'F', None, 2), (None, None, 'M', 5, None), (1, 1.0, 'M', None, None), (5, 5.0, 'M', None, None)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id ROWS 2 PRECEDING)
+--Result--
+[(None, None, 1, 2, None), (1, 1.0, 2, 3, None), (2, 3.0, 3, 4, None), (3, 6.0, 3, 5, 1), (4, 9.0, 3, 10, 2), (5, 12.0, 3, 10, 3), (10, 19.0, 3, 11, 4), (10, 25.0, 3, None, 5), (11, 31.0, 3, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id ASC ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING)
+--Result--
+[(None, None, 0, 2, None), (1, None, 1, 3, None), (2, 1.0, 2, 4, None), (3, 3.0, 2, 5, 1), (4, 5.0, 2, 10, 2), (5, 7.0, 2, 10, 3), (10, 9.0, 2, 11, 4), (10, 15.0, 2, None, 5), (11, 20.0, 2, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id ASC ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(None, 3.0, 2, 2, None), (1, 5.0, 2, 3, None), (2, 7.0, 2, 4, None), (3, 9.0, 2, 5, 1), (4, 15.0, 2, 10, 2), (5, 20.0, 2, 10, 3), (10, 21.0, 2, 11, 4), (10, 11.0, 1, None, 5), (11, None, 0, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id RANGE 2 PRECEDING)
+--Result--
+[(None, None, 1, 2, None), (1, 1.0, 1, 3, None), (2, 3.0, 2, 4, None), (3, 6.0, 3, 5, 1), (4, 9.0, 3, 10, 2), (5, 12.0, 3, 10, 3), (10, 20.0, 2, 11, 4), (10, 20.0, 2, None, 5), (11, 31.0, 3, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING)
+--Result--
+[(None, None, 1, 2, None), (1, 3.0, 2, 3, None), (2, 6.0, 3, 4, None), (3, 9.0, 3, 5, 1), (4, 12.0, 3, 10, 2), (5, 9.0, 2, 10, 3), (10, 31.0, 3, 11, 4), (10, 31.0, 3, None, 5), (11, 31.0, 3, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id RANGE BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(None, None, 1, 2, None), (1, 5.0, 2, 3, None), (2, 7.0, 2, 4, None), (3, 9.0, 2, 5, 1), (4, 5.0, 1, 10, 2), (5, None, 0, 10, 3), (10, 11.0, 1, 11, 4), (10, 11.0, 1, None, 5), (11, None, 0, None, 10)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY id DESC ROWS 2 PRECEDING)
+--Result--
+[(11, 11.0, 1, None, 10, None), (10, 21.0, 2, None, None, None), (10, 31.0, 3, None, None, 11), (4, 4.0, 1, 'F', 2, None), (3, 7.0, 2, 'F', None, None), (2, 9.0, 3, 'F', None, 4), (5, 5.0, 1, 'M', None, None), (1, 6.0, 2, 'M', None, None), (None, 6.0, 3, 'M', None, 5)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (PARTITION BY SEX ORDER BY id DESC RANGE 2 PRECEDING)
+--Result--
+[(11, 11.0, 1, None, 10, None), (10, 31.0, 3, None, None, None), (10, 31.0, 3, None, None, 11), (4, 4.0, 1, 'F', 2, None), (3, 7.0, 2, 'F', None, None), (2, 9.0, 3, 'F', None, 4), (5, 5.0, 1, 'M', None, None), (1, 1.0, 1, 'M', None, None), (None, None, 1, 'M', None, 5)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id DESC ROWS 2 PRECEDING)
+--Result--
+[(11, 11.0, 1, None, 10, None), (10, 21.0, 2, None, 5, None), (10, 31.0, 3, None, 4, 11), (5, 25.0, 3, 'M', 3, 10), (4, 19.0, 3, 'F', 2, 10), (3, 12.0, 3, 'F', 1, 5), (2, 9.0, 3, 'F', None, 4), (1, 6.0, 3, 'M', None, 3), (None, 3.0, 3, 'M', None, 2)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id DESC ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING)
+--Result--
+[(11, None, 0, None, 10, None), (10, 11.0, 1, None, 5, None), (10, 21.0, 2, None, 4, 11), (5, 20.0, 2, 'M', 3, 10), (4, 15.0, 2, 'F', 2, 10), (3, 9.0, 2, 'F', 1, 5), (2, 7.0, 2, 'F', None, 4), (1, 5.0, 2, 'M', None, 3), (None, 3.0, 2, 'M', None, 2)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id DESC ROWS BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(11, 20.0, 2, None, 10, None), (10, 15.0, 2, None, 5, None), (10, 9.0, 2, None, 4, 11), (5, 7.0, 2, 'M', 3, 10), (4, 5.0, 2, 'F', 2, 10), (3, 3.0, 2, 'F', 1, 5), (2, 1.0, 2, 'F', None, 4), (1, None, 1, 'M', None, 3), (None, None, 0, 'M', None, 2)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id DESC RANGE 2 PRECEDING)
+--Result--
+[(11, 11.0, 1, None, 10, None), (10, 31.0, 3, None, 5, None), (10, 31.0, 3, None, 4, 11), (5, 5.0, 1, 'M', 3, 10), (4, 9.0, 2, 'F', 2, 10), (3, 12.0, 3, 'F', 1, 5), (2, 9.0, 3, 'F', None, 4), (1, 6.0, 3, 'M', None, 3), (None, None, 1, 'M', None, 2)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id DESC RANGE BETWEEN 1 PRECEDING AND 1 FOLLOWING)
+--Result--
+[(11, 31.0, 3, None, 10, None), (10, 31.0, 3, None, 5, None), (10, 31.0, 3, None, 4, 11), (5, 9.0, 2, 'M', 3, 10), (4, 12.0, 3, 'F', 2, 10), (3, 9.0, 3, 'F', 1, 5), (2, 6.0, 3, 'F', None, 4), (1, 3.0, 2, 'M', None, 3), (None, None, 1, 'M', None, 2)]
++--------------------+
+--Query--
+SELECT id, SUM(id) OVER w `sum`, COUNT(*) OVER w cnt, sex,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w as (ORDER BY id DESC RANGE BETWEEN 1 FOLLOWING AND 2 FOLLOWING)
+--Result--
+[(11, 20.0, 2, None, 10, None), (10, None, 0, None, 5, None), (10, None, 0, None, 4, 11), (5, 7.0, 2, 'M', 3, 10), (4, 5.0, 2, 'F', 2, 10), (3, 3.0, 2, 'F', 1, 5), (2, 1.0, 1, 'F', None, 4), (1, None, 0, 'M', None, 3), (None, None, 1, 'M', None, 2)]
++--------------------+
+--Query--
+SELECT d, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(d, 3) OVER w le3,        FIRST_VALUE(d) OVER w fv,        LEAD(d, 1) OVER w le1,        LEAD(d, 2) OVER w le2,        LAG(d, 2) OVER w la2 FROM t1        WINDOW w AS (ORDER BY d ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+--Result--
+[(None, None, 1, 3.0, None, 1.0, 2.0, None), (1.0, 1.0, 2, 4.0, None, 2.0, 3.0, None), (2.0, 3.0, 3, 5.0, None, 3.0, 4.0, None), (3.0, 6.0, 3, 10.0, 1.0, 4.0, 5.0, 1.0), (4.0, 9.0, 3, 10.0, 2.0, 5.0, 10.0, 2.0), (5.0, 12.0, 3, 11.0, 3.0, 10.0, 10.0, 3.0), (10.0, 19.0, 3, None, 4.0, 10.0, 11.0, 4.0), (10.0, 25.0, 3, None, 5.0, 11.0, None, 5.0), (11.0, 31.0, 3, None, 10.0, None, None, 10.0)]
++--------------------+
+--Query--
+SELECT id, SUM(d) OVER w `sum`, COUNT(*) OVER w cnt,        LEAD(id, 3) OVER w le3,        FIRST_VALUE(id) OVER w fv,        LEAD(id, 1) OVER w le1,        LEAD(id, 2) OVER w le2,        LAG(id, 2) OVER w la2 FROM t1        WINDOW w AS (ORDER BY id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+--Result--
+[(None, None, 1, 3, None, 1, 2, None), (1, 1.0, 2, 4, None, 2, 3, None), (2, 3.0, 3, 5, None, 3, 4, None), (3, 6.0, 3, 10, 1, 4, 5, 1), (4, 9.0, 3, 10, 2, 5, 10, 2), (5, 12.0, 3, 11, 3, 10, 10, 3), (10, 19.0, 3, None, 4, 10, 11, 4), (10, 25.0, 3, None, 5, 11, None, 5), (11, 31.0, 3, None, 10, None, None, 10)]
++--------------------+
+--Query--
+SELECT i, PERCENT_RANK() OVER w cd        FROM t WINDOW w AS (ORDER BY i)
+--Result--
+[(None, 0.0), (1, 0.08333333333333333), (2, 0.16666666666666666), (3, 0.25), (3, 0.25), (4, 0.4166666666666667), (5, 0.5), (6, 0.5833333333333334), (6, 0.5833333333333334), (7, 0.75), (8, 0.8333333333333334), (9, 0.9166666666666666), (10, 1.0)]
++--------------------+
+--Query--
+SELECT i, PERCENT_RANK() OVER w cd FROM t        WINDOW w AS (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING)
+--Result--
+[(None, 0.0), (1, 0.08333333333333333), (2, 0.16666666666666666), (3, 0.25), (3, 0.25), (4, 0.4166666666666667), (5, 0.5), (6, 0.5833333333333334), (6, 0.5833333333333334), (7, 0.75), (8, 0.8333333333333334), (9, 0.9166666666666666), (10, 1.0)]
++--------------------+
+--Query--
+SELECT i, PERCENT_RANK() OVER w cd, NTILE(3) OVER w `ntile`, COUNT(*) OVER w cnt, SUM(i) OVER W `sum` FROM t        WINDOW w AS (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING)
+--Result--
+[(None, 0.0, 1, 3, 3.0), (1, 0.08333333333333333, 1, 4, 6.0), (2, 0.16666666666666666, 1, 4, 9.0), (3, 0.25, 1, 4, 12.0), (3, 0.25, 1, 4, 15.0), (4, 0.4166666666666667, 2, 4, 18.0), (5, 0.5, 2, 4, 21.0), (6, 0.5833333333333334, 2, 4, 24.0), (6, 0.5833333333333334, 2, 4, 27.0), (7, 0.75, 3, 4, 30.0), (8, 0.8333333333333334, 3, 4, 34.0), (9, 0.9166666666666666, 3, 3, 27.0), (10, 1.0, 3, 2, 19.0)]
++--------------------+
+--Query--
+SELECT i, PERCENT_RANK() OVER w cd, NTILE(3) OVER w `ntile`, COUNT(*) OVER w cnt, SUM(i) OVER W `sum`,        LEAD(i,2) OVER w le2,        LAG(i) OVER w la FROM t        WINDOW w AS (ORDER BY i ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING)
+--Result--
+[(None, 0.0, 1, 3, 3.0, 2, None), (1, 0.08333333333333333, 1, 4, 6.0, 3, None), (2, 0.16666666666666666, 1, 4, 9.0, 3, 1), (3, 0.25, 1, 4, 12.0, 4, 2), (3, 0.25, 1, 4, 15.0, 5, 3), (4, 0.4166666666666667, 2, 4, 18.0, 6, 3), (5, 0.5, 2, 4, 21.0, 6, 4), (6, 0.5833333333333334, 2, 4, 24.0, 7, 5), (6, 0.5833333333333334, 2, 4, 27.0, 8, 6), (7, 0.75, 3, 4, 30.0, 9, 6), (8, 0.8333333333333334, 3, 4, 34.0, 10, 7), (9, 0.9166666666666666, 3, 3, 27.0, None, 8), (10, 1.0, 3, 2, 19.0, None, 9)]
++--------------------+
+--Query--
+SELECT dt, LEAD(dt, 1) OVER w1 `lead`,        CAST(LEAD(ge, 1) OVER w1 AS JSON) geo    FROM test WHERE `pk` = 2 WINDOW w1 AS ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT dt, LAG(dt) OVER w1 `lag`,        CAST(LAG(ge) OVER w1 AS JSON) geo    FROM test WHERE `pk` > 3 WINDOW w1 AS ()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SUM(c/d), LEAD(SUM(c/d), 1) OVER (ORDER BY a)  FROM t GROUP BY a,b
+--Result--
+[(1.0, 2.0), (2.0, 3.0), (3.0, None)]
++--------------------+
+--Query--
+SELECT SUM(c/d), LAG(SUM(c/d), 1) OVER (ORDER BY a)  FROM t GROUP BY a,b
+--Result--
+[(1.0, None), (2.0, 1.0), (3.0, 2.0)]
++--------------------+
+--Query--
+SELECT 1+LEAD(SUM(c/d), 1) OVER (ORDER BY a)  FROM t GROUP BY a,b
+--Result--
+[(3.0,), (4.0,), (None,)]
++--------------------+
+--Query--
+SELECT ROW_NUMBER() OVER () rn,        1 + LEAD(SUM(c/d), 1) OVER (ORDER BY a) le1,        1 + LAG(SUM(c/d), 1) OVER (ORDER BY a) la1,        1 + LEAD(SUM(c/d), 2) OVER (ORDER BY a) le2,        1 + LAG(SUM(c/d), 2) OVER (ORDER BY a) la2,        1 + LEAD(SUM(c/d), 1, SUM(c/d)) OVER (ORDER BY a) le1d,        1 + LAG(SUM(c/d), 1, SUM(c/d)) OVER (ORDER BY a) la1d,        1 + LEAD(SUM(c/d), 2, SUM(c/d)) OVER (ORDER BY a) le2d,        1 + LAG(SUM(c/d), 2, SUM(c/d)) OVER (ORDER BY a) la2d,        1 + LEAD(SUM(c/d), 1, 1 + SUM(c/d)) OVER (ORDER BY a) le1dp,        1 + LAG(SUM(c/d), 1, 1 + SUM(c/d)) OVER (ORDER BY a) la1dp,        1 + LEAD(SUM(c/d), 2, 1 + SUM(c/d)) OVER (ORDER BY a) le2dp,        1 + LAG(SUM(c/d), 2, 1 + SUM(c/d)) OVER (ORDER BY a) la2dp        FROM t GROUP BY a,b
+--Result--
+[(1, 3.0, None, 4.0, None, 3.0, 2.0, 4.0, 2.0, 3.0, 3.0, 4.0, 3.0), (2, 4.0, 2.0, None, None, 4.0, 2.0, 3.0, 3.0, 4.0, 2.0, 4.0, 4.0), (3, None, 3.0, None, 2.0, 4.0, 3.0, 4.0, 2.0, 5.0, 3.0, 5.0, 2.0)]
++--------------------+
+--Query--
+SELECT  LEAD(a, 7,'abc') OVER w1, LAG(a) OVER w1 FROM t1 WINDOW w1 AS (PARTITION BY a)
+--Result--
+[('abc', None), ('abc', None), ('abc', None), ('abc', None)]
++--------------------+
+--Query--
+SELECT ADDTIME(LEAD(time'18:00:00', 0) OVER (ORDER BY NULL), '01:00:00')
+--Result--
+[(datetime.timedelta(seconds=68400),)]
++--------------------+
+--Query--
+SELECT ADDDATE(LEAD(NULL, 1, date'1955-05-15') OVER (ORDER BY NULL), 1)
+--Result--
+[(datetime.date(1955, 5, 16),)]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(3,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT ((MAKETIME(((QUARTER('| !*c>*{/'))<=>                (LAG(JSON_OBJECTAGG('key4',0x067c13d0d0d7d8c8d768aef7)                     ,7)OVER())),'9236-05-27',0xe2a7d4))^(0x1109))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ((LAG(JSON_MERGE_PATCH(1.755913e+308,'{ }'),246)OVER())<=(1))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT ((QUOTE(JSON_KEYS(LEAD(JSON_KEYS(EXP(-15676),ABS('d0')),                           162)OVER())))>=(CONNECTION_ID()))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT JSON_LENGTH(LEAD(JSON_OBJECTAGG('key2','*B'),172)OVER())
+--Result--
+[(None,)]
++--------------------+

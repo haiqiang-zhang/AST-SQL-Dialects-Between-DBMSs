@@ -1,11 +1,3 @@
-
--- If we partition by these columns instead of one it will be twice more partitions.
--- Partition by (.., ignore(d1)) allows to partition by the first column but build
--- min_max indexes for both column, so partition pruning works for both columns.
--- It's very similar to min_max skip index but gives bigger performance boost,
--- because partition pruning happens on very early query stage.
-
-
 DROP TABLE IF EXISTS weird_partitions_02245;
 CREATE TABLE weird_partitions_02245(d DateTime, d1 DateTime default d - toIntervalHour(8), id Int64)
 Engine=MergeTree

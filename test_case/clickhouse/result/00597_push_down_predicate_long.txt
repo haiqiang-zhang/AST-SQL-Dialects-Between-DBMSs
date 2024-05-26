@@ -1,0 +1,400 @@
+--Query--
+SELECT * FROM (SELECT floor(floor(1, floor(NULL), id = 257), floor(floor(floor(floor(NULL), '10485.76', '9223372036854775807', NULL), floor(10, floor(65535, NULL), 100.0000991821289), NULL)), '2.56'), b.* FROM (SELECT floor(floor(floor(floor(NULL), 1000.0001220703125))), * FROM test_00597) AS b) WHERE id = 257
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-------No need for predicate optimization, but still works-------'
+--Result--
+[('-------No need for predicate optimization, but still works-------',)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 AS id WHERE id = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT arrayJoin([1,2,3]) AS id WHERE id = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM test_00597 WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+SELECT '-------Forbid push down-------'
+--Result--
+[('-------Forbid push down-------',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT count() FROM (SELECT [number] a, [number * 2] b FROM system.numbers LIMIT 1) AS t ARRAY JOIN a, b WHERE NOT ignore(a + b)
+--Result--
+[('SELECT count()',), ('FROM',), ('(',), ('    SELECT',), ('        [number] AS a,',), ('        [number * 2] AS b',), ('    FROM system.numbers',), ('    LIMIT 1',), (') AS t',), ('ARRAY JOIN',), ('    a,',), ('    b',), ('WHERE NOT ignore(a + b)',)]
++--------------------+
+--Query--
+SELECT count() FROM (SELECT [number] a, [number * 2] b FROM system.numbers LIMIT 1) AS t ARRAY JOIN a, b WHERE NOT ignore(a + b)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT a, b FROM (SELECT 1 AS a) ANY LEFT JOIN (SELECT 1 AS a, 1 AS b) USING (a) WHERE b = 0
+--Result--
+[('SELECT',), ('    a,',), ('    b',), ('FROM',), ('(',), ('    SELECT 1 AS a',), (')',), ('ANY LEFT JOIN',), ('(',), ('    SELECT',), ('        1 AS a,',), ('        1 AS b',), (') USING (a)',), ('WHERE b = 0',)]
++--------------------+
+--Query--
+SELECT a, b FROM (SELECT 1 AS a) ANY LEFT JOIN (SELECT 1 AS a, 1 AS b) USING (a) WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT a, b FROM (SELECT 1 AS a, 1 as b) ANY RIGHT JOIN (SELECT 1 AS a) USING (a) WHERE b = 0
+--Result--
+[('SELECT',), ('    a,',), ('    b',), ('FROM',), ('(',), ('    SELECT',), ('        1 AS a,',), ('        1 AS b',), (')',), ('ANY RIGHT JOIN',), ('(',), ('    SELECT 1 AS a',), (') USING (a)',), ('WHERE b = 0',)]
++--------------------+
+--Query--
+SELECT a, b FROM (SELECT 1 AS a, 1 as b) ANY RIGHT JOIN (SELECT 1 AS a) USING (a) WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT a, b FROM (SELECT 1 AS a) ANY FULL JOIN (SELECT 1 AS a, 1 AS b) USING (a) WHERE b = 0
+--Result--
+[('SELECT',), ('    a,',), ('    b',), ('FROM',), ('(',), ('    SELECT 1 AS a',), (')',), ('ANY FULL OUTER JOIN',), ('(',), ('    SELECT',), ('        1 AS a,',), ('        1 AS b',), (') USING (a)',), ('WHERE b = 0',)]
++--------------------+
+--Query--
+SELECT a, b FROM (SELECT 1 AS a) ANY FULL JOIN (SELECT 1 AS a, 1 AS b) USING (a) WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT a, b FROM (SELECT 1 AS a, 1 AS b) ANY FULL JOIN (SELECT 1 AS a) USING (a) WHERE b = 0
+--Result--
+[('SELECT',), ('    a,',), ('    b',), ('FROM',), ('(',), ('    SELECT',), ('        1 AS a,',), ('        1 AS b',), (')',), ('ANY FULL OUTER JOIN',), ('(',), ('    SELECT 1 AS a',), (') USING (a)',), ('WHERE b = 0',)]
++--------------------+
+--Query--
+SELECT a, b FROM (SELECT 1 AS a) ANY FULL JOIN (SELECT 1 AS a, 1 AS b) USING (a) WHERE b = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-------Need push down-------'
+--Result--
+[('-------Need push down-------',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT toString(value) AS value FROM (SELECT 1 AS value) WHERE value = '1'
+--Result--
+[('SELECT toString(value) AS value',), ('FROM',), ('(',), ('    SELECT 1 AS value',), (')',)]
++--------------------+
+--Query--
+SELECT toString(value) AS value FROM (SELECT 1 AS value) WHERE value = '1'
+--Result--
+[('1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT 1 AS id UNION ALL SELECT 2) WHERE id = 1
+--Result--
+[('SELECT id',), ('FROM',), ('(',), ('    SELECT 1 AS id',), ('    UNION ALL',), ('    SELECT 2 AS `--predicate_optimizer_0`',), ('    WHERE 0',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 AS id UNION ALL SELECT 2) WHERE id = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT arrayJoin([1, 2, 3]) AS id) WHERE id = 1
+--Result--
+[('SELECT id',), ('FROM',), ('(',), ('    SELECT arrayJoin([1, 2, 3]) AS id',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT arrayJoin([1, 2, 3]) AS id) WHERE id = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT id FROM (SELECT arrayJoin([1, 2, 3]) AS id) WHERE id = 1
+--Result--
+[('SELECT id',), ('FROM',), ('(',), ('    SELECT arrayJoin([1, 2, 3]) AS id',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT id FROM (SELECT arrayJoin([1, 2, 3]) AS id) WHERE id = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT 1 AS id, (SELECT 1) as subquery) WHERE subquery = 1
+--Result--
+[('SELECT',), ('    id,',), ('    subquery',), ('FROM',), ('(',), ('    SELECT',), ('        1 AS id,',), ("        __scalarSubqueryResult(_CAST(1, 'Nullable(UInt8)')) AS subquery",), ('    WHERE subquery = 1',), (')',), ('WHERE subquery = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT 1 AS id, (SELECT 1) as subquery) WHERE subquery = 1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT toUInt64(b) AS a, sum(id) AS b FROM test_00597) WHERE a = 3
+--Result--
+[('SELECT',), ('    a,',), ('    b',), ('FROM',), ('(',), ('    SELECT',), ('        toUInt64(sum(id) AS b) AS a,',), ('        b',), ('    FROM test_00597',), ('    HAVING a = 3',), (')',), ('WHERE a = 3',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT toUInt64(b) AS a, sum(id) AS b FROM test_00597) WHERE a = 3
+--Result--
+[(3, 3)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT date, id, name, value FROM (SELECT date, name, value, min(id) AS id FROM test_00597 GROUP BY date, name, value) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        name,',), ('        value,',), ('        min(id) AS id',), ('    FROM test_00597',), ('    GROUP BY',), ('        date,',), ('        name,',), ('        value',), ('    HAVING id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT date, id, name, value FROM (SELECT date, name, value, min(id) AS id FROM test_00597 GROUP BY date, name, value) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT toUInt64(b) AS a, sum(id) AS b FROM test_00597 AS table_alias) AS outer_table_alias WHERE outer_table_alias.b = 3
+--Result--
+[('SELECT',), ('    a,',), ('    b',), ('FROM',), ('(',), ('    SELECT',), ('        toUInt64(sum(id) AS b) AS a,',), ('        b',), ('    FROM test_00597 AS table_alias',), ('    HAVING b = 3',), (') AS outer_table_alias',), ('WHERE b = 3',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT toUInt64(b) AS a, sum(id) AS b FROM test_00597 AS table_alias) AS outer_table_alias WHERE outer_table_alias.b = 3
+--Result--
+[(3, 3)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM test_00597) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597)) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    )',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597)) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT b.* FROM (SELECT * FROM test_00597) AS b) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    ) AS b',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT b.* FROM (SELECT * FROM test_00597) AS b) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT date, id, name, value FROM test_00597) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT date, id, name, value FROM test_00597) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT date, id, name, value FROM (SELECT date, id, name, value FROM test_00597)) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    )',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT date, id, name, value FROM (SELECT date, id, name, value FROM test_00597)) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM test_00597) AS b WHERE b.id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), ('    WHERE id = 1',), (') AS b',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) AS b WHERE b.id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) AS a) AS b WHERE b.id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    ) AS a',), ('    WHERE id = 1',), (') AS b',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) AS a) AS b WHERE b.id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT id, date, min(value) AS value FROM test_00597 GROUP BY id, date) WHERE id = 1
+--Result--
+[('SELECT',), ('    id,',), ('    date,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        id,',), ('        date,',), ('        min(value) AS value',), ('    FROM test_00597',), ('    WHERE id = 1',), ('    GROUP BY',), ('        id,',), ('        date',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT id, date, min(value) AS value FROM test_00597 GROUP BY id, date) WHERE id = 1
+--Result--
+[(1, datetime.date(2000, 1, 1), 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM test_00597 UNION ALL SELECT * FROM test_00597) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), ('    WHERE id = 1',), ('    UNION ALL',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597 UNION ALL SELECT * FROM test_00597) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1), (datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) USING id WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value,',), ('    date,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), ('    WHERE id = 1',), (')',), ('ANY LEFT JOIN',), ('(',), ('    SELECT id',), ('    FROM test_00597',), (') USING (id)',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) USING id WHERE id = 1 SETTINGS allow_experimental_analyzer=0
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+SELECT '------- allow_experimental_analyzer=1 -------'
+--Result--
+[('------- allow_experimental_analyzer=1 -------',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) USING id WHERE id = 1 SETTINGS allow_experimental_analyzer=1
+--Result--
+[(1, datetime.date(2000, 1, 1), 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT toInt8(1) AS id) ANY LEFT JOIN test_00597 USING id WHERE value = 1
+--Result--
+[('SELECT',), ('    id,',), ('    date,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT toInt8(1) AS id',), (')',), ('ANY LEFT JOIN',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), (') AS test_00597 USING (id)',), ('WHERE value = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT toInt8(1) AS id) ANY LEFT JOIN test_00597 USING id WHERE value = 1
+--Result--
+[(1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT b.value FROM (SELECT toInt8(1) AS id) ANY LEFT JOIN test_00597 AS b USING id WHERE value = 1
+--Result--
+[('SELECT value',), ('FROM',), ('(',), ('    SELECT toInt8(1) AS id',), (')',), ('ANY LEFT JOIN test_00597 AS b USING (id)',), ('WHERE value = 1',)]
++--------------------+
+--Query--
+SELECT b.value FROM (SELECT toInt8(1) AS id) ANY LEFT JOIN test_00597 AS b USING id WHERE value = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) USING id) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value,',), ('        date,',), ('        name,',), ('        value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    )',), ('    ANY LEFT JOIN',), ('    (',), ('        SELECT id',), ('        FROM test_00597',), ('    ) USING (id)',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) USING id) WHERE id = 1 SETTINGS allow_experimental_analyzer=0
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+SELECT '------- allow_experimental_analyzer=1 -------'
+--Result--
+[('------- allow_experimental_analyzer=1 -------',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) USING id) WHERE id = 1 SETTINGS allow_experimental_analyzer=1
+--Result--
+[(1, datetime.date(2000, 1, 1), 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) AS b USING id WHERE b.id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value,',), ('    b.date,',), ('    b.name,',), ('    b.value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), (')',), ('ANY LEFT JOIN',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), (') AS b USING (id)',), ('WHERE b.id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) AS b USING id WHERE b.id = 1 SETTINGS allow_experimental_analyzer=0
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+SELECT '------- allow_experimental_analyzer=1 -------'
+--Result--
+[('------- allow_experimental_analyzer=1 -------',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) ANY LEFT JOIN (SELECT * FROM test_00597) AS b USING id WHERE b.id = 1 SETTINGS allow_experimental_analyzer=1
+--Result--
+[(1, datetime.date(2000, 1, 1), 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT toInt8(1) AS id, toDate('2000-01-01') AS date FROM system.numbers LIMIT 1) ANY LEFT JOIN (SELECT * FROM test_00597) AS b USING date, id WHERE b.date = toDate('2000-01-01')
+--Result--
+[('SELECT',), ('    id,',), ('    date,',), ('    name,',), ('    value',), ('FROM',), ('(',), ('    SELECT',), ('        toInt8(1) AS id,',), ("        toDate('2000-01-01') AS date",), ('    FROM system.numbers',), ('    LIMIT 1',), (')',), ('ANY LEFT JOIN',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), (') AS b USING (date, id)',), ("WHERE b.date = toDate('2000-01-01')",)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT toInt8(1) AS id, toDate('2000-01-01') AS date FROM system.numbers LIMIT 1) ANY LEFT JOIN (SELECT * FROM test_00597) AS b USING date, id WHERE b.date = toDate('2000-01-01') SETTINGS allow_experimental_analyzer=0
+--Result--
+[(1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+SELECT '------- allow_experimental_analyzer=1 -------'
+--Result--
+[('------- allow_experimental_analyzer=1 -------',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT toInt8(1) AS id, toDate('2000-01-01') AS date FROM system.numbers LIMIT 1) ANY LEFT JOIN (SELECT * FROM test_00597) AS b USING date, id WHERE b.date = toDate('2000-01-01') SETTINGS allow_experimental_analyzer=1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) AS a ANY LEFT JOIN (SELECT * FROM test_00597) AS b  ON  a.id = b.id) WHERE id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value,',), ('    `b.date`,',), ('    `b.id`,',), ('    `b.name`,',), ('    `b.value`',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value,',), ('        b.date,',), ('        b.id,',), ('        b.name,',), ('        b.value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    ) AS a',), ('    ANY LEFT JOIN',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('    ) AS b ON id = b.id',), ('    WHERE id = 1',), (')',), ('WHERE id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM test_00597) AS a ANY LEFT JOIN (SELECT * FROM test_00597) AS b  ON  a.id = b.id) WHERE id = 1
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1, datetime.date(2000, 1, 1), 1, 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM (SELECT * FROM test_00597) ANY INNER JOIN (SELECT * FROM (SELECT * FROM test_00597)) as r USING id WHERE r.id = 1
+--Result--
+[('SELECT',), ('    date,',), ('    id,',), ('    name,',), ('    value,',), ('    r.date,',), ('    r.name,',), ('    r.value',), ('FROM',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM test_00597',), (')',), ('SEMI LEFT JOIN',), ('(',), ('    SELECT',), ('        date,',), ('        id,',), ('        name,',), ('        value',), ('    FROM',), ('    (',), ('        SELECT',), ('            date,',), ('            id,',), ('            name,',), ('            value',), ('        FROM test_00597',), ('        WHERE id = 1',), ('    )',), ('    WHERE id = 1',), (') AS r USING (id)',), ('WHERE r.id = 1',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) ANY INNER JOIN (SELECT * FROM (SELECT * FROM test_00597)) as r USING id WHERE r.id = 1 SETTINGS allow_experimental_analyzer=0
+--Result--
+[(datetime.date(2000, 1, 1), 1, 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+SELECT '------- allow_experimental_analyzer=1 -------'
+--Result--
+[('------- allow_experimental_analyzer=1 -------',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM test_00597) ANY INNER JOIN (SELECT * FROM (SELECT * FROM test_00597)) as r USING id WHERE r.id = 1 SETTINGS allow_experimental_analyzer=1
+--Result--
+[(1, datetime.date(2000, 1, 1), 'test string 1', 1, datetime.date(2000, 1, 1), 'test string 1', 1)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT value + t1.value AS expr FROM (SELECT t0.value, t1.value FROM test_00597 AS t0 FULL JOIN test_00597 AS t1 USING date) WHERE expr < 3
+--Result--
+[('SELECT value + t1.value AS expr',), ('FROM',), ('(',), ('    SELECT',), ('        value,',), ('        t1.value',), ('    FROM test_00597 AS t0',), ('    ALL FULL OUTER JOIN test_00597 AS t1 USING (date)',), ('    WHERE (value + `t1.value`) < 3',), (')',), ('WHERE expr < 3',)]
++--------------------+
+--Query--
+SELECT value + t1.value AS expr FROM (SELECT t0.value, t1.value FROM test_00597 AS t0 FULL JOIN test_00597 AS t1 USING date) WHERE expr < 3
+--Result--
+[(2,)]
++--------------------+

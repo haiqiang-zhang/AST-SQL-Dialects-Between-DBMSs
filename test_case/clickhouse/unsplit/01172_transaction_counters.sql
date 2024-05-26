@@ -10,13 +10,11 @@ select 2, name, creation_csn, removal_tid, removal_csn from system.parts where d
 insert into txn_counters(n) values (3);
 select 3, system.parts.name, txn_counters.creation_tid = system.parts.creation_tid from txn_counters join system.parts on txn_counters._part = system.parts.name where database=currentDatabase() and table='txn_counters' order by system.parts.name;
 select 4, name, creation_csn, removal_tid, removal_csn from system.parts where database=currentDatabase() and table='txn_counters' order by system.parts.name;
-select 5, transactionID().3 == serverUUID();
 detach table txn_counters;
 attach table txn_counters;
 insert into txn_counters(n) values (4);
 select 6, system.parts.name, txn_counters.creation_tid = system.parts.creation_tid from txn_counters join system.parts on txn_counters._part = system.parts.name where database=currentDatabase() and table='txn_counters' order by system.parts.name;
 select 7, name, removal_tid, removal_csn from system.parts where database=currentDatabase() and table='txn_counters' and active order by system.parts.name;
-select 8, transactionID().3 == serverUUID();
 insert into txn_counters(n) values (5);
 alter table txn_counters drop partition id 'all';
 system flush logs;

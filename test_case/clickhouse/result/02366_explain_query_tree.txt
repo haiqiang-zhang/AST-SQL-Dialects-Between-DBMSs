@@ -1,0 +1,55 @@
+--Query--
+EXPLAIN QUERY TREE run_passes = 0 SELECT 1
+--Result--
+[('QUERY id: 0',), ('  PROJECTION',), ('    LIST id: 1, nodes: 1',), ('      CONSTANT id: 2, constant_value: UInt64_1, constant_value_type: UInt8',), ('  JOIN TREE',), ('    IDENTIFIER id: 3, identifier: system.one',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE run_passes = 0 SELECT id, value FROM test_table
+--Result--
+[('QUERY id: 0',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      IDENTIFIER id: 2, identifier: id',), ('      IDENTIFIER id: 3, identifier: value',), ('  JOIN TREE',), ('    IDENTIFIER id: 4, identifier: test_table',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE run_passes = 1 SELECT id, value FROM test_table
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    id UInt64',), ('    value String',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      COLUMN id: 2, column_name: id, result_type: UInt64, source_id: 3',), ('      COLUMN id: 4, column_name: value, result_type: String, source_id: 3',), ('  JOIN TREE',), ('    TABLE id: 3, alias: __table1, table_name: test.test_table',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE run_passes = 0 SELECT arrayMap(x -> x + id, [1, 2, 3]) FROM test_table
+--Result--
+[('QUERY id: 0',), ('  PROJECTION',), ('    LIST id: 1, nodes: 1',), ('      FUNCTION id: 2, function_name: arrayMap, function_type: ordinary',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 2',), ('            LAMBDA id: 4',), ('              ARGUMENTS ',), ('                LIST id: 5, nodes: 1',), ('                  IDENTIFIER id: 6, identifier: x',), ('              EXPRESSION ',), ('                FUNCTION id: 7, function_name: plus, function_type: ordinary',), ('                  ARGUMENTS',), ('                    LIST id: 8, nodes: 2',), ('                      IDENTIFIER id: 9, identifier: x',), ('                      IDENTIFIER id: 10, identifier: id',), ('            CONSTANT id: 11, constant_value: Array_[UInt64_1, UInt64_2, UInt64_3], constant_value_type: Array(UInt8)',), ('  JOIN TREE',), ('    IDENTIFIER id: 12, identifier: test_table',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+EXPLAIN QUERY TREE run_passes = 0 WITH x -> x + 1 AS lambda SELECT lambda(id) FROM test_table
+--Result--
+[('QUERY id: 0',), ('  WITH',), ('    LIST id: 1, nodes: 1',), ('      LAMBDA id: 2, alias: lambda',), ('        ARGUMENTS ',), ('          LIST id: 3, nodes: 1',), ('            IDENTIFIER id: 4, identifier: x',), ('        EXPRESSION ',), ('          FUNCTION id: 5, function_name: plus, function_type: ordinary',), ('            ARGUMENTS',), ('              LIST id: 6, nodes: 2',), ('                IDENTIFIER id: 7, identifier: x',), ('                CONSTANT id: 8, constant_value: UInt64_1, constant_value_type: UInt8',), ('  PROJECTION',), ('    LIST id: 9, nodes: 1',), ('      FUNCTION id: 10, function_name: lambda, function_type: ordinary',), ('        ARGUMENTS',), ('          LIST id: 11, nodes: 1',), ('            IDENTIFIER id: 12, identifier: id',), ('  JOIN TREE',), ('    IDENTIFIER id: 13, identifier: test_table',)]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+

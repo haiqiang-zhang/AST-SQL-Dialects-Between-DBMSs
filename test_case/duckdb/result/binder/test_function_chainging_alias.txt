@@ -1,0 +1,40 @@
+--Query--
+PREPARE v1 AS  SELECT (?.split(' ')::VARCHAR).lower() lstrings,        (?.split(' ')::VARCHAR).upper() ustrings,        list_concat(lstrings::VARCHAR[], ustrings::VARCHAR[]) as mix_case_srings
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'test' || ' more testing' as added,         added.substr(5) as my_substr
+--Result--
+[('test more testing', ' more testing')]
++--------------------+
+--Query--
+SELECT v.lower() FROM varchars
+--Result--
+[('test function chainging alias',)]
++--------------------+
+--Query--
+SELECT  v.trim('><') as trim_inequality,         trim_inequality.replace('%', '') as only_alphabet,         only_alphabet.lower() as lower FROM varchars
+--Result--
+[('Test Function Chainging Alias', 'Test Function Chainging Alias', 'test function chainging alias')]
++--------------------+
+--Query--
+SELECT  varchars.v.trim('><') as trim_inequality,         trim_inequality.replace('%', '') as only_alphabet,         only_alphabet.lower() as lower FROM varchars
+--Result--
+[('Test Function Chainging Alias', 'Test Function Chainging Alias', 'test function chainging alias')]
++--------------------+
+--Query--
+SELECT  v.split(' ')::VARCHAR strings,         strings.lower() lower,         lower.upper() upper FROM varchars
+--Result--
+[('[Test, Function, Chainging, Alias]', '[test, function, chainging, alias]', '[TEST, FUNCTION, CHAINGING, ALIAS]')]
++--------------------+
+--Query--
+SELECT  v.split(' ') strings,         strings.apply(x -> x.lower()).filter(x -> x[1] == 't') lower,         strings.apply(x -> x.upper()).filter(x -> x[1] == 'T') upper,         lower + upper  as mix_case_srings FROM varchars
+--Result--
+[(['Test', 'Function', 'Chainging', 'Alias'], ['test'], ['TEST'], ['test', 'TEST'])]
++--------------------+
+--Query--
+EXECUTE v1('Hello World', 'test function chainging')
+--Result--
+[('[hello, world]', '[TEST, FUNCTION, CHAINGING]', ['hello', 'world', 'TEST', 'FUNCTION', 'CHAINGING'])]
++--------------------+

@@ -1,0 +1,20 @@
+--Query--
+show create a
+--Result--
+[("CREATE TABLE test.a\n(\n    `x` Int64\n)\nENGINE = URL('https://example.com/', 'CSV', headers('foo' = '[HIDDEN]', 'a' = '[HIDDEN]'))",)]
++--------------------+
+--Query--
+show create b
+--Result--
+[("CREATE TABLE test.b\n(\n    `x` Int64\n)\nENGINE = URL('https://example.com/', 'CSV', headers())",)]
++--------------------+
+--Query--
+show create e
+--Result--
+[("CREATE VIEW test.e\n(\n    `x` Int64\n)\nAS SELECT count()\nFROM url('https://example.com/', CSV, headers('foo' = '[HIDDEN]', 'a' = '[HIDDEN]'))",)]
++--------------------+
+--Query--
+show create f
+--Result--
+[("CREATE VIEW test.f\n(\n    `x` Int64\n)\nAS SELECT count()\nFROM url('https://example.com/', CSV, headers())",)]
++--------------------+

@@ -1,0 +1,220 @@
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))',), ('CREATE TABLE t2(a, b)',), ('CREATE INDEX t2expr ON t2(a) WHERE t2.b>0',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE t2(a, b)',), ('CREATE INDEX t2expr ON t2(a) WHERE t2.b>0',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',)]
++--------------------+
+--Query--
+SELECT * FROM vvv
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM vvv
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='vvv'
+--Result--
+[('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',)]
++--------------------+
+--Query--
+SELECT * FROM uuu
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='uuu'
+--Result--
+[('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',)]
++--------------------+
+--Query--
+SELECT * FROM ttt
+--Result--
+[(1, 2, 2, 1)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_temp_master WHERE name='ttt'
+--Result--
+[('CREATE VIEW ttt AS SELECT main."t xx".a, "t xx".b, one.b, main.one.a FROM "t xx" AS one, "t xx"',)]
++--------------------+
+--Query--
+SELECT * FROM t10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT  *  FROM v
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT * FROM vv
+--Result--
+[(1, 2, 3, 4)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'x2'
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db2' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM aux.sqlite_master WHERE name = 'c1'
+--Result--
+[('CREATE TABLE c1(x INTEGER PRIMARY KEY, y REFERENCES "ppp"(a))',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_temp_master
+--Result--
+[('CREATE VIEW ttt AS SELECT main."t xx".a, "t xx".b, one.b, main.one.a FROM "t xx" AS one, "t xx"',), ('CREATE TABLE "t1234567890"(a, b, c)',), ('CREATE VIEW vv AS SELECT one.a, one.b, t2.a, t2.b FROM "t3" AS one, t2',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type='trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, tbl_name FROM sqlite_temp_master
+--Result--
+[('ttt', 'ttt'), ('t1234567890', 't1234567890'), ('vv', 'vv')]
++--------------------+
+--Query--
+SELECT name, tbl_name FROM sqlite_temp_master
+--Result--
+[('ttt', 'ttt'), ('t1234567890', 't1234567890'), ('vv', 'vv')]
++--------------------+
+--Query--
+SELECT name, tbl_name FROM sqlite_temp_master
+--Result--
+[('ttt', 'ttt'), ('t1234567890', 't1234567890'), ('vv', 'vv')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM x
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM x
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'y'
+--Result--
+[('CREATE VIEW y AS SELECT f1 AS f1 FROM x',)]
++--------------------+
+--Query--
+SELECT name, sql FROM sqlite_master WHERE sql IS NOT NULL
+--Result--
+[('t1new', 'CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))'), ('t2new', 'CREATE TABLE "t2new"(a, b)'), ('t2expr', 'CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0'), ('abc', 'CREATE TABLE abc(a, b, c)'), ('t xx', 'CREATE TABLE "t xx"(a, b, c)'), ('vvv', 'CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"'), ('uuu', 'CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one'), ('t11', 'CREATE TABLE "t11"(x, y)'), ('t22', 'CREATE TABLE "t22"(a, b)'), ('t9', 'CREATE TABLE t9(a, b, c)'), ('t10', 'CREATE TABLE t10(a, b, c)'), ('t3', 'CREATE TABLE "t3"(a, b)'), ('t2', 'CREATE TABLE t2(a, b)'), ('ddd', 'CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)'), ('t1', 'CREATE TABLE t1(a, b, c)'), ('log', 'CREATE TABLE log(c)'), ('v1', 'CREATE VIEW v1 AS SELECT * FROM t1'), ('x', 'CREATE TABLE x(f1 integer NOT NULL)'), ('y', 'CREATE VIEW y AS SELECT f1 AS f1 FROM x'), ('z', 'CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)'), ('sqlite1234', 'CREATE TABLE sqlite1234 (id integer)')]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',), ('CREATE TABLE abc(a, b, c)',), ('CREATE TABLE "t xx"(a, b, c)',), ('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',), ('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',), ('CREATE TABLE "t11"(x, y)',), ('CREATE TABLE "t22"(a, b)',), ('CREATE TABLE t9(a, b, c)',), ('CREATE TABLE t10(a, b, c)',), ('CREATE TABLE "t3"(a, b)',), ('CREATE TABLE t2(a, b)',), ('CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE log(c)',), ('CREATE VIEW v1 AS SELECT * FROM t1',), ('CREATE TABLE x(f1 integer NOT NULL)',), ('CREATE VIEW y AS SELECT f1 AS f1 FROM x',), ('CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)',), ('CREATE TABLE sqlite1234 (id integer)',), ('CREATE TABLE t0 (c0 INTEGER, PRIMARY KEY(c0)) WITHOUT ROWID',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',), ('CREATE TABLE abc(a, b, c)',), ('CREATE TABLE "t xx"(a, b, c)',), ('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',), ('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',), ('CREATE TABLE "t11"(x, y)',), ('CREATE TABLE "t22"(a, b)',), ('CREATE TABLE t9(a, b, c)',), ('CREATE TABLE t10(a, b, c)',), ('CREATE TABLE "t3"(a, b)',), ('CREATE TABLE t2(a, b)',), ('CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE log(c)',), ('CREATE VIEW v1 AS SELECT * FROM t1',), ('CREATE TABLE x(f1 integer NOT NULL)',), ('CREATE VIEW y AS SELECT f1 AS f1 FROM x',), ('CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)',), ('CREATE TABLE sqlite1234 (id integer)',), ('CREATE TABLE t0 (c0 INTEGER, PRIMARY KEY(c0)) WITHOUT ROWID',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',), ('CREATE TABLE abc(a, b, c)',), ('CREATE TABLE "t xx"(a, b, c)',), ('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',), ('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',), ('CREATE TABLE "t11"(x, y)',), ('CREATE TABLE "t22"(a, b)',), ('CREATE TABLE t9(a, b, c)',), ('CREATE TABLE t10(a, b, c)',), ('CREATE TABLE "t3"(a, b)',), ('CREATE TABLE t2(a, b)',), ('CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)',), ('CREATE TABLE t1(a, b, c)',), ('CREATE TABLE log(c)',), ('CREATE VIEW v1 AS SELECT * FROM t1',), ('CREATE TABLE x(f1 integer NOT NULL)',), ('CREATE VIEW y AS SELECT f1 AS f1 FROM x',), ('CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)',), ('CREATE TABLE sqlite1234 (id integer)',), ('CREATE TABLE t0 (c0 INTEGER, PRIMARY KEY(c0)) WITHOUT ROWID',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',), ('CREATE TABLE abc(a, b, c)',), ('CREATE TABLE "t xx"(a, b, c)',), ('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',), ('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',), ('CREATE TABLE "t11"(x, y)',), ('CREATE TABLE "t22"(a, b)',), ('CREATE TABLE t9(a, b, c)',), ('CREATE TABLE t10(a, b, c)',), ('CREATE TABLE "t3"(a, b)',), ('CREATE TABLE t2(a, b)',), ('CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)',), ('CREATE TABLE t1(a INT, b TEXT, c INT DEFAULT 78)',), ('CREATE TABLE log(c)',), ('CREATE VIEW v1 AS SELECT * FROM t1',), ('CREATE TABLE x(f1 integer NOT NULL)',), ('CREATE VIEW y AS SELECT f1 AS f1 FROM x',), ('CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)',), ('CREATE TABLE sqlite1234 (id integer)',), ('CREATE TABLE t0 (c0 INTEGER, PRIMARY KEY(c0)) WITHOUT ROWID',), ('CREATE TABLE a(a)',), ('CREATE VIEW b AS SELECT(SELECT *FROM c JOIN a USING(d, a, a, a) JOIN a) IN()',), ('CREATE VIEW c AS \n      SELECT NULL INTERSECT \n      SELECT NULL ORDER BY\n      likelihood(NULL, (d, (SELECT c)))',), ('CREATE TABLE "ggiiggoo"(a text)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',), ('CREATE TABLE abc(a, b, c)',), ('CREATE TABLE "t xx"(a, b, c)',), ('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',), ('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',), ('CREATE TABLE "t11"(x, y)',), ('CREATE TABLE "t22"(a, b)',), ('CREATE TABLE t9(a, b, c)',), ('CREATE TABLE t10(a, b, c)',), ('CREATE TABLE "t3"(a, b)',), ('CREATE TABLE t2(a, b)',), ('CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)',), ('CREATE TABLE t1(a INT, b TEXT, c INT DEFAULT 78)',), ('CREATE TABLE log(c)',), ('CREATE VIEW v1 AS SELECT * FROM t1',), ('CREATE TABLE x(f1 integer NOT NULL)',), ('CREATE VIEW y AS SELECT f1 AS f1 FROM x',), ('CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)',), ('CREATE TABLE sqlite1234 (id integer)',), ('CREATE TABLE t0 (c0 INTEGER, PRIMARY KEY(c0)) WITHOUT ROWID',), ('CREATE TABLE a(a)',), ('CREATE VIEW b AS SELECT(SELECT *FROM c JOIN a USING(d, a, a, a) JOIN a) IN()',), ('CREATE VIEW c AS \n      SELECT NULL INTERSECT \n      SELECT NULL ORDER BY\n      likelihood(NULL, (d, (SELECT c)))',), ('CREATE TABLE "ggiiggoo"(a text)',)]
++--------------------+
+--Query--
+SELECT * FROM t1x
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM v0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE name='v0'
+--Result--
+[('CREATE VIEW v0 AS\n    WITH p AS ( SELECT 1 FROM t1 ),\n         g AS ( SELECT 1 FROM p, t1 )\n    SELECT 1 FROM g',)]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE name='v2'
+--Result--
+[('CREATE VIEW v2 AS\n    WITH p AS ( SELECT 1 FROM t2 ),\n         g AS ( SELECT 1 FROM (\n           WITH i AS (SELECT 1 FROM p, t2)\n           SELECT * FROM i\n         )\n    )\n    SELECT 1 FROM g',)]
++--------------------+
+--Query--
+SELECT * FROM v3
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE name='v3'
+--Result--
+[('CREATE VIEW v3(b) AS WITH b AS (SELECT b FROM (SELECT * FROM "t5")) VALUES(1)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema ORDER BY rowid
+--Result--
+[('CREATE TABLE "t1new"(a, b, CHECK("t1new".a != "t1new".b))',), ('CREATE TABLE "t2new"(a, b)',), ('CREATE INDEX t2expr ON "t2new"(a) WHERE "t2new".b>0',), ('CREATE TABLE abc(a, b, c)',), ('CREATE TABLE "t xx"(a, b, c)',), ('CREATE VIEW vvv AS SELECT main."t xx".a, "t xx".b, c FROM "t xx"',), ('CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM "t xx" AS one',), ('CREATE TABLE "t11"(x, y)',), ('CREATE TABLE "t22"(a, b)',), ('CREATE TABLE t9(a, b, c)',), ('CREATE TABLE t10(a, b, c)',), ('CREATE TABLE "t3"(a, b)',), ('CREATE TABLE "t5"(a, b)',), ('CREATE TABLE ddd(db, sql, zOld, zNew, bTemp)',), ('CREATE TABLE "t1x"(a INT, b TEXT, c INT DEFAULT 78)',), ('CREATE TABLE log(c)',), ('CREATE VIEW v1 AS SELECT * FROM "t1x"',), ('CREATE TABLE x(f1 integer NOT NULL)',), ('CREATE VIEW y AS SELECT f1 AS f1 FROM x',), ('CREATE TABLE z (f1 integer NOT NULL PRIMARY KEY)',), ('CREATE TABLE sqlite1234 (id integer)',), ('CREATE TABLE t0 (c0 INTEGER, PRIMARY KEY(c0)) WITHOUT ROWID',), ('CREATE TABLE a(a)',), ('CREATE VIEW b AS SELECT(SELECT *FROM c JOIN a USING(d, a, a, a) JOIN a) IN()',), ('CREATE VIEW c AS \n      SELECT NULL INTERSECT \n      SELECT NULL ORDER BY\n      likelihood(NULL, (d, (SELECT c)))',), ('CREATE TABLE "ggiiggoo"(a text)',), ('CREATE TABLE xx(x)',), ('CREATE VIEW v3(b) AS WITH b AS (SELECT b FROM (SELECT * FROM "t5")) VALUES(1)',), ('CREATE TABLE t2_a(k,v)',), ('CREATE TABLE t_sa (\n c_dg INTEGER NOT NULL,\n c_d4u TEXT \n )',), ('CREATE TABLE t1(a2, b, c)',), ('CREATE VIEW v0 AS\n    WITH p AS ( SELECT 1 FROM t1 ),\n         g AS ( SELECT 1 FROM p, t1 )\n    SELECT 1 FROM g',), ('CREATE VIEW v2 AS\n    WITH p AS ( SELECT 1 FROM "t5" ),\n         g AS ( SELECT 1 FROM (\n           WITH i AS (SELECT 1 FROM p, "t5")\n           SELECT * FROM i\n         )\n    )\n    SELECT 1 FROM g',), ('CREATE TABLE t4(b,c)',), ('CREATE TABLE t2(a,b,c)',)]
++--------------------+
+--Query--
+SELECT * FROM vvv
+--Result--
+[(1, 2, 3)]
++--------------------+

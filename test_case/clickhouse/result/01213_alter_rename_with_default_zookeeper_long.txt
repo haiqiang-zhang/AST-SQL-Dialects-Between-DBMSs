@@ -1,0 +1,20 @@
+--Query--
+SHOW CREATE TABLE table_rename_with_default
+--Result--
+[("CREATE TABLE test.table_rename_with_default\n(\n    `date` Date,\n    `key` UInt64,\n    `value1` String,\n    `value2` String DEFAULT concat('Hello ', value1),\n    `value3` String ALIAS concat('Word ', value1)\n)\nENGINE = MergeTree\nPARTITION BY date\nORDER BY key\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE table_rename_with_default
+--Result--
+[("CREATE TABLE test.table_rename_with_default\n(\n    `date` Date,\n    `key` UInt64,\n    `renamed_value1` String,\n    `value2` String DEFAULT concat('Hello ', renamed_value1),\n    `value3` String ALIAS concat('Word ', renamed_value1)\n)\nENGINE = MergeTree\nPARTITION BY date\nORDER BY key\nSETTINGS index_granularity = 8192",)]
++--------------------+
+--Query--
+SELECT value2 FROM table_rename_with_default WHERE key = 1
+--Result--
+[('Hello 1',)]
++--------------------+
+--Query--
+SELECT value3 FROM table_rename_with_default WHERE key = 1
+--Result--
+[('Word 1',)]
++--------------------+

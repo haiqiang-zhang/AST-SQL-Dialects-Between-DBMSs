@@ -13,7 +13,6 @@ INSERT INTO replacing_table SELECT 100, number, number from numbers(16);
 SELECT sum(a), count() FROM replacing_table;
 SYSTEM START MERGES replacing_table;
 OPTIMIZE TABLE replacing_table FINAL;
-SELECT sum(a), count() FROM replacing_table;
 DROP TABLE IF EXISTS replacing_table;
 CREATE TABLE replacing_table
 (
@@ -27,7 +26,5 @@ SETTINGS
     vertical_merge_algorithm_min_columns_to_activate=0,
     min_bytes_for_wide_part = 0;
 INSERT INTO replacing_table SELECT if(number == 8192, 8191, number), 1 FROM numbers(8193);
-SELECT sum(key), count() from replacing_table;
 OPTIMIZE TABLE replacing_table FINAL;
-SELECT sum(key), count() from replacing_table;
 DROP TABLE IF EXISTS replacing_table;

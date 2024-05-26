@@ -1,0 +1,170 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 11), (2, 22), (3, 33)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 111), (33, 333), (44, 444)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(111, 1111), (444, 4444), (555, 5555)]
++--------------------+
+--Query--
+SELECT * FROM       t1 NATURAL JOIN t2 NATURAL JOIN t3
+--Result--
+[(1, 11, 111, 1111)]
++--------------------+
+--Query--
+SELECT * FROM       t1 NATURAL JOIN t2 NATURAL LEFT OUTER JOIN t3
+--Result--
+[(1, 11, 111, 1111), (3, 33, 333, None)]
++--------------------+
+--Query--
+SELECT * FROM       t1 NATURAL LEFT OUTER JOIN t2 NATURAL JOIN t3
+--Result--
+[(1, 11, 111, 1111)]
++--------------------+
+--Query--
+SELECT * FROM       t2 NATURAL RIGHT OUTER JOIN t1 NATURAL JOIN t3
+--Result--
+[(11, 111, 1, 1111)]
++--------------------+
+--Query--
+SELECT * FROM         t1 NATURAL LEFT OUTER JOIN (t2 NATURAL JOIN t3)
+--Result--
+[(1, 11, 111, 1111), (2, 22, None, None), (3, 33, None, None)]
++--------------------+
+--Query--
+SELECT a, b, c, d FROM         t2 NATURAL JOIN t3 NATURAL RIGHT JOIN t1
+--Result--
+[(1, 11, 111, 1111), (2, 22, None, None), (3, 33, None, None)]
++--------------------+
+--Query--
+SELECT * FROM aa JOIN cc ON (a=b) JOIN bb ON (b=c)
+--Result--
+[('one', 'one', 'one')]
++--------------------+
+--Query--
+SELECT v1, v3 FROM c1 LEFT JOIN c2 ON (c2.k=v1) LEFT JOIN c3 ON (c3.k=v2)
+--Result--
+[(2, 'v3'), (1112, None)]
++--------------------+
+--Query--
+SELECT v1, v3 FROM c1 LEFT JOIN c2 ON (c2.k=v1) LEFT JOIN c3 ON (c3.k=v1+1)
+--Result--
+[(2, 'v3'), (1112, None)]
++--------------------+
+--Query--
+SELECT DISTINCT v1, v3 FROM c1 LEFT JOIN c2 LEFT JOIN c3 ON (c3.k=v1+1)
+--Result--
+[(2, 'v3'), (1112, None)]
++--------------------+
+--Query--
+SELECT v1, v3 FROM c1 LEFT JOIN c2 LEFT JOIN c3 ON (c3.k=v1+1)
+--Result--
+[(2, 'v3'), (2, 'v3'), (1112, None), (1112, None)]
++--------------------+
+--Query--
+SELECT v1, v3 FROM c1 LEFT JOIN c2 ON (c2.k=v1) LEFT JOIN c3 ON (c3.k=v2)
+--Result--
+[(2, 'v3'), (1112, None)]
++--------------------+
+--Query--
+SELECT v1, v3 FROM c1 LEFT JOIN c2 ON (c2.k=v1) LEFT JOIN c3 ON (c3.k=v1+1)
+--Result--
+[(2, 'v3'), (1112, None)]
++--------------------+
+--Query--
+SELECT DISTINCT v1, v3 FROM c1 LEFT JOIN c2 LEFT JOIN c3 ON (c3.k=v1+1)
+--Result--
+[(2, 'v3'), (1112, None)]
++--------------------+
+--Query--
+SELECT v1, v3 FROM c1 LEFT JOIN c2 LEFT JOIN c3 ON (c3.k=v1+1)
+--Result--
+[(2, 'v3'), (2, 'v3'), (1112, None), (1112, None)]
++--------------------+
+--Query--
+SELECT a.x     FROM t1 AS a     LEFT JOIN t1 AS b ON (a.x=b.x)     LEFT JOIN t2 AS c ON (a.x=c.x)
+--Result--
+[]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM c WHERE x<10)     INSERT INTO t1(x) SELECT x FROM c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a.x, c.x     FROM t1 AS a     LEFT JOIN t1 AS b ON (a.x=b.x)     LEFT JOIN t2 AS c ON (a.x=c.x)
+--Result--
+[(1, None), (2, None), (3, None), (4, None), (5, None), (6, None), (7, None), (8, None), (9, None), (10, 10)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT s1.a FROM s1 left join s2 using (a)
+--Result--
+[(2, 0, 0, 'SCAN s1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT s1.a FROM s1 left join s3 using (a)
+--Result--
+[(2, 0, 0, 'SCAN s1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT u2.* FROM u2 LEFT JOIN u1 ON( u1.a=u2.a AND u1.b=u2.b AND u1.c=u2.c )
+--Result--
+[(2, 0, 0, 'SCAN u2')]
++--------------------+
+--Query--
+SELECT typeof(c0), c0 FROM v0 WHERE c0>='0'
+--Result--
+[('integer', 0)]
++--------------------+
+--Query--
+SELECT * FROM t0, v0 WHERE v0.c0 >= '0'
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT * FROM t0 LEFT JOIN v0 WHERE v0.c0 >= '0'
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT * FROM t0 LEFT JOIN v0 ON v0.c0 >= '0'
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT * FROM t0 LEFT JOIN v0 ON v0.c0 >= '0' WHERE TRUE    UNION SELECT 0,0 WHERE 0
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT (     SELECT 1 FROM t2 LEFT JOIN (SELECT x AS v FROM t3) ON 500=v WHERE (v OR FALSE)   ) FROM t1
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT (     SELECT 1 FROM t2 LEFT JOIN (SELECT x AS v FROM t3) ON 500=v WHERE (v)   ) FROM t1
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT (     SELECT 1 FROM t2 LEFT JOIN (SELECT x AS v FROM t3) ON 500=v WHERE (v OR FALSE)   ) FROM t1
+--Result--
+[(None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t3 ON y=z
+--Result--
+[(None, -2, -2, 3), (None, 1, None, None), ('0', 2, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON a=b LIMIT 10 OFFSET 98
+--Result--
+[]
++--------------------+

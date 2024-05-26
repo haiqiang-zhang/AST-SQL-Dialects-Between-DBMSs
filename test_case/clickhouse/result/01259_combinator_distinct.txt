@@ -1,0 +1,45 @@
+--Query--
+SELECT sum(DISTINCT number) FROM numbers_mt(100000)
+--Result--
+[(4999950000,)]
++--------------------+
+--Query--
+SELECT arraySort(groupArray(DISTINCT number % 13)) FROM numbers_mt(100000)
+--Result--
+[([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],)]
++--------------------+
+--Query--
+SELECT finalizeAggregation(countState(DISTINCT toString(number % 20))) FROM numbers_mt(100000)
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT round(corrStable(DISTINCT x, y), 5) FROM (SELECT number % 10 AS x, number % 5 AS y FROM numbers(1000))
+--Result--
+[(0.49237,)]
++--------------------+
+--Query--
+SELECT sum(DISTINCT y) FROM (SELECT number % 5 AS x, number % 15 AS y FROM numbers(1000)) GROUP BY x ORDER BY x
+--Result--
+[(15,), (18,), (21,), (24,), (27,)]
++--------------------+
+--Query--
+SELECT countIf(DISTINCT number % 10, number % 5 = 2) FROM numbers(10000)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT countIf(DISTINCT number % 10, number % 5 = 2) FROM numbers(10000)
+--Result--
+[('SELECT uniqExactIf(number % 10, (number % 5) = 2)',), ('FROM numbers(10000)',)]
++--------------------+
+--Query--
+SELECT sumIf(DISTINCT number % 10, number % 5 = 2) FROM numbers(10000)
+--Result--
+[(9,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sumIf(DISTINCT number % 10, number % 5 = 2) FROM numbers(10000)
+--Result--
+[('SELECT sumDistinctIf(number % 10, (number % 5) = 2)',), ('FROM numbers(10000)',)]
++--------------------+

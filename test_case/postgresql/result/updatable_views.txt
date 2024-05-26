@@ -939,11 +939,6 @@ EXPLAIN (COSTS OFF) UPDATE v2 SET a = 1
 [('Update on t1',), ('  InitPlan 1 (returns $0)',), ('    ->  Result',), ('  ->  Merge Join',), ('        Merge Cond: (t1.a = v1.a)',), ('        ->  Sort',), ('              Sort Key: t1.a',), ('              ->  Seq Scan on t1',), ('        ->  Sort',), ('              Sort Key: v1.a',), ('              ->  Subquery Scan on v1',), ('                    ->  Result',), ('                          One-Time Filter: $0',), ('                          ->  Seq Scan on t1 t1_1',)]
 +--------------------+
 --Query--
-select events & 4 != 0 AS upd,        events & 8 != 0 AS ins,        events & 16 != 0 AS del   from pg_catalog.pg_relation_is_updatable('uv_pt'::regclass, false) t(events)
---Result--
-[(True, True, True)]
-+--------------------+
---Query--
 select pg_catalog.pg_column_is_updatable('uv_pt'::regclass, 1::smallint, false)
 --Result--
 [(True,)]
@@ -997,11 +992,6 @@ explain (costs off) insert into uv_iocu_view (a, b) values ('xyxyxy', 3)    on c
 select * from uv_iocu_tab
 --Result--
 [('xyxyxy', 3.0)]
-+--------------------+
---Query--
-explain (costs off) insert into uv_iocu_view (aa,bb) values (1,'y')    on conflict (aa) do update set bb = 'Rejected: '||excluded.*    where excluded.aa > 0    and excluded.bb != ''    and excluded.cc is not null
---Result--
-[('Insert on uv_iocu_tab',), ('  Conflict Resolution: UPDATE',), ('  Conflict Arbiter Indexes: uv_iocu_tab_a_key',), ("  Conflict Filter: ((excluded.a > 0) AND (excluded.b <> ''::text) AND ((excluded.*)::text IS NOT NULL))",), ('  ->  Result',)]
 +--------------------+
 --Query--
 select * from uv_iocu_view

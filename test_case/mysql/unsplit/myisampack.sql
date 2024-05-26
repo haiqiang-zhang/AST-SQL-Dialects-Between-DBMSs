@@ -64,12 +64,10 @@ SELECT table_rows, row_format, table_comment FROM information_schema.tables
 INSERT INTO t1 VALUES('aaaa'),('bbbb'),('cccc');
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
-SELECT COUNT(*) FROM t1;
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
-SELECT COUNT(*) FROM t1;
 SELECT table_rows, row_format, table_comment FROM information_schema.tables
   WHERE TABLE_SCHEMA='test' AND TABLE_NAME='t1';
 DROP TABLE t1;

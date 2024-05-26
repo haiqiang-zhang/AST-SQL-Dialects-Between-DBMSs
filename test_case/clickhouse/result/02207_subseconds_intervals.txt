@@ -1,0 +1,95 @@
+--Query--
+SELECT 'test intervals'
+--Result--
+[('test intervals',)]
++--------------------+
+--Query--
+SELECT '- test nanoseconds'
+--Result--
+[('- test nanoseconds',)]
++--------------------+
+--Query--
+select toStartOfInterval(toDateTime64('1980-12-12 12:12:12.123456789', 9), INTERVAL 1 NANOSECOND)
+--Result--
+[(datetime.datetime(1980, 12, 12, 12, 12, 12, 123457),)]
++--------------------+
+--Query--
+SELECT '- test microseconds'
+--Result--
+[('- test microseconds',)]
++--------------------+
+--Query--
+SELECT '- test milliseconds'
+--Result--
+[('- test milliseconds',)]
++--------------------+
+--Query--
+SELECT 'test add[...]seconds()'
+--Result--
+[('test add[...]seconds()',)]
++--------------------+
+--Query--
+SELECT '- test nanoseconds'
+--Result--
+[('- test nanoseconds',)]
++--------------------+
+--Query--
+select addNanoseconds(toDateTime64('1980-12-12 12:12:12.123456789', 9), 1)
+--Result--
+[(datetime.datetime(1980, 12, 12, 12, 12, 12, 123457),)]
++--------------------+
+--Query--
+SELECT '- test microseconds'
+--Result--
+[('- test microseconds',)]
++--------------------+
+--Query--
+select addMicroseconds(toDateTime64('1980-12-12 12:12:12.123456', 6), 1)
+--Result--
+[(datetime.datetime(1980, 12, 12, 12, 12, 12, 123457),)]
++--------------------+
+--Query--
+SELECT '- test milliseconds'
+--Result--
+[('- test milliseconds',)]
++--------------------+
+--Query--
+select addMilliseconds(toDateTime64('1980-12-12 12:12:12.123', 3), 1)
+--Result--
+[(datetime.datetime(1980, 12, 12, 12, 12, 12, 124000),)]
++--------------------+
+--Query--
+select 'test subtract[...]seconds()'
+--Result--
+[('test subtract[...]seconds()',)]
++--------------------+
+--Query--
+select '- test nanoseconds'
+--Result--
+[('- test nanoseconds',)]
++--------------------+
+--Query--
+select subtractNanoseconds(toDateTime64('2023-01-01 00:00:00.0000000', 7, 'UTC'), 1)
+--Result--
+[(datetime.datetime(2023, 1, 1, 0, 0, tzinfo=<UTC>),)]
++--------------------+
+--Query--
+select '- test microseconds'
+--Result--
+[('- test microseconds',)]
++--------------------+
+--Query--
+select subtractMicroseconds(toDateTime64('2023-01-01 00:00:00.0000', 4, 'UTC'), 1)
+--Result--
+[(datetime.datetime(2022, 12, 31, 23, 59, 59, 999999, tzinfo=<UTC>),)]
++--------------------+
+--Query--
+select '- test milliseconds'
+--Result--
+[('- test milliseconds',)]
++--------------------+
+--Query--
+select subtractMilliseconds(toDateTime64('2023-01-01 00:00:00.0', 1, 'UTC'), 1)
+--Result--
+[(datetime.datetime(2022, 12, 31, 23, 59, 59, 999000, tzinfo=<UTC>),)]
++--------------------+

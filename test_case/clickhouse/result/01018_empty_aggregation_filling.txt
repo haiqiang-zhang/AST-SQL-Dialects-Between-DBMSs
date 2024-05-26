@@ -1,0 +1,85 @@
+--Query--
+SELECT '--- Int Empty ---'
+--Result--
+[('--- Int Empty ---',)]
++--------------------+
+--Query--
+SELECT arrayReduce('avgOrDefault', arrayPopBack([1]))
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT avgOrDefaultIf(x, x > 1) FROM (SELECT 1 AS x)
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT avgOrNullIf(x, x > 1) FROM (SELECT 1 AS x)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT stddevSampOrDefaultIf(x, x > 1) FROM (SELECT 1 AS x)
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT stddevSampOrNullIf(x, x > 1) FROM (SELECT 1 AS x)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT maxOrDefaultIf(x, x > 1) FROM (SELECT 1 AS x)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT maxOrNullIf(x, x > 1) FROM (SELECT 1 AS x)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT avgOrDefaultIfMerge(state) FROM (SELECT avgOrDefaultIfState(x, x > 1) AS state FROM (SELECT 1 AS x))
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT avgOrNullIfMerge(state) FROM (SELECT avgOrNullIfState(x, x > 1) AS state FROM (SELECT 1 AS x))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT stddevSampOrDefaultIfMerge(state) FROM (SELECT stddevSampOrDefaultIfState(x, x > 1) AS state FROM (SELECT 1 AS x))
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT stddevSampOrNullIfMerge(state) FROM (SELECT stddevSampOrNullIfState(x, x > 1) AS state FROM (SELECT 1 AS x))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT maxOrDefaultIfMerge(state) FROM (SELECT maxOrDefaultIfState(x, x > 1) AS state FROM (SELECT 1 AS x))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT maxOrNullIfMerge(state) FROM (SELECT maxOrNullIfState(x, x > 1) AS state FROM (SELECT 1 AS x))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT '--- Int Non-empty ---'
+--Result--
+[('--- Int Non-empty ---',)]
++--------------------+
+--Query--
+SELECT '--- Other Types Empty ---'
+--Result--
+[('--- Other Types Empty ---',)]
++--------------------+
+--Query--
+SELECT '--- Other Types Non-empty ---'
+--Result--
+[('--- Other Types Non-empty ---',)]
++--------------------+

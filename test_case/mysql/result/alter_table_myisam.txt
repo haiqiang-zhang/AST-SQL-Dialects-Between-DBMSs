@@ -1,0 +1,115 @@
+--Query--
+select * from t1
+--Result--
+[(6, 1, None), (3, 4, None), (1, 6, None), (2, 6, None), (4, 9, None), (5, 10, None), (7, 12, None), (8, 12, None)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 6, None), (2, 6, None), (3, 4, None), (4, 9, None), (5, 10, None), (6, 1, None), (7, 12, None), (8, 12, None)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[('localhost', ''), ('localhost', 'root')]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (2,), (50,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (2,), (50,), (51,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, datetime.datetime(2000, 1, 1, 0, 0), datetime.date(2000, 1, 1), datetime.datetime(2002, 2, 2, 0, 0), datetime.date(2002, 2, 2))]
++--------------------+
+--Query--
+select (@unpaked_keys_size > @paked_keys_size)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select (@orig_max_data_length > @changed_max_data_length)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(2, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(2, 0)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock" AND         info = "ALTER TABLE t1 DISABLE KEYS"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 'abcd', 1.234)]
++--------------------+

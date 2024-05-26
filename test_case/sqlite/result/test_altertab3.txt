@@ -1,0 +1,105 @@
+--Query--
+SELECT sql FROM sqlite_master WHERE name='tr1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'r1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'v1'
+--Result--
+[('CREATE VIEW v1 AS SELECT * FROM t1 WHERE a=1 OR (b IN ())',)]
++--------------------+
+--Query--
+SELECT type, name, tbl_name, sql    FROM sqlite_master WHERE type='table' AND name!='t1'
+--Result--
+[('table', 't1x', 't1x', 'CREATE TABLE "t1x"(aaa, b)'), ('table', 't2', 't2', 'CREATE TABLE t2(a,b,c)'), ('table', 't4', 't4', 'CREATE TABLE "t4"(e, f)')]
++--------------------+
+--Query--
+SELECT type, name, tbl_name, sql    FROM sqlite_master WHERE type='table' AND name!='t1'
+--Result--
+[('table', 't1x', 't1x', 'CREATE TABLE "t1x"(aaa, b)'), ('table', 't2', 't2', 'CREATE TABLE t2(a,b,c)'), ('table', 't4', 't4', 'CREATE TABLE "t4"(e, f)')]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1x"(aaa, b)',), ('CREATE TABLE t2(a,b,c)',), ('CREATE TABLE t1(a, bbb, c, d)',), ('CREATE VIEW v1 AS SELECT * FROM t1 WHERE a=1 OR (b IN ())',), ('CREATE TABLE "t4"(e, f)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master
+--Result--
+[('CREATE TABLE "t1x"(aaa, b)',), ('CREATE TABLE t2(a,b,c)',), ('CREATE TABLE t1(a, bbb, c, d)',), ('CREATE VIEW v1 AS SELECT * FROM t1 WHERE a=1 OR (b IN ())',), ('CREATE TABLE "t4"(e, f)',), ('CREATE TABLE t0(c0)',), ("CREATE INDEX i0 ON t0('1' IN ())",)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE tbl_name = 't2'
+--Result--
+[('CREATE TABLE t2(a,b,c)',), ('CREATE INDEX i2 ON t2((LIKELIHOOD(c0, 100) IN ()))',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name='v1'
+--Result--
+[('CREATE VIEW v1 AS SELECT * FROM t1 WHERE a=1 OR (b IN ())',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE name = 'b'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, sum(d) w2,max(d)OVER FROM t1 WINDOW w1 AS (PARTITION BY d ROWS BETWEEN '' PRECEDING AND false FOLLOWING), d AS (PARTITION BY b ORDER BY d ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+--Result--
+[(None, None, None)]
++--------------------+
+--Query--
+WITH t4 AS (SELECT * FROM t1) SELECT 33
+--Result--
+[(33,)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type='trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master WHERE type='trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE name='tr2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE name = 't1'
+--Result--
+[('CREATE TABLE t1(a, bbb, c, d)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE type='trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE type='trigger'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_schema WHERE type='view'
+--Result--
+[('CREATE VIEW v1 AS SELECT * FROM t1 WHERE a=1 OR (b IN ())',), ('CREATE VIEW q AS SELECT 99 WINDOW x AS (RANGE BETWEEN UNBOUNDED PRECEDING\n    AND count(*)OVER(PARTITION BY (WITH a AS(VALUES(2),(x3))VALUES(0)))\n    FOLLOWING)ORDER BY x2,sum(1)OVER(PARTITION BY avg(5)OVER(PARTITION BY x1))',), ('CREATE VIEW v AS SELECT ( \n    WITH x(a) AS(SELECT * FROM s) VALUES(RIGHT) \n  ) IN()',), ('CREATE VIEW v2(b) AS WITH t3 AS (SELECT b FROM v2) VALUES(1)',)]
++--------------------+

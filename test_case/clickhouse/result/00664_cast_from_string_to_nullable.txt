@@ -1,0 +1,25 @@
+--Query--
+SELECT CAST(arrayJoin(['', 'abc', '123', '123a', '-123']) AS Nullable(UInt8))
+--Result--
+[(None,), (None,), (123,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT toDateOrZero(arrayJoin(['', '2018', '2018-01-02', '2018-1-2', '2018-01-2', '2018-1-02', '2018-ab-cd', '2018-01-02a']))
+--Result--
+[(datetime.date(1970, 1, 1),), (datetime.date(1970, 1, 1),), (datetime.date(2018, 1, 2),), (datetime.date(2018, 1, 2),), (datetime.date(2018, 1, 2),), (datetime.date(2018, 1, 2),), (datetime.date(1970, 1, 1),), (datetime.date(1970, 1, 1),)]
++--------------------+
+--Query--
+SELECT toDateOrNull(arrayJoin(['', '2018', '2018-01-02', '2018-1-2', '2018-01-2', '2018-1-02', '2018-ab-cd', '2018-01-02a']))
+--Result--
+[(None,), (None,), (datetime.date(2018, 1, 2),), (datetime.date(2018, 1, 2),), (datetime.date(2018, 1, 2),), (datetime.date(2018, 1, 2),), (None,), (None,)]
++--------------------+
+--Query--
+SELECT toDateTimeOrZero(arrayJoin(['', '2018', '2018-01-02 01:02:03', '2018-01-02T01:02:03', '2018-01-02 01:02:03 abc']), 'UTC')
+--Result--
+[(datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>),), (datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>),), (datetime.datetime(2018, 1, 2, 1, 2, 3, tzinfo=<UTC>),), (datetime.datetime(2018, 1, 2, 1, 2, 3, tzinfo=<UTC>),), (datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>),)]
++--------------------+
+--Query--
+SELECT toDateTimeOrNull(arrayJoin(['', '2018', '2018-01-02 01:02:03', '2018-01-02T01:02:03', '2018-01-02 01:02:03 abc']))
+--Result--
+[(None,), (None,), (datetime.datetime(2018, 1, 2, 1, 2, 3),), (datetime.datetime(2018, 1, 2, 1, 2, 3),), (None,)]
++--------------------+

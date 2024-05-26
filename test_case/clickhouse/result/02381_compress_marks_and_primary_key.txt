@@ -1,0 +1,65 @@
+--Query--
+select * from test_02381_compress where a = 1000 limit 1
+--Result--
+[(1000, 10000)]
++--------------------+
+--Query--
+optimize table test_02381_compress final
+--Result--
+[]
++--------------------+
+--Query--
+select * from test_02381_compress where a = 1000 limit 1
+--Result--
+[(1000, 10000)]
++--------------------+
+--Query--
+select table, sum(rows), sum(bytes_on_disk) sum_bytes, sum(marks_bytes) sum_marks_bytes, (sum_bytes - sum_marks_bytes) exclude_marks from system.parts_columns where active and database = currentDatabase() and table like 'test_02381%' group by table order by table
+--Result--
+[('test_02381', 2000000, 16112790, 11904, 16100886), ('test_02381_compress', 2000000, 16099626, 1658, 16097968)]
++--------------------+
+--Query--
+select * from test_02381_compress where a = 10000 limit 1
+--Result--
+[(10000, 100000)]
++--------------------+
+--Query--
+optimize table test_02381_compress final
+--Result--
+[]
++--------------------+
+--Query--
+select * from test_02381_compress where a = 10000 limit 1
+--Result--
+[(10000, 100000)]
++--------------------+
+--Query--
+select * from test_02381 where a = 10000 limit 1
+--Result--
+[(10000, 100000)]
++--------------------+
+--Query--
+optimize table test_02381 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from test_02381 where a = 10000 limit 1
+--Result--
+[(10000, 100000)]
++--------------------+
+--Query--
+select * from test_02381_compact order by a
+--Result--
+[(1, 'Hello'), (2, 'World')]
++--------------------+
+--Query--
+optimize table test_02381_compact final
+--Result--
+[]
++--------------------+
+--Query--
+select * from test_02381_compact order by a
+--Result--
+[(1, 'Hello'), (2, 'World')]
++--------------------+

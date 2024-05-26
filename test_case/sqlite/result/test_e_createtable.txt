@@ -1,0 +1,395 @@
+--Query--
+ATTACH 'test.db2' AS auxa
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db3' AS auxb
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[('A', 'B'), ('C', 'D'), ('E', 'F')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master
+--Result--
+[('t2',)]
++--------------------+
+--Query--
+SELECT name FROM auxa.sqlite_master
+--Result--
+[('x1',), ('log',), ('ppp',), ('c1',), ('c2',), ('t4',), ('x3',)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM auxa.sqlite_master
+--Result--
+[('x1',), ('log',), ('ppp',), ('c1',), ('c2',), ('x3',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master ORDER BY rowid DESC LIMIT 1
+--Result--
+[('CREATE TABLE x1(m,n)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master ORDER BY rowid DESC LIMIT 1
+--Result--
+[('CREATE TABLE x2(x INT)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master ORDER BY rowid DESC LIMIT 1
+--Result--
+[('CREATE TABLE x3(o)',)]
++--------------------+
+--Query--
+SELECT sql FROM sqlite_master ORDER BY rowid DESC LIMIT 1
+--Result--
+[('CREATE TABLE x4(p,q REAL,r NUM)',)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM x2
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM x3
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM x4
+--Result--
+[(None, None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('i', 'one'), ('ii', 'two'), ('iii', 'three')]
++--------------------+
+--Query--
+SELECT * FROM x1 ORDER BY rowid
+--Result--
+[('i', 'one'), ('ii', 'two'), ('iii', 'three')]
++--------------------+
+--Query--
+SELECT min(rowid), count(rowid)==max(rowid) FROM x1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY x DESC
+--Result--
+[('iii', 'three'), ('ii', 'two'), ('i', 'one')]
++--------------------+
+--Query--
+SELECT * FROM x2 ORDER BY rowid
+--Result--
+[('iii', 'three'), ('ii', 'two'), ('i', 'one')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY x ASC
+--Result--
+[('i', 'one'), ('ii', 'two'), ('iii', 'three')]
++--------------------+
+--Query--
+SELECT * FROM x3 ORDER BY rowid
+--Result--
+[('i', 'one'), ('ii', 'two'), ('iii', 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('14', 'quite a lengthy string', b'UVU')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('not a datetime', 13, '12:41:59')]
++--------------------+
+--Query--
+SELECT quote(x), quote(y), quote(z) FROM t1 ORDER BY rowid DESC LIMIT 1
+--Result--
+[("'15'", '22', '14.0')]
++--------------------+
+--Query--
+SELECT a, b, c FROM t7 ORDER BY rowid DESC LIMIT 1
+--Result--
+[('y', '2024-05-26', 'x')]
++--------------------+
+--Query--
+SELECT a FROM t8 ORDER BY a, rowid
+--Result--
+[('abc',), ('ABC',), ('abc  ',), ('ABC  ',)]
++--------------------+
+--Query--
+SELECT b FROM t8 ORDER BY b, rowid
+--Result--
+[('ABC  ',), ('ABC',), ('abc',), ('abc  ',)]
++--------------------+
+--Query--
+SELECT c FROM t8 ORDER BY c, rowid
+--Result--
+[('ABC',), ('ABC  ',), ('abc',), ('abc  ',)]
++--------------------+
+--Query--
+SELECT d FROM t8 ORDER BY d, rowid
+--Result--
+[('ABC',), ('ABC  ',), ('abc',), ('abc  ',)]
++--------------------+
+--Query--
+SELECT count(*) FROM t1 WHERE x IS NULL
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT u FROM t3
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b = 5
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX sqlite_autoindex_t1_1 (b=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t2 ORDER BY b, c
+--Result--
+[(4, 0, 0, 'SCAN t2 USING INDEX sqlite_autoindex_t2_1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE b=10 AND c>10
+--Result--
+[(3, 0, 0, 'SEARCH t2 USING INDEX sqlite_autoindex_t2_1 (b=? AND c>?)')]
++--------------------+
+--Query--
+SELECT * FROM t1_ab
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1_ro
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1_fa
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t1_ig
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three'), (4, 'string'), (6, 'string')]
++--------------------+
+--Query--
+SELECT * FROM t1_re
+--Result--
+[(1, 'one'), (2, 'two'), (4, 'string'), (3, 'string'), (6, 'string')]
++--------------------+
+--Query--
+SELECT * FROM t1_xx
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t2_ab
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t2_ro
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t2_fa
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t2_ig
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three'), (4, 'xx'), (6, 'xx')]
++--------------------+
+--Query--
+SELECT * FROM t2_re
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t2_xx
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t3_ab ORDER BY rowid
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t3_ro ORDER BY rowid
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t3_fa ORDER BY rowid
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t3_ig ORDER BY rowid
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three'), (4, 'three'), (6, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t3_re ORDER BY rowid
+--Result--
+[(1, 'one'), (2, 'two'), (4, 'three'), (3, 'three'), (6, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t3_xx ORDER BY rowid
+--Result--
+[(1, 'one'), (2, 'two'), (3, 'three')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t5
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT oid FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT _rowid_ FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT ROWID FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT OID FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT _ROWID_ FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT RoWiD FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT OiD FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT _RoWiD_ FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT oid, rowid, _rowid_ FROM t2
+--Result--
+[('one', 1, 1), ('three', 2, 2)]
++--------------------+
+--Query--
+SELECT oid, rowid, _rowid_ FROM t3
+--Result--
+[(1, 1, 'six'), (2, 2, 'eight')]
++--------------------+
+--Query--
+SELECT oid, rowid, _rowid_ FROM t4
+--Result--
+[(1, 'eleven', 1), (2, 'fourteen', 2)]
++--------------------+
+--Query--
+SELECT typeof(pk), pk FROM t6
+--Result--
+[('integer', 2)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(5, 5, 5)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(6, 6, 6)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(7, 7, 7)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(15, 15, 15)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(16, 16, 16)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(17, 17, 17)]
++--------------------+
+--Query--
+SELECT rowid, _rowid_, oid FROM t10
+--Result--
+[(3, 3, 3)]
++--------------------+

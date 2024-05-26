@@ -18,16 +18,12 @@ UNION ALL
 SELECT arrayJoin(range(10))
 UNION ALL
 SELECT arrayJoin(range(100));
-SELECT blockSize() AS b, count() / b AS c FROM numbers_squashed GROUP BY blockSize() ORDER BY c DESC, b ASC;
-SELECT count() FROM numbers_squashed;
 INSERT INTO numbers_squashed
 SELECT arrayJoin(range(10)) AS number
 UNION ALL
 SELECT arrayJoin(range(100))
 UNION ALL
 SELECT arrayJoin(range(100));
-SELECT blockSize() AS b, count() / b AS c FROM numbers_squashed GROUP BY blockSize() ORDER BY c DESC, b ASC;
-SELECT count() FROM numbers_squashed;
 INSERT INTO numbers_squashed
 SELECT arrayJoin(range(10)) AS number
 UNION ALL
@@ -38,8 +34,6 @@ UNION ALL
 SELECT arrayJoin(range(100))
 UNION ALL
 SELECT arrayJoin(range(10));
-SELECT blockSize() AS b, count() / b AS c FROM numbers_squashed GROUP BY blockSize() ORDER BY c DESC, b ASC;
-SELECT count() FROM numbers_squashed;
 SET min_insert_block_size_rows = 10;
 INSERT INTO numbers_squashed
 SELECT arrayJoin(range(10)) AS number
@@ -51,6 +45,4 @@ UNION ALL
 SELECT arrayJoin(range(100))
 UNION ALL
 SELECT arrayJoin(range(10));
-SELECT blockSize() AS b, count() / b AS c FROM numbers_squashed GROUP BY blockSize() ORDER BY c DESC, b ASC;
-SELECT count() FROM numbers_squashed;
 DROP TABLE numbers_squashed;

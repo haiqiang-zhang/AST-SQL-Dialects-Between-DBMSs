@@ -1,0 +1,405 @@
+--Query--
+SELECT IS_USED_LOCK('test') IS NULL AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') IS NULL AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 0 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT GET_LOCK('test', 0) = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test') = CONNECTION_ID() AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test') = @aux AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT GET_LOCK('test', 0) = 0 expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT GET_LOCK('test1',0)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test1') = CONNECTION_ID()    AND IS_USED_LOCK('test2') = CONNECTION_ID() AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test1') = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test1') = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test2') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test2') = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test1') AND IS_FREE_LOCK('test2') AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test1') = CONNECTION_ID()    AND IS_USED_LOCK('test2') = CONNECTION_ID() AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test1') = CONNECTION_ID()    AND IS_USED_LOCK('test2') = CONNECTION_ID() AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test1') = CONNECTION_ID()    AND IS_USED_LOCK('test2') = CONNECTION_ID() AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test') <> CONNECTION_ID() AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('test') = CONNECTION_ID() AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test1') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test1') = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test2') + RELEASE_LOCK('test1') = 2 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (RELEASE_LOCK('test1') = 1) AND (RELEASE_LOCK('test3') IS NULL)    AND (RELEASE_LOCK('test2') = 1) AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 2 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT id FROM t1 ORDER BY id
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 AS expect_1 FROM t1 WHERE id = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK(1) = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK(2) = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK(2) = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK(3) = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 0 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @aux
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 0 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT GET_LOCK('test', 0), RELEASE_LOCK('test')
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK('test') = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('test') = 1 AS expect_1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT GET_LOCK('test', 0), GET_LOCK('test1', 0), RELEASE_ALL_LOCKS(),        GET_LOCK('test', 0)
+--Result--
+[(1, 1, 2, 1)]
++--------------------+
+--Query--
+SELECT RELEASE_ALL_LOCKS() = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT GET_LOCK(REPEAT('a', 64), 0) = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK(REPEAT('a', 64)) = CONNECTION_ID() AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_FREE_LOCK(REPEAT('a', 64)) = 0 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK(REPEAT('a', 64)) = 1 AS expect_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('a') = CONNECTION_ID()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK(_koi8r 0xd4c5d3d4) = CONNECTION_ID()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT GET_LOCK("test", NULL) = 0 AS expect_1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('bug16501') = connection_id FROM t1 WHERE conn = 'default'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('bug16501') = CONNECTION_ID()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('bug16501') = connection_id FROM t1 WHERE conn = 'con1'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT IS_USED_LOCK('bug16501') = CONNECTION_ID()
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from(SELECT MIN(GET_LOCK(0,0) / 1 ^ 0)) as a
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+select * from(SELECT MAX(RELEASE_LOCK(0) / 1 ^ 0)) as a
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+select * from(SELECT MAX(RELEASE_ALL_LOCKS() / 1 ^ 0)) as a
+--Result--
+[(1.0,)]
++--------------------+

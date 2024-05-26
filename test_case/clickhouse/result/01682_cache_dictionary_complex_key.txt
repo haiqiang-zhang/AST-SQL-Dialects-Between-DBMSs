@@ -1,0 +1,125 @@
+--Query--
+SELECT 'Dictionary cache_dictionary_complex_key_simple_attributes'
+--Result--
+[('Dictionary cache_dictionary_complex_key_simple_attributes',)]
++--------------------+
+--Query--
+SELECT 'dictGet existing value'
+--Result--
+[('dictGet existing value',)]
++--------------------+
+--Query--
+SELECT dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_first', (number, concat('id_key_', toString(number)))) as value_first,     dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_second', (number, concat('id_key_', toString(number)))) as value_second FROM system.numbers LIMIT 3
+--Result--
+[('value_0', 'value_second_0'), ('value_1', 'value_second_1'), ('value_2', 'value_second_2')]
++--------------------+
+--Query--
+SELECT 'dictGet with non existing value'
+--Result--
+[('dictGet with non existing value',)]
++--------------------+
+--Query--
+SELECT dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_first', (number, concat('id_key_', toString(number)))) as value_first,     dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_second', (number, concat('id_key_', toString(number)))) as value_second FROM system.numbers LIMIT 4
+--Result--
+[('value_0', 'value_second_0'), ('value_1', 'value_second_1'), ('value_2', 'value_second_2'), ('value_first_default', 'value_second_default')]
++--------------------+
+--Query--
+SELECT 'dictGetOrDefault existing value'
+--Result--
+[('dictGetOrDefault existing value',)]
++--------------------+
+--Query--
+SELECT dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_first', (number, concat('id_key_', toString(number))), toString('default')) as value_first,     dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_second', (number, concat('id_key_', toString(number))), toString('default')) as value_second FROM system.numbers LIMIT 3
+--Result--
+[('value_0', 'value_second_0'), ('value_1', 'value_second_1'), ('value_2', 'value_second_2')]
++--------------------+
+--Query--
+SELECT 'dictGetOrDefault non existing value'
+--Result--
+[('dictGetOrDefault non existing value',)]
++--------------------+
+--Query--
+SELECT dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_first', (number, concat('id_key_', toString(number))), toString('default')) as value_first,     dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', 'value_second', (number, concat('id_key_', toString(number))), toString('default')) as value_second FROM system.numbers LIMIT 4
+--Result--
+[('value_0', 'value_second_0'), ('value_1', 'value_second_1'), ('value_2', 'value_second_2'), ('default', 'default')]
++--------------------+
+--Query--
+SELECT 'dictHas'
+--Result--
+[('dictHas',)]
++--------------------+
+--Query--
+SELECT dictHas('01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes', (number, concat('id_key_', toString(number)))) FROM system.numbers LIMIT 4
+--Result--
+[(1,), (1,), (1,), (0,)]
++--------------------+
+--Query--
+SELECT 'select all values as input stream'
+--Result--
+[('select all values as input stream',)]
++--------------------+
+--Query--
+SELECT * FROM 01682_database_for_cache_dictionary.cache_dictionary_complex_key_simple_attributes ORDER BY id
+--Result--
+[(0, 'id_key_0', 'value_0', 'value_second_0'), (1, 'id_key_1', 'value_1', 'value_second_1'), (2, 'id_key_2', 'value_2', 'value_second_2')]
++--------------------+
+--Query--
+SELECT 'Dictionary cache_dictionary_complex_key_complex_attributes'
+--Result--
+[('Dictionary cache_dictionary_complex_key_complex_attributes',)]
++--------------------+
+--Query--
+SELECT 'dictGet existing value'
+--Result--
+[('dictGet existing value',)]
++--------------------+
+--Query--
+SELECT dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_first', (number, concat('id_key_', toString(number)))) as value_first,     dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_second', (number, concat('id_key_', toString(number)))) as value_second FROM system.numbers LIMIT 3
+--Result--
+[('value_0', 'value_second_0'), ('value_1', None), ('value_2', 'value_second_2')]
++--------------------+
+--Query--
+SELECT 'dictGet with non existing value'
+--Result--
+[('dictGet with non existing value',)]
++--------------------+
+--Query--
+SELECT dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_first', (number, concat('id_key_', toString(number)))) as value_first,     dictGet('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_second', (number, concat('id_key_', toString(number)))) as value_second FROM system.numbers LIMIT 4
+--Result--
+[('value_0', 'value_second_0'), ('value_1', None), ('value_2', 'value_second_2'), ('value_first_default', 'value_second_default')]
++--------------------+
+--Query--
+SELECT 'dictGetOrDefault existing value'
+--Result--
+[('dictGetOrDefault existing value',)]
++--------------------+
+--Query--
+SELECT dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_first', (number, concat('id_key_', toString(number))), toString('default')) as value_first,     dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_second', (number, concat('id_key_', toString(number))), toString('default')) as value_second FROM system.numbers LIMIT 3
+--Result--
+[('value_0', 'value_second_0'), ('value_1', None), ('value_2', 'value_second_2')]
++--------------------+
+--Query--
+SELECT 'dictGetOrDefault non existing value'
+--Result--
+[('dictGetOrDefault non existing value',)]
++--------------------+
+--Query--
+SELECT dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_first', (number, concat('id_key_', toString(number))), toString('default')) as value_first,     dictGetOrDefault('01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes', 'value_second', (number, concat('id_key_', toString(number))), toString('default')) as value_second FROM system.numbers LIMIT 4
+--Result--
+[('value_0', 'value_second_0'), ('value_1', None), ('value_2', 'value_second_2'), ('default', 'default')]
++--------------------+
+--Query--
+SELECT 'dictHas'
+--Result--
+[('dictHas',)]
++--------------------+
+--Query--
+SELECT 'select all values as input stream'
+--Result--
+[('select all values as input stream',)]
++--------------------+
+--Query--
+SELECT * FROM 01682_database_for_cache_dictionary.cache_dictionary_complex_key_complex_attributes ORDER BY id
+--Result--
+[(0, 'id_key_0', 'value_0', 'value_second_0'), (1, 'id_key_1', 'value_1', None), (2, 'id_key_2', 'value_2', 'value_second_2')]
++--------------------+

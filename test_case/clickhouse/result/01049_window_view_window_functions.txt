@@ -1,0 +1,35 @@
+--Query--
+SELECT tumble(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL 1 SECOND, 'US/Samoa')
+--Result--
+[((datetime.datetime(2020, 1, 9, 12, 0, 1, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>), datetime.datetime(2020, 1, 9, 12, 0, 2, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>)),)]
++--------------------+
+--Query--
+SELECT tumbleStart(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' DAY, 'US/Samoa')
+--Result--
+[(datetime.datetime(2020, 1, 9, 0, 0, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT toDateTime(tumbleStart(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' DAY, 'US/Samoa'), 'US/Samoa')
+--Result--
+[(datetime.datetime(2020, 1, 9, 0, 0, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT tumbleEnd(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' DAY, 'US/Samoa')
+--Result--
+[(datetime.datetime(2020, 1, 10, 0, 0, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT hop(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL 1 SECOND, INTERVAL 3 SECOND, 'US/Samoa')
+--Result--
+[((datetime.datetime(2020, 1, 9, 11, 59, 59, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>), datetime.datetime(2020, 1, 9, 12, 0, 2, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>)),)]
++--------------------+
+--Query--
+SELECT hopStart(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' DAY, INTERVAL '3' DAY, 'US/Samoa')
+--Result--
+[(datetime.datetime(2020, 1, 7, 0, 0, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT hopEnd(toDateTime('2020-01-09 12:00:01', 'US/Samoa'), INTERVAL '1' DAY, INTERVAL '3' DAY, 'US/Samoa')
+--Result--
+[(datetime.datetime(2020, 1, 10, 0, 0, tzinfo=<DstTzInfo 'US/Samoa' SST-1 day, 13:00:00 STD>),)]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+SELECT sumIf(1, number % 2 > 2) FROM numbers(100)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT sumIf(1 as one_expr, number % 2 > 2 as cond_expr), sum(cond_expr), one_expr FROM numbers(100)
+--Result--
+[(0, 0, 1)]
++--------------------+
+--Query--
+SELECT countIf(number % 2 > 2) FROM numbers(100)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT sum(if(number % 2 == 0, 1, 0)) FROM numbers(100)
+--Result--
+[(50,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sumIf(123, number % 2 == 0) FROM numbers(100)
+--Result--
+[('SELECT sumIf(123, (number % 2) = 0)',), ('FROM numbers(100)',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sum(if(number % 2 == 0, 123, 0)) FROM numbers(100)
+--Result--
+[('SELECT sum(if((number % 2) = 0, 123, 0))',), ('FROM numbers(100)',)]
++--------------------+

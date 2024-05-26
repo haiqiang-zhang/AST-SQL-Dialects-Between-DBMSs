@@ -1,0 +1,15 @@
+--Query--
+desc file('02841.parquet')
+--Result--
+[('number', 'Nullable(UInt64)', '', '', '', '', ''), ('u8', 'Nullable(UInt8)', '', '', '', '', ''), ('u16', 'Nullable(UInt16)', '', '', '', '', ''), ('u32', 'Nullable(UInt32)', '', '', '', '', ''), ('u64', 'Nullable(UInt64)', '', '', '', '', ''), ('i8', 'Nullable(Int8)', '', '', '', '', ''), ('i16', 'Nullable(Int16)', '', '', '', '', ''), ('i32', 'Nullable(Int32)', '', '', '', '', ''), ('i64', 'Nullable(Int64)', '', '', '', '', ''), ('date32', 'Nullable(Date32)', '', '', '', '', ''), ('dt64_ms', "Nullable(DateTime64(3, 'UTC'))", '', '', '', '', ''), ('dt64_us', "Nullable(DateTime64(6, 'UTC'))", '', '', '', '', ''), ('dt64_ns', "Nullable(DateTime64(9, 'UTC'))", '', '', '', '', ''), ('dt64_s', "Nullable(DateTime64(3, 'UTC'))", '', '', '', '', ''), ('dt64_cs', "Nullable(DateTime64(3, 'UTC'))", '', '', '', '', ''), ('f32', 'Nullable(Float32)', '', '', '', '', ''), ('f64', 'Nullable(Float64)', '', '', '', '', ''), ('s', 'Nullable(String)', '', '', '', '', ''), ('fs', 'Nullable(FixedString(9))', '', '', '', '', ''), ('d32', 'Nullable(Decimal(9, 3))', '', '', '', '', ''), ('d64', 'Nullable(Decimal(18, 10))', '', '', '', '', ''), ('d128', 'Nullable(Decimal(38, 20))', '', '', '', '', ''), ('d256', 'Nullable(Decimal(76, 40))', '', '', '', '', '')]
++--------------------+
+--Query--
+select count(), sum(number) from file('02841.parquet') where indexHint(u8 in (10, 15, 250))
+--Result--
+[(10000, 49995000)]
++--------------------+
+--Query--
+select count() from file('02841.parquet') where indexHint(s > '')
+--Result--
+[(10000,)]
++--------------------+

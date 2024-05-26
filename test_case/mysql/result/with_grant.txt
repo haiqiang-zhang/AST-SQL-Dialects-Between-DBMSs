@@ -1,0 +1,25 @@
+--Query--
+select pub from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select priv from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select * from (select pub from t1) as dt
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select /*+ merge(dt) */ * from (select priv from t1) as dt
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select /*+ no_merge(dt) */ * from (select priv from t1) as dt
+--Result--
+[(2,)]
++--------------------+

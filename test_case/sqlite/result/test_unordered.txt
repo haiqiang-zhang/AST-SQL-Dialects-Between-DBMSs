@@ -1,0 +1,40 @@
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 ORDER BY a
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX i1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a > 100
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i1 (a>?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT max(a) FROM t1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT group_concat(b) FROM t1 GROUP BY a
+--Result--
+[(7, 0, 0, 'SCAN t1 USING INDEX i1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT count(*) FROM t1
+--Result--
+[(4, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 ORDER BY a
+--Result--
+[(4, 0, 0, 'SCAN t1 USING INDEX i1')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a > 100
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX i1 (a>?)')]
++--------------------+

@@ -1,0 +1,115 @@
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid, * from t2
+--Result--
+[(1, 11, 2, 3), (2, 22, 3, 4)]
++--------------------+
+--Query--
+ATTACH DATABASE 'test.db' AS t2
+--Result--
+[]
++--------------------+
+--Query--
+DETACH t2
+--Result--
+[]
++--------------------+
+--Query--
+REINDEX t2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'testerr.db' AS t2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'testerr.db' AS t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 0.25)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 0.25)]
++--------------------+
+--Query--
+SELECT integrity_check AS x FROM pragma_integrity_check ORDER BY 1
+--Result--
+[('NULL value in t1.b',), ('NULL value in t1x.a',), ('NULL value in t1x.a',), ('non-unique entry in index t1a',), ('non-unique entry in index t1a',)]
++--------------------+
+--Query--
+DETACH aux
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test3.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+DETACH aux
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_temp_master
+--Result--
+[('table', 'saved_schema', 'saved_schema', 2, 'CREATE TABLE saved_schema(name TEXT,rootpage INT)')]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM aux.t1
+--Result--
+[]
++--------------------+
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM temp_store_directory_test
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 't2', 't2', 2, 'CREATE TABLE t2(a,b,c)'), ('table', 't1x', 't1x', 3, 'CREATE TABLE "t1x"(a NOT NULL,b)'), ('table', 't5', 't5', 5, "CREATE TABLE t5(\n      a TEXT DEFAULT CURRENT_TIMESTAMP, \n      b DEFAULT (5+3),\n      c TEXT,\n      d INTEGER DEFAULT NULL,\n      e TEXT DEFAULT '',\n      UNIQUE(b,c,d),\n      PRIMARY KEY(e,b,c)\n    )"), ('index', 'sqlite_autoindex_t5_1', 't5', 6, None), ('index', 'sqlite_autoindex_t5_2', 't5', 7, None), ('table', 't2_3', 't2_3', 8, 'CREATE TABLE t2_3(a,b INTEGER PRIMARY KEY,c)'), ('table', 't3', 't3', 9, 'CREATE TABLE t3(a int references t2(b), b UNIQUE)'), ('index', 'sqlite_autoindex_t3_1', 't3', 10, None), ('table', 'trial', 'trial', 11, 'CREATE TABLE trial(col_main)'), ('table', 'test_table', 'test_table', 12, "CREATE TABLE test_table(\n      one INT NOT NULL DEFAULT -1, \n      two text,\n      three VARCHAR(45, 65) DEFAULT 'abcde',\n      four REAL DEFAULT X'abcdef',\n      five DEFAULT CURRENT_TIME\n    )"), ('table', 't68', 't68', 13, 'CREATE TABLE t68(a,b,c,PRIMARY KEY(a,b,a,c))'), ('index', 'sqlite_autoindex_t68_1', 't68', 14, None), ('index', 'i2', 't2', 16, 'CREATE INDEX i2 ON t2(a)'), ('index', 't1a', 't1x', 17, 'CREATE UNIQUE INDEX t1a ON "t1x"(a)'), ('index', 't3i1', 't3', 18, 'CREATE INDEX t3i1 ON t3(a,b)'), ('table', 't1', 't1', 4, 'CREATE TABLE t1(a PRIMARY KEY)'), ('index', 'sqlite_autoindex_t1_1', 't1', 19, None), ('table', 't1_mirror', 't1_mirror', 20, 'CREATE TABLE t1_mirror(a)'), ('table', 't1_mirror2', 't1_mirror2', 21, 'CREATE TABLE t1_mirror2(a)'), ('table', 't4', 't4', 15, 'CREATE TABLE t4(a INTEGER PRIMARY KEY,b)'), ('table', 'abc', 'abc', 22, 'CREATE TABLE abc(a, b, c)'), ('table', 'def', 'def', 23, 'CREATE TABLE def(a, b, c)'), ('table', 'newtable', 'newtable', 24, 'CREATE TABLE newtable(a, b, c)')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+

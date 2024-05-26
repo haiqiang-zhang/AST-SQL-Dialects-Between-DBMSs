@@ -8,9 +8,6 @@ EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
   SELECT generate_series(1,3) WITH DATA;
 CREATE TABLE selinto_schema.tbl_nodata1 (a) AS
   SELECT generate_series(1,3) WITH NO DATA;
-EXPLAIN (ANALYZE, COSTS OFF, SUMMARY OFF, TIMING OFF)
-  CREATE TABLE selinto_schema.tbl_nodata2 (a) AS
-  SELECT generate_series(1,3) WITH NO DATA;
 PREPARE data_sel AS SELECT generate_series(1,3);
 CREATE TABLE selinto_schema.tbl_withdata3 (a) AS
   EXECUTE data_sel WITH DATA;

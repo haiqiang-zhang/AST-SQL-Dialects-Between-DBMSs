@@ -1,0 +1,25 @@
+--Query--
+SELECT countMerge(x + y) FROM (SELECT countState(a) as x, countState(b) as y from add_aggregate)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT sumMerge(x + y), sumMerge(x), sumMerge(y) FROM (SELECT sumState(a) as x, sumState(b) as y from add_aggregate)
+--Result--
+[(7, 4, 3)]
++--------------------+
+--Query--
+SELECT minMerge(x) FROM (SELECT minState(a) + minState(b) as x FROM add_aggregate)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT uniqMerge(x + y) FROM (SELECT uniqState(a) as x, uniqState(b) as y FROM add_aggregate)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT arraySort(groupArrayMerge(x + y)) FROM (SELECT groupArrayState(a) AS x, groupArrayState(b) as y FROM add_aggregate)
+--Result--
+[([1, 1, 2, 3],)]
++--------------------+

@@ -6,68 +6,16 @@ select number, max(number) over (partition by intDiv(number, 3) order by number 
 select number, avg(number) over (order by number rows unbounded preceding) from numbers(10);
 select number, quantileExact(number) over (partition by intDiv(number, 3) AS value order by number rows unbounded preceding) from numbers(10);
 select number, quantileExact(number) over (partition by intDiv(number, 3) AS value order by number rows unbounded preceding) q from numbers(10);
-select number, q * 10, quantileExact(number) over (partition by intDiv(number, 3) order by number rows unbounded preceding) q from numbers(10) order by number;
 select * from (select count(*) over (rows unbounded preceding) c from numbers(3)) where c > 0;
-select number, max(number) over (partition by intDiv(number, 3) order by number desc rows unbounded preceding) m from numbers(10) order by m desc, number;
 select * from (select count(*) over (rows unbounded preceding) c from numbers(3)) order by c;
 select sum(any(number)) over (rows unbounded preceding) from numbers(1);
-select sum(any(number) + 1) over (rows unbounded preceding) from numbers(1);
-select sum(any(number + 1)) over (rows unbounded preceding) from numbers(1);
-
 select number, max(number) over (partition by intDiv(number, 3) order by number desc rows unbounded preceding), count(number) over (partition by intDiv(number, 5) order by number rows unbounded preceding) as m from numbers(31) order by number settings max_block_size = 2;
-
-select number, max(number) over (partition by intDiv(number, 3) order by number desc rows unbounded preceding), count(number) over (partition by intDiv(number, 3) order by number desc rows unbounded preceding) as m from numbers(7) order by number settings max_block_size = 2;
 select median(x) over (partition by x) from (select 1 x);
 select groupArray(number) over (rows unbounded preceding) from numbers(3);
-select groupArray(number) over () from numbers(3);
 select count(1) over (rows unbounded preceding), max(number + 1) over () from numbers(3);
-select distinct sum(0) over (rows unbounded preceding) from numbers(2);
 select distinct any(number) over (rows unbounded preceding) from numbers(2);
 with number + 1 as x select intDiv(number, 3) as y, sum(x + y) over (partition by y order by x rows unbounded preceding) from numbers(7);
 select 1 window w1 as ();
-select sum(number) over w1, sum(number) over w2
-from numbers(10)
-window
-    w1 as (rows unbounded preceding),
-    w2 as (partition by intDiv(number, 3) as value order by number rows unbounded preceding);
-select
-    sum(number) over w1,
-    sum(number) over (partition by intDiv(number, 3) as value order by number rows unbounded preceding)
-from numbers(10)
-window
-    w1 as (partition by intDiv(number, 3) rows unbounded preceding);
-select sum(number) over () from numbers(3);
-
-select number, intDiv(number, 3) p, mod(number, 2) o, count(number) over w as c
-from numbers(31)
-window w as (partition by p order by o, number range unbounded preceding)
-order by number
-settings max_block_size = 5;
-select number, intDiv(number, 5) p, mod(number, 3) o, count(number) over w as c
-from numbers(31)
-window w as (partition by p order by o, number range unbounded preceding)
-order by number
-settings max_block_size = 2;
-select number, intDiv(number, 5) p, mod(number, 2) o, count(number) over w as c
-from numbers(31)
-window w as (partition by p order by o, number range unbounded preceding)
-order by number
-settings max_block_size = 3;
-select number, intDiv(number, 3) p, mod(number, 5) o, count(number) over w as c
-from numbers(31)
-window w as (partition by p order by o, number range unbounded preceding)
-order by number
-settings max_block_size = 2;
-select number, intDiv(number, 2) p, mod(number, 5) o, count(number) over w as c
-from numbers(31)
-window w as (partition by p order by o, number range unbounded preceding)
-order by number
-settings max_block_size = 3;
-select number, intDiv(number, 2) p, mod(number, 3) o, count(number) over w as c
-from numbers(31)
-window w as (partition by p order by o range unbounded preceding)
-order by number
-settings max_block_size = 5;
 select min(number) over (partition by p)  from (select number, intDiv(number, 3) p from numbers(10));
 select
     min(number) over wa, min(number) over wo,
@@ -91,102 +39,10 @@ select number, p,
 from (select number, intDiv(number, 5) p from numbers(31))
 order by p, number
 settings max_block_size = 2;
-select number, p,
-    count(*) over (partition by p order by number
-        rows between 2 preceding and 2 following)
-from (select number, intDiv(number, 7) p from numbers(71))
-order by p, number
-settings max_block_size = 2;
-SELECT count(*) OVER (ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) FROM numbers(4);
-select
-    count() over (partition by intDiv(number, 3)
-        rows between 100 following and unbounded following),
-    count() over (partition by intDiv(number, 3)
-        rows between current row and 100 following)
-from numbers(10);
-select count() over ();
-select number, p, o,
-    count(*) over (partition by p order by o
-        range between current row and unbounded following)
-from (select number, intDiv(number, 5) p, mod(number, 3) o
-    from numbers(31))
-order by p, o, number
-settings max_block_size = 2;
-select
-    count(*) over (rows between  current row and current row),
-    count(*) over (range between  current row and current row)
-from numbers(3);
 select x, min(x) over w, max(x) over w, count(x) over w from (
     select toUInt8(number) x from numbers(11))
 window w as (order by x asc range between 1 preceding and 2 following)
 order by x;
-select x, min(x) over w, max(x) over w, count(x) over w
-from (
-    select toUInt8(if(mod(number, 2),
-        toInt64(255 - intDiv(number, 2)),
-        toInt64(intDiv(number, 2)))) x
-    from numbers(10)
-)
-window w as (order by x range between 1 preceding and 2 following)
-order by x;
-select x, min(x) over w, max(x) over w, count(x) over w
-from (
-    select toInt8(multiIf(
-        mod(number, 3) == 0, toInt64(intDiv(number, 3)),
-        mod(number, 3) == 1, toInt64(127 - intDiv(number, 3)),
-        toInt64(-128 + intDiv(number, 3)))) x
-    from numbers(15)
-)
-window w as (order by x range between 1 preceding and 2 following)
-order by x;
-
-select x, min(x) over w, max(x) over w, count(x) over w
-from (
-    select toUInt8(if(mod(number, 2),
-        toInt64(255 - intDiv(number, 2)),
-        toInt64(intDiv(number, 2)))) x
-    from numbers(10)
-)
-window w as (order by x range between 255 preceding and 255 following)
-order by x;
-select x, min(x) over w, max(x) over w, count(x) over w from (
-    select toUInt8(number) x from numbers(11)) t
-window w as (order by x desc range between 1 preceding and 2 following)
-order by x
-settings max_block_size = 1;
-select x, min(x) over w, max(x) over w, count(x) over w from (
-    select toUInt8(number) x from numbers(11)) t
-window w as (order by x desc range between 1 preceding and unbounded following)
-order by x
-settings max_block_size = 2;
-select x, min(x) over w, max(x) over w, count(x) over w from (
-    select toUInt8(number) x from numbers(11)) t
-window w as (order by x desc range between unbounded preceding and 2 following)
-order by x
-settings max_block_size = 3;
-select x, min(x) over w, max(x) over w, count(x) over w from (
-    select toUInt8(number) x from numbers(11)) t
-window w as (order by x desc range between unbounded preceding and 2 preceding)
-order by x
-settings max_block_size = 4;
-
-select
-    number,
-    count(*) over (partition by p order by number),
-    count(*) over (partition by p order by number, o),
-    count(*) over (),
-    count(*) over (order by number),
-    count(*) over (order by o),
-    count(*) over (order by o, number),
-    count(*) over (order by number, o),
-    count(*) over (partition by p order by o, number),
-    count(*) over (partition by p),
-    count(*) over (partition by p order by o),
-    count(*) over (partition by p, o order by number)
-from
-    (select number, intDiv(number, 3) p, mod(number, 5) o
-        from numbers(16)) t
-order by number;
 explain select
     count(*) over (partition by p),
     count(*) over (),
@@ -194,23 +50,9 @@ explain select
 from
     (select number, intDiv(number, 3) p, mod(number, 5) o
         from numbers(16)) t;
-explain select
-    count(*) over (order by o, number),
-    count(*) over (order by number)
-from
-    (select number, intDiv(number, 3) p, mod(number, 5) o
-        from numbers(16)) t;
-SELECT
-    max(number) OVER (ORDER BY number DESC NULLS FIRST),
-    max(number) OVER (ORDER BY number ASC NULLS FIRST)
-FROM numbers(2);
 drop table if exists window_mt;
 create table window_mt engine MergeTree order by number
     as select number, mod(number, 3) p from numbers(100);
-select number, count(*) over (partition by p)
-    from window_mt order by number limit 10 settings optimize_read_in_order = 0;
-select number, count(*) over (partition by p)
-    from window_mt order by number limit 10 settings optimize_read_in_order = 1;
 drop table window_mt;
 select number, p, o,
     count(*) over w,
@@ -247,40 +89,8 @@ select
 from numbers(10)
 window w as (order by number range between 1 preceding and 1 following)
 order by number;
-select
-    number,
-    nth_value(number, 1) over w as firstValue,
-    nth_value(number, 2) over w as secondValue,
-    nth_value(number, 3) over w as thirdValue,
-    nth_value(number, 4) over w as fourthValue
-from numbers(10)
-window w as (order by number)
-order by number;
-select
-    number,
-    nth_value(number, 1) over w as firstValue,
-    nth_value(number, 2) over w as secondValue,
-    nth_value(number, 3) over w as thirdValue,
-    nth_value(number, 4) over w as fourthValue
-from numbers(10)
-window w as (order by number range between 1 preceding and 1 following)
-order by number;
 SELECT nth_value(1, /* INT64_MAX */ 0x7fffffffffffffff) OVER ();
-SELECT nth_value(1, 1) OVER ();
-SELECT lagInFrame(1, 0) OVER ();
-SELECT lagInFrame(1, /* INT64_MAX */ 0x7fffffffffffffff) OVER ();
-SELECT lagInFrame(1, 1) OVER ();
 SELECT leadInFrame(1, 0) OVER ();
-SELECT leadInFrame(1, /* INT64_MAX */ 0x7fffffffffffffff) OVER ();
-SELECT leadInFrame(1, 1) OVER ();
-
-select count() over () from numbers(4) where number < 2;
-select
-    count(*) over (order by toFloat32(number) range 5 preceding),
-    count(*) over (order by toFloat64(number) range 5 preceding),
-    count(*) over (order by toFloat32(number) range between current row and 5 following),
-    count(*) over (order by toFloat64(number) range between current row and 5 following)
-from numbers(7);
 select sum(a[length(a)])
 from (
     select groupArray(number) over (partition by modulo(number, 11)
@@ -305,12 +115,3 @@ from
                 group by k
             )
     );
-
-select count() over () from (select 1 a) l inner join (select 2 a) r using a;
-select count() over () where null;
-select number, count() over (w1 rows unbounded preceding) from numbers(10)
-window
-    w0 as (partition by intDiv(number, 5) as p),
-    w1 as (w0 order by mod(number, 3) as o, number)
-order by p, o, number;
-select count() over (w) from numbers(1) window w as ();

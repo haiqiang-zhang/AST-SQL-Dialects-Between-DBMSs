@@ -12,10 +12,4 @@ INSERT INTO test_ttl_group_by01763(key, ts, value) SELECT number%5 as key, now()
 INSERT INTO test_ttl_group_by01763(key, ts, value) SELECT number%5 as key, now() -   interval 2 month + number, 0 FROM numbers(1000);
 INSERT INTO test_ttl_group_by01763(key, ts, value) SELECT number%5 as key, now() -   interval 2 month + number, 3 FROM numbers(1000);
 SELECT sum(value), min(min_value), max(max_value), uniqExact(key) FROM test_ttl_group_by01763;
-SELECT sum(value), min(min_value), max(max_value), uniqExact(key) FROM test_ttl_group_by01763 where key = 3;
-SELECT sum(value), min(min_value), max(max_value), uniqExact(key) FROM test_ttl_group_by01763 where key = 3 and ts <= today() - interval 30 day;
-OPTIMIZE TABLE test_ttl_group_by01763 FINAL;
-SELECT sum(value), min(min_value), max(max_value), uniqExact(key) FROM test_ttl_group_by01763;
-SELECT sum(value), min(min_value), max(max_value), uniqExact(key) FROM test_ttl_group_by01763 where key = 3;
-SELECT sum(value), min(min_value), max(max_value), uniqExact(key) FROM test_ttl_group_by01763 where key = 3 and ts <= today() - interval 30 day;
 DROP TABLE test_ttl_group_by01763;

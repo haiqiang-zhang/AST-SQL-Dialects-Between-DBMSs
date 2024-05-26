@@ -1,0 +1,65 @@
+--Query--
+SELECT (0.1, 0.2)::Tuple(Decimal(75, 70), Decimal(75, 70))
+--Result--
+[((0.1, 0.2),)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT (0.1, 0.2)::Tuple(Decimal(75, 70), Decimal(75, 70))
+--Result--
+[("SELECT CAST('(0.1, 0.2)', 'Tuple(Decimal(75, 70), Decimal(75, 70))')",)]
++--------------------+
+--Query--
+SELECT 0.1 :: Decimal(4, 4)
+--Result--
+[(0.1,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT 0.1 :: Decimal(4, 4)
+--Result--
+[("SELECT CAST('0.1', 'Decimal(4, 4)')",)]
++--------------------+
+--Query--
+SELECT [1, 2, 3] :: Array(Int32)
+--Result--
+[([1, 2, 3],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT [1, 2, 3] :: Array(Int32)
+--Result--
+[("SELECT CAST('[1, 2, 3]', 'Array(Int32)')",)]
++--------------------+
+--Query--
+SELECT [1::UInt32, 2::UInt32]::Array(UInt64)
+--Result--
+[([1, 2],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT [1::UInt32, 2::UInt32]::Array(UInt64)
+--Result--
+[("SELECT CAST([CAST('1', 'UInt32'), CAST('2', 'UInt32')], 'Array(UInt64)')",)]
++--------------------+
+--Query--
+SELECT [[1, 2]::Array(UInt32), [3]]::Array(Array(UInt64))
+--Result--
+[([[1, 2], [3]],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT [[1, 2]::Array(UInt32), [3]]::Array(Array(UInt64))
+--Result--
+[("SELECT CAST([CAST('[1, 2]', 'Array(UInt32)'), [3]], 'Array(Array(UInt64))')",)]
++--------------------+
+--Query--
+SELECT [[1::UInt16, 2::UInt16]::Array(UInt32), [3]]::Array(Array(UInt64))
+--Result--
+[([[1, 2], [3]],)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT [[1::UInt16, 2::UInt16]::Array(UInt32), [3]]::Array(Array(UInt64))
+--Result--
+[("SELECT CAST([CAST([CAST('1', 'UInt16'), CAST('2', 'UInt16')], 'Array(UInt32)'), [3]], 'Array(Array(UInt64))')",)]
++--------------------+
+--Query--
+SELECT [(1, 'a'), (3, 'b')]::Nested(u UInt8, s String) AS t, toTypeName(t)
+--Result--
+[([(1, 'a'), (3, 'b')], 'Nested(u UInt8, s String)')]
++--------------------+

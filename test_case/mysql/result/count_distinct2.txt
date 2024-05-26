@@ -1,0 +1,50 @@
+--Query--
+select distinct n1 from t1
+--Result--
+[(1,), (2,), (None,)]
++--------------------+
+--Query--
+select count(distinct n1) from t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select distinct n2 from t1
+--Result--
+[(11,), (12,), (13,), (None,)]
++--------------------+
+--Query--
+select distinct s from t1
+--Result--
+[('one',), ('two',), (None,)]
++--------------------+
+--Query--
+select distinct vs from t1
+--Result--
+[('eleven',), ('twevle',), ('thirteen',), (None,)]
++--------------------+
+--Query--
+select distinct t from t1
+--Result--
+[('eleven',), ('twelve',), ('foo',), ('bar',), (None,)]
++--------------------+
+--Query--
+select distinct n1,n2 from t1
+--Result--
+[(1, 11), (2, 11), (2, 12), (2, 13), (None, 13), (2, None)]
++--------------------+
+--Query--
+select distinct n1,s from t1
+--Result--
+[(1, 'one'), (2, 'two'), (None, 'two'), (2, None)]
++--------------------+
+--Query--
+select distinct s,n1,vs from t1
+--Result--
+[('one', 1, 'eleven'), ('two', 2, 'eleven'), ('two', 2, 'twevle'), ('two', 2, 'thirteen'), ('two', None, 'thirteen'), (None, 2, 'thirteen'), ('two', 2, None)]
++--------------------+
+--Query--
+select distinct s,t from t1
+--Result--
+[('one', 'eleven'), ('two', 'eleven'), ('two', 'twelve'), ('two', 'foo'), ('two', 'bar'), (None, 'bar'), ('two', None)]
++--------------------+

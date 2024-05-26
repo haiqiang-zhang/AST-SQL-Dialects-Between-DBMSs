@@ -1,0 +1,35 @@
+--Query--
+SYSTEM STOP MERGES ttl_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM ttl_table
+--Result--
+[(datetime.date(2020, 10, 1), 144.0)]
++--------------------+
+--Query--
+SYSTEM START MERGES ttl_table
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE ttl_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM ttl_table
+--Result--
+[(datetime.date(2020, 10, 1), 0.0)]
++--------------------+
+--Query--
+OPTIMIZE TABLE ttl_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM ttl_table
+--Result--
+[(datetime.date(2020, 10, 1), 0.0)]
++--------------------+

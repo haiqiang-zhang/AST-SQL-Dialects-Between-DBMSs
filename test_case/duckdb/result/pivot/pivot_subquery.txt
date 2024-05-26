@@ -1,0 +1,10 @@
+--Query--
+PIVOT (SELECT YEAR(d) AS year, MONTH(d) AS month, empid, amount FROM sales) ON YEAR, MONTH USING SUM(AMOUNT) ORDER BY ALL
+--Result--
+[(1, 10400, 8000, 11000, None, None, None), (2, None, None, None, 39500, 90700, 12000)]
++--------------------+
+--Query--
+PIVOT (PIVOT (SELECT YEAR(d) AS year, MONTH(d) AS month, empid, amount FROM sales) ON YEAR, MONTH USING SUM(AMOUNT)) ON empid USING SUM(COALESCE("2000_1",0) + COALESCE("2000_2",0) + COALESCE("2000_3",0) + COALESCE("2001_1",0) + COALESCE("2001_2",0) + COALESCE("2001_3",0))
+--Result--
+[(29400, 142200)]
++--------------------+

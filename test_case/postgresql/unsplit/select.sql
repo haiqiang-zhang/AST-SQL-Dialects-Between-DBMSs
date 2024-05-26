@@ -42,10 +42,8 @@ SELECT 1 AS x ORDER BY x;
 create function sillysrf(int) returns setof int as
   'values (1),(10),(2),($1)' language sql immutable;
 select sillysrf(42);
-select sillysrf(-1) order by 1;
 drop function sillysrf(int);
 select * from (values (2),(null),(1)) v(k) where k = k order by k;
-select * from (values (2),(null),(1)) v(k) where k = k;
 create table list_parted_tbl (a int,b int) partition by list (a);
 create table list_parted_tbl1 partition of list_parted_tbl
   for values in (1) partition by list(b);

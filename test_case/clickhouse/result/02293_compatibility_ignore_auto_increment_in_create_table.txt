@@ -1,0 +1,70 @@
+--Query--
+select 'disable AUTO_INCREMENT compatibility mode'
+--Result--
+[('disable AUTO_INCREMENT compatibility mode',)]
++--------------------+
+--Query--
+select 'create table failed, column +type +AUTO_INCREMENT, compatibility disabled'
+--Result--
+[('create table failed, column +type +AUTO_INCREMENT, compatibility disabled',)]
++--------------------+
+--Query--
+select 'enable AUTO_INCREMENT compatibility mode'
+--Result--
+[('enable AUTO_INCREMENT compatibility mode',)]
++--------------------+
+--Query--
+select 'create table, +type +AUTO_INCREMENT'
+--Result--
+[('create table, +type +AUTO_INCREMENT',)]
++--------------------+
+--Query--
+select 'create table, column +AUTO_INCREMENT -type'
+--Result--
+[('create table, column +AUTO_INCREMENT -type',)]
++--------------------+
+--Query--
+DESCRIBE TABLE ignore_auto_increment
+--Result--
+[('id', 'Int32', '', '', '', '', '')]
++--------------------+
+--Query--
+select 'create table, several columns +/-type +AUTO_INCREMENT'
+--Result--
+[('create table, several columns +/-type +AUTO_INCREMENT',)]
++--------------------+
+--Query--
+DESCRIBE TABLE ignore_auto_increment
+--Result--
+[('id', 'Int32', '', '', '', '', ''), ('di', 'Int32', '', '', '', '', ''), ('s', 'String', '', '', '', '', '')]
++--------------------+
+--Query--
+select 'create table, several columns with different default specifiers'
+--Result--
+[('create table, several columns with different default specifiers',)]
++--------------------+
+--Query--
+DESCRIBE TABLE ignore_auto_increment
+--Result--
+[('di', 'UInt8', 'DEFAULT', '1', '', '', ''), ('id', 'Int32', '', '', '', '', ''), ('s', 'String', 'EPHEMERAL', "defaultValueOfTypeName('String')", '', '', '')]
++--------------------+
+--Query--
+select 'create table failed, column +type +DEFAULT +AUTO_INCREMENT'
+--Result--
+[('create table failed, column +type +DEFAULT +AUTO_INCREMENT',)]
++--------------------+
+--Query--
+select 'create table failed, column -type +DEFAULT +AUTO_INCREMENT'
+--Result--
+[('create table failed, column -type +DEFAULT +AUTO_INCREMENT',)]
++--------------------+
+--Query--
+select 'create table failed, column +type +AUTO_INCREMENT +DEFAULT'
+--Result--
+[('create table failed, column +type +AUTO_INCREMENT +DEFAULT',)]
++--------------------+
+--Query--
+select 'create table failed, column -type +AUTO_INCREMENT +DEFAULT'
+--Result--
+[('create table failed, column -type +AUTO_INCREMENT +DEFAULT',)]
++--------------------+

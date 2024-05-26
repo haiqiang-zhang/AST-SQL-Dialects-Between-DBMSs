@@ -1,0 +1,20 @@
+--Query--
+select * from tab_00577 order by version
+--Result--
+[(datetime.date(2018, 1, 1), 0, 0), (datetime.date(2018, 1, 1), 1, 1), (datetime.date(2018, 1, 1), 2, 2)]
++--------------------+
+--Query--
+OPTIMIZE TABLE tab_00577 FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from tab_00577
+--Result--
+[(datetime.date(2018, 1, 1), 2, 2)]
++--------------------+
+--Query--
+SELECT '== (Replicas) Test optimize =='
+--Result--
+[('== (Replicas) Test optimize ==',)]
++--------------------+

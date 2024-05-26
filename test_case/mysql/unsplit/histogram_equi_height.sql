@@ -2,10 +2,6 @@ CREATE TABLE tbl_int (col1 INT);
 INSERT INTO tbl_int VALUES (1), (2), (3), (4), (5), (6), (7), (8), (NULL), (NULL);
 DROP TABLE tbl_int;
 CREATE TABLE tbl_varchar (col1 VARCHAR(255));
-INSERT INTO tbl_varchar VALUES
-  ("abcd"), ("ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ£"), ("ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂº"), ("eeeeeeeeee"), ("ef"), ("AG"),
-  ("a very long string that is longer than 42 characters"),
-  ("lorem ipsum"), (NULL), (NULL);
 DROP TABLE tbl_varchar;
 CREATE TABLE tbl_varchar (col1 VARCHAR(255));
 INSERT INTO tbl_varchar VALUES
@@ -79,12 +75,6 @@ INSERT INTO t1 VALUES ("00:00:00"), ("00:00:00"), ("00:00:00"), ("00:00:00"),
                       ("00:02:00"), ("00:03:00");
 DROP TABLE t1;
 CREATE TABLE t1(x INT);
-SELECT JSON_PRETTY(JSON_REMOVE(histogram, '$."last-updated"'))
-FROM INFORMATION_SCHEMA.column_statistics
-WHERE table_name = 't1' AND column_name = 'x';
-SELECT JSON_PRETTY(JSON_REMOVE(histogram, '$."last-updated"'))
-FROM INFORMATION_SCHEMA.column_statistics
-WHERE table_name = 't1' AND column_name = 'x';
 SELECT JSON_PRETTY(JSON_REMOVE(histogram, '$."last-updated"'))
 FROM INFORMATION_SCHEMA.column_statistics
 WHERE table_name = 't1' AND column_name = 'x';

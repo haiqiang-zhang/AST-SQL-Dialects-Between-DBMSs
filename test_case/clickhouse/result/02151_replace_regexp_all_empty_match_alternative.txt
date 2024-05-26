@@ -1,0 +1,65 @@
+--Query--
+SELECT replaceRegexpAll(',,1,,', '^[,]*|[,]*$', '')
+--Result--
+[('1',)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll('a', 'z*', '') == 'a'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll('aa', 'z*', '') == 'aa'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll('aaq', 'z*', '') == 'aaq'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll('aazq', 'z*', '') == 'aaq'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll('aazzq', 'z*', '') == 'aaq'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll('aazzqa', 'z*', '') == 'aaqa'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(materialize('a'), 'z*', '') == 'a'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(materialize('aa'), 'z*', '') == 'aa'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(materialize('aaq'), 'z*', '') == 'aaq'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(materialize('aazq'), 'z*', '') == 'aaq'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(materialize('aazzq'), 'z*', '') == 'aaq'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT replaceRegexpAll(materialize('aazzqa'), 'z*', '') == 'aaqa'
+--Result--
+[(1,)]
++--------------------+

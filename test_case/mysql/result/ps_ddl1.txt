@@ -1,0 +1,165 @@
+--Query--
+select variable_value from   performance_schema.session_status where   variable_name='com_stmt_reprepare'   into @reprepare_count
+--Result--
+[]
++--------------------+
+--Query--
+select '' as "SUCCESS"
+--Result--
+[('',)]
++--------------------+
+--Query--
+prepare stmt from "select a from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from "truncate t1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt2 from "select 1 as my_column from t1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt3 from "select 1 as my_column from (select * from t1) as t2"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt4 from "select 1 as my_column from (select 1) as t2 where exists (select 1 from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt5 from "select * from (select 1 as b) as t2, t1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt6 from "select * from t1 union all select 1.5"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt7 from "select 1 as my_column union all select 1 from t1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt8 from "insert into t1 values(1),(2)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt9 from "update t1 set a = 3 where a = 2"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt10 from "delete from t1 where a = 1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from "select a,b from t1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt2 from "select a,b from (select * from t1) as t1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt3 from "select * from t1 where a = 2 and b = 2"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt4 from "select * from t2 where (a,b) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt5 from "select * from t1 union select * from t2"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt6 from "select * from t1 union all select * from t2"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt7 from "insert into t1 set a = 4, b = 4"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt8 from "insert into t1 select * from t2"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select avg(a) from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 values(1)"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+

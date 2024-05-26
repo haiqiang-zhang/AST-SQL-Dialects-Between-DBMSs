@@ -1,0 +1,35 @@
+--Query--
+SELECT *  FROM ( SELECT   max(`column_1`) AS `column_1`, NULL AS `column_2`,   `id` FROM `clickhouse_alias_issue_1` GROUP BY   `id` UNION ALL SELECT   NULL AS `column_1`,   max(`column_2`) AS `column_2`,   `id` FROM `clickhouse_alias_issue_2` GROUP BY   `id` SETTINGS prefer_column_name_to_alias=1 ) ORDER BY ALL DESC NULLS LAST
+--Result--
+[(300.0, None, 3), (200.0, None, 2), (100.0, None, 1), (None, 30.0, 3), (None, 20.0, 2), (None, 10.0, 1)]
++--------------------+
+--Query--
+SELECT '-------------------------'
+--Result--
+[('-------------------------',)]
++--------------------+
+--Query--
+SELECT   max(`column_1`) AS `column_1`,   max(`column_2`) AS `column_2`,   `id` FROM (   SELECT     max(`column_1`) AS `column_1`,     NULL AS `column_2`,     `id`   FROM `clickhouse_alias_issue_1`   GROUP BY     `id`   UNION ALL   SELECT     NULL AS `column_1`,     max(`column_2`) AS `column_2`,     `id`   FROM `clickhouse_alias_issue_2`   GROUP BY     `id`   SETTINGS prefer_column_name_to_alias=1 ) as T1 GROUP BY `id` ORDER BY `id` DESC SETTINGS prefer_column_name_to_alias=1
+--Result--
+[(300.0, 30.0, 3), (200.0, 20.0, 2), (100.0, 10.0, 1)]
++--------------------+
+--Query--
+SELECT '-------------------------'
+--Result--
+[('-------------------------',)]
++--------------------+
+--Query--
+SELECT `column_1` / `column_2`, `id` FROM (     SELECT         max(`column_1`) AS `column_1`,         max(`column_2`) AS `column_2`,         `id`     FROM (         SELECT           max(`column_1`) AS `column_1`,           NULL AS `column_2`,           `id`         FROM `clickhouse_alias_issue_1`         GROUP BY           `id`         UNION ALL         SELECT           NULL AS `column_1`,           max(`column_2`) AS `column_2`,           `id`         FROM `clickhouse_alias_issue_2`         GROUP BY           `id`         SETTINGS prefer_column_name_to_alias=1         ) as T1     GROUP BY `id`     ORDER BY `id` DESC     SETTINGS prefer_column_name_to_alias=1 ) as T2 WHERE `column_1` IS NOT NULL AND `column_2` IS NOT NULL SETTINGS prefer_column_name_to_alias=1
+--Result--
+[(10.0, 3), (10.0, 2), (10.0, 1)]
++--------------------+
+--Query--
+SELECT '-------------------------'
+--Result--
+[('-------------------------',)]
++--------------------+
+--Query--
+SELECT `column_1` / `column_2`, `id` FROM (     SELECT         max(`column_1`) AS `column_1`,         max(`column_2`) AS `column_2`,         `id`     FROM (         SELECT           max(`column_1`) AS `column_1`,           NULL AS `column_2`,           `id`         FROM `clickhouse_alias_issue_1`         GROUP BY           `id`         UNION ALL         SELECT           NULL AS `column_1`,           max(`column_2`) AS `column_2`,           `id`         FROM `clickhouse_alias_issue_2`         GROUP BY           `id`         ) as T1     GROUP BY `id`     ORDER BY `id` DESC ) as T2 WHERE `column_1` IS NOT NULL AND `column_2` IS NOT NULL
+--Result--
+[(10.0, 3), (10.0, 2), (10.0, 1)]
++--------------------+

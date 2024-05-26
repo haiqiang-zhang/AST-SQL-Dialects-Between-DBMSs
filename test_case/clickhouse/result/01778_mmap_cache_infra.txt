@@ -1,0 +1,15 @@
+--Query--
+SYSTEM DROP MMAP CACHE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT event FROM system.events WHERE event LIKE '%MMap%' ORDER BY event
+--Result--
+[('CreatedReadBufferMMap',), ('CreatedReadBufferMMapFailed',), ('MMappedFileCacheHits',), ('MMappedFileCacheMisses',)]
++--------------------+
+--Query--
+SELECT metric FROM system.metrics WHERE metric LIKE '%MMap%' ORDER BY metric
+--Result--
+[('MMappedFileBytes',), ('MMappedFiles',)]
++--------------------+

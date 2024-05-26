@@ -1,0 +1,35 @@
+--Query--
+SELECT * from const_len_bug
+--Result--
+[]
++--------------------+
+--Query--
+SELECT IF( a = 1, a, a ) AS `b` FROM t1 ORDER BY field( `b` + 1, 1 )
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for global read lock" AND         info = "DROP FUNCTION metaphon"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for global read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+

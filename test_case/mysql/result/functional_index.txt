@@ -1,0 +1,70 @@
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_NAME IN ('int_func_index', 'string_func_index')
+--Result--
+[('def', 'test_db', 't1', 1, 'test_db', 'int_func_index', 1, None, 'A', 1, None, None, 'YES', 'BTREE', '', '', 'YES', 'abs(`int_col`)'), ('def', 'test_db', 't1', 1, 'test_db', 'string_func_index', 1, None, 'A', 2, None, None, 'YES', 'BTREE', '', '', 'YES', 'substr(`string_col`,1,2)')]
++--------------------+
+--Query--
+SELECT COUNT(*) AS should_be_2 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = "t1"
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT COUNT(*) AS should_be_2 FROM INFORMATION_SCHEMA.INNODB_COLUMNS c JOIN INFORMATION_SCHEMA.INNODB_TABLES t ON (c.TABLE_ID = t.TABLE_ID) WHERE t.NAME = "test/t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE f1->"$.id"= 5
+--Result--
+[('{"id": 5}',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE f1->"$.id" IN (1,2,3)
+--Result--
+[('{"id": 1}',), ('{"id": 2}',), ('{"id": 3}',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE CAST(f1->>"$.id" AS CHAR(10)) = "\"n\""
+--Result--
+[('{"id": "\\"n\\""}',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE CAST(f1->>"$.id" AS CHAR(10)) IN ("'z", "\"n\"","a")
+--Result--
+[('{"id": "\'z"}',), ('{"id": "\\"n\\""}',), ('{"id": "a"}',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE f1->>"$.name" = "James"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE f1->>"$.name" = "james"
+--Result--
+[('{"name": "james"}',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE CAST(f1->>"$.name" AS CHAR(30)) COLLATE utf8mb4_bin = "james"
+--Result--
+[('{"name": "james"}',)]
++--------------------+
+--Query--
+SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE table_name = "t"
+--Result--
+[('regular_index',)]
++--------------------+
+--Query--
+SELECT COLUMN_NAME, ORDINAL_POSITION FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_NAME = "t1"
+--Result--
+[('col1', 1)]
++--------------------+
+--Query--
+SELECT COLUMN_NAME, ORDINAL_POSITION FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_NAME = "t1"
+--Result--
+[('col1', 1), ('col2', 2)]
++--------------------+
+--Query--
+SELECT j->'$**.used_columns' FROM t2
+--Result--
+[]
++--------------------+

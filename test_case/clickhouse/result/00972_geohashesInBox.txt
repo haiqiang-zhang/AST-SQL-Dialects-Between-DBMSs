@@ -1,0 +1,70 @@
+--Query--
+SELECT 'center'
+--Result--
+[('center',)]
++--------------------+
+--Query--
+SELECT arraySort(geohashesInBox(-1.0, -1.0, 1.0, 1.0, 3))
+--Result--
+[(['7zz', 'ebp', 'kpb', 's00'],)]
++--------------------+
+--Query--
+SELECT 'north pole'
+--Result--
+[('north pole',)]
++--------------------+
+--Query--
+SELECT 'south pole'
+--Result--
+[('south pole',)]
++--------------------+
+--Query--
+SELECT 'wrap point around equator'
+--Result--
+[('wrap point around equator',)]
++--------------------+
+--Query--
+SELECT 'arbitrary values in all 4 quarters'
+--Result--
+[('arbitrary values in all 4 quarters',)]
++--------------------+
+--Query--
+SELECT 'small range always produces array of length 1'
+--Result--
+[('small range always produces array of length 1',)]
++--------------------+
+--Query--
+SELECT lon/5 - 180 AS lon1, lat/5 - 90 AS lat1, lon1 AS lon2, lat1 AS lat2, geohashesInBox(lon1, lat1, lon2, lat2, 1)  AS g FROM (SELECT arrayJoin(range(360*5)) AS lon,  arrayJoin(range(180*5)) AS lat) WHERE length(g) != 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lon/5 - 40 AS lon1, lat/5 - 20 AS lat1, lon1 AS lon2, lat1 AS lat2, geohashesInBox(lon1, lat1, lon2, lat2, 12) AS g FROM (SELECT arrayJoin(range(80*5)) AS lon,  arrayJoin(range(10*5)) AS lat) WHERE length(g) != 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT lon/5 - 40 AS lon1, lat/5 - 20 AS lat1, lon1 + 0.0000000001 AS lon2, lat1 + 0.0000000001 AS lat2, geohashesInBox(lon1, lat1, lon2, lat2, 1) AS g FROM (SELECT arrayJoin(range(80*5)) AS lon,  arrayJoin(range(10*5)) AS lat) WHERE length(g) != 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'zooming'
+--Result--
+[('zooming',)]
++--------------------+
+--Query--
+SELECT 'input values are clamped to -90..90, -180..180 range'
+--Result--
+[('input values are clamped to -90..90, -180..180 range',)]
++--------------------+
+--Query--
+SELECT length(geohashesInBox(-inf, -inf, inf, inf, 3))
+--Result--
+[(32768,)]
++--------------------+
+--Query--
+SELECT 'errors'
+--Result--
+[('errors',)]
++--------------------+

@@ -1,0 +1,40 @@
+--Query--
+SELECT (SELECT (SELECT (SELECT (SELECT (SELECT count() FROM (SELECT * FROM system.numbers LIMIT 10)))))) = (SELECT 10), ((SELECT 1, 'Hello', [1, 2]).3)[1]
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT toUInt64((SELECT 9)) IN (SELECT number FROM system.numbers LIMIT 10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT toDate('2015-01-02')) = toDate('2015-01-02'), 'Hello' = (SELECT 'Hello')
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT (SELECT toDate('2015-01-02'), 'Hello')
+--Result--
+[((datetime.date(2015, 1, 2), 'Hello'),)]
++--------------------+
+--Query--
+SELECT (SELECT toDate('2015-01-02'), 'Hello') AS x, x, identity((SELECT 1)), identity((SELECT 1) AS y)
+--Result--
+[((datetime.date(2015, 1, 2), 'Hello'), (datetime.date(2015, 1, 2), 'Hello'), 1, 1)]
++--------------------+
+--Query--
+SELECT (SELECT 1 WHERE 0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT (SELECT 1, 2)
+--Result--
+[((1, 2),)]
++--------------------+
+--Query--
+SELECT (SELECT [1])
+--Result--
+[([1],)]
++--------------------+

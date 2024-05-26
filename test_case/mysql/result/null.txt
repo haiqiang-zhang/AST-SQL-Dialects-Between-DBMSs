@@ -1,0 +1,125 @@
+--Query--
+select null,isnull(null),isnull(1/0),isnull(1/0 = null),ifnull(null,1),ifnull(null,"TRUE"),ifnull("TRUE","ERROR"),1/0 is null,1 is not null
+--Result--
+[(None, 1, 1, 1, 1, 'TRUE', 'TRUE', 1, 1)]
++--------------------+
+--Query--
+select 1 | NULL,1 & NULL,1+NULL,1-NULL
+--Result--
+[(None, None, None, None)]
++--------------------+
+--Query--
+select NULL=NULL,NULL<>NULL,IFNULL(NULL,1.1)+0,IFNULL(NULL,1) | 0
+--Result--
+[(None, None, 1.1, 1)]
++--------------------+
+--Query--
+select strcmp("a",NULL),(1<NULL)+0.0,NULL regexp "a",null like "a%","a%" like null
+--Result--
+[(None, None, None, None, None)]
++--------------------+
+--Query--
+select concat("a",NULL),replace(NULL,"a","b"),replace("string","i",NULL),replace("string",NULL,"i"),insert("abc",1,1,NULL),left(NULL,1)
+--Result--
+[(None, None, None, None, None, None)]
++--------------------+
+--Query--
+select repeat("a",0),repeat("ab",5+5),repeat("ab",-1),reverse(NULL)
+--Result--
+[('', 'abababababababababab', '', None)]
++--------------------+
+--Query--
+select field(NULL,"a","b","c")
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 2 between null and 1,2 between 3 AND NULL,NULL between 1 and 2,2 between NULL and 3, 2 between 1 AND null
+--Result--
+[(0, 0, None, None, None)]
++--------------------+
+--Query--
+SELECT NULL AND NULL, 1 AND NULL, NULL AND 1, NULL OR NULL, 0 OR NULL, NULL OR 0
+--Result--
+[(None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT (NULL OR NULL) IS NULL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select NULL AND 0, 0 and NULL
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+select inet_ntoa(null),inet_aton(null)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+select inet6_ntoa(null),inet6_aton(null)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+select * from t1 where x != 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE indexed_field=NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE indexed_field IS NULL
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE indexed_field<=>NULL
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+select t2.b, ifnull(t2.b,"this is null") from t1 as t2 left join t1 as t3 on t2.b=t3.a
+--Result--
+[(None, 'this is null')]
++--------------------+
+--Query--
+select cast(NULL as signed)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select count(*) from t1 where i=2 or i is null
+--Result--
+[(10,)]
++--------------------+
+--Query--
+select    case 'str' when 'STR' then 'str' when null then 'null' end as c01,   case 'str' when null then 'null' when 'STR' then 'str' end as c02,   field(null, 'str1', 'str2') as c03,   field('str1','STR1', null) as c04,   field('str1', null, 'STR1') as c05,   'string' in ('STRING', null) as c08,   'string' in (null, 'STRING') as c09
+--Result--
+[('str', 'str', 0, 1, 2, 1, 1)]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN *  FROM t1 LEFT OUTER JOIN t1 AS t2     ON t1.col_int_unique = t2.col_int_unique
+--Result--
+[(1, 1, 'xxxx', 1, 1, 'xxxx'), (2, None, 'xxxx', None, None, None), (3, 3, 'xxxx', 3, 3, 'xxxx'), (4, 4, 'xxxx', 4, 4, 'xxxx'), (5, 5, 'xxxx', 5, 5, 'xxxx'), (6, 6, 'xxxx', 6, 6, 'xxxx'), (7, 7, 'xxxx', 7, 7, 'xxxx'), (8, 8, 'xxxx', 8, 8, 'xxxx')]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN *  FROM t1 LEFT OUTER JOIN t1 AS t2     ON t1.col_int_unique = t2.col_int_unique
+--Result--
+[(1, 1, 'xxxx', 1, 1, 'xxxx'), (2, None, 'xxxx', None, None, None), (3, 3, 'xxxx', 3, 3, 'xxxx'), (4, 4, 'xxxx', 4, 4, 'xxxx'), (5, 5, 'xxxx', 5, 5, 'xxxx'), (6, 6, 'xxxx', 6, 6, 'xxxx'), (7, 7, 'xxxx', 7, 7, 'xxxx'), (8, 8, 'xxxx', 8, 8, 'xxxx')]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN *  FROM t1 JOIN t1 AS t2     ON t1.col_int_unique = t2.col_int_unique  WHERE t1.pk = 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT NULL <=> (0 <=> NULL)
+--Result--
+[(0,)]
++--------------------+

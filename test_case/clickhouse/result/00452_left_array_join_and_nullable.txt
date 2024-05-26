@@ -1,0 +1,25 @@
+--Query--
+SELECT emptyArrayToSingle(arrayMap(x -> nullIf(x, 2), arrayJoin([emptyArrayUInt8(), [1], [2, 3]]))) AS arr
+--Result--
+[([None],), ([1],), ([None, 3],)]
++--------------------+
+--Query--
+SELECT arr, element FROM (SELECT arrayMap(x -> nullIf(x, 2), arrayJoin([emptyArrayUInt8(), [1], [2, 3]])) AS arr) LEFT ARRAY JOIN arr AS element
+--Result--
+[([], None), ([1], 1), ([None, 3], None), ([None, 3], 3)]
++--------------------+
+--Query--
+SELECT emptyArrayToSingle(arr) FROM (SELECT arrayMap(x -> (x, toString(x), x = 1 ? NULL : x), range(number % 3)) AS arr FROM system.numbers LIMIT 10)
+--Result--
+[([(0, '', None)],), ([(0, '0', 0)],), ([(0, '0', 0), (1, '1', None)],), ([(0, '', None)],), ([(0, '0', 0)],), ([(0, '0', 0), (1, '1', None)],), ([(0, '', None)],), ([(0, '0', 0)],), ([(0, '0', 0), (1, '1', None)],), ([(0, '', None)],)]
++--------------------+
+--Query--
+SELECT emptyArrayToSingle(arrayMap(x -> toString(x), arrayMap(x -> nullIf(x, 2), arrayJoin([emptyArrayUInt8(), [1], [2, 3]])))) AS arr
+--Result--
+[([None],), (['1'],), ([None, '3'],)]
++--------------------+
+--Query--
+SELECT emptyArrayToSingle(arrayMap(x -> toFixedString(toString(x), 3), arrayMap(x -> nullIf(x, 2), arrayJoin([emptyArrayUInt8(), [1], [2, 3], [3, 4, 5]])))) AS arr
+--Result--
+[([None],), (['1'],), ([None, '3'],), (['3', '4', '5'],)]
++--------------------+

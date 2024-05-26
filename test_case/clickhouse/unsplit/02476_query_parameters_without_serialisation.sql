@@ -20,4 +20,3 @@ SET param_arr_map_tuple=[{1:(2, '2022-08-04 18:30:53', 's'), 3:(4, '2020-08-04 1
 SET param_map_arr_tuple_map={'a':[(1,{10:1, 20:2}),(2, {30:3, 40:4})], 'b':[(3, {50:5, 60:6}),(4, {70:7, 80:8})]};
 SELECT {arr_arr_arr: Array(Array(Array(String)))}, toTypeName({arr_arr_arr: Array(Array(Array(String)))});
 SELECT {tuple_tuple_tuple: Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))}, toTypeName({tuple_tuple_tuple: Tuple(Tuple(Tuple(Int32, String, UUID, Float32)))});
-SELECT {arr_map_tuple: Array(Map(UInt64, Tuple(Int16, DateTime, String)))}, toTypeName({arr_map_tuple: Array(Map(UInt64, Tuple(Int16, DateTime, String)))});

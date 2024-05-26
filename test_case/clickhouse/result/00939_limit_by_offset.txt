@@ -1,0 +1,20 @@
+--Query--
+select * from limit_by order by id, val limit 2, 2 by id
+--Result--
+[(1, 120), (1, 130), (2, 220)]
++--------------------+
+--Query--
+select * from limit_by order by id, val limit 2 offset 1 by id
+--Result--
+[(1, 110), (1, 120), (2, 210), (2, 220)]
++--------------------+
+--Query--
+select * from limit_by order by id, val limit 1, 2 by id limit 3
+--Result--
+[(1, 110), (1, 120), (2, 210)]
++--------------------+
+--Query--
+select * from limit_by order by id, val limit 1, 2 by id limit 3 offset 1
+--Result--
+[(1, 120), (2, 210), (2, 220)]
++--------------------+

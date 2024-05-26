@@ -1,0 +1,25 @@
+--Query--
+SELECT number % 2 ? ['Hello', 'World'] : ['abc'] FROM system.numbers LIMIT 10
+--Result--
+[(['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],)]
++--------------------+
+--Query--
+SELECT number % 2 ? materialize(['Hello', 'World']) : ['abc'] FROM system.numbers LIMIT 10
+--Result--
+[(['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],), (['abc'],), (['Hello', 'World'],)]
++--------------------+
+--Query--
+SELECT number % 2 ? ['Hello', '', 'World!'] : emptyArrayString() FROM system.numbers LIMIT 10
+--Result--
+[([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],)]
++--------------------+
+--Query--
+SELECT number % 2 ? materialize(['Hello', '', 'World!']) : emptyArrayString() FROM system.numbers LIMIT 10
+--Result--
+[([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],), ([],), (['Hello', '', 'World!'],)]
++--------------------+
+--Query--
+SELECT number % 2 ? [''] : ['', ''] FROM system.numbers LIMIT 10
+--Result--
+[(['', ''],), ([''],), (['', ''],), ([''],), (['', ''],), ([''],), (['', ''],), ([''],), (['', ''],), ([''],)]
++--------------------+

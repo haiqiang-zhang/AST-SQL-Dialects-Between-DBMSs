@@ -1,0 +1,45 @@
+--Query--
+SELECT * FROM source WHERE toYYYYMM(ts) = 202112
+--Result--
+[(datetime.datetime(2021, 12, 31, 23, 0, tzinfo=<UTC>), 0)]
++--------------------+
+--Query--
+SELECT * FROM source WHERE toYear(ts) = 2021
+--Result--
+[(datetime.datetime(2021, 12, 31, 23, 0, tzinfo=<UTC>), 0)]
++--------------------+
+--Query--
+SELECT * FROM source WHERE toYYYYMM(ts) = 202112 SETTINGS allow_experimental_analyzer=1
+--Result--
+[(datetime.datetime(2021, 12, 31, 23, 0, tzinfo=<UTC>), 0)]
++--------------------+
+--Query--
+SELECT * FROM source WHERE toYear(ts) = 2021 SETTINGS allow_experimental_analyzer=1
+--Result--
+[(datetime.datetime(2021, 12, 31, 23, 0, tzinfo=<UTC>), 0)]
++--------------------+
+--Query--
+SELECT 'Date'
+--Result--
+[('Date',)]
++--------------------+
+--Query--
+SELECT count(*) FROM source WHERE toYYYYMM(dt) = 202312
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 'DateTime'
+--Result--
+[('DateTime',)]
++--------------------+
+--Query--
+SELECT 'Date32'
+--Result--
+[('Date32',)]
++--------------------+
+--Query--
+SELECT 'DateTime64'
+--Result--
+[('DateTime64',)]
++--------------------+

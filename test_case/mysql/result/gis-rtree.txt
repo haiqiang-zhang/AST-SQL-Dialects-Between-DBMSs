@@ -1,0 +1,30 @@
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT fid, ST_AsText(g) FROM t1 WHERE ST_Within(g, ST_GeomFromText('Polygon((140 140,160 140,160 160,140 160,140 140))'))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE foo != POINT(0,0)
+--Result--
+[(1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE   MBRINTERSECTS(b, ST_GEOMFROMTEXT('LINESTRING(1 1,1102219 2)') )
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a = ST_GEOMFROMTEXT('LINESTRING(-1 -1, 1 -1, -1 -1, -1 1, 1 1)')
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT ST_ASTEXT(a), ST_ASTEXT(b) FROM t1
+--Result--
+[]
++--------------------+

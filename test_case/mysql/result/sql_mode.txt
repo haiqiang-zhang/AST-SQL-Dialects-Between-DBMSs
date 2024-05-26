@@ -1,0 +1,135 @@
+--Query--
+SELECT p, hex(a) FROM t1
+--Result--
+[(1, '5C'), (2, '0A'), (3, '08'), (4, '0D'), (5, '09'), (6, '78'), (7, '61'), (8, '6161'), (9, '5C61'), (10, '5C6161'), (11, '5F'), (12, '5C5F'), (13, '5C5F'), (14, '5C5C5F'), (15, '5C5C5F'), (16, '25'), (17, '5C25'), (18, '5C25'), (19, '5C5C25'), (20, '5C5C25')]
++--------------------+
+--Query--
+select   masks.p,   masks.a as mask,   examples.a as example from             t1 as masks   left join t1 as examples on examples.a LIKE masks.a order by masks.p, example
+--Result--
+[(1, '\\', '\\'), (6, 'x', 'x'), (7, 'a', 'a'), (8, 'aa', 'aa'), (9, '\\a', 'a'), (10, '\\aa', 'aa'), (11, '_', '%'), (11, '_', 'a'), (11, '_', 'x'), (11, '_', '\\'), (11, '_', '_'), (12, '\\_', '_'), (13, '\\_', '_'), (14, '\\\\_', '\\%'), (14, '\\\\_', '\\%'), (14, '\\\\_', '\\a'), (14, '\\\\_', '\\_'), (14, '\\\\_', '\\_'), (15, '\\\\_', '\\%'), (15, '\\\\_', '\\%'), (15, '\\\\_', '\\a'), (15, '\\\\_', '\\_'), (15, '\\\\_', '\\_'), (16, '%', '%'), (16, '%', 'a'), (16, '%', 'aa'), (16, '%', 'x'), (16, '%', '\\'), (16, '%', '\\%'), (16, '%', '\\%'), (16, '%', '\\a'), (16, '%', '\\aa'), (16, '%', '\\\\%'), (16, '%', '\\\\%'), (16, '%', '\\\\_'), (16, '%', '\\\\_'), (16, '%', '\\_'), (16, '%', '\\_'), (16, '%', '_'), (17, '\\%', '%'), (18, '\\%', '%'), (19, '\\\\%', '\\'), (19, '\\\\%', '\\%'), (19, '\\\\%', '\\%'), (19, '\\\\%', '\\a'), (19, '\\\\%', '\\aa'), (19, '\\\\%', '\\\\%'), (19, '\\\\%', '\\\\%'), (19, '\\\\%', '\\\\_'), (19, '\\\\%', '\\\\_'), (19, '\\\\%', '\\_'), (19, '\\\\%', '\\_'), (20, '\\\\%', '\\'), (20, '\\\\%', '\\%'), (20, '\\\\%', '\\%'), (20, '\\\\%', '\\a'), (20, '\\\\%', '\\aa'), (20, '\\\\%', '\\\\%'), (20, '\\\\%', '\\\\%'), (20, '\\\\%', '\\\\_'), (20, '\\\\%', '\\\\_'), (20, '\\\\%', '\\_'), (20, '\\\\%', '\\_')]
++--------------------+
+--Query--
+select   masks.p,   masks.a as mask,   examples.a as example from             t1 as masks   left join t1 as examples on examples.a LIKE masks.a order by masks.p, example
+--Result--
+[(1, '\\', '\\'), (6, 'x', 'x'), (7, 'a', 'a'), (8, 'aa', 'aa'), (9, '\\a', 'a'), (10, '\\aa', 'aa'), (11, '_', '%'), (11, '_', 'a'), (11, '_', 'x'), (11, '_', '\\'), (11, '_', '_'), (12, '\\_', '_'), (13, '\\_', '_'), (14, '\\\\_', '\\%'), (14, '\\\\_', '\\%'), (14, '\\\\_', '\\a'), (14, '\\\\_', '\\_'), (14, '\\\\_', '\\_'), (15, '\\\\_', '\\%'), (15, '\\\\_', '\\%'), (15, '\\\\_', '\\a'), (15, '\\\\_', '\\_'), (15, '\\\\_', '\\_'), (16, '%', '%'), (16, '%', 'a'), (16, '%', 'aa'), (16, '%', 'x'), (16, '%', '\\'), (16, '%', '\\%'), (16, '%', '\\%'), (16, '%', '\\a'), (16, '%', '\\aa'), (16, '%', '\\\\%'), (16, '%', '\\\\%'), (16, '%', '\\\\_'), (16, '%', '\\\\_'), (16, '%', '\\_'), (16, '%', '\\_'), (16, '%', '_'), (17, '\\%', '%'), (18, '\\%', '%'), (19, '\\\\%', '\\'), (19, '\\\\%', '\\%'), (19, '\\\\%', '\\%'), (19, '\\\\%', '\\a'), (19, '\\\\%', '\\aa'), (19, '\\\\%', '\\\\%'), (19, '\\\\%', '\\\\%'), (19, '\\\\%', '\\\\_'), (19, '\\\\%', '\\\\_'), (19, '\\\\%', '\\_'), (19, '\\\\%', '\\_'), (20, '\\\\%', '\\'), (20, '\\\\%', '\\%'), (20, '\\\\%', '\\%'), (20, '\\\\%', '\\a'), (20, '\\\\%', '\\aa'), (20, '\\\\%', '\\\\%'), (20, '\\\\%', '\\\\%'), (20, '\\\\%', '\\\\_'), (20, '\\\\%', '\\\\_'), (20, '\\\\%', '\\_'), (20, '\\\\%', '\\_')]
++--------------------+
+--Query--
+SELECT 'a\\b', 'a\\\"b', 'a''\\b', 'a''\\\"b'
+--Result--
+[('a\\b', 'a\\"b', "a'\\b", 'a\'\\"b')]
++--------------------+
+--Query--
+SELECT "a\\b", "a\\\'b", "a""\\b", "a""\\\'b"
+--Result--
+[('a\\b', "a\\'b", 'a"\\b', 'a"\\\'b')]
++--------------------+
+--Query--
+SELECT 'a\\b', 'a\\\"b', 'a''\\b', 'a''\\\"b'
+--Result--
+[('a\\b', 'a\\"b', "a'\\b", 'a\'\\"b')]
++--------------------+
+--Query--
+SELECT "a\\b", "a\\\'b", "a""\\b", "a""\\\'b"
+--Result--
+[('a\\b', "a\\'b", 'a"\\b', 'a"\\\'b')]
++--------------------+
+--Query--
+select @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+select @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+select @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+select @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+select @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+select concat('x',b,'x') from t1
+--Result--
+[('xax',), ('xb\tx',), ('xcx',)]
++--------------------+
+--Query--
+select current_user()
+--Result--
+[('tester@localhost',)]
++--------------------+
+--Query--
+SELECT @@sql_mode LIKE '%NO_ENGINE_SUBSTITUTION%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+PREPARE insert_stmt FROM 'INSERT INTO test_table VALUES (?)'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE update_stmt FROM 'UPDATE test_table SET c1= ? WHERE c1= ?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+SELECT @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+SELECT @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+SELECT '\''
+--Result--
+[("'",)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'UPDATE test SET count = count + 1 WHERE id = ?'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test
+--Result--
+[(1, 0.0), (2, 0.0)]
++--------------------+

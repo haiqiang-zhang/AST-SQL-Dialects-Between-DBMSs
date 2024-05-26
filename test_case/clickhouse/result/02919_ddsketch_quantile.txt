@@ -1,0 +1,60 @@
+--Query--
+SELECT '1'
+--Result--
+[('1',)]
++--------------------+
+--Query--
+SELECT round(quantileDD(0.01, 0.5)(number), 2) FROM numbers(200)
+--Result--
+[(98.5,)]
++--------------------+
+--Query--
+SELECT '2'
+--Result--
+[('2',)]
++--------------------+
+--Query--
+SELECT round(quantileDD(0.01, 0.5)(number), 2) FROM (     SELECT arrayJoin([toInt64(number), number - 10]) AS number     FROM numbers(0, 10) )
+--Result--
+[(-1.01,)]
++--------------------+
+--Query--
+SELECT '3'
+--Result--
+[('3',)]
++--------------------+
+--Query--
+SELECT '4'
+--Result--
+[('4',)]
++--------------------+
+--Query--
+SELECT '5'
+--Result--
+[('5',)]
++--------------------+
+--Query--
+SELECT '6'
+--Result--
+[('6',)]
++--------------------+
+--Query--
+SELECT '7'
+--Result--
+[('7',)]
++--------------------+
+--Query--
+SELECT '8'
+--Result--
+[('8',)]
++--------------------+
+--Query--
+SELECT '9'
+--Result--
+[('9',)]
++--------------------+
+--Query--
+SELECT arrayMap(a -> round(a, 2), (quantilesDDMerge(0.001, 0.9)(sketch))) FROM `02919_ddsketch_quantile`
+--Result--
+[([1799.03],)]
++--------------------+

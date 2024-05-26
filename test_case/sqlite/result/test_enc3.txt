@@ -1,0 +1,40 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[("abc'123", 5)]
++--------------------+
+--Query--
+SELECT quote(x) || ' ' || quote(y) FROM t1
+--Result--
+[("'abc''123' 5",)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(b'abcdef', None)]
++--------------------+
+--Query--
+SELECT quote(x) || ' ' || quote(y) FROM t1
+--Result--
+[("X'616263646566' NULL",)]
++--------------------+
+--Query--
+SELECT CAST(a AS text) FROM t2 WHERE CAST(a AS text) LIKE 'abc%'
+--Result--
+[('abcde',)]
++--------------------+
+--Query--
+SELECT rowid FROM t2        WHERE CAST(a AS text) LIKE CAST(x'610062002500' AS text)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+ATTACH 'test.db' AS utf16
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM utf16.sqlite_master LIMIT 1
+--Result--
+[]
++--------------------+

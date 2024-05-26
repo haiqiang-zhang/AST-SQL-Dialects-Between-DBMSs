@@ -1,8 +1,3 @@
-
--- and `SHOW CREATE DICTIONARY`.
------------------------------------------------------------------------------------
-
--- prerequisites
 CREATE TABLE source_table
 (
     id UInt64,

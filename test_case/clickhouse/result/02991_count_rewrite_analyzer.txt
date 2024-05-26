@@ -1,0 +1,20 @@
+--Query--
+SELECT toTypeName(sum(toNullable('a') IN toNullable('a'))) AS x
+--Result--
+[('Nullable(UInt64)',)]
++--------------------+
+--Query--
+SELECT toTypeName(count(toNullable('a') IN toNullable('a'))) AS x
+--Result--
+[('UInt64',)]
++--------------------+
+--Query--
+SELECT toTypeName(sum(toFixedString('a', toLowCardinality(toNullable(1))) IN toFixedString('a', 1))) AS x
+--Result--
+[('Nullable(UInt64)',)]
++--------------------+
+--Query--
+SELECT toTypeName(count(toFixedString('a', toLowCardinality(toNullable(1))) IN toFixedString('a', 1))) AS x
+--Result--
+[('UInt64',)]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+SELECT count() FROM constrained
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SHOW CREATE TABLE constrained
+--Result--
+[("CREATE TABLE test.constrained\n(\n    `URL` String,\n    CONSTRAINT is_censor CHECK domainWithoutWWW(URL) = 'censor.net',\n    CONSTRAINT is_utf8 CHECK isValidUTF8(URL)\n)\nENGINE = Log",)]
++--------------------+
+--Query--
+SHOW CREATE TABLE constrained2
+--Result--
+[("CREATE TABLE test.constrained2\n(\n    `URL` String,\n    CONSTRAINT is_censor CHECK domainWithoutWWW(URL) = 'censor.net',\n    CONSTRAINT is_utf8 CHECK isValidUTF8(URL)\n)\nENGINE = Log",)]
++--------------------+

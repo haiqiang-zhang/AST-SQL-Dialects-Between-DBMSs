@@ -1,0 +1,45 @@
+--Query--
+ATTACH 'test.db2' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM pragma_table_info('t1')
+--Result--
+[(0, 'a', '', 0, None, 0), (1, 'b', '', 0, None, 0), (2, 'c', '', 0, None, 0)]
++--------------------+
+--Query--
+SELECT * FROM pragma_index_info('i1')
+--Result--
+[(0, 1, 'b')]
++--------------------+
+--Query--
+SELECT * FROM main.sqlite_master, aux.sqlite_master
+--Result--
+[('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'log', 'log', 2, 'CREATE TABLE log(v)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'ppp', 'ppp', 3, 'CREATE TABLE "ppp"(a INTEGER PRIMARY KEY, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'c1', 'c1', 4, 'CREATE TABLE c1(x INTEGER PRIMARY KEY, y REFERENCES "ppp"(a))'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'c2', 'c2', 5, 'CREATE TABLE c2(x INTEGER PRIMARY KEY, y REFERENCES c1(a))'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't8', 't8', 8, 'CREATE TABLE t8(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't9', 't9', 9, 'CREATE TABLE t9(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'tblname', 'tblname', 10, 'CREATE TABLE tblname(cname)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't1', 't1', 11, 'CREATE TABLE t1(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't5', 't5', 12, 'CREATE TABLE t5(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'p1', 'p1', 14, 'CREATE TABLE p1(a INTEGER PRIMARY KEY)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'f3_rules', 'f3_rules', 15, 'CREATE TABLE f3_rules(ruleset, cfrom, cto, cost)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'b', 'b', 6, 'CREATE TABLE b(x)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't2', 't2', 13, 'CREATE TABLE t2(d, e, f)')]
++--------------------+
+--Query--
+SELECT * FROM pragma_index_list('t1')
+--Result--
+[(0, 'i1', 0, 'c', 0)]
++--------------------+
+--Query--
+SELECT * FROM main.sqlite_master, aux.sqlite_master
+--Result--
+[('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'log', 'log', 2, 'CREATE TABLE log(v)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'ppp', 'ppp', 3, 'CREATE TABLE "ppp"(a INTEGER PRIMARY KEY, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'c1', 'c1', 4, 'CREATE TABLE c1(x INTEGER PRIMARY KEY, y REFERENCES "ppp"(a))'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'c2', 'c2', 5, 'CREATE TABLE c2(x INTEGER PRIMARY KEY, y REFERENCES c1(a))'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't8', 't8', 8, 'CREATE TABLE t8(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't9', 't9', 9, 'CREATE TABLE t9(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'tblname', 'tblname', 10, 'CREATE TABLE tblname(cname)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't1', 't1', 11, 'CREATE TABLE t1(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't5', 't5', 12, 'CREATE TABLE t5(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'p1', 'p1', 14, 'CREATE TABLE p1(a INTEGER PRIMARY KEY)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'f3_rules', 'f3_rules', 15, 'CREATE TABLE f3_rules(ruleset, cfrom, cto, cost)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'b', 'b', 6, 'CREATE TABLE b(x)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't2', 't2', 13, 'CREATE TABLE t2(d, e, f)')]
++--------------------+
+--Query--
+SELECT * FROM pragma_foreign_key_list('c1')
+--Result--
+[(0, 0, 't1', 'c', 'a', 'NO ACTION', 'NO ACTION', 'NONE')]
++--------------------+
+--Query--
+SELECT * FROM main.sqlite_master, aux.sqlite_master
+--Result--
+[('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'log', 'log', 2, 'CREATE TABLE log(v)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'ppp', 'ppp', 3, 'CREATE TABLE "ppp"(a INTEGER PRIMARY KEY, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'c1', 'c1', 4, 'CREATE TABLE c1(x INTEGER PRIMARY KEY, y REFERENCES "ppp"(a))'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't8', 't8', 8, 'CREATE TABLE t8(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't9', 't9', 9, 'CREATE TABLE t9(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'tblname', 'tblname', 10, 'CREATE TABLE tblname(cname)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't1', 't1', 11, 'CREATE TABLE t1(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't5', 't5', 12, 'CREATE TABLE t5(a, b)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'p1', 'p1', 14, 'CREATE TABLE p1(a INTEGER PRIMARY KEY)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'f3_rules', 'f3_rules', 15, 'CREATE TABLE f3_rules(ruleset, cfrom, cto, cost)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 'b', 'b', 6, 'CREATE TABLE b(x)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'table', 't2', 't2', 13, 'CREATE TABLE t2(d, e, f)'), ('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)', 'index', 'i2', 't2', 7, 'CREATE UNIQUE INDEX i2 ON t2(d)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'log', 'log', 2, 'CREATE TABLE log(v)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'ppp', 'ppp', 3, 'CREATE TABLE "ppp"(a INTEGER PRIMARY KEY, b)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'c1', 'c1', 4, 'CREATE TABLE c1(x INTEGER PRIMARY KEY, y REFERENCES "ppp"(a))'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 't8', 't8', 8, 'CREATE TABLE t8(a, b)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 't9', 't9', 9, 'CREATE TABLE t9(a, b)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'tblname', 'tblname', 10, 'CREATE TABLE tblname(cname)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 't1', 't1', 11, 'CREATE TABLE t1(a, b)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 't5', 't5', 12, 'CREATE TABLE t5(a, b)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'p1', 'p1', 14, 'CREATE TABLE p1(a INTEGER PRIMARY KEY)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'f3_rules', 'f3_rules', 15, 'CREATE TABLE f3_rules(ruleset, cfrom, cto, cost)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 'b', 'b', 6, 'CREATE TABLE b(x)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'table', 't2', 't2', 13, 'CREATE TABLE t2(d, e, f)'), ('index', 'i1', 't1', 3, 'CREATE UNIQUE INDEX i1 ON t1(a)', 'index', 'i2', 't2', 7, 'CREATE UNIQUE INDEX i2 ON t2(d)')]
++--------------------+
+--Query--
+SELECT t.name, f."table", f."from", i.name, i.pk       FROM pragma_table_list() AS t            JOIN pragma_foreign_key_list(t.name, t.schema) AS f            JOIN pragma_table_info(f."table", t.schema) AS i      WHERE i.pk
+--Result--
+[]
++--------------------+

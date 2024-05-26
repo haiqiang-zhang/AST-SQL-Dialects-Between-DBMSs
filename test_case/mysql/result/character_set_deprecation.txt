@@ -1,0 +1,130 @@
+--Query--
+SELECT _utf8mb3'abc'
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT n'abc'
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT CONVERT ( 'abc' USING utf8mb3 )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT CAST( 'abc' AS NATIONAL CHAR )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET utf8mb3 PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET "utf8mb3" PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET 'utf8mb3' PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET `utf8mb3` PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p NATIONAL CHAR(1) PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]' COLUMNS (p NCHAR(1) PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]' COLUMNS (p NCHAR PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]' COLUMNS (p NVARCHAR(1) PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT HEX(_ucs2'abc')
+--Result--
+[('00616263',)]
++--------------------+
+--Query--
+SELECT CONVERT ( 'abc' USING ucs2 )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET ucs2 COLLATE ucs2_persian_ci PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONVERT ( 'abc' USING macroman )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET macroman COLLATE macroman_general_ci PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONVERT ( 'abc' USING macce )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET macce COLLATE macce_general_ci PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@character_set_results
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+SELECT @@character_set_results
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+SELECT @@character_set_results
+--Result--
+[('utf8mb4',)]
++--------------------+
+--Query--
+SELECT CONVERT ( 'abc' USING dec8 )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET dec8 COLLATE dec8_swedish_ci PATH '$.a')) AS t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONVERT ( 'abc' USING hp8 )
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+SELECT * FROM json_table('[]', '$[*]'   COLUMNS (p CHAR(1) CHARACTER SET hp8 COLLATE hp8_english_ci PATH '$.a')) AS t
+--Result--
+[]
++--------------------+

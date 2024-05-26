@@ -1,0 +1,25 @@
+--Query--
+SELECT x FROM primary_key ORDER BY x
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT 'a', -x FROM primary_key WHERE -x < -3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'b', -x FROM primary_key WHERE -x < -2
+--Result--
+[('b', -3)]
++--------------------+
+--Query--
+SELECT 'c', -x FROM primary_key WHERE -x < -1
+--Result--
+[('c', -3), ('c', -2)]
++--------------------+
+--Query--
+SELECT 'd', -x FROM primary_key WHERE -x < toInt8(0)
+--Result--
+[('d', -3), ('d', -2), ('d', -1)]
++--------------------+

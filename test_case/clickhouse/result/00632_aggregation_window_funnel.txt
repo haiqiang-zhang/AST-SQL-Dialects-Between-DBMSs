@@ -1,0 +1,120 @@
+--Query--
+select 1 = windowFunnel(10000)(timestamp, event = 1000) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 = windowFunnel(10000)(timestamp, event = 1000, event = 1001) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 3 = windowFunnel(10000)(timestamp, event = 1000, event = 1001, event = 1002) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 4 = windowFunnel(10000)(timestamp, event = 1000, event = 1001, event = 1002, event = 1008) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 = windowFunnel(1)(timestamp, event = 1000) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 3 = windowFunnel(2)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 4 = windowFunnel(3)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 5 = windowFunnel(4)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 5 = windowFunnel(4)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 = windowFunnel(10000)(timestamp, event = 1001, event = 1008) from funnel_test2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 = windowFunnel(10000)(timestamp, event = 1008, event = 1001) from funnel_test2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 5 = windowFunnel(4)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 4 = windowFunnel(4)(timestamp, event <= 1007, event >= 1002, event <= 1006, event >= 1004) from funnel_test2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 5 = windowFunnel(4)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test_u64
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 = windowFunnel(10000)(timestamp, event = 1001, event = 1008) from funnel_test_u64
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 = windowFunnel(10000)(timestamp, event = 1008, event = 1001) from funnel_test_u64
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 5 = windowFunnel(4)(timestamp, event = 1003, event = 1004, event = 1005, event = 1006, event = 1007) from funnel_test_u64
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 4 = windowFunnel(4)(timestamp, event <= 1007, event >= 1002, event <= 1006, event >= 1004) from funnel_test_u64
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 6 = windowFunnel(10000, 'strict_deduplication')(timestamp, event = 1000, event = 1001, event = 1002, event = 1003, event = 1004, event = 1005, event = 1006) from funnel_test_strict
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 7 = windowFunnel(10000)(timestamp, event = 1000, event = 1001, event = 1002, event = 1003, event = 1004, event = 1005, event = 1006) from funnel_test_strict
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 5 = windowFunnel(10000)(timestamp, event = 1000, event = 1001, event = 1002, event = 1003, event = 1004) from funnel_test_strict_increase
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 2 = windowFunnel(10000, 'strict_increase')(timestamp, event = 1000, event = 1001, event = 1002, event = 1003, event = 1004) from funnel_test_strict_increase
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 3 = windowFunnel(10000)(timestamp, event = 1004, event = 1004, event = 1004) from funnel_test_strict_increase
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 = windowFunnel(10000, 'strict_increase')(timestamp, event = 1004, event = 1004, event = 1004) from funnel_test_strict_increase
+--Result--
+[(1,)]
++--------------------+

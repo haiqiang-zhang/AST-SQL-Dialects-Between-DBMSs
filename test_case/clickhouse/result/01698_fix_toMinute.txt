@@ -1,0 +1,25 @@
+--Query--
+SELECT 'Check the bug causing situation: the special Australia/Lord_Howe time zone. toDateTime and toString functions are all tested at once'
+--Result--
+[('Check the bug causing situation: the special Australia/Lord_Howe time zone. toDateTime and toString functions are all tested at once',)]
++--------------------+
+--Query--
+SELECT toUnixTimestamp(x) as tt, (toDateTime('2019-04-07 01:00:00', 'Australia/Lord_Howe') + INTERVAL number * 600 SECOND) AS x,  toString(x) as xx FROM numbers(20)
+--Result--
+[(1554559200, datetime.datetime(2019, 4, 7, 1, 0, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +11+11:00:00 DST>), '2019-04-07 01:00:00'), (1554559800, datetime.datetime(2019, 4, 7, 1, 10, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +11+11:00:00 DST>), '2019-04-07 01:10:00'), (1554560400, datetime.datetime(2019, 4, 7, 1, 20, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +11+11:00:00 DST>), '2019-04-07 01:20:00'), (1554561000, datetime.datetime(2019, 4, 7, 1, 30, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +11+11:00:00 DST>), '2019-04-07 01:30:00'), (1554561600, datetime.datetime(2019, 4, 7, 1, 40, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +11+11:00:00 DST>), '2019-04-07 01:40:00'), (1554562200, datetime.datetime(2019, 4, 7, 1, 50, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +11+11:00:00 DST>), '2019-04-07 01:50:00'), (1554562800, datetime.datetime(2019, 4, 7, 1, 30, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 01:30:00'), (1554563400, datetime.datetime(2019, 4, 7, 1, 40, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 01:40:00'), (1554564000, datetime.datetime(2019, 4, 7, 1, 50, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 01:50:00'), (1554564600, datetime.datetime(2019, 4, 7, 2, 0, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 02:00:00'), (1554565200, datetime.datetime(2019, 4, 7, 2, 10, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 02:10:00'), (1554565800, datetime.datetime(2019, 4, 7, 2, 20, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 02:20:00'), (1554566400, datetime.datetime(2019, 4, 7, 2, 30, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 02:30:00'), (1554567000, datetime.datetime(2019, 4, 7, 2, 40, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 02:40:00'), (1554567600, datetime.datetime(2019, 4, 7, 2, 50, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 02:50:00'), (1554568200, datetime.datetime(2019, 4, 7, 3, 0, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 03:00:00'), (1554568800, datetime.datetime(2019, 4, 7, 3, 10, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 03:10:00'), (1554569400, datetime.datetime(2019, 4, 7, 3, 20, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 03:20:00'), (1554570000, datetime.datetime(2019, 4, 7, 3, 30, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 03:30:00'), (1554570600, datetime.datetime(2019, 4, 7, 3, 40, tzinfo=<DstTzInfo 'Australia/Lord_Howe' +1030+10:30:00 STD>), '2019-04-07 03:40:00')]
++--------------------+
+--Query--
+SELECT '4 days test in batch comparing with manually computation result for Asia/Istanbul whose timezone epoc is of whole hour:'
+--Result--
+[('4 days test in batch comparing with manually computation result for Asia/Istanbul whose timezone epoc is of whole hour:',)]
++--------------------+
+--Query--
+SELECT '4 days test in batch comparing with manually computation result for Asia/Tehran whose timezone epoc is of half hour:'
+--Result--
+[('4 days test in batch comparing with manually computation result for Asia/Tehran whose timezone epoc is of half hour:',)]
++--------------------+
+--Query--
+SELECT '4 days test in batch comparing with manually computation result for Australia/Lord_Howe whose timezone epoc is of half hour and also its DST offset is half hour:'
+--Result--
+[('4 days test in batch comparing with manually computation result for Australia/Lord_Howe whose timezone epoc is of half hour and also its DST offset is half hour:',)]
++--------------------+

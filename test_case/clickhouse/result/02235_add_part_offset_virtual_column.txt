@@ -1,0 +1,100 @@
+--Query--
+OPTIMIZE TABLE t_1 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(DISTINCT(_part)) FROM t_1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT min(_part_offset), max(_part_offset) FROM t_1
+--Result--
+[(0, 999999)]
++--------------------+
+--Query--
+SELECT count(*) FROM t_1 WHERE _part_offset != order_0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, _part FROM t_1 ORDER BY order_0 LIMIT 3
+--Result--
+[(0, 0, '198401_1_1_1'), (1, 1, '198401_1_1_1'), (2, 2, '198401_1_1_1')]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, _part FROM t_1 ORDER BY order_0 DESC LIMIT 3
+--Result--
+[(999999, 999999, '198401_1_1_1'), (999998, 999998, '198401_1_1_1'), (999997, 999997, '198401_1_1_1')]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, _part FROM t_1 WHERE order_0 <= 1 OR (order_0 BETWEEN 10000 AND 10002) OR order_0 >= 999998 ORDER BY order_0
+--Result--
+[(0, 0, '198401_1_1_1'), (1, 1, '198401_1_1_1'), (10000, 10000, '198401_1_1_1'), (10001, 10001, '198401_1_1_1'), (10002, 10002, '198401_1_1_1'), (999998, 999998, '198401_1_1_1'), (999999, 999999, '198401_1_1_1')]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, _part FROM t_1 WHERE order_0 <= 1 OR (order_0 BETWEEN 10000 AND 10002) OR order_0 >= 999998 ORDER BY order_0 DESC
+--Result--
+[(999999, 999999, '198401_1_1_1'), (999998, 999998, '198401_1_1_1'), (10002, 10002, '198401_1_1_1'), (10001, 10001, '198401_1_1_1'), (10000, 10000, '198401_1_1_1'), (1, 1, '198401_1_1_1'), (0, 0, '198401_1_1_1')]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, computed FROM t_1 ORDER BY order_0, _part_offset, computed LIMIT 3
+--Result--
+[(0, 0, 'computed_1984-01-01'), (1, 1, 'computed_1984-01-01'), (2, 2, 'computed_1984-01-01')]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, computed FROM t_1 ORDER BY order_0 DESC, _part_offset DESC, computed DESC LIMIT 3
+--Result--
+[(999999, 999999, 'computed_1984-01-01'), (999998, 999998, 'computed_1984-01-01'), (999997, 999997, 'computed_1984-01-01')]
++--------------------+
+--Query--
+SELECT order_0, _part_offset, _part FROM t_1 WHERE order_0 <= 1 OR order_0 >= 999998 ORDER BY order_0 LIMIT 3
+--Result--
+[(0, 0, '198401_1_1_1'), (1, 1, '198401_1_1_1'), (999998, 999998, '198401_1_1_1')]
++--------------------+
+--Query--
+SELECT _part_offset FROM t_1 ORDER BY order_0 LIMIT 3
+--Result--
+[(0,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT _part_offset, foo FROM t_1 ORDER BY order_0 LIMIT 3
+--Result--
+[(0, 'foo'), (1, 'foo'), (2, 'foo')]
++--------------------+
+--Query--
+SELECT 'SOME GRANULES FILTERED OUT'
+--Result--
+[('SOME GRANULES FILTERED OUT',)]
++--------------------+
+--Query--
+SELECT count(*), sum(_part_offset), sum(order_0) from t_1 where granule == 0
+--Result--
+[(335872, 166463369216, 166463369216)]
++--------------------+
+--Query--
+SELECT _part_offset FROM t_1 where granule == 0 AND _part_offset >= 100000 ORDER BY order_0 LIMIT 3
+--Result--
+[(100000,), (100001,), (100002,)]
++--------------------+
+--Query--
+SELECT _part_offset, foo FROM t_1 where granule == 0 AND _part_offset >= 100000 ORDER BY order_0 LIMIT 3
+--Result--
+[(100000, 'foo'), (100001, 'foo'), (100002, 'foo')]
++--------------------+
+--Query--
+SELECT 'PREWHERE'
+--Result--
+[('PREWHERE',)]
++--------------------+
+--Query--
+SELECT _part_offset FROM t_1 PREWHERE order_0 % 10000 == 42 ORDER BY order_0 LIMIT 3
+--Result--
+[(42,), (10042,), (20042,)]
++--------------------+
+--Query--
+SELECT _part_offset, foo FROM t_1 PREWHERE order_0 % 10000 == 42 ORDER BY order_0 LIMIT 3
+--Result--
+[(42, 'foo'), (10042, 'foo'), (20042, 'foo')]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+SELECT '-- negative tests'
+--Result--
+[('-- negative tests',)]
++--------------------+
+--Query--
+SELECT '-- test mysql compatibility setting'
+--Result--
+[('-- test mysql compatibility setting',)]
++--------------------+
+--Query--
+SELECT locate('abcabc', 'ca')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT locate('abcabc', 'ca') SETTINGS function_locate_has_mysql_compatible_argument_order = true
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT locate('abcabc', 'ca') SETTINGS function_locate_has_mysql_compatible_argument_order = false
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT '-- the function name needs to be case-insensitive for historical reasons'
+--Result--
+[('-- the function name needs to be case-insensitive for historical reasons',)]
++--------------------+
+--Query--
+SELECT LoCaTe('abcabc', 'ca')
+--Result--
+[(0,)]
++--------------------+

@@ -1,0 +1,275 @@
+--Query--
+SELECT * FROM t1 FOR UPDATE
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE NOWAIT
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE SKIP LOCKED
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE NOWAIT
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE SKIP LOCKED
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE OF t1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE OF t1 NOWAIT
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE OF t1 SKIP LOCKED
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE OF t1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE OF t1 NOWAIT
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE OF t1 SKIP LOCKED
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR SHARE OF t1, t2
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR SHARE OF t1, t2 NOWAIT
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR SHARE OF t1, t2 SKIP LOCKED
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR UPDATE OF t1, t2
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR UPDATE OF t1, t2 NOWAIT
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR UPDATE OF t1, t2 SKIP LOCKED
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN t2 FOR UPDATE
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN t2 FOR SHARE
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 STRAIGHT_JOIN t2 FOR UPDATE
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 STRAIGHT_JOIN t2 AS t12 FOR UPDATE OF t12
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 STRAIGHT_JOIN t2 FOR SHARE
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 STRAIGHT_JOIN t2 FOR SHARE OF t1
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 STRAIGHT_JOIN t2 FOR SHARE OF t1 FOR UPDATE OF t2
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 STRAIGHT_JOIN t2 AS t12 FOR UPDATE OF t12, t1
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN t2 FOR SHARE OF t1 FOR UPDATE OF t2
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 NATURAL JOIN t2 FOR SHARE OF t1 FOR UPDATE OF t2
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR SHARE OF t1 FOR UPDATE OF t2
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR SHARE OF t1 FOR SHARE OF t2
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE OF t1 NOWAIT
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR SHARE OF t1 SKIP LOCKED
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 FOR SHARE OF t1 NOWAIT FOR SHARE OF t2 NOWAIT
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT 1 FROM ( SELECT 1 ) AS t2 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM v1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT MIN(a) FROM t1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT MAX(a) FROM t1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SUM(a) FROM t1 FOR UPDATE
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM t1 FOR UPDATE
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM t1 LOCK IN SHARE MODE
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 2 FOR UPDATE
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 2 LOCK IN SHARE MODE
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM t1 FOR UPDATE SKIP LOCKED
+--Result--
+[(1, 1), (10, 10)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM t1 FOR UPDATE NOWAIT
+--Result--
+[(1, 1), (10, 10)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = 2 FOR UPDATE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE NOWAIT
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 FOR UPDATE NOWAIT
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL LIMIT 1 INTO @var FOR UPDATE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM DUAL LIMIT 1 FOR UPDATE INTO @var
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 FOR UPDATE INTO @var
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT 1 INTO @var FOR UPDATE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tt WHERE id = 2 FOR UPDATE
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT * FROM tt WHERE id = 2 FOR UPDATE NOWAIT
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT * FROM tt WHERE id = 2 FOR UPDATE NOWAIT
+--Result--
+[(2, 2)]
++--------------------+
+--Query--
+SELECT * FROM tt WHERE id = 2 FOR UPDATE NOWAIT
+--Result--
+[(2, 2)]
++--------------------+

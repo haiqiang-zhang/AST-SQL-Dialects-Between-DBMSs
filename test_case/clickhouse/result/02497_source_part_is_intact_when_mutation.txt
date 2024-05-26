@@ -1,0 +1,35 @@
+--Query--
+CHECK TABLE t_source_part_is_intact SETTINGS max_threads = 1
+--Result--
+[('all_1_1_0', 1, '')]
++--------------------+
+--Query--
+SELECT 1, count() FROM t_source_part_is_intact
+--Result--
+[(1, 2000)]
++--------------------+
+--Query--
+CHECK TABLE t_source_part_is_intact SETTINGS max_threads = 1
+--Result--
+[('all_1_1_0_2', 1, '')]
++--------------------+
+--Query--
+CHECK TABLE t_source_part_is_intact SETTINGS max_threads = 1
+--Result--
+[('all_1_1_0_3', 1, '')]
++--------------------+
+--Query--
+DETACH TABLE t_source_part_is_intact
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE t_source_part_is_intact
+--Result--
+[]
++--------------------+
+--Query--
+CHECK TABLE t_source_part_is_intact SETTINGS max_threads = 1
+--Result--
+[('all_1_1_0_3', 1, '')]
++--------------------+

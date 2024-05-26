@@ -1,0 +1,40 @@
+--Query--
+SELECT * FROM m INNER JOIN b USING(key)
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT * FROM a INNER JOIN b USING(key) GROUP BY ID, key
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT * FROM m INNER JOIN b USING(key) WHERE ID = 1
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT * FROM m INNER JOIN b USING(key) GROUP BY ID, key
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT ID FROM m INNER JOIN b USING(key) GROUP BY ID
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM m INNER JOIN b USING(key) WHERE ID = 1 HAVING ID = 1 ORDER BY ID
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT * FROM m INNER JOIN b USING(key) WHERE ID = 1 GROUP BY ID, key HAVING ID = 1 ORDER BY ID
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT sum(b.ID), sum(m.key) FROM m FULL JOIN b ON (m.key == b.key) GROUP BY key
+--Result--
+[(1, 0)]
++--------------------+

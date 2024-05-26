@@ -1,0 +1,45 @@
+--Query--
+WITH RECURSIVE closure(x) AS (      VALUES(1)      UNION      SELECT aa FROM closure, link WHERE link.bb=closure.x      UNION      SELECT bb FROM closure, link WHERE link.aa=closure.x   )   SELECT x FROM closure ORDER BY x
+--Result--
+[(1,), (3,), (5,), (7,), (9,), (11,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (      VALUES(1)      UNION      SELECT aa FROM link, closure WHERE link.bb=closure.x      UNION      SELECT bb FROM closure, link WHERE link.aa=closure.x   )   SELECT x FROM closure ORDER BY x
+--Result--
+[(1,), (3,), (5,), (7,), (9,), (11,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (      VALUES(1)      UNION      SELECT bb FROM closure, link WHERE link.aa=closure.x      UNION      SELECT aa FROM link, closure WHERE link.bb=closure.x   )   SELECT x FROM closure ORDER BY x
+--Result--
+[(1,), (3,), (5,), (7,), (9,), (11,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (      VALUES(1),(200),(300),(400)      INTERSECT      VALUES(1)      UNION      SELECT bb FROM closure, link WHERE link.aa=closure.x      UNION      SELECT aa FROM link, closure WHERE link.bb=closure.x   )   SELECT x FROM closure ORDER BY x
+--Result--
+[(1,), (3,), (5,), (7,), (9,), (11,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (      VALUES(1),(200),(300),(400)      UNION ALL      VALUES(2)      UNION      SELECT bb FROM closure, link WHERE link.aa=closure.x      UNION      SELECT aa FROM link, closure WHERE link.bb=closure.x   )   SELECT x FROM closure ORDER BY x
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (11,), (200,), (300,), (400,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (     SELECT 1 AS x     UNION     SELECT aa FROM link JOIN closure ON bb=x     UNION     SELECT bb FROM link JOIN closure on aa=x     ORDER BY x LIMIT 4   )   SELECT * FROM closure
+--Result--
+[(1,), (3,), (5,), (7,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (     SELECT 1 AS x     UNION ALL     SELECT 2     UNION     SELECT aa FROM link JOIN closure ON bb=x     UNION     SELECT bb FROM link JOIN closure on aa=x     ORDER BY x LIMIT 4   )   SELECT * FROM closure
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (     VALUES(1)     UNION ALL     SELECT aa2 FROM linkA JOIN closure ON x=aa1     UNION ALL     SELECT bb2 FROM linkB JOIN closure ON x=bb1     UNION ALL     SELECT cc2 FROM linkC JOIN closure ON x=cc1     UNION ALL     SELECT dd2 FROM linkD JOIN closure ON x=dd1   )   SELECT x FROM closure ORDER BY +x
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (11,), (13,)]
++--------------------+
+--Query--
+WITH RECURSIVE closure(x) AS (     VALUES(1)     UNION ALL     SELECT aa2 FROM linkA_ipk JOIN closure ON x=aa1     UNION ALL     SELECT bb2 FROM linkB_ipk JOIN closure ON x=bb1     UNION ALL     SELECT cc2 FROM linkC_ipk JOIN closure ON x=cc1     UNION ALL     SELECT dd2 FROM linkD_ipk JOIN closure ON x=dd1   )   SELECT x FROM closure ORDER BY +x
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (11,), (13,)]
++--------------------+

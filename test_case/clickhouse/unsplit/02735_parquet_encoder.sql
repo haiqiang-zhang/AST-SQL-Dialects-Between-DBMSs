@@ -1,7 +1,5 @@
 set engine_file_truncate_on_insert=1;
 set allow_suspicious_low_cardinality_types=1;
-
-
 drop table if exists basic_types_02735;
 create temporary table basic_types_02735 as select * from generateRandom('
     u8 UInt8,
@@ -51,8 +49,6 @@ create temporary table nullables_02735 as select * from generateRandom('
 insert into function file(nullables_02735.parquet) select * from nullables_02735;
 select (select sum(cityHash64(*)) from nullables_02735) - (select sum(cityHash64(*)) from file(nullables_02735.parquet));
 drop table nullables_02735;
-
-
 drop table if exists arrays_02735;
 drop table if exists arrays_out_02735;
 create table arrays_02735 engine = Memory as select * from generateRandom('
@@ -90,5 +86,3 @@ insert into function file(datetime64_02735.parquet) select
     toDateTime64(number, 0) as s,
     toDateTime64(number / 1e7, 7) as dus
     from numbers(2000);
-desc file(datetime64_02735.parquet);
-select sum(cityHash64(*)) from file(datetime64_02735.parquet);

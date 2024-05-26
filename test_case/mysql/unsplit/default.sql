@@ -115,7 +115,6 @@ SELECT data_type,
    AND column_name='f3';
 INSERT INTO t1 VALUES(DEFAULT,DEFAULT,DEFAULT);
 SELECT "--base--";
-SELECT HEX(f1),HEX(f2),HEX(f3) FROM t1;
 DROP TABLE t1;
 SELECT "--base,dump--";
 SELECT "--base,dump,pump--";

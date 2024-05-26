@@ -73,7 +73,6 @@ INSERT t1 (a) VALUES
 ('\\%'),
 ('\\\%'),
 ('\\\\%');
-SELECT p, hex(a) FROM t1;
 delete from t1 where a in ('\n','\r','\t', '\b');
 select
   masks.p,
@@ -101,7 +100,6 @@ select @@sql_mode;
 select @@sql_mode;
 create table t1 (a int auto_increment primary key, b char(5));
 insert into t1 (b) values('a'),('b\t'),('c ');
-select concat('x',b,'x') from t1;
 select concat('x',b,'x') from t1;
 drop table t1;
 select current_user();

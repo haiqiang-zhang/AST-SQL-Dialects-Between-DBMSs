@@ -1,0 +1,30 @@
+--Query--
+select * from information_schema.collations order by id limit 1
+--Result--
+[('big5_chinese_ci', 'big5', 1, 'Yes', 'Yes', 1, 'PAD SPACE')]
++--------------------+
+--Query--
+select * from t1 where a in (select a from t11) order by 1, 2, 3 limit 1
+--Result--
+[(1, 67, datetime.datetime(2006, 2, 23, 15, 1, 35))]
++--------------------+
+--Query--
+select * from t1 where a in (select a from t11) order by 1, 2, 3 limit 1
+--Result--
+[(1, 67, datetime.datetime(2006, 2, 23, 15, 1, 35))]
++--------------------+
+--Query--
+select * from t1 union select * from t2 order by 1 limit 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SUM(id) sm FROM t1 group by id order by sm limit 1
+--Result--
+[(128.0,)]
++--------------------+
+--Query--
+SELECT SUM(DISTINCT t1.id) sm FROM t1 left join t2 on t1.id=t2.id GROUP BY t1.id order by sm limit 1
+--Result--
+[(1.0,)]
++--------------------+

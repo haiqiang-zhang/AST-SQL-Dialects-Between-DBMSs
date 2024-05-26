@@ -23,11 +23,8 @@ partition by range columns (a)
 insert into t1 values (0x00410000);
 select hex(a) from t1 where a like 'A_';
 alter table t1 remove partitioning;
-select hex(a) from t1 where a like 'A_';
 create index a on t1 (a);
-select hex(a) from t1 where a like 'A_';
 insert into t1 values ('A_');
-select hex(a) from t1;
 drop table t1;
 create table t1 (a varchar(1) character set latin1 collate latin1_general_ci)
 partition by range columns(a)

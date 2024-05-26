@@ -1,0 +1,15 @@
+--Query--
+WITH '{ "v":1.1}' AS raw SELECT     JSONExtract(raw, 'v', 'float') AS float32_1,     JSONExtract(raw, 'v', 'Float32') AS float32_2,     JSONExtractFloat(raw, 'v') AS float64_1,     JSONExtract(raw, 'v', 'double') AS float64_2
+--Result--
+[(1.100000023841858, 1.100000023841858, 1.1, 1.1)]
++--------------------+
+--Query--
+WITH '{ "v":1E-2}' AS raw SELECT     JSONExtract(raw, 'v', 'float') AS float32_1,     JSONExtract(raw, 'v', 'Float32') AS float32_2,     JSONExtractFloat(raw, 'v') AS float64_1,     JSONExtract(raw, 'v', 'double') AS float64_2
+--Result--
+[(0.009999999776482582, 0.009999999776482582, 0.01, 0.01)]
++--------------------+
+--Query--
+SELECT JSONExtract('{"v":1.1}', 'v', 'UInt64')
+--Result--
+[(1,)]
++--------------------+

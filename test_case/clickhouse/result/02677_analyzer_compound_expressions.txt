@@ -1,0 +1,90 @@
+--Query--
+WITH ('a', 'b')::Tuple(c1 String, c2 String) AS t SELECT t.c1, t.c2
+--Result--
+[('a', 'b')]
++--------------------+
+--Query--
+WITH materialize(('a', 'b')::Tuple(c1 String, c2 String)) AS t SELECT t.c1, t.c2
+--Result--
+[('a', 'b')]
++--------------------+
+--Query--
+WITH (1, ('a', 'b'))::Tuple(c1 UInt64, t1 Tuple(c1 String, c2 String)) AS t SELECT t.c1, t.t1.c1, t.t1.c2
+--Result--
+[(1, 'a', 'b')]
++--------------------+
+--Query--
+WITH materialize((1, ('a', 'b'))::Tuple(c1 UInt64, t1 Tuple(c1 String, c2 String))) AS t SELECT t.c1, t.t1.c1, t.t1.c2
+--Result--
+[(1, 'a', 'b')]
++--------------------+
+--Query--
+WITH [1, 2, 3] AS arr SELECT arr.size0
+--Result--
+[(3,)]
++--------------------+
+--Query--
+WITH materialize([1, 2, 3]) AS arr SELECT arr.size0
+--Result--
+[(3,)]
++--------------------+
+--Query--
+WITH [1, 2, NULL] AS arr SELECT arr.null
+--Result--
+[([0, 0, 1],)]
++--------------------+
+--Query--
+WITH materialize([1, 2, NULL]) AS arr SELECT arr.null
+--Result--
+[([0, 0, 1],)]
++--------------------+
+--Query--
+WITH [[1, 2], [], [3]] AS arr SELECT arr.size0, arr.size1
+--Result--
+[(3, [2, 0, 1])]
++--------------------+
+--Query--
+WITH materialize([[1, 2], [], [3]]) AS arr SELECT arr.size0, arr.size1
+--Result--
+[(3, [2, 0, 1])]
++--------------------+
+--Query--
+WITH map('foo', 1, 'bar', 2) AS m SELECT m.keys, m.values
+--Result--
+[(['foo', 'bar'], [1, 2])]
++--------------------+
+--Query--
+WITH materialize(map('foo', 1, 'bar', 2)) AS m SELECT m.keys, m.values
+--Result--
+[(['foo', 'bar'], [1, 2])]
++--------------------+
+--Query--
+WITH map('foo', 1, 'bar', 2) AS m SELECT m.*
+--Result--
+[(['foo', 'bar'], [1, 2])]
++--------------------+
+--Query--
+WITH map('foo', (1, 2), 'bar', (3, 4))::Map(String, Tuple(a UInt64, b UInt64)) AS m SELECT m.keys, m.values, m.values.a, m.values.b
+--Result--
+[(['foo', 'bar'], [(1, 2), (3, 4)], [1, 3], [2, 4])]
++--------------------+
+--Query--
+WITH materialize(map('foo', (1, 2), 'bar', (3, 4))::Map(String, Tuple(a UInt64, b UInt64))) AS m SELECT m.keys, m.values, m.values.a, m.values.b
+--Result--
+[(['foo', 'bar'], [(1, 2), (3, 4)], [1, 3], [2, 4])]
++--------------------+
+--Query--
+WITH map('foo', (1, 2), 'bar', (3, 4))::Map(String, Tuple(a UInt64, b UInt64)) AS m SELECT m.keys, m.values, m.values.*
+--Result--
+[(['foo', 'bar'], [(1, 2), (3, 4)], [1, 3], [2, 4])]
++--------------------+
+--Query--
+WITH materialize(map('foo', (1, 2), 'bar', (3, 4))::Map(String, Tuple(a UInt64, b UInt64))) AS m SELECT m.keys, m.values, m.values.*
+--Result--
+[(['foo', 'bar'], [(1, 2), (3, 4)], [1, 3], [2, 4])]
++--------------------+
+--Query--
+SELECT getSubcolumn([1, 2, 3], 'size0')
+--Result--
+[(3,)]
++--------------------+

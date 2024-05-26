@@ -41,7 +41,6 @@ INSERT INTO INSERT_TBL(z,x) VALUES (-7,  7);
 INSERT INTO INSERT_TBL VALUES (7, '!check failed', -7);
 SELECT * FROM INSERT_TBL;
 SELECT * FROM INSERT_TBL;
-SELECT 'seven' AS one, nextval('insert_seq');
 SELECT 'eight' AS one, currval('insert_seq');
 INSERT INTO INSERT_TBL VALUES (null, null, null);
 SELECT * FROM INSERT_TBL;

@@ -1,0 +1,240 @@
+--Query--
+select '-- enable distinct in order optimization'
+--Result--
+[('-- enable distinct in order optimization',)]
++--------------------+
+--Query--
+select '-- create table with only primary key columns'
+--Result--
+[('-- create table with only primary key columns',)]
++--------------------+
+--Query--
+select '-- the same values in every chunk, pre-distinct should skip entire chunks with the same key as previous one'
+--Result--
+[('-- the same values in every chunk, pre-distinct should skip entire chunks with the same key as previous one',)]
++--------------------+
+--Query--
+select distinct * from distinct_in_order settings max_block_size=10, max_threads=1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- create table with only primary key columns'
+--Result--
+[('-- create table with only primary key columns',)]
++--------------------+
+--Query--
+select '-- pre-distinct should skip part of chunk since it contains values from previous one'
+--Result--
+[('-- pre-distinct should skip part of chunk since it contains values from previous one',)]
++--------------------+
+--Query--
+select distinct a from distinct_in_order settings max_block_size=10, max_threads=1
+--Result--
+[(0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,)]
++--------------------+
+--Query--
+select '-- create table with not only primary key columns'
+--Result--
+[('-- create table with not only primary key columns',)]
++--------------------+
+--Query--
+select '-- distinct with primary key prefix only'
+--Result--
+[('-- distinct with primary key prefix only',)]
++--------------------+
+--Query--
+select distinct a from distinct_in_order
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- distinct with primary key prefix only, order by sorted column'
+--Result--
+[('-- distinct with primary key prefix only, order by sorted column',)]
++--------------------+
+--Query--
+select distinct a from distinct_in_order order by a
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- distinct with primary key prefix only, order by sorted column desc'
+--Result--
+[('-- distinct with primary key prefix only, order by sorted column desc',)]
++--------------------+
+--Query--
+select distinct a from distinct_in_order order by a desc
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- distinct with full key, order by sorted column'
+--Result--
+[('-- distinct with full key, order by sorted column',)]
++--------------------+
+--Query--
+select distinct a,b from distinct_in_order order by b
+--Result--
+[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)]
++--------------------+
+--Query--
+select '-- distinct with full key, order by sorted column desc'
+--Result--
+[('-- distinct with full key, order by sorted column desc',)]
++--------------------+
+--Query--
+select distinct a,b from distinct_in_order order by b desc
+--Result--
+[(0, 4), (0, 3), (0, 2), (0, 1), (0, 0)]
++--------------------+
+--Query--
+select '-- distinct with key prefix and non-sorted column, order by non-sorted'
+--Result--
+[('-- distinct with key prefix and non-sorted column, order by non-sorted',)]
++--------------------+
+--Query--
+select distinct a,c from distinct_in_order order by c
+--Result--
+[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 9)]
++--------------------+
+--Query--
+select '-- distinct with key prefix and non-sorted column, order by non-sorted desc'
+--Result--
+[('-- distinct with key prefix and non-sorted column, order by non-sorted desc',)]
++--------------------+
+--Query--
+select distinct a,c from distinct_in_order order by c desc
+--Result--
+[(0, 9), (0, 8), (0, 7), (0, 6), (0, 5), (0, 4), (0, 3), (0, 2), (0, 1), (0, 0)]
++--------------------+
+--Query--
+select '-- distinct with non-key prefix and non-sorted column, order by non-sorted'
+--Result--
+[('-- distinct with non-key prefix and non-sorted column, order by non-sorted',)]
++--------------------+
+--Query--
+select distinct b,c from distinct_in_order order by c
+--Result--
+[(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (0, 5), (1, 6), (2, 7), (3, 8), (4, 9)]
++--------------------+
+--Query--
+select '-- distinct with non-key prefix and non-sorted column, order by non-sorted desc'
+--Result--
+[('-- distinct with non-key prefix and non-sorted column, order by non-sorted desc',)]
++--------------------+
+--Query--
+select distinct b,c from distinct_in_order order by c desc
+--Result--
+[(4, 9), (3, 8), (2, 7), (1, 6), (0, 5), (4, 4), (3, 3), (2, 2), (1, 1), (0, 0)]
++--------------------+
+--Query--
+select '-- distinct with constants columns'
+--Result--
+[('-- distinct with constants columns',)]
++--------------------+
+--Query--
+select distinct 1 as x, 2 as y from distinct_in_order
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select distinct 1 as x, 2 as y from distinct_in_order order by x
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select distinct 1 as x, 2 as y from distinct_in_order order by x, y
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select a, x from (select distinct a, 1 as x from distinct_in_order order by x) order by a
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+select distinct a, 1 as x, 2 as y from distinct_in_order order by a
+--Result--
+[(0, 1, 2)]
++--------------------+
+--Query--
+select a, b, x, y from(select distinct a, b, 1 as x, 2 as y from distinct_in_order order by a) order by a, b
+--Result--
+[(0, 0, 1, 2), (0, 1, 1, 2), (0, 2, 1, 2), (0, 3, 1, 2), (0, 4, 1, 2)]
++--------------------+
+--Query--
+select distinct x, y from (select 1 as x, 2 as y from distinct_in_order order by x) order by y
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select distinct a, b, x, y from (select a, b, 1 as x, 2 as y from distinct_in_order order by a) order by a, b
+--Result--
+[(0, 0, 1, 2), (0, 1, 1, 2), (0, 2, 1, 2), (0, 3, 1, 2), (0, 4, 1, 2)]
++--------------------+
+--Query--
+select '-- check that distinct in order returns the same result as ordinary distinct'
+--Result--
+[('-- check that distinct in order returns the same result as ordinary distinct',)]
++--------------------+
+--Query--
+select '-- check that distinct in order WITH order by returns the same result as ordinary distinct'
+--Result--
+[('-- check that distinct in order WITH order by returns the same result as ordinary distinct',)]
++--------------------+
+--Query--
+select count() as diff from (select distinct * from distinct_in_order except select * from ordinary_distinct)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- check that distinct in order WITHOUT order by returns the same result as ordinary distinct'
+--Result--
+[('-- check that distinct in order WITHOUT order by returns the same result as ordinary distinct',)]
++--------------------+
+--Query--
+select count() as diff from (select distinct * from distinct_in_order except select * from ordinary_distinct)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- check that distinct in order WITHOUT order by and WITH filter returns the same result as ordinary distinct'
+--Result--
+[('-- check that distinct in order WITHOUT order by and WITH filter returns the same result as ordinary distinct',)]
++--------------------+
+--Query--
+select count() as diff from (select distinct * from distinct_in_order except select * from ordinary_distinct)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select '-- bug 42185, distinct in order and empty sort description'
+--Result--
+[('-- bug 42185, distinct in order and empty sort description',)]
++--------------------+
+--Query--
+select '-- distinct in order, sorting key tuple()'
+--Result--
+[('-- distinct in order, sorting key tuple()',)]
++--------------------+
+--Query--
+select distinct a from sorting_key_empty_tuple
+--Result--
+[(1,), (0,)]
++--------------------+
+--Query--
+select '-- distinct in order, sorting key contains function'
+--Result--
+[('-- distinct in order, sorting key contains function',)]
++--------------------+
+--Query--
+select distinct datetime from sorting_key_contain_function
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+select distinct toDate(datetime) from sorting_key_contain_function
+--Result--
+[(datetime.date(2000, 1, 1),)]
++--------------------+

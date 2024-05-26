@@ -1,0 +1,30 @@
+--Query--
+EXPLAIN QUERY TREE SELECT grouping(id), grouping(value) FROM test_table GROUP BY id, value
+--Result--
+[('QUERY id: 0',), ('  PROJECTION COLUMNS',), ('    grouping(id) UInt64',), ('    grouping(value) UInt64',), ('  PROJECTION',), ('    LIST id: 1, nodes: 2',), ('      FUNCTION id: 2, function_name: groupingOrdinary, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 3, nodes: 1',), ('            COLUMN id: 4, column_name: id, result_type: UInt64, source_id: 5',), ('      FUNCTION id: 6, function_name: groupingOrdinary, function_type: ordinary, result_type: UInt64',), ('        ARGUMENTS',), ('          LIST id: 7, nodes: 1',), ('            COLUMN id: 8, column_name: value, result_type: String, source_id: 5',), ('  JOIN TREE',), ('    TABLE id: 5, alias: __table1, table_name: test.test_table',), ('  GROUP BY',), ('    LIST id: 9, nodes: 2',), ('      COLUMN id: 4, column_name: id, result_type: UInt64, source_id: 5',), ('      COLUMN id: 8, column_name: value, result_type: String, source_id: 5',)]
++--------------------+
+--Query--
+SELECT grouping(id) AS grouping_id, grouping(value) AS grouping_value, id, value FROM test_table GROUP BY id, value ORDER BY grouping_id, grouping_value
+--Result--
+[(0, 0, 0, 'Value')]
++--------------------+
+--Query--
+SELECT grouping(id) AS grouping_id, grouping(value) AS grouping_value, id, value FROM test_table GROUP BY ROLLUP (id, value) ORDER BY grouping_id, grouping_value
+--Result--
+[(0, 0, 0, 'Value'), (0, 1, 0, ''), (1, 1, 0, '')]
++--------------------+
+--Query--
+SELECT grouping(id) AS grouping_id, grouping(value) AS grouping_value, id, value FROM test_table GROUP BY CUBE (id, value) ORDER BY grouping_id, grouping_value
+--Result--
+[(0, 0, 0, 'Value'), (0, 1, 0, ''), (1, 0, 0, 'Value'), (1, 1, 0, '')]
++--------------------+
+--Query--
+SELECT grouping(id) AS grouping_id, grouping(value) AS grouping_value, id, value FROM test_table GROUP BY GROUPING SETS (id, value) ORDER BY grouping_id, grouping_value
+--Result--
+[(0, 1, 0, ''), (1, 0, 0, 'Value')]
++--------------------+
+--Query--
+SELECT grouping(id) AS grouping_id, grouping(value) AS grouping_value, id, value FROM test_table GROUP BY GROUPING SETS ((id), (value)) ORDER BY grouping_id, grouping_value
+--Result--
+[(0, 1, 0, ''), (1, 0, 0, 'Value')]
++--------------------+

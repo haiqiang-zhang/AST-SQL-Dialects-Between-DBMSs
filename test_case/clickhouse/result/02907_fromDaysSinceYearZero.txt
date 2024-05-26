@@ -1,0 +1,50 @@
+--Query--
+SELECT '-- negative tests'
+--Result--
+[('-- negative tests',)]
++--------------------+
+--Query--
+SELECT '-- UInt32 and Int32 arguments, both const and non-const'
+--Result--
+[('-- UInt32 and Int32 arguments, both const and non-const',)]
++--------------------+
+--Query--
+SELECT 719527 AS u, toInt32(u) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero(materialize(u)), fromDaysSinceYearZero(s), fromDaysSinceYearZero(materialize(s))
+--Result--
+[(719527, 719527, datetime.date(2149, 6, 6), datetime.date(2149, 6, 6), datetime.date(2149, 6, 6), datetime.date(2149, 6, 6))]
++--------------------+
+--Query--
+SELECT 693961 AS u, toInt32(u) AS s, fromDaysSinceYearZero32(u), fromDaysSinceYearZero32(materialize(u)), fromDaysSinceYearZero32(s), fromDaysSinceYearZero32(materialize(s))
+--Result--
+[(693961, 693961, datetime.date(1900, 1, 1), datetime.date(1900, 1, 1), datetime.date(1900, 1, 1), datetime.date(1900, 1, 1))]
++--------------------+
+--Query--
+SELECT '-- integer types != (U)Int32'
+--Result--
+[('-- integer types != (U)Int32',)]
++--------------------+
+--Query--
+SELECT toUInt64(719529) AS u, toInt64(719529) AS s, fromDaysSinceYearZero(u), fromDaysSinceYearZero32(u), fromDaysSinceYearZero(s), fromDaysSinceYearZero32(s)
+--Result--
+[(719529, 719529, datetime.date(1970, 1, 2), datetime.date(1970, 1, 2), datetime.date(1970, 1, 2), datetime.date(1970, 1, 2))]
++--------------------+
+--Query--
+SELECT '-- NULL handling'
+--Result--
+[('-- NULL handling',)]
++--------------------+
+--Query--
+SELECT '-- ubsan bugs'
+--Result--
+[('-- ubsan bugs',)]
++--------------------+
+--Query--
+SELECT '-- Alias'
+--Result--
+[('-- Alias',)]
++--------------------+
+--Query--
+SELECT FROM_DAYS(1)
+--Result--
+[(datetime.date(1973, 10, 1),)]
++--------------------+

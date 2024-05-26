@@ -1,0 +1,60 @@
+--Query--
+select @test_compress_string:='string for test compress function aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa '
+--Result--
+[('string for test compress function aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ',)]
++--------------------+
+--Query--
+select length(@test_compress_string)
+--Result--
+[(117,)]
++--------------------+
+--Query--
+select uncompress(compress(@test_compress_string))
+--Result--
+[(b'string for test compress function aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ',)]
++--------------------+
+--Query--
+select uncompressed_length(compress(@test_compress_string))=length(@test_compress_string)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select uncompressed_length(compress(@test_compress_string))
+--Result--
+[(117,)]
++--------------------+
+--Query--
+select length(compress(@test_compress_string))<length(@test_compress_string)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('|',c,'|') from t1
+--Result--
+[('|d|',)]
++--------------------+
+--Query--
+select compress("")
+--Result--
+[(b'',)]
++--------------------+
+--Query--
+select uncompress(a), uncompressed_length(a) from t1
+--Result--
+[(None, None), (b'a', 1)]
++--------------------+
+--Query--
+select * from t1 where uncompress(a) is null
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+SELECT UNCOMPRESS(c1), UNCOMPRESSED_LENGTH(c1) FROM t1
+--Result--
+[(None, 0), (None, 0), (None, 825307441)]
++--------------------+
+--Query--
+SELECT UNCOMPRESS( CAST( 0 AS BINARY(5) ) )
+--Result--
+[(None,)]
++--------------------+

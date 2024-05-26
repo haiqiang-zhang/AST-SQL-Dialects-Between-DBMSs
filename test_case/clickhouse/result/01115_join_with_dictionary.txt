@@ -1,0 +1,305 @@
+--Query--
+SELECT 'flat: left on'
+--Result--
+[('flat: left on',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_flat d ON s1.key = d.key ORDER BY s1.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3, 3, 3, '3', 3.0), (4, 0, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT 'flat: left'
+--Result--
+[('flat: left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT 'flat: any left'
+--Result--
+[('flat: any left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANY LEFT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT 'flat: semi left'
+--Result--
+[('flat: semi left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 SEMI JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT 'flat: anti left'
+--Result--
+[('flat: anti left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANTI JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(4, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT 'flat: inner'
+--Result--
+[('flat: inner',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 JOIN dict_flat d USING(key)
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0)]
++--------------------+
+--Query--
+SELECT 'flat: inner on'
+--Result--
+[('flat: inner on',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS k FROM numbers(100)) s1 JOIN dict_flat d ON k = key ORDER BY k
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3, 3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT 'hashed: left on'
+--Result--
+[('hashed: left on',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_hashed d ON s1.key = d.key ORDER BY s1.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3, 3, 3, '3', 3.0), (4, None, None, None, None)]
++--------------------+
+--Query--
+SELECT 'hashed: left'
+--Result--
+[('hashed: left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_hashed d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, None, None, None)]
++--------------------+
+--Query--
+SELECT 'hashed: any left'
+--Result--
+[('hashed: any left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANY LEFT JOIN dict_hashed d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, None, None, None)]
++--------------------+
+--Query--
+SELECT 'hashed: semi left'
+--Result--
+[('hashed: semi left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 SEMI JOIN dict_hashed d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT 'hashed: anti left'
+--Result--
+[('hashed: anti left',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANTI JOIN dict_hashed d USING(key) ORDER BY key
+--Result--
+[(4, None, None, None)]
++--------------------+
+--Query--
+SELECT 'hashed: inner'
+--Result--
+[('hashed: inner',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 JOIN dict_hashed d USING(key)
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0)]
++--------------------+
+--Query--
+SELECT 'hashed: inner on'
+--Result--
+[('hashed: inner on',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS k FROM numbers(100)) s1 JOIN dict_hashed d ON k = key ORDER BY k
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3, 3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT 'flat: inner or'
+--Result--
+[('flat: inner or',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT if(number % 2 = 0, number, number * 1000) AS k FROM numbers(100)) s1 JOIN dict_flat d ON k = key OR k == 1000 * key ORDER BY key
+--Result--
+[(0, 0, 0, '0', 0.0), (1000, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3000, 3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT 'flat: any left + any_join_distinct_right_table_keys'
+--Result--
+[('flat: any left + any_join_distinct_right_table_keys',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANY LEFT JOIN dict_flat d USING(key) ORDER BY key SETTINGS any_join_distinct_right_table_keys = '1'
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT 'complex_cache (smoke)'
+--Result--
+[('complex_cache (smoke)',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_complex_cache d ON s1.key = d.key ORDER BY s1.key
+--Result--
+[(0, None, None, None, None), (1, None, None, None, None), (2, None, None, None, None), (3, None, None, None, None), (4, None, None, None, None)]
++--------------------+
+--Query--
+SELECT 'not optimized (smoke)'
+--Result--
+[('not optimized (smoke)',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 RIGHT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 RIGHT JOIN dict_flat d ON s1.key = d.key ORDER BY d.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (None, 2, 2, '2', 2.0), (None, 3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number + 2 AS key FROM numbers(4)) s1 FULL JOIN dict_flat d USING(key) ORDER BY s1.key, d.key
+--Result--
+[(2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, None, None, None), (5, None, None, None), (None, 0, '0', 0.0), (None, 1, '1', 1.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 ANY INNER JOIN dict_flat d USING(key) ORDER BY s1.key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 ANY RIGHT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 SEMI RIGHT JOIN dict_flat d USING(key) ORDER BY s1.key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 ANTI RIGHT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(2, 2, '2', 2.0), (3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT 'issue 23002'
+--Result--
+[('issue 23002',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_flat d ON s1.key = d.key ORDER BY s1.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3, 3, 3, '3', 3.0), (4, 0, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANY LEFT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 RIGHT JOIN dict_flat d ON s1.key = d.key ORDER BY d.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (0, 2, 2, '2', 2.0), (0, 3, 3, '3', 3.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 LEFT JOIN dict_flat d ON s1.key = d.key ORDER BY s1.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (2, 2, 2, '2', 2.0), (3, 3, 3, '3', 3.0), (4, 0, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(5)) s1 ANY LEFT JOIN dict_flat d USING(key) ORDER BY key
+--Result--
+[(0, 0, '0', 0.0), (1, 1, '1', 1.0), (2, 2, '2', 2.0), (3, 3, '3', 3.0), (4, 0, '', 0.0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT number AS key FROM numbers(2)) s1 RIGHT JOIN dict_flat d ON s1.key = d.key ORDER BY d.key
+--Result--
+[(0, 0, 0, '0', 0.0), (1, 1, 1, '1', 1.0), (0, 2, 2, '2', 2.0), (0, 3, 3, '3', 3.0)]
++--------------------+

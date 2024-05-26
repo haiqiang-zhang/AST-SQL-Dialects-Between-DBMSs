@@ -1,0 +1,40 @@
+--Query--
+SELECT count(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST   WHERE state = "Waiting for check constraint metadata lock" AND         info  = "CREATE TABLE t2 (f1 INT, f2 INT, CONSTRAINT t1_ck CHECK(f2 < 10))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST   WHERE state = "Waiting for check constraint metadata lock" AND         info  = "CREATE TABLE t3 (f1 INT, CONSTRAINT t1_chk_1 CHECK (f1 < 10))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST   WHERE state = "Waiting for check constraint metadata lock" AND         info  = "CREATE TABLE t3 (f1 INT, CONSTRAINT t1_chk_1 CHECK (f1 < 10))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST   WHERE state = "Waiting for check constraint metadata lock" AND         info  = "CREATE TABLE t2 (f1 INT, CONSTRAINT t1_chk_1 CHECK (f1 < 10))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST   WHERE state = "Waiting for check constraint metadata lock" AND         info  = "CREATE TABLE t2 (f1 INT, CONSTRAINT t1_chk_1 CHECK (f1 < 10))"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(5, 5, 5)]
++--------------------+
+--Query--
+SELECT count(*) = 1 FROM INFORMATION_SCHEMA.PROCESSLIST                       WHERE info = "UPDATE t2 SET f2 = 10 WHERE f1 = 5" AND                             state LIKE '%skip_check_constraints_on_unaffected_columns%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(5, 5, 5)]
++--------------------+

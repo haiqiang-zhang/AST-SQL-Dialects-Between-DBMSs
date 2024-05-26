@@ -1,0 +1,30 @@
+--Query--
+SELECT value == 'default' FROM system.settings WHERE name = 'join_algorithm'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT countIf(explain like '%Algorithm: DirectKeyValueJoin%'), countIf(explain like '%Algorithm: HashJoin%') FROM (     EXPLAIN PLAN actions = 1     SELECT * FROM ( SELECT k AS key FROM t2 ) AS t2     INNER JOIN rdb ON rdb.key = t2.key     ORDER BY key ASC )
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+SELECT value == 'direct,hash' FROM system.settings WHERE name = 'join_algorithm'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT value == 'hash,direct' FROM system.settings WHERE name = 'join_algorithm'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT value == 'grace_hash,hash' FROM system.settings WHERE name = 'join_algorithm'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT value = 'grace_hash,hash,auto' FROM system.settings WHERE name = 'join_algorithm'
+--Result--
+[(1,)]
++--------------------+

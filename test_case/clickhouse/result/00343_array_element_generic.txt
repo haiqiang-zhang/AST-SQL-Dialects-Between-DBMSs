@@ -1,0 +1,95 @@
+--Query--
+SELECT range(100) == range(0, 100) and  range(0, 100) == range(0, 100, 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT distinct length(range(number, number + 100, 99))  == 2 FROM numbers(1000)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT range(0)[-1]
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT range(0)[1]
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT range(number)[2] FROM system.numbers LIMIT 10
+--Result--
+[(0,), (0,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT range(number)[-1] FROM system.numbers LIMIT 10
+--Result--
+[(0,), (0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT range(number)[number] FROM system.numbers LIMIT 10
+--Result--
+[(0,), (0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,)]
++--------------------+
+--Query--
+SELECT range(number)[2 - number] FROM system.numbers LIMIT 10
+--Result--
+[(0,), (0,), (0,), (2,), (2,), (2,), (2,), (2,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> toString(x), range(number))[2] FROM system.numbers LIMIT 10
+--Result--
+[('',), ('',), ('1',), ('1',), ('1',), ('1',), ('1',), ('1',), ('1',), ('1',)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> toString(x), range(number))[-1] FROM system.numbers LIMIT 10
+--Result--
+[('',), ('0',), ('1',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> toString(x), range(number))[number] FROM system.numbers LIMIT 10
+--Result--
+[('',), ('0',), ('1',), ('2',), ('3',), ('4',), ('5',), ('6',), ('7',), ('8',)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> toString(x), range(number))[2 - number] FROM system.numbers LIMIT 10
+--Result--
+[('',), ('0',), ('',), ('2',), ('2',), ('2',), ('2',), ('2',), ('2',), ('2',)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> range(x), range(number))[2] FROM system.numbers LIMIT 10
+--Result--
+[([],), ([],), ([0],), ([0],), ([0],), ([0],), ([0],), ([0],), ([0],), ([0],)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> range(x), range(number))[-1] FROM system.numbers LIMIT 10
+--Result--
+[([],), ([],), ([0],), ([0, 1],), ([0, 1, 2],), ([0, 1, 2, 3],), ([0, 1, 2, 3, 4],), ([0, 1, 2, 3, 4, 5],), ([0, 1, 2, 3, 4, 5, 6],), ([0, 1, 2, 3, 4, 5, 6, 7],)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> range(x), range(number))[number] FROM system.numbers LIMIT 10
+--Result--
+[([],), ([],), ([0],), ([0, 1],), ([0, 1, 2],), ([0, 1, 2, 3],), ([0, 1, 2, 3, 4],), ([0, 1, 2, 3, 4, 5],), ([0, 1, 2, 3, 4, 5, 6],), ([0, 1, 2, 3, 4, 5, 6, 7],)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> range(x), range(number))[2 - number] FROM system.numbers LIMIT 10
+--Result--
+[([],), ([],), ([],), ([0, 1],), ([0, 1],), ([0, 1],), ([0, 1],), ([0, 1],), ([0, 1],), ([0, 1],)]
++--------------------+
+--Query--
+SELECT [[1]][1], materialize([[1]])[1], [[1]][materialize(1)], materialize([[1]])[materialize(1)]
+--Result--
+[([1], [1], [1], [1])]
++--------------------+
+--Query--
+SELECT [['Hello']][1], materialize([['World']])[1], [['Hello']][materialize(1)], materialize([['World']])[materialize(1)]
+--Result--
+[(['Hello'], ['World'], ['Hello'], ['World'])]
++--------------------+
+--Query--
+SELECT ([[['a'], ['b', 'c']], [['d', 'e', 'f'], ['g', 'h', 'i', 'j'], ['k', 'l', 'm', 'n', 'o']], [['p', 'q', 'r', 's', 't', 'u'], ['v', 'w', 'x', 'y', 'z', 'aa', 'bb'], ['cc', 'dd', 'ee', 'ff', 'gg', 'hh', 'ii', 'jj'], ['kk', 'll', 'mm', 'nn', 'oo', 'pp', 'qq', 'rr', 'ss']]] AS arr)[number], arr[number][number], arr[number][number][number] FROM system.numbers LIMIT 10
+--Result--
+[([], [], ''), ([['a'], ['b', 'c']], ['a'], 'a'), ([['d', 'e', 'f'], ['g', 'h', 'i', 'j'], ['k', 'l', 'm', 'n', 'o']], ['g', 'h', 'i', 'j'], 'h'), ([['p', 'q', 'r', 's', 't', 'u'], ['v', 'w', 'x', 'y', 'z', 'aa', 'bb'], ['cc', 'dd', 'ee', 'ff', 'gg', 'hh', 'ii', 'jj'], ['kk', 'll', 'mm', 'nn', 'oo', 'pp', 'qq', 'rr', 'ss']], ['cc', 'dd', 'ee', 'ff', 'gg', 'hh', 'ii', 'jj'], 'ee'), ([], [], ''), ([], [], ''), ([], [], ''), ([], [], ''), ([], [], ''), ([], [], '')]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+SELECT @bar
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @bar
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select t1.f1,count(distinct t2.f2),count(distinct 1,NULL) from t1 left join t2 on t1.f1=t2.f1 group by t1.f1
+--Result--
+[(1, 0, 0)]
++--------------------+
+--Query--
+SELECT COUNT(DISTINCT t1.a) FROM t1,t1 t2 WHERE t1.a = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '' FROM t GROUP BY 1 WITH ROLLUP HAVING GROUP_CONCAT('')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT GROUP_CONCAT(i,'foo') AS f1 FROM t1 GROUP BY 'a' WITH ROLLUP
+--Result--
+[('1foo,2foo',), ('1foo,2foo',)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM v
+--Result--
+[('x',)]
++--------------------+

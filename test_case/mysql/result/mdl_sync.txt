@@ -1,0 +1,1615 @@
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) from t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and          info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "delete from t1 limit 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert low_priority into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "delete from t1 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "delete low_priority from t1 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "select count(*) from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "delete from t1 limit 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert low_priority into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "handler t1 open"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info like "select table_name, table_type, auto_increment%"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and        info = "select count(*) from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete from t1 limit 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert low_priority into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete from t1 limit 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert low_priority into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete low_priority from t1 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete from t1 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete low_priority from t1 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "select count(*) from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert into t1 values (1),(1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete low_priority from t1 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where   table_schema='test' and table_name='t1'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "handler t1 open"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "select count(*) from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete from t1 limit 2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert low_priority into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add index (not_exist)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 read"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert into t2 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add primary key (c1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t2 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "select count(*) from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t2 drop column c2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "insert into t2 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "alter table t1 add column c2 int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t2 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "select count(*) from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t2 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete from t2 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "lock table t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t2 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "select count(*) from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t2 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "delete from t2 limit 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist where state = "Waiting for table metadata lock" and       info = "rename table t1 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column j int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert into t2 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 drop column j"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert into t2 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 read local
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update t2 set j=3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column j int"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock table t1 write, t2 read local
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "update t2 set j=3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table level lock" and         info = "handler t2 read first"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t2 to t0, t3 to t2, t0 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "select * from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t0, t3 to t1, t0 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t2 to t0, t1 to t2, t0 to t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+lock table t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and info = "select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t0, t2 to t1, t0 to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 add column j int, rename to t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock tables t1 write, t2 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "alter table t1 drop column j"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1, t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush" and         info = "flush tables t1, t2 with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "select * from t1 where i in (select j from t2 for update)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush" and         info = "flush tables t2 with read lock"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "drop tables t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "rename table t1 to t0, t2 to t1, t3 to t2, t0 to t3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock table t3 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+unlock table
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1, t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table flush" and         info = "flush tables"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t4 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "lock tables t1 write"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "create table t2 select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns   where table_schema='test' and table_name='t2'
+--Result--
+[]
++--------------------+
+--Query--
+select table_name, table_type, auto_increment, table_comment   from information_schema.tables where table_schema='test' and table_name='t2'
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "create table t2 select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "show fields from t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "create table t2 select * from t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select column_name from information_schema.columns where table_schema='test' and table_name='t2'
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t3 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info like "rename table t1 to t2%"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info like "select table_name, table_type, auto_increment, table_comment from information_schema.tables%"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where c2 = 3
+--Result--
+[(3, 3, 0)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table level lock" and info = "SELECT 1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "truncate table t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 2 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "insert into t1 values (1)"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE state = "Waiting for table metadata lock" AND         info = "DELETE FROM t2 WHERE a = 3"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM m1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "DROP TABLES t1, t2"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "REPAIR TABLE t2"
+--Result--
+[(0,)]
++--------------------+

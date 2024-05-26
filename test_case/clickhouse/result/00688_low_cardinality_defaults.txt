@@ -1,0 +1,20 @@
+--Query--
+select CAST(toLowCardinality(val) as UInt64) from (select arrayJoin(['1']) as val)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select toUInt64(toLowCardinality(val)) from (select arrayJoin(['1']) as val)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 % toLowCardinality(val) from (select arrayJoin([1]) as val)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select gcd(1, toLowCardinality(val)) from (select arrayJoin([1]) as val)
+--Result--
+[(1,)]
++--------------------+

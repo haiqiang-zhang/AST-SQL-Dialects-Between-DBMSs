@@ -1,0 +1,120 @@
+--Query--
+SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[(3, 0, 0, 'SCAN people'), (12, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[(4, 0, 0, 'SEARCH people USING INDEX people_idx1 (ANY(role) AND height>?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT name FROM people    WHERE role IN (SELECT DISTINCT role FROM people)      AND height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+SELECT name FROM people WHERE role='teacher' AND height>=180   UNION ALL   SELECT name FROM people WHERE role='student' AND height>=180   ORDER BY 1
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT stat FROM sqlite_stat1 WHERE idx='people_idx1'
+--Result--
+[('34 17 2',)]
++--------------------+
+--Query--
+SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[(3, 0, 0, 'SCAN people'), (12, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT stat FROM sqlite_stat1 WHERE idx='people_idx1'
+--Result--
+[('36 18 2',)]
++--------------------+
+--Query--
+SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT name FROM people WHERE height>=180 ORDER BY +name
+--Result--
+[(4, 0, 0, 'SEARCH people USING INDEX people_idx1 (ANY(role) AND height>?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT name FROM peoplew WHERE height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+SELECT name FROM peoplew    WHERE role IN (SELECT DISTINCT role FROM peoplew)      AND height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+SELECT name FROM peoplew WHERE role='teacher' AND height>=180   UNION ALL   SELECT name FROM peoplew WHERE role='student' AND height>=180   ORDER BY 1
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM peoplew WHERE height>=180 ORDER BY +name
+--Result--
+[('David',), ('Jack',), ('Patrick',), ('Quiana',), ('Xavier',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT name FROM peoplew WHERE height>=180 ORDER BY +name
+--Result--
+[(3, 0, 0, 'SEARCH peoplew USING COVERING INDEX peoplew_idx1 (ANY(role) AND height>?)'), (19, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t3 WHERE b=42
+--Result--
+[(2, 0, 0, 'SCAN t3')]
++--------------------+

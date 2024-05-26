@@ -1,0 +1,35 @@
+--Query--
+SELECT IF (COUNT(*) > 0, "YES", "NO") AS "IMPLICIT COMMIT" FROM trans
+--Result--
+[('NO',)]
++--------------------+
+--Query--
+select 1 as res from t1 where (1) in (select * from t1)
+--Result--
+[(1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 write, trans write
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from "insert into t1 values (5)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt1
+--Result--
+[]
++--------------------+

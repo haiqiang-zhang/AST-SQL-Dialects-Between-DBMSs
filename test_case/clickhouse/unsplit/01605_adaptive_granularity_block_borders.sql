@@ -1,6 +1,4 @@
 DROP TABLE IF EXISTS adaptive_table;
-
-
 CREATE TABLE adaptive_table(
     key UInt64,
     value String

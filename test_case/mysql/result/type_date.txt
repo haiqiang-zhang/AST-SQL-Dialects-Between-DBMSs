@@ -1,0 +1,305 @@
+--Query--
+select * from t1 where c = '2000-01-01'
+--Result--
+[('test 2000-01-01', datetime.date(2000, 1, 1), datetime.datetime(2000, 1, 1, 0, 0))]
++--------------------+
+--Query--
+select * from t1 where b = '2000-01-01'
+--Result--
+[('test 2000-01-01', datetime.date(2000, 1, 1), datetime.datetime(2000, 1, 1, 0, 0))]
++--------------------+
+--Query--
+select name,t1.cdate,note from t1,t2 where t1.cdate=t2.cdate and t1.cdate='1998-01-01'
+--Result--
+[('name1', datetime.date(1998, 1, 1), 'note01'), ('name2', datetime.date(1998, 1, 1), 'note01')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE datum BETWEEN cast("2000-1-2" as date) AND cast("2000-1-4" as date)
+--Result--
+[(datetime.date(2000, 1, 2),), (datetime.date(2000, 1, 3),), (datetime.date(2000, 1, 4),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE datum BETWEEN cast("2000-1-2" as date) AND datum - INTERVAL 100 DAY
+--Result--
+[]
++--------------------+
+--Query--
+select max(rdate) as s from t1 where rdate < '1998-01-03' having s> "1998-01-01"
+--Result--
+[(datetime.date(1998, 1, 2),)]
++--------------------+
+--Query--
+select max(rdate) as s from t1 having s="1998-01-04"
+--Result--
+[(datetime.date(1998, 1, 4),)]
++--------------------+
+--Query--
+select max(rdate+0) as s from t1 having s="19980104"
+--Result--
+[(19980104,)]
++--------------------+
+--Query--
+select date_add(date,INTERVAL 1 DAY),date_add(date,INTERVAL 1 SECOND) from t1
+--Result--
+[(datetime.date(2000, 8, 11), datetime.datetime(2000, 8, 10, 0, 0, 1)), (datetime.date(2000, 8, 12), datetime.datetime(2000, 8, 11, 0, 0, 1))]
++--------------------+
+--Query--
+SELECT DATE_FORMAT(f1, "%l.%i %p") , DATE_FORMAT(f2, "%l.%i %p") FROM t1
+--Result--
+[('9.00 AM', '12.00 PM')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('19781126',), ('19781126',)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[('19781126',), ('19781126',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 from t1 where cast('2000-01-01 12:01:01' as datetime) between start_date and end_date
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select @d:=1111
+--Result--
+[(1111,)]
++--------------------+
+--Query--
+select year(@d), month(@d), day(@d), cast(@d as date)
+--Result--
+[(2000, 11, 11, datetime.date(2000, 11, 11))]
++--------------------+
+--Query--
+select @d:=011111
+--Result--
+[(11111,)]
++--------------------+
+--Query--
+select @d:=1311
+--Result--
+[(1311,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(None, None, None), (datetime.date(2001, 11, 11), datetime.datetime(2001, 11, 11, 0, 0), datetime.datetime(2001, 11, 11, 0, 0))]
++--------------------+
+--Query--
+SELECT str_to_date( '', a ) FROM t1
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE a = NOW()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT hour(f1), minute(f1), second(f1) FROM t1
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+select * from t1 where a between '0000-00-01' and '0000-00-02'
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 t11 JOIN t1 t12 ON addtime( t11.the_date, t11.the_time ) =                                      addtime( t12.the_date, t12.the_time )
+--Result--
+[(datetime.date(2010, 1, 1), datetime.timedelta(seconds=3661), datetime.date(2010, 1, 1), datetime.timedelta(seconds=3661))]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN v1 ON addtime( t1.the_date, t1.the_time ) =                              addtime( v1.the_date, v1.the_time )
+--Result--
+[(datetime.date(2010, 1, 1), datetime.timedelta(seconds=3661), datetime.date(2010, 1, 1), datetime.timedelta(seconds=3661))]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN v1 ON addtime( t1.the_date, t1.the_time ) =                              addtime( cast(v1.the_date AS DATETIME), v1.the_time )
+--Result--
+[(datetime.date(2010, 1, 1), datetime.timedelta(seconds=3661), datetime.date(2010, 1, 1), datetime.timedelta(seconds=3661))]
++--------------------+
+--Query--
+SELECT b = CONVERT(a, DATE) FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT b = (SELECT CONVERT(a, DATE) FROM t1 GROUP BY a) FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT b = CONVERT((SELECT CONVERT(a, DATE) FROM t1 GROUP BY a), DATE) FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT LAST_DAY('0')) a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT MAKEDATE(2011,0)) a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.date(2001, 1, 1),), (datetime.date(2001, 1, 1),), (datetime.date(2001, 1, 1),), (datetime.date(2024, 5, 26),), (datetime.date(9999, 12, 30),), (datetime.date(9999, 12, 31),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.date(2001, 1, 2),), (datetime.date(2001, 1, 2),), (datetime.date(2001, 1, 2),), (datetime.date(2024, 5, 27),)]
++--------------------+
+--Query--
+SELECT a, CAST(a AS DATE) FROM t1
+--Result--
+[(None, None), (101010.9999, datetime.date(2010, 10, 10)), (-101010.9999, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a NOT IN (DATE'2001-01-01',DATE'2002-02-02')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COALESCE(DATE(NULL))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT DATE(20110512154559.6 + 0e0)
+--Result--
+[(datetime.date(2011, 5, 12),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE LAST_DAY('0000-00-00 00:00:00') IS NULL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE LAST_DAY((SELECT b FROM t2 WHERE b = '0000-00-00 00:00:00')) IS NULL
+--Result--
+[(1,)]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT DATE'2020-01-01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "INSERT INTO d VALUES(?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM d
+--Result--
+[(datetime.date(2021, 10, 11),), (datetime.date(2021, 10, 11),)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = DATE'2023-01-01'
+--Result--
+[('2023-01-01',), ('2023-1-1',)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = b and b = DATE'2023-01-01'
+--Result--
+[('2023-01-01', '2023-01-01'), ('2023-1-1', '2023-1-1')]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = CURRENT_TIME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = CURRENT_TIMESTAMP
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = CURRENT_DATE
+--Result--
+[]
++--------------------+

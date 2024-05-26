@@ -1,0 +1,15 @@
+--Query--
+WITH x AS (SELECT * FROM cte1), y AS (SELECT * FROM cte2), z AS (SELECT * FROM x WHERE a % 2 = 1), w AS (SELECT * FROM y WHERE a > 333) SELECT max(a)  FROM x JOIN y USING (a)  WHERE a in (SELECT * FROM z) AND a <= (SELECT max(a) FROM w)
+--Result--
+[(4999,)]
++--------------------+
+--Query--
+WITH x AS (SELECT * FROM cte1), y AS (SELECT * FROM cte2), z AS (SELECT * FROM x WHERE a % 3 = 1), w AS (SELECT * FROM y WHERE a > 333 AND a < 1000) SELECT count(a)  FROM x left JOIN y USING (a)  WHERE a in (SELECT * FROM z) AND a <= (SELECT max(a) FROM w)
+--Result--
+[(333,)]
++--------------------+
+--Query--
+WITH x AS (SELECT a-4000 a FROM cte1 WHERE cte1.a >700), y AS (SELECT * FROM cte2), z AS (SELECT * FROM x WHERE a % 3 = 1), w AS (SELECT * FROM y WHERE a > 333 AND a < 1000) SELECT max(a), min(a), count(*)  FROM x WHERE a in (SELECT * FROM z) AND a <100
+--Result--
+[(97, 1, 33)]
++--------------------+

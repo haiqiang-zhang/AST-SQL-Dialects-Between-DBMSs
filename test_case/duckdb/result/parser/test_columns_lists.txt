@@ -1,0 +1,55 @@
+--Query--
+SELECT COLUMNS([x for x in *]) FROM integers
+--Result--
+[(42, 84), (13, 14)]
++--------------------+
+--Query--
+SELECT COLUMNS([x for x in (*) if x <> 'i']) FROM integers
+--Result--
+[(84,), (14,)]
++--------------------+
+--Query--
+SELECT COLUMNS(x -> x <> 'i') FROM integers
+--Result--
+[(84,), (14,)]
++--------------------+
+--Query--
+SELECT COLUMNS([x for x in (*) if x SIMILAR TO 'i']) FROM integers
+--Result--
+[(42,), (13,)]
++--------------------+
+--Query--
+SELECT COLUMNS(['i', 'i']) FROM integers
+--Result--
+[(42,), (13,)]
++--------------------+
+--Query--
+SELECT COLUMNS(list_concat(['i'], ['i'])) FROM integers
+--Result--
+[(42,), (13,)]
++--------------------+
+--Query--
+SELECT COLUMNS([x for x in (* EXCLUDE (i))]) FROM integers
+--Result--
+[(84,), (14,)]
++--------------------+
+--Query--
+SELECT COLUMNS(['i']) + COLUMNS(['i']) FROM integers
+--Result--
+[(84,), (26,)]
++--------------------+
+--Query--
+SELECT COLUMNS([i, j]) FROM integers
+--Result--
+[(42, 84), (13, 14)]
++--------------------+
+--Query--
+SELECT COLUMNS([x for x in (*) if x LIKE 'i']) FROM integers i1 JOIN integers i2 USING (i)
+--Result--
+[(42,), (13,)]
++--------------------+
+--Query--
+SELECT COLUMNS([x for x in (*) if x LIKE 'i']) FROM integers i1 JOIN integers i2 ON (i1.i=i2.i)
+--Result--
+[(42, 42), (13, 13)]
++--------------------+

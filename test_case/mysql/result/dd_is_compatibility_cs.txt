@@ -1,0 +1,115 @@
+--Query--
+SELECT table_name FROM information_schema.tables   WHERE TABLE_NAME LIKE 'tables' AND TABLE_SCHEMA LIKE 'mysql'   ORDER BY table_name COLLATE utf8mb3_general_ci
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name FROM information_schema.tables   WHERE TABLE_NAME LIKE '%tables%' AND TABLE_SCHEMA LIKE 'mysql'   ORDER BY table_name COLLATE utf8mb3_general_ci
+--Result--
+[('tables_priv',)]
++--------------------+
+--Query--
+SELECT table_name FROM information_schema.tables   WHERE table_schema = 'no such schema'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name as 'table_name' FROM information_schema.tables   WHERE table_schema = 'no such schema'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME,        IF(CREATE_TIME IS NULL, 'no create time', 'have create time')   FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME='t1'
+--Result--
+[('t1', 'have create time')]
++--------------------+
+--Query--
+SELECT table_name FROM information_schema.tables   WHERE table_name LIKE 'no_such_table'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name AS 'table_name'   FROM information_schema.tables   WHERE table_name LIKE 'no_such_table'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[('ADMINISTRABLE_ROLE_AUTHORIZATIONS',), ('APPLICABLE_ROLES',), ('CHARACTER_SETS',), ('CHECK_CONSTRAINTS',), ('COLLATIONS',), ('COLLATION_CHARACTER_SET_APPLICABILITY',), ('COLUMNS',), ('COLUMNS_EXTENSIONS',), ('COLUMN_PRIVILEGES',), ('COLUMN_STATISTICS',), ('ENABLED_ROLES',), ('ENGINES',), ('EVENTS',), ('FILES',), ('KEYWORDS',), ('KEY_COLUMN_USAGE',), ('OPTIMIZER_TRACE',), ('PARAMETERS',), ('PARTITIONS',), ('PLUGINS',), ('PROCESSLIST',), ('PROFILING',), ('REFERENTIAL_CONSTRAINTS',), ('RESOURCE_GROUPS',), ('ROLE_COLUMN_GRANTS',), ('ROLE_ROUTINE_GRANTS',), ('ROLE_TABLE_GRANTS',), ('ROUTINES',), ('SCHEMATA',), ('SCHEMATA_EXTENSIONS',), ('SCHEMA_PRIVILEGES',), ('STATISTICS',), ('ST_GEOMETRY_COLUMNS',), ('ST_SPATIAL_REFERENCE_SYSTEMS',), ('ST_UNITS_OF_MEASURE',), ('TABLES',), ('TABLESPACES',), ('TABLESPACES_EXTENSIONS',), ('TABLES_EXTENSIONS',), ('TABLE_CONSTRAINTS',), ('TABLE_CONSTRAINTS_EXTENSIONS',), ('TABLE_PRIVILEGES',), ('TRIGGERS',), ('USER_ATTRIBUTES',), ('USER_PRIVILEGES',), ('VIEWS',), ('VIEW_ROUTINE_USAGE',), ('VIEW_TABLE_USAGE',)]
++--------------------+
+--Query--
+SELECT table_name FROM information_schema.tables   WHERE table_name LIKE 'no_such_table'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_NAME LIKE 'no_such_table'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) = IF(@@lower_case_table_names = 0, 7, 12)   FROM information_schema.tables   WHERE table_name LIKE 'TAB%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT count(*) = IF(@@lower_case_table_names = 0, 5, 12)   FROM information_schema.tables   WHERE table_name LIKE 'tab%'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*)+IF(@@lower_case_table_names=0, 1, 0) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='INFORMATION_SCHEMA' AND TABLE_NAME='TABLES'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+PREPARE ps1 FROM 'SHOW TABLES FROM no_such_schema'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE ps2 FROM 'SHOW TABLES FROM mysql LIKE \'%tables%\''
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ps1
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE ps2
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 write
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist   where state = "Waiting for table metadata lock" and         info = "CREATE TABLE t2 AS SELECT * FROM t1"
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT table_name, table_type, auto_increment, table_comment        FROM information_schema.tables        WHERE table_schema='test' and table_name='t2'
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name, is_updatable FROM INFORMATION_SCHEMA.VIEWS                                 WHERE table_name = 'v1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT table_name, is_updatable FROM INFORMATION_SCHEMA.VIEWS     WHERE table_schema != 'sys' ORDER BY table_name
+--Result--
+[('v1', 'NO')]
++--------------------+

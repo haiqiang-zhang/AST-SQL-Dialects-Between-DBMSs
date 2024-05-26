@@ -1,5 +1,3 @@
-
--- in StorageReplicatedMergeTree::createZeroCopyLockNode
 set insert_keeper_fault_injection_probability=0;
 select sleepEachRow(0.5) as test_does_not_rely_on_this;
 set optimize_throw_if_noop=1;

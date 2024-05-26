@@ -1,0 +1,1195 @@
+--Query--
+SELECT HEX(vbin1 & vbin2), HEX(vbin1 | vbin2), HEX(vbin1 ^ vbin2),   HEX(~vbin1), HEX(vbin1 << 3), HEX(vbin2 >> 3), BIT_COUNT(vbin1) FROM t WHERE id in(1,2,3,4,5,6)
+--Result--
+[('48', '7B', '33', 'A6', 'C8', '0D', 4), ('4801', '7BFB', '33FA', 'A6C6', 'C9C8', '0D58', 8), ('48010908', '7BFBFDBA', '33FAF4B2', 'A6C65667', 'C9CD4CC0', '0D586BA5', 15), ('4801090820114B10', '7BFBFDBA7BB74FFF', '33FAF4B25BA604EF', 'A6C656679EEAB0CA', 'C9CD4CC308AA79A8', '0D586BA54756697B', 30), ('4801090820114B1082C4000200418008', '7BFBFDBA7BB74FFF8FD556EE19E9B7AF', '33FAF4B25BA604EF0D1156EC19A837A7', 'A6C656679EEAB0CA782ABBF9E7164D74', 'C9CD4CC308AA79AC3EAA2030C74D9458', '0D586BA54756697B5158825D402830A5', 58), ('4801090820114B1082C40002004180081400008108114A3090A009308C100200', '7BFBFDBA7BB74FFF8FD556EE19E9B7AF3EEFB9FFDBD34AF1BAEDCBF1BFFF7A9A', '33FAF4B25BA604EF0D1156EC19A837A72AEFB97ED3C200C12A4DC2C133EF789A', 'A6C656679EEAB0CA782ABBF9E7164D74E99E7E3A35AEB54E4716368F51A1BDE5', 'C9CD4CC308AA79AC3EAA2030C74D9458B30C0E2E528A558DC74E4B8572F210D0', '0D586BA54756697B5158825D402830A58791C7176332694E1254817633B62750', 115)]
++--------------------+
+--Query--
+SELECT vbin1 & vbin2, vbin1 | vbin2, vbin1 ^ vbin2, ~vbin1, vbin1 << 3, vbin2 >> 3 FROM t WHERE id in(1,2,3,4,5,6)
+--Result--
+[(b'H', b'{', b'3', b'\xa6', b'\xc8', b'\r'), (b'H\x01', b'{\xfb', b'3\xfa', b'\xa6\xc6', b'\xc9\xc8', b'\rX'), (b'H\x01\t\x08', b'{\xfb\xfd\xba', b'3\xfa\xf4\xb2', b'\xa6\xc6Vg', b'\xc9\xcdL\xc0', b'\rXk\xa5'), (b'H\x01\t\x08 \x11K\x10', b'{\xfb\xfd\xba{\xb7O\xff', b'3\xfa\xf4\xb2[\xa6\x04\xef', b'\xa6\xc6Vg\x9e\xea\xb0\xca', b'\xc9\xcdL\xc3\x08\xaay\xa8', b'\rXk\xa5GVi{'), (b'H\x01\t\x08 \x11K\x10\x82\xc4\x00\x02\x00A\x80\x08', b'{\xfb\xfd\xba{\xb7O\xff\x8f\xd5V\xee\x19\xe9\xb7\xaf', b'3\xfa\xf4\xb2[\xa6\x04\xef\r\x11V\xec\x19\xa87\xa7', b'\xa6\xc6Vg\x9e\xea\xb0\xcax*\xbb\xf9\xe7\x16Mt', b'\xc9\xcdL\xc3\x08\xaay\xac>\xaa 0\xc7M\x94X', b'\rXk\xa5GVi{QX\x82]@(0\xa5'), (b'H\x01\t\x08 \x11K\x10\x82\xc4\x00\x02\x00A\x80\x08\x14\x00\x00\x81\x08\x11J0\x90\xa0\t0\x8c\x10\x02\x00', b'{\xfb\xfd\xba{\xb7O\xff\x8f\xd5V\xee\x19\xe9\xb7\xaf>\xef\xb9\xff\xdb\xd3J\xf1\xba\xed\xcb\xf1\xbf\xffz\x9a', b'3\xfa\xf4\xb2[\xa6\x04\xef\r\x11V\xec\x19\xa87\xa7*\xef\xb9~\xd3\xc2\x00\xc1*M\xc2\xc13\xefx\x9a', b'\xa6\xc6Vg\x9e\xea\xb0\xcax*\xbb\xf9\xe7\x16Mt\xe9\x9e~:5\xae\xb5NG\x166\x8fQ\xa1\xbd\xe5', b'\xc9\xcdL\xc3\x08\xaay\xac>\xaa 0\xc7M\x94X\xb3\x0c\x0e.R\x8aU\x8d\xc7NK\x85r\xf2\x10\xd0', b"\rXk\xa5GVi{QX\x82]@(0\xa5\x87\x91\xc7\x17c2iN\x12T\x81v3\xb6'P")]
++--------------------+
+--Query--
+SELECT (vbin1 & vbin2)=0x4801090820114B1082C40002004180081400008108114A3090A009308C100200, (vbin1 | vbin2)=0x7BFBFDBA7BB74FFF8FD556EE19E9B7AF3EEFB9FFDBD34AF1BAEDCBF1BFFF7A9A, (vbin1 ^ vbin2)=0x33FAF4B25BA604EF0D1156EC19A837A72AEFB97ED3C200C12A4DC2C133EF789A, (~vbin1)=0xA6C656679EEAB0CA782ABBF9E7164D74E99E7E3A35AEB54E4716368F51A1BDE5, (vbin1 << 3)=0xC9CD4CC308AA79AC3EAA2030C74D9458B30C0E2E528A558DC74E4B8572F210D0, (vbin2 >> 3)=0x0D586BA54756697B5158825D402830A58791C7176332694E1254817633B62750 FROM t WHERE id in(1,2,3,4,5,6)
+--Result--
+[(0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), (1, 1, 1, 1, 1, 1)]
++--------------------+
+--Query--
+select HEX(0x19c9bbcce9e0a88f5212572b0c5b9e6d0 | _binary 0x13c19e5cfdf03b19518cbe3d65faf10d2), HEX(0x19c9bbcce9e0a88f5212572b0c5b9e6d0 ^ _binary 0x13c19e5cfdf03b19518cbe3d65faf10d2), HEX(0x19c9bbcce9e0a88f5212572b0c5b9e6d0 & _binary 0x13c19e5cfdf03b19518cbe3d65faf10d2), HEX(~ _binary 0x19c9bbcce9e0a88f5212572b0c5b9e6d0), HEX(~ _binary 0x13c19e5cfdf03b19518cbe3d65faf10d2)
+--Result--
+[('01BC9BFDCFDF0BB9F539EFF3F6DFBFF6D2', '00A08259014109396039EE91669A16F602', '011C19A4CE9E0280950001629045A900D0', 'FE6364433161F5770ADEDA8D4F3A46192F', 'FEC3E61A3020FC4E6AE7341C29A050EF2D')]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT HEX(vbin1 & vbin2), HEX(vbin1 | vbin2), HEX(vbin1 ^ vbin2),   HEX(~vbin1), HEX(vbin1 << 3), HEX(vbin2 >> 3), BIT_COUNT(vbin1) FROM t WHERE id in(1, 2, 3, 4, 5, 6)"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM "SELECT HEX(vbin1 & vbin2), HEX(vbin1 | vbin2), HEX(vbin1 ^ vbin2),   HEX(~vbin1), HEX(vbin1 << 3), HEX(vbin2 >> 3), BIT_COUNT(vbin1) FROM t WHERE id in(7)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT _bit | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _tin | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _boo | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _sms | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _smu | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _mes | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _meu | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _ins | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _inu | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _bis | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _biu | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _dec | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _flo | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _dou | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _yea | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _jsn | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _chr | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _vch | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _bin | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _vbn | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _tbl | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _ttx | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _blb | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _txt | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _mbb | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _mtx | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _lbb | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _ltx | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _dat | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _dtt | 2147483647 FROM at
+--Result--
+[(20151986552831,)]
++--------------------+
+--Query--
+SELECT _smp | 2147483647 FROM at
+--Result--
+[(20151986552831,)]
++--------------------+
+--Query--
+SELECT _tim | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _enu | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _set | 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _bit & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _tin & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _boo & 2147483647 FROM at
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT _sms & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _smu & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _mes & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _meu & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _ins & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _inu & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _bis & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _biu & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _dec & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _flo & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _dou & 2147483647 FROM at
+--Result--
+[(64,)]
++--------------------+
+--Query--
+SELECT _yea & 2147483647 FROM at
+--Result--
+[(2005,)]
++--------------------+
+--Query--
+SELECT _jsn & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _chr & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _vch & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _bin & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _vbn & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _tbl & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _ttx & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _blb & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _txt & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _mbb & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _mtx & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _lbb & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _ltx & 2147483647 FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _dat & 2147483647 FROM at
+--Result--
+[(19881215,)]
++--------------------+
+--Query--
+SELECT _dtt & 2147483647 FROM at
+--Result--
+[(1185050816,)]
++--------------------+
+--Query--
+SELECT _smp & 2147483647 FROM at
+--Result--
+[(1185070816,)]
++--------------------+
+--Query--
+SELECT _tim & 2147483647 FROM at
+--Result--
+[(70809,)]
++--------------------+
+--Query--
+SELECT _enu & 2147483647 FROM at
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT _set & 2147483647 FROM at
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT _bit ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _tin ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _boo ^ 2147483647 FROM at
+--Result--
+[(2147483646,)]
++--------------------+
+--Query--
+SELECT _sms ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _smu ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _mes ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _meu ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _ins ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _inu ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _bis ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _biu ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _dec ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _flo ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _dou ^ 2147483647 FROM at
+--Result--
+[(2147483583,)]
++--------------------+
+--Query--
+SELECT _yea ^ 2147483647 FROM at
+--Result--
+[(2147481642,)]
++--------------------+
+--Query--
+SELECT _jsn ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _chr ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _vch ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _bin ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _vbn ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _tbl ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _ttx ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _blb ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _txt ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _mbb ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _mtx ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _lbb ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _ltx ^ 2147483647 FROM at
+--Result--
+[(2147483647,)]
++--------------------+
+--Query--
+SELECT _dat ^ 2147483647 FROM at
+--Result--
+[(2127602432,)]
++--------------------+
+--Query--
+SELECT _dtt ^ 2147483647 FROM at
+--Result--
+[(20150801502015,)]
++--------------------+
+--Query--
+SELECT _smp ^ 2147483647 FROM at
+--Result--
+[(20150801482015,)]
++--------------------+
+--Query--
+SELECT _tim ^ 2147483647 FROM at
+--Result--
+[(2147412838,)]
++--------------------+
+--Query--
+SELECT _enu ^ 2147483647 FROM at
+--Result--
+[(2147483646,)]
++--------------------+
+--Query--
+SELECT _set ^ 2147483647 FROM at
+--Result--
+[(2147483646,)]
++--------------------+
+--Query--
+SELECT _bit | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _tin | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _boo | x'cafebabe' FROM at
+--Result--
+[(3405691583,)]
++--------------------+
+--Query--
+SELECT _sms | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _smu | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _mes | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _meu | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _ins | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _inu | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _bis | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _biu | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _dec | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _flo | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _dou | x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _yea | x'cafebabe' FROM at
+--Result--
+[(3405692927,)]
++--------------------+
+--Query--
+SELECT _jsn | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _chr | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _vch | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT hex(_bin | x'CAFEBABE000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000CAFE1111CAFE1111') FROM at
+--Result--
+[('CAFEBABE000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000CAFEBBBFDBFF1111',)]
++--------------------+
+--Query--
+SELECT _ttx | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _txt | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _mtx | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _ltx | x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _dat | x'cafebabe' FROM at
+--Result--
+[(3422551807,)]
++--------------------+
+--Query--
+SELECT _dtt | x'cafebabe' FROM at
+--Result--
+[(20151164402430,)]
++--------------------+
+--Query--
+SELECT _smp | x'cafebabe' FROM at
+--Result--
+[(20151164387070,)]
++--------------------+
+--Query--
+SELECT _tim | x'cafebabe' FROM at
+--Result--
+[(3405758143,)]
++--------------------+
+--Query--
+SELECT _enu | x'cafebabe' FROM at
+--Result--
+[(3405691583,)]
++--------------------+
+--Query--
+SELECT _set | x'cafebabe' FROM at
+--Result--
+[(3405691583,)]
++--------------------+
+--Query--
+SELECT _bit & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _tin & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _boo & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _sms & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _smu & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _mes & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _meu & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _ins & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _inu & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _bis & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _biu & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _dec & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _flo & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _dou & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _yea & x'cafebabe' FROM at
+--Result--
+[(660,)]
++--------------------+
+--Query--
+SELECT _jsn & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _chr & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _vch & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _ttx & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _txt & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _mtx & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _ltx & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _dat & x'cafebabe' FROM at
+--Result--
+[(3020990,)]
++--------------------+
+--Query--
+SELECT _dtt & x'cafebabe' FROM at
+--Result--
+[(3265409152,)]
++--------------------+
+--Query--
+SELECT _smp & x'cafebabe' FROM at
+--Result--
+[(3265444512,)]
++--------------------+
+--Query--
+SELECT _tim & x'cafebabe' FROM at
+--Result--
+[(4248,)]
++--------------------+
+--Query--
+SELECT _enu & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _set & x'cafebabe' FROM at
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT _bit ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _tin ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _boo ^ x'cafebabe' FROM at
+--Result--
+[(3405691583,)]
++--------------------+
+--Query--
+SELECT _sms ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _smu ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _mes ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _meu ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _ins ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _inu ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _bis ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _biu ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _dec ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _flo ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _dou ^ x'cafebabe' FROM at
+--Result--
+[(3405691646,)]
++--------------------+
+--Query--
+SELECT _yea ^ x'cafebabe' FROM at
+--Result--
+[(3405692267,)]
++--------------------+
+--Query--
+SELECT _jsn ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _chr ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _vch ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _ttx ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _txt ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _mtx ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _ltx ^ x'cafebabe' FROM at
+--Result--
+[(3405691582,)]
++--------------------+
+--Query--
+SELECT _dat ^ x'cafebabe' FROM at
+--Result--
+[(3419530817,)]
++--------------------+
+--Query--
+SELECT _dtt ^ x'cafebabe' FROM at
+--Result--
+[(20147898993278,)]
++--------------------+
+--Query--
+SELECT _smp ^ x'cafebabe' FROM at
+--Result--
+[(20147898942558,)]
++--------------------+
+--Query--
+SELECT _tim ^ x'cafebabe' FROM at
+--Result--
+[(3405753895,)]
++--------------------+
+--Query--
+SELECT _enu ^ x'cafebabe' FROM at
+--Result--
+[(3405691583,)]
++--------------------+
+--Query--
+SELECT _set ^ x'cafebabe' FROM at
+--Result--
+[(3405691583,)]
++--------------------+
+--Query--
+SELECT BIT_AND(a) FROM t
+--Result--
+[(b'\xf0\x00\xf0\x00',)]
++--------------------+
+--Query--
+SELECT BIT_OR(a) FROM t
+--Result--
+[(b'\xff\xf0\xff\xf0',)]
++--------------------+
+--Query--
+SELECT BIT_XOR(a) FROM t
+--Result--
+[(b'\x0f\xf0\x0f\xf0',)]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT group_id, HEX(BIT_AND(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM "SELECT group_id, HEX(BIT_OR(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s3 FROM "SELECT group_id, HEX(BIT_XOR(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s4 FROM "SELECT HEX(BIT_AND(a)) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s5 FROM "SELECT HEX(BIT_OR(a)) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s6 FROM "SELECT HEX(BIT_XOR(a)) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT group_id, HEX(BIT_AND(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM "SELECT group_id, HEX(BIT_OR(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s3 FROM "SELECT group_id, HEX(BIT_XOR(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s4 FROM "SELECT HEX(BIT_AND(a)) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s5 FROM "SELECT HEX(BIT_OR(a)) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s6 FROM "SELECT HEX(BIT_XOR(a)) FROM t"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT BIT_COUNT(group_id), BIT_COUNT(a), BIT_COUNT(192), BIT_COUNT(0x303233),   BIT_COUNT(binary "foo"), BIT_COUNT(NULL) FROM t
+--Result--
+[(1, 16, 2, 9, 16, None), (1, 8, 2, 9, 16, None), (1, 8, 2, 9, 16, None), (1, 16, 2, 9, 16, None), (1, 33, 2, 9, 16, None), (1, None, 2, 9, 16, None), (1, 33, 2, 9, 16, None), (2, 33, 2, 9, 16, None), (1, 34, 2, 9, 16, None), (2, 17, 2, 9, 16, None), (2, 9, 2, 9, 16, None), (2, 10, 2, 9, 16, None), (1, 33, 2, 9, 16, None), (1, 32, 2, 9, 16, None), (1, None, 2, 9, 16, None), (1, 33, 2, 9, 16, None)]
++--------------------+
+--Query--
+PREPARE s1 FROM "SELECT HEX(BIT_AND(a)),HEX(BIT_OR(a)),HEX(BIT_XOR(a)) FROM t WHERE group_id = 5"
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM "SELECT group_id, HEX(BIT_AND(a)), HEX(BIT_OR(a)), HEX (BIT_XOR(a)) FROM t GROUP BY group_id"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONCAT("M", (0x39 | 0x39))
+--Result--
+[('M57',)]
++--------------------+
+--Query--
+SELECT 1.0 * BIT_OR(a) FROM t2
+--Result--
+[(15.0,)]
++--------------------+
+--Query--
+SELECT gid, 1.0 * BIT_OR(a) FROM t2 GROUP BY gid
+--Result--
+[(1, 3.0), (2, 12.0)]
++--------------------+
+--Query--
+SELECT LENGTH(@a), HEX(@a)
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM r ORDER by c
+--Result--
+[(0, None, None)]
++--------------------+
+--Query--
+SELECT id, bit_or(a) FROM t where id in (1,2) GROUP BY id
+--Result--
+[(1, b''), (2, b'')]
++--------------------+
+--Query--
+SELECT a | b = 0x7bf7dfef8bbb7daffbbe9f9faefcfffe, a | c = 0xfbd7efffefded58dfef7eeed4ebcfbff, b | c = 0xfbf17fb9effff9aafffbfb77ea68ff57 FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT a & b = 0x6b81400989881080680200050228b816, a & c = 0x4b400e810b9851887aa000000820e940, b & c = 0x5b100121098a1080e8108a000020aa00 FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT a ^ b = 0x10769fe602336d2f93bc9f9aacd447e8, a ^ c = 0xb097e17ee44684058457eeed469c12bf, b ^ c = 0xa0e17e98e675e92a17eb7177ea485557 FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT (~a) = 0x943831307467aa728559fb72f1430601, ~b = 0x844eaed67654c75d16e564e85d9741e9, ~c = 0x24afd04e90212e77010e159fb7df14be FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT BIT_AND(a) = 0x4b00000109881080680000000020a800, BIT_OR(a) = 0xfbf7ffffeffffdafffffffffeefcffff, BIT_XOR(a) = 0xcb26b0576dedbca76d4d75fae4f4aca9 FROM t WHERE id = 1
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT a | b = 0x7bf7dfef8bbb7daffbbe9f9faefcfffe0000, a | c = 0xfbd7efffefded58dfef7eeed4ebcfbff0000, b | c = 0xfbf17fb9effff9aafffbfb77ea68ff570000 FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT a & b = 0x6b81400989881080680200050228b8160000, a & c = 0x4b400e810b9851887aa000000820e9400000, b & c = 0x5b100121098a1080e8108a000020aa000000 FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT a ^ b = 0x10769fe602336d2f93bc9f9aacd447e80000, a ^ c = 0xb097e17ee44684058457eeed469c12bf0000, b ^ c = 0xa0e17e98e675e92a17eb7177ea4855570000 FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT (~a) = 0x943831307467aa728559fb72f1430601ffff, ~b = 0x844eaed67654c75d16e564e85d9741e9ffff, ~c = 0x24afd04e90212e77010e159fb7df14beffff FROM u
+--Result--
+[(1, 1, 1)]
++--------------------+
+--Query--
+SELECT BIT_COUNT(0b1100000010011010000000101000000111100010) = 13
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT bit_count(a & NULL) FROM t
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 1 FROM t WHERE ~reverse(a & NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t WHERE insert(a & NULL,'','','')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t WHERE rtrim(a & NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (SELECT a & NULL from t)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+PREPARE s FROM 'do json_array(1, database(), bit_or(@c:=0xe9))'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE GREATEST((-1) & (-1), -t0.c0)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT GREATEST((-1) & (-1), -t0.c0) IS TRUE FROM t0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE GREATEST(18446744073709551615, -t0.c0)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE t0.c1 < (t0.c0 & t0.c0) AND t0.c0 = -1
+--Result--
+[(-1, 'a')]
++--------------------+
+--Query--
+SELECT t0.c1 < (t0.c0 & t0.c0) AND t0.c0 = -1 FROM t0
+--Result--
+[(1,)]
++--------------------+

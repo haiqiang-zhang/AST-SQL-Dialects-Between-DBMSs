@@ -84,11 +84,3 @@ select str_to_date('10:04:11 03-07-2019', '%s:%i:%H %d-%m-%Y', 'UTC') = toDateTi
 select sTr_To_DaTe('10:04:11 03-07-2019', '%s:%i:%H %d-%m-%Y', 'UTC') = toDateTime('2019-07-03 11:04:10', 'UTC');
 select str_to_date('10:04:11 invalid 03-07-2019', '%s:%i:%H %d-%m-%Y', 'UTC') IS NULL;
 select parseDateTime('Aug 13, 2022, 07:58:32 PM', '%b %e, %G, %h:%i:%s %p', 'UTC');
-select parseDateTime('Aug 13, 2022, 7:58:32 PM', '%b %e, %G, %l:%i:%s %p', 'UTC');
-select parseDateTime('Aug 13, 2022, 07:58:32 PM', '%b %e, %G, %l:%i:%s %p', 'UTC');
-select parseDateTime('Aug 13, 2022, 07:58:32', '%b %e, %G, %H:%i:%s', 'UTC');
-select parseDateTime('Aug 13, 2022, 7:58:32', '%b %e, %G, %k:%i:%s', 'UTC');
-select parseDateTime('Aug 13, 2022, 07:58:32', '%b %e, %G, %k:%i:%s', 'UTC');
-select parseDateTime('08 13, 2022, 07:58:32', '%m %e, %G, %k:%i:%s', 'UTC');
-select parseDateTime('8 13, 2022, 7:58:32', '%c %e, %G, %k:%i:%s', 'UTC');
-select parseDateTime('08 13, 2022, 07:58:32', '%c %e, %G, %k:%i:%s', 'UTC');

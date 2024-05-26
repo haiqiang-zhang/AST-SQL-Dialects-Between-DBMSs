@@ -9,7 +9,5 @@ INSERT INTO t_missed_subcolumns VALUES (4, 'ddd', '{"k1": {"k2": "foo"}, "k3": 4
 OPTIMIZE TABLE t_missed_subcolumns FINAL;
 SELECT count(), min(id) FROM t_missed_subcolumns;
 ALTER TABLE t_missed_subcolumns DELETE WHERE obj.k4 = 5;
-SELECT count(), min(id) FROM t_missed_subcolumns;
 DELETE FROM t_missed_subcolumns WHERE obj.k1.k3 = 'fee';
-SELECT count(), min(id) FROM t_missed_subcolumns;
 DROP TABLE IF EXISTS t_missed_subcolumns;

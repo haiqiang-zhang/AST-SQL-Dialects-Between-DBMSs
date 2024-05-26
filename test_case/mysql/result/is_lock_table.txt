@@ -1,0 +1,75 @@
+--Query--
+SELECT COUNT(*) FROM information_schema.columns                 WHERE table_name='db'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t1 READ, v1 READ
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE, t1 as X READ, t3 READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 as X
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 READ
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) > 0 FROM information_schema.tables
+--Result--
+[(1,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+

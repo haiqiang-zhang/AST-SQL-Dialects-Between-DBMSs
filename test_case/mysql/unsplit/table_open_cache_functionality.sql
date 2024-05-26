@@ -6,12 +6,7 @@ SELECT @@GLOBAL.table_open_cache;
 SELECT @@GLOBAL.table_open_cache = VARIABLE_VALUE
 FROM performance_schema.global_variables
 WHERE VARIABLE_NAME='table_open_cache';
-SELECT COUNT(@@GLOBAL.table_open_cache);
-SELECT COUNT(VARIABLE_VALUE)
-FROM performance_schema.global_variables 
-WHERE VARIABLE_NAME='table_open_cache';
 SELECT @@table_open_cache = @@GLOBAL.table_open_cache;
-SELECT COUNT(@@GLOBAL.table_open_cache);
 DROP TABLE IF EXISTS tab1;
 DROP TABLE IF EXISTS tab2;
 DROP TABLE IF EXISTS tab3;

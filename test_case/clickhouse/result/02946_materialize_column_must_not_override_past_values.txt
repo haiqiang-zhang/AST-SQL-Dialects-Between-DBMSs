@@ -1,0 +1,170 @@
+--Query--
+SELECT 'DEFAULT expressions'
+--Result--
+[('DEFAULT expressions',)]
++--------------------+
+--Query--
+SELECT '-- Compact parts'
+--Result--
+[('-- Compact parts',)]
++--------------------+
+--Query--
+SELECT 'Before materialize'
+--Result--
+[('Before materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT 'After materialize'
+--Result--
+[('After materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT '-- Wide parts'
+--Result--
+[('-- Wide parts',)]
++--------------------+
+--Query--
+SELECT 'Before materialize'
+--Result--
+[('Before materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT 'After materialize'
+--Result--
+[('After materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT '-- Nullable column != physically absent'
+--Result--
+[('-- Nullable column != physically absent',)]
++--------------------+
+--Query--
+SELECT 'Before materialize'
+--Result--
+[('Before materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, None), (3, 54321)]
++--------------------+
+--Query--
+SELECT 'After materialize'
+--Result--
+[('After materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, None), (3, 54321)]
++--------------------+
+--Query--
+SELECT '-- Parts with renamed column'
+--Result--
+[('-- Parts with renamed column',)]
++--------------------+
+--Query--
+SELECT 'Before materialize'
+--Result--
+[('Before materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT 'After rename'
+--Result--
+[('After rename',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT 'After materialize'
+--Result--
+[('After materialize',)]
++--------------------+
+--Query--
+SELECT * FROM tab ORDER BY id
+--Result--
+[(1, 1), (2, 54321)]
++--------------------+
+--Query--
+SELECT 'MATERIALIZED expressions'
+--Result--
+[('MATERIALIZED expressions',)]
++--------------------+
+--Query--
+SELECT '-- Compact parts'
+--Result--
+[('-- Compact parts',)]
++--------------------+
+--Query--
+SELECT 'Before materialize'
+--Result--
+[('Before materialize',)]
++--------------------+
+--Query--
+SELECT id, mtrl FROM tab ORDER BY id
+--Result--
+[(1, 54321)]
++--------------------+
+--Query--
+SELECT 'After materialize'
+--Result--
+[('After materialize',)]
++--------------------+
+--Query--
+SELECT id, mtrl FROM tab ORDER BY id
+--Result--
+[(1, 65432)]
++--------------------+
+--Query--
+SELECT '-- Compact parts'
+--Result--
+[('-- Compact parts',)]
++--------------------+
+--Query--
+SELECT 'Before materialize'
+--Result--
+[('Before materialize',)]
++--------------------+
+--Query--
+SELECT id, mtrl FROM tab ORDER BY id
+--Result--
+[(1, 54321)]
++--------------------+
+--Query--
+SELECT 'After materialize'
+--Result--
+[('After materialize',)]
++--------------------+
+--Query--
+SELECT id, mtrl FROM tab ORDER BY id
+--Result--
+[(1, 65432)]
++--------------------+

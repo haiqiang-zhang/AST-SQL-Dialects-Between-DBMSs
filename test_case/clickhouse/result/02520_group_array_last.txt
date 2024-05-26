@@ -1,0 +1,30 @@
+--Query--
+select groupArrayLast(1)(number+1) from numbers(5)
+--Result--
+[([5],)]
++--------------------+
+--Query--
+select groupArrayLastArray(3)([1,2,3,4,5,6])
+--Result--
+[([4, 5, 6],)]
++--------------------+
+--Query--
+select * from simple_agg_groupArrayLastArray order by key, value
+--Result--
+[(1, [6, 2, 3, 4, 5]), (2, [3, 5, 6, 1, 2])]
++--------------------+
+--Query--
+system stop merges simple_agg_groupArrayLastArray
+--Result--
+[]
++--------------------+
+--Query--
+select * from simple_agg_groupArrayLastArray order by key, value
+--Result--
+[(1, [6, 2, 3, 4, 5]), (1, [7, 8]), (2, [3, 5, 6, 1, 2]), (2, [7, 8])]
++--------------------+
+--Query--
+select * from simple_agg_groupArrayLastArray final order by key, value
+--Result--
+[(1, [7, 8, 3, 4, 5]), (2, [7, 8, 6, 1, 2])]
++--------------------+

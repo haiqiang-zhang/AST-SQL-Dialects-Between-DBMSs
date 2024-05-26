@@ -30,5 +30,4 @@ SELECT * FROM t1 WHERE a LIKE 'we_%' ORDER BY a;
 drop table t1;
 CREATE TABLE t1 (test1 INT, test2 VARCHAR(255));
 SELECT COALESCE(IF(test1=1, 1, NULL), test2) FROM t1;
-SELECT COALESCE(IF(test1=1, NULL, 1), test2) FROM t1;
 DROP TABLE t1;

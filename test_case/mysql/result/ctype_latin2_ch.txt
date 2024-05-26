@@ -1,0 +1,85 @@
+--Query--
+select * from t1 where tt like 'Aa%'
+--Result--
+[(1, 'Aa'), (2, 'Aas')]
++--------------------+
+--Query--
+select * from t1 ignore index (primary) where tt like 'Aa%'
+--Result--
+[(1, 'Aa'), (2, 'Aas')]
++--------------------+
+--Query--
+select * from t1 where tt like '%Aa%'
+--Result--
+[(1, 'Aa'), (2, 'Aas')]
++--------------------+
+--Query--
+select * from t1 where tt like 'AA%'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 ignore index (primary) where tt like 'AA%'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where tt like '%AA%'
+--Result--
+[]
++--------------------+
+--Query--
+select hex(a) from t1
+--Result--
+[('05FF',), ('FF',)]
++--------------------+
+--Query--
+select hex(weight_string(ch)) w, name from t1 order by ch
+--Result--
+[('140127014C014C00', 'LATIN SMALL LETTER O'), ('140127014D014D00', 'LATIN CAPITAL LETTER O'), ('140128014E014E00', 'LATIN SMALL LETTER O WITH ACUTE'), ('140128014F014F00', 'LATIN CAPITAL LETTER O WITH ACUTE'), ('1401290150015000', 'LATIN SMALL LETTER O WITH CIRCUMFLEX'), ('1401290151015100', 'LATIN CAPITAL LETTER O WITH CURCUMFLEX'), ('14012A0152015200', 'LATIN SMALL LETTER O WITH DIAERESIS'), ('14012A0153015300', 'LATIN CAPITAL LETTER O WITH DIAERESIS'), ('14012B0154015400', 'LATIN SMALL LETTER O WITH DOUBLE ACUTE'), ('14012B0155015500', 'LATIN CAPITAL LETTER O WITH DOUBLE ACUTE'), ('1C0138016E016E00', 'LATIN SMALL LETTER U'), ('1C0138016F016F00', 'LATIN CAPITAL LETTER U'), ('1C01390170017000', 'LATIN SMALL LETTER U WITH ACUTE'), ('1C01390171017100', 'LATIN CAPITAL LETTER U WITH ACUTE'), ('1C013A0172017200', 'LATIN SMALL LETTER U WITH RING ABOVE'), ('1C013A0173017300', 'LATIN CAPITAL LETTER U WITH RING ABOVE'), ('1C013B0174017400', 'LATIN SMALL LETTER U WITH DIAERESIS'), ('1C013B0175017500', 'LATIN CAPITAL LETTER U WITH DIAERESIS'), ('1C013C0176017600', 'LATIN SMALL LETTER U WITH DOUBLE ACUTE'), ('1C013C0177017700', 'LATIN CAPITAL LETTER U WITH DOUBLE ACUTE')]
++--------------------+
+--Query--
+select hex(weight_string(ch)) w, name from t1 order by ch
+--Result--
+[('140127014D014D00', 'LATIN CAPITAL LETTER O'), ('140128014F014F00', 'LATIN CAPITAL LETTER O WITH ACUTE'), ('1401290151015100', 'LATIN CAPITAL LETTER O WITH CURCUMFLEX'), ('14012A0153015300', 'LATIN CAPITAL LETTER O WITH DIAERESIS'), ('14012B0155015500', 'LATIN CAPITAL LETTER O WITH DOUBLE ACUTE'), ('1C0138016E016E00', 'LATIN _SMALL_ LETTER U'), ('1C01390170017000', 'LATIN _SMALL_ LETTER U WITH ACUTE'), ('1C013A0172017200', 'LATIN _SMALL_ LETTER U WITH RING ABOVE'), ('1C013B0174017400', 'LATIN _SMALL_ LETTER U WITH DIAERESIS'), ('1C013C0176017600', 'LATIN _SMALL_ LETTER U WITH DOUBLE ACUTE')]
++--------------------+
+--Query--
+select hex(weight_string(ch)) w, name from t1 order by ch
+--Result--
+[('140127014D014D00', 'LATIN CAPITAL LETTER O'), ('140128014F014F00', 'LATIN CAPITAL LETTER O WITH ACUTE'), ('1401290151015100', 'LATIN CAPITAL LETTER O WITH CURCUMFLEX'), ('14012A0153015300', 'LATIN CAPITAL LETTER O WITH DIAERESIS'), ('14012B0155015500', 'LATIN CAPITAL LETTER O WITH DOUBLE ACUTE'), ('1C0138016E016E00', 'LATIN _SMALL_ LETTER U'), ('1C01390170017000', 'LATIN _SMALL_ LETTER U WITH ACUTE'), ('1C013A0172017200', 'LATIN _SMALL_ LETTER U WITH RING ABOVE'), ('1C013B0174017400', 'LATIN _SMALL_ LETTER U WITH DIAERESIS'), ('1C013C0176017600', 'LATIN _SMALL_ LETTER U WITH DOUBLE ACUTE')]
++--------------------+
+--Query--
+select hex(weight_string(ch)) w, name from t1 order by concat(ch)
+--Result--
+[('140127014D014D00', 'LATIN CAPITAL LETTER O'), ('140128014F014F00', 'LATIN CAPITAL LETTER O WITH ACUTE'), ('1401290151015100', 'LATIN CAPITAL LETTER O WITH CURCUMFLEX'), ('14012A0153015300', 'LATIN CAPITAL LETTER O WITH DIAERESIS'), ('14012B0155015500', 'LATIN CAPITAL LETTER O WITH DOUBLE ACUTE'), ('1C0138016E016E00', 'LATIN _SMALL_ LETTER U'), ('1C01390170017000', 'LATIN _SMALL_ LETTER U WITH ACUTE'), ('1C013A0172017200', 'LATIN _SMALL_ LETTER U WITH RING ABOVE'), ('1C013B0174017400', 'LATIN _SMALL_ LETTER U WITH DIAERESIS'), ('1C013C0176017600', 'LATIN _SMALL_ LETTER U WITH DOUBLE ACUTE')]
++--------------------+
+--Query--
+SELECT * FROM t1 GROUP BY s1
+--Result--
+[('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY s1
+--Result--
+[('x',), ('X',), ('y',), ('Y',), ('z',), ('Z',)]
++--------------------+
+--Query--
+SELECT * FROM t1 GROUP BY s1
+--Result--
+[('x',), ('y',), ('z',)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY s1
+--Result--
+[('x',), ('X',), ('y',), ('Y',), ('z',), ('Z',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Asia',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[({'blue'},)]
++--------------------+

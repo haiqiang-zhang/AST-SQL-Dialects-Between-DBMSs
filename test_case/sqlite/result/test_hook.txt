@@ -1,0 +1,80 @@
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7)]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t3
+--Result--
+[(1, '')]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t3
+--Result--
+[(1, '')]
++--------------------+
+--Query--
+SELECT * FROM t1 INTERSECT SELECT * FROM t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 EXCEPT SELECT * FROM t3
+--Result--
+[(1, '')]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY b
+--Result--
+[(1, '')]
++--------------------+
+--Query--
+SELECT * FROM t1 GROUP BY b
+--Result--
+[(1, '')]
++--------------------+
+--Query--
+REPLACE INTO t4 VALUES(1, 'c')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4 ORDER BY a
+--Result--
+[(1, 'c'), (2, 'b')]
++--------------------+
+--Query--
+REPLACE INTO t4 VALUES(1, 'd')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4 ORDER BY a
+--Result--
+[(1, 'd'), (2, 'b')]
++--------------------+
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('one', 'I'), ('two', 'II')]
++--------------------+

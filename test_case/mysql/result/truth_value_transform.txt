@@ -1,0 +1,35 @@
+--Query--
+select id, a=1 is false from t1
+--Result--
+[(1, 0), (2, 1), (3, 0)]
++--------------------+
+--Query--
+select id, not (a=1 is true) from t1
+--Result--
+[(1, 0), (2, 1), (3, 1)]
++--------------------+
+--Query--
+select id, (not a=1) is true from t1
+--Result--
+[(1, 0), (2, 1), (3, 0)]
++--------------------+
+--Query--
+select id, not (a=1 is false) from t1
+--Result--
+[(1, 1), (2, 0), (3, 1)]
++--------------------+
+--Query--
+select id, not (a=1 is unknown) from t1
+--Result--
+[(1, 1), (2, 1), (3, 0)]
++--------------------+
+--Query--
+select id, ((not a=1) is true) is false from t1
+--Result--
+[(1, 1), (2, 0), (3, 1)]
++--------------------+
+--Query--
+select id, 3 + (not (a=1 is false)) from t1
+--Result--
+[(1, 4), (2, 3), (3, 4)]
++--------------------+

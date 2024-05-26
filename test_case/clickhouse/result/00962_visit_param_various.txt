@@ -1,0 +1,20 @@
+--Query--
+SELECT visitParamExtractUInt('"a":123', 'a')
+--Result--
+[(123,)]
++--------------------+
+--Query--
+SELECT visitParamExtractString('"a":"Hello"', 'a')
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT visitParamExtractRaw('"a":Hello}', 'a')
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT sum(ignore(visitParamExtractRaw(concat('{"a":', reinterpretAsString(rand64())), 'a'))) FROM numbers(1000000)
+--Result--
+[(0,)]
++--------------------+

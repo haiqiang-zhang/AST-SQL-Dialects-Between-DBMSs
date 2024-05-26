@@ -1,0 +1,25 @@
+--Query--
+SYSTEM STOP MERGES replacing_table
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sum(a), count() FROM replacing_table
+--Result--
+[(1720, 32)]
++--------------------+
+--Query--
+SYSTEM START MERGES replacing_table
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE replacing_table FINAL
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE replacing_table FINAL
+--Result--
+[]
++--------------------+

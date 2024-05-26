@@ -1,0 +1,35 @@
+--Query--
+SELECT ALL 'a'
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT DISTINCT 'a'
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT ALL * FROM (SELECT 1 UNION ALL SELECT 1)
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM (SELECT 2 UNION ALL SELECT 2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT sum(number) FROM numbers(10)
+--Result--
+[(45,)]
++--------------------+
+--Query--
+SELECT sum(ALL x) FROM (SELECT 1 x UNION ALL SELECT 1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT repeat('a', ALL) FROM (SELECT number AS ALL FROM numbers(10))
+--Result--
+[('',), ('a',), ('aa',), ('aaa',), ('aaaa',), ('aaaaa',), ('aaaaaa',), ('aaaaaaa',), ('aaaaaaaa',), ('aaaaaaaaa',)]
++--------------------+

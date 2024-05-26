@@ -1,0 +1,430 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 'x'), (2, 'y')]
++--------------------+
+--Query--
+ATTACH DATABASE 'test2.db' AS two
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 'x'), (2, 'y')]
++--------------------+
+--Query--
+DETACH DATABASE two
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, 'x'), (2, 'y')]
++--------------------+
+--Query--
+ATTACH DATABASE 'test3.db' AS three
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM three.sqlite_master
+--Result--
+[('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b, c)'), ('table', 'ON', 'ON', 3, "CREATE TABLE 'ON'(a, b, c)"), ('table', 'sqlite_stat1', 'sqlite_stat1', 4, 'CREATE TABLE sqlite_stat1(tbl,idx,stat)')]
++--------------------+
+--Query--
+DETACH DATABASE [three]
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db3
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db4
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db5
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db6
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db7
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db8
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' AS db9
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' as db10
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' as db11
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db5
+--Result--
+[]
++--------------------+
+--Query--
+select * from temp.sqlite_master
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test.db' as db12
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db12
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db11
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db10
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db9
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db8
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db7
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db6
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db4
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db3
+--Result--
+[]
++--------------------+
+--Query--
+DETACH db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tx
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tx
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tx
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main.tx
+--Result--
+[]
++--------------------+
+--Query--
+SELECT type, name, tbl_name FROM db2.sqlite_master
+--Result--
+[('table', 'sqlite_stat1', 'sqlite_stat1')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE x>5
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT type, name, tbl_name FROM sqlite_master
+--Result--
+[('table', 't1', 't1'), ('table', 't2', 't2'), ('table', 'tx', 'tx'), ('index', 'i2', 't2')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE x>5
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT type, name, tbl_name FROM sqlite_master
+--Result--
+[('table', 't1', 't1'), ('table', 't2', 't2'), ('table', 'tx', 'tx'), ('index', 'i2', 't2')]
++--------------------+
+--Query--
+SELECT type, name, tbl_name FROM db2.sqlite_master
+--Result--
+[('table', 'sqlite_stat1', 'sqlite_stat1')]
++--------------------+
+--Query--
+SELECT type, name, tbl_name FROM db2.sqlite_master
+--Result--
+[('table', 'sqlite_stat1', 'sqlite_stat1')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(11, 'x'), (12, 'y')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2, 2), (4, 4)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2, 2), (4, 4)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2, 2), (4, 4)]
++--------------------+
+--Query--
+DETACH db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(1, 2), (9, 10)]
++--------------------+
+--Query--
+ATTACH DATABASE 'test2.db' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main.t3
+--Result--
+[(1, 2), (9, 10)]
++--------------------+
+--Query--
+DETACH db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main.t4
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE 'test2.db' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+DETACH DATABASE db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v3
+--Result--
+[(102,), (910,), (607,), (1112,), (1516,)]
++--------------------+
+--Query--
+SELECT * FROM v3
+--Result--
+[(102,), (910,), (607,), (1112,), (1516,)]
++--------------------+
+--Query--
+ATTACH DATABASE 'test2.db' AS db2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM main.v3
+--Result--
+[(102,), (910,), (607,), (1112,), (1516,)]
++--------------------+
+--Query--
+ATTACH DATABASE 'test.db' AS orig
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE 'no-such-file' AS nosuch
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH DATABASE 'cannot-read' AS noread
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS t2
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test4.db' AS aux1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test4.db' AS aux2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux2.t1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM aux2.t1
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+ATTACH '' AS noname
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH ':memory:' AS inmem
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM noname.sqlite_master
+--Result--
+[('noname',)]
++--------------------+
+--Query--
+SELECT name FROM inmem.sqlite_master
+--Result--
+[('inmem',)]
++--------------------+
+--Query--
+SELECT * FROM aux1.t1
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+

@@ -1,0 +1,10 @@
+--Query--
+SELECT flattenTuple(t) AS ft, toTypeName(ft) FROM t_flatten_tuple
+--Result--
+[(([1, 2], ['a', 'b'], 3, 'c', 4), 'Tuple(\n    `t1.a` Array(UInt32),\n    `t1.s` Array(String),\n    b UInt32,\n    `t2.k` String,\n    `t2.v` UInt32)')]
++--------------------+
+--Query--
+SELECT untuple(flattenTuple(data)) FROM t_flatten_object ORDER BY data.id
+--Result--
+[(1, 1, '2', [3, 4], [0, 0], 0, 'foo'), (2, 0, 'str', [0], [55], 42, 'bar')]
++--------------------+

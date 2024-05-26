@@ -1,0 +1,40 @@
+--Query--
+SELECT a, FORMAT(MATCH (message) AGAINST ('steve'),6) FROM t1 WHERE MATCH (message) AGAINST ('steve')
+--Result--
+[(4, '0.296010'), (7, '0.296010')]
++--------------------+
+--Query--
+SELECT a, MATCH (message) AGAINST ('steve' IN BOOLEAN MODE) FROM t1 WHERE MATCH (message) AGAINST ('steve')
+--Result--
+[(4, 0.2960100471973419), (7, 0.2960100471973419)]
++--------------------+
+--Query--
+SELECT a, FORMAT(MATCH (message) AGAINST ('steve'),6) as rel FROM t1 ORDER BY rel
+--Result--
+[(1, '0.000000'), (2, '0.000000'), (3, '0.000000'), (5, '0.000000'), (6, '0.000000'), (4, '0.296010'), (7, '0.296010')]
++--------------------+
+--Query--
+SELECT a, MATCH (message) AGAINST ('steve' IN BOOLEAN MODE) as rel FROM t1 ORDER BY rel
+--Result--
+[(1, 0.0), (2, 0.0), (3, 0.0), (5, 0.0), (6, 0.0), (4, 0.2960100471973419), (7, 0.2960100471973419)]
++--------------------+
+--Query--
+SELECT message FROM t1 WHERE MATCH (message) AGAINST ('steve') ORDER BY message desc
+--Result--
+[('steve is cool',), ('steve',)]
++--------------------+
+--Query--
+SELECT a, MATCH (message) AGAINST ('t* f*' IN BOOLEAN MODE) as rel FROM t1
+--Result--
+[(1, 1.885928302414186e-09), (2, 0.0906190574169159)]
++--------------------+
+--Query--
+SELECT a, MATCH (message) AGAINST ('t* f*' IN BOOLEAN MODE) as rel FROM t1 ORDER BY rel,a
+--Result--
+[(1, 1.885928302414186e-09), (2, 0.0906190574169159)]
++--------------------+
+--Query--
+select distinct b.id, b.betreff from t3 b  order by match(betreff) against ('+abc' in boolean mode) desc
+--Result--
+[]
++--------------------+

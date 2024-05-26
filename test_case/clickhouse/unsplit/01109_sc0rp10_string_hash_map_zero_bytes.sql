@@ -1,6 +1,3 @@
-
--- in this group are '', '\0', ...., '\0 x 34', to a total of 35. All other
--- keys are unique.
 select count(*) = 18 * 18 * 17 + 35 
 from (
     select key

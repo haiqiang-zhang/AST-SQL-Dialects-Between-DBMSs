@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0), (datetime.date(2000, 1, 1), 0, 199952, 0, 0)]
++--------------------+
+--Query--
+SELECT @@sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+select load_file('$MYSQLD_DATADIR/test/t1.par')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT PARTITION_NAME, SUBPARTITION_NAME, PARTITION_COMMENT FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = 't1' AND TABLE_SCHEMA = 'test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT PARTITION_NAME, SUBPARTITION_NAME, PARTITION_COMMENT FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = 't1' AND TABLE_SCHEMA = 'test'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT PARTITION_NAME, SUBPARTITION_NAME, PARTITION_COMMENT FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = 't1' AND TABLE_SCHEMA = 'test' ORDER BY PARTITION_NAME, SUBPARTITION_NAME DESC
+--Result--
+[]
++--------------------+
+--Query--
+SELECT FROM_DAYS(3652499), FROM_DAYS(3652500), FROM_DAYS(3652501)
+--Result--
+[(None, None, None)]
++--------------------+

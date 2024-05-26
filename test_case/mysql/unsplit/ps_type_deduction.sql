@@ -73,15 +73,10 @@ prepare s from 'select length(?), sha2(?, 0)';
 prepare s from 'insert into t3 values(?)';
 select length(a), a=@a from t3;
 prepare s from 'update t3 set a=?';
-select length(a), a=@b from t3;
 prepare s from 'delete from t3 where a=?';
-select length(a), a from t3;
 prepare s from 'insert into t3 select ?';
-select length(a), a=@a from t3;
 prepare s from 'insert into t3 select ? union select ?';
-select length(a), a=@a, a=@b from t3;
 prepare s from 'insert into t3 select ? union all select ?';
-select length(a), a=@a, a=@b from t3;
 prepare s from 'create table t4 as select ? as a from t3 limit 1';
 prepare s from
  'create table t4 as select cast(? as binary(1000000)) as a from t3

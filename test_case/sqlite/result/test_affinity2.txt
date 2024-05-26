@@ -1,0 +1,75 @@
+--Query--
+SELECT xi, typeof(xi) FROM t1 ORDER BY rowid
+--Result--
+[(1, 'integer'), (2, 'integer'), (3, 'integer')]
++--------------------+
+--Query--
+SELECT rowid, xi==xt, xi==xb, xi==+xt FROM t1 ORDER BY rowid
+--Result--
+[(1, 1, 1, 1), (2, 1, 1, 1), (3, 1, 1, 1)]
++--------------------+
+--Query--
+SELECT rowid, xr==xt, xr==xb, xr==+xt FROM t1 ORDER BY rowid
+--Result--
+[(1, 1, 1, 1), (2, 1, 1, 1), (3, 1, 1, 1)]
++--------------------+
+--Query--
+SELECT rowid, xn==xt, xn==xb, xn==+xt FROM t1 ORDER BY rowid
+--Result--
+[(1, 1, 1, 1), (2, 1, 1, 1), (3, 1, 1, 1)]
++--------------------+
+--Query--
+SELECT rowid, xt==+xi, xt==xi, xt==xb FROM t1 ORDER BY rowid
+--Result--
+[(1, 1, 1, 0), (2, 1, 1, 1), (3, 0, 1, 1)]
++--------------------+
+--Query--
+SELECT * FROM ttt WHERE CAST(c0 AS NUMERIC) > c1 GROUP BY rowid
+--Result--
+[('abc', '-1')]
++--------------------+
+--Query--
+SELECT * FROM ttt INDEXED BY ii WHERE CAST(c0 AS NUMERIC) > c1 GROUP BY rowid
+--Result--
+[('abc', '-1')]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE c='0' ORDER BY a
+--Result--
+[(2, 1, 0), (4, 1, 0)]
++--------------------+
+--Query--
+SELECT quote(- x'ce'), quote(t0.c0), quote(- x'ce' >= t0.c0) FROM t0
+--Result--
+[('0', "'-1'", '1')]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE - x'ce' >= t0.c0
+--Result--
+[('-1', None)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE +-+x'ce' >= t0.c0
+--Result--
+[('-1', None)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE - 'ce' >= t0.c0
+--Result--
+[('-1', None)]
++--------------------+
+--Query--
+SELECT * FROM t0 WHERE +-+'ce' >= t0.c0
+--Result--
+[('-1', None)]
++--------------------+
+--Query--
+SELECT 3175546974276630385 < c0 FROM t0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t0 WHERE 3175546974276630385 < c0
+--Result--
+[(1,)]
++--------------------+

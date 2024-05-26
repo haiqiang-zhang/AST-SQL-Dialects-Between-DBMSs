@@ -13,13 +13,8 @@ SELECT cast(id1 as UInt16) AS cond1, (id2 % 40000) AS cond2, (cond1 AND cond2) A
 SELECT * FROM test_02559 PREWHERE id1 <= 3 AND id2 > 0 WHERE (id1 + id2 < 15) LIMIT 10;
 SELECT count() FROM test_02559 PREWHERE id2>=0 AND (1 OR ignore(id1)) WHERE ignore(id1)=0;
 SELECT count() FROM test_02559 PREWHERE ignore(id1);
-SELECT count() FROM test_02559 PREWHERE 1 OR ignore(id1);
-SELECT count() FROM test_02559 PREWHERE ignore(id1) AND id2 > 0;
 SELECT count() FROM test_02559 PREWHERE (1 OR ignore(id1)) AND id2 > 0;
 SELECT count() FROM test_02559 PREWHERE (id1 <= 10 AND id2 > 0) AND ignore(id1);
-SELECT count() FROM test_02559 PREWHERE ignore(id1) AND (id1 <= 10 AND id2 > 0);
-SELECT count() FROM test_02559 PREWHERE (id1 <= 10 AND id2 > 0) AND (1 OR ignore(id1));
-SELECT count() FROM test_02559 PREWHERE (1 OR ignore(id1)) AND (id1 <= 10 AND id2 > 0);
 SELECT * FROM test_02559;
 SELECT * FROM test_02559;
 DROP ROW POLICY IF EXISTS 02559_filter_1 ON test_02559;

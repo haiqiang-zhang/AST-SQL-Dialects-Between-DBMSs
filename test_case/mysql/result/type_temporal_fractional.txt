@@ -1,0 +1,2745 @@
+--Query--
+SELECT CURRENT_TIME(6) RLIKE '^[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}$'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6) RLIKE '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}$'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT LEFT(CURRENT_TIME(6), 8) = CONCAT(CURRENT_TIME)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT LEFT(CURRENT_TIMESTAMP(6), 8) = CONCAT(CURRENT_TIMESTAMP)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RIGHT(CURRENT_TIME(6), 7) = RIGHT(CURRENT_TIMESTAMP(6), 7)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)=TIMESTAMP(CURRENT_DATE, CURRENT_TIME(6))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)=NOW(6)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)=LOCALTIME(6)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)=LOCALTIMESTAMP(6)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)<=SYSDATE(6)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)<=SYSDATE(6) + 0
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT MICROSECOND(CURRENT_TIME(6))=MICROSECOND(UTC_TIME(6))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT MICROSECOND(CURRENT_TIMESTAMP(6))=MICROSECOND(UTC_TIMESTAMP(6))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(101100, datetime.timedelta(seconds=36659, microseconds=500000)), (101011, datetime.timedelta(seconds=36610, microseconds=500000)), (101010, datetime.timedelta(seconds=36610, microseconds=499999)), (-101100, datetime.timedelta(days=-1, seconds=49740, microseconds=500000)), (-101011, datetime.timedelta(days=-1, seconds=49789, microseconds=500000)), (-101010, datetime.timedelta(days=-1, seconds=49789, microseconds=500001))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(15959,), (20000,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(10203.123,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT a, CAST(a AS TIME(3)) FROM t1
+--Result--
+[(None, None), (101010.9999, datetime.timedelta(seconds=36611)), (-101010.9999, datetime.timedelta(days=-1, seconds=49789)), (1e+19, None), (999999.1, None)]
++--------------------+
+--Query--
+SELECT CAST('1 00:00:00' as TIME), EXTRACT(HOUR FROM '1 00:00:00'), HOUR('1 00:00:00')
+--Result--
+[(datetime.timedelta(days=1), 24, 24)]
++--------------------+
+--Query--
+SELECT a6, t6, HEX(WEIGHT_STRING(t6)) FROM t1 ORDER BY t6
+--Result--
+[('-838:59:59.000000', datetime.timedelta(days=-35, seconds=3601), '7FFFCB9105000000'), ('-838:59:58.999999', datetime.timedelta(days=-35, seconds=3601, microseconds=1), '7FFFCB9105F0BDC1'), ('-838:59:58.999990', datetime.timedelta(days=-35, seconds=3601, microseconds=10), '7FFFCB9105F0BDCA'), ('-838:59:58.999900', datetime.timedelta(days=-35, seconds=3601, microseconds=100), '7FFFCB9105F0BE24'), ('-838:59:58.999000', datetime.timedelta(days=-35, seconds=3601, microseconds=1000), '7FFFCB9105F0C1A8'), ('-838:59:58.990000', datetime.timedelta(days=-35, seconds=3601, microseconds=10000), '7FFFCB9105F0E4D0'), ('-838:59:58.900000', datetime.timedelta(days=-35, seconds=3601, microseconds=100000), '7FFFCB9105F24460'), ('-838:59:58.100000', datetime.timedelta(days=-35, seconds=3601, microseconds=900000), '7FFFCB9105FE7960'), ('-838:59:58.099999', datetime.timedelta(days=-35, seconds=3601, microseconds=900001), '7FFFCB9105FE7961'), ('-838:59:58.009999', datetime.timedelta(days=-35, seconds=3601, microseconds=990001), '7FFFCB9105FFD8F1'), ('-838:59:58.000999', datetime.timedelta(days=-35, seconds=3601, microseconds=999001), '7FFFCB9105FFFC19'), ('-838:59:58.000099', datetime.timedelta(days=-35, seconds=3601, microseconds=999901), '7FFFCB9105FFFF9D'), ('-838:59:58.000016', datetime.timedelta(days=-35, seconds=3601, microseconds=999984), '7FFFCB9105FFFFF0'), ('-838:59:58.000015', datetime.timedelta(days=-35, seconds=3601, microseconds=999985), '7FFFCB9105FFFFF1'), ('-838:59:58.000008', datetime.timedelta(days=-35, seconds=3601, microseconds=999992), '7FFFCB9105FFFFF8'), ('-838:59:58.000001', datetime.timedelta(days=-35, seconds=3601, microseconds=999999), '7FFFCB9105FFFFFF'), ('-01:00:00.999999', datetime.timedelta(days=-1, seconds=82799, microseconds=1), '7FFFFFEFFFF0BDC1'), ('-01:00:00.999990', datetime.timedelta(days=-1, seconds=82799, microseconds=10), '7FFFFFEFFFF0BDCA'), ('-01:00:00.999900', datetime.timedelta(days=-1, seconds=82799, microseconds=100), '7FFFFFEFFFF0BE24'), ('-01:00:00.999000', datetime.timedelta(days=-1, seconds=82799, microseconds=1000), '7FFFFFEFFFF0C1A8'), ('-01:00:00.990000', datetime.timedelta(days=-1, seconds=82799, microseconds=10000), '7FFFFFEFFFF0E4D0'), ('-01:00:00.900000', datetime.timedelta(days=-1, seconds=82799, microseconds=100000), '7FFFFFEFFFF24460'), ('-01:00:00.100000', datetime.timedelta(days=-1, seconds=82799, microseconds=900000), '7FFFFFEFFFFE7960'), ('-01:00:00.099999', datetime.timedelta(days=-1, seconds=82799, microseconds=900001), '7FFFFFEFFFFE7961'), ('-01:00:00.009999', datetime.timedelta(days=-1, seconds=82799, microseconds=990001), '7FFFFFEFFFFFD8F1'), ('-01:00:00.000999', datetime.timedelta(days=-1, seconds=82799, microseconds=999001), '7FFFFFEFFFFFFC19'), ('-01:00:00.000099', datetime.timedelta(days=-1, seconds=82799, microseconds=999901), '7FFFFFEFFFFFFF9D'), ('-01:00:00.000016', datetime.timedelta(days=-1, seconds=82799, microseconds=999984), '7FFFFFEFFFFFFFF0'), ('-01:00:00.000015', datetime.timedelta(days=-1, seconds=82799, microseconds=999985), '7FFFFFEFFFFFFFF1'), ('-01:00:00.000008', datetime.timedelta(days=-1, seconds=82799, microseconds=999992), '7FFFFFEFFFFFFFF8'), ('-01:00:00.000001', datetime.timedelta(days=-1, seconds=82799, microseconds=999999), '7FFFFFEFFFFFFFFF'), ('-00:01:00.999999', datetime.timedelta(days=-1, seconds=86339, microseconds=1), '7FFFFFFFBFF0BDC1'), ('-00:01:00.900000', datetime.timedelta(days=-1, seconds=86339, microseconds=100000), '7FFFFFFFBFF24460'), ('-00:01:00.100000', datetime.timedelta(days=-1, seconds=86339, microseconds=900000), '7FFFFFFFBFFE7960'), ('-00:01:00.099999', datetime.timedelta(days=-1, seconds=86339, microseconds=900001), '7FFFFFFFBFFE7961'), ('-00:01:00.009999', datetime.timedelta(days=-1, seconds=86339, microseconds=990001), '7FFFFFFFBFFFD8F1'), ('-00:01:00.000999', datetime.timedelta(days=-1, seconds=86339, microseconds=999001), '7FFFFFFFBFFFFC19'), ('-00:01:00.000099', datetime.timedelta(days=-1, seconds=86339, microseconds=999901), '7FFFFFFFBFFFFF9D'), ('-00:01:00.000016', datetime.timedelta(days=-1, seconds=86339, microseconds=999984), '7FFFFFFFBFFFFFF0'), ('-00:01:00.000015', datetime.timedelta(days=-1, seconds=86339, microseconds=999985), '7FFFFFFFBFFFFFF1'), ('-00:01:00.000008', datetime.timedelta(days=-1, seconds=86339, microseconds=999992), '7FFFFFFFBFFFFFF8'), ('-00:01:00.000001', datetime.timedelta(days=-1, seconds=86339, microseconds=999999), '7FFFFFFFBFFFFFFF'), ('-00:00:01.999999', datetime.timedelta(days=-1, seconds=86398, microseconds=1), '7FFFFFFFFEF0BDC1'), ('-00:00:01.999990', datetime.timedelta(days=-1, seconds=86398, microseconds=10), '7FFFFFFFFEF0BDCA'), ('-00:00:01.999900', datetime.timedelta(days=-1, seconds=86398, microseconds=100), '7FFFFFFFFEF0BE24'), ('-00:00:01.999000', datetime.timedelta(days=-1, seconds=86398, microseconds=1000), '7FFFFFFFFEF0C1A8'), ('-00:00:01.990000', datetime.timedelta(days=-1, seconds=86398, microseconds=10000), '7FFFFFFFFEF0E4D0'), ('-00:00:01.900000', datetime.timedelta(days=-1, seconds=86398, microseconds=100000), '7FFFFFFFFEF24460'), ('-00:00:01.100000', datetime.timedelta(days=-1, seconds=86398, microseconds=900000), '7FFFFFFFFEFE7960'), ('-00:00:01.099999', datetime.timedelta(days=-1, seconds=86398, microseconds=900001), '7FFFFFFFFEFE7961'), ('-00:00:01.090000', datetime.timedelta(days=-1, seconds=86398, microseconds=910000), '7FFFFFFFFEFEA070'), ('-00:00:01.009999', datetime.timedelta(days=-1, seconds=86398, microseconds=990001), '7FFFFFFFFEFFD8F1'), ('-00:00:01.000999', datetime.timedelta(days=-1, seconds=86398, microseconds=999001), '7FFFFFFFFEFFFC19'), ('-00:00:01.000099', datetime.timedelta(days=-1, seconds=86398, microseconds=999901), '7FFFFFFFFEFFFF9D'), ('-00:00:01.000016', datetime.timedelta(days=-1, seconds=86398, microseconds=999984), '7FFFFFFFFEFFFFF0'), ('-00:00:01.000015', datetime.timedelta(days=-1, seconds=86398, microseconds=999985), '7FFFFFFFFEFFFFF1'), ('-00:00:01.000014', datetime.timedelta(days=-1, seconds=86398, microseconds=999986), '7FFFFFFFFEFFFFF2'), ('-00:00:01.000013', datetime.timedelta(days=-1, seconds=86398, microseconds=999987), '7FFFFFFFFEFFFFF3'), ('-00:00:01.000012', datetime.timedelta(days=-1, seconds=86398, microseconds=999988), '7FFFFFFFFEFFFFF4'), ('-00:00:01.000011', datetime.timedelta(days=-1, seconds=86398, microseconds=999989), '7FFFFFFFFEFFFFF5'), ('-00:00:01.000010', datetime.timedelta(days=-1, seconds=86398, microseconds=999990), '7FFFFFFFFEFFFFF6'), ('-00:00:01.000009', datetime.timedelta(days=-1, seconds=86398, microseconds=999991), '7FFFFFFFFEFFFFF7'), ('-00:00:01.000008', datetime.timedelta(days=-1, seconds=86398, microseconds=999992), '7FFFFFFFFEFFFFF8'), ('-00:00:01.000007', datetime.timedelta(days=-1, seconds=86398, microseconds=999993), '7FFFFFFFFEFFFFF9'), ('-00:00:01.000006', datetime.timedelta(days=-1, seconds=86398, microseconds=999994), '7FFFFFFFFEFFFFFA'), ('-00:00:01.000005', datetime.timedelta(days=-1, seconds=86398, microseconds=999995), '7FFFFFFFFEFFFFFB'), ('-00:00:01.000004', datetime.timedelta(days=-1, seconds=86398, microseconds=999996), '7FFFFFFFFEFFFFFC'), ('-00:00:01.000003', datetime.timedelta(days=-1, seconds=86398, microseconds=999997), '7FFFFFFFFEFFFFFD'), ('-00:00:01.000002', datetime.timedelta(days=-1, seconds=86398, microseconds=999998), '7FFFFFFFFEFFFFFE'), ('-00:00:01.000001', datetime.timedelta(days=-1, seconds=86398, microseconds=999999), '7FFFFFFFFEFFFFFF'), ('-00:00:01.000000', datetime.timedelta(days=-1, seconds=86399), '7FFFFFFFFF000000'), ('-00:00:00.999999', datetime.timedelta(days=-1, seconds=86399, microseconds=1), '7FFFFFFFFFF0BDC1'), ('-00:00:00.999990', datetime.timedelta(days=-1, seconds=86399, microseconds=10), '7FFFFFFFFFF0BDCA'), ('-00:00:00.999900', datetime.timedelta(days=-1, seconds=86399, microseconds=100), '7FFFFFFFFFF0BE24'), ('-00:00:00.999000', datetime.timedelta(days=-1, seconds=86399, microseconds=1000), '7FFFFFFFFFF0C1A8'), ('-00:00:00.990000', datetime.timedelta(days=-1, seconds=86399, microseconds=10000), '7FFFFFFFFFF0E4D0'), ('-00:00:00.900000', datetime.timedelta(days=-1, seconds=86399, microseconds=100000), '7FFFFFFFFFF24460'), ('-00:00:00.100000', datetime.timedelta(days=-1, seconds=86399, microseconds=900000), '7FFFFFFFFFFE7960'), ('-00:00:00.099999', datetime.timedelta(days=-1, seconds=86399, microseconds=900001), '7FFFFFFFFFFE7961'), ('-00:00:00.009999', datetime.timedelta(days=-1, seconds=86399, microseconds=990001), '7FFFFFFFFFFFD8F1'), ('-00:00:00.000999', datetime.timedelta(days=-1, seconds=86399, microseconds=999001), '7FFFFFFFFFFFFC19'), ('-00:00:00.000099', datetime.timedelta(days=-1, seconds=86399, microseconds=999901), '7FFFFFFFFFFFFF9D'), ('-00:00:00.000016', datetime.timedelta(days=-1, seconds=86399, microseconds=999984), '7FFFFFFFFFFFFFF0'), ('-00:00:00.000015', datetime.timedelta(days=-1, seconds=86399, microseconds=999985), '7FFFFFFFFFFFFFF1'), ('-00:00:00.000014', datetime.timedelta(days=-1, seconds=86399, microseconds=999986), '7FFFFFFFFFFFFFF2'), ('-00:00:00.000013', datetime.timedelta(days=-1, seconds=86399, microseconds=999987), '7FFFFFFFFFFFFFF3'), ('-00:00:00.000012', datetime.timedelta(days=-1, seconds=86399, microseconds=999988), '7FFFFFFFFFFFFFF4'), ('-00:00:00.000011', datetime.timedelta(days=-1, seconds=86399, microseconds=999989), '7FFFFFFFFFFFFFF5'), ('-00:00:00.000010', datetime.timedelta(days=-1, seconds=86399, microseconds=999990), '7FFFFFFFFFFFFFF6'), ('-00:00:00.000009', datetime.timedelta(days=-1, seconds=86399, microseconds=999991), '7FFFFFFFFFFFFFF7'), ('-00:00:00.000008', datetime.timedelta(days=-1, seconds=86399, microseconds=999992), '7FFFFFFFFFFFFFF8'), ('-00:00:00.000007', datetime.timedelta(days=-1, seconds=86399, microseconds=999993), '7FFFFFFFFFFFFFF9'), ('-00:00:00.000006', datetime.timedelta(days=-1, seconds=86399, microseconds=999994), '7FFFFFFFFFFFFFFA'), ('-00:00:00.000005', datetime.timedelta(days=-1, seconds=86399, microseconds=999995), '7FFFFFFFFFFFFFFB'), ('-00:00:00.000004', datetime.timedelta(days=-1, seconds=86399, microseconds=999996), '7FFFFFFFFFFFFFFC'), ('-00:00:00.000003', datetime.timedelta(days=-1, seconds=86399, microseconds=999997), '7FFFFFFFFFFFFFFD'), ('-00:00:00.000002', datetime.timedelta(days=-1, seconds=86399, microseconds=999998), '7FFFFFFFFFFFFFFE'), ('-00:00:00.000001', datetime.timedelta(days=-1, seconds=86399, microseconds=999999), '7FFFFFFFFFFFFFFF'), ('00:00:00.000000', datetime.timedelta(0), '8000000000000000'), ('-00:00:00.000000', datetime.timedelta(0), '8000000000000000'), ('00:00:00.000001', datetime.timedelta(microseconds=1), '8000000000000001'), ('00:00:00.000002', datetime.timedelta(microseconds=2), '8000000000000002'), ('00:00:00.000003', datetime.timedelta(microseconds=3), '8000000000000003'), ('00:00:00.000004', datetime.timedelta(microseconds=4), '8000000000000004'), ('00:00:00.000005', datetime.timedelta(microseconds=5), '8000000000000005'), ('00:00:00.000006', datetime.timedelta(microseconds=6), '8000000000000006'), ('00:00:00.000007', datetime.timedelta(microseconds=7), '8000000000000007'), ('00:00:00.000008', datetime.timedelta(microseconds=8), '8000000000000008'), ('00:00:00.000009', datetime.timedelta(microseconds=9), '8000000000000009'), ('00:00:00.000010', datetime.timedelta(microseconds=10), '800000000000000A'), ('00:00:00.000011', datetime.timedelta(microseconds=11), '800000000000000B'), ('00:00:00.000012', datetime.timedelta(microseconds=12), '800000000000000C'), ('00:00:00.000013', datetime.timedelta(microseconds=13), '800000000000000D'), ('00:00:00.000014', datetime.timedelta(microseconds=14), '800000000000000E'), ('00:00:00.000015', datetime.timedelta(microseconds=15), '800000000000000F'), ('00:00:00.000016', datetime.timedelta(microseconds=16), '8000000000000010'), ('00:00:00.000099', datetime.timedelta(microseconds=99), '8000000000000063'), ('00:00:00.000999', datetime.timedelta(microseconds=999), '80000000000003E7'), ('00:00:00.009999', datetime.timedelta(microseconds=9999), '800000000000270F'), ('00:00:00.099999', datetime.timedelta(microseconds=99999), '800000000001869F'), ('00:00:00.100000', datetime.timedelta(microseconds=100000), '80000000000186A0'), ('00:00:00.900000', datetime.timedelta(microseconds=900000), '80000000000DBBA0'), ('00:00:00.990000', datetime.timedelta(microseconds=990000), '80000000000F1B30'), ('00:00:00.999000', datetime.timedelta(microseconds=999000), '80000000000F3E58'), ('00:00:00.999900', datetime.timedelta(microseconds=999900), '80000000000F41DC'), ('00:00:00.999990', datetime.timedelta(microseconds=999990), '80000000000F4236'), ('00:00:00.999999', datetime.timedelta(microseconds=999999), '80000000000F423F'), ('00:00:01.000000', datetime.timedelta(seconds=1), '8000000001000000'), ('00:00:01.000001', datetime.timedelta(seconds=1, microseconds=1), '8000000001000001'), ('00:00:01.000002', datetime.timedelta(seconds=1, microseconds=2), '8000000001000002'), ('00:00:01.000003', datetime.timedelta(seconds=1, microseconds=3), '8000000001000003'), ('00:00:01.000004', datetime.timedelta(seconds=1, microseconds=4), '8000000001000004'), ('00:00:01.000005', datetime.timedelta(seconds=1, microseconds=5), '8000000001000005'), ('00:00:01.000006', datetime.timedelta(seconds=1, microseconds=6), '8000000001000006'), ('00:00:01.000007', datetime.timedelta(seconds=1, microseconds=7), '8000000001000007'), ('00:00:01.000008', datetime.timedelta(seconds=1, microseconds=8), '8000000001000008'), ('00:00:01.000009', datetime.timedelta(seconds=1, microseconds=9), '8000000001000009'), ('00:00:01.000010', datetime.timedelta(seconds=1, microseconds=10), '800000000100000A'), ('00:00:01.000011', datetime.timedelta(seconds=1, microseconds=11), '800000000100000B'), ('00:00:01.000012', datetime.timedelta(seconds=1, microseconds=12), '800000000100000C'), ('00:00:01.000013', datetime.timedelta(seconds=1, microseconds=13), '800000000100000D'), ('00:00:01.000014', datetime.timedelta(seconds=1, microseconds=14), '800000000100000E'), ('00:00:01.000015', datetime.timedelta(seconds=1, microseconds=15), '800000000100000F'), ('00:00:01.000016', datetime.timedelta(seconds=1, microseconds=16), '8000000001000010'), ('00:00:01.000099', datetime.timedelta(seconds=1, microseconds=99), '8000000001000063'), ('00:00:01.000999', datetime.timedelta(seconds=1, microseconds=999), '80000000010003E7'), ('00:00:01.009999', datetime.timedelta(seconds=1, microseconds=9999), '800000000100270F'), ('00:00:01.090000', datetime.timedelta(seconds=1, microseconds=90000), '8000000001015F90'), ('00:00:01.099999', datetime.timedelta(seconds=1, microseconds=99999), '800000000101869F'), ('00:00:01.100000', datetime.timedelta(seconds=1, microseconds=100000), '80000000010186A0'), ('00:00:01.900000', datetime.timedelta(seconds=1, microseconds=900000), '80000000010DBBA0'), ('00:00:01.990000', datetime.timedelta(seconds=1, microseconds=990000), '80000000010F1B30'), ('00:00:01.999000', datetime.timedelta(seconds=1, microseconds=999000), '80000000010F3E58'), ('00:00:01.999900', datetime.timedelta(seconds=1, microseconds=999900), '80000000010F41DC'), ('00:00:01.999990', datetime.timedelta(seconds=1, microseconds=999990), '80000000010F4236'), ('00:00:01.999999', datetime.timedelta(seconds=1, microseconds=999999), '80000000010F423F'), ('00:01:00.000001', datetime.timedelta(seconds=60, microseconds=1), '8000000040000001'), ('00:01:00.000008', datetime.timedelta(seconds=60, microseconds=8), '8000000040000008'), ('00:01:00.000015', datetime.timedelta(seconds=60, microseconds=15), '800000004000000F'), ('00:01:00.000016', datetime.timedelta(seconds=60, microseconds=16), '8000000040000010'), ('00:01:00.000099', datetime.timedelta(seconds=60, microseconds=99), '8000000040000063'), ('00:01:00.000999', datetime.timedelta(seconds=60, microseconds=999), '80000000400003E7'), ('00:01:00.009999', datetime.timedelta(seconds=60, microseconds=9999), '800000004000270F'), ('00:01:00.099999', datetime.timedelta(seconds=60, microseconds=99999), '800000004001869F'), ('00:01:00.100000', datetime.timedelta(seconds=60, microseconds=100000), '80000000400186A0'), ('00:01:00.900000', datetime.timedelta(seconds=60, microseconds=900000), '80000000400DBBA0'), ('00:01:00.999999', datetime.timedelta(seconds=60, microseconds=999999), '80000000400F423F'), ('01:00:00.000001', datetime.timedelta(seconds=3600, microseconds=1), '8000001000000001'), ('01:00:00.000008', datetime.timedelta(seconds=3600, microseconds=8), '8000001000000008'), ('01:00:00.000015', datetime.timedelta(seconds=3600, microseconds=15), '800000100000000F'), ('01:00:00.000016', datetime.timedelta(seconds=3600, microseconds=16), '8000001000000010'), ('01:00:00.000099', datetime.timedelta(seconds=3600, microseconds=99), '8000001000000063'), ('01:00:00.000999', datetime.timedelta(seconds=3600, microseconds=999), '80000010000003E7'), ('01:00:00.009999', datetime.timedelta(seconds=3600, microseconds=9999), '800000100000270F'), ('01:00:00.099999', datetime.timedelta(seconds=3600, microseconds=99999), '800000100001869F'), ('01:00:00.100000', datetime.timedelta(seconds=3600, microseconds=100000), '80000010000186A0'), ('01:00:00.900000', datetime.timedelta(seconds=3600, microseconds=900000), '80000010000DBBA0'), ('01:00:00.990000', datetime.timedelta(seconds=3600, microseconds=990000), '80000010000F1B30'), ('01:00:00.999000', datetime.timedelta(seconds=3600, microseconds=999000), '80000010000F3E58'), ('01:00:00.999900', datetime.timedelta(seconds=3600, microseconds=999900), '80000010000F41DC'), ('01:00:00.999990', datetime.timedelta(seconds=3600, microseconds=999990), '80000010000F4236'), ('01:00:00.999999', datetime.timedelta(seconds=3600, microseconds=999999), '80000010000F423F'), ('838:59:58.000001', datetime.timedelta(days=34, seconds=82798, microseconds=1), '8000346EFA000001'), ('838:59:58.000008', datetime.timedelta(days=34, seconds=82798, microseconds=8), '8000346EFA000008'), ('838:59:58.000015', datetime.timedelta(days=34, seconds=82798, microseconds=15), '8000346EFA00000F'), ('838:59:58.000016', datetime.timedelta(days=34, seconds=82798, microseconds=16), '8000346EFA000010'), ('838:59:58.000099', datetime.timedelta(days=34, seconds=82798, microseconds=99), '8000346EFA000063'), ('838:59:58.000999', datetime.timedelta(days=34, seconds=82798, microseconds=999), '8000346EFA0003E7'), ('838:59:58.009999', datetime.timedelta(days=34, seconds=82798, microseconds=9999), '8000346EFA00270F'), ('838:59:58.099999', datetime.timedelta(days=34, seconds=82798, microseconds=99999), '8000346EFA01869F'), ('838:59:58.100000', datetime.timedelta(days=34, seconds=82798, microseconds=100000), '8000346EFA0186A0'), ('838:59:58.900000', datetime.timedelta(days=34, seconds=82798, microseconds=900000), '8000346EFA0DBBA0'), ('838:59:58.990000', datetime.timedelta(days=34, seconds=82798, microseconds=990000), '8000346EFA0F1B30'), ('838:59:58.999000', datetime.timedelta(days=34, seconds=82798, microseconds=999000), '8000346EFA0F3E58'), ('838:59:58.999900', datetime.timedelta(days=34, seconds=82798, microseconds=999900), '8000346EFA0F41DC'), ('838:59:58.999990', datetime.timedelta(days=34, seconds=82798, microseconds=999990), '8000346EFA0F4236'), ('838:59:58.999999', datetime.timedelta(days=34, seconds=82798, microseconds=999999), '8000346EFA0F423F'), ('838:59:59.000000', datetime.timedelta(days=34, seconds=82799), '8000346EFB000000')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-1, seconds=82799, microseconds=1),), (datetime.timedelta(days=-1, seconds=82799, microseconds=999999),), (datetime.timedelta(days=-1, seconds=82800),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999999),), (datetime.timedelta(0),), (datetime.timedelta(seconds=86399, microseconds=999999),), (datetime.timedelta(seconds=3723),), (datetime.timedelta(seconds=3723, microseconds=400000),), (datetime.timedelta(seconds=3723, microseconds=450000),), (datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456780),), (datetime.timedelta(seconds=3723, microseconds=456789),), (datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(seconds=86399, microseconds=999999),), (datetime.timedelta(seconds=3723, microseconds=456789),), (datetime.timedelta(seconds=3723, microseconds=456780),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=450000),), (datetime.timedelta(seconds=3723, microseconds=400000),), (datetime.timedelta(seconds=3723),), (datetime.timedelta(0),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999999),), (datetime.timedelta(days=-1, seconds=82800),), (datetime.timedelta(days=-1, seconds=82799, microseconds=999999),), (datetime.timedelta(days=-1, seconds=82799, microseconds=1),), (datetime.timedelta(days=-35, seconds=3601),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='01:02:03.45'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=450000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='01:02:03.4567'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='01:02:03.45670'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='01:02:03.456700'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN '01:02:00' AND '01:03:00'
+--Result--
+[(datetime.timedelta(seconds=3723),), (datetime.timedelta(seconds=3723, microseconds=400000),), (datetime.timedelta(seconds=3723, microseconds=450000),), (datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456780),), (datetime.timedelta(seconds=3723, microseconds=456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIME'01:02:03.456' AND TIME'01:02:03.45678'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456780),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-1, seconds=82799, microseconds=1),), (datetime.timedelta(days=-1, seconds=82799, microseconds=999999),), (datetime.timedelta(days=-1, seconds=82800),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999999),), (datetime.timedelta(0),), (datetime.timedelta(seconds=3723),), (datetime.timedelta(seconds=3723, microseconds=400000),), (datetime.timedelta(seconds=3723, microseconds=450000),), (datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456780),), (datetime.timedelta(seconds=3723, microseconds=456789),), (datetime.timedelta(seconds=86399, microseconds=999999),), (datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(seconds=86399, microseconds=999999),), (datetime.timedelta(seconds=3723, microseconds=456789),), (datetime.timedelta(seconds=3723, microseconds=456780),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=450000),), (datetime.timedelta(seconds=3723, microseconds=400000),), (datetime.timedelta(seconds=3723),), (datetime.timedelta(0),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999999),), (datetime.timedelta(days=-1, seconds=82800),), (datetime.timedelta(days=-1, seconds=82799, microseconds=999999),), (datetime.timedelta(days=-1, seconds=82799, microseconds=1),), (datetime.timedelta(days=-35, seconds=3601),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='01:02:03.456700'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN '01:02:00' AND '01:03:00'
+--Result--
+[(datetime.timedelta(seconds=3723),), (datetime.timedelta(seconds=3723, microseconds=400000),), (datetime.timedelta(seconds=3723, microseconds=450000),), (datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456780),), (datetime.timedelta(seconds=3723, microseconds=456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIME'01:02:03.456' AND TIME'01:02:03.45678'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=456000),), (datetime.timedelta(seconds=3723, microseconds=456700),), (datetime.timedelta(seconds=3723, microseconds=456780),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(datetime.timedelta(days=-10),), (datetime.timedelta(days=-1),), (datetime.timedelta(days=-1),), (datetime.timedelta(0),), (datetime.timedelta(days=1),), (datetime.timedelta(days=1),), (datetime.timedelta(days=10),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(datetime.timedelta(0),), (datetime.timedelta(0),), (datetime.timedelta(seconds=682),), (datetime.timedelta(seconds=3723),), (datetime.timedelta(seconds=40953),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=39599, microseconds=123457),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111112),), (datetime.timedelta(microseconds=111112),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111112),), (datetime.timedelta(microseconds=111112),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111111),), (datetime.timedelta(microseconds=111112),), (datetime.timedelta(microseconds=111112),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN ('00:00:00', '-99:00:00.000001', '99:00:00.000002')
+--Result--
+[(datetime.timedelta(days=-5, seconds=75599, microseconds=999999),), (datetime.timedelta(0),), (datetime.timedelta(days=4, seconds=10800, microseconds=2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, -990000, 990000)
+--Result--
+[(datetime.timedelta(days=-5, seconds=75600),), (datetime.timedelta(0),), (datetime.timedelta(days=4, seconds=10800),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0.000001, -990000.000001, 990000.000001)
+--Result--
+[(datetime.timedelta(days=-5, seconds=75599, microseconds=999999),), (datetime.timedelta(microseconds=1),), (datetime.timedelta(days=4, seconds=10800, microseconds=1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN ('00:00:00', '-99:00:00.000001', '99:00:00.000002')
+--Result--
+[(datetime.timedelta(days=-5, seconds=75599, microseconds=999999),), (datetime.timedelta(0),), (datetime.timedelta(days=4, seconds=10800, microseconds=2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, -990000, 990000)
+--Result--
+[(datetime.timedelta(days=-5, seconds=75600),), (datetime.timedelta(0),), (datetime.timedelta(days=4, seconds=10800),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0.000001, -990000.000001, 990000.000001)
+--Result--
+[(datetime.timedelta(days=-5, seconds=75599, microseconds=999999),), (datetime.timedelta(microseconds=1),), (datetime.timedelta(days=4, seconds=10800, microseconds=1),)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.timedelta(seconds=63, microseconds=100000), datetime.timedelta(seconds=63, microseconds=100000)), (datetime.timedelta(seconds=63, microseconds=120000), datetime.timedelta(seconds=63, microseconds=120000)), (datetime.timedelta(seconds=63, microseconds=123000), datetime.timedelta(seconds=63, microseconds=123000)), (datetime.timedelta(seconds=63, microseconds=123400), datetime.timedelta(seconds=63, microseconds=123400)), (datetime.timedelta(seconds=63, microseconds=123450), datetime.timedelta(seconds=63, microseconds=123450)), (datetime.timedelta(seconds=63, microseconds=123456), datetime.timedelta(seconds=63, microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.timedelta(seconds=63, microseconds=100000), datetime.timedelta(seconds=63, microseconds=100000)), (datetime.timedelta(seconds=63, microseconds=120000), datetime.timedelta(seconds=63, microseconds=120000)), (datetime.timedelta(seconds=63, microseconds=123000), datetime.timedelta(seconds=63, microseconds=123000)), (datetime.timedelta(seconds=63, microseconds=123400), datetime.timedelta(seconds=63, microseconds=123400)), (datetime.timedelta(seconds=63, microseconds=123450), datetime.timedelta(seconds=63, microseconds=123450)), (datetime.timedelta(seconds=63, microseconds=123456), datetime.timedelta(seconds=63, microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.timedelta(seconds=63, microseconds=100000), datetime.timedelta(seconds=63, microseconds=100000)), (datetime.timedelta(seconds=63, microseconds=120000), datetime.timedelta(seconds=63, microseconds=120000)), (datetime.timedelta(seconds=63, microseconds=123000), datetime.timedelta(seconds=63, microseconds=123000)), (datetime.timedelta(seconds=63, microseconds=123400), datetime.timedelta(seconds=63, microseconds=123400)), (datetime.timedelta(seconds=63, microseconds=123450), datetime.timedelta(seconds=63, microseconds=123450)), (datetime.timedelta(seconds=63, microseconds=123456), datetime.timedelta(seconds=63, microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.timedelta(seconds=63, microseconds=100000), datetime.timedelta(seconds=63, microseconds=100000)), (datetime.timedelta(seconds=63, microseconds=120000), datetime.timedelta(seconds=63, microseconds=120000)), (datetime.timedelta(seconds=63, microseconds=123000), datetime.timedelta(seconds=63, microseconds=123000)), (datetime.timedelta(seconds=63, microseconds=123400), datetime.timedelta(seconds=63, microseconds=123400)), (datetime.timedelta(seconds=63, microseconds=123450), datetime.timedelta(seconds=63, microseconds=123450)), (datetime.timedelta(seconds=63, microseconds=123456), datetime.timedelta(seconds=63, microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.timedelta(days=-35, seconds=10801), datetime.timedelta(days=-35, seconds=10801)), (datetime.timedelta(seconds=36672), datetime.timedelta(seconds=36672)), (datetime.timedelta(seconds=36673), datetime.timedelta(seconds=36673)), (datetime.timedelta(days=34, seconds=75599), datetime.timedelta(days=34, seconds=75599))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.timedelta(days=-35, seconds=10801), datetime.timedelta(days=-35, seconds=10801)), (datetime.timedelta(seconds=36672), datetime.timedelta(seconds=36672)), (datetime.timedelta(seconds=36673), datetime.timedelta(seconds=36673)), (datetime.timedelta(days=34, seconds=75599), datetime.timedelta(days=34, seconds=75599))]
++--------------------+
+--Query--
+SELECT a, COUNT(*) FROM t1 GROUP BY a
+--Result--
+[(datetime.timedelta(seconds=62), 2), (datetime.timedelta(seconds=62, microseconds=10000), 2), (datetime.timedelta(seconds=62, microseconds=20000), 2)]
++--------------------+
+--Query--
+SELECT MIN(b), MAX(b) FROM t1
+--Result--
+[(datetime.timedelta(seconds=62), datetime.timedelta(seconds=36662, microseconds=1))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(101011, 101011.9, 101011.99, 101011.999, 101011.9999, 101011.99999, 101011.999999)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(101011.1, 101012.0, 101012.09, 101012.099, 101012.0999, 101012.09999, 101012.099999)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(101011.0, 101011.9, 101011.99, 101011.999, 101011.9999, 101011.99999, 101011.999999)]
++--------------------+
+--Query--
+SELECT   MAX(t0) + 1,   MAX(t1) + 1, MAX(t2) + 1, MAX(t3) + 1,   MAX(t4) + 1, MAX(t5) + 1, MAX(t6) + 1 FROM t1
+--Result--
+[(101011, 101011.9, 101011.99, 101011.999, 101011.9999, 101011.99999, 101011.999999)]
++--------------------+
+--Query--
+SELECT LEAST(CAST('00:00:00.1' as TIME(6)), '00:00:01.1') AS a
+--Result--
+[('00:00:00.100000',)]
++--------------------+
+--Query--
+SELECT LEAST(TIME'00:00:00.1', TIME'00:00:00.12') AS a
+--Result--
+[(datetime.timedelta(microseconds=100000),)]
++--------------------+
+--Query--
+SELECT GREATEST(CAST('00:00:00.1' as TIME(6)), '00:00:01.1') AS a
+--Result--
+[('00:00:01.1',)]
++--------------------+
+--Query--
+SELECT GREATEST(TIME'00:00:00.1', TIME'00:00:00.12') AS a
+--Result--
+[(datetime.timedelta(microseconds=120000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=7323),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=-35, seconds=3601),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=7323, microseconds=400000),), (datetime.timedelta(seconds=7323, microseconds=450000),), (datetime.timedelta(seconds=7323, microseconds=456000),), (datetime.timedelta(seconds=7323, microseconds=456700),), (datetime.timedelta(seconds=7323, microseconds=456780),), (datetime.timedelta(seconds=7323, microseconds=456789),), (datetime.timedelta(seconds=7323, microseconds=456789),), (datetime.timedelta(seconds=7323, microseconds=456790),), (datetime.timedelta(seconds=7323, microseconds=456790),), (datetime.timedelta(seconds=7323, microseconds=456790),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),), (datetime.timedelta(days=-35, seconds=3601),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(microseconds=123457),), (datetime.timedelta(seconds=1, microseconds=234567),), (datetime.timedelta(seconds=12, microseconds=345670),), (datetime.timedelta(seconds=83, microseconds=456700),), (datetime.timedelta(seconds=754, microseconds=567000),), (datetime.timedelta(seconds=5025, microseconds=670000),), (datetime.timedelta(seconds=45296, microseconds=700000),), (datetime.timedelta(days=34, seconds=82799),), (datetime.timedelta(days=-35, seconds=3601),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953), datetime.timedelta(seconds=40953), 112233, 112233.0, 112233.0)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953), datetime.timedelta(seconds=40953, microseconds=123000), 112233, 112233.123, 112233.123)]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.timedelta(seconds=40953), 112233), (datetime.timedelta(days=-1, seconds=45447), -112233)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.timedelta(seconds=40953, microseconds=123000), 112233.123), (datetime.timedelta(days=-1, seconds=45446, microseconds=876544), -112233.123456)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.timedelta(seconds=40953, microseconds=123000), 112233.123)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.timedelta(seconds=40953, microseconds=123000), 112233.123), (datetime.timedelta(days=-1, seconds=45446, microseconds=876544), -112233.123456)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.timedelta(days=-1, seconds=45446, microseconds=876544), '-11:22:33.123456')]
++--------------------+
+--Query--
+SELECT a, a + 0, a + 1, a + 1.0, a + 1e0 FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=86399, microseconds=999999), -1e-06, 0.999999, 0.999999, 0.999999), (datetime.timedelta(0), 0.0, 1.0, 1.0, 1.0), (datetime.timedelta(microseconds=1), 1e-06, 1.000001, 1.000001, 1.000001)]
++--------------------+
+--Query--
+SELECT ADDTIME(a, '00:00:00.000001') FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=82800),), (datetime.timedelta(days=-1, seconds=82800, microseconds=1),), (datetime.timedelta(0),), (datetime.timedelta(microseconds=1),), (datetime.timedelta(microseconds=2),), (datetime.timedelta(seconds=3600, microseconds=1),), (datetime.timedelta(seconds=3600, microseconds=2),)]
++--------------------+
+--Query--
+SELECT SUBTIME(a, '00:00:00.000001') FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=82799, microseconds=999998),), (datetime.timedelta(days=-1, seconds=82799, microseconds=999999),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999998),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999999),), (datetime.timedelta(0),), (datetime.timedelta(seconds=3599, microseconds=999999),), (datetime.timedelta(seconds=3600),)]
++--------------------+
+--Query--
+SELECT TIMEDIFF(a, '00:00:00.000001') FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=82799, microseconds=999998),), (datetime.timedelta(days=-1, seconds=82799, microseconds=999999),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999998),), (datetime.timedelta(days=-1, seconds=86399, microseconds=999999),), (datetime.timedelta(0),), (datetime.timedelta(seconds=3599, microseconds=999999),), (datetime.timedelta(seconds=3600),)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.timedelta(seconds=3600, microseconds=100001),)]
++--------------------+
+--Query--
+SELECT TIME(CAST('00:00:00' AS TIME) + INTERVAL 34 DAY)
+--Result--
+[(datetime.timedelta(0),)]
++--------------------+
+--Query--
+SELECT a, a + INTERVAL 1 HOUR, a - INTERVAL 1 HOUR FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=50399, microseconds=900000), datetime.timedelta(days=-1, seconds=53999, microseconds=900000), datetime.timedelta(days=-1, seconds=46799, microseconds=900000)), (datetime.timedelta(microseconds=100000), datetime.timedelta(seconds=3600, microseconds=100000), datetime.timedelta(days=-1, seconds=82800, microseconds=100000)), (datetime.timedelta(seconds=36000, microseconds=100000), datetime.timedelta(seconds=39600, microseconds=100000), datetime.timedelta(seconds=32400, microseconds=100000))]
++--------------------+
+--Query--
+SELECT a, a + INTERVAL 1 SECOND, a - INTERVAL 1 SECOND FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=50399, microseconds=900000), datetime.timedelta(days=-1, seconds=50400, microseconds=900000), datetime.timedelta(days=-1, seconds=50398, microseconds=900000)), (datetime.timedelta(microseconds=100000), datetime.timedelta(seconds=1, microseconds=100000), datetime.timedelta(days=-1, seconds=86399, microseconds=100000)), (datetime.timedelta(seconds=36000, microseconds=100000), datetime.timedelta(seconds=36001, microseconds=100000), datetime.timedelta(seconds=35999, microseconds=100000))]
++--------------------+
+--Query--
+SELECT a, a + INTERVAL 1.1 SECOND, a - INTERVAL 1.1 SECOND FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=50399, microseconds=900000), datetime.timedelta(days=-1, seconds=50401), datetime.timedelta(days=-1, seconds=50398, microseconds=800000)), (datetime.timedelta(microseconds=100000), datetime.timedelta(seconds=1, microseconds=200000), datetime.timedelta(days=-1, seconds=86399)), (datetime.timedelta(seconds=36000, microseconds=100000), datetime.timedelta(seconds=36001, microseconds=200000), datetime.timedelta(seconds=35999))]
++--------------------+
+--Query--
+SELECT a, a + INTERVAL 1 HOUR, a - INTERVAL 1 HOUR FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=50400), datetime.timedelta(days=-1, seconds=54000), datetime.timedelta(days=-1, seconds=46800)), (datetime.timedelta(0), datetime.timedelta(seconds=3600), datetime.timedelta(days=-1, seconds=82800)), (datetime.timedelta(seconds=36000), datetime.timedelta(seconds=39600), datetime.timedelta(seconds=32400))]
++--------------------+
+--Query--
+SELECT a, a + INTERVAL 1 SECOND, a - INTERVAL 1 SECOND FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=50400), datetime.timedelta(days=-1, seconds=50401), datetime.timedelta(days=-1, seconds=50399)), (datetime.timedelta(0), datetime.timedelta(seconds=1), datetime.timedelta(days=-1, seconds=86399)), (datetime.timedelta(seconds=36000), datetime.timedelta(seconds=36001), datetime.timedelta(seconds=35999))]
++--------------------+
+--Query--
+SELECT a, a + INTERVAL 1.1 SECOND, a - INTERVAL 1.1 SECOND FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=50400), datetime.timedelta(days=-1, seconds=50401, microseconds=100000), datetime.timedelta(days=-1, seconds=50398, microseconds=900000)), (datetime.timedelta(0), datetime.timedelta(seconds=1, microseconds=100000), datetime.timedelta(days=-1, seconds=86398, microseconds=900000)), (datetime.timedelta(seconds=36000), datetime.timedelta(seconds=36001, microseconds=100000), datetime.timedelta(seconds=35998, microseconds=900000))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3661), '01:01:01')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3661, microseconds=100000), datetime.timedelta(seconds=3661, microseconds=110000), datetime.timedelta(seconds=3661, microseconds=111000), datetime.timedelta(seconds=3661, microseconds=111100), datetime.timedelta(seconds=3661, microseconds=111110), datetime.timedelta(seconds=3661, microseconds=111111), datetime.timedelta(seconds=3661, microseconds=111111))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=123456), datetime.timedelta(seconds=3723))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36672), datetime.timedelta(seconds=36672))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3723),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3783, microseconds=456000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3783),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(112233, 112233)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953), datetime.timedelta(seconds=40953))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(112233.0, 112233.1234)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953), datetime.timedelta(seconds=40953, microseconds=123400))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(112233.0, 112233.1234)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=40953), datetime.timedelta(seconds=40953, microseconds=123400))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 10, 10, 10, 100000), datetime.datetime(2024, 5, 26, 10, 10, 10, 100000), datetime.date(2024, 5, 26)), (datetime.datetime(2024, 5, 27, 10, 10, 10, 100000), datetime.datetime(2024, 5, 27, 10, 10, 10, 100000), datetime.date(2024, 5, 27))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=100000), datetime.date(2024, 5, 26), datetime.datetime(2024, 5, 26, 10, 10, 10, 100000), datetime.datetime(2024, 5, 26, 10, 10, 10, 100000)), (datetime.timedelta(days=1, seconds=36610, microseconds=100000), datetime.date(2024, 5, 27), datetime.datetime(2024, 5, 27, 10, 10, 10, 100000), datetime.datetime(2024, 5, 27, 10, 10, 10, 100000))]
++--------------------+
+--Query--
+SELECT a << 0 FROM t1
+--Result--
+[(112233,), (112234,), (18446744073709439383,), (18446744073709439382,), (18446744073701185959,)]
++--------------------+
+--Query--
+SELECT a, LENGTH(a) FROM t2
+--Result--
+[('11:22:33.123000', 15), ('11:22:33.999000', 15), ('-11:22:33.123000', 16), ('-11:22:33.999000', 16), ('-836:56:56.999999', 17)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(datetime.timedelta(seconds=682, microseconds=123456),), (datetime.timedelta(seconds=40953, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY t0
+--Result--
+[(datetime.timedelta(seconds=682, microseconds=123456),), (datetime.timedelta(seconds=40953),)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY t6
+--Result--
+[(datetime.timedelta(seconds=682, microseconds=123456),), (datetime.timedelta(seconds=40953),)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY t3
+--Result--
+[(datetime.timedelta(seconds=683, microseconds=123000),), (datetime.timedelta(seconds=684, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=ADDTIME(b, '10:00:00')
+--Result--
+[(datetime.timedelta(seconds=36000, microseconds=123456), datetime.timedelta(microseconds=123456)), (datetime.timedelta(seconds=36000), datetime.timedelta(0))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=TIMEDIFF(a, '10:00:00')
+--Result--
+[(datetime.timedelta(seconds=36000, microseconds=123456), datetime.timedelta(microseconds=123456)), (datetime.timedelta(seconds=36000), datetime.timedelta(0))]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a=MAKETIME(10,0,0)
+--Result--
+[(datetime.timedelta(seconds=36000),)]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a=SEC_TO_TIME(36000)
+--Result--
+[(datetime.timedelta(seconds=36000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 PARTITION(p0)
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=2),), (datetime.timedelta(seconds=1, microseconds=6),)]
++--------------------+
+--Query--
+SELECT MAKETIME(1, 1, 1)
+--Result--
+[(datetime.timedelta(seconds=3661),)]
++--------------------+
+--Query--
+SELECT CONCAT(CAST(a AS TIME(0))), CONCAT(CAST(b AS TIME(0))) FROM t1
+--Result--
+[('11:22:33', '11:22:33')]
++--------------------+
+--Query--
+SELECT CAST('10:11:12' AS TIME(0)) + 1
+--Result--
+[(101113,)]
++--------------------+
+--Query--
+SELECT CAST('10:11:12' AS TIME(6)) + 1
+--Result--
+[(101113.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('10:11:12.000003' AS TIME(6))
+--Result--
+[(datetime.timedelta(seconds=36672, microseconds=3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('10:11:12.000003' AS TIME(0))
+--Result--
+[(datetime.timedelta(seconds=36672),)]
++--------------------+
+--Query--
+SELECT CAST('10:11:12.123' AS TIME(0)) = 101112
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(101112.123 AS TIME(0)) = 101112
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(101112.123e0 AS TIME(0)) = 101112
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('24:00:00' AS TIME) = (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('24:00:00' AS TIME(6)) = (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('24:00:00.123456' AS TIME(0)) = (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('24:00:00.123456' AS TIME(6)) = (SELECT b FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a, MICROSECOND(a) FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=46066, microseconds=999999), 1), (datetime.timedelta(seconds=40333, microseconds=1), 1), (datetime.timedelta(seconds=40333, microseconds=100001), 100001), (datetime.timedelta(seconds=40333, microseconds=999999), 999999)]
++--------------------+
+--Query--
+SELECT a, EXTRACT(MICROSECOND FROM a) FROM t1
+--Result--
+[(datetime.timedelta(days=-1, seconds=46066, microseconds=999999), -1), (datetime.timedelta(seconds=40333, microseconds=1), 1), (datetime.timedelta(seconds=40333, microseconds=100001), 100001), (datetime.timedelta(seconds=40333, microseconds=999999), 999999)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'INSERT INTO t1 VALUES (?)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'SELECT * FROM t1 WHERE a=?'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=@a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=@a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=@a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a INTO @a FROM t1 LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[('11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1) t12
+--Result--
+[(datetime.timedelta(microseconds=123456),), (datetime.timedelta(seconds=40271, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MIN(a) FROM t1)
+--Result--
+[(datetime.timedelta(microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = (SELECT a FROM t1 ORDER BY a DESC LIMIT 1)
+--Result--
+[(datetime.timedelta(seconds=40271, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MAX(a) FROM t1 GROUP BY id)
+--Result--
+[(1, datetime.timedelta(seconds=39600, microseconds=123456)), (2, datetime.timedelta(seconds=39660, microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE a='00:00:00.123456'
+--Result--
+[(datetime.timedelta(microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MAX(a) FROM v1)
+--Result--
+[(datetime.timedelta(seconds=40271, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(datetime.timedelta(seconds=40271, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=(SELECT a FROM v1)
+--Result--
+[(datetime.timedelta(seconds=40271, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT DATE_ADD(TIME'00:00:00.0', INTERVAL 10.1 SECOND)
+--Result--
+[(datetime.timedelta(seconds=10, microseconds=100000),)]
++--------------------+
+--Query--
+SELECT t0 FROM t1 WHERE t6='00:00:00.9999998'
+--Result--
+[(datetime.timedelta(seconds=1),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1 WHERE t6='00:00:00.9999998'
+--Result--
+[(datetime.timedelta(seconds=1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),), (datetime.datetime(9999, 12, 31, 23, 59, 59),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC
+--Result--
+[(datetime.datetime(9999, 12, 31, 23, 59, 59),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.45'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.4567'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.45670'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.456700'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN '2000-01-01 01:02:00' AND '2000-01-01 01:03:00'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),), (datetime.datetime(9999, 12, 31, 23, 59, 59),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC
+--Result--
+[(datetime.datetime(9999, 12, 31, 23, 59, 59),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.456700'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN '2000-01-01 01:02:00' AND '2000-01-01 01:03:00'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIMESTAMP'2000-01-01 01:02:03.456' AND TIMESTAMP'2000-01-01 01:02:03.45678'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= 20000101000000
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= 20000101000000.0
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= 20000101000000.000001
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1999, 1, 1, 10, 3),), (datetime.datetime(2000, 1, 31, 10, 5),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0, 0, 123457),), (datetime.datetime(2001, 3, 1, 0, 0),), (datetime.datetime(9999, 3, 1, 0, 0),), (datetime.datetime(2001, 1, 1, 10, 0, 0, 123457),), (datetime.datetime(2001, 3, 1, 0, 0),), (datetime.datetime(9999, 3, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 10, 11),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(20010101101100, datetime.datetime(2001, 1, 1, 10, 10, 59, 500000)), (20010101101011, datetime.datetime(2001, 1, 1, 10, 10, 10, 500000)), (20010101101010, datetime.datetime(2001, 1, 1, 10, 10, 10, 499999))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 29),), (datetime.datetime(2024, 5, 26, 3, 22, 29, 54996),), (datetime.datetime(2024, 5, 26, 8, 0, 0, 123456),), (datetime.datetime(2024, 6, 5, 0, 0, 0, 1),), (datetime.datetime(2024, 5, 25, 13, 59, 59, 999999),), (datetime.datetime(2024, 5, 15, 23, 59, 59, 999999),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN ('2000-01-01 00:00:00', '0000-00-00 00:00:00.000001', '2000-01-01 23:00:00.000002')
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, 20000101000000, 20000101230000)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0.000001, 20000101000000.000001, 20000101230000.000001)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0e0, 0.000001e0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN ('2000-01-01 00:00:00', '0000-00-00 00:00:00.000001','2000-01-01 23:00:00.000002')
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, 20000101000000, 20000101230000)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0.000001, 20000101000000.000001, 20000101230000.000001)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0e0, 0.000001e0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 10, 11, 12), datetime.datetime(2000, 1, 1, 10, 11, 12)), (datetime.datetime(2000, 1, 1, 10, 11, 13), datetime.datetime(2000, 1, 1, 10, 11, 13)), (datetime.datetime(2000, 1, 1, 23, 59, 59), datetime.datetime(2000, 1, 1, 23, 59, 59))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 10, 11, 12), datetime.datetime(2000, 1, 1, 10, 11, 12)), (datetime.datetime(2000, 1, 1, 10, 11, 13), datetime.datetime(2000, 1, 1, 10, 11, 13)), (datetime.datetime(2000, 1, 1, 23, 59, 59), datetime.datetime(2000, 1, 1, 23, 59, 59))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(20010101101011, 20010101101011.9, 20010101101011.99, 20010101101012.0, 20010101101012.0, 20010101101012.0, 20010101101012.0)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(20010101101011.1, 20010101101012.0, 20010101101012.09, 20010101101012.098, 20010101101012.1, 20010101101012.1, 20010101101012.1)]
++--------------------+
+--Query--
+SELECT   MAX(t0) + 1,   MAX(t1) + 1, MAX(t2) + 1, MAX(t3) + 1,   MAX(t4) + 1, MAX(t5) + 1, MAX(t6) + 1 FROM t1
+--Result--
+[(20010101101011, 20010101101011.9, 20010101101011.99, 20010101101012.0, 20010101101012.0, 20010101101012.0, 20010101101012.0)]
++--------------------+
+--Query--
+SELECT LEAST(TIMESTAMP'2001-01-01 00:00:00.1', TIMESTAMP'2001-01-01 00:00:00.2')
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 100000),)]
++--------------------+
+--Query--
+SELECT LEAST(TIMESTAMP'2001-01-01 00:00:00.1', TIMESTAMP'2001-01-01 00:00:00.2') + 1
+--Result--
+[(20010101000001.1,)]
++--------------------+
+--Query--
+SELECT LEAST(TIMESTAMP'2001-01-01 00:00:00.1', TIMESTAMP'2001-01-01 00:00:00.2') + 1.0
+--Result--
+[(20010101000001.1,)]
++--------------------+
+--Query--
+SELECT LEAST(TIMESTAMP'2001-01-01 00:00:00.1', TIMESTAMP'2001-01-01 00:00:00.2') + 1e0
+--Result--
+[(20010101000001.1,)]
++--------------------+
+--Query--
+SELECT LEAST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') AS a
+--Result--
+[('2001-01-01 00:00:00.100000',)]
++--------------------+
+--Query--
+SELECT LEAST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') + 0 AS a
+--Result--
+[(20010101000000.1,)]
++--------------------+
+--Query--
+SELECT CAST(LEAST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') AS SIGNED) AS a
+--Result--
+[(20010101000000,)]
++--------------------+
+--Query--
+SELECT CAST(LEAST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') AS DECIMAL(30,6)) AS a
+--Result--
+[(20010101000000.1,)]
++--------------------+
+--Query--
+SELECT GREATEST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') AS a
+--Result--
+[('2001-01-02 00:00:00.100000',)]
++--------------------+
+--Query--
+SELECT GREATEST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') + 0 AS a
+--Result--
+[(20010102000000.1,)]
++--------------------+
+--Query--
+SELECT CAST(GREATEST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') AS SIGNED) AS a
+--Result--
+[(20010102000000,)]
++--------------------+
+--Query--
+SELECT CAST(GREATEST(CAST('2001-01-01 00:00:00.1' as DATETIME(6)), '2001-01-02 00:00:00.1') AS DECIMAL(30,6)) AS a
+--Result--
+[(20010102000000.1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(9999, 12, 31, 23, 59, 59),), (datetime.datetime(9999, 12, 31, 23, 59, 59, 100000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1999, 1, 2, 0, 0),), (datetime.datetime(1999, 1, 2, 11, 22, 33),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 22, 33, 44, 400000),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 450000),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456000),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456700),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456780),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456789),), (datetime.datetime(200, 10, 10, 12, 2, 3, 456789),), (datetime.datetime(200, 10, 10, 12, 2, 3, 456790),), (datetime.datetime(200, 10, 10, 12, 2, 3, 456790),), (datetime.datetime(200, 10, 10, 12, 2, 3, 456790),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0), datetime.date(2000, 1, 1)), (datetime.datetime(2000, 1, 2, 0, 0), datetime.date(2000, 1, 2))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=CAST(t2.a AS DATE) ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0), datetime.datetime(2000, 1, 1, 0, 0)), (datetime.datetime(2000, 1, 2, 0, 0), datetime.datetime(2000, 1, 2, 0, 0))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2000, 1, 1, 11, 22, 33), 20000101112233)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), 20010101112233.0), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), 20010101112233.12), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123456), 20010101112233.125)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), 20010101112233.0), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), 20010101112233.12)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT a, a + 0, a + 1, a + 1.0, a + 1e0 FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0), 20010101000000.0, 20010101000001.0, 20010101000001.0, 20010101000001.0), (datetime.datetime(2001, 1, 1, 0, 0, 0, 1), 20010101000000.0, 20010101000001.0, 20010101000001.0, 20010101000001.0)]
++--------------------+
+--Query--
+SELECT TIMESTAMP(a, '10:00:00') FROM t1
+--Result--
+[(datetime.datetime(1000, 1, 1, 11, 0),), (datetime.datetime(1000, 1, 1, 11, 0, 0, 1),), (datetime.datetime(2001, 1, 1, 10, 0),), (datetime.datetime(2001, 1, 1, 10, 0, 0, 1),), (datetime.datetime(2001, 1, 1, 11, 0),), (datetime.datetime(2001, 1, 1, 11, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT DATE_SUB(a, INTERVAL 1 MINUTE) FROM t1 ORDER BY a
+--Result--
+[(datetime.datetime(1000, 1, 1, 0, 59),), (datetime.datetime(1000, 1, 1, 0, 59, 0, 1),), (datetime.datetime(2000, 12, 31, 23, 59),), (datetime.datetime(2000, 12, 31, 23, 59, 0, 1),), (datetime.datetime(2001, 1, 1, 0, 59),), (datetime.datetime(2001, 1, 1, 0, 59, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.datetime(2001, 1, 1, 1, 0, 0, 100001),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 3, 3, 456000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 3, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(20000101112233, 20000101112233)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 11, 22, 33), datetime.datetime(2000, 1, 1, 11, 22, 33))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(20010101112233.0, 20010101112233.125)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), datetime.datetime(2001, 1, 1, 11, 22, 33, 123400))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=100000), datetime.datetime(2001, 1, 1, 10, 10, 10, 100000), datetime.date(2001, 1, 1))]
++--------------------+
+--Query--
+SELECT a << 0 FROM t1
+--Result--
+[(20010101112233,), (20010101112234,), (20011231235958,), (20011231235959,), (20011231235959,), (20020101000000,)]
++--------------------+
+--Query--
+SELECT a, b FROM t1 WHERE a=b
+--Result--
+[(datetime.timedelta(seconds=12149), datetime.datetime(2024, 5, 26, 3, 22, 29))]
++--------------------+
+--Query--
+SELECT a6, b6 FROM t1 WHERE a6=b6
+--Result--
+[(datetime.timedelta(seconds=12149, microseconds=832964), datetime.datetime(2024, 5, 26, 3, 22, 29, 832964))]
++--------------------+
+--Query--
+SELECT a, b FROM t1 WHERE a=LEAST(a,a)
+--Result--
+[(datetime.timedelta(seconds=12149), datetime.datetime(2024, 5, 26, 3, 22, 29))]
++--------------------+
+--Query--
+SELECT a, b FROM t1 WHERE a=LEAST(a,b)
+--Result--
+[(datetime.timedelta(seconds=12149), datetime.datetime(2024, 5, 26, 3, 22, 29))]
++--------------------+
+--Query--
+SELECT NOW(6)
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 29, 841519),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=TIME'10:50:50.123'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CURRENT_TIME(6)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('10:50:50.123' AS TIME(6))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=MAKETIME(10,50,50.123)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=SEC_TO_TIME(39050.123)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE TIME'10:50:50.123'=a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE CURRENT_TIME(6)=a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE CAST('10:50:50.123' AS TIME(6))=a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE MAKETIME(10,50,50.123)=a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE SEC_TO_TIME(39050.123)=a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIME'10:50:50.120' AND TIME'10:50:50.123'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIMESTAMP'2010-01-01 10:50:50.120' AND TIME'10:50:50.123'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 50, 50, 123000),), (datetime.datetime(2010, 1, 1, 10, 50, 50, 200000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIME'10:50:50.120' AND TIMESTAMP'2010-01-01 10:50:50.123'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=39050, microseconds=100000),), (datetime.timedelta(seconds=39050, microseconds=123000),), (datetime.timedelta(seconds=39050, microseconds=200000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIME'10:50:50.120' AND TIME'10:50:50.123'
+--Result--
+[(datetime.timedelta(seconds=39050, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIMESTAMP'2010-01-01 10:50:50.120' AND TIME'10:50:50.123'
+--Result--
+[(datetime.timedelta(seconds=39050, microseconds=100000),), (datetime.timedelta(seconds=39050, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIME'10:50:50.120' AND TIMESTAMP'2010-01-01 10:50:50.123'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 11, 22, 123456),), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 11, 22, 123456),), (datetime.datetime(2001, 1, 1, 11, 22, 33),)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 11, 22, 123456),), (datetime.datetime(2001, 1, 1, 11, 22, 33),)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY c
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0),), (datetime.datetime(2001, 1, 1, 0, 11, 22, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=TIMESTAMP('2001-01-01', b)
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0, 0, 123456), datetime.timedelta(seconds=36000, microseconds=123456)), (datetime.datetime(2001, 1, 1, 10, 0), datetime.timedelta(seconds=36000))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=ADDTIME('2001-01-01 00:00:00', '10:00:00')
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0), datetime.timedelta(seconds=36000))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=ADDTIME('2001-01-01 00:00:00', '10:00:00.123456')
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0, 0, 123456), datetime.timedelta(seconds=36000, microseconds=123456))]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 10:11:12' AS DATETIME(0)) + 1
+--Result--
+[(20010101101113,)]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 10:11:12' AS DATETIME(6)) + 1
+--Result--
+[(20010101101113.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('2001-01-01 10:11:12.000003' AS DATETIME(6))
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 11, 12, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('2001-01-01 10:11:12.000003' AS DATETIME(0))
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 11, 12),)]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 10:11:12.123' AS DATETIME(0)) = 20010101101112
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(20010101101112.123 AS DATETIME(0))        = 20010101101112
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(00010101101112.123e0 AS DATETIME(0))      = 20010101101112
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 23:00:00' AS DATETIME) = (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 23:00:00' AS DATETIME(6)) = (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 23:00:00.123456' AS DATETIME(0)) = (SELECT a FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('2001-01-01 23:00:00.123456' AS DATETIME(6)) = (SELECT b FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'INSERT INTO t1 VALUES (?)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'SELECT * FROM t1 WHERE a=?'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a INTO @a FROM t1 LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[('2001-01-01 11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-01-01 11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1) t12
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 123456),), (datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MIN(a) FROM t1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = (SELECT a FROM t1 ORDER BY a DESC LIMIT 1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MAX(a) FROM t1 GROUP BY id)
+--Result--
+[(1, datetime.datetime(2001, 1, 1, 11, 0, 0, 123456)), (2, datetime.datetime(2001, 1, 1, 11, 1, 0, 123456))]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE a='2001-01-01 00:00:00.123456'
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MAX(a) FROM v1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=(SELECT a FROM v1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT t0 FROM t1 WHERE t6='2001-01-01 00:00:00.9999998'
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1 WHERE t6='2001-01-01 00:00:00.9999998'
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 10, 11),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(20010101101100, datetime.datetime(2001, 1, 1, 10, 10, 59, 500000)), (20010101101011, datetime.datetime(2001, 1, 1, 10, 10, 10, 500000)), (20010101101010, datetime.datetime(2001, 1, 1, 10, 10, 10, 499999))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.45'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.4567'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.45670'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.456700'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN '2000-01-01 01:02:00' AND '2000-01-01 01:03:00'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY a DESC
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a='2000-01-01 01:02:03.456700'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN '2000-01-01 01:02:00' AND '2000-01-01 01:03:00'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 400000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 450000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456789),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN TIMESTAMP'2000-01-01 01:02:03.456' AND '2000-01-01 01:02:03.45678'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3, 456000),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456700),), (datetime.datetime(2000, 1, 1, 1, 2, 3, 456780),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= 20000101000000
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= 20000101000000.0
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a >= 20000101000000.000001
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 1, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1999, 1, 1, 10, 3),), (datetime.datetime(2000, 1, 31, 10, 5),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CURRENT_DATE, CURRENT_TIME(6)
+--Result--
+[(datetime.date(2024, 5, 26), datetime.timedelta(seconds=12150, microseconds=826346))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 0, 0, 0, 2),), (datetime.datetime(2000, 1, 1, 10, 0),), (datetime.datetime(2000, 1, 1, 10, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 10, 0, 0, 2),), (datetime.datetime(2000, 1, 1, 23, 0),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN ('2000-01-01 00:00:00', '0000-00-00 00:00:00.000001', '2000-01-01 23:00:00.000002')
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, 20000101000000, 20000101230000)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=0.1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0.1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (20000101000000.000001, 20000101230000.000001)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE   a IN (0.000001, 20000101000000.000001, 20000101230000.000001)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0e0, 0.000001e0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN ('2000-01-01 00:00:00', '0000-00-00 00:00:00.000001', '2000-01-01 23:00:00.000002')
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 2),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0, 20000101000000, 20000101230000)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0),), (datetime.datetime(2000, 1, 1, 23, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0.000001, 20000101000000.000001, 20000101230000.000001)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (20000101000000.000001, 20000101230000.000001)
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 1),), (datetime.datetime(2000, 1, 1, 23, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (0e0, 0.000001e0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 1, 3, 100000), datetime.datetime(2000, 1, 1, 0, 1, 3, 100000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 120000), datetime.datetime(2000, 1, 1, 0, 1, 3, 120000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123000), datetime.datetime(2000, 1, 1, 0, 1, 3, 123000)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123400), datetime.datetime(2000, 1, 1, 0, 1, 3, 123400)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123450), datetime.datetime(2000, 1, 1, 0, 1, 3, 123450)), (datetime.datetime(2000, 1, 1, 0, 1, 3, 123456), datetime.datetime(2000, 1, 1, 0, 1, 3, 123456))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 10, 11, 12), datetime.datetime(2000, 1, 1, 10, 11, 12)), (datetime.datetime(2000, 1, 1, 10, 11, 13), datetime.datetime(2000, 1, 1, 10, 11, 13)), (datetime.datetime(2000, 1, 1, 23, 59, 59), datetime.datetime(2000, 1, 1, 23, 59, 59))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 10, 11, 12), datetime.datetime(2000, 1, 1, 10, 11, 12)), (datetime.datetime(2000, 1, 1, 10, 11, 13), datetime.datetime(2000, 1, 1, 10, 11, 13)), (datetime.datetime(2000, 1, 1, 23, 59, 59), datetime.datetime(2000, 1, 1, 23, 59, 59))]
++--------------------+
+--Query--
+SELECT LEAST(a, '2001-01-02 00:00:00.1') AS a FROM t1
+--Result--
+[('2001-01-01 00:00:00.100000',)]
++--------------------+
+--Query--
+SELECT LEAST(a, '2001-01-02 00:00:00.1') + 0 AS a FROM t1
+--Result--
+[(20010101000000.1,)]
++--------------------+
+--Query--
+SELECT CAST(LEAST(a, '2001-01-02 00:00:00.1') AS SIGNED) AS a FROM t1
+--Result--
+[(20010101000000,)]
++--------------------+
+--Query--
+SELECT CAST(LEAST(a, '2001-01-02 00:00:00.1') AS DECIMAL(30,6)) AS a FROM t1
+--Result--
+[(20010101000000.1,)]
++--------------------+
+--Query--
+SELECT GREATEST(a, '2001-01-02 00:00:00.1') AS a FROM t1
+--Result--
+[('2001-01-02 00:00:00.100000',)]
++--------------------+
+--Query--
+SELECT GREATEST(a, '2001-01-02 00:00:00.1') + 0 AS a FROM t1
+--Result--
+[(20010102000000.1,)]
++--------------------+
+--Query--
+SELECT CAST(GREATEST(a, '2001-01-02 00:00:00.1') AS SIGNED) AS a FROM t1
+--Result--
+[(20010102000000,)]
++--------------------+
+--Query--
+SELECT CAST(GREATEST(a, '2001-01-02 00:00:00.1') AS DECIMAL(30,6)) AS a FROM t1
+--Result--
+[(20010102000000.1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2038, 1, 19, 3, 14, 7),), (datetime.datetime(2038, 1, 19, 3, 14, 7, 999999),), (datetime.datetime(2038, 1, 19, 3, 14, 8),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1999, 1, 2, 0, 0),), (datetime.datetime(1999, 1, 2, 11, 22, 33),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 22, 33, 44, 400000),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 450000),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456000),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456700),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456780),), (datetime.datetime(2001, 1, 1, 22, 33, 44, 456789),), (datetime.datetime(2001, 1, 1, 20, 20, 30, 456789),), (datetime.datetime(2001, 1, 1, 20, 20, 30, 456790),), (datetime.datetime(2001, 1, 1, 20, 20, 30, 456790),), (datetime.datetime(2001, 1, 1, 20, 20, 30, 456790),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t6, i, d FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 11, 22, 33), 20000101112233, 20000101112233.0)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 2, 2, 11, 22, 33), datetime.datetime(2001, 2, 2, 11, 22, 33, 100000), 20010202112233, 20010202112233.1, 20010202112233.1)]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 11, 22, 33),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[(datetime.datetime(2000, 10, 10, 11, 22, 33, 100000),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1
+--Result--
+[(datetime.datetime(2000, 10, 10, 11, 22, 33, 100000),)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=t2.a ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0), datetime.date(2000, 1, 1)), (datetime.datetime(2000, 1, 2, 0, 0), datetime.date(2000, 1, 2))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE t1.a=CAST(t2.a AS DATE) ORDER BY t1.a, t2.a
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0), datetime.datetime(2000, 1, 1, 0, 0)), (datetime.datetime(2000, 1, 2, 0, 0), datetime.datetime(2000, 1, 2, 0, 0))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2000, 1, 1, 11, 22, 33), 20000101112233)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), 20010101112233.0), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), 20010101112233.12), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123456), 20010101112233.125)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), 20010101112233.0), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), 20010101112233.12)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(20000101112233.0,), (20000101112233.1,), (20000101112233.12,)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2000, 1, 1, 11, 22, 33), 20000101112233.0), (datetime.datetime(2000, 1, 1, 11, 22, 33, 100000), 20000101112233.1), (datetime.datetime(2000, 1, 1, 11, 22, 33, 120000), 20000101112233.12)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b ORDER BY BINARY a, BINARY b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.0000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.00000'), (datetime.datetime(2001, 1, 1, 11, 22, 33), '2001-01-01 11:22:33.000000'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.1230'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.12300'), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), '2001-01-01 11:22:33.123000')]
++--------------------+
+--Query--
+SELECT a, a + 0, a + 1, a + 1.0, a + 1e0 FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0), 20010101000000.0, 20010101000001.0, 20010101000001.0, 20010101000001.0), (datetime.datetime(2001, 1, 1, 0, 0, 0, 1), 20010101000000.0, 20010101000001.0, 20010101000001.0, 20010101000001.0)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.datetime(2001, 1, 1, 1, 1, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 3, 3, 456000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 3, 3),)]
++--------------------+
+--Query--
+SELECT a << 0 FROM t1
+--Result--
+[(20010101112233,)]
++--------------------+
+--Query--
+SELECT CURRENT_TIMESTAMP(6)
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 31, 498395),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 31, 490000), datetime.datetime(2024, 5, 26, 3, 22, 31, 490000)), (datetime.datetime(2024, 5, 26, 3, 22, 31, 490000), datetime.datetime(2024, 5, 26, 3, 22, 31, 490000))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1999, 1, 1, 0, 0), datetime.datetime(1999, 1, 1, 0, 0), 1)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 31, 510000), datetime.datetime(2024, 5, 26, 3, 22, 31, 510000), 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=TIMESTAMP('2001-01-01', b)
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0, 0, 123456), datetime.timedelta(seconds=36000, microseconds=123456)), (datetime.datetime(2001, 1, 1, 10, 0), datetime.timedelta(seconds=36000))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=ADDTIME('2001-01-01 00:00:00', '10:00:00')
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0), datetime.timedelta(seconds=36000))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=ADDTIME('2001-01-01 00:00:00', '10:00:00.123456')
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0, 0, 123456), datetime.timedelta(seconds=36000, microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('2001-01-01 10:11:12.000003' AS DATETIME(6))
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 11, 12, 3),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=CAST('2001-01-01 10:11:12.000003' AS DATETIME(0))
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 11, 12),)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'INSERT INTO t1 VALUES (?)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'SELECT * FROM t1 WHERE a=?'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33, 123456),), (datetime.datetime(2001, 1, 1, 0, 0, 0, 100000),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=@a
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=@a
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33, 123456),)]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[('2001-01-01 11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=@a
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33, 123456),)]
++--------------------+
+--Query--
+SELECT a INTO @a FROM t1 LIMIT 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[('2001-01-01 11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-01-01 11:22:33.123456',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1) t12
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 123456),), (datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MIN(a) FROM t1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a = (SELECT a FROM t1 ORDER BY a DESC LIMIT 1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MAX(a) FROM t1 GROUP BY id)
+--Result--
+[(1, datetime.datetime(2001, 1, 1, 11, 0, 0, 123456)), (2, datetime.datetime(2001, 1, 1, 11, 1, 0, 123456))]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE a='2001-01-01 00:00:00.123456'
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IN (SELECT MAX(a) FROM v1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=(SELECT a FROM v1)
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 11, 11, 123456),)]
++--------------------+
+--Query--
+SELECT a=b FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a + b FROM t1
+--Result--
+[(12121212212121.766,), (99991231235960.0,)]
++--------------------+
+--Query--
+SELECT if(0, dt2, t3), CONCAT(if(0, dt2, t3)) FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 0, 0, 0, 567000), '2024-05-26 00:00:00.567')]
++--------------------+
+--Query--
+SELECT CASE WHEN 0 THEN dt2 ELSE t3 END FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 0, 0, 0, 567000),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 1 THEN dt2 ELSE t3 END FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 120000),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 0 THEN t3 ELSE dt2 END FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 120000),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 1 THEN t3 ELSE dt2 END FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 0, 0, 0, 567000),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 0 THEN d ELSE t3 END FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 0, 0, 0, 567000),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 1 THEN d ELSE t3 END FROM t1
+--Result--
+[(datetime.datetime(2002, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 0 THEN t3 ELSE d END FROM t1
+--Result--
+[(datetime.datetime(2002, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT CASE WHEN 1 THEN t3 ELSE d END FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 0, 0, 0, 567000),)]
++--------------------+
+--Query--
+SELECT COALESCE(dt2, t3) FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 120000),)]
++--------------------+
+--Query--
+SELECT IFNULL(dt2, t3) FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 0, 120000),)]
++--------------------+
+--Query--
+SELECT GREATEST(dt2, t3) FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 0, 0, 0, 567000),), (datetime.datetime(2024, 5, 26, 0, 0, 0, 567000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('00:00:00',), ('00:00:00.000000',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('00:00:10',), ('-00:00:00.1',), ('-00:00:00.01',), ('-00:00:00.001',), ('-00:00:00.0001',), ('-00:00:00.00001',), ('-00:00:00.000001',), ('00:00:10.0',), ('00:00:10.1',), ('00:00:10.12',), ('00:00:10.123',), ('00:00:10.1234',), ('00:00:10.12345',), ('00:00:10.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('00:00:00',), ('00:00:00.000000',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('10:10:10',), ('10:10:10.1',), ('10:10:10.12',), ('10:10:10.123',), ('10:10:10.1234',), ('10:10:10.12345',), ('10:10:10.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-01-01 00:00:00',), ('2001-01-01 00:00:00.000000',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-09-09 03:46:40',), ('2001-09-09 03:46:40.0',), ('2001-09-09 03:46:40.1',), ('2001-09-09 03:46:40.12',), ('2001-09-09 03:46:40.123',), ('2001-09-09 03:46:40.1234',), ('2001-09-09 03:46:40.12345',), ('2001-09-09 03:46:40.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-01-01 10:00:00',), ('2001-01-01 10:00:00.000000',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('10:10:20',), ('10:10:20.123456',), ('10:10:20',), ('10:10:20.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('03:22:41',), ('03:22:41.123456',), ('2024-05-26 03:22:41',), ('2024-05-26 03:22:41.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-01-01 00:00:01',), ('2001-01-01 00:00:01.100000',), ('2001-01-01 00:00:01',), ('2001-01-01 00:00:01.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('2001-01-01 00:00:01',), ('2001-01-01 00:00:01.000000',), ('2001-01-01 00:00:01.1',), ('2001-01-01 00:00:01.100000',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('00:00:01',), ('00:00:01.000000',), ('00:00:01.1',), ('00:00:01.100000',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('10:00:00',), ('10:00:00',), ('10:00:00.000000',), ('10:00:00.123456',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0), datetime.datetime(2001, 1, 1, 0, 0), datetime.timedelta(0))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1111, 11, 11, 11, 11, 11, 600000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=100000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1973, 1, 1, 1, 1, 1, 200000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 11, 1, 1, 1, 1, 550000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=2),)]
++--------------------+
+--Query--
+SELECT TIME'00:00:00.1' = TIME'00:00:00.100'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2005, 1, 2, 0, 0),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10' + INTERVAL .6 SECOND
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=600000),)]
++--------------------+
+--Query--
+SELECT TIME('20:20:20') + INTERVAL .4 SECOND
+--Result--
+[(datetime.timedelta(seconds=73220, microseconds=400000),)]
++--------------------+
+--Query--
+SELECT FROM_UNIXTIME(0.5)
+--Result--
+[(datetime.datetime(1970, 1, 1, 1, 0, 0, 500000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT SEC_TO_TIME(36000.123)
+--Result--
+[(datetime.timedelta(seconds=36000, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT @@timestamp
+--Result--
+[(1716686552.060762,)]
++--------------------+
+--Query--
+SELECT   DATE_ADD(GREATEST(first_usage, IFNULL(last_recharge, first_usage)), INTERVAL life_time DAY ) as dt,   DATE_ADD(GREATEST(first_usage, IFNULL(last_recharge, first_usage)), INTERVAL life_time DAY ) <   DATE('2011-04-28') as exp FROM t1
+--Result--
+[(datetime.datetime(2013, 10, 13, 0, 0), 0)]
++--------------------+
+--Query--
+SELECT TIME(20110512154559.616),   DATE(20110512154559.616), DATE(FLOOR(20110512154559.616))
+--Result--
+[(datetime.timedelta(seconds=56759, microseconds=616000), datetime.date(2011, 5, 12), datetime.date(2011, 5, 12))]
++--------------------+
+--Query--
+SELECT 3 IN (SELECT MAX(a) FROM t1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT s1 + s2 FROM t1
+--Result--
+[(12121212212121.766,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1971, 1, 1, 0, 0, 0, 10),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SYSDATE(6) LIKE '____-__-__ __:__:__.______'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SYSDATE(6) NOT LIKE '%.000000' || SYSDATE(6) NOT LIKE '%.000000'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1970, 1, 1, 11, 11, 11, 120000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMPADD(second, 1, s1) FROM t1
+--Result--
+[(datetime.datetime(1, 1, 1, 0, 0, 1, 50000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=40271, microseconds=123457),)]
++--------------------+
+--Query--
+SELECT MAX(s1), MAX(s1 + 0), MAX(s1) FROM t1
+--Result--
+[(datetime.datetime(2011, 5, 18, 16, 17, 11, 291816), 20110518161711.293, datetime.datetime(2011, 5, 18, 16, 17, 11, 291816))]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2011-05-18 16:17:11.'
+--Result--
+[(datetime.datetime(2011, 5, 18, 16, 17, 11),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=2),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2005, 1, 2, 0, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(microseconds=123000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0, 0, 123000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=37230, microseconds=123457),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=1, microseconds=100000),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1716686552.212671,)]
++--------------------+
+--Query--
+SELECT col_time_3_not_null_key  FROM t1  WHERE col_datetime_4_not_null_key > 7
+--Result--
+[]
++--------------------+
+--Query--
+SELECT UNIX_TIMESTAMP(col_datetime_4_not_null) FROM t1 ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_datetime_6 AS c1, col_datetime AS c2  FROM t1  WHERE col_time_2_key   NOT BETWEEN     SUBTIME(DATE('0000-00-00 00:00:00'), '19:30:30.005477' )   AND CURRENT_TIME() ORDER BY   col_time_1, col_time_3, col_datetime_6, col_time_3_key,   col_datetime_5_not_null, col_time_1_key, col_time_4_key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_datetime_2 AS c1, col_time_not_null AS c2 FROM t1 WHERE   col_time_6_not_null_key >   COALESCE(col_time_2_not_null_key, col_time_4, col_time_not_null, col_time_3_not_null) ORDER BY 1
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 270000), datetime.timedelta(seconds=12152))]
++--------------------+
+--Query--
+SELECT ROUND(COALESCE(a,a)) FROM t1
+--Result--
+[(20010101102031.0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE timestamp'2006-11-14 10:22:27.009969' IN (LEAST(a, MAKETIME(24,8,0)))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONVERT_TZ(GREATEST(DATE('2021-00-00'),DATE('2021-00-00')),'+00:00','+7:5')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE  col_time_not_null = DATE(NULL) AND col_time_not_null = TIME(NULL)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_time_6 AS c1, NOW() AS c2 FROM t1 WHERE   col_datetime_not_null BETWEEN SUBTIME('0000-00-00','00:00:00') AND col_date_not_null AND   col_time_not_null=STR_TO_DATE(DATE_FORMAT(TIME('00:00:00.000000'),CONCAT_WS('-','%s','%k' )),CONCAT_WS(':','%i','%M')) AND   col_date BETWEEN UNIX_TIMESTAMP('0000-00-00 00:00:00') AND col_timestamp_3_key AND   col_datetime_6 NOT IN (col_time_6_not_null,'0000-00-00') AND   col_time_not_null = TIMEDIFF(CURDATE(),'00:00:00.000000') AND   col_time_3_key NOT IN (col_timestamp_6_key,pk) AND   col_timestamp_3_not_null_key < col_datetime
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2001-01-01 00:00:00' = TIME(NULL)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE GREATEST(a, a) / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE LEAST(a, a) / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE COALESCE(a, a) / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE IF(0, a, a) / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE IFNULL(a, a) / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE CASE WHEN 0 then a ELSE a END / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE (SELECT a FROM t1) / a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT   EXTRACT(DAY FROM (-0.1111111111)),   EXTRACT(YEAR FROM (-0.1111111)),   EXTRACT(YEAR_MONTH FROM (-0.1111111111)),   EXTRACT(DAY FROM (-0.1111111)),   EXTRACT(QUARTER FROM (-0.1111111111)),   EXTRACT(MONTH FROM (-0.1111111)),   EXTRACT(WEEK FROM (-0.1111111)),   DATE(-0.1111111),   QUARTER(-0.1111111111),   TIMESTAMP(-0.1111111111),   LAST_DAY(-0.1111111111),   DAY(-0.1111111111),   MONTH(-0.1111111111),   YEAR(-0.1111111),   DAYOFMONTH(-0.1111111111),   TIMESTAMP((-0.1111111111),'{$x'),   DATE_FORMAT(-0.1111111111,'+'),   CONVERT(-0.1111111,DATE),   CAST(-0.1111111111 AS DATE)
+--Result--
+[(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT GREATEST(a,20010101120000), LEAST(a,20010101120000) FROM t1
+--Result--
+[('2001-01-01 12:00:00.000000', '2001-01-01 01:01:01.123456')]
++--------------------+
+--Query--
+SELECT SECOND(4.99999999991e0)
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2013:07:10 01.02.0.31'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 0, 310000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.1'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 100000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.12'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 120000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.123'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 123000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.1234'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 123400),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.12345'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 123450),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.123456'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 123456),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '20130710010203.1234567'
+--Result--
+[(datetime.datetime(2013, 7, 10, 1, 2, 3, 123457),)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY key1
+--Result--
+[(1, datetime.datetime(2013, 7, 10, 1, 2, 3, 100000)), (2, datetime.datetime(2013, 7, 10, 1, 2, 3, 120000)), (3, datetime.datetime(2013, 7, 10, 1, 2, 3, 123000)), (4, datetime.datetime(2013, 7, 10, 1, 2, 3, 123400)), (5, datetime.datetime(2013, 7, 10, 1, 2, 3, 123450)), (6, datetime.datetime(2013, 7, 10, 1, 2, 3, 123456)), (7, datetime.datetime(2020, 12, 7, 10, 1, 2))]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY key1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY key1
+--Result--
+[(1, datetime.datetime(2013, 7, 10, 1, 2, 3, 100000)), (2, datetime.datetime(2013, 7, 10, 1, 2, 3, 120000)), (3, datetime.datetime(2013, 7, 10, 1, 2, 3, 123000)), (4, datetime.datetime(2013, 7, 10, 1, 2, 3, 123400)), (5, datetime.datetime(2013, 7, 10, 1, 2, 3, 123450)), (6, datetime.datetime(2013, 7, 10, 1, 2, 3, 123456)), (7, datetime.datetime(2020, 12, 7, 10, 1, 2))]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY key1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TIME '010203'
+--Result--
+[(datetime.timedelta(seconds=3723),)]
++--------------------+
+--Query--
+SELECT TIME '1010203'
+--Result--
+[(datetime.timedelta(days=4, seconds=18123),)]
++--------------------+
+--Query--
+SELECT TIME '01010203'
+--Result--
+[(datetime.timedelta(days=4, seconds=18123),)]
++--------------------+
+--Query--
+SELECT TIME '01:02:0.31'
+--Result--
+[(datetime.timedelta(seconds=3720, microseconds=310000),)]
++--------------------+
+--Query--
+SELECT TIME '010203.'
+--Result--
+[(datetime.timedelta(seconds=3723),)]
++--------------------+
+--Query--
+SELECT TIME '110203.1'
+--Result--
+[(datetime.timedelta(seconds=39723, microseconds=100000),)]
++--------------------+
+--Query--
+SELECT TIME '010203.12'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=120000),)]
++--------------------+
+--Query--
+SELECT TIME '010203.123'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT TIME '010203.1234'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=123400),)]
++--------------------+
+--Query--
+SELECT TIME '010203.12345'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=123450),)]
++--------------------+
+--Query--
+SELECT TIME '010203.123456'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT TIME '010203.1234567'
+--Result--
+[(datetime.timedelta(seconds=3723, microseconds=123457),)]
++--------------------+
+--Query--
+SELECT TIME '01021.1'
+--Result--
+[(datetime.timedelta(seconds=621, microseconds=100000),)]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY key1
+--Result--
+[(1, datetime.timedelta(seconds=3723, microseconds=100000)), (2, datetime.timedelta(seconds=3723, microseconds=120000)), (3, datetime.timedelta(seconds=3723, microseconds=123000)), (4, datetime.timedelta(seconds=3723, microseconds=123400)), (5, datetime.timedelta(seconds=3723, microseconds=123450)), (6, datetime.timedelta(seconds=3723, microseconds=123456)), (7, datetime.timedelta(seconds=123, microseconds=123456)), (8, datetime.timedelta(seconds=3, microseconds=123456)), (9, datetime.timedelta(microseconds=123456))]
++--------------------+
+--Query--
+SELECT * FROM t ORDER BY key1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT LEAST(c , '2005-05-14' ) AS c1 FROM t1 ORDER BY 1
+--Result--
+[('2002-08-12 22:00:00.0',), ('2002-08-12 22:00:00.1',), ('2002-08-12 22:00:00.2',)]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 33), datetime.datetime(2024, 5, 26, 3, 22, 33))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 500000), datetime.datetime(2024, 5, 26, 3, 22, 32, 500000))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 520000), datetime.datetime(2024, 5, 26, 3, 22, 32, 520000))]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 522000), datetime.datetime(2024, 5, 26, 3, 22, 32, 522000))]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 523400), datetime.datetime(2024, 5, 26, 3, 22, 32, 523400))]
++--------------------+
+--Query--
+SELECT * FROM t5
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 525380), datetime.datetime(2024, 5, 26, 3, 22, 32, 525380))]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 527175), datetime.datetime(2024, 5, 26, 3, 22, 32, 527175))]
++--------------------+
+--Query--
+SELECT * FROM t0
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 33), datetime.datetime(2024, 5, 26, 3, 22, 33))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 600000), datetime.datetime(2024, 5, 26, 3, 22, 32, 600000))]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 580000), datetime.datetime(2024, 5, 26, 3, 22, 32, 580000))]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 582000), datetime.datetime(2024, 5, 26, 3, 22, 32, 582000))]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 582600), datetime.datetime(2024, 5, 26, 3, 22, 32, 582600))]
++--------------------+
+--Query--
+SELECT * FROM t5
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 583130), datetime.datetime(2024, 5, 26, 3, 22, 32, 583130))]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(datetime.datetime(2024, 5, 26, 3, 22, 32, 583699), datetime.datetime(2024, 5, 26, 3, 22, 32, 583699))]
++--------------------+
+--Query--
+SELECT a - INTERVAL(b) MICROSECOND FROM t
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT current_date IN ( MAX(NULL), 1 )
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT current_time IN ( MAX(NULL), 1 )
+--Result--
+[(None,)]
++--------------------+

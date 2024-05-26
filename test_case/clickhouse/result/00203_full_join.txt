@@ -1,0 +1,65 @@
+--Query--
+SELECT k, x, y FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY FULL JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(1, 'Hello', []), (2, 'Hello', []), (3, 'Hello', [0, 1, 2]), (4, '', [0, 1, 2, 3]), (5, '', [0, 1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT k, x FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY FULL JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(1, 'Hello'), (2, 'Hello'), (3, 'Hello'), (4, ''), (5, '')]
++--------------------+
+--Query--
+SELECT k, y FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY FULL JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(1, []), (2, []), (3, [0, 1, 2]), (4, [0, 1, 2, 3]), (5, [0, 1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY FULL JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[('Hello', []), ('Hello', []), ('Hello', [0, 1, 2]), ('', [0, 1, 2, 3]), ('', [0, 1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT k FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY FULL JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(1,), (2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT k, x, y FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY RIGHT JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(3, 'Hello', [0, 1, 2]), (4, '', [0, 1, 2, 3]), (5, '', [0, 1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT k, x FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY RIGHT JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(3, 'Hello'), (4, ''), (5, '')]
++--------------------+
+--Query--
+SELECT k, y FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY RIGHT JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(3, [0, 1, 2]), (4, [0, 1, 2, 3]), (5, [0, 1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT x, y FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY RIGHT JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[('Hello', [0, 1, 2]), ('', [0, 1, 2, 3]), ('', [0, 1, 2, 3, 4])]
++--------------------+
+--Query--
+SELECT k FROM (SELECT arrayJoin([1, 2, 3]) AS k, 'Hello' AS x) ANY RIGHT JOIN (SELECT range(k) AS y, arrayJoin([3, 4, 5]) AS k) USING k WHERE k < 10 ORDER BY k
+--Result--
+[(3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT k1, k2, k3, val_t1, val_t2 FROM t1_00203 ANY FULL JOIN t2_00203 USING (k3, k1, k2) ORDER BY k1, k2, k3
+--Result--
+[(1, 2, 3, 'aaa', ''), (2, 3, 4, 'bbb', 'ccc'), (5, 6, 7, '', 'ddd')]
++--------------------+
+--Query--
+SELECT k1, k2, k3, val_t1, val_t2 FROM t1_00203 ANY RIGHT JOIN t2_00203 USING (k3, k1, k2) ORDER BY k1, k2, k3
+--Result--
+[(2, 3, 4, 'bbb', 'ccc'), (5, 6, 7, '', 'ddd')]
++--------------------+
+--Query--
+SELECT k1, k2, k3, val_t1, val_t2 FROM t1_00203 ANY RIGHT JOIN t2_00203 USING (k3, k1, k2) ORDER BY k1, k2, k3
+--Result--
+[(2, 3, 4, 'bbb', 'ccc'), (5, 6, 7, '', 'ddd')]
++--------------------+

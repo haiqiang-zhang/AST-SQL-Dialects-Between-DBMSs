@@ -1,0 +1,30 @@
+--Query--
+SELECT 1 AS a FROM tb JOIN tabc USING (a) ORDER BY ALL
+--Result--
+[(1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT a + 2 AS b FROM ta JOIN tabc USING (b) ORDER BY ALL
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT b + 2 AS a FROM tb JOIN tabc USING (a) ORDER BY ALL
+--Result--
+[(2,), (3,)]
++--------------------+
+--Query--
+SELECT a + 2 AS c FROM ta JOIN tabc USING (c) ORDER BY ALL
+--Result--
+[(2,), (3,), (4,), (5,)]
++--------------------+
+--Query--
+SELECT b AS a, a FROM tb JOIN tabc USING (a) ORDER BY ALL
+--Result--
+[(0, 0), (1, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+SELECT a + 2 AS b FROM tb JOIN tabc USING (b) ORDER BY ALL SETTINGS analyzer_compatibility_join_using_top_level_identifier = 0, allow_experimental_analyzer = 1
+--Result--
+[(2,), (3,), (4,)]
++--------------------+

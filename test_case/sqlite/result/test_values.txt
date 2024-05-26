@@ -1,0 +1,325 @@
+--Query--
+SELECT * FROM x1
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4), (5, 5, 5), (6, 6, 6)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4), (6, 6, 6)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[(1, 1, 1), (2, 2, 2), (3, 3, 3), (6, 6, 6)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM y1
+--Result--
+[(1, 2), (3, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT * FROM y1
+--Result--
+[(1, 2), (3, 4), (1, 6), (1, 7)]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM x1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1
+--Result--
+[(1, 2, 3), (4, 5, 6), (7, 8, 9)]
++--------------------+
+--Query--
+SELECT ( VALUES( x ), ( x ) ) FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1, (VALUES(1), (2))
+--Result--
+[(1, 1), (2, 1), ('x', 1), ('y', 1), (1, 2), (2, 2), ('x', 2), ('y', 2)]
++--------------------+
+--Query--
+VALUES(CAST(44 AS REAL)),(55)
+--Result--
+[(44.0,), (55,)]
++--------------------+
+--Query--
+WITH x1(a, b) AS (     VALUES(1, 2), ('a', 'b')   )   SELECT * FROM x1 one, x1 two
+--Result--
+[(1, 2, 1, 2), (1, 2, 'a', 'b'), ('a', 'b', 1, 2), ('a', 'b', 'a', 'b')]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )
+--Result--
+[(1, 'a', 'b'), (1, 'c', 'd'), (1, 123, None), (2, 'a', 'b'), (2, 'c', 'd'), (2, 123, None), ('x', 'a', 'b'), ('x', 'c', 'd'), ('x', 123, None), ('y', 'a', 'b'), ('y', 'c', 'd'), ('y', 123, None), ('d', 'a', 'b'), ('d', 'c', 'd'), ('d', 123, None), (None, 'a', 'b'), (None, 'c', 'd'), (None, 123, None), (123, 'a', 'b'), (123, 'c', 'd'), (123, 123, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )
+--Result--
+[(1, 'a', 'b'), (1, 'c', 'd'), (1, 123, None), (2, 'a', 'b'), (2, 'c', 'd'), (2, 123, None), ('x', 'a', 'b'), ('x', 'c', 'd'), ('x', 123, None), ('y', 'a', 'b'), ('y', 'c', 'd'), ('y', 123, None), ('d', 'a', 'b'), ('d', 'c', 'd'), ('d', 123, None), (None, 'a', 'b'), (None, 'c', 'd'), (None, 123, None), (123, 'a', 'b'), (123, 'c', 'd'), (123, 123, None)]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM t1 LEFT JOIN VVV
+--Result--
+[(1, 'a', 'b'), (1, 'c', 'd'), (1, 123, None), (2, 'a', 'b'), (2, 'c', 'd'), (2, 123, None), ('x', 'a', 'b'), ('x', 'c', 'd'), ('x', 123, None), ('y', 'a', 'b'), ('y', 'c', 'd'), ('y', 123, None), ('d', 'a', 'b'), ('d', 'c', 'd'), ('d', 123, None), (None, 'a', 'b'), (None, 'c', 'd'), (None, 123, None), (123, 'a', 'b'), (123, 'c', 'd'), (123, 123, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  ON (column1=x)
+--Result--
+[(1, None, None), (2, None, None), ('x', None, None), ('y', None, None), ('d', None, None), (None, None, None), (123, 123, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  ON (column1=x)
+--Result--
+[(1, None, None), (2, None, None), ('x', None, None), ('y', None, None), ('d', None, None), (None, None, None), (123, 123, None)]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM t1 LEFT JOIN VVV ON (column1=x)
+--Result--
+[(1, None, None), (2, None, None), ('x', None, None), ('y', None, None), ('d', None, None), (None, None, None), (123, 123, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )
+--Result--
+[(1, 'a', 'b'), (1, 'c', 'd'), (1, 123, None), (2, 'a', 'b'), (2, 'c', 'd'), (2, 123, None), ('x', 'a', 'b'), ('x', 'c', 'd'), ('x', 123, None), ('y', 'a', 'b'), ('y', 'c', 'd'), ('y', 123, None), ('d', 'a', 'b'), ('d', 'c', 'd'), ('d', 123, None), (None, 'a', 'b'), (None, 'c', 'd'), (None, 123, None), (123, 'a', 'b'), (123, 'c', 'd'), (123, 123, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )
+--Result--
+[(1, 'a', 'b'), (1, 'c', 'd'), (1, 123, None), (2, 'a', 'b'), (2, 'c', 'd'), (2, 123, None), ('x', 'a', 'b'), ('x', 'c', 'd'), ('x', 123, None), ('y', 'a', 'b'), ('y', 'c', 'd'), ('y', 123, None), ('d', 'a', 'b'), ('d', 'c', 'd'), ('d', 123, None), (None, 'a', 'b'), (None, 'c', 'd'), (None, 123, None), (123, 'a', 'b'), (123, 'c', 'd'), (123, 123, None)]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM t1 RIGHT JOIN VVV
+--Result--
+[(1, 'a', 'b'), (1, 'c', 'd'), (1, 123, None), (2, 'a', 'b'), (2, 'c', 'd'), (2, 123, None), ('x', 'a', 'b'), ('x', 'c', 'd'), ('x', 123, None), ('y', 'a', 'b'), ('y', 'c', 'd'), ('y', 123, None), ('d', 'a', 'b'), ('d', 'c', 'd'), ('d', 123, None), (None, 'a', 'b'), (None, 'c', 'd'), (None, 123, None), (123, 'a', 'b'), (123, 'c', 'd'), (123, 123, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  ON (column1=x)
+--Result--
+[(123, 123, None), (None, 'a', 'b'), (None, 'c', 'd')]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  ON (column1=x)
+--Result--
+[(123, 123, None), (None, 'a', 'b'), (None, 'c', 'd')]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM t1 RIGHT JOIN VVV ON (column1=x)
+--Result--
+[(123, 123, None), (None, 'a', 'b'), (None, 'c', 'd')]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL OUTER JOIN    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  ON (column1=x)
+--Result--
+[(1, None, None), (2, None, None), ('x', None, None), ('y', None, None), ('d', None, None), (None, None, None), (123, 123, None), (None, 'a', 'b'), (None, 'c', 'd')]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL OUTER JOIN    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  ON (column1=x)
+--Result--
+[(1, None, None), (2, None, None), ('x', None, None), ('y', None, None), ('d', None, None), (None, None, None), (123, 123, None), (None, 'a', 'b'), (None, 'c', 'd')]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM t1 FULL OUTER JOIN VVV ON (column1=x)
+--Result--
+[(1, None, None), (2, None, None), ('x', None, None), ('y', None, None), ('d', None, None), (None, None, None), (123, 123, None), (None, 'a', 'b'), (None, 'c', 'd')]
++--------------------+
+--Query--
+SELECT count(*) FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )
+--Result--
+[(3,)]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT count(*) FROM VVV
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT (SELECT column1 FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) ) )
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT (SELECT column1 FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   ) )
+--Result--
+[('a',)]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT (SELECT column1 FROM VVV)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  UNION ALL SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )
+--Result--
+[('a', 'b'), ('c', 'd'), (123, None), ('a', 'b'), ('c', 'd'), (123, None)]
++--------------------+
+--Query--
+SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  UNION ALL SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )
+--Result--
+[('a', 'b'), ('c', 'd'), (123, None), ('a', 'b'), ('c', 'd'), (123, None)]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM VVV UNION ALL SELECT * FROM VVV
+--Result--
+[('a', 'b'), ('c', 'd'), (123, None), ('a', 'b'), ('c', 'd'), (123, None)]
++--------------------+
+--Query--
+SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  INTERSECT SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )
+--Result--
+[(123, None), ('a', 'b'), ('c', 'd')]
++--------------------+
+--Query--
+SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  INTERSECT SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )
+--Result--
+[(123, None), ('a', 'b'), ('c', 'd')]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM VVV INTERSECT SELECT * FROM VVV
+--Result--
+[(123, None), ('a', 'b'), ('c', 'd')]
++--------------------+
+--Query--
+SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  eXCEPT SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  eXCEPT SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )
+--Result--
+[]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM VVV eXCEPT SELECT * FROM VVV
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  eXCEPT SELECT 'a', 'b'
+--Result--
+[(123, None), ('c', 'd')]
++--------------------+
+--Query--
+SELECT * FROM    (    SELECT 'a' AS column1, 'b' AS column2    UNION ALL SELECT 'c', 'd' UNION ALL SELECT 123, NULL   )  eXCEPT SELECT 'a', 'b'
+--Result--
+[(123, None), ('c', 'd')]
++--------------------+
+--Query--
+WITH VVV AS    ( VALUES('a', 'b'), ('c', 'd'), (123, NULL) )  SELECT * FROM VVV eXCEPT SELECT 'a', 'b'
+--Result--
+[(123, None), ('c', 'd')]
++--------------------+
+--Query--
+VALUES(456), (123), (NULL) UNION ALL SELECT 122 ORDER BY 1
+--Result--
+[(None,), (122,), (123,), (456,)]
++--------------------+
+--Query--
+VALUES (1, 2), (3, 4), (     ( SELECT column1 FROM ( VALUES (5, 6), (7, 8) ) ),     ( SELECT max(column2) FROM ( VALUES (5, 1), (7, 6) ) )   )
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), ('x',), ('y',), ('d',), (None,), (123,)]
++--------------------+
+--Query--
+SELECT (       VALUES( (max(substr('abc', 1, 1), x)) ),       (123),       (456)       )   FROM t1
+--Result--
+[('a',), ('a',), ('x',), ('y',), ('d',), (None,), ('a',), ('xyz',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 0)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2, 13)]
++--------------------+
+--Query--
+SELECT *     FROM t1 CROSS JOIN t2 FULL JOIN t3 ON a=d    ORDER BY +d, +column1
+--Result--
+[(1, 2, 11, 22, None, None), (1, 2, 33, 44, None, None), (None, None, None, None, 3, 4)]
++--------------------+
+--Query--
+SELECT *     FROM t1 CROSS JOIN (VALUES(11,22),(33,44)) FULL JOIN t3 ON a=d    ORDER BY +d, +column1
+--Result--
+[(1, 2, 11, 22, None, None), (1, 2, 33, 44, None, None), (None, None, None, None, 3, 4)]
++--------------------+
+--Query--
+SELECT *     FROM t1 CROSS JOIN t2 FULL JOIN t3 ON a=d    WHERE column1 IS NULL
+--Result--
+[(None, None, None, None, 3, 4)]
++--------------------+
+--Query--
+SELECT *     FROM t1 CROSS JOIN (VALUES(11,22),(33,44)) FULL JOIN t3 ON a=d    WHERE column1 IS NULL
+--Result--
+[(None, None, None, None, 3, 4)]
++--------------------+

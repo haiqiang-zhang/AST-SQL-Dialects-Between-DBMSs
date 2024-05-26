@@ -1,0 +1,25 @@
+--Query--
+SELECT 'Check total_bytes/total_rows for Distributed'
+--Result--
+[('Check total_bytes/total_rows for Distributed',)]
++--------------------+
+--Query--
+SYSTEM STOP DISTRIBUTED SENDS check_system_tables
+--Result--
+[]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE database = currentDatabase() AND name = 'check_system_tables'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT total_bytes>0, total_rows FROM system.tables WHERE database = currentDatabase() AND name = 'check_system_tables'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT total_bytes, total_rows FROM system.tables WHERE database = currentDatabase() AND name = 'check_system_tables'
+--Result--
+[]
++--------------------+

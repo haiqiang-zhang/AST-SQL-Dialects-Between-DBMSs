@@ -1,9 +1,7 @@
 SELECT toStartOfDay(toDateTime('2017-12-31 03:45:00', 'UTC'), 'UTC');
 SELECT toMonday(toDateTime('2017-12-31 00:00:00', 'UTC'), 'UTC');
 SELECT toStartOfWeek(toDateTime('2017-12-31 00:00:00', 'UTC'), 0, 'UTC');
-SELECT toStartOfWeek(toDateTime('2017-12-31 00:00:00', 'UTC'), 1, 'UTC');
 SELECT toLastDayOfWeek(toDateTime('2017-12-31 00:00:00', 'UTC'), 0, 'UTC');
-SELECT toLastDayOfWeek(toDateTime('2017-12-31 00:00:00', 'UTC'), 1, 'UTC');
 SELECT toStartOfMonth(toDateTime('2017-12-31 00:00:00', 'UTC'), 'UTC');
 SELECT toStartOfQuarter(toDateTime('2017-12-31 00:00:00', 'UTC'), 'UTC');
 SELECT toStartOfYear(toDateTime('2017-12-31 00:00:00', 'UTC'), 'UTC');

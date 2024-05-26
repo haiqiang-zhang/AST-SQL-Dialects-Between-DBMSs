@@ -1,0 +1,25 @@
+--Query--
+SELECT k, s FROM t_sparse_pk WHERE k = 2 ORDER BY k, s
+--Result--
+[(2, ''), (2, 'e')]
++--------------------+
+--Query--
+SELECT k, s FROM t_sparse_pk WHERE k = 0 OR k = 3 ORDER BY k, s
+--Result--
+[(0, 'a'), (0, 'b'), (3, 'f')]
++--------------------+
+--Query--
+SELECT count(v), sum(v) FROM t_sparse_pk WHERE k = 0
+--Result--
+[(200, 84)]
++--------------------+
+--Query--
+SELECT (k = NULL) OR (k = 1000) FROM t_sparse_pk LIMIT 3
+--Result--
+[(None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT range(k) FROM t_sparse_pk LIMIT 3
+--Result--
+[([],), ([],), ([],)]
++--------------------+

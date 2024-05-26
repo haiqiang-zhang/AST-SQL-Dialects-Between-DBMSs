@@ -1,0 +1,15 @@
+--Query--
+EXPLAIN SYNTAX select uniq(x), uniqExact(x), uniqHLL12(x), uniqCombined(x), uniqCombined64(x) from (select number % 2 as x from numbers(10))
+--Result--
+[('SELECT',), ('    uniq(x),',), ('    uniqExact(x),',), ('    uniqHLL12(x),',), ('    uniqCombined(x),',), ('    uniqCombined64(x)',), ('FROM',), ('(',), ('    SELECT number % 2 AS x',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX select count(distinct -bitNot(-x)) from (select number % 2 as x from numbers(10))
+--Result--
+[('SELECT uniqExact(x)',), ('FROM',), ('(',), ('    SELECT number % 2 AS x',), ('    FROM numbers(10)',), (')',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX select uniq(concatAssumeInjective('x', 'y')) from numbers(10)
+--Result--
+[("SELECT uniq(concatAssumeInjective('x', 'y'))",), ('FROM numbers(10)',)]
++--------------------+

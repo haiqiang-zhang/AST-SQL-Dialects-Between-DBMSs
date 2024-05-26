@@ -1,0 +1,220 @@
+--Query--
+select SQL_BUFFER_RESULT * from t1 order by 1, 2
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (3, 'c'), (4, 'c')]
++--------------------+
+--Query--
+select * from t1 left join t2 on t1.b = t2.b order by t1.a
+--Result--
+[(1, 'a', None, None), (2, 'b', None, None), (3, 'c', None, None), (3, 'c', None, None), (4, 'c', None, None)]
++--------------------+
+--Query--
+select SQL_BIG_RESULT distinct * from t1, t2 order by 1, 2, 3, 4
+--Result--
+[(1, 'a', 2, 'd'), (1, 'a', 3, 'e'), (1, 'a', 4, 'f'), (1, 'a', 5, 'e'), (1, 'a', 6, 'g'), (1, 'a', 7, 'h'), (2, 'b', 2, 'd'), (2, 'b', 3, 'e'), (2, 'b', 4, 'f'), (2, 'b', 5, 'e'), (2, 'b', 6, 'g'), (2, 'b', 7, 'h'), (3, 'c', 2, 'd'), (3, 'c', 3, 'e'), (3, 'c', 4, 'f'), (3, 'c', 5, 'e'), (3, 'c', 6, 'g'), (3, 'c', 7, 'h'), (4, 'c', 2, 'd'), (4, 'c', 3, 'e'), (4, 'c', 4, 'f'), (4, 'c', 5, 'e'), (4, 'c', 6, 'g'), (4, 'c', 7, 'h')]
++--------------------+
+--Query--
+select SQL_BIG_RESULT t1.b from t1, t2 group by t1.b order by 1
+--Result--
+[('a',), ('b',), ('c',)]
++--------------------+
+--Query--
+select distinct t1.a from t1, t2 where  t1.b = t2.b order by 1
+--Result--
+[]
++--------------------+
+--Query--
+select distinct a from t1 group by b,a order by 1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+select * from t1 union all select * from t2
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (3, 'c'), (4, 'c'), (2, 'd'), (3, 'e'), (4, 'f'), (4, 'f'), (5, 'e'), (6, 'g'), (7, 'h')]
++--------------------+
+--Query--
+select * from t1 union select * from t2 order by 1, 2
+--Result--
+[(1, 'a'), (2, 'b'), (2, 'd'), (3, 'c'), (3, 'e'), (4, 'c'), (4, 'f'), (5, 'e'), (6, 'g'), (7, 'h')]
++--------------------+
+--Query--
+select tt.* from (select * from t1) as tt order by 1, 2
+--Result--
+[(1, 'a'), (2, 'b'), (3, 'c'), (3, 'c'), (4, 'c')]
++--------------------+
+--Query--
+select * from (select b from t1) as t1, (select b from t2) as t2 order by 1, 2
+--Result--
+[('a', 'd'), ('a', 'e'), ('a', 'e'), ('a', 'f'), ('a', 'f'), ('a', 'g'), ('a', 'h'), ('b', 'd'), ('b', 'e'), ('b', 'e'), ('b', 'f'), ('b', 'f'), ('b', 'g'), ('b', 'h'), ('c', 'd'), ('c', 'd'), ('c', 'd'), ('c', 'e'), ('c', 'e'), ('c', 'e'), ('c', 'e'), ('c', 'e'), ('c', 'e'), ('c', 'f'), ('c', 'f'), ('c', 'f'), ('c', 'f'), ('c', 'f'), ('c', 'f'), ('c', 'g'), ('c', 'g'), ('c', 'g'), ('c', 'h'), ('c', 'h'), ('c', 'h')]
++--------------------+
+--Query--
+select * from t1, (select * from t3) as t where t.a =5 order by 1, 2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where t1.a in (select a from t2) order by 1, 2
+--Result--
+[(2, 'b'), (3, 'c'), (3, 'c'), (4, 'c')]
++--------------------+
+--Query--
+select * from t1 where t1.a in (select a from t2) order by 1, 2
+--Result--
+[(2, 'b'), (3, 'c'), (3, 'c'), (4, 'c')]
++--------------------+
+--Query--
+select * from information_schema.character_sets order by 1 limit 3
+--Result--
+[('armscii8', 'armscii8_general_ci', 'ARMSCII-8 Armenian', 1), ('ascii', 'ascii_general_ci', 'US ASCII', 1), ('big5', 'big5_chinese_ci', 'Big5 Traditional Chinese', 2)]
++--------------------+
+--Query--
+select count(distinct a) from t1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+select * from t1 left join t2 on t1.a = t2.a order by t1.b
+--Result--
+[(1, b'ababab', None, None), (2, b'cccddd', None, None), (2, b'cccddd', None, None), (3, b'eeffddd', None, None)]
++--------------------+
+--Query--
+select * from t1 left join t2 on t1.a = t2.a order by t1.b
+--Result--
+[(1, b'ababab', None, None), (2, b'cccddd', None, None), (2, b'cccddd', None, None), (3, b'eeffddd', None, None)]
++--------------------+
+--Query--
+select distinct b from t1 order by 1
+--Result--
+[(b'ababab',), (b'cccddd',), (b'eeffddd',)]
++--------------------+
+--Query--
+select distinct concat(c1, repeat('xx', 250)) as cc from t2 order by 1
+--Result--
+[('aabbccxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',), ('aabbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',), ('aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',)]
++--------------------+
+--Query--
+select concat(c1, repeat('xx', 250)) as cc from t2 group by cc order by 1
+--Result--
+[('aabbccxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',), ('aabbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',), ('aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',)]
++--------------------+
+--Query--
+select count(distinct concat(c1, repeat('xx', 250))) as cc from t2 order by 1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select distinct * from test
+--Result--
+[(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18)]
++--------------------+
+--Query--
+select sum(a) + 200 as the_sum, @Oporto as the_town from t1 where a > 1  group by b  having avg(a) > 2
+--Result--
+[(203.0, None), (204.0, None)]
++--------------------+
+--Query--
+select * from t3 where b in (select a from t1)
+--Result--
+[(1, 1, '1', '1', '1'), (2, 2, '2', '2', '2')]
++--------------------+
+--Query--
+select * from t1 order by 1,2
+--Result--
+[(1, 1), (1, 1), (2, 2)]
++--------------------+
+--Query--
+select * from t3 order by 1,2
+--Result--
+[(0, 0, '0', '0', '0'), (1, 1, '1', '1', '1'), (2, 2, '2', '2', '2'), (3, 3, '3', '3', '3'), (4, 4, '4', '4', '4'), (5, 5, '5', '5', '5'), (6, 6, '6', '6', '6'), (7, 7, '7', '7', '7'), (8, 8, '8', '8', '8'), (9, 9, '9', '9', '9')]
++--------------------+
+--Query--
+select * from t3 order by 1,2
+--Result--
+[(0, 0, '0', '0', '0'), (1, 1, '1', '1', '1'), (2, 2, '2', '2', '2'), (3, 3, '3', '3', '3'), (4, 4, '4', '4', '4'), (5, 5, '5', '5', '5'), (6, 6, '6', '6', '6'), (7, 7, '7', '7', '7'), (8, 8, '8', '8', '8'), (9, 9, '9', '9', '9')]
++--------------------+
+--Query--
+select f1,'' from t1 union select f1,'' from t1
+--Result--
+[('a', ''), ('mn', '')]
++--------------------+
+--Query--
+select distinct *,if(1,'',f1) from t1
+--Result--
+[('a', ''), ('mn', '')]
++--------------------+
+--Query--
+select count(*), f1,if(1,'',f1) from t1 group by 2,3
+--Result--
+[(2, 'a', ''), (1, 'mn', '')]
++--------------------+
+--Query--
+SELECT alias1 . pk AS field3 , alias3 . pk AS field5 , MIN( DISTINCT alias2 . col_int_key ) AS field8 FROM  ( SELECT * FROM  P  ) AS  alias1  LEFT  JOIN  ( SELECT * FROM  N  ) AS alias2  RIGHT  JOIN ( SELECT * FROM  P  ) AS  alias3 ON  alias2 . col_varchar_1024_utf8_key =  alias3 . col_varchar_10_latin1 ON  alias1 . pk =  alias3 . col_int_key GROUP BY field3, field5 ORDER BY 1,2,3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT found_rows()
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT DISTINCT table2 . `col_time_key` AS field1 , table1 . `col_datetime_key` AS field2 , table1 . `col_datetime_key` AS field3 FROM ( C AS table1 STRAIGHT_JOIN ( ( C AS table2 INNER JOIN C AS table3 ON (( table3 . `pk` != table2 . `col_int_nokey` ) AND ( table3 . `pk` = table2 . `col_int_key` ) ) ) ) ON (( table3 .`pk` >= table2 . `col_int_key` ) AND (table3 .`pk` <> table2 . `pk` ) ) ) ORDER BY table1 . `col_datetime_key`  , field1, field2, field3
+--Result--
+[(datetime.timedelta(0), datetime.datetime(2001, 2, 15, 3, 8, 38), datetime.datetime(2001, 2, 15, 3, 8, 38)), (datetime.timedelta(seconds=40464), datetime.datetime(2001, 2, 15, 3, 8, 38), datetime.datetime(2001, 2, 15, 3, 8, 38)), (datetime.timedelta(seconds=71279), datetime.datetime(2001, 2, 15, 3, 8, 38), datetime.datetime(2001, 2, 15, 3, 8, 38)), (datetime.timedelta(0), datetime.datetime(2002, 1, 16, 0, 0), datetime.datetime(2002, 1, 16, 0, 0)), (datetime.timedelta(seconds=40464), datetime.datetime(2002, 1, 16, 0, 0), datetime.datetime(2002, 1, 16, 0, 0)), (datetime.timedelta(seconds=71279), datetime.datetime(2002, 1, 16, 0, 0), datetime.datetime(2002, 1, 16, 0, 0)), (datetime.timedelta(0), datetime.datetime(2002, 8, 20, 22, 48), datetime.datetime(2002, 8, 20, 22, 48)), (datetime.timedelta(seconds=40464), datetime.datetime(2002, 8, 20, 22, 48), datetime.datetime(2002, 8, 20, 22, 48)), (datetime.timedelta(seconds=71279), datetime.datetime(2002, 8, 20, 22, 48), datetime.datetime(2002, 8, 20, 22, 48)), (datetime.timedelta(0), datetime.datetime(2004, 10, 2, 20, 31, 15), datetime.datetime(2004, 10, 2, 20, 31, 15)), (datetime.timedelta(seconds=40464), datetime.datetime(2004, 10, 2, 20, 31, 15), datetime.datetime(2004, 10, 2, 20, 31, 15)), (datetime.timedelta(seconds=71279), datetime.datetime(2004, 10, 2, 20, 31, 15), datetime.datetime(2004, 10, 2, 20, 31, 15)), (datetime.timedelta(0), datetime.datetime(2006, 10, 12, 4, 32, 53), datetime.datetime(2006, 10, 12, 4, 32, 53)), (datetime.timedelta(seconds=40464), datetime.datetime(2006, 10, 12, 4, 32, 53), datetime.datetime(2006, 10, 12, 4, 32, 53)), (datetime.timedelta(seconds=71279), datetime.datetime(2006, 10, 12, 4, 32, 53), datetime.datetime(2006, 10, 12, 4, 32, 53)), (datetime.timedelta(0), datetime.datetime(2007, 5, 28, 0, 0), datetime.datetime(2007, 5, 28, 0, 0)), (datetime.timedelta(seconds=40464), datetime.datetime(2007, 5, 28, 0, 0), datetime.datetime(2007, 5, 28, 0, 0)), (datetime.timedelta(seconds=71279), datetime.datetime(2007, 5, 28, 0, 0), datetime.datetime(2007, 5, 28, 0, 0)), (datetime.timedelta(0), datetime.datetime(2009, 7, 25, 9, 21, 20), datetime.datetime(2009, 7, 25, 9, 21, 20)), (datetime.timedelta(seconds=40464), datetime.datetime(2009, 7, 25, 9, 21, 20), datetime.datetime(2009, 7, 25, 9, 21, 20)), (datetime.timedelta(seconds=71279), datetime.datetime(2009, 7, 25, 9, 21, 20), datetime.datetime(2009, 7, 25, 9, 21, 20))]
++--------------------+
+--Query--
+SELECT DISTINCT alias1 . col_datetime_key AS field1 , alias1 . col_time_key AS field2 , alias1 . col_int_nokey AS field3 , alias1 . col_date_key AS field4 , alias2 . col_int_key AS field5 , alias2 . col_time_key AS field6 , alias2 . col_varchar_key AS field7 , alias1 . col_time_key AS field8 , alias1 . col_varchar_nokey AS field9 , alias1 . col_date_key AS field10 , alias1 . col_varchar_key AS field11 , alias1 . col_datetime_key AS field12 , alias1 . col_date_key AS field13 , alias1 . col_date_key AS field14 , alias1 . col_time_key AS field15 , alias2 . col_date_key AS field16 , alias2 . col_int_key AS field17 , alias1 . col_datetime_key AS field18 , alias2 . col_int_key AS field19 , alias1 . col_varchar_key AS field20 , alias1 . col_varchar_key AS field21 , alias1 . col_int_key AS field22 , alias1 . col_time_key AS field23 , alias1 . col_time_key AS field24 , alias1 . col_datetime_key AS field25 , alias1 . col_int_nokey AS field26 , alias1 . col_int_key AS field27 , alias1 . col_varchar_key AS field28 , alias2 . col_time_key AS field29 , alias1 . col_varchar_key AS field30 , alias1 . col_int_key AS field31 , alias1 . col_int_nokey AS field32 FROM ( C AS alias1, C AS alias2)
+--Result--
+[(datetime.datetime(2001, 11, 28, 0, 50, 27), datetime.timedelta(seconds=50583), None, datetime.date(2004, 4, 9), 7, datetime.timedelta(seconds=50583), 'c', datetime.timedelta(seconds=50583), 'c', datetime.date(2004, 4, 9), 'c', datetime.datetime(2001, 11, 28, 0, 50, 27), datetime.date(2004, 4, 9), datetime.date(2004, 4, 9), datetime.timedelta(seconds=50583), datetime.date(2004, 4, 9), 7, datetime.datetime(2001, 11, 28, 0, 50, 27), 7, 'c', 'c', 7, datetime.timedelta(seconds=50583), datetime.timedelta(seconds=50583), datetime.datetime(2001, 11, 28, 0, 50, 27), None, 7, 'c', datetime.timedelta(seconds=50583), 'c', 7, None)]
++--------------------+
+--Query--
+SELECT COUNT(DISTINCT alias2.`col_int_key`)   FROM C AS alias1 , D AS alias2   WHERE alias1.`col_int_key` = 47
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT  OUTR . col_date_nokey AS x  FROM C AS OUTR2 LEFT JOIN B AS OUTR ON ( OUTR2 . col_varchar_key >= OUTR .                                           col_varchar_key )  WHERE OUTR . col_int_key IN  (   SELECT  INNR . col_int_nokey AS y   FROM BB AS INNR   WHERE INNR . col_time_nokey BETWEEN '2007-11-26' AND '2002-11-26'  )  AND OUTR . col_time_nokey < '2007-09-24' XOR OUTR . col_varchar_key IS NULL  ORDER BY OUTR . col_varchar_key , OUTR . pk
+--Result--
+[]
++--------------------+
+--Query--
+SELECT alias2 . `col_int_nokey` AS field1 FROM ( CC AS alias1 INNER JOIN ( ( BB AS alias2 INNER JOIN        (  SELECT   SQ1_alias1 . * FROM C AS SQ1_alias1  ) AS alias3          ON (alias3 . `col_int_key` = alias2 . `col_int_nokey`  ) ) )        ON (alias3 . `col_varchar_nokey` = alias2 . `col_varchar_key`  ) ) WHERE (  ( alias2 . `pk` , alias3 . `col_int_nokey` ) IN   ( SELECT 4 , 7  UNION  SELECT 137, 6 ) )     AND alias1 . `pk` > 149 AND alias1 . `pk` < ( 149 + 7 )     OR alias3 . `col_varchar_key` < 'o'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT   table1.col_varchar_1024_latin1_key AS field1,   table1.col_varchar_1024_latin1_key AS field2 FROM   t2 AS table1 RIGHT JOIN t1 AS table2 ON table1.pk = table2.col_int_key WHERE   table1.col_int_key NOT BETWEEN 7 AND ( 7 + 1000 ) OR table1.pk >= 7   AND  table1.col_varchar_1024_utf8_key < table2.col_varchar_10_latin1_key ORDER BY field1,field2 DESC
+--Result--
+[('as', 'as'), ('CEJHM', 'CEJHM'), ('CRDLM', 'CRDLM'), ('is', 'is'), ('mcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpo', 'mcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpomcrxjxxfpo'), ('no', 'no'), ('not', 'not'), ('really', 'really')]
++--------------------+
+--Query--
+SELECT DISTINCT CONCAT( table2 . col_varchar_key , table1 . col_varchar_key ) AS field1 FROM ( CC AS table1 RIGHT OUTER JOIN C AS table2 ON (table2 . col_varchar_key = table1 . col_varchar_nokey  ) ) WHERE ( table1 . pk = 13 ) ORDER BY field1 , field1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT sum(b) FROM t1 GROUP BY a, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33, c34, c35
+--Result--
+[(4.0,), (4.0,), (4.0,)]
++--------------------+
+--Query--
+select 1 as a union all select 1 union all select 2 union select 1 union all select 2
+--Result--
+[(1,), (2,), (2,)]
++--------------------+
+--Query--
+select distinct least(1,count(distinct a)) from t1 group by a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT DISTINCT c1, c2 FROM test_distinct
+--Result--
+[('a', None)]
++--------------------+
+--Query--
+SELECT c1, c2 FROM test_distinct GROUP BY c1, c2
+--Result--
+[('a', None)]
++--------------------+

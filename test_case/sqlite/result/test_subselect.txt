@@ -1,0 +1,120 @@
+--Query--
+SELECT * FROM t1 WHERE a = (SELECT count(*) FROM t1)
+--Result--
+[(3, 4)]
++--------------------+
+--Query--
+SELECT b from t1 where a = (SELECT a FROM t1 WHERE b=2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT b from t1 where a = (SELECT a FROM t1 WHERE b=4)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT b from t1 where a = (SELECT a FROM t1 WHERE b=6)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT b from t1 where a = (SELECT a FROM t1 WHERE b=8)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1        WHERE a = (SELECT a FROM t1 UNION SELECT b FROM t1 ORDER BY 1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT b from t1 where a = coalesce((SELECT a FROM t1 WHERE b=5),1)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT y from t2      WHERE x = (SELECT sum(b) FROM t1 where a notnull) - (SELECT sum(a) FROM t1)
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT x FROM t2 ORDER BY x
+--Result--
+[(2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT (SELECT a FROM t1 ORDER BY a), (SELECT a FROM t1 ORDER BY a DESC)
+--Result--
+[(1, 5)]
++--------------------+
+--Query--
+SELECT 1 IN (SELECT a FROM t1 ORDER BY a)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 2 IN (SELECT a FROM t1 ORDER BY a DESC)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t3 ORDER BY x
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT sum(x) FROM (SELECT x FROM t3 ORDER BY x LIMIT 2)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT (SELECT x FROM t3 ORDER BY x)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT x FROM t3 ORDER BY x DESC)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT (SELECT x FROM t3 ORDER BY x LIMIT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT x FROM t3 ORDER BY x DESC LIMIT 1)
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT (SELECT x FROM t3 ORDER BY x LIMIT 1 OFFSET 2)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT (SELECT x FROM t3 ORDER BY x DESC LIMIT 1 OFFSET 2)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT x FROM t3 WHERE x IN        (SELECT x FROM t3 ORDER BY x DESC LIMIT 1 OFFSET 2)
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT a FROM t4 WHERE b IN (SELECT b FROM t4 ORDER BY b)
+--Result--
+[('a',), ('b',), ('c',)]
++--------------------+
+--Query--
+SELECT a FROM t4 WHERE b IN (SELECT b FROM t4 ORDER BY b LIMIT 1)
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT a FROM t4 WHERE b IN (SELECT b FROM t4 ORDER BY b DESC LIMIT 1)
+--Result--
+[('c',)]
++--------------------+

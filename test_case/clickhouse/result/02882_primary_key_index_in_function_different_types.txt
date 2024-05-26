@@ -1,0 +1,40 @@
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT 5)
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 1-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT '5')
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 1-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT toUInt8(number) FROM numbers(5))
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 5-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT toString(number) FROM numbers(5))
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 5-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT 5)
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 1-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT '5')
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 1-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT toUInt8(number) FROM numbers(5))
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 5-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+
+--Query--
+EXPLAIN indexes = 1, description=0 SELECT id FROM test_table WHERE id <= 10 AND value IN (SELECT toString(number) FROM numbers(5))
+--Result--
+[('CreatingSets',), ('  Expression',), ('    Expression',), ('      ReadFromMergeTree',), ('      Indexes:',), ('        PrimaryKey',), ('          Keys: ',), ('            id',), ('            value',), ('          Condition: and((value in 5-element set), (id in (-Inf, 10]))',), ('          Parts: 1/1',), ('          Granules: 1/1',)]
++--------------------+

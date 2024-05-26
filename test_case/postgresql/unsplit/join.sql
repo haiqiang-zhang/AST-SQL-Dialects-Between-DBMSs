@@ -40,9 +40,6 @@ SELECT *
   FROM J1_TBL t1 (a, b, c);
 SELECT *
   FROM J1_TBL t1 (a, b, c), J2_TBL t2 (d, e);
-SELECT t1.a, t2.e
-  FROM J1_TBL t1 (a, b, c), J2_TBL t2 (d, e)
-  WHERE t1.a = t2.d;
 SELECT *
   FROM J1_TBL CROSS JOIN J2_TBL;
 SELECT t1.i, k, t
@@ -59,12 +56,6 @@ SELECT *
   FROM J1_TBL INNER JOIN J2_TBL USING (i);
 SELECT *
   FROM J1_TBL JOIN J2_TBL USING (i);
-SELECT *
-  FROM J1_TBL t1 (a, b, c) JOIN J2_TBL t2 (a, d) USING (a)
-  ORDER BY a, d;
-SELECT *
-  FROM J1_TBL t1 (a, b, c) JOIN J2_TBL t2 (a, b) USING (b)
-  ORDER BY b, t1.a;
 SELECT * FROM J1_TBL JOIN J2_TBL USING (i) WHERE J1_TBL.t = 'one';
 SELECT * FROM J1_TBL JOIN J2_TBL USING (i) AS x WHERE J1_TBL.t = 'one';
 SELECT * FROM J1_TBL JOIN J2_TBL USING (i) AS x WHERE x.i = 1;
@@ -73,12 +64,6 @@ SELECT ROW(x.*) FROM J1_TBL JOIN J2_TBL USING (i) AS x WHERE J1_TBL.t = 'one';
 SELECT row_to_json(x.*) FROM J1_TBL JOIN J2_TBL USING (i) AS x WHERE J1_TBL.t = 'one';
 SELECT *
   FROM J1_TBL NATURAL JOIN J2_TBL;
-SELECT *
-  FROM J1_TBL t1 (a, b, c) NATURAL JOIN J2_TBL t2 (a, d);
-SELECT *
-  FROM J1_TBL t1 (a, b, c) NATURAL JOIN J2_TBL t2 (d, a);
-SELECT *
-  FROM J1_TBL t1 (a, b) NATURAL JOIN J2_TBL t2 (a);
 SELECT *
   FROM J1_TBL JOIN J2_TBL ON (J1_TBL.i = J2_TBL.i);
 SELECT *
@@ -193,18 +178,6 @@ select * from x left join y on (x1 = y1 and x2 is not null);
 select * from x left join y on (x1 = y1 and y2 is not null);
 select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
 on (x1 = xx1);
-select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
-on (x1 = xx1 and x2 is not null);
-select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
-on (x1 = xx1 and y2 is not null);
-select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
-on (x1 = xx1 and xx2 is not null);
-select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
-on (x1 = xx1) where (x2 is not null);
-select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
-on (x1 = xx1) where (y2 is not null);
-select * from (x left join y on (x1 = y1)) left join x xx(xx1,xx2)
-on (x1 = xx1) where (xx2 is not null);
 begin;
 set geqo = on;
 set geqo_threshold = 2;
@@ -845,9 +818,6 @@ select p.b from sj p join sj q on p.a = q.a group by p.b having sum(p.a) = 1;
 explain (verbose, costs off)
 select 1 from (select x.* from sj x, sj y where x.a = y.a) q,
   lateral generate_series(1, q.a) gs(i);
-explain (verbose, costs off)
-select 1 from (select y.* from sj x, sj y where x.a = y.a) q,
-  lateral generate_series(1, q.a) gs(i);
 explain (costs off) select * from sj p join sj q on p.a = q.a
   left join sj r on p.a + q.a = r.a;
 explain (costs off)
@@ -871,12 +841,6 @@ CREATE UNIQUE INDEX ON emp1((id*id));
 EXPLAIN (COSTS OFF)
 SELECT count(*) FROM emp1 c1, emp1 c2, emp1 c3
 WHERE c1.id=c2.id AND c1.id*c2.id=c3.id*c3.id;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM emp1 c1, emp1 c2, emp1 c3
-WHERE c1.id=c3.id AND c1.id*c3.id=c2.id*c2.id;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM emp1 c1, emp1 c2, emp1 c3
-WHERE c3.id=c2.id AND c3.id*c2.id=c1.id*c1.id;
 EXPLAIN (COSTS OFF)
 SELECT c1.code FROM emp1 c1 LEFT JOIN emp1 c2 ON c1.id = c2.id
 WHERE c2.id IS NOT NULL

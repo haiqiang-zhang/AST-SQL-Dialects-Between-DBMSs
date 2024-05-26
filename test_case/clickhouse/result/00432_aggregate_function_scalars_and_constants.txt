@@ -1,0 +1,65 @@
+--Query--
+SELECT k, sumMerge(d) FROM agg_func_col GROUP BY k ORDER BY k
+--Result--
+[(0, 200), (1, 100)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT k, sumMerge(d), avgMerge(af_avg1) FROM agg_func_col GROUP BY k ORDER BY k
+--Result--
+[(0, 200, nan), (1, 100, nan)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT k, sumMerge(d), avgMerge(af_avg1), groupUniqArrayMerge(af_gua) FROM agg_func_col GROUP BY k ORDER BY k
+--Result--
+[(0, 200, nan, ['---']), (1, 100, nan, ['---']), (2, 200, 101.0, ['---'])]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE agg_func_col
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT arrayReduce('groupUniqArrayIf', ['---', '---', 't1'], [1, 1, 0])
+--Result--
+[(['---'],)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT ''
+--Result--
+[('',)]
++--------------------+

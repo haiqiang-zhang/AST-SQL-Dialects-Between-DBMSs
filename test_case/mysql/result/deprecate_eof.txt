@@ -1,0 +1,85 @@
+--Query--
+SELECT * FROM t1 ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY 1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT "session state sent as part of above SELECT" AS col_heading
+--Result--
+[('session state sent as part of above SELECT',)]
++--------------------+
+--Query--
+SELECT "no session state exists" AS col_heading
+--Result--
+[('no session state exists',)]
++--------------------+
+--Query--
+SELECT MIN(a) FROM t2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT MAX(2) FROM t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT "session state sent for SELECT inside t1_sel()" AS col_heading
+--Result--
+[('session state sent for SELECT inside t1_sel()',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT @a,@b,@c,@d,@e,@f,@g,@h,@i,@j
+--Result--
+[(None, None, None, None, None, None, None, None, None, None)]
++--------------------+
+--Query--
+SELECT "session state sent as part of above SELECT" AS col_heading
+--Result--
+[('session state sent as part of above SELECT',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (1,), (2,)]
++--------------------+
+--Query--
+PREPARE x FROM 'SELECT 1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY 1
+--Result--
+[(1,), (1,), (2,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+

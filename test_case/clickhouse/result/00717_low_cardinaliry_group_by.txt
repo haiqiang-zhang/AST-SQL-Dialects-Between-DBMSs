@@ -1,0 +1,75 @@
+--Query--
+select count() from tab_00717
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select a from tab_00717 group by a order by a
+--Result--
+[('a_1',), ('a_2',)]
++--------------------+
+--Query--
+select b from tab_00717 group by b order by b
+--Result--
+[('b_1',), ('b_2',)]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select sum(length(a)), b from tab_00717 group by b order by b
+--Result--
+[(3, 'b_1'), (3, 'b_2')]
++--------------------+
+--Query--
+select a, b from tab_00717 group by a, b order by a, b
+--Result--
+[('a_1', 'b_1'), ('a_2', 'b_2')]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l, l + 1
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l, l + 1, l + 2
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l, l + 1, l + 2, l + 3
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l, l + 1, l + 2, l + 3, l + 4
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select length(b) as l from tab_00717 group by l, l + 1, l + 2, l + 3, l + 4, l + 5
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select a, length(b) as l from tab_00717 group by a, l, l + 1 order by a
+--Result--
+[('a_1', 3), ('a_2', 3)]
++--------------------+
+--Query--
+select b, length(b) as l from tab_00717 group by b, l, l + 1 order by b
+--Result--
+[('b_1', 3), ('b_2', 3)]
++--------------------+
+--Query--
+select a, b, length(b) as l from tab_00717 group by a, b, l, l + 1 order by a, b
+--Result--
+[('a_1', 'b_1', 3), ('a_2', 'b_2', 3)]
++--------------------+

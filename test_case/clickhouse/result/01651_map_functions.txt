@@ -1,0 +1,35 @@
+--Query--
+select mapContains(a, 'name') from table_map
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+select mapKeys(a) from table_map
+--Result--
+[(['name', 'age'],), (['name', 'gender'],)]
++--------------------+
+--Query--
+select mapFromArrays(c, d) from table_map
+--Result--
+[({'name': 'zhangsan', 'age': '10'},), ({'name': 'lisi', 'gender': 'female'},)]
++--------------------+
+--Query--
+select mapValues(a) from table_map
+--Result--
+[([1000],), ([1001],), ([1002],)]
++--------------------+
+--Query--
+select map( 'aa', 4, 'bb' , 5) as m, mapKeys(m), mapValues(m)
+--Result--
+[({'aa': 4, 'bb': 5}, ['aa', 'bb'], [4, 5])]
++--------------------+
+--Query--
+select map(0, 0) as m, mapContains(m, number % 2) from numbers(2)
+--Result--
+[({0: 0}, 1), ({0: 0}, 0)]
++--------------------+
+--Query--
+select mapFromArrays(['aa', 'bb'], materialize([4, 5])) from numbers(2)
+--Result--
+[({'aa': 4, 'bb': 5},), ({'aa': 4, 'bb': 5},)]
++--------------------+

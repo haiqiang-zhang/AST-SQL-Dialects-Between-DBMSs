@@ -1,0 +1,80 @@
+--Query--
+SELECT 'Initial'
+--Result--
+[('Initial',)]
++--------------------+
+--Query--
+SELECT count(), sum(d) FROM src
+--Result--
+[(4, 4)]
++--------------------+
+--Query--
+SELECT 'REPLACE simple'
+--Result--
+[('REPLACE simple',)]
++--------------------+
+--Query--
+SELECT 'REPLACE empty'
+--Result--
+[('REPLACE empty',)]
++--------------------+
+--Query--
+SELECT 'REPLACE recursive'
+--Result--
+[('REPLACE recursive',)]
++--------------------+
+--Query--
+SELECT (max(m) - min(m) > 1) AS new_block_is_generated FROM test_block_numbers
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'ATTACH FROM'
+--Result--
+[('ATTACH FROM',)]
++--------------------+
+--Query--
+SYSTEM STOP MERGES dst
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'OPTIMIZE'
+--Result--
+[('OPTIMIZE',)]
++--------------------+
+--Query--
+SELECT count(), sum(d), uniqExact(_part) FROM dst
+--Result--
+[(5, 8, 5)]
++--------------------+
+--Query--
+SYSTEM START MERGES dst
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE dst
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'After restart'
+--Result--
+[('After restart',)]
++--------------------+
+--Query--
+DETACH TABLE dst
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE dst
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'DETACH+ATTACH PARTITION'
+--Result--
+[('DETACH+ATTACH PARTITION',)]
++--------------------+

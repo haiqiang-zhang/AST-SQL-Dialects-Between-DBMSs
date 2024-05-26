@@ -1,0 +1,75 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+SELECT * FROM tt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM tt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tt1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM tt1
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH 'test2.db' AS aux
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.t2
+--Result--
+[(3, 4), (5, 6), (7, 8), (1, 2)]
++--------------------+
+--Query--
+SELECT * FROM tt2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM aux.t2
+--Result--
+[(3, 4), (5, 6), (7, 8), (1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM tt2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM sqlite_master
+--Result--
+[('table', 't1', 't1', 2, 'CREATE TABLE t1(a, b)'), ('table', 't3', 't3', 3, 'CREATE TABLE t3(a, b)'), ('table', 't2', 't2', 4, 'CREATE TABLE t2(a, b)')]
++--------------------+
+--Query--
+SELECT * FROM temp.sqlite_master
+--Result--
+[('table', 'tt1', 'tt1', 2, 'CREATE TABLE tt1(a, b)'), ('table', 'tt2', 'tt2', 3, 'CREATE TABLE tt2(a, b)')]
++--------------------+
+--Query--
+SELECT type,name,tbl_name,sql FROM aux.sqlite_master
+--Result--
+[('table', 'sqlite_stat1', 'sqlite_stat1', 'CREATE TABLE sqlite_stat1(tbl,idx,stat)'), ('table', 'Table2', 'Table2', 'CREATE TABLE Table2(col1 INTEGER, col2 INTEGER, col3 INTEGER, col4)'), ('index', 'idx_col1_unique', 'Table2', 'CREATE UNIQUE INDEX idx_col1_unique ON Table2 (col1)'), ('index', 'idx_col23_unique', 'Table2', 'CREATE UNIQUE INDEX idx_col23_unique ON Table2 (col2, col3)'), ('index', 'idx_col2', 'Table2', 'CREATE INDEX idx_col2 ON Table2 (col2)'), ('table', 'ab', 'ab', 'CREATE TABLE ab(a, b)'), ('table', 'files', 'files', 'CREATE TABLE files(name, text)'), ('table', 'def', 'def', 'CREATE TABLE def(d, e, f)'), ('table', 'x', 'x', 'CREATE TABLE x ( n integer )'), ('table', 'abc', 'abc', 'CREATE TABLE abc(a, b, c)'), ('table', 't2', 't2', 'CREATE TABLE t2(x, y)'), ('table', 'ghi', 'ghi', 'CREATE TABLE ghi(g, h, i)')]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+WITH RECURSIVE c(x) AS (VALUES(1) UNION SELECT x+1 FROM c WHERE x<30)     INSERT INTO t1(a,b,c,d,e)        SELECT x, printf('ab%03xxy',x), x, x, x FROM c
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE b='ab005xy' COLLATE nocase
+--Result--
+[(5,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT a FROM t1 WHERE b='ab005xy' COLLATE nocase
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING INDEX sqlite_autoindex_t1_2 (b=?)')]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master WHERE tbl_name='t1' ORDER BY name
+--Result--
+[('sqlite_autoindex_t1_1',), ('sqlite_autoindex_t1_2',), ('t1',), ('t1c',), ('t1d',)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master WHERE tbl_name LIKE 't2_' ORDER BY name
+--Result--
+[('t2a',), ('t2b',), ('t2c',), ('t2d',)]
++--------------------+

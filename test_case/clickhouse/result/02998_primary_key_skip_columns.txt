@@ -1,0 +1,20 @@
+--Query--
+SELECT count() FROM test
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SELECT 'Key size: ', round(sum(primary_key_bytes_in_memory), -5) FROM system.parts WHERE database = currentDatabase() AND table = 'test'
+--Result--
+[('Key size: ', 2400000)]
++--------------------+
+--Query--
+DETACH TABLE test
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE test
+--Result--
+[]
++--------------------+

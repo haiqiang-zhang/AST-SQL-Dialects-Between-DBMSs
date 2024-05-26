@@ -1,0 +1,135 @@
+--Query--
+SELECT 'Scalar subqueries'
+--Result--
+[('Scalar subqueries',)]
++--------------------+
+--Query--
+SELECT (SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH 1 AS a SELECT (SELECT a)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT (SELECT id FROM test_table)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (SELECT value FROM test_table)
+--Result--
+[('Value',)]
++--------------------+
+--Query--
+SELECT (SELECT id, value FROM test_table)
+--Result--
+[((0, 'Value'),)]
++--------------------+
+--Query--
+SELECT 'Subqueries FROM section'
+--Result--
+[('Subqueries FROM section',)]
++--------------------+
+--Query--
+SELECT a FROM (SELECT 1 AS a) AS b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b.a FROM (SELECT 1 AS a) AS b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT a FROM (SELECT 1 AS a) AS b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT b.a FROM (SELECT 1 AS a) AS b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH 1 AS global_a SELECT a FROM (SELECT global_a AS a) AS b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH 1 AS global_a SELECT b.a FROM (SELECT global_a AS a) AS b
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM (SELECT * FROM test_table))
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+SELECT * FROM (SELECT id, value FROM (SELECT * FROM test_table))
+--Result--
+[(0, 'Value')]
++--------------------+
+--Query--
+WITH 1 AS a SELECT (SELECT * FROM (SELECT * FROM (SELECT a + 1)))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 'Subqueries CTE'
+--Result--
+[('Subqueries CTE',)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT * FROM subquery
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT a FROM subquery
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT subquery.a FROM subquery
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT subquery.* FROM subquery
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT subquery.* APPLY toString FROM subquery
+--Result--
+[('1',)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT subquery_alias.a FROM subquery AS subquery_alias
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT subquery_alias.* FROM subquery AS subquery_alias
+--Result--
+[(1,)]
++--------------------+
+--Query--
+WITH subquery AS (SELECT 1 AS a) SELECT subquery_alias.* APPLY toString FROM subquery AS subquery_alias
+--Result--
+[('1',)]
++--------------------+
+--Query--
+WITH subquery_1 AS (SELECT 1 AS a), subquery_2 AS (SELECT 1 + subquery_1.a FROM subquery_1) SELECT * FROM subquery_2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+WITH subquery_1 AS (SELECT 1 AS a), subquery_2 AS (SELECT (1 + subquery_1.a) AS a FROM subquery_1) SELECT subquery_2.a FROM subquery_2
+--Result--
+[(2,)]
++--------------------+

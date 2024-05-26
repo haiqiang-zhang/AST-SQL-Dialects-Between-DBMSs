@@ -1,0 +1,215 @@
+--Query--
+SELECT '*** Not partitioned ***'
+--Result--
+[('*** Not partitioned ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'not_partitioned' AND active ORDER BY name
+--Result--
+[('tuple()', 'all_1_1_0'), ('tuple()', 'all_2_2_0')]
++--------------------+
+--Query--
+OPTIMIZE TABLE not_partitioned PARTITION tuple() FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'not_partitioned' AND active ORDER BY name
+--Result--
+[('tuple()', 'all_1_2_1')]
++--------------------+
+--Query--
+SELECT 'Sum before DETACH PARTITION:'
+--Result--
+[('Sum before DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT sum(x) FROM not_partitioned
+--Result--
+[(15,)]
++--------------------+
+--Query--
+SELECT 'Sum after DETACH PARTITION:'
+--Result--
+[('Sum after DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'system.detached_parts after DETACH PARTITION:'
+--Result--
+[('system.detached_parts after DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT system.detached_parts.* EXCEPT (bytes_on_disk, `path`, disk, modification_time) FROM system.detached_parts WHERE database = currentDatabase() AND table = 'not_partitioned'
+--Result--
+[('test', 'not_partitioned', 'all', 'all_1_2_1', '', 1, 2, 1)]
++--------------------+
+--Query--
+SELECT '*** Partitioned by week ***'
+--Result--
+[('*** Partitioned by week ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_week' AND active ORDER BY name
+--Result--
+[('1999-12-27', '19991227_1_1_0'), ('2000-01-03', '20000103_2_2_0'), ('2000-01-03', '20000103_3_3_0')]
++--------------------+
+--Query--
+OPTIMIZE TABLE partitioned_by_week PARTITION '2000-01-03' FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_week' AND active ORDER BY name
+--Result--
+[('1999-12-27', '19991227_1_1_0'), ('2000-01-03', '20000103_2_3_1')]
++--------------------+
+--Query--
+SELECT 'Sum before DROP PARTITION:'
+--Result--
+[('Sum before DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DROP PARTITION:'
+--Result--
+[('Sum after DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Partitioned by a (Date, UInt8) tuple ***'
+--Result--
+[('*** Partitioned by a (Date, UInt8) tuple ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_tuple' AND active ORDER BY name
+--Result--
+[("('2000-01-01',1)", '20000101-1_1_1_0'), ("('2000-01-01',1)", '20000101-1_5_5_0'), ("('2000-01-01',2)", '20000101-2_2_2_0'), ("('2000-01-02',1)", '20000102-1_3_3_0'), ("('2000-01-02',1)", '20000102-1_4_4_0')]
++--------------------+
+--Query--
+OPTIMIZE TABLE partitioned_by_tuple PARTITION ('2000-01-01', 1) FINAL
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE partitioned_by_tuple PARTITION ('2000-01-02', 1) FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_tuple' AND active ORDER BY name
+--Result--
+[("('2000-01-01',1)", '20000101-1_1_5_1'), ("('2000-01-01',2)", '20000101-2_2_2_0'), ("('2000-01-02',1)", '20000102-1_3_4_1')]
++--------------------+
+--Query--
+SELECT 'Sum before DETACH PARTITION:'
+--Result--
+[('Sum before DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DETACH PARTITION:'
+--Result--
+[('Sum after DETACH PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Partitioned by String ***'
+--Result--
+[('*** Partitioned by String ***',)]
++--------------------+
+--Query--
+SELECT 'Parts before OPTIMIZE:'
+--Result--
+[('Parts before OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_string' AND active ORDER BY name
+--Result--
+[('bbb', '7d878f3d88441d2b3dc371e2a3050f6d_1_1_0'), ('aaa', '9b50856126a8a6064f11f027d455bf58_2_2_0')]
++--------------------+
+--Query--
+OPTIMIZE TABLE partitioned_by_string PARTITION 'aaa' FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Parts after OPTIMIZE:'
+--Result--
+[('Parts after OPTIMIZE:',)]
++--------------------+
+--Query--
+SELECT partition, name FROM system.parts WHERE database = currentDatabase() AND table = 'partitioned_by_string' AND active ORDER BY name
+--Result--
+[('bbb', '7d878f3d88441d2b3dc371e2a3050f6d_1_1_0'), ('aaa', '9b50856126a8a6064f11f027d455bf58_2_2_1')]
++--------------------+
+--Query--
+SELECT 'Sum before DROP PARTITION:'
+--Result--
+[('Sum before DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT 'Sum after DROP PARTITION:'
+--Result--
+[('Sum after DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT '*** Table without columns with fixed size ***'
+--Result--
+[('*** Table without columns with fixed size ***',)]
++--------------------+
+--Query--
+SELECT 'Parts:'
+--Result--
+[('Parts:',)]
++--------------------+
+--Query--
+SELECT partition, name, rows FROM system.parts WHERE database = currentDatabase() AND table = 'without_fixed_size_columns' AND active ORDER BY name
+--Result--
+[('1', '1_1_1_0', 2), ('2', '2_2_2_0', 2)]
++--------------------+
+--Query--
+SELECT 'Before DROP PARTITION:'
+--Result--
+[('Before DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT * FROM without_fixed_size_columns ORDER BY s
+--Result--
+[('a',), ('aa',), ('b',), ('cc',)]
++--------------------+
+--Query--
+SELECT 'After DROP PARTITION:'
+--Result--
+[('After DROP PARTITION:',)]
++--------------------+
+--Query--
+SELECT * FROM without_fixed_size_columns ORDER BY s
+--Result--
+[('aa',), ('cc',)]
++--------------------+

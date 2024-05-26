@@ -1,0 +1,20 @@
+--Query--
+SELECT {'a': INET '127.0.0.1/17'}, NULL::STRUCT(a INET), {'a': INET '255.255.255.255/31'}
+--Result--
+[({'a': {'ip_type': 1, 'address': 2130706433, 'mask': 17}}, None, {'a': {'ip_type': 1, 'address': 4294967295, 'mask': 31}})]
++--------------------+
+--Query--
+SELECT {'a': INET '127.0.0.1/17'}::STRUCT(a VARCHAR), NULL::STRUCT(a INET)::STRUCT(a VARCHAR), {'a': INET '255.255.255.255/31'}::STRUCT(a VARCHAR)
+--Result--
+[({'a': '127.0.0.1/17'}, None, {'a': '255.255.255.255/31'})]
++--------------------+
+--Query--
+SELECT [INET '127.0.0.1/17', NULL, INET '255.255.255.255/31']::VARCHAR[]
+--Result--
+[(['127.0.0.1/17', None, '255.255.255.255/31'],)]
++--------------------+
+--Query--
+SELECT [INET '127.0.0.1/17', NULL, '255.255.255.255/31']
+--Result--
+[([{'ip_type': 1, 'address': 2130706433, 'mask': 17}, None, {'ip_type': 1, 'address': 4294967295, 'mask': 31}],)]
++--------------------+

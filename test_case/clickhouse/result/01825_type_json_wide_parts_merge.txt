@@ -1,0 +1,20 @@
+--Query--
+SYSTEM STOP MERGES t_json_wide_parts
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM START MERGES t_json_wide_parts
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE t_json_wide_parts FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT type FROM system.parts_columns WHERE table = 't_json_wide_parts' AND database = currentDatabase() AND active
+--Result--
+[('Tuple(k1 Int8, k2 Int8)',)]
++--------------------+

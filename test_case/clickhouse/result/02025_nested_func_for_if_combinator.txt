@@ -1,0 +1,15 @@
+--Query--
+SELECT uniqCombinedIfMerge(n) FROM (SELECT uniqCombinedIfState(number, number % 2) AS n, max(number) AS last FROM numbers(10))
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT uniqCombinedIfMergeIf(n, last > 50) FROM (SELECT uniqCombinedIfState(number, number % 2) AS n, max(number) AS last FROM numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT uniqCombinedIfMerge(n) FILTER(WHERE last>50) FROM (SELECT uniqCombinedIfState(number, number % 2) AS n, max(number) AS last FROM numbers(10))
+--Result--
+[(0,)]
++--------------------+

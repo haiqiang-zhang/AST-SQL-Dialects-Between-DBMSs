@@ -1,0 +1,105 @@
+--Query--
+USE test_01109
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE t0 TO t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(0, 'exchange'), (1, 'tables')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(2, 'hello'), (3, 'world')]
++--------------------+
+--Query--
+EXCHANGE TABLES t1 AND t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2, 'hello'), (3, 'world')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(0, 'exchange'), (1, 'tables')]
++--------------------+
+--Query--
+RENAME TABLE t1 TO t1tmp, t2 TO t2tmp
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE t1tmp TO t2, t2tmp TO t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(0, 'exchange'), (1, 'tables')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(2, 'hello'), (3, 'world')]
++--------------------+
+--Query--
+EXCHANGE TABLES t1 AND test_01109_other_atomic.t3
+--Result--
+[]
++--------------------+
+--Query--
+EXCHANGE TABLES t2 AND t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(4, 'another'), (5, 'db')]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(2, 'hello'), (3, 'world')]
++--------------------+
+--Query--
+SELECT * FROM test_01109_other_atomic.t3
+--Result--
+[(0, 'exchange'), (1, 'tables')]
++--------------------+
+--Query--
+SELECT * FROM test_01109_ordinary.t4
+--Result--
+[]
++--------------------+
+--Query--
+USE test_01109_rename_exists
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE if exists t0_tmp TO t1
+--Result--
+[]
++--------------------+
+--Query--
+RENAME TABLE if exists t0 TO t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(0,), (1,)]
++--------------------+

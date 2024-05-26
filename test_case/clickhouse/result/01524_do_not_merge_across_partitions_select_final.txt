@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM select_final FINAL ORDER BY x, t
+--Result--
+[(datetime.datetime(2000, 1, 1, 0, 0), 0, ''), (datetime.datetime(2020, 1, 1, 0, 0), 0, ''), (datetime.datetime(2000, 1, 1, 0, 0), 1, ''), (datetime.datetime(2020, 1, 1, 0, 0), 1, ''), (datetime.datetime(2000, 1, 1, 0, 0), 2, ''), (datetime.datetime(2020, 1, 1, 0, 0), 2, '')]
++--------------------+
+--Query--
+TRUNCATE TABLE select_final
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE select_final FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT max(x) FROM select_final FINAL where string = 'updated'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+TRUNCATE TABLE select_final
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE select_final FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

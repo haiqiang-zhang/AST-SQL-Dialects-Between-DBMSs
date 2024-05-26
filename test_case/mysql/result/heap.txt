@@ -1,0 +1,200 @@
+--Query--
+select * from t1
+--Result--
+[(2, 2), (3, 3), (4, 4)]
++--------------------+
+--Query--
+select * from t1 where a=4
+--Result--
+[(4, 4)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(2, 2), (3, 4), (4, 6)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1), (2, 2), (3, 3), (4, 4)]
++--------------------+
+--Query--
+select * from t1 where a > 736494
+--Result--
+[(869751,), (802616,)]
++--------------------+
+--Query--
+select * from t1 where a > 736494
+--Result--
+[(869751,), (802616,)]
++--------------------+
+--Query--
+select * from t1 where a = 736494
+--Result--
+[(736494,)]
++--------------------+
+--Query--
+select * from t1 where a=869751 or a=736494
+--Result--
+[(736494,), (869751,)]
++--------------------+
+--Query--
+select * from t1 where a in (869751,736494,226312,802616)
+--Result--
+[(226312,), (736494,), (802616,), (869751,)]
++--------------------+
+--Query--
+select * from t1 where x=1
+--Result--
+[(1, 3), (1, 1)]
++--------------------+
+--Query--
+select * from t1,t1 as t2 where t1.x=t2.y
+--Result--
+[(1, 1, 1, 1), (2, 2, 2, 2), (1, 3, 1, 1), (2, 4, 2, 2), (2, 5, 2, 2), (2, 6, 2, 2)]
++--------------------+
+--Query--
+select max(a) from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from t1 where a=1
+--Result--
+[(1, 6), (1, 5), (1, 4), (1, 3), (1, 2), (1, 1)]
++--------------------+
+--Query--
+select * from t1 where a=1
+--Result--
+[(1, 6), (1, 5), (1, 4), (1, 3), (1, 2), (1, 1), (1, 6), (1, 5), (1, 4), (1, 3), (1, 2), (1, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(16, 'ted'), (12, 'ted'), (12, 'ted'), (12, 'ted'), (12, 'ted')]
++--------------------+
+--Query--
+select * from t1 where btn like "q%"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a<=>NULL
+--Result--
+[(None, 99)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b<=>NULL
+--Result--
+[(99, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=10
+--Result--
+[(10,), (10,), (10,)]
++--------------------+
+--Query--
+SELECT * from t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT MAX(job_title_id) FROM job_titles
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE B is not null
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('ZoomZip', 1101106546)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[('3',), ('2',)]
++--------------------+
+--Query--
+select concat('*',v,'*',c,'*',t,'*') from t1
+--Result--
+[('*+ *+*+ *',), (None,)]
++--------------------+
+--Query--
+select count(*) from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select concat('*',v,'*',c,'*',t,'*') as qq from t1 where v='a' order by length(concat('*',v,'*',c,'*',t,'*'))
+--Result--
+[]
++--------------------+
+--Query--
+select sql_big_result trim(v),count(t) from t1 group by v order by v limit 10
+--Result--
+[(None, 0), ('a!', 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a = 0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE a='a'
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT c2 FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'wrong' as 'result' FROM dual WHERE ('h', 0) NOT IN (SELECT * FROM h1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE c1='bar2'
+--Result--
+[('bar2',)]
++--------------------+
+--Query--
+SELECT * FROM t1 IGNORE INDEX (i1) WHERE c1='bar2'
+--Result--
+[('bar2',)]
++--------------------+

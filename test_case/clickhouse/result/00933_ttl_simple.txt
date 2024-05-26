@@ -1,0 +1,110 @@
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select a, b from ttl_00933_1
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select a, b from ttl_00933_1
+--Result--
+[(1, 2), (3, 4), (5, 6)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1 order by d
+--Result--
+[(datetime.datetime(2000, 10, 10, 0, 0), 0), (datetime.datetime(2000, 10, 10, 0, 0), 0), (datetime.datetime(2000, 10, 10, 0, 0), 0)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1 order by d
+--Result--
+[(datetime.datetime(2100, 10, 10, 0, 0), 3)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1 order by d
+--Result--
+[(datetime.date(2100, 10, 10), 2)]
++--------------------+
+--Query--
+show create table ttl_00933_1
+--Result--
+[("CREATE TABLE test.ttl_00933_1\n(\n    `b` Int32,\n    `a` Int32 TTL CAST('2000-10-10 00:00:00', 'DateTime')\n)\nENGINE = MergeTree\nPARTITION BY tuple()\nORDER BY tuple()\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192",)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+show create table ttl_00933_1
+--Result--
+[("CREATE TABLE test.ttl_00933_1\n(\n    `b` Int32,\n    `a` Int32 TTL CAST('2100-10-10 00:00:00', 'DateTime')\n)\nENGINE = MergeTree\nPARTITION BY tuple()\nORDER BY tuple()\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192",)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+show create table ttl_00933_1
+--Result--
+[("CREATE TABLE test.ttl_00933_1\n(\n    `b` Int32,\n    `a` Int32 TTL CAST('2000-10-10', 'Date')\n)\nENGINE = MergeTree\nPARTITION BY tuple()\nORDER BY tuple()\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192",)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+show create table ttl_00933_1
+--Result--
+[("CREATE TABLE test.ttl_00933_1\n(\n    `b` Int32,\n    `a` Int32 TTL CAST('2100-10-10', 'Date')\n)\nENGINE = MergeTree\nPARTITION BY tuple()\nORDER BY tuple()\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192",)]
++--------------------+
+--Query--
+optimize table ttl_00933_1 final
+--Result--
+[]
++--------------------+
+--Query--
+select * from ttl_00933_1
+--Result--
+[(1, 1)]
++--------------------+

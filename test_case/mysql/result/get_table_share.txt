@@ -1,0 +1,25 @@
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for table flush' AND info LIKE 'FLUSH TABLES'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for table flush' AND info LIKE 'FLUSH TABLES tb'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for table flush' AND info LIKE 'FLUSH TABLES'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 0 FROM information_schema.processlist     WHERE state LIKE 'Waiting for table flush' AND info LIKE 'FLUSH TABLES'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist     WHERE state LIKE 'Waiting for table metadata lock'       AND info LIKE 'CREATE TABLE tb%'
+--Result--
+[(0,)]
++--------------------+

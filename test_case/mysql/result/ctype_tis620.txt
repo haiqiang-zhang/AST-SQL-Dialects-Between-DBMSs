@@ -1,0 +1,35 @@
+--Query--
+SELECT hex(@u0:=convert(@pl0 using utf8mb3))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT 'a' = 'a '
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a\0' < 'a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a\0' < 'a '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'a\t' < 'a'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 'a\t' < 'a '
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT hex(a),STRCMP(a,'a'), STRCMP(a,'a ') FROM t1
+--Result--
+[('61', 0, 0), ('6100', -1, -1), ('6109', -1, -1), ('61', 0, 0)]
++--------------------+

@@ -3,7 +3,6 @@ CREATE TABLE t1 (a text) character set gbk;
 INSERT INTO t1 VALUES (0xA3A0),(0xA1A1);
 SELECT hex(a) FROM t1 ORDER BY a;
 DROP TABLE t1;
-select hex(convert(_gbk 0xA14041 using ucs2));
 create table t1 (c1 text not null, c2 text not null) character set gbk;
 alter table t1 change c1 c1 mediumtext  character set gbk not null;
 drop table t1;

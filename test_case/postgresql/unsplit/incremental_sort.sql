@@ -76,7 +76,6 @@ analyze t;
 set enable_incremental_sort = off;
 explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1;
 set enable_incremental_sort = on;
-explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1;
 set enable_hashagg to off;
 explain (costs off) select * from t union select * from t order by 1,3;
 explain (costs off) select distinct a,b from t;

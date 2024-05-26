@@ -1,0 +1,65 @@
+--Query--
+SELECT number FROM numbers(1) ORDER BY 10 ASC, number DESC WITH FILL FROM 1 SETTINGS enable_positional_arguments=0
+--Result--
+[(1,), (0,)]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill step 1
+--Result--
+[(1, 10, 1.0), (1, 11, 0.0), (1, 12, 2.0), (3, 5, 1.0), (3, 6, 0.0), (3, 7, 3.0), (5, 1, 1.0), (5, 2, 0.0), (5, 3, 1.0)]
++--------------------+
+--Query--
+system stop merges ts
+--Result--
+[]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill step 1 settings max_block_size=2
+--Result--
+[(1, 10, 1.0), (1, 11, 0.0), (1, 12, 1.0), (3, 5, 1.0), (3, 6, 0.0), (3, 7, 1.0), (5, 1, 1.0), (5, 2, 0.0), (5, 3, 1.0)]
++--------------------+
+--Query--
+system stop merges ts
+--Result--
+[]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill step 1 settings max_block_size=3
+--Result--
+[(1, 10, 1.0), (1, 11, 0.0), (1, 12, 1.0), (3, 5, 1.0), (3, 6, 0.0), (3, 7, 1.0), (5, 1, 1.0), (5, 2, 0.0), (5, 3, 1.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill from 6 to 10 step 1 interpolate (value as 9999)
+--Result--
+[(1, 6, 9999.0), (1, 7, 9999.0), (1, 8, 9999.0), (1, 9, 9999.0), (1, 10, 1.0), (1, 12, 1.0), (3, 5, 1.0), (3, 6, 9999.0), (3, 7, 1.0), (3, 8, 9999.0), (3, 9, 9999.0), (5, 1, 1.0), (5, 3, 1.0), (5, 6, 9999.0), (5, 7, 9999.0), (5, 8, 9999.0), (5, 9, 9999.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill from 6 to 10 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0
+--Result--
+[(0, 6, 9999.0), (0, 7, 9999.0), (0, 8, 9999.0), (0, 9, 9999.0), (1, 10, 1.0), (1, 12, 1.0), (3, 5, 1.0), (3, 7, 1.0), (5, 1, 1.0), (5, 3, 1.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id DESC, timestamp with fill from 6 to 10 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0
+--Result--
+[(5, 1, 1.0), (5, 3, 1.0), (3, 5, 1.0), (0, 6, 9999.0), (3, 7, 1.0), (0, 8, 9999.0), (0, 9, 9999.0), (1, 10, 1.0), (1, 12, 1.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill from 6 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0
+--Result--
+[(0, 6, 9999.0), (0, 7, 9999.0), (0, 8, 9999.0), (0, 9, 9999.0), (1, 10, 1.0), (0, 11, 9999.0), (1, 12, 1.0), (3, 5, 1.0), (3, 7, 1.0), (5, 1, 1.0), (5, 3, 1.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id DESC, timestamp with fill from 6 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0
+--Result--
+[(5, 1, 1.0), (5, 3, 1.0), (3, 5, 1.0), (0, 6, 9999.0), (3, 7, 1.0), (0, 8, 9999.0), (0, 9, 9999.0), (1, 10, 1.0), (0, 11, 9999.0), (1, 12, 1.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id, timestamp with fill to 10 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0
+--Result--
+[(1, 10, 1.0), (1, 12, 1.0), (3, 5, 1.0), (3, 7, 1.0), (5, 1, 1.0), (5, 3, 1.0)]
++--------------------+
+--Query--
+select * from ts order by sensor_id DESC, timestamp with fill to 10 step 1 interpolate (value as 9999) settings use_with_fill_by_sorting_prefix=0
+--Result--
+[(5, 1, 1.0), (0, 2, 9999.0), (5, 3, 1.0), (0, 4, 9999.0), (3, 5, 1.0), (0, 6, 9999.0), (3, 7, 1.0), (0, 8, 9999.0), (0, 9, 9999.0), (1, 10, 1.0), (1, 12, 1.0)]
++--------------------+

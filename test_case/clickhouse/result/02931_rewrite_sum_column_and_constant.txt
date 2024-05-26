@@ -1,0 +1,345 @@
+--Query--
+Select sum(number + 1) from numbers(10)
+--Result--
+[(55,)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX (Select sum(number + 1) from numbers(10))
+--Result--
+[('SELECT sum(number) + (1 * count(number))',), ('FROM numbers(10)',)]
++--------------------+
+--Query--
+WITH 1::Nullable(UInt64) as my_literal Select sum(number + my_literal) from numbers(0)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+WITH 1::Nullable(UInt64) as my_literal Select sum(number) + my_literal * count() from numbers(0)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT sum(uint64 + 1 AS i) from test_table where i > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(uint64 + 1) AS j from test_table having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(uint64 + 1 AS i) j from test_table where i > 0 having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum((uint64 AS m) + (1 AS n)) j from test_table where m > 0 and n > 0 having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(((uint64 AS m) + (1 AS n)) AS i) j from test_table where m > 0 and n > 0 and i > 0 having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(1 + uint64) AS j from test_table having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(1 + uint64 AS i) j from test_table where i > 0 having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum((1 AS m) + (uint64 AS n)) j from test_table where m > 0 and n > 0 having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(((1 AS m) + (uint64 AS n)) AS i) j from test_table where m > 0 and n > 0 and i > 0 having j > 0
+--Result--
+[(20,)]
++--------------------+
+--Query--
+SELECT sum(uint64 - 1) AS j from test_table having j > 0
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT sum(uint64 - 1 AS i) j from test_table where i > 0 having j > 0
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT sum((uint64 AS m) - (1 AS n)) j from test_table where m > 0 and n > 0 having j > 0
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT sum(((uint64 AS m) - (1 AS n)) AS i) j from test_table where m > 0 and n > 0 and i > 0 having j > 0
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT sum(1 - uint64) AS j from test_table
+--Result--
+[(-10,)]
++--------------------+
+--Query--
+SELECT sum(1 - uint64 AS i) j from test_table
+--Result--
+[(-10,)]
++--------------------+
+--Query--
+SELECT sum((1 AS m) - (uint64 AS n)) j from test_table
+--Result--
+[(-10,)]
++--------------------+
+--Query--
+SELECT sum(((1 AS m) - (uint64 AS n)) AS i) j from test_table
+--Result--
+[(-10,)]
++--------------------+
+--Query--
+SELECT sum(uint64) + 2.11 * count(uint64) From test_table
+--Result--
+[(25.549999999999997,)]
++--------------------+
+--Query--
+SELECT 2.11 * count(uint64) + sum(uint64) From test_table
+--Result--
+[(25.549999999999997,)]
++--------------------+
+--Query--
+SELECT sum(uint64) - 2.11 * count(uint64) From test_table
+--Result--
+[(4.450000000000001,)]
++--------------------+
+--Query--
+SELECT 2.11 * count(uint64) - sum(uint64) From test_table
+--Result--
+[(-4.450000000000001,)]
++--------------------+
+--Query--
+SELECT sum(uint64) + 2 * count(uint64) From test_table
+--Result--
+[(25,)]
++--------------------+
+--Query--
+SELECT 2 * count(uint64) + sum(uint64) From test_table
+--Result--
+[(25,)]
++--------------------+
+--Query--
+SELECT sum(uint64) - 2 * count(uint64) From test_table
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT 2 * count(uint64) - sum(uint64) From test_table
+--Result--
+[(-5,)]
++--------------------+
+--Query--
+SELECT sum(float64) + 2 * count(float64) From test_table
+--Result--
+[(26.5,)]
++--------------------+
+--Query--
+SELECT 2 * count(float64) + sum(float64) From test_table
+--Result--
+[(26.5,)]
++--------------------+
+--Query--
+SELECT sum(float64) - 2 * count(float64) From test_table
+--Result--
+[(6.5,)]
++--------------------+
+--Query--
+SELECT 2 * count(float64) - sum(float64) From test_table
+--Result--
+[(-6.5,)]
++--------------------+
+--Query--
+SELECT sum(decimal32) + 2 * count(decimal32) From test_table
+--Result--
+[(26.65,)]
++--------------------+
+--Query--
+SELECT 2 * count(decimal32) + sum(decimal32) From test_table
+--Result--
+[(26.65,)]
++--------------------+
+--Query--
+SELECT sum(decimal32) - 2 * count(decimal32) From test_table
+--Result--
+[(6.65,)]
++--------------------+
+--Query--
+SELECT 2 * count(decimal32) - sum(decimal32) From test_table
+--Result--
+[(-6.65,)]
++--------------------+
+--Query--
+SELECT sum(uint64 + 2) + sum(uint64 + 3) From test_table
+--Result--
+[(55,)]
++--------------------+
+--Query--
+SELECT sum(uint64 + 2) - sum(uint64 + 3) From test_table
+--Result--
+[(-5,)]
++--------------------+
+--Query--
+SELECT sum(uint64 - 2) + sum(uint64 - 3) From test_table
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT sum(uint64 - 2) - sum(uint64 - 3) From test_table
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT sum(2 - uint64) - sum(3 - uint64) From test_table
+--Result--
+[(-5,)]
++--------------------+
+--Query--
+SELECT (sum(uint64) + 2 * count(uint64)) + (sum(uint64) + 3 * count(uint64)) From test_table
+--Result--
+[(55,)]
++--------------------+
+--Query--
+SELECT (sum(uint64) + 2 * count(uint64)) - (sum(uint64) + 3 * count(uint64)) From test_table
+--Result--
+[(-5,)]
++--------------------+
+--Query--
+SELECT (sum(uint64) - 2 * count(uint64)) + (sum(uint64) - 3 * count(uint64)) From test_table
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT (sum(uint64) - 2 * count(uint64)) - (sum(uint64) - 3 * count(uint64)) From test_table
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT (2 * count(uint64) - sum(uint64)) + (3 * count(uint64) - sum(uint64)) From test_table
+--Result--
+[(-5,)]
++--------------------+
+--Query--
+SELECT sum(float64 + 2) + sum(float64 + 3) From test_table
+--Result--
+[(58.0,)]
++--------------------+
+--Query--
+SELECT sum(float64 + 2) - sum(float64 + 3) From test_table
+--Result--
+[(-5.0,)]
++--------------------+
+--Query--
+SELECT sum(float64 - 2) + sum(float64 - 3) From test_table
+--Result--
+[(8.0,)]
++--------------------+
+--Query--
+SELECT sum(float64 - 2) - sum(float64 - 3) From test_table
+--Result--
+[(5.0,)]
++--------------------+
+--Query--
+SELECT sum(2 - float64) - sum(3 - float64) From test_table
+--Result--
+[(-5.0,)]
++--------------------+
+--Query--
+SELECT (sum(float64) + 2 * count(float64)) + (sum(float64) + 3 * count(float64)) From test_table
+--Result--
+[(58.0,)]
++--------------------+
+--Query--
+SELECT (sum(float64) + 2 * count(float64)) - (sum(float64) + 3 * count(float64)) From test_table
+--Result--
+[(-5.0,)]
++--------------------+
+--Query--
+SELECT (sum(float64) - 2 * count(float64)) + (sum(float64) - 3 * count(float64)) From test_table
+--Result--
+[(8.0,)]
++--------------------+
+--Query--
+SELECT (sum(float64) - 2 * count(float64)) - (sum(float64) - 3 * count(float64)) From test_table
+--Result--
+[(5.0,)]
++--------------------+
+--Query--
+SELECT (2 * count(float64) - sum(float64)) + (3 * count(float64) - sum(float64)) From test_table
+--Result--
+[(-8.0,)]
++--------------------+
+--Query--
+SELECT sum(decimal32 + 2) + sum(decimal32 + 3) From test_table
+--Result--
+[(58.3,)]
++--------------------+
+--Query--
+SELECT sum(decimal32 + 2) - sum(decimal32 + 3) From test_table
+--Result--
+[(-5.0,)]
++--------------------+
+--Query--
+SELECT sum(decimal32 - 2) + sum(decimal32 - 3) From test_table
+--Result--
+[(8.3,)]
++--------------------+
+--Query--
+SELECT sum(decimal32 - 2) - sum(decimal32 - 3) From test_table
+--Result--
+[(5.0,)]
++--------------------+
+--Query--
+SELECT sum(2 - decimal32) - sum(3 - decimal32) From test_table
+--Result--
+[(-5.0,)]
++--------------------+
+--Query--
+SELECT (sum(decimal32) + 2 * count(decimal32)) + (sum(decimal32) + 3 * count(decimal32)) From test_table
+--Result--
+[(58.3,)]
++--------------------+
+--Query--
+SELECT (sum(decimal32) + 2 * count(decimal32)) - (sum(decimal32) + 3 * count(decimal32)) From test_table
+--Result--
+[(-5.0,)]
++--------------------+
+--Query--
+SELECT (sum(decimal32) - 2 * count(decimal32)) + (sum(decimal32) - 3 * count(decimal32)) From test_table
+--Result--
+[(8.3,)]
++--------------------+
+--Query--
+SELECT (sum(decimal32) - 2 * count(decimal32)) - (sum(decimal32) - 3 * count(decimal32)) From test_table
+--Result--
+[(5.0,)]
++--------------------+
+--Query--
+SELECT (2 * count(decimal32) - sum(decimal32)) + (3 * count(decimal32) - sum(decimal32)) From test_table
+--Result--
+[(-8.3,)]
++--------------------+
+--Query--
+SELECT sum(uint64 + 2) as j, j + 5 as t from test_table
+--Result--
+[(25, 30)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT sum(uint64 + 2) as j, j + 5 as t from test_table
+--Result--
+[('SELECT',), ('    sum(uint64) + (2 * count(uint64)) AS j,',), ('    j + 5 AS t',), ('FROM test_table',)]
++--------------------+

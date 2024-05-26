@@ -1,0 +1,15 @@
+--Query--
+select sum(j), avg(k) from x where i in (select number from numbers(4))
+--Result--
+[(2, 3.0)]
++--------------------+
+--Query--
+select j, k from x where i in (select number from numbers(4))
+--Result--
+[(2, 3)]
++--------------------+
+--Query--
+select if(SrcAS in (select SrcAS from flows group by SrcAS order by sum(Bytes) desc limit 10) , SrcAS, 33) as SrcAS from flows where 2 == 2 order by SrcAS
+--Result--
+[(12322,), (15169,), (15169,), (15169,), (15169,), (15169,), (15169,), (15169,), (15169,), (15169,), (15169,), (60068,)]
++--------------------+

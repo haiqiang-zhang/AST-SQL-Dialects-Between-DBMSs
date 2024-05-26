@@ -23,9 +23,6 @@ SELECT * FROM fast_emp4000
     WHERE home_base <@ '(200,200),(2000,1000)'::box
     ORDER BY (home_base[0])[0];
 SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box;
-SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL;
-SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon;
-SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle;
 SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10;
 SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10;
 SET enable_seqscan = OFF;
@@ -40,21 +37,10 @@ SELECT * FROM fast_emp4000
     ORDER BY (home_base[0])[0];
 EXPLAIN (COSTS OFF)
 SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box;
-SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL;
-SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon;
-SELECT count(*) FROM gpolygon_tbl WHERE f1 && '(1000,1000,0,0)'::polygon;
-EXPLAIN (COSTS OFF)
-SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle;
-SELECT count(*) FROM gcircle_tbl WHERE f1 && '<(500,500),500>'::circle;
 EXPLAIN (COSTS OFF)
 SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10;
 SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10;
 EXPLAIN (COSTS OFF)
-SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10;
 SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10;
 EXPLAIN (COSTS OFF)
 SELECT point(x,x), (SELECT f1 FROM gpolygon_tbl ORDER BY f1 <-> point(x,x) LIMIT 1) as c FROM generate_series(0,10,1) x;
@@ -147,7 +133,6 @@ CREATE UNIQUE INDEX unique_idx3 ON unique_tbl (i) NULLS DISTINCT;
 DELETE FROM unique_tbl WHERE t = 'seven';
 CREATE UNIQUE INDEX unique_idx4 ON unique_tbl (i) NULLS NOT DISTINCT;
 SELECT pg_get_indexdef('unique_idx3'::regclass);
-SELECT pg_get_indexdef('unique_idx4'::regclass);
 DROP TABLE unique_tbl;
 CREATE TABLE func_index_heap (f1 text, f2 text);
 CREATE UNIQUE INDEX func_index_index on func_index_heap (textcat(f1,f2));
@@ -312,9 +297,7 @@ CREATE INDEX testcomment_idx1 ON testcomment (i);
 COMMENT ON INDEX testcomment_idx1 IS 'test comment';
 SELECT obj_description('testcomment_idx1'::regclass, 'pg_class');
 REINDEX TABLE testcomment;
-SELECT obj_description('testcomment_idx1'::regclass, 'pg_class');
 REINDEX TABLE CONCURRENTLY testcomment;
-SELECT obj_description('testcomment_idx1'::regclass, 'pg_class');
 DROP TABLE testcomment;
 CREATE TABLE concur_clustered(i int);
 CREATE INDEX concur_clustered_i_idx ON concur_clustered(i);
@@ -360,8 +343,6 @@ CREATE INDEX concur_reindex_part_index_0_2 ON ONLY concur_reindex_part_0_2 (c1);
 ALTER INDEX concur_reindex_part_index_0 ATTACH PARTITION concur_reindex_part_index_0_2;
 SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
   ORDER BY relid, level;
-SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
-  ORDER BY relid, level;
 SELECT pg_describe_object(classid, objid, objsubid) as obj,
        pg_describe_object(refclassid,refobjid,refobjsubid) as objref,
        deptype
@@ -378,8 +359,6 @@ WHERE classid = 'pg_class'::regclass AND
   ORDER BY 1, 2;
 REINDEX INDEX CONCURRENTLY concur_reindex_part_index_0_1;
 REINDEX INDEX CONCURRENTLY concur_reindex_part_index_0_2;
-SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
-  ORDER BY relid, level;
 REINDEX TABLE CONCURRENTLY concur_reindex_part_0_1;
 REINDEX TABLE CONCURRENTLY concur_reindex_part_0_2;
 SELECT pg_describe_object(classid, objid, objsubid) as obj,
@@ -396,8 +375,6 @@ WHERE classid = 'pg_class'::regclass AND
             'concur_reindex_part_index_0_1'::regclass,
             'concur_reindex_part_index_0_2'::regclass)
   ORDER BY 1, 2;
-SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
-  ORDER BY relid, level;
 BEGIN;
 ROLLBACK;
 REINDEX INDEX concur_reindex_part_index;
@@ -429,17 +406,8 @@ CREATE UNIQUE INDEX concur_exprs_index_pred_2
   WHERE ('-H') >= (c2::TEXT) COLLATE "C";
 ALTER INDEX concur_exprs_index_expr ALTER COLUMN 1 SET STATISTICS 100;
 ANALYZE concur_exprs_tab;
-SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass);
-SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass);
-SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass);
 REINDEX TABLE CONCURRENTLY concur_exprs_tab;
-SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass);
-SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass);
-SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass);
 ALTER TABLE concur_exprs_tab ALTER c2 TYPE TEXT;
-SELECT pg_get_indexdef('concur_exprs_index_expr'::regclass);
-SELECT pg_get_indexdef('concur_exprs_index_pred'::regclass);
-SELECT pg_get_indexdef('concur_exprs_index_pred_2'::regclass);
 SELECT attrelid::regclass, attnum, attstattarget
   FROM pg_attribute WHERE attrelid IN (
     'concur_exprs_index_expr'::regclass,

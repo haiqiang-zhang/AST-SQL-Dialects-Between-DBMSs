@@ -100,8 +100,6 @@ CREATE   VIEW  mytempview AS SELECT * FROM tbl1 WHERE tbl1.a
 BETWEEN (SELECT d FROM tbl2 WHERE c = 1) AND (SELECT e FROM tbl3 WHERE f = 2)
 AND EXISTS (SELECT g FROM tbl4 LEFT JOIN tbl3 ON tbl4.h = tbl3.f)
 AND NOT EXISTS (SELECT g FROM tbl4 LEFT JOIN tmptbl ON tbl4.h = tmptbl.j);
-SELECT count(*) FROM pg_class where relname LIKE 'mytempview'
-And relnamespace IN (SELECT OID FROM pg_namespace WHERE nspname LIKE 'pg_temp%');
 CREATE VIEW mysecview1
        AS SELECT * FROM tbl1 WHERE a = 0;
 CREATE VIEW mysecview2 WITH (security_barrier=true)
@@ -187,9 +185,6 @@ create view view_of_joins_2b as select * from tbl1 join tbl1a using (a) as x;
 create view view_of_joins_2c as select * from (tbl1 join tbl1a using (a)) as y;
 create view view_of_joins_2d as select * from (tbl1 join tbl1a using (a) as x) as y;
 select pg_get_viewdef('view_of_joins_2a', true);
-select pg_get_viewdef('view_of_joins_2b', true);
-select pg_get_viewdef('view_of_joins_2c', true);
-select pg_get_viewdef('view_of_joins_2d', true);
 create table tt2 (a int, b int, c int);
 create table tt3 (ax int8, b int2, c numeric);
 create table tt4 (ay int, b int, q int);
@@ -198,51 +193,20 @@ create view v1a as select * from (tt2 natural join tt3) j;
 create view v2 as select * from tt2 join tt3 using (b,c) join tt4 using (b);
 create view v2a as select * from (tt2 join tt3 using (b,c) join tt4 using (b)) j;
 create view v3 as select * from tt2 join tt3 using (b,c) full join tt4 using (b);
-select pg_get_viewdef('v1', true);
-select pg_get_viewdef('v1a', true);
-select pg_get_viewdef('v2', true);
-select pg_get_viewdef('v2a', true);
-select pg_get_viewdef('v3', true);
 alter table tt2 add column d int;
 alter table tt2 add column e int;
-select pg_get_viewdef('v1', true);
-select pg_get_viewdef('v1a', true);
-select pg_get_viewdef('v2', true);
-select pg_get_viewdef('v2a', true);
-select pg_get_viewdef('v3', true);
 alter table tt3 rename c to d;
-select pg_get_viewdef('v1', true);
-select pg_get_viewdef('v1a', true);
-select pg_get_viewdef('v2', true);
-select pg_get_viewdef('v2a', true);
-select pg_get_viewdef('v3', true);
 alter table tt3 add column c int;
 alter table tt3 add column e int;
-select pg_get_viewdef('v1', true);
-select pg_get_viewdef('v1a', true);
-select pg_get_viewdef('v2', true);
-select pg_get_viewdef('v2a', true);
-select pg_get_viewdef('v3', true);
 alter table tt2 drop column d;
-select pg_get_viewdef('v1', true);
-select pg_get_viewdef('v1a', true);
-select pg_get_viewdef('v2', true);
-select pg_get_viewdef('v2a', true);
-select pg_get_viewdef('v3', true);
 create table tt5 (a int, b int);
 create table tt6 (c int, d int);
 create view vv1 as select * from (tt5 cross join tt6) j(aa,bb,cc,dd);
-select pg_get_viewdef('vv1', true);
 alter table tt5 add column c int;
-select pg_get_viewdef('vv1', true);
 alter table tt5 add column cc int;
-select pg_get_viewdef('vv1', true);
 alter table tt5 drop column c;
-select pg_get_viewdef('vv1', true);
 create view v4 as select * from v1;
 alter view v1 rename column a to x;
-select pg_get_viewdef('v1', true);
-select pg_get_viewdef('v4', true);
 create table tt7 (x int, xx int, y int);
 alter table tt7 drop column xx;
 create table tt8 (x int, z int);
@@ -250,28 +214,22 @@ create view vv2 as
 select * from (values(1,2,3,4,5)) v(a,b,c,d,e)
 union all
 select * from tt7 full join tt8 using (x), tt8 tt8x;
-select pg_get_viewdef('vv2', true);
 create view vv3 as
 select * from (values(1,2,3,4,5,6)) v(a,b,c,x,e,f)
 union all
 select * from
   tt7 full join tt8 using (x),
   tt7 tt7x full join tt8 tt8x using (x);
-select pg_get_viewdef('vv3', true);
 create view vv4 as
 select * from (values(1,2,3,4,5,6,7)) v(a,b,c,x,e,f,g)
 union all
 select * from
   tt7 full join tt8 using (x),
   tt7 tt7x full join tt8 tt8x using (x) full join tt8 tt8y using (x);
-select pg_get_viewdef('vv4', true);
 alter table tt7 add column zz int;
 alter table tt7 add column z int;
 alter table tt7 drop column zz;
 alter table tt8 add column z2 int;
-select pg_get_viewdef('vv2', true);
-select pg_get_viewdef('vv3', true);
-select pg_get_viewdef('vv4', true);
 create table tt7a (x date, xx int, y int);
 alter table tt7a drop column xx;
 create table tt8a (x timestamptz, z int);
@@ -279,21 +237,16 @@ create view vv2a as
 select * from (values(now(),2,3,now(),5)) v(a,b,c,d,e)
 union all
 select * from tt7a left join tt8a using (x), tt8a tt8ax;
-select pg_get_viewdef('vv2a', true);
 create table tt9 (x int, xx int, y int);
 create table tt10 (x int, z int);
 create view vv5 as select x,y,z from tt9 join tt10 using(x);
-select pg_get_viewdef('vv5', true);
 alter table tt9 drop column xx;
-select pg_get_viewdef('vv5', true);
 create table tt11 (x int, y int);
 create table tt12 (x int, z int);
 create table tt13 (z int, q int);
 create view vv6 as select x,y,z,q from
   (tt11 join tt12 using(x)) join tt13 using(z);
-select pg_get_viewdef('vv6', true);
 alter table tt11 add column z int;
-select pg_get_viewdef('vv6', true);
 create table tt14t (f1 text, f2 text, f3 text, f4 text);
 insert into tt14t values('foo', 'bar', 'baz', '42');
 alter table tt14t drop column f2;
@@ -310,7 +263,6 @@ end;
 $$
 language plpgsql;
 create view tt14v as select t.* from tt14f() t;
-select pg_get_viewdef('tt14v', true);
 select * from tt14v;
 begin;
 rollback;
@@ -318,10 +270,8 @@ begin;
 rollback;
 drop view tt14v;
 create view tt14v as select t.f1, t.f4 from tt14f() t;
-select pg_get_viewdef('tt14v', true);
 select * from tt14v;
 alter table tt14t drop column f3;
-select pg_get_viewdef('tt14v', true);
 explain (verbose, costs off) select * from tt14v;
 select * from tt14v;
 select 'foo'::text = any(array['abc','def','foo']::text[]);
@@ -329,7 +279,6 @@ select 'foo'::text = any((select array['abc','def','foo']::text[])::text[]);
 create view tt19v as
 select 'foo'::text = any(array['abc','def','foo']::text[]) c1,
        'foo'::text = any((select array['abc','def','foo']::text[])::text[]) c2;
-select pg_get_viewdef('tt19v', true);
 create view tt20v as
 select * from
   coalesce(1,2) as c,
@@ -338,7 +287,6 @@ select * from
   localtimestamp(3) as t,
   cast(1+2 as int4) as i4,
   cast(1+2 as int8) as i8;
-select pg_get_viewdef('tt20v', true);
 create view tt201v as
 select
   ('2022-12-01'::date + '1 day'::interval) at time zone 'UTC' as atz,
@@ -393,23 +341,18 @@ select
   (select * from SESSION_USER) as seu2,
   SYSTEM_USER as su,
   (select * from SYSTEM_USER) as su2;
-select pg_get_viewdef('tt201v', true);
 create view tt21v as
 select * from tt5 natural inner join tt6;
-select pg_get_viewdef('tt21v', true);
 create view tt22v as
 select * from tt5 natural left join tt6;
-select pg_get_viewdef('tt22v', true);
 create view tt24v as
 with cte as materialized (select r from (values(1,2),(3,4)) r)
 select (r).column2 as col_a, (rr).column2 as col_b from
   cte join (select rr from (values(1,7),(3,8)) rr limit 2) ss
   on (r).column1 = (rr).column1;
-select pg_get_viewdef('tt24v', true);
 create view tt25v as
 with cte as materialized (select pg_get_keywords() k)
 select (k).word from cte;
-select pg_get_viewdef('tt25v', true);
 explain (verbose, costs off)
 select * from tt24v;
 explain (verbose, costs off)
@@ -427,6 +370,5 @@ select x + y + z as c1,
        (x,y) <> ALL (values(1,2),(3,4)) as c10,
        (x,y) <= ANY (values(1,2),(3,4)) as c11
 from (values(1,2,3)) v(x,y,z);
-select pg_get_viewdef('tt26v', true);
 DROP SCHEMA temp_view_test CASCADE;
 DROP SCHEMA testviewschm2 CASCADE;

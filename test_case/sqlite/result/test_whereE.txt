@@ -1,0 +1,25 @@
+--Query--
+EXPLAIN QUERY PLAN SELECT x FROM t1, t2 WHERE a=z AND c=x
+--Result--
+[(3, 0, 0, 'SCAN t1'), (5, 0, 0, 'SEARCH t2 USING COVERING INDEX t2zx (z=? AND x=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT x FROM t2, t1 WHERE a=z AND c=x
+--Result--
+[(3, 0, 0, 'SCAN t1'), (5, 0, 0, 'SEARCH t2 USING COVERING INDEX t2zx (z=? AND x=?)')]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT x FROM t1, t2 WHERE a=z AND c=x
+--Result--
+[(3, 0, 0, 'SCAN t1'), (5, 0, 0, 'SEARCH t2 USING COVERING INDEX t2zx (z=? AND x=?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN SELECT x FROM t2, t1 WHERE a=z AND c=x
+--Result--
+[(3, 0, 0, 'SCAN t1'), (5, 0, 0, 'SEARCH t2 USING COVERING INDEX t2zx (z=? AND x=?)')]
++--------------------+

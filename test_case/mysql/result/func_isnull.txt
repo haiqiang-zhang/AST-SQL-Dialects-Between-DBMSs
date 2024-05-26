@@ -1,0 +1,65 @@
+--Query--
+select * from t1 where isnull(to_days(mydate))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ISNULL((SELECT GET_LOCK('Bug#53933', 0) FROM t1 GROUP BY f1)) AS f2 FROM t1 GROUP BY f1 HAVING f2 = f2
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT RELEASE_LOCK('Bug#53933')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT t1.id  FROM t1  WHERE (id  is not null and id is null )
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3 left join (t2 outr2 join t2 outr join t1) on (outr.pk = t3.pk) and (t1.col_int_key = t3.pk) and isnull(t1.col_date_key) and (outr2.pk <> t3.pk)
+--Result--
+[(3, None, None, None, None, None), (3, None, None, None, None, None)]
++--------------------+
+--Query--
+select * from t3, t1 where t1.col_date_key is null
+--Result--
+[(3, 14, 4, None), (3, 17, 3, None)]
++--------------------+
+--Query--
+select * from t3 join t1 on t1.col_date_key is null
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3 left join t1 on t1.col_date_key is null
+--Result--
+[(3, None, None, None)]
++--------------------+
+--Query--
+select * from t3 left join t1 on t1.col_date_key is null where t1.col_date_key is null
+--Result--
+[(3, None, None, None)]
++--------------------+
+--Query--
+select * from t3, t1 where t1.col_date_key is not null
+--Result--
+[(3, 14, 4, None), (3, 15, 2, datetime.date(2003, 1, 13)), (3, 16, 5, datetime.date(2006, 7, 7)), (3, 17, 3, None)]
++--------------------+
+--Query--
+select * from t3, t1 where not (t1.col_date_key is null)
+--Result--
+[(3, 14, 4, None), (3, 15, 2, datetime.date(2003, 1, 13)), (3, 16, 5, datetime.date(2006, 7, 7)), (3, 17, 3, None)]
++--------------------+
+--Query--
+select * from t3, t1 where (t1.col_date_key is null) is true
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.x IS NULL = t2.x AS col FROM t AS t1, t AS t2 ORDER BY col
+--Result--
+[(0,), (0,), (1,), (1,)]
++--------------------+

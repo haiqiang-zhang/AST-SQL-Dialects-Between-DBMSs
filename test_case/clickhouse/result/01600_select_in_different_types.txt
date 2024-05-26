@@ -1,0 +1,75 @@
+--Query--
+SELECT 1 IN (SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT -1 IN (SELECT 1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (-1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (SELECT -1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (SELECT 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT value FROM select_in_test WHERE value IN (SELECT 2)
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 1 IN (1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '1' IN (SELECT 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN (SELECT 1) SETTINGS transform_null_in = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 IN (SELECT 'a') SETTINGS transform_null_in = 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1 IN (SELECT -1) SETTINGS transform_null_in = 1
+--Result--
+[(0,)]
++--------------------+

@@ -1,0 +1,735 @@
+--Query--
+select 'const args'
+--Result--
+[('const args',)]
++--------------------+
+--Query--
+select 'concat'
+--Result--
+[('concat',)]
++--------------------+
+--Query--
+select arrayConcat(emptyArrayUInt8())
+--Result--
+[([],)]
++--------------------+
+--Query--
+select 'slice'
+--Result--
+[('slice',)]
++--------------------+
+--Query--
+select arraySlice(Null, 1, 2)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select arraySlice([], materialize(NULL), NULL), 1 from numbers(2)
+--Result--
+[([], 1), ([], 1)]
++--------------------+
+--Query--
+select 'push back'
+--Result--
+[('push back',)]
++--------------------+
+--Query--
+select arrayPushBack(Null, 1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 'push front'
+--Result--
+[('push front',)]
++--------------------+
+--Query--
+select arrayPushFront(Null, 1)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 'pop back'
+--Result--
+[('pop back',)]
++--------------------+
+--Query--
+select arrayPopBack(Null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select 'pop front'
+--Result--
+[('pop front',)]
++--------------------+
+--Query--
+select arrayPopFront(Null)
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'table'
+--Result--
+[('table',)]
++--------------------+
+--Query--
+select * from array_functions
+--Result--
+[([], [], 1, None, 1, None), ([], [1], 1, None, 1, None), ([1, 2, 3, 4, 5], [6, 7], 2, None, 1, None), ([1, 2, 3, 4, 5, 6, 7], [8], 2, 2, 3, 3), ([1, 2, 3, 4, 5, 6, 7], [], 2, None, -3, -3), ([1, 2, 3, 4, 5, 6, 7], [], 2, None, -3, None), ([1, 2, 3, 4, 5, 6, 7], [], -5, -5, 4, 4), ([1, 2, 3, 4, 5, 6, 7], [], -5, -5, -3, -3)]
++--------------------+
+--Query--
+select 'concat arr1, arr2'
+--Result--
+[('concat arr1, arr2',)]
++--------------------+
+--Query--
+select 'concat arr1, arr2, arr1'
+--Result--
+[('concat arr1, arr2, arr1',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, l)'
+--Result--
+[('arraySlice(arr1, o, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, nl)'
+--Result--
+[('arraySlice(arr1, no, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, l)'
+--Result--
+[('arraySlice(arr1, 2, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, 2)'
+--Result--
+[('arraySlice(arr1, o, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, nl)'
+--Result--
+[('arraySlice(arr1, 2, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, 2)'
+--Result--
+[('arraySlice(arr1, no, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, l)'
+--Result--
+[('arraySlice(arr1, -4, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, -2)'
+--Result--
+[('arraySlice(arr1, o, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, nl)'
+--Result--
+[('arraySlice(arr1, -4, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, -2)'
+--Result--
+[('arraySlice(arr1, no, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, 4)'
+--Result--
+[('arraySlice(arr1, 2, 4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, -4)'
+--Result--
+[('arraySlice(arr1, 2, -4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, 2)'
+--Result--
+[('arraySlice(arr1, -4, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, -1)'
+--Result--
+[('arraySlice(arr1, -4, -1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 1)'
+--Result--
+[('arrayPushFront(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 0.1)'
+--Result--
+[('arrayPushFront(arr1, 0.1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, l)'
+--Result--
+[('arrayPushFront(arr1, l)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, nl)'
+--Result--
+[('arrayPushFront(arr1, nl)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([1, 2, 3], l)'
+--Result--
+[('arrayPushFront([1, 2, 3], l)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([1, 2, 3], nl)' from array_functions
+--Result--
+[('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 1)'
+--Result--
+[('arrayPushBack(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 0.1)'
+--Result--
+[('arrayPushBack(arr1, 0.1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, l)'
+--Result--
+[('arrayPushBack(arr1, l)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, nl)'
+--Result--
+[('arrayPushBack(arr1, nl)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([1, 2, 3], l)'
+--Result--
+[('arrayPushBack([1, 2, 3], l)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([1, 2, 3], nl)'
+--Result--
+[('arrayPushBack([1, 2, 3], nl)',)]
++--------------------+
+--Query--
+select 'arrayPopFront(arr1)'
+--Result--
+[('arrayPopFront(arr1)',)]
++--------------------+
+--Query--
+select 'arrayPopBack(arr1)'
+--Result--
+[('arrayPopBack(arr1)',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'table'
+--Result--
+[('table',)]
++--------------------+
+--Query--
+select * from array_functions
+--Result--
+[([], [], 1, None, 1, None), ([], [1.0, None], 1, None, 1, None), ([1, 2, 3, 4, 5], [6.0, None], 2, None, 1, None), ([1, None, 3, 4, None, 6, 7], [8.0], 2, 2, 3, 3), ([1, 2, 3, None, 5, 6, 7], [None, 1.0], 2, None, -3, -3), ([1, 2, 3, 4, 5, None, 7], [1.0, None], 2, None, -3, None), ([1, 2, 3, 4, 5, 6, 7], [1.0, 2.0], -5, -5, 4, 4), ([1, None, 3, None, 5, 6, 7], [], -5, -5, -3, -3)]
++--------------------+
+--Query--
+select 'concat arr1, arr2'
+--Result--
+[('concat arr1, arr2',)]
++--------------------+
+--Query--
+select 'concat arr1, arr2, arr1'
+--Result--
+[('concat arr1, arr2, arr1',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, l)'
+--Result--
+[('arraySlice(arr1, o, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, nl)'
+--Result--
+[('arraySlice(arr1, no, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, l)'
+--Result--
+[('arraySlice(arr1, 2, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, 2)'
+--Result--
+[('arraySlice(arr1, o, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, nl)'
+--Result--
+[('arraySlice(arr1, 2, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, 2)'
+--Result--
+[('arraySlice(arr1, no, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, l)'
+--Result--
+[('arraySlice(arr1, -4, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, -2)'
+--Result--
+[('arraySlice(arr1, o, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, nl)'
+--Result--
+[('arraySlice(arr1, -4, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, -2)'
+--Result--
+[('arraySlice(arr1, no, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, 4)'
+--Result--
+[('arraySlice(arr1, 2, 4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, -4)'
+--Result--
+[('arraySlice(arr1, 2, -4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, 2)'
+--Result--
+[('arraySlice(arr1, -4, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, -1)'
+--Result--
+[('arraySlice(arr1, -4, -1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 1)'
+--Result--
+[('arrayPushFront(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 0.1)'
+--Result--
+[('arrayPushFront(arr1, 0.1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, l)'
+--Result--
+[('arrayPushFront(arr1, l)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, nl)'
+--Result--
+[('arrayPushFront(arr1, nl)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([1, 2, 3], l)'
+--Result--
+[('arrayPushFront([1, 2, 3], l)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([1, 2, 3], nl)' from array_functions
+--Result--
+[('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 1)'
+--Result--
+[('arrayPushBack(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 0.1)'
+--Result--
+[('arrayPushBack(arr1, 0.1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, l)'
+--Result--
+[('arrayPushBack(arr1, l)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, nl)'
+--Result--
+[('arrayPushBack(arr1, nl)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([1, 2, 3], l)'
+--Result--
+[('arrayPushBack([1, 2, 3], l)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([1, 2, 3], nl)'
+--Result--
+[('arrayPushBack([1, 2, 3], nl)',)]
++--------------------+
+--Query--
+select 'arrayPopFront(arr1)'
+--Result--
+[('arrayPopFront(arr1)',)]
++--------------------+
+--Query--
+select 'arrayPopBack(arr1)'
+--Result--
+[('arrayPopBack(arr1)',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'table'
+--Result--
+[('table',)]
++--------------------+
+--Query--
+select * from array_functions
+--Result--
+[([], [], 1, None, 1, None), ([], [1, 2], 1, None, 1, None), ([1, 2, 3, 4, 5], [6, 7], 2, None, 1, None), ([1, None, 3, 4, None, 6, 7], [8], 2, 2, 3, 3), ([1, 2, 3, None, 5, 6, 7], [0, 1], 2, None, -3, -3), ([1, 2, 3, 4, 5, None, 7], [1, 2], 2, None, -3, None), ([1, 2, 3, 4, 5, 6, 7], [1, 2], -5, -5, 4, 4), ([1, None, 3, None, 5, 6, 7], [], -5, -5, -3, -3)]
++--------------------+
+--Query--
+select 'concat arr1, arr2'
+--Result--
+[('concat arr1, arr2',)]
++--------------------+
+--Query--
+select 'concat arr1, arr2, arr1'
+--Result--
+[('concat arr1, arr2, arr1',)]
++--------------------+
+--Query--
+select * from array_functions
+--Result--
+[([], [], 1, None, 1, None), ([], [1, 2], 1, None, 1, None), ([1, 2, 3, 4, 5], [6, 7], 2, None, 1, None), ([1, None, 3, 4, None, 6, 7], [8], 2, 2, 3, 3), ([1, 2, 3, None, 5, 6, 7], [0, 1], 2, None, -3, -3), ([1, 2, 3, 4, 5, None, 7], [1, 2], 2, None, -3, None), ([1, 2, 3, 4, 5, 6, 7], [1, 2], -5, -5, 4, 4), ([1, None, 3, None, 5, 6, 7], [], -5, -5, -3, -3)]
++--------------------+
+--Query--
+select 'concat arr1, arr2'
+--Result--
+[('concat arr1, arr2',)]
++--------------------+
+--Query--
+select 'concat arr1, arr2, arr1'
+--Result--
+[('concat arr1, arr2, arr1',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, l)'
+--Result--
+[('arraySlice(arr1, o, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, nl)'
+--Result--
+[('arraySlice(arr1, no, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, l)'
+--Result--
+[('arraySlice(arr1, 2, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, 2)'
+--Result--
+[('arraySlice(arr1, o, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, nl)'
+--Result--
+[('arraySlice(arr1, 2, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, 2)'
+--Result--
+[('arraySlice(arr1, no, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, l)'
+--Result--
+[('arraySlice(arr1, -4, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, -2)'
+--Result--
+[('arraySlice(arr1, o, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, nl)'
+--Result--
+[('arraySlice(arr1, -4, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, -2)'
+--Result--
+[('arraySlice(arr1, no, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, 4)'
+--Result--
+[('arraySlice(arr1, 2, 4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, -4)'
+--Result--
+[('arraySlice(arr1, 2, -4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, 2)'
+--Result--
+[('arraySlice(arr1, -4, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, -1)'
+--Result--
+[('arraySlice(arr1, -4, -1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 1)'
+--Result--
+[('arrayPushFront(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 0.1)'
+--Result--
+[('arrayPushFront(arr1, 0.1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, l)'
+--Result--
+[('arrayPushFront(arr1, l)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, nl)'
+--Result--
+[('arrayPushFront(arr1, nl)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([1, 2, 3], l)'
+--Result--
+[('arrayPushFront([1, 2, 3], l)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([1, 2, 3], nl)' from array_functions
+--Result--
+[('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',), ('arrayPushFront([1, 2, 3], nl)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 1)'
+--Result--
+[('arrayPushBack(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 0.1)'
+--Result--
+[('arrayPushBack(arr1, 0.1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, l)'
+--Result--
+[('arrayPushBack(arr1, l)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, nl)'
+--Result--
+[('arrayPushBack(arr1, nl)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([1, 2, 3], l)'
+--Result--
+[('arrayPushBack([1, 2, 3], l)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([1, 2, 3], nl)'
+--Result--
+[('arrayPushBack([1, 2, 3], nl)',)]
++--------------------+
+--Query--
+select 'arrayPopFront(arr1)'
+--Result--
+[('arrayPopFront(arr1)',)]
++--------------------+
+--Query--
+select 'arrayPopBack(arr1)'
+--Result--
+[('arrayPopBack(arr1)',)]
++--------------------+
+--Query--
+select ''
+--Result--
+[('',)]
++--------------------+
+--Query--
+select 'table'
+--Result--
+[('table',)]
++--------------------+
+--Query--
+select * from array_functions
+--Result--
+[([], [], '', None, 1, None, 1, None), ([], ['1', '2'], 'a', 'b', 1, None, 1, None), (['1', '2', '3', '4', '5'], ['6', '7'], 'a', None, 2, None, 1, None), (['1', None, '3', '4', None, '6', '7'], ['8'], 'a', 'b', 2, 2, 3, 3), (['1', '2', '3', None, '5', '6', '7'], ['0', '1'], 'a', None, 2, None, -3, -3), (['1', '2', '3', '4', '5', None, '7'], ['1', '2'], 'a', 'b', 2, None, -3, None), (['1', '2', '3', '4', '5', '6', '7'], ['1', '2'], 'a', None, -5, -5, 4, 4), (['1', None, '3', None, '5', '6', '7'], [], 'a', 'b', -5, -5, -3, -3)]
++--------------------+
+--Query--
+select 'concat arr1, arr2'
+--Result--
+[('concat arr1, arr2',)]
++--------------------+
+--Query--
+select 'concat arr1, arr2, arr1'
+--Result--
+[('concat arr1, arr2, arr1',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, l)'
+--Result--
+[('arraySlice(arr1, o, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, nl)'
+--Result--
+[('arraySlice(arr1, no, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, l)'
+--Result--
+[('arraySlice(arr1, 2, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, 2)'
+--Result--
+[('arraySlice(arr1, o, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, nl)'
+--Result--
+[('arraySlice(arr1, 2, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, 2)'
+--Result--
+[('arraySlice(arr1, no, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, l)'
+--Result--
+[('arraySlice(arr1, -4, l)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, o, -2)'
+--Result--
+[('arraySlice(arr1, o, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, nl)'
+--Result--
+[('arraySlice(arr1, -4, nl)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, no, -2)'
+--Result--
+[('arraySlice(arr1, no, -2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, 4)'
+--Result--
+[('arraySlice(arr1, 2, 4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, 2, -4)'
+--Result--
+[('arraySlice(arr1, 2, -4)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, 2)'
+--Result--
+[('arraySlice(arr1, -4, 2)',)]
++--------------------+
+--Query--
+select 'arraySlice(arr1, -4, -1)'
+--Result--
+[('arraySlice(arr1, -4, -1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, 1)'
+--Result--
+[('arrayPushFront(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, val)'
+--Result--
+[('arrayPushFront(arr1, val)',)]
++--------------------+
+--Query--
+select 'arrayPushFront(arr1, val2)'
+--Result--
+[('arrayPushFront(arr1, val2)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([a, b, c], val)'
+--Result--
+[('arrayPushFront([a, b, c], val)',)]
++--------------------+
+--Query--
+select 'arrayPushFront([a, b, c], val2)'
+--Result--
+[('arrayPushFront([a, b, c], val2)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, 1)'
+--Result--
+[('arrayPushBack(arr1, 1)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, val)'
+--Result--
+[('arrayPushBack(arr1, val)',)]
++--------------------+
+--Query--
+select 'arrayPushBack(arr1, val2)'
+--Result--
+[('arrayPushBack(arr1, val2)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([a, b, c], val)'
+--Result--
+[('arrayPushBack([a, b, c], val)',)]
++--------------------+
+--Query--
+select 'arrayPushBack([a, b, c], val2)'
+--Result--
+[('arrayPushBack([a, b, c], val2)',)]
++--------------------+
+--Query--
+select 'arrayPopFront(arr1)'
+--Result--
+[('arrayPopFront(arr1)',)]
++--------------------+
+--Query--
+select 'arrayPopBack(arr1)'
+--Result--
+[('arrayPopBack(arr1)',)]
++--------------------+

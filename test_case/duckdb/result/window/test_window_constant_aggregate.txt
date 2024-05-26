@@ -1,0 +1,20 @@
+--Query--
+SELECT part, id, sum(val) OVER(PARTITION BY part ORDER BY id), lead(val) OVER(PARTITION BY part ORDER BY id) FROM (SELECT range AS id, range % 5 AS part, range AS val FROM range(13)) t ORDER BY ALL
+--Result--
+[(0, 0, 0, 5), (0, 5, 5, 10), (0, 10, 15, None), (1, 1, 1, 6), (1, 6, 7, 11), (1, 11, 18, None), (2, 2, 2, 7), (2, 7, 9, 12), (2, 12, 21, None), (3, 3, 3, 8), (3, 8, 11, None), (4, 4, 4, 9), (4, 9, 13, None)]
++--------------------+
+--Query--
+SELECT part, id, list_sort(list(val) OVER(PARTITION BY part)) FROM (SELECT range AS id, range % 5 AS part, range AS val FROM range(13)) t ORDER BY ALL
+--Result--
+[(0, 0, [0, 5, 10]), (0, 5, [0, 5, 10]), (0, 10, [0, 5, 10]), (1, 1, [1, 6, 11]), (1, 6, [1, 6, 11]), (1, 11, [1, 6, 11]), (2, 2, [2, 7, 12]), (2, 7, [2, 7, 12]), (2, 12, [2, 7, 12]), (3, 3, [3, 8]), (3, 8, [3, 8]), (4, 4, [4, 9]), (4, 9, [4, 9])]
++--------------------+
+--Query--
+SELECT part, min(const) AS lo, max(const) AS hi FROM ( 	SELECT part, sum(val) OVER(PARTITION BY part) as const 	FROM ( 		(SELECT 1 AS part, range AS val FROM range(73)) 	UNION ALL 		(SELECT 2 AS part, range AS val FROM range(75)) 	UNION ALL 		(SELECT 3 AS part, range AS val FROM range(77)) 	UNION ALL 		(SELECT 4 AS part, range AS val FROM range(79)) 	UNION ALL 		(SELECT 5 AS part, range AS val FROM range(81)) 	UNION ALL 		(SELECT 6 AS part, range AS val FROM range(83)) 	) u ) t GROUP BY ALL ORDER BY ALL
+--Result--
+[(1, 2628, 2628), (2, 2775, 2775), (3, 2926, 2926), (4, 3081, 3081), (5, 3240, 3240), (6, 3403, 3403)]
++--------------------+
+--Query--
+SELECT *, max(Ct) FILTER (WHERE Depth=1) OVER (PARTITION BY Season) as value_depth1  from issue7353 order by all
+--Result--
+[('Summer', 'Bronze', 'F', 3174, 3, 222552), ('Summer', 'Bronze', 'M', 8235, 3, 222552), ('Summer', 'Bronze', None, 11409, 2, 222552), ('Summer', 'Gold', 'F', 3140, 3, 222552), ('Summer', 'Gold', 'M', 8319, 3, 222552), ('Summer', 'Gold', None, 11459, 2, 222552), ('Summer', 'NA', 'F', 50001, 3, 222552), ('Summer', 'NA', 'M', 138463, 3, 222552), ('Summer', 'NA', None, 188464, 2, 222552), ('Summer', 'Silver', 'F', 3128, 3, 222552), ('Summer', 'Silver', 'M', 8092, 3, 222552), ('Summer', 'Silver', None, 11220, 2, 222552), ('Summer', None, None, 222552, 1, 222552), ('Winter', 'Bronze', 'F', 597, 3, 48564), ('Winter', 'Bronze', 'M', 1289, 3, 48564), ('Winter', 'Bronze', None, 1886, 2, 48564), ('Winter', 'Gold', 'F', 607, 3, 48564), ('Winter', 'Gold', 'M', 1306, 3, 48564), ('Winter', 'Gold', None, 1913, 2, 48564), ('Winter', 'NA', 'F', 13268, 3, 48564), ('Winter', 'NA', 'M', 29601, 3, 48564), ('Winter', 'NA', None, 42869, 2, 48564), ('Winter', 'Silver', 'F', 607, 3, 48564), ('Winter', 'Silver', 'M', 1289, 3, 48564), ('Winter', 'Silver', None, 1896, 2, 48564), ('Winter', None, None, 48564, 1, 48564), (None, None, None, 271116, 0, None)]
++--------------------+

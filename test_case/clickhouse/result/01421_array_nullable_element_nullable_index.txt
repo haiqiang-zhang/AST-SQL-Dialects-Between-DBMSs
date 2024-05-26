@@ -1,0 +1,20 @@
+--Query--
+SELECT [toNullable(1)] AS x, x[toNullable(1)] AS y
+--Result--
+[([1], 1)]
++--------------------+
+--Query--
+SELECT materialize([toNullable(1)]) AS x, x[toNullable(1)] AS y
+--Result--
+[([1], 1)]
++--------------------+
+--Query--
+SELECT [toNullable(1)] AS x, x[materialize(toNullable(1))] AS y
+--Result--
+[([1], 1)]
++--------------------+
+--Query--
+SELECT materialize([toNullable(1)]) AS x, x[materialize(toNullable(1))] AS y
+--Result--
+[([1], 1)]
++--------------------+

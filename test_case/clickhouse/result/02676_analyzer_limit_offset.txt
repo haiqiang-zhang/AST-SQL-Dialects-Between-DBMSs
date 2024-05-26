@@ -1,0 +1,75 @@
+--Query--
+OPTIMIZE TABLE test FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test
+--Result--
+[(0,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM test OFFSET 20
+--Result--
+[(15,), (15,), (16,), (16,), (17,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT i FROM test LIMIT 10 OFFSET 50) TMP
+--Result--
+[(30,), (30,), (31,), (31,), (32,)]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 4 OFFSET 192
+--Result--
+[(102,), (103,), (104,), (105,)]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 10 OFFSET 195
+--Result--
+[(105,), (106,), (107,), (108,), (109,)]
++--------------------+
+--Query--
+SELECT * FROM test
+--Result--
+[(105,), (106,), (107,), (108,), (109,)]
++--------------------+
+--Query--
+SELECT * FROM test OFFSET 20
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 100
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 20 OFFSET 100
+--Result--
+[(60,), (60,), (61,), (61,), (62,), (62,), (63,), (63,), (64,), (64,)]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 11 OFFSET 100
+--Result--
+[(60,)]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 50 OFFSET 50
+--Result--
+[(35,), (35,), (36,), (36,), (37,), (37,), (38,), (38,), (39,), (39,)]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 50 OFFSET 190
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 50 OFFSET 185
+--Result--
+[(105,), (106,), (107,), (108,), (109,)]
++--------------------+
+--Query--
+SELECT * FROM test LIMIT 18 OFFSET 5
+--Result--
+[(12,), (13,), (13,), (14,), (14,), (15,), (15,), (16,)]
++--------------------+

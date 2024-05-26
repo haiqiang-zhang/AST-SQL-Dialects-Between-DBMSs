@@ -249,29 +249,9 @@ EXPLAIN (COSTS OFF) EXECUTE p1(2)
 [('Seq Scan on t1',), ('  Filter: (a <= 2)',)]
 +--------------------+
 --Query--
-EXECUTE p1(2)
---Result--
-[]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) EXECUTE p1(2)
---Result--
-[('Seq Scan on t1',), ('  Filter: (a <= 2)',)]
-+--------------------+
---Query--
 PREPARE p2(int) AS SELECT * FROM t1 WHERE a = $1
 --Result--
 []
-+--------------------+
---Query--
-EXECUTE p2(2)
---Result--
-[]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) EXECUTE p2(2)
---Result--
-[('Seq Scan on t1',), ('  Filter: (a = 2)',)]
 +--------------------+
 --Query--
 EXECUTE p2(2)
@@ -607,11 +587,6 @@ SELECT row_security_active('current_check')
 SELECT attname, most_common_vals FROM pg_stats   WHERE tablename = 'current_check'   ORDER BY 1
 --Result--
 [('currentid', None), ('payload', None), ('rlsuser', '{regress_rls_bob}')]
-+--------------------+
---Query--
-SELECT row_security_active('current_check')
---Result--
-[(False,)]
 +--------------------+
 --Query--
 SELECT attname, most_common_vals FROM pg_stats   WHERE tablename = 'current_check'   ORDER BY 1

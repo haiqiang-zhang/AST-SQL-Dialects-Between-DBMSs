@@ -1,0 +1,65 @@
+--Query--
+SHOW CREATE test_sparse_dictionary_load_factor
+--Result--
+[('CREATE DICTIONARY test.test_sparse_dictionary_load_factor\n(\n    `key` UInt64,\n    `value` UInt16\n)\nPRIMARY KEY key\nSOURCE(CLICKHOUSE(TABLE test_table))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(SPARSE_HASHED(MAX_LOAD_FACTOR 0.9))',)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_sparse_dictionary_load_factor
+--Result--
+[]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() AND name = 'test_sparse_dictionary_load_factor'
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SELECT count() FROM test_table WHERE dictGet('test_sparse_dictionary_load_factor', 'value', key) != value
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SHOW CREATE test_dictionary_load_factor
+--Result--
+[('CREATE DICTIONARY test.test_dictionary_load_factor\n(\n    `key` UInt64,\n    `value` UInt16\n)\nPRIMARY KEY key\nSOURCE(CLICKHOUSE(TABLE test_table))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(HASHED(MAX_LOAD_FACTOR 0.9))',)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_dictionary_load_factor
+--Result--
+[]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() AND name = 'test_dictionary_load_factor'
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SHOW CREATE test_dictionary_load_factor_nullable
+--Result--
+[('CREATE DICTIONARY test.test_dictionary_load_factor_nullable\n(\n    `key` UInt64,\n    `value` Nullable(UInt16)\n)\nPRIMARY KEY key\nSOURCE(CLICKHOUSE(TABLE test_table_nullable))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(HASHED(MAX_LOAD_FACTOR 0.9))',)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_dictionary_load_factor_nullable
+--Result--
+[]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() AND name = 'test_dictionary_load_factor_nullable'
+--Result--
+[(100000,)]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY test_complex_dictionary_load_factor
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE test_complex_dictionary_load_factor
+--Result--
+[('CREATE DICTIONARY test.test_complex_dictionary_load_factor\n(\n    `key_1` UInt64,\n    `key_2` UInt64,\n    `value` UInt16\n)\nPRIMARY KEY key_1, key_2\nSOURCE(CLICKHOUSE(TABLE test_table_complex))\nLIFETIME(MIN 0 MAX 0)\nLAYOUT(COMPLEX_KEY_HASHED(MAX_LOAD_FACTOR 0.9))',)]
++--------------------+
+--Query--
+SELECT element_count FROM system.dictionaries WHERE database = currentDatabase() and name = 'test_complex_dictionary_load_factor'
+--Result--
+[(100000,)]
++--------------------+

@@ -1,0 +1,15 @@
+--Query--
+optimize table test final
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count() FROM test PREWHERE hasToken(h['user-agent'], 'bulk')  WHERE hasToken(h['user-agent'], 'tests') and t = 'xxx'
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT count() FROM test WHERE hasToken(h['user-agent'], 'bulk') and hasToken(h['user-agent'], 'tests') and t = 'xxx'
+--Result--
+[(2,)]
++--------------------+

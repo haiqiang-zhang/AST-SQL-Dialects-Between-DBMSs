@@ -1,0 +1,75 @@
+--Query--
+SELECT 'Rows in parts', SUM(rows) FROM system.parts WHERE database = currentDatabase() AND table = 'lwd_test' AND active
+--Result--
+[('Rows in parts', 1000000)]
++--------------------+
+--Query--
+SELECT 'Count', count() FROM lwd_test
+--Result--
+[('Count', 1000000)]
++--------------------+
+--Query--
+SELECT 'First row', id, length(value) FROM lwd_test ORDER BY id LIMIT 1
+--Result--
+[('First row', 0, 10)]
++--------------------+
+--Query--
+SELECT 'Delete 100K rows using lightweight DELETE'
+--Result--
+[('Delete 100K rows using lightweight DELETE',)]
++--------------------+
+--Query--
+SELECT 'Force merge to cleanup deleted rows'
+--Result--
+[('Force merge to cleanup deleted rows',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE lwd_test FINAL SETTINGS mutations_sync = 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Delete 100K more rows using lightweight DELETE'
+--Result--
+[('Delete 100K more rows using lightweight DELETE',)]
++--------------------+
+--Query--
+SELECT 'Do UPDATE mutation'
+--Result--
+[('Do UPDATE mutation',)]
++--------------------+
+--Query--
+SELECT 'Force merge to cleanup deleted rows'
+--Result--
+[('Force merge to cleanup deleted rows',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE lwd_test FINAL SETTINGS mutations_sync = 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Delete 100K more rows using lightweight DELETE'
+--Result--
+[('Delete 100K more rows using lightweight DELETE',)]
++--------------------+
+--Query--
+SELECT 'Do ALTER DELETE mutation that does a "heavyweight" delete'
+--Result--
+[('Do ALTER DELETE mutation that does a "heavyweight" delete',)]
++--------------------+
+--Query--
+SELECT 'Delete 100K more rows using lightweight DELETE'
+--Result--
+[('Delete 100K more rows using lightweight DELETE',)]
++--------------------+
+--Query--
+SELECT 'Force merge to cleanup deleted rows'
+--Result--
+[('Force merge to cleanup deleted rows',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE lwd_test FINAL SETTINGS mutations_sync = 2
+--Result--
+[]
++--------------------+

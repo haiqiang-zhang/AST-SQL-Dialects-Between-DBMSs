@@ -1,0 +1,25 @@
+--Query--
+select @@collation_connection
+--Result--
+[('utf8mb4_0900_ai_ci',)]
++--------------------+
+--Query--
+select * from t1 where a like "abc%"
+--Result--
+[('abc',), ('abcd',)]
++--------------------+
+--Query--
+select * from t1 where a like "test%"
+--Result--
+[('test',)]
++--------------------+
+--Query--
+select * from t1 where a like "te_t"
+--Result--
+[('test',)]
++--------------------+
+--Query--
+select * from t1 where match a against ("te*" in boolean mode)+0
+--Result--
+[('test',)]
++--------------------+

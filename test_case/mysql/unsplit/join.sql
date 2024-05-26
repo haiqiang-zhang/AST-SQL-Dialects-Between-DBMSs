@@ -11,7 +11,6 @@ SELECT * from t1 CROSS JOIN t2;
 SELECT * from t1 LEFT JOIN t2 USING(S1);
 SELECT * from t1 LEFT JOIN t2 ON(t2.S1=2);
 SELECT * from t1 RIGHT JOIN t2 USING(S1);
-SELECT * from t1 RIGHT JOIN t2 ON(t1.S1=1);
 drop table t1,t2;
 create table t1 (id int primary key);
 create table t2 (id int);
@@ -29,7 +28,6 @@ insert into t1 values (107);
 insert into t2 values (107),(75),(1000);
 select t1.id, t2.id from t1, t2 where t2.id = t1.id;
 select t1.id, count(t2.id) from t1,t2 where t2.id = t1.id group by t1.id;
-select t1.id, count(t2.id) from t1,t2 where t2.id = t1.id group by t2.id;
 select t1.id,t2.id from t2 left join t1 on t1.id>=74 and t1.id<=0 where t2.id=75 and t1.id is null;
 drop table t1,t2;
 CREATE TABLE t2 (
@@ -96,23 +94,6 @@ CREATE TABLE t3 (
 INSERT INTO t3 VALUES ('ger','home','1','1','1'),('ger','Test','1','0','0'),('ger','derclu','1','0','0'),('ger','clubne','1','0','0'),('ger','philos','1','0','0'),('ger','clubko','1','0','0'),('ger','clubim','1','1','1'),('ger','progra','1','0','0'),('ger','progvo','1','0','0'),('ger','progsp','1','0','0'),('ger','progau','1','0','0'),('ger','progku','1','0','0'),('ger','progss','1','0','0'),('ger','nachl','1','0','0'),('ger','mitgli','1','0','0'),('ger','mitsu','1','0','0'),('ger','mitbus','1','0','0'),('ger','ergmar','1','1','1'),('ger','home','4','1','1'),('ger','derclu','4','1','1'),('ger','clubne','4','0','0'),('ger','philos','4','1','1'),('ger','clubko','4','1','1'),('ger','clubim','4','1','1'),('ger','progra','4','1','1'),('ger','progvo','4','1','1'),('ger','progsp','4','1','1'),('ger','progau','4','0','0'),('ger','progku','4','1','1'),('ger','progss','4','1','1'),('ger','nachl','4','1','1'),('ger','mitgli','4','0','0'),('ger','mitsu','4','0','0'),('ger','mitbus','4','0','0'),('ger','ergmar','4','1','1'),('ger','progra2','1','0','0'),('ger','archiv','4','1','1'),('ger','anmeld','4','1','1'),('ger','thema','4','1','1'),('ger','edito','4','1','1'),('ger','madis','4','1','1'),('ger','enma','4','1','1'),('ger','madis','1','1','1'),('ger','enma','1','1','1'),('ger','vorsch','4','0','0'),('ger','veranst','4','0','0'),('ger','anle','4','1','1'),('ger','redak','4','1','1'),('ger','nele','4','1','1'),('ger','aukt','4','1','1'),('ger','callcenter','4','1','1'),('ger','anle','1','0','0');
 delete from t1 where Contractor_ID='999998';
 insert into t1 (Contractor_ID) Values ('999998');
-SELECT DISTINCT COUNT(t1.Title) FROM t1,
-t2, t3 WHERE 
-t1.Document_ID='xep80' AND t1.Contractor_ID='1' AND 
-t1.Language_ID='ger' AND '2001-12-21 23:14:24' >= 
-Publishing_Date AND '2001-12-21 23:14:24' <= Expiration_Date AND 
-t1.Document_ID = t2.Document_ID AND 
-t1.Language_ID = t2.Language_ID AND 
-t1.Contractor_ID = t2.Contractor_ID AND ( 
-t2.Customer_ID = '4'  OR 
-t2.Customer_ID = '999999'  OR 
-t2.Customer_ID = '1' )AND t2.CanRead 
-= '1'  AND t1.Column_ID=t3.Column_ID AND 
-t1.Language_ID=t3.Language_ID AND ( 
-t3.Contractor_ID = '4'  OR 
-t3.Contractor_ID = '999999'  OR 
-t3.Contractor_ID = '1') AND 
-t3.CanRead='1' AND t3.Active='1';
 SELECT DISTINCT COUNT(t1.Title) FROM t1,
 t2, t3 WHERE 
 t1.Document_ID='xep80' AND t1.Contractor_ID='1' AND 
@@ -757,12 +738,6 @@ INSERT INTO t3 VALUES ('2020-12-29 18:23:02',2,100);
 CREATE TABLE t4 (
   z INTEGER
 );
-SELECT COUNT(*)
-FROM
-    t1
-    LEFT JOIN t2 ON t1.x = t2.x AND t2.ts <= t1.ts
-    JOIN t3 ON t1.y = t3.y AND t3.ts <= t1.ts
-    LEFT JOIN t4 ON t3.z = t4.z;
 DROP TABLE t1, t2, t3, t4;
 CREATE TABLE t1 ( a INTEGER );
 INSERT INTO t1 VALUES (0), (0), (0), (1), (1), (0), (1), (0);

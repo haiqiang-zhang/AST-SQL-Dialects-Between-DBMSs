@@ -1,0 +1,100 @@
+--Query--
+SELECT tuple(1, 'a').1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST(('hello', 1) AS Tuple(hello String, count UInt32)) AS t, t.hello
+--Result--
+[(('hello', 1), 'hello')]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT CAST(('hello', 1) AS Tuple(name String, count UInt32)).*
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT untuple(CAST(('hello', 1) AS Tuple(name String, count UInt32)))
+--Result--
+[('hello', 1)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * EXCEPT('hello|world')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * EXCEPT(hello) REPLACE(x + 1 AS x)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT x, x FROM (SELECT 1 AS x))
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT x FROM (SELECT x, x FROM (SELECT 1 AS x))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM (SELECT x, x FROM (SELECT 1 AS x))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT `plus(1, 2)` FROM (SELECT 1 + 2)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x FROM numbers(5 AS x)
+--Result--
+[(5,), (5,), (5,), (5,), (5,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT y FROM aliased
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x, y, z FROM aliased3
+--Result--
+[(10, 12, 11)]
++--------------------+

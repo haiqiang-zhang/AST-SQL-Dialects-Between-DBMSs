@@ -1,0 +1,70 @@
+--Query--
+select * from t1
+--Result--
+[('a',), ('ab',), ('abc',)]
++--------------------+
+--Query--
+select a, left(a,1) as b from t1
+--Result--
+[('a', 'a'), ('ab', 'a'), ('abc', 'a')]
++--------------------+
+--Query--
+select a, left(a,1) as b from t1 group by a
+--Result--
+[('a', 'a'), ('ab', 'a'), ('abc', 'a')]
++--------------------+
+--Query--
+SELECT DISTINCT RIGHT(a,1) from t1
+--Result--
+[('a',), ('b',), ('c',)]
++--------------------+
+--Query--
+select upper(a),upper(b) from t1
+--Result--
+[('AAA', b'bbb'), ('AAA', b'BBB')]
++--------------------+
+--Query--
+select lower(a),lower(b) from t1
+--Result--
+[('aaa', b'bbb'), ('aaa', b'BBB')]
++--------------------+
+--Query--
+select * from t1 where upper(a)='AAA'
+--Result--
+[('aaa', b'bbb'), ('AAA', b'BBB')]
++--------------------+
+--Query--
+select * from t1 where lower(a)='aaa'
+--Result--
+[('aaa', b'bbb'), ('AAA', b'BBB')]
++--------------------+
+--Query--
+select * from t1 where upper(b)='BBB'
+--Result--
+[('AAA', b'BBB')]
++--------------------+
+--Query--
+select * from t1 where lower(b)='bbb'
+--Result--
+[('aaa', b'bbb')]
++--------------------+
+--Query--
+select charset(a), charset(b), charset(binary 'ccc') from t1 limit 1
+--Result--
+[('cp1251', 'binary', 'binary')]
++--------------------+
+--Query--
+select collation(a), collation(b), collation(binary 'ccc') from t1 limit 1
+--Result--
+[('cp1251_bin', 'binary', 'binary')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a LIKE 'we_%' ORDER BY a
+--Result--
+[('we_iliyan', None), ('we_ivo', None), ('we_martin', None), ('we_toshko', None)]
++--------------------+
+--Query--
+SELECT COALESCE(IF(test1=1, 1, NULL), test2) FROM t1
+--Result--
+[]
++--------------------+

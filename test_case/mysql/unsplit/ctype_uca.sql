@@ -8,50 +8,8 @@ select 'a  a' > 'a', 'a  \t' < 'a';
 select 'c' like '\_' as want0;
 create table t1 (c1 char(10) character set utf8mb3 COLLATE utf8mb3_bin);
 select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_unicode_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_icelandic_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_latvian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_romanian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_slovenian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_polish_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_estonian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_spanish_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_swedish_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_turkish_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_czech_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_danish_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_lithuanian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_slovak_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_spanish2_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_roman_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_esperanto_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_hungarian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_croatian_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_german2_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_unicode_520_ci;
-select group_concat(c1 order by c1) from t1 group by c1 COLLATE utf8mb3_vietnamese_ci;
 ALTER TABLE t1 CONVERT TO CHARACTER SET ucs2 COLLATE ucs2_bin;
 SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_unicode_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_icelandic_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_latvian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_romanian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_slovenian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_polish_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_estonian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_spanish_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_swedish_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_turkish_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_czech_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_danish_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_lithuanian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_slovak_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_spanish2_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_roman_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_esperanto_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_hungarian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_croatian_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_german2_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_unicode_520_ci;
-SELECT GROUP_CONCAT(c1 ORDER BY c1) FROM t1 GROUP BY c1 COLLATE ucs2_vietnamese_ci;
 drop table t1;
 CREATE TABLE t1 (c varchar(255) NOT NULL COLLATE utf8mb3_general_ci, INDEX (c));
 INSERT INTO t1 VALUES (CONVERT(_ucs2 0x039C03C903B403B11F770308 USING utf8mb3));
@@ -326,7 +284,6 @@ create table t1 (
   a varchar(255),
   key a(a)
 ) character set utf8mb3 COLLATE utf8mb3_danish_ci;
-insert into t1 values ('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥aaaa'),('ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¥aaa'),('aaaaa');
 select a as like_a from t1 where a like 'a%';
 select a as like_aa from t1 where a like 'aa%';
 select a as like_aaa from t1 where a like 'aaa%';
@@ -369,7 +326,6 @@ drop table t1;
 select hex(weight_string(_utf8mb4 0xF0908080 /* U+10000 */ collate utf8mb4_unicode_ci));
 CREATE TABLE t1 (s1 VARCHAR(10) COLLATE utf8mb3_german2_ci);
 INSERT INTO t1 VALUES ('a'),('ae'),('af');
-SELECT s1,hex(s1),hex(weight_string(s1)) FROM t1 ORDER BY s1;
 DROP TABLE t1;
 CREATE TABLE t1 (
         f1 CHAR(4) NOT NULL
@@ -386,10 +342,7 @@ INSERT INTO t1 VALUES ('XYZ');
 INSERT INTO t1 VALUES ('XYZ ');
 INSERT INTO t1 VALUES ('ABC ');
 SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ';
-SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ ';
 CREATE INDEX f1_index ON t1 ( f1 );
-SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ';
-SELECT CONCAT(f1, '|') FROM t1 WHERE f1 = 'XYZ ';
 DROP TABLE t1;
 CREATE TABLE t1(c1 float);
 INSERT INTO t1 VALUES
@@ -397,14 +350,11 @@ INSERT INTO t1 VALUES
 (-99999999999999),
 (-999999999999999),
 (-9999999999999999);
-SELECT GROUP_CONCAT(c1) FROM t1 GROUP BY c1 COLLATE utf8mb3_icelandic_ci;
 DROP TABLE t1;
 CREATE TABLE t1double(c1 double);
 INSERT INTO t1double values(0.00000000000002123456789123456789);
 SELECT c1 FROM t1double;
-SELECT CONCAT(c1) FROM t1double;
 SELECT CAST(CONCAT(c1) AS DOUBLE) FROM t1double;
-SELECT GROUP_CONCAT(c1) FROM t1double GROUP BY c1 COLLATE utf8mb3_icelandic_ci;
 DROP TABLE t1double;
 CREATE TABLE t1 (
   col_real_key double DEFAULT NULL,

@@ -99,7 +99,6 @@ drop table t2;
 create table t1 (a integer, b integer);
 insert into t1 values (1,4), (2,2),(2,2), (4,1),(4,1),(4,1),(4,1);
 select distinct sum(b) from t1 group by a;
-select distinct sum(b) from (select a,b from t1) y group by a;
 drop table t1;
 CREATE TABLE t1 (a char(10), b char(10));
 INSERT INTO t1 VALUES ('root','localhost'), ('root','%');
@@ -411,8 +410,6 @@ WHERE ( OUTR.col_varchar_nokey , OUTR.col_varchar_key )
 DROP TABLE t1,t2;
 create table t1(f1 char(255) charset utf8mb3);
 insert into t1 values('1'),('2'),('3'),('4'),('5'),('6'),('7'),('8'),('9'),('0');
-select count(*) from t1 join (
-  select t1.f1 from t1 join t1 as t2 join t1 as t3) tt on t1.f1 = tt.f1;
 drop table t1;
 CREATE TABLE t1(f1 INT);
 INSERT INTO t1 VALUES (1),(2),(3);
@@ -771,13 +768,6 @@ FROM t1 JOIN (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt ON t1.a=dt.a;
 SELECT dt.a, COUNT(*)
 FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt
 GROUP BY dt.a;
-SELECT dt.a, COUNT(*)
-FROM (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt
-GROUP BY dt.a;
-SELECT COUNT(*)
-FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt;
-SELECT COUNT(*)
-FROM (SELECT * FROM t2 ORDER BY t2.a DESC) AS dt;
 SELECT DISTINCT *
 FROM (SELECT * FROM t2 ORDER BY t2.a) AS dt;
 SELECT DISTINCT *

@@ -1,0 +1,50 @@
+--Query--
+SELECT TRACE FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b = 2 AND a = 2 AND  c > 0 AND c < 100
+--Result--
+[(2, 2, 17), (2, 2, 20), (2, 2, 25)]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE a = 2 AND b = 2 AND c IN (13,25,28)
+--Result--
+[(2, 2, 25)]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE b = 2 AND a = 2 AND  c > 0 AND c < 100
+--Result--
+[(2, 2, 17), (2, 2, 20), (2, 2, 25)]
++--------------------+
+--Query--
+SELECT TRACE FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE (b = 2 OR a = 2) AND  c > 0 AND c < 100
+--Result--
+[(1, 2, 13), (2, 2, 17), (2, 2, 20), (1, 2, 24), (2, 2, 25), (2, 1, 28), (2, 1, 98), (2, 1, 98), (2, 1, 98), (2, 1, 98), (1, 2, 99), (1, 2, 99), (1, 2, 99), (1, 2, 99)]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE (b = 2 OR a = 2) AND  c > 0 AND c < 100
+--Result--
+[(1, 2, 13), (2, 2, 17), (2, 2, 20), (1, 2, 24), (2, 2, 25), (2, 1, 28), (2, 1, 98), (2, 1, 98), (2, 1, 98), (2, 1, 98), (1, 2, 99), (1, 2, 99), (1, 2, 99), (1, 2, 99)]
++--------------------+
+--Query--
+SELECT TRACE FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE (b >= 2 OR a >= 2) AND  c > 0 AND c < 100
+--Result--
+[(1, 2, 13), (2, 2, 17), (2, 2, 20), (1, 2, 24), (2, 2, 25), (2, 1, 28), (2, 1, 98), (2, 1, 98), (2, 1, 98), (2, 1, 98), (1, 2, 99), (1, 2, 99), (1, 2, 99), (1, 2, 99)]
++--------------------+
+--Query--
+SELECT a,b,c FROM t1 WHERE (b >= 2 OR a >= 2) AND  c > 0 AND c < 100
+--Result--
+[(1, 2, 13), (2, 2, 17), (2, 2, 20), (1, 2, 24), (2, 2, 25), (2, 1, 28), (2, 1, 98), (2, 1, 98), (2, 1, 98), (2, 1, 98), (1, 2, 99), (1, 2, 99), (1, 2, 99), (1, 2, 99)]
++--------------------+

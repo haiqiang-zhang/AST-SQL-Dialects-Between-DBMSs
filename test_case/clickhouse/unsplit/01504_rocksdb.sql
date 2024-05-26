@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS 01504_test;
 CREATE TABLE 01504_test (key Tuple(String, UInt32), value UInt64) Engine=EmbeddedRocksDB PRIMARY KEY(key);
 DROP TABLE IF EXISTS 01504_test;

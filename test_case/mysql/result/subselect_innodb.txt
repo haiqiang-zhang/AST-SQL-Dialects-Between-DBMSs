@@ -1,0 +1,110 @@
+--Query--
+SELECT 'c373e9f5ad0791a0dab5444553544200' IN(SELECT t1.FOLDERID FROM t1 WHERE t1.PARENTID='2f6161e879db43c1a5b82c21ddc49089' AND t1.FOLDERNAME = 'Level1')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select a from t3 where t3.a in (select a from t1 where a <= 3 union select * from t2 where a <= 30)
+--Result--
+[(1,), (2,), (10,)]
++--------------------+
+--Query--
+SELECT distinct p1.processor_id, (SELECT y.yod_id FROM t1 p2, t2 y WHERE p2.processor_id = p1.processor_id and p2.processor_id = y.processor_id) FROM t1 p1
+--Result--
+[(1, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+select (select max(id) from t2 where b=1 group by b) as x,b from t1 where b=1
+--Result--
+[(2, 1)]
++--------------------+
+--Query--
+select t2.id,t2.value,(select t1.value from t1 where t1.id=t2.id) from t2
+--Result--
+[(1, 'z', 'a'), (2, 'x', 'b')]
++--------------------+
+--Query--
+select t2.id,t2.value,(select t1.value from t1 where t1.id=t2.id) from t2
+--Result--
+[(1, 'z', 'a'), (2, 'x', 'b')]
++--------------------+
+--Query--
+select a, sum(b) as b from t1 group by a having b > (select max(a) from t2)
+--Result--
+[(1, 5.0), (2, 12.0), (4, 105.0)]
++--------------------+
+--Query--
+SELECT R.unit, R.ingredient FROM t1 R WHERE R.ingredient IN (SELECT N.ingredient FROM t2 N WHERE N.unit = R.unit)
+--Result--
+[('xx', 'yy')]
++--------------------+
+--Query--
+SELECT DISTINCT  (SELECT sum(sum_used) FROM t1 WHERE sum_used > 0 AND year(date1) <= '2004') as somallontvangsten,  (SELECT sum(sum_used) FROM t1 WHERE sum_used < 0 AND year(date1) <= '2004') as somalluitgaven  FROM t1
+--Result--
+[(154.0, None)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, datetime.date(1999, 1, 1), 1, 'test', 22.0, 33.0, 'comment'), (2, datetime.date(1999, 1, 1), 1, 'test', 22.0, 33.0, 'comment'), (3, datetime.date(1999, 1, 1), 1, 'test', 22.0, 33.0, 'comment'), (4, datetime.date(1998, 1, 1), 1, 'test', 22.0, 33.0, 'comment'), (5, datetime.date(1998, 1, 1), 1, 'test', 22.0, 33.0, 'comment'), (6, datetime.date(2004, 1, 1), 1, 'test', 22.0, 33.0, 'comment'), (7, datetime.date(2004, 1, 1), 1, 'test', 22.0, 33.0, 'comment')]
++--------------------+
+--Query--
+PREPARE my_stmt FROM "SELECT t1.b, count(*) FROM t1 group by t1.b having count(*) > ALL (SELECT COUNT(*) FROM t2 WHERE t2.a=1 GROUP By t2.b)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare my_stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t2.*, t4.DOCTYPENAME, t1.CONTENTSIZE,t1.MIMETYPE FROM t2 INNER JOIN t4 ON t2.DOCTYPEID = t4.DOCTYPEID LEFT OUTER JOIN t1 ON t2.DOCID = t1.DOCID WHERE t2.FOLDERID IN(SELECT t3.FOLDERID FROM t3 WHERE t3.PARENTID IN(SELECT t3.FOLDERID FROM t3 WHERE t3.PARENTID IN(SELECT t3.FOLDERID FROM t3 WHERE t3.PARENTID IN(SELECT t3.FOLDERID FROM t3 WHERE t3.PARENTID IN(SELECT t3.FOLDERID FROM t3 WHERE t3.PARENTID='2f6161e879db43c1a5b82c21ddc49089' AND t3.FOLDERNAME = 'Level1') AND t3.FOLDERNAME = 'Level2') AND t3.FOLDERNAME = 'Level3') AND t3.FOLDERNAME = 'CopiedFolder') AND t3.FOLDERNAME = 'Movie Reviews') AND t2.DOCNAME = 'Last Discussion'
+--Result--
+[('c373e9f5ad07993f3859444553544200', 'Last Discussion', 'c373e9f5ad079174ff17444553544200', 'c373e9f5ad0796c0eca4444553544200', 'Goldilocks', datetime.datetime(2003, 6, 9, 11, 21, 6), 'Title: Last Discussion', None, b'Setting new abstract and keeping doc checked out', datetime.datetime(2003, 6, 9, 10, 51, 26), datetime.datetime(2003, 6, 9, 10, 51, 26), None, None, None, '03eea05112b845949f3fd03278b5fe43', datetime.datetime(2003, 6, 9, 11, 21, 6), 'admin', 0, None, 'Discussion', None, None)]
++--------------------+
+--Query--
+select count(country) as countrycount, sum(funds_requested) as smcnt,        country, (select sum(funds_requested) from t1) as total_funds from t1 group by country
+--Result--
+[(1, 1200.0, 'USA', 1200.0)]
++--------------------+
+--Query--
+select count(country) as countrycount, sum(funds_requested) as smcnt,        country, (select sum(funds_requested) from t1) as total_funds from t1 group by country
+--Result--
+[(1, 1200.0, 'USA', 1200.0)]
++--------------------+
+--Query--
+select   (SELECT rs.t2_id    FROM t2 rs    WHERE rs.t1_id=      (SELECT lt.t1_id       FROM t1 lt       WHERE lt.t3_id=a.t3_id)    ORDER BY b DESC LIMIT 1) from t3 AS a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select       (SELECT rs.t2_id        FROM t2 rs        WHERE rs.t1_id=          (SELECT lt.t1_id           FROM t1 lt           WHERE lt.t3_id=a.t3_id)        ORDER BY b DESC LIMIT 1) as x     from t3 AS a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT t1.* FROM t1 WHERE (SELECT COUNT(*) FROM t3,t2 WHERE t3.c=t2.a                             and t2.a='1' AND t1.a=t3.b) > 0
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT col_time_key, col_datetime_key FROM  ( SELECT * FROM t1 ) AS table1  HAVING ( 'r' , 'e' ) IN    ( SELECT col_varchar_nokey , col_varchar_nokey FROM t2 ) ORDER BY col_datetime_key  LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b < (SELECT CAST(a as date) FROM t1 GROUP BY a)
+--Result--
+[(datetime.date(2011, 5, 13), 0)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE NOT EXISTS (SELECT 1 FROM t2 WHERE d = (SELECT d FROM t2 WHERE a >= 1) ORDER BY d)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE a != (SELECT 1 FROM t2 WHERE a <=> b OR a > '' AND 6 = 7 ORDER BY b, c)
+--Result--
+[]
++--------------------+

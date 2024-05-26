@@ -1,0 +1,35 @@
+--Query--
+USE dict_db_01254
+--Result--
+[]
++--------------------+
+--Query--
+SELECT query_count, status FROM system.dictionaries WHERE database = 'dict_db_01254' AND name = 'dict'
+--Result--
+[(0, 'NOT_LOADED')]
++--------------------+
+--Query--
+SYSTEM RELOAD DICTIONARY dict_db_01254.dict
+--Result--
+[]
++--------------------+
+--Query--
+SELECT query_count, status FROM system.dictionaries WHERE database = 'dict_db_01254' AND name = 'dict'
+--Result--
+[(0, 'LOADED')]
++--------------------+
+--Query--
+SELECT dictGetUInt64('dict_db_01254.dict', 'val', toUInt64(0))
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT query_count, status FROM system.dictionaries WHERE database = 'dict_db_01254' AND name = 'dict'
+--Result--
+[(1, 'LOADED')]
++--------------------+
+--Query--
+USE system
+--Result--
+[]
++--------------------+

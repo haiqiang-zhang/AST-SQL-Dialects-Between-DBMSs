@@ -1,0 +1,265 @@
+--Query--
+SELECT * FROM t1 LIMIT 6
+--Result--
+[(11,), (12,), (13,), (14,), (15,), (16,)]
++--------------------+
+--Query--
+SELECT * FROM t1 LIMIT 5 OFFSET 1
+--Result--
+[(12,), (13,), (14,), (15,), (16,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2 LIMIT 5
+--Result--
+[(11,), (12,), (13,), (14,), (15,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2 LIMIT 5 OFFSET 6
+--Result--
+[(17,), (18,), (19,), (21,), (22,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a LIMIT 5
+--Result--
+[(11,), (12,), (13,), (14,), (15,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION SELECT * FROM t2 ORDER BY a LIMIT 5 OFFSET 6
+--Result--
+[(17,), (18,), (19,), (21,), (22,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t2 LIMIT 5
+--Result--
+[(11,), (12,), (13,), (14,), (15,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t2 LIMIT 5 OFFSET 6
+--Result--
+[(17,), (18,), (19,), (21,), (22,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t2 ORDER BY a LIMIT 5
+--Result--
+[(11,), (12,), (13,), (14,), (15,)]
++--------------------+
+--Query--
+SELECT * FROM t1 UNION ALL SELECT * FROM t2 ORDER BY a LIMIT 5 OFFSET 6
+--Result--
+[(17,), (18,), (19,), (21,), (22,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8
+--Result--
+[(21,), (22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a LIMIT 8 OFFSET 1
+--Result--
+[(22,), (23,), (24,), (25,), (26,), (27,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(0, 0), (2, 1), (3, 1), (4, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(0, 0), (2, 2), (3, 2), (4, 1)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(0, 0), (2, 2), (3, 2), (4, 4)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(0, 0), (3, 2), (4, 4)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(3, 2), (4, 4)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(2,), (1,)]
++--------------------+
+--Query--
+select 0 limit 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(2, 0), (3, 0), (4, 0)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(3, 0), (4, 0)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(3, 0)]
++--------------------+
+--Query--
+select 1 as a from t1 union all select 1 from dual limit 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) c FROM t1 WHERE a > 0 ORDER BY c LIMIT 3
+--Result--
+[(7,)]
++--------------------+
+--Query--
+select sum(a) c FROM t1 WHERE a > 0 ORDER BY c LIMIT 3
+--Result--
+[(28.0,)]
++--------------------+
+--Query--
+prepare s from "select 1 limit ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select 1 limit 1, ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "select 1 limit ?, ?"
+--Result--
+[]
++--------------------+
+--Query--
+select 1 as a limit 4294967296,10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 LIMIT 1 OFFSET 3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t1.pk FROM (SELECT DISTINCT * FROM t1) AS t1 WHERE t1.pk=1 LIMIT 1 OFFSET 2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_varchar_key AS f1   FROM t1   WHERE (col_int_key NOT BETWEEN 10 AND 15 OR col_varchar_key < '2') AND col_int_key IS NULL   GROUP BY f1 LIMIT 100
+--Result--
+[]
++--------------------+
+--Query--
+SELECT col_varchar_key AS f1   FROM t1   WHERE (col_int_key NOT BETWEEN 10 AND 15 OR col_varchar_key < '2') AND col_int_key IS NULL   GROUP BY f1 LIMIT 100
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY i DESC LIMIT 3) AS alias LIMIT 2
+--Result--
+[(5,), (4,)]
++--------------------+
+--Query--
+SELECT STRAIGHT_JOIN a.pk FROM a   JOIN b ON a.col_varchar_255 = b.col_varchar_10 WHERE b.pk <= a.col_int ORDER BY a.pk LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM "SELECT * FROM t1 WHERE id > ?"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM "(SELECT * FROM t1 LIMIT 2) UNION ALL (SELECT * FROM t1 ORDER BY 1)"
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+

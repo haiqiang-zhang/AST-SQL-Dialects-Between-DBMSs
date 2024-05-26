@@ -1,0 +1,15 @@
+--Query--
+SELECT i FROM tbl ORDER BY id
+--Result--
+[({'ip_type': 1, 'address': 2130706433, 'mask': 32},), (None,), ({'ip_type': 1, 'address': 4294967295, 'mask': 31},), ({'ip_type': 1, 'address': 0, 'mask': 0},), ({'ip_type': 2, 'address': -170141183460469231731687303715884105727, 'mask': 128},), (None,), ({'ip_type': 2, 'address': -124417814392769526607067262002336322286, 'mask': 96},), ({'ip_type': 2, 'address': -170141183460469231731687303715884105728, 'mask': 0},)]
++--------------------+
+--Query--
+SELECT i FROM tbl WHERE id%2=1 ORDER BY id
+--Result--
+[({'ip_type': 1, 'address': 2130706433, 'mask': 32},), ({'ip_type': 1, 'address': 4294967295, 'mask': 31},), ({'ip_type': 2, 'address': -170141183460469231731687303715884105727, 'mask': 128},), ({'ip_type': 2, 'address': -124417814392769526607067262002336322286, 'mask': 96},)]
++--------------------+
+--Query--
+SELECT host(i) FROM tbl WHERE id%2=1 ORDER BY id
+--Result--
+[('127.0.0.1',), ('255.255.255.255',), ('::1',), ('2266:25::12:0:ad12',)]
++--------------------+

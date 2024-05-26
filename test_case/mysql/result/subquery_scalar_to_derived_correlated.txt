@@ -1,0 +1,215 @@
+--Query--
+SELECT * FROM t1 WHERE(SELECT a FROM t2 WHERE t2.a = t1.a) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE(SELECT b FROM t3 WHERE t3.a = t1.a) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE(SELECT ABS(a) FROM t2 WHERE t2.a = t1.a) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE(SELECT a FROM t3       WHERE t3.a = t2.a AND             t3.b = t2.a) > 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE(SELECT a FROM t2       WHERE t2.a > t3.a) > 0
+--Result--
+[(1, 3)]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE(SELECT a FROM t2       WHERE t2.a != t3.a) > 0
+--Result--
+[(1, 3), (2, 3)]
++--------------------+
+--Query--
+SELECT a,        (SELECT SUM(a) + t3.b FROM t2) FROM t3
+--Result--
+[(1, 6.0), (2, 6.0)]
++--------------------+
+--Query--
+SELECT a,        (SELECT SUM(a) OVER w FROM t2 WINDOW w AS(ORDER BY t3.a) LIMIT 1) FROM t3
+--Result--
+[(1, 3.0), (2, 3.0)]
++--------------------+
+--Query--
+SELECT a FROM t2  WHERE(SELECT SUM(b) FROM t3 GROUP BY a, t2.a LIMIT 1) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT a FROM t2 WHERE (SELECT SUM(b) FROM t3 GROUP BY a HAVING SUM(b) > t2.a LIMIT 1) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT a,        (SELECT t2.a FROM t2 ORDER BY t1.a LIMIT 1) FROM t1
+--Result--
+[(1, 1), (2, 1), (3, 1), (4, 1)]
++--------------------+
+--Query--
+SELECT SUM(a),        a, (SELECT MIN(a) FROM t2 WHERE a = COUNT(*)) FROM t1 GROUP BY a
+--Result--
+[(1.0, 1, 1), (2.0, 2, 1), (3.0, 3, 1), (4.0, 4, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT COUNT(a) FROM t2 WHERE t2.a = t1.a) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT COUNT(a) FROM t3 WHERE t3.a = t1.a GROUP BY b) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select * from l, p where p_pkey = l_pkey and       l_quantity < (select 0.9 * avg(l_quantity)                     from l where l_pkey = p_pkey)
+--Result--
+[(10, 10, 10), (10, 1, 10)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT a FROM t2                         WHERE t2.a = t1.a                         GROUP BY a, b HAVING t2.a > 10) > 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT b FROM t2 WHERE t2.b = t1.a and t2.c = t1.a GROUP BY b) > 0
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT a FROM t3 WHERE t3.a = t1.a GROUP BY a) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT b, MAX(a) AS ma FROM t4 GROUP BY b HAVING ma < (SELECT MAX(t2.a) FROM t2 WHERE t2.b=t4.b)
+--Result--
+[(10, 1)]
++--------------------+
+--Query--
+SELECT (SELECT t1.a FROM t1, t2 WHERE t1.a = t2.b AND t2.a = t3.c ORDER BY t1.a) FROM t3
+--Result--
+[(2,), (None,)]
++--------------------+
+--Query--
+SELECT (SELECT datestamp         FROM t1         WHERE contract_id = t2.id         ORDER BY datestamp ASC         LIMIT 1) FROM t2
+--Result--
+[(None,), (datetime.datetime(2006, 9, 18, 9, 7, 53),), (datetime.datetime(2006, 9, 18, 9, 7, 53),), (datetime.datetime(2006, 9, 18, 9, 7, 53),), (datetime.datetime(2006, 9, 18, 9, 7, 53),), (datetime.datetime(2014, 9, 18, 9, 7, 53),), (datetime.datetime(2006, 9, 18, 9, 7, 53),), (None,), (datetime.datetime(2006, 9, 18, 9, 7, 53),), (datetime.datetime(2006, 9, 18, 9, 7, 53),)]
++--------------------+
+--Query--
+SELECT (SELECT dt.a         FROM   (SELECT 1 AS a, t2.a AS b                 FROM t2                 HAVING t1.a) dt     # <----- outer reference inside derived table.         WHERE dt.b=t1.a) AS subq    # <----- normal outer reference FROM t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT (SELECT SUM(t_b.a) OVER ()         FROM t_b         WHERE t_b.a = t_a.a) aa,        b FROM t_a GROUP BY aa, b
+--Result--
+[(4.0, 40), (1.0, 10), (2.0, 20), (3.0, 30)]
++--------------------+
+--Query--
+SELECT t1.id, ( SELECT COUNT(t.id)                 FROM t2 AS t                 WHERE t.id = t1.id ) AS c FROM t1
+--Result--
+[(1, 1), (2, 0)]
++--------------------+
+--Query--
+SELECT t1.id, ( SELECT COUNT(t.id)+2                 FROM t2 AS t                 WHERE t.id = t1.id ) AS c FROM t1
+--Result--
+[(1, 3), (2, 2)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 a JOIN      t1 outr      ON a.a = (SELECT COUNT(*) FROM t1 inr WHERE inr.a = outr.a)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT (SELECT COUNT(t2.f1) FROM (t2) WHERE t2.f2 <> table1.f1  AND t2.f2 != table1.f1) AS dt FROM (SELECT * FROM t1 ) AS table1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM view_merge
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT f1, (SELECT SUM(t2.f2) FROM (t1 as t2)             WHERE t2.f3 = t1.f3 AND t2.f1 < t1.f1) AS dt   FROM t1 WHERE f2 =3 GROUP BY f1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT (SELECT MIN(t1.f1) FROM t1         WHERE t1.f3 > t2.f3 OR t1.f3 = t2.f3) FROM (( SELECT * FROM t1) AS t2 RIGHT JOIN t1 ON 1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM v1 WHERE(SELECT b FROM v2 WHERE v2.a = v1.a) > 0
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT /*+ SET_VAR(optimizer_switch='subquery_to_derived=OFF') */ * FROM t1 WHERE ( SELECT COUNT(dt.f1) FROM t1 AS dt WHERE dt.f2 > t1.f2)
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE ( SELECT COUNT(dt.f1) FROM t1 AS dt WHERE dt.f2 > t1.f2)
+--Result--
+[(1, 1), (2, 2)]
++--------------------+
+--Query--
+SELECT /*+ SET_VAR(optimizer_switch='subquery_to_derived=OFF') */   (SELECT MAX(dt.f1) AS max FROM t1 AS dt    WHERE dt.f2 = dt1.f2 AND dt.f3 > 'h' ) AS field1  FROM (t1 AS dt1, t1 AS dt2) GROUP BY field1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT   (SELECT MAX(dt.f1) AS max FROM t1 AS dt    WHERE dt.f2 = dt1.f2 AND dt.f3 > 'h' ) AS field1  FROM (t1 AS dt1, t1 AS dt2) GROUP BY field1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT f1 FROM t1 AS table1  WHERE f2 <> (SELECT f1 FROM t1 WHERE table1.f3 = (SELECT f4 FROM t1))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE ( SELECT DISTINCT b FROM t2 WHERE t1.a = t1.a )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t2 WHERE 1 = (SELECT t1.a FROM t1 WHERE t1.b = t2.a)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT /*+ JOIN_SUFFIX (t2) */ a FROM t2 WHERE 1 = (SELECT t1.a FROM t1 WHERE t1.b = t2.a)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT *   FROM t1 AS alias1   WHERE ( SELECT COUNT(t1.b)           FROM t1           WHERE EXISTS ( SELECT SUM( t1.b )                          FROM t1                          WHERE alias1.b                        )                 AND alias1.b          )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (SELECT t2.a FROM t2 WHERE t2.a = t1.a AND t2.a = t1.a)
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE ( SELECT a FROM t2 WHERE t2.a = t1.a + t2.b ) > 0
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE ( SELECT a FROM t2 WHERE t2.a = t1.a + 3 ) > 0
+--Result--
+[]
++--------------------+

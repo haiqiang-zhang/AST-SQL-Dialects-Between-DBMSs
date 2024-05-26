@@ -1,0 +1,160 @@
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1
+--Result--
+[(1, 2), (2, 3), (3, 5), (4, 5), (5, 5), (6, 6), (7, 7), (8, 9)]
++--------------------+
+--Query--
+select found_rows()
+--Result--
+[(8,)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 limit 1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select SQL_BUFFER_RESULT SQL_CALC_FOUND_ROWS * from t1 limit 1
+--Result--
+[(1, 2)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 order by b desc limit 1
+--Result--
+[(8, 9)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS distinct b from t1 limit 1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS b,count(*) as c from t1 group by b order by c desc limit 1
+--Result--
+[(5, 3)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 left join t1 as t2 on (t1.b=t2.a) limit 2,1
+--Result--
+[(3, 5, 5, 5)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 limit 10 offset 100
+--Result--
+[]
++--------------------+
+--Query--
+select sql_calc_found_rows a from t1 where a in (1,2,3) order by a desc limit 0,2
+--Result--
+[(3,), (2,)]
++--------------------+
+--Query--
+select FOUND_ROWS()
+--Result--
+[(3,)]
++--------------------+
+--Query--
+select sql_calc_found_rows a from t1 where a in (1,2,3) order by a+2 desc limit 0,2
+--Result--
+[(3,), (2,)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS DISTINCT email FROM t2 LEFT JOIN t1  ON kid = t2.id WHERE t1.id IS NULL order by email LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT email FROM t2 LEFT JOIN t1  ON kid = t2.id WHERE t1.id IS NULL LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT email FROM t2 LEFT JOIN t1  ON kid = t2.id WHERE t1.id IS NULL ORDER BY email LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS DISTINCT email FROM t2 LEFT JOIN t1  ON kid = t2.id WHERE t1.id IS NULL LIMIT 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS titre,numeropost,maxnumrep FROM t1 WHERE numeropost IN (1,2) ORDER BY maxnumrep DESC LIMIT 0, 1
+--Result--
+[('test2', 2, 2)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS 1 FROM (SELECT 1) as a LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 WHERE numeropost > 1  LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 ORDER BY numeropost  LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 where id > 3 limit 0, 1
+--Result--
+[(4,)]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 where id > 3 AND 1=2 limit 0, 1
+--Result--
+[]
++--------------------+
+--Query--
+select SQL_CALC_FOUND_ROWS * from t1 where id > 6 limit 0, 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (  ( b =1 AND a BETWEEN 14 AND 21 ) OR  ( b =2 AND a BETWEEN 16 AND 18 ) OR  ( b =3 AND a BETWEEN 15 AND 19 ) )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 WHERE a = '2' LIMIT 0, 1
+--Result--
+[('2',)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS * FROM t1 WHERE a = 0 GROUP BY a HAVING a > 10
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'foo'
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS 'foo'
+--Result--
+[('foo',)]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS 'foo' limit 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS 'foo' UNION SELECT 'bar' LIMIT 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT SQL_CALC_FOUND_ROWS DISTINCT 'a' FROM t1 GROUP BY b LIMIT 2
+--Result--
+[('a',)]
++--------------------+

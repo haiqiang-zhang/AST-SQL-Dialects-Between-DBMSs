@@ -175,7 +175,6 @@ CREATE TABLE t_crashme ( f1 BIGINT);
 CREATE VIEW a1 (t_CRASHME) AS SELECT f1 FROM t_crashme GROUP BY f1;
 CREATE VIEW a2 AS SELECT t_CRASHME FROM a1;
 SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;
-SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='test';
 drop view a2, a1;
 drop table t_crashme;
 select table_schema, table_name, column_name from information_schema.columns
@@ -205,10 +204,6 @@ WHERE TABLE_NAME= 't1' ORDER BY COLUMN_NAME;
 drop table t1;
 SELECT TABLE_NAME, COLUMN_NAME, PRIVILEGES FROM INFORMATION_SCHEMA.COLUMNS
 where COLUMN_NAME='TABLE_NAME' ORDER BY TABLE_NAME COLLATE utf8mb3_GENERAL_CI;
-SELECT table_schema, count(*) FROM information_schema.TABLES WHERE
-table_schema IN ('mysql', 'information_schema', 'test', 'mysqltest')
-AND table_name not like 'ndb%' AND table_name COLLATE utf8mb3_general_ci not like 'innodb_%'
-GROUP BY TABLE_SCHEMA;
 create table t1 (i int, j int);
 select * from information_schema.triggers where trigger_schema in ('mysql', 'information_schema', 'test', 'mysqltest')
 order by trigger_name;
@@ -399,10 +394,6 @@ SELECT * FROM INFORMATION_SCHEMA.SCHEMATA
 WHERE SCHEMA_NAME = '';
 SELECT * FROM INFORMATION_SCHEMA.SCHEMATA
 WHERE SCHEMA_NAME = 'test';
-select count(*) from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA='mysql' AND TABLE_NAME='nonexisting';
-select count(*) from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA='mysql' AND TABLE_NAME='';
-select count(*) from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA='' AND TABLE_NAME='';
-select count(*) from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA='' AND TABLE_NAME='nonexisting';
 CREATE VIEW v1
 AS SELECT *
 FROM information_schema.TABLES;
@@ -468,7 +459,6 @@ DROP TABLE t1;
 SELECT 'OK' AS TEST_RESULT FROM INFORMATION_SCHEMA.PROCESSLIST WHERE time < 0;
 CREATE DATABASE db1;
 CREATE TABLE t1 (id INT);
-SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='t1';
 DROP DATABASE db1;
 CREATE TABLE variables(f1 INT);
 SELECT COLUMN_DEFAULT, TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS
@@ -651,8 +641,6 @@ CREATE TABLE t1 (a CHAR(40) NOT NULL, UNIQUE idx1(a(2)))
 SELECT create_options, UPPER(create_options),
        table_comment, UPPER(table_comment)
   FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 't1';
-SELECT privileges, UPPER(privileges)
-  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 't1';
 DROP TABLE t1;
 SELECT t.table_name, c1.column_name
   FROM information_schema.tables t

@@ -1,0 +1,365 @@
+--Query--
+SELECT DATE'01:01:01'
+--Result--
+[(datetime.date(2001, 1, 1),)]
++--------------------+
+--Query--
+SELECT DATE'01-01-01'
+--Result--
+[(datetime.date(2001, 1, 1),)]
++--------------------+
+--Query--
+SELECT DATE'2010-01-01'
+--Result--
+[(datetime.date(2010, 1, 1),)]
++--------------------+
+--Query--
+SELECT DATE '2010-01-01'
+--Result--
+[(datetime.date(2010, 1, 1),)]
++--------------------+
+--Query--
+SELECT TIME'1 24:00:00'
+--Result--
+[(datetime.timedelta(days=2),)]
++--------------------+
+--Query--
+SELECT TIME'30 24:00:00'
+--Result--
+[(datetime.timedelta(days=31),)]
++--------------------+
+--Query--
+SELECT TIME'10'
+--Result--
+[(datetime.timedelta(seconds=10),)]
++--------------------+
+--Query--
+SELECT TIME'10:10'
+--Result--
+[(datetime.timedelta(seconds=36600),)]
++--------------------+
+--Query--
+SELECT TIME'10:11.12'
+--Result--
+[(datetime.timedelta(seconds=36660, microseconds=120000),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10'
+--Result--
+[(datetime.timedelta(seconds=36610),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.'
+--Result--
+[(datetime.timedelta(seconds=36610),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.1'
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=100000),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.12'
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=120000),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.123'
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=123000),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.1234'
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=123400),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.12345'
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=123450),)]
++--------------------+
+--Query--
+SELECT TIME'10:10:10.123456'
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=123456),)]
++--------------------+
+--Query--
+SELECT TIME'-10:00:00'
+--Result--
+[(datetime.timedelta(days=-1, seconds=50400),)]
++--------------------+
+--Query--
+SELECT TIME '10:11:12'
+--Result--
+[(datetime.timedelta(seconds=36672),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 00'
+--Result--
+[(datetime.datetime(2010, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 00:01'
+--Result--
+[(datetime.datetime(2010, 1, 1, 0, 1),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.1'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10, 100000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.12'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10, 120000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.123'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10, 123000),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.1234'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10, 123400),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.12345'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10, 123450),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2010-01-01 10:10:10.123456'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 10, 10, 123456),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2010-01-01 10:20:30'
+--Result--
+[(datetime.datetime(2010, 1, 1, 10, 20, 30),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a BETWEEN DATE'2001-01-01' AND DATE'2002-01-01'
+--Result--
+[(datetime.date(2001, 1, 1),)]
++--------------------+
+--Query--
+SELECT DATE'2001-01-01' FROM t1 GROUP BY DATE'2001-01-01'
+--Result--
+[(datetime.date(2001, 1, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c1 = c11   WHERE c2 BETWEEN {d'2014-01-01'} AND {d'2014-01-05'}
+--Result--
+[(1, datetime.date(2014, 1, 2), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None), (2, datetime.date(2014, 1, 4), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c1 = c11   WHERE c3 BETWEEN {t'01:01:01'} AND {t'01:01:05'}
+--Result--
+[(1, datetime.date(2014, 1, 2), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None), (2, datetime.date(2014, 1, 4), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c1 = c11   WHERE c4 BETWEEN {ts'2014-01-01 01:01:01'} AND {ts'2014-01-05 01:01:01'}
+--Result--
+[(1, datetime.date(2014, 1, 2), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None), (2, datetime.date(2014, 1, 4), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c1 = c11   WHERE c2 BETWEEN DATE'2014-01-01' AND DATE'2014-01-05'
+--Result--
+[(1, datetime.date(2014, 1, 2), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None), (2, datetime.date(2014, 1, 4), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c1 = c11   WHERE c3 BETWEEN TIME'01:01:01' AND TIME'01:01:05'
+--Result--
+[(1, datetime.date(2014, 1, 2), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None), (2, datetime.date(2014, 1, 4), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 LEFT JOIN t2 ON c1 = c11   WHERE c4 BETWEEN TIMESTAMP'2014-01-01 01:01:01'                AND TIMESTAMP'2014-01-05 01:01:01'
+--Result--
+[(1, datetime.date(2014, 1, 2), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None), (2, datetime.date(2014, 1, 4), datetime.timedelta(seconds=3661), datetime.datetime(2014, 1, 2, 1, 1, 1), None, None)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '  2021-07-15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23:01:02  '
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15   23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021/07-15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07/15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23.01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23:01.02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021//07/15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021/07//15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23..01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23:01..02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021--07-15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07--15 23:01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23::01:02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '2021-07-15 23:01::02'
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP '  2021??07//15  23:+*&01.,"02   '
+--Result--
+[(datetime.datetime(2021, 7, 15, 23, 1, 2),)]
++--------------------+
+--Query--
+SELECT CAST('2015-01-15 23-24:25' AS DATETIME)
+--Result--
+[(datetime.datetime(2015, 1, 15, 23, 24, 25),)]
++--------------------+
+--Query--
+SELECT JSON_VALUE('{"data": "2019-01-01 11:11::11"}', '$.data' RETURNING DATETIME) AS v
+--Result--
+[(datetime.datetime(2019, 1, 1, 11, 11, 11),)]
++--------------------+
+--Query--
+SELECT LEAST(CAST('01-01-01' AS DATETIME), '01-01:02')
+--Result--
+[('2001-01-01 00:00:00',)]
++--------------------+
+--Query--
+SELECT f1 FROM t1 WHERE f1 < "01-4:15"
+--Result--
+[(datetime.date(2001, 1, 1),)]
++--------------------+
+--Query--
+SELECT DATE'2021/09-20'
+--Result--
+[(datetime.date(2021, 9, 20),)]
++--------------------+
+--Query--
+SELECT DATE' 2021-09-20'
+--Result--
+[(datetime.date(2021, 9, 20),)]
++--------------------+
+--Query--
+SELECT DATE'2021-09-20 '
+--Result--
+[(datetime.date(2021, 9, 20),)]
++--------------------+
+--Query--
+SELECT JSON_VALUE('{"data": "2019-01/01"}', '$.data' RETURNING DATE) AS v
+--Result--
+[(datetime.date(2019, 1, 1),)]
++--------------------+
+--Query--
+SELECT f1 FROM t1 WHERE f1 < "2001-01/01"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TIME' 10:11:12.098700'
+--Result--
+[(datetime.timedelta(seconds=36672, microseconds=98700),)]
++--------------------+
+--Query--
+SELECT TIME'10:11:12.098700  '
+--Result--
+[(datetime.timedelta(seconds=36672, microseconds=98700),)]
++--------------------+
+--Query--
+SELECT TIME'1  01:01:01',        TIME'1  01:01',        TIME'1  01',        TIME'1 ',        TIME'1', # OK        TIME' 1'
+--Result--
+[(datetime.timedelta(days=1, seconds=3661), datetime.timedelta(days=1, seconds=3660), datetime.timedelta(days=1, seconds=3600), datetime.timedelta(seconds=1), datetime.timedelta(seconds=1), datetime.timedelta(seconds=1))]
++--------------------+
+--Query--
+SELECT JSON_VALUE('{"data": "10:11:12.098700    "}', '$.data' RETURNING TIME) AS v
+--Result--
+[(datetime.timedelta(seconds=36672),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2021-07-17.18:45:00'
+--Result--
+[(datetime.datetime(2021, 7, 17, 18, 45),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'2021-07-17-18:45:00'
+--Result--
+[(datetime.datetime(2021, 7, 17, 18, 45),)]
++--------------------+
+--Query--
+SELECT TIMESTAMP'20211018.121000'
+--Result--
+[(datetime.datetime(2021, 10, 18, 12, 10),)]
++--------------------+

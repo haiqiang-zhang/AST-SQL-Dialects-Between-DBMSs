@@ -1,0 +1,80 @@
+--Query--
+USE test_truncate_database
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM dest_view_memory ORDER BY x LIMIT 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM dest_view_log ORDER BY x LIMIT 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM dest_view_tiny_log ORDER BY x LIMIT 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM dest_view_stripe_log ORDER BY x LIMIT 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM dest_view_merge_tree ORDER BY x LIMIT 1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT name, database, element_count FROM system.dictionaries WHERE database = 'test_truncate_database' AND name = 'dest_dictionary'
+--Result--
+[('dest_dictionary', 'test_truncate_database', 0)]
++--------------------+
+--Query--
+SELECT * FROM dest_dictionary
+--Result--
+[(1, 'First')]
++--------------------+
+--Query--
+SELECT '=== TABLES IN test_truncate_database ==='
+--Result--
+[('=== TABLES IN test_truncate_database ===',)]
++--------------------+
+--Query--
+SHOW TABLES FROM test_truncate_database
+--Result--
+[('dest_dictionary',), ('dest_view_log',), ('dest_view_memory',), ('dest_view_merge_tree',), ('dest_view_stripe_log',), ('dest_view_tiny_log',), ('source_table_dictionary',), ('source_table_log',), ('source_table_memory',), ('source_table_merge_tree',), ('source_table_stripe_log',), ('source_table_tiny_log',)]
++--------------------+
+--Query--
+SELECT '=== DICTIONARIES IN test_truncate_database ==='
+--Result--
+[('=== DICTIONARIES IN test_truncate_database ===',)]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM test_truncate_database
+--Result--
+[('dest_dictionary',)]
++--------------------+
+--Query--
+TRUNCATE DATABASE test_truncate_database
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, database, element_count FROM system.dictionaries WHERE database = 'test_truncate_database' AND name = 'dest_dictionary'
+--Result--
+[]
++--------------------+
+--Query--
+SHOW TABLES FROM test_truncate_database
+--Result--
+[]
++--------------------+
+--Query--
+SHOW DICTIONARIES FROM test_truncate_database
+--Result--
+[]
++--------------------+

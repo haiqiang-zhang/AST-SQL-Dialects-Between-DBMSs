@@ -1,0 +1,70 @@
+--Query--
+select '---- Q1 ----'
+--Result--
+[('---- Q1 ----',)]
++--------------------+
+--Query--
+SELECT 	product_name, 	price, 	group_name, 	AVG(price) OVER (PARTITION BY group_name) FROM products INNER JOIN  product_groups USING (group_id) order by group_name, product_name, price
+--Result--
+[('Dell Vostro', 800.0, 'Laptop', 850.0), ('HP Elite', 1200.0, 'Laptop', 850.0), ('Lenovo Thinkpad', 700.0, 'Laptop', 850.0), ('Sony VAIO', 700.0, 'Laptop', 850.0), ('HTC One', 400.0, 'Smartphone', 500.0), ('Microsoft Lumia', 200.0, 'Smartphone', 500.0), ('Nexus', 500.0, 'Smartphone', 500.0), ('iPhone', 900.0, 'Smartphone', 500.0), ('Kindle Fire', 150.0, 'Tablet', 350.0), ('Samsung Galaxy Tab', 200.0, 'Tablet', 350.0), ('iPad', 700.0, 'Tablet', 350.0)]
++--------------------+
+--Query--
+select '---- Q2 ----'
+--Result--
+[('---- Q2 ----',)]
++--------------------+
+--Query--
+SELECT 	product_name, 	group_name,   price, 	rank() OVER (PARTITION BY group_name ORDER BY price) rank FROM products INNER JOIN product_groups USING (group_id) order by group_name, rank, price, product_name
+--Result--
+[('Lenovo Thinkpad', 'Laptop', 700.0, 1), ('Sony VAIO', 'Laptop', 700.0, 1), ('Dell Vostro', 'Laptop', 800.0, 3), ('HP Elite', 'Laptop', 1200.0, 4), ('Microsoft Lumia', 'Smartphone', 200.0, 1), ('HTC One', 'Smartphone', 400.0, 2), ('Nexus', 'Smartphone', 500.0, 3), ('iPhone', 'Smartphone', 900.0, 4), ('Kindle Fire', 'Tablet', 150.0, 1), ('Samsung Galaxy Tab', 'Tablet', 200.0, 2), ('iPad', 'Tablet', 700.0, 3)]
++--------------------+
+--Query--
+select '---- Q3 ----'
+--Result--
+[('---- Q3 ----',)]
++--------------------+
+--Query--
+SELECT 	product_name, 	group_name, 	price, 	row_number() OVER (PARTITION BY group_name ORDER BY price desc, product_name asc) rn FROM products INNER JOIN product_groups USING (group_id) ORDER BY group_name, rn
+--Result--
+[('HP Elite', 'Laptop', 1200.0, 1), ('Dell Vostro', 'Laptop', 800.0, 2), ('Lenovo Thinkpad', 'Laptop', 700.0, 3), ('Sony VAIO', 'Laptop', 700.0, 4), ('iPhone', 'Smartphone', 900.0, 1), ('Nexus', 'Smartphone', 500.0, 2), ('HTC One', 'Smartphone', 400.0, 3), ('Microsoft Lumia', 'Smartphone', 200.0, 4), ('iPad', 'Tablet', 700.0, 1), ('Samsung Galaxy Tab', 'Tablet', 200.0, 2), ('Kindle Fire', 'Tablet', 150.0, 3)]
++--------------------+
+--Query--
+select '---- Q4 ----'
+--Result--
+[('---- Q4 ----',)]
++--------------------+
+--Query--
+SELECT * FROM (     SELECT         product_name,         group_name,         price,         min(price) OVER (PARTITION BY group_name) AS min_price,         dense_rank() OVER (PARTITION BY group_name ORDER BY price ASC) AS r     FROM products     INNER JOIN product_groups USING (group_id) ) AS t WHERE min_price > 160 ORDER BY     group_name ASC,     r ASC,     product_name ASC
+--Result--
+[('Lenovo Thinkpad', 'Laptop', 700.0, 700.0, 1), ('Sony VAIO', 'Laptop', 700.0, 700.0, 1), ('Dell Vostro', 'Laptop', 800.0, 700.0, 2), ('HP Elite', 'Laptop', 1200.0, 700.0, 3), ('Microsoft Lumia', 'Smartphone', 200.0, 200.0, 1), ('HTC One', 'Smartphone', 400.0, 200.0, 2), ('Nexus', 'Smartphone', 500.0, 200.0, 3), ('iPhone', 'Smartphone', 900.0, 200.0, 4)]
++--------------------+
+--Query--
+select '---- Q5 ----'
+--Result--
+[('---- Q5 ----',)]
++--------------------+
+--Query--
+SELECT 	product_name, 	group_name, 	price, 	FIRST_VALUE (price) OVER (PARTITION BY group_name ORDER BY product_name desc) AS price_per_group_per_alphab FROM products INNER JOIN product_groups USING (group_id) order by group_name, product_name desc
+--Result--
+[('Sony VAIO', 'Laptop', 700.0, 700.0), ('Lenovo Thinkpad', 'Laptop', 700.0, 700.0), ('HP Elite', 'Laptop', 1200.0, 700.0), ('Dell Vostro', 'Laptop', 800.0, 700.0), ('iPhone', 'Smartphone', 900.0, 900.0), ('Nexus', 'Smartphone', 500.0, 900.0), ('Microsoft Lumia', 'Smartphone', 200.0, 900.0), ('HTC One', 'Smartphone', 400.0, 900.0), ('iPad', 'Tablet', 700.0, 700.0), ('Samsung Galaxy Tab', 'Tablet', 200.0, 700.0), ('Kindle Fire', 'Tablet', 150.0, 700.0)]
++--------------------+
+--Query--
+select '---- Q6 ----'
+--Result--
+[('---- Q6 ----',)]
++--------------------+
+--Query--
+SELECT 	product_name, 	group_name, 	price, 	LAST_VALUE (price) OVER (PARTITION BY group_name ORDER BY 			price RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING   ) AS highest_price_per_group FROM 	products INNER JOIN product_groups USING (group_id) order by group_name, product_name
+--Result--
+[('Dell Vostro', 'Laptop', 800.0, 1200.0), ('HP Elite', 'Laptop', 1200.0, 1200.0), ('Lenovo Thinkpad', 'Laptop', 700.0, 1200.0), ('Sony VAIO', 'Laptop', 700.0, 1200.0), ('HTC One', 'Smartphone', 400.0, 900.0), ('Microsoft Lumia', 'Smartphone', 200.0, 900.0), ('Nexus', 'Smartphone', 500.0, 900.0), ('iPhone', 'Smartphone', 900.0, 900.0), ('Kindle Fire', 'Tablet', 150.0, 700.0), ('Samsung Galaxy Tab', 'Tablet', 200.0, 700.0), ('iPad', 'Tablet', 700.0, 700.0)]
++--------------------+
+--Query--
+select '---- Q7 ----'
+--Result--
+[('---- Q7 ----',)]
++--------------------+
+--Query--
+select product_name, price, group_name, round(avg0), round(avg1) from ( SELECT 	product_name, 	price, 	group_name, 	avg(price) OVER (PARTITION BY group_name ORDER BY price) avg0, 	avg(price) OVER (PARTITION BY group_name ORDER BY 			price RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) avg1 FROM products INNER JOIN  product_groups USING (group_id)) t order by group_name, product_name, price
+--Result--
+[('Dell Vostro', 800.0, 'Laptop', 733.0, 850.0), ('HP Elite', 1200.0, 'Laptop', 850.0, 850.0), ('Lenovo Thinkpad', 700.0, 'Laptop', 700.0, 850.0), ('Sony VAIO', 700.0, 'Laptop', 700.0, 850.0), ('HTC One', 400.0, 'Smartphone', 300.0, 500.0), ('Microsoft Lumia', 200.0, 'Smartphone', 200.0, 500.0), ('Nexus', 500.0, 'Smartphone', 367.0, 500.0), ('iPhone', 900.0, 'Smartphone', 500.0, 500.0), ('Kindle Fire', 150.0, 'Tablet', 150.0, 350.0), ('Samsung Galaxy Tab', 200.0, 'Tablet', 175.0, 350.0), ('iPad', 700.0, 'Tablet', 350.0, 350.0)]
++--------------------+

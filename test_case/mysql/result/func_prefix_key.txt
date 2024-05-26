@@ -1,0 +1,35 @@
+--Query--
+SELECT COUNT(*) FROM t1 WHERE b like 'abc%'
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT b like 'abcdf%'  FROM t1 WHERE a > 4 AND b like 'abcd%'
+--Result--
+[(0,), (1,)]
++--------------------+
+--Query--
+SELECT b like 'ab%'  FROM t1 WHERE a > 4 AND b like 'a%'
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT b like 'ab%'  FROM t1 FORCE INDEX(k3) WHERE a > 4 AND b like 'a%'
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT (f1 LIKE null) from t1
+--Result--
+[(None,), (None,)]
++--------------------+
+--Query--
+SELECT 1 FROM t1 WHERE f1 LIKE json_depth(null)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT t2.example, t2.id FROM t2, t1 WHERE t1.example = LOWER(t2.example)
+--Result--
+[('1234567890', 1)]
++--------------------+

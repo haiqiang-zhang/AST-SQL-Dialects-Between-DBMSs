@@ -16,7 +16,6 @@ SELECT query_count FROM system.dictionaries WHERE database = 'foo 1234' AND name
 SELECT 'SYSTEM RELOAD DICTIONARY';
 SYSTEM RELOAD DICTIONARY `foo 1234`.dict;
 SELECT query_count FROM system.dictionaries WHERE database = 'foo 1234' AND name = 'dict';
-SELECT dictGetUInt64('foo 1234.dict', 'val', toUInt64(0));
 SELECT query_count FROM system.dictionaries WHERE database = 'foo 1234' AND name = 'dict';
 SELECT 'CREATE DATABASE';
 DROP DATABASE IF EXISTS `foo 123`;

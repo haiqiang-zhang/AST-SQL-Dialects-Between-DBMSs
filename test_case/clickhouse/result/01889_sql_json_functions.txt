@@ -1,0 +1,50 @@
+--Query--
+SELECT '--JSON_VALUE--'
+--Result--
+[('--JSON_VALUE--',)]
++--------------------+
+--Query--
+SELECT JSON_VALUE('{"hello":1}', '$')
+--Result--
+[('',)]
++--------------------+
+--Query--
+select JSON_VALUE('{"hello":"world"}', '$.b') settings function_json_value_return_type_allow_nullable=true
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select JSON_VALUE('{"hello":{"world":"!"}}', '$.hello') settings function_json_value_return_type_allow_complex=true
+--Result--
+[('{"world":"!"}',)]
++--------------------+
+--Query--
+SELECT JSON_VALUE('{"hello":["world","world2"]}', '$.hello') settings function_json_value_return_type_allow_complex=true
+--Result--
+[('["world","world2"]',)]
++--------------------+
+--Query--
+SELECT '--JSON_QUERY--'
+--Result--
+[('--JSON_QUERY--',)]
++--------------------+
+--Query--
+SELECT JSON_QUERY('{"hello":1}', '$')
+--Result--
+[('[{"hello":1}]',)]
++--------------------+
+--Query--
+SELECT '--JSON_EXISTS--'
+--Result--
+[('--JSON_EXISTS--',)]
++--------------------+
+--Query--
+SELECT JSON_EXISTS('{"hello":1}', '$')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT '--MANY ROWS--'
+--Result--
+[('--MANY ROWS--',)]
++--------------------+

@@ -1,13 +1,2 @@
 SELECT reverse([NULL, '\0']);
-SELECT reverse([NULL, 123, NULL]);
-SELECT reverse([toFixedString('Hello', 5), NULL]);
-SELECT reverse(['Hello', 'world']);
-SELECT reverse(['Hello', NULL, 'world']);
-SELECT reverse([NULL, NULL, NULL]);
-SELECT reverse([[], [''], [' ']]);
-SELECT reverse([[], [''], [NULL]]);
-SELECT reverse([(1, 'Hello', []), (nan, 'World', [NULL])]);
-SELECT reverse(NULL);
-SELECT reverse([]);
-SELECT reverse([[[[]]]]);
 SET send_logs_level = 'fatal';

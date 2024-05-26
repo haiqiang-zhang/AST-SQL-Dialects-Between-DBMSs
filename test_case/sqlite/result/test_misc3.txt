@@ -1,0 +1,135 @@
+--Query--
+VACUUM
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 2e-25*0.5e25
+--Result--
+[(1.0000000000000002,)]
++--------------------+
+--Query--
+SELECT 2.0e-25*000000.500000000000000000000000000000e+00025
+--Result--
+[(1.0000000000000002,)]
++--------------------+
+--Query--
+SELECT 000000000002e-0000000025*0.5e25
+--Result--
+[(1.0000000000000002,)]
++--------------------+
+--Query--
+SELECT 2e-25*0.5e250
+--Result--
+[(1e+225,)]
++--------------------+
+--Query--
+SELECT 2.0e-250*0.5e25
+--Result--
+[(1e-225,)]
++--------------------+
+--Query--
+SELECT '-2.0e-127' * '-0.5e27'
+--Result--
+[(1e-100,)]
++--------------------+
+--Query--
+SELECT '+2.0e-127' * '-0.5e27'
+--Result--
+[(-1e-100,)]
++--------------------+
+--Query--
+SELECT 2.0e-27 * '+0.5e+127'
+--Result--
+[(1e+100,)]
++--------------------+
+--Query--
+SELECT 2.0e-27 * '+0.000005e+132'
+--Result--
+[(1e+100,)]
++--------------------+
+--Query--
+SELECT * FROM t2 ORDER BY a
+--Result--
+[(-2147483649,), (-2147483648,), (-2147483647,), (2147483646,), (2147483647,), (2147483648,), (2147483649,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>=-2147483648 ORDER BY a
+--Result--
+[(-2147483648,), (-2147483647,), (2147483646,), (2147483647,), (2147483648,), (2147483649,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>-2147483648 ORDER BY a
+--Result--
+[(-2147483647,), (2147483646,), (2147483647,), (2147483648,), (2147483649,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>-2147483649 ORDER BY a
+--Result--
+[(-2147483648,), (-2147483647,), (2147483646,), (2147483647,), (2147483648,), (2147483649,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>=0 AND a<2147483649 ORDER BY a DESC
+--Result--
+[(2147483648,), (2147483647,), (2147483646,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>=0 AND a<=2147483648 ORDER BY a DESC
+--Result--
+[(2147483648,), (2147483647,), (2147483646,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>=0 AND a<2147483648 ORDER BY a DESC
+--Result--
+[(2147483647,), (2147483646,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>=0 AND a<=2147483647 ORDER BY a DESC
+--Result--
+[(2147483647,), (2147483646,)]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a>=0 AND a<2147483647 ORDER BY a DESC
+--Result--
+[(2147483646,)]
++--------------------+
+--Query--
+SELECT count(a), count(b) FROM t3
+--Result--
+[(128, 64)]
++--------------------+
+--Query--
+SELECT x2.c AS c, e, b FROM x2 LEFT JOIN          (SELECT b, max(c)+0 AS c FROM x1 GROUP BY b)          USING(c)
+--Result--
+[(1, 'one', 'cat'), (2, 'two', None), (3, 'three', None), (4, 'four', 'dog')]
++--------------------+
+--Query--
+SELECT * FROM (         SELECT x2.c AS c, e, b FROM x2 LEFT JOIN            (SELECT b, max(c)+0 AS c FROM x1 GROUP BY b)            USING(c)       )
+--Result--
+[(1, 'one', 'cat'), (2, 'two', None), (3, 'three', None), (4, 'four', 'dog')]
++--------------------+
+--Query--
+EXPLAIN BEGIN
+--Result--
+[(0, 'Init', 0, 3, 0, None, 0, None), (1, 'AutoCommit', 0, 0, 0, None, 0, None), (2, 'Halt', 0, 0, 0, None, 0, None), (3, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+EXPLAIN COMMIT
+--Result--
+[(0, 'Init', 0, 3, 0, None, 0, None), (1, 'AutoCommit', 1, 0, 0, None, 0, None), (2, 'Halt', 0, 0, 0, None, 0, None), (3, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+EXPLAIN ROLLBACK
+--Result--
+[(0, 'Init', 0, 3, 0, None, 0, None), (1, 'AutoCommit', 1, 1, 0, None, 0, None), (2, 'Halt', 0, 0, 0, None, 0, None), (3, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+EXPLAIN REINDEX
+--Result--
+[(0, 'Init', 0, 65, 0, None, 0, None), (1, 'SorterOpen', 2, 0, 1, 'k(2,,)', 0, None), (2, 'OpenRead', 0, 13, 0, '3', 0, None), (3, 'Rewind', 0, 9, 0, None, 0, None), (4, 'Column', 0, 0, 2, '54321', 0, None), (5, 'Rowid', 0, 3, 0, None, 0, None), (6, 'MakeRecord', 2, 2, 1, None, 0, None), (7, 'SorterInsert', 2, 1, 0, None, 0, None), (8, 'Next', 0, 4, 0, None, 0, None), (9, 'Clear', 14, 0, 0, None, 0, None), (10, 'OpenWrite', 1, 14, 0, 'k(2,,)', 1, None), (11, 'SorterSort', 2, 19, 0, None, 0, None), (12, 'Goto', 0, 15, 0, None, 0, None), (13, 'SorterCompare', 2, 12, 1, '1', 0, None), (14, 'Halt', 2067, 2, 0, 'ex1.a', 2, None), (15, 'SorterData', 2, 1, 1, None, 0, None), (16, 'SeekEnd', 1, 0, 0, None, 0, None), (17, 'IdxInsert', 1, 1, 0, None, 16, None), (18, 'SorterNext', 2, 13, 0, None, 0, None), (19, 'Close', 0, 0, 0, None, 0, None), (20, 'Close', 1, 0, 0, None, 0, None), (21, 'Close', 2, 0, 0, None, 0, None), (22, 'SorterOpen', 5, 0, 1, 'k(2,,)', 0, None), (23, 'OpenRead', 3, 8, 0, '1', 0, None), (24, 'Rewind', 3, 30, 0, None, 0, None), (25, 'Column', 3, 0, 2, None, 0, None), (26, 'Rowid', 3, 3, 0, None, 0, None), (27, 'MakeRecord', 2, 2, 1, None, 0, None), (28, 'SorterInsert', 5, 1, 0, None, 0, None), (29, 'Next', 3, 25, 0, None, 0, None), (30, 'Clear', 9, 0, 0, None, 0, None), (31, 'OpenWrite', 4, 9, 0, 'k(2,,)', 1, None), (32, 'SorterSort', 5, 40, 0, None, 0, None), (33, 'Goto', 0, 36, 0, None, 0, None), (34, 'SorterCompare', 5, 33, 1, '1', 0, None), (35, 'Halt', 2067, 2, 0, 't2.a', 2, None), (36, 'SorterData', 5, 1, 4, None, 0, None), (37, 'SeekEnd', 4, 0, 0, None, 0, None), (38, 'IdxInsert', 4, 1, 0, None, 16, None), (39, 'SorterNext', 5, 34, 0, None, 0, None), (40, 'Close', 3, 0, 0, None, 0, None), (41, 'Close', 4, 0, 0, None, 0, None), (42, 'Close', 5, 0, 0, None, 0, None), (43, 'SorterOpen', 8, 0, 1, 'k(2,,)', 0, None), (44, 'OpenRead', 6, 2, 0, '2', 0, None), (45, 'Rewind', 6, 51, 0, None, 0, None), (46, 'Column', 6, 0, 2, None, 0, None), (47, 'Rowid', 6, 3, 0, None, 0, None), (48, 'MakeRecord', 2, 2, 1, None, 0, None), (49, 'SorterInsert', 8, 1, 0, None, 0, None), (50, 'Next', 6, 46, 0, None, 0, None), (51, 'Clear', 3, 0, 0, None, 0, None), (52, 'OpenWrite', 7, 3, 0, 'k(2,,)', 1, None), (53, 'SorterSort', 8, 61, 0, None, 0, None), (54, 'Goto', 0, 57, 0, None, 0, None), (55, 'SorterCompare', 8, 54, 1, '1', 0, None), (56, 'Halt', 2067, 2, 0, 't1.a', 2, None), (57, 'SorterData', 8, 1, 7, None, 0, None), (58, 'SeekEnd', 7, 0, 0, None, 0, None), (59, 'IdxInsert', 7, 1, 0, None, 16, None), (60, 'SorterNext', 8, 55, 0, None, 0, None), (61, 'Close', 6, 0, 0, None, 0, None), (62, 'Close', 7, 0, 0, None, 0, None), (63, 'Close', 8, 0, 0, None, 0, None), (64, 'Halt', 0, 0, 0, None, 0, None), (65, 'Transaction', 0, 1, 12, '1', 1, None), (66, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+EXPLAIN SELECT a+123456789012, b*4.5678, c FROM ex1 ORDER BY +a, b DESC
+--Result--
+[(0, 'Init', 0, 24, 0, None, 0, None), (1, 'SorterOpen', 1, 6, 0, 'k(2,B,-B)', 0, None), (2, 'OpenRead', 0, 13, 0, '3', 0, None), (3, 'Rewind', 0, 15, 0, None, 0, None), (4, 'Column', 0, 0, 6, '54321', 0, None), (5, 'Add', 7, 6, 3, None, 0, None), (6, 'Column', 0, 1, 6, 'hello', 0, None), (7, 'Multiply', 8, 6, 4, None, 0, None), (8, 'Column', 0, 2, 5, '3.1415926', 0, None), (9, 'RealAffinity', 5, 0, 0, None, 0, None), (10, 'Column', 0, 0, 1, '54321', 0, None), (11, 'Column', 0, 1, 2, 'hello', 0, None), (12, 'MakeRecord', 1, 5, 9, None, 0, None), (13, 'SorterInsert', 1, 9, 1, '5', 0, None), (14, 'Next', 0, 4, 0, None, 1, None), (15, 'OpenPseudo', 2, 10, 6, None, 0, None), (16, 'SorterSort', 1, 23, 0, None, 0, None), (17, 'SorterData', 1, 10, 2, None, 0, None), (18, 'Column', 2, 4, 5, None, 0, None), (19, 'Column', 2, 3, 4, None, 0, None), (20, 'Column', 2, 2, 3, None, 0, None), (21, 'ResultRow', 3, 3, 0, None, 0, None), (22, 'SorterNext', 1, 17, 0, None, 0, None), (23, 'Halt', 0, 0, 0, None, 0, None), (24, 'Transaction', 0, 0, 12, '1', 1, None), (25, 'Int64', 0, 7, 0, '123456789012', 0, None), (26, 'Real', 0, 8, 0, '4.5678', 0, None), (27, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+

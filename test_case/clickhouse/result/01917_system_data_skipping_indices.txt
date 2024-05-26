@@ -1,0 +1,15 @@
+--Query--
+SELECT * FROM system.data_skipping_indices WHERE database = currentDatabase()
+--Result--
+[('test', 'data_01917', 'd1_idx', 'minmax', 'minmax', 'd1', 1, 0, 0, 0), ('test', 'data_01917', 'd1_null_idx', 'minmax', 'minmax', 'assumeNotNull(d1_null)', 1, 0, 0, 0), ('test', 'data_01917_2', 'memory', 'set', 'set(1000)', 'frequency * length(name)', 5, 0, 0, 0), ('test', 'data_01917_2', 'sample_index1', 'minmax', 'minmax', 'length(name), name', 4, 0, 0, 0), ('test', 'data_01917_2', 'sample_index2', 'ngrambf_v1', 'ngrambf_v1(3, 256, 2, 0)', 'lower(name), name', 4, 0, 0, 0)]
++--------------------+
+--Query--
+SELECT count(*) FROM system.data_skipping_indices WHERE table = 'data_01917' AND database = currentDatabase()
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT name FROM system.data_skipping_indices WHERE type = 'minmax' AND database = currentDatabase()
+--Result--
+[('d1_idx',), ('d1_null_idx',), ('sample_index1',)]
++--------------------+

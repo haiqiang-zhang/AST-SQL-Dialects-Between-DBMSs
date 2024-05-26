@@ -29,34 +29,14 @@ select id, txid_visible_in_snapshot(id, snap) from snapshot_test, generate_serie
 [(11, True), (12, True), (13, False), (14, True), (15, False), (16, True), (17, True), (18, False), (19, True), (20, False), (21, False)]
 +--------------------+
 --Query--
-select id, txid_visible_in_snapshot(id, snap) from snapshot_test, generate_series(90, 160) id where nr = 4
---Result--
-[(90, True), (91, True), (92, True), (93, True), (94, True), (95, True), (96, True), (97, True), (98, True), (99, True), (100, True), (101, False), (102, False), (103, False), (104, False), (105, False), (106, False), (107, False), (108, False), (109, False), (110, False), (111, False), (112, False), (113, False), (114, False), (115, False), (116, False), (117, False), (118, False), (119, False), (120, False), (121, False), (122, False), (123, False), (124, False), (125, False), (126, False), (127, False), (128, False), (129, False), (130, False), (131, False), (132, True), (133, True), (134, True), (135, True), (136, True), (137, True), (138, True), (139, True), (140, True), (141, True), (142, True), (143, True), (144, True), (145, True), (146, True), (147, True), (148, True), (149, True), (150, False), (151, False), (152, False), (153, False), (154, False), (155, False), (156, False), (157, False), (158, False), (159, False), (160, False)]
-+--------------------+
---Query--
 select txid_current() >= txid_snapshot_xmin(txid_current_snapshot())
 --Result--
 [(True,)]
 +--------------------+
 --Query--
-select txid_visible_in_snapshot(txid_current(), txid_current_snapshot())
---Result--
-[(False,)]
-+--------------------+
---Query--
 select txid_snapshot '1000100010001000:1000100010001100:1000100010001012,1000100010001013'
 --Result--
 [('1000100010001000:1000100010001100:1000100010001012,1000100010001013',)]
-+--------------------+
---Query--
-select txid_visible_in_snapshot('1000100010001012', '1000100010001000:1000100010001100:1000100010001012,1000100010001013')
---Result--
-[(False,)]
-+--------------------+
---Query--
-select txid_visible_in_snapshot('1000100010001015', '1000100010001000:1000100010001100:1000100010001012,1000100010001013')
---Result--
-[(True,)]
 +--------------------+
 --Query--
 SELECT txid_snapshot '1:9223372036854775807:3'

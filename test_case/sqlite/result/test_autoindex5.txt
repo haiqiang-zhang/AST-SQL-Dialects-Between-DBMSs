@@ -1,0 +1,25 @@
+--Query--
+EXPLAIN QUERY PLAN    SELECT     st.bug_name,     (SELECT ALL debian_cve.bug FROM debian_cve       WHERE debian_cve.bug_name = st.bug_name       ORDER BY debian_cve.bug),     sp.release   FROM      source_package_status AS st,      source_packages AS sp,      bugs   WHERE      sp.rowid = st.package      AND st.bug_name = bugs.name      AND ( st.bug_name LIKE 'CVE-%' OR st.bug_name LIKE 'TEMP-%' )      AND ( sp.release = 'sid' OR sp.release = 'stretch' OR sp.release = 'jessie'             OR sp.release = 'wheezy' OR sp.release = 'squeeze' )   ORDER BY sp.name, st.bug_name, sp.release, sp.subrelease
+--Result--
+[(5, 0, 0, 'SCAN st USING COVERING INDEX sqlite_autoindex_source_package_status_1'), (13, 0, 0, 'SEARCH sp USING INTEGER PRIMARY KEY (rowid=?)'), (26, 0, 0, 'SEARCH bugs USING COVERING INDEX sqlite_autoindex_bugs_1 (name=?)'), (31, 0, 0, 'CORRELATED SCALAR SUBQUERY 1'), (34, 31, 0, 'CO-ROUTINE debian_cve'), (39, 34, 0, 'SCAN debian_bugs USING COVERING INDEX sqlite_autoindex_debian_bugs_1'), (41, 34, 0, 'SEARCH package_notes USING INTEGER PRIMARY KEY (rowid=?)'), (44, 34, 0, 'SEARCH st USING COVERING INDEX sqlite_autoindex_source_package_status_1 (bug_name=?)'), (56, 34, 0, 'USE TEMP B-TREE FOR DISTINCT'), (72, 31, 0, 'SEARCH debian_cve USING AUTOMATIC COVERING INDEX (bug_name=?)'), (85, 31, 0, 'USE TEMP B-TREE FOR ORDER BY'), (98, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT (       SELECT sum(z) FROM vvv WHERE x='aaa'   ) FROM one
+--Result--
+[(8.0,)]
++--------------------+
+--Query--
+SELECT (     SELECT aaa FROM t1 GROUP BY (       SELECT bbb FROM (         SELECT ccc AS bbb FROM (            SELECT 1 ccc         ) WHERE rowid IS NOT 1       ) WHERE bbb = 1     )   )
+--Result--
+[(9,)]
++--------------------+
+--Query--
+SELECT artists.*   FROM artists   INNER JOIN artists AS 'b' ON (b.id = artists.id)   WHERE (artists.id IN (     SELECT albums.artist_id     FROM albums     WHERE ((name = 'Al')       AND (albums.artist_id IS NOT NULL)       AND (albums.id IN (         SELECT id         FROM (           SELECT albums.id,                  row_number() OVER (                    PARTITION BY albums.artist_id                    ORDER BY name                  ) AS 'x'           FROM albums           WHERE (name = 'Al')         ) AS 't1'         WHERE (x = 1)       ))       AND (albums.id IN (1, 2)))   ))
+--Result--
+[(1, 'Ar')]
++--------------------+
+--Query--
+SELECT * FROM t5 WHERE (a=1 OR b=2) AND c IN (     SELECT e FROM (SELECT DISTINCT e FROM t6) WHERE e=1   )
+--Result--
+[(1, 1, 1, 1)]
++--------------------+

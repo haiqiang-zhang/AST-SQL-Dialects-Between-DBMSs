@@ -1,0 +1,30 @@
+--Query--
+SHOW CREATE TABLE t_nested_detach
+--Result--
+[('CREATE TABLE test.t_nested_detach\n(\n    `n` Nested(u UInt32, s String)\n)\nENGINE = Log',)]
++--------------------+
+--Query--
+DESC TABLE t_nested_detach
+--Result--
+[('n', 'Nested(u UInt32, s String)', '', '', '', '', '')]
++--------------------+
+--Query--
+DETACH TABLE t_nested_detach
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE t_nested_detach
+--Result--
+[]
++--------------------+
+--Query--
+SHOW CREATE TABLE t_nested_detach
+--Result--
+[('CREATE TABLE test.t_nested_detach\n(\n    `n` Nested(u UInt32, s String)\n)\nENGINE = Log',)]
++--------------------+
+--Query--
+DESC TABLE t_nested_detach
+--Result--
+[('n', 'Nested(u UInt32, s String)', '', '', '', '', '')]
++--------------------+

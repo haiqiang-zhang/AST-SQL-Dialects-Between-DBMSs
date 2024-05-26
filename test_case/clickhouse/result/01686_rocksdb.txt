@@ -1,0 +1,85 @@
+--Query--
+SELECT value FROM system.rocksdb WHERE database = currentDatabase() and table = '01686_test' and name = 'number.keys.written'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT value FROM system.rocksdb WHERE database = currentDatabase() and table = '01686_test' and name = 'number.keys.written'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key = 123
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key = -123
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key = 123 OR key = 4567 ORDER BY key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key = NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key = NULL OR key = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key IN (123, 456, -123) ORDER BY key
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '--'
+--Result--
+[('--',)]
++--------------------+
+--Query--
+DETACH TABLE 01686_test SYNC
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE 01686_test
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM 01686_test WHERE key IN (99, 999, 9999, -123) ORDER BY key
+--Result--
+[]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+EXPLAIN SYNTAX SELECT -1
+--Result--
+[('SELECT -1',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT -(1)
+--Result--
+[('SELECT -(1)',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT -(-(1))
+--Result--
+[('SELECT -(-(1))',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT -(-(-(1)))
+--Result--
+[('SELECT -(-(-(1)))',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT -(-(-1))
+--Result--
+[('SELECT -(-(-1))',)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT -(-toUInt64(-(1)))
+--Result--
+[('SELECT -(-toUInt64(-(1)))',)]
++--------------------+

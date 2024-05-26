@@ -1,0 +1,45 @@
+--Query--
+SELECT 'Nullable'
+--Result--
+[('Nullable',)]
++--------------------+
+--Query--
+SELECT count() FROM null_subcolumns WHERE n.null
+--Result--
+[(2,)]
++--------------------+
+--Query--
+DETACH TABLE null_subcolumns
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE null_subcolumns
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'Map'
+--Result--
+[('Map',)]
++--------------------+
+--Query--
+SELECT count() FROM map_subcolumns PREWHERE has(m.keys, 'b')
+--Result--
+[(2,)]
++--------------------+
+--Query--
+DETACH TABLE map_subcolumns
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE map_subcolumns
+--Result--
+[]
++--------------------+
+--Query--
+SELECT id, m.size0 FROM map_subcolumns
+--Result--
+[(1, 2), (2, 2), (3, 3)]
++--------------------+

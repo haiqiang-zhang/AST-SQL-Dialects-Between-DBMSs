@@ -1,0 +1,25 @@
+--Query--
+SHOW CREATE TABLE rename_table
+--Result--
+[('CREATE TABLE test.rename_table\n(\n    `key` Int32,\n    `old_value1` Int32,\n    `value1` Int32\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE rename_table
+--Result--
+[('CREATE TABLE test.rename_table\n(\n    `k` Int32,\n    `v1` Int32,\n    `v2` Int32\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT '---polymorphic---'
+--Result--
+[('---polymorphic---',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE rename_table_polymorphic
+--Result--
+[('CREATE TABLE test.rename_table_polymorphic\n(\n    `key` Int32,\n    `old_value1` Int32,\n    `value1` Int32\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_rows_for_wide_part = 10000, index_granularity = 8192',)]
++--------------------+
+--Query--
+SHOW CREATE TABLE rename_table_polymorphic
+--Result--
+[('CREATE TABLE test.rename_table_polymorphic\n(\n    `k` Int32,\n    `v1` Int32,\n    `v2` Int32\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_rows_for_wide_part = 10000, index_granularity = 8192',)]
++--------------------+

@@ -1,5 +1,4 @@
 SELECT COUNT(@@GLOBAL.sort_buffer_size);
-SELECT COUNT(@@SESSION.sort_buffer_size);
 SELECT @@GLOBAL.sort_buffer_size;
 SELECT @@SESSION.sort_buffer_size;
 SELECT @@GLOBAL.sort_buffer_size;
@@ -11,15 +10,7 @@ WHERE VARIABLE_NAME='sort_buffer_size';
 SELECT @@session.sort_buffer_size = VARIABLE_VALUE 
 FROM performance_schema.session_variables 
 WHERE VARIABLE_NAME='sort_buffer_size';
-SELECT COUNT(@@GLOBAL.sort_buffer_size);
-SELECT COUNT(VARIABLE_VALUE)
-FROM performance_schema.global_variables 
-WHERE VARIABLE_NAME='sort_buffer_size';
 SELECT @@sort_buffer_size = @@GLOBAL.sort_buffer_size;
-SELECT COUNT(@@sort_buffer_size);
-SELECT COUNT(@@local.sort_buffer_size);
-SELECT COUNT(@@SESSION.sort_buffer_size);
-SELECT COUNT(@@GLOBAL.sort_buffer_size);
 SELECT @@GLOBAL.sort_buffer_size;
 select @@session.sort_buffer_size;
 select @@session.sort_buffer_size;

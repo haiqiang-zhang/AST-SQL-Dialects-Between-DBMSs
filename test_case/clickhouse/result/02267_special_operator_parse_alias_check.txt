@@ -1,0 +1,45 @@
+--Query--
+SELECT cast('1234' AS UInt32)
+--Result--
+[(1234,)]
++--------------------+
+--Query--
+SELECT substring('1234' FROM 2)
+--Result--
+[('234',)]
++--------------------+
+--Query--
+SELECT trim(LEADING 'a' AS arg_1 FROM 'abca' AS arg_2), arg_1, arg_2
+--Result--
+[('bca', 'a', 'abca')]
++--------------------+
+--Query--
+SELECT EXTRACT(DAY FROM toDate('2019-05-05') as arg_1), arg_1
+--Result--
+[(5, datetime.date(2019, 5, 5))]
++--------------------+
+--Query--
+SELECT extract('1234' AS arg_1, '123' AS arg_2), arg_1, arg_2
+--Result--
+[('123', '1234', '123')]
++--------------------+
+--Query--
+SELECT position(('123' AS arg_1) IN ('1234' AS arg_2)), arg_1, arg_2
+--Result--
+[(1, '123', '1234')]
++--------------------+
+--Query--
+SELECT dateAdd(DAY, 1 AS arg_1, toDate('2019-05-05') AS arg_2), arg_1, arg_2
+--Result--
+[(datetime.date(2019, 5, 6), 1, datetime.date(2019, 5, 5))]
++--------------------+
+--Query--
+SELECT dateSub(DAY, 1 AS arg_1, toDate('2019-05-05') AS arg_2), arg_1, arg_2
+--Result--
+[(datetime.date(2019, 5, 4), 1, datetime.date(2019, 5, 5))]
++--------------------+
+--Query--
+SELECT dateDiff(DAY, toDate('2019-05-05') AS arg_1, toDate('2019-05-06') AS arg_2), arg_1, arg_2
+--Result--
+[(1, datetime.date(2019, 5, 5), datetime.date(2019, 5, 6))]
++--------------------+

@@ -1,0 +1,65 @@
+--Query--
+PREPARE x FROM 'INSERT INTO t1 VALUES (1), (2)'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM temp1 ORDER BY 1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM temp1 ORDER BY 1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @a
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM newt ORDER BY 1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@TIMESTAMP
+--Result--
+[(1716686505.26473,)]
++--------------------+
+--Query--
+SELECT @@TIMESTAMP=200
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 2
+--Result--
+[(2,)]
++--------------------+

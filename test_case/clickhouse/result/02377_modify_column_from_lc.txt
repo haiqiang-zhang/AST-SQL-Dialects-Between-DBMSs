@@ -1,0 +1,15 @@
+--Query--
+OPTIMIZE TABLE t_modify_from_lc_1 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+OPTIMIZE TABLE t_modify_from_lc_2 FINAL
+--Result--
+[]
++--------------------+
+--Query--
+WITH groupArray((table, bytes))::Map(String, UInt64) AS stats SELECT     length(stats), stats['t_modify_from_lc_1'] < stats['t_modify_from_lc_2'] FROM (     SELECT table, sum(bytes_on_disk) AS bytes FROM system.parts     WHERE database = currentDatabase() AND table LIKE 't_modify_from_lc%' AND active     GROUP BY table )
+--Result--
+[(2, 1)]
++--------------------+

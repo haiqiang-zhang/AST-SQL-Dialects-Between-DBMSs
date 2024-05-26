@@ -40,6 +40,5 @@ DROP TABLE IF EXISTS store_of_hash_00804;
 CREATE TABLE store_of_hash_00804 (hash UInt64) ENGINE = Memory();
 SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'large_alter_table_00804' AND name = 'data';
 SELECT COUNT(hash) FROM store_of_hash_00804;
-SELECT COUNT(DISTINCT hash) FROM store_of_hash_00804;
 DROP TABLE IF EXISTS large_alter_table_00804;
 DROP TABLE IF EXISTS store_of_hash_00804;

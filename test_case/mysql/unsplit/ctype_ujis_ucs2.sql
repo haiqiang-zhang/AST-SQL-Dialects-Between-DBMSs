@@ -1140,7 +1140,6 @@ update t1 set name='User defined range #2' where ujis >= 0x8FF5A1 and ujis <= 0x
 update t1 set name='UNASSIGNED' where name='';
 update ignore t1 set ucs2=ujis, ujis2=ucs2;
 select hex(ujis), hex(ucs2), hex(ujis2), name from t1 where ujis=ujis2 order by ujis;
-select hex(ujis), hex(ucs2), hex(ujis2), name from t1 where ujis<>ujis2 order by ujis;
 drop table t1;
 drop table t2;
 create table t1 (
@@ -1164,7 +1163,6 @@ insert into t1 (ujis,name) values (0xA2CC,   'U+00AC NOT SIGN');
 insert into t1 (ujis,name) values (0x8FA2B7, 'U+007E TILDE');
 insert into t1 (ujis,name) values (0x8FA2C3, 'U+00A6 BROKEN BAR');
 update t1 set ucs2=ujis, ujis2=ucs2;
-select hex(ujis), hex(ucs2), hex(ujis2), name from t1;
 drop table t1;
 create table t1 (
   ujis char(1) character set ujis,
@@ -1183,5 +1181,4 @@ insert into t1 (ucs2,name) values (0xFFE1,'U+FFE1 FULLWIDTH POUND SIGN');
 insert into t1 (ucs2,name) values (0xFFE2,'U+FFE2 FULLWIDTH NOT SIGN');
 insert into t1 (ucs2,name) values (0xFFE4,'U+FFE4 FULLWIDTH BROKEN BAR');
 update ignore t1 set ujis=ucs2;
-select hex(ucs2),hex(ujis),name from t1 order by name;
 drop table t1;

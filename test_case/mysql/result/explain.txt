@@ -1,0 +1,150 @@
+--Query--
+select * from t1 where str is null
+--Result--
+[(1, None), (2, None)]
++--------------------+
+--Query--
+select * from t1 where str="foo"
+--Result--
+[(3, 'foo')]
++--------------------+
+--Query--
+select 3 into @v1
+--Result--
+[]
++--------------------+
+--Query--
+prepare s1 from  'EXPLAIN SELECT 1    FROM (SELECT COUNT(DISTINCT t1.a) FROM t1,t2 GROUP BY t1.a) AS s1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s1 from  'EXPLAIN FORMAT=JSON SELECT 1    FROM (SELECT COUNT(DISTINCT t1.a) FROM t1,t2 GROUP BY t1.a) AS s1'
+--Result--
+[]
++--------------------+
+--Query--
+prepare s1 from  'EXPLAIN SELECT 1    FROM (SELECT COUNT(DISTINCT t1.a) FROM t1,t2 GROUP BY t1.a) AS s1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @@session.sql_mode INTO @old_sql_mode
+--Result--
+[]
++--------------------+
+--Query--
+SELECT outr.dt FROM t1 AS outr WHERE outr.dt IN (SELECT innr.dt FROM t2 AS innr WHERE outr.dt IS NULL )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT outr.dt FROM t1 AS outr WHERE outr.dt IN ( SELECT innr.dt FROM t2 AS innr WHERE outr.t < '2005-11-13 7:41:31' )
+--Result--
+[(datetime.datetime(2001, 1, 1, 1, 1, 1),), (datetime.datetime(2001, 1, 1, 1, 1, 1),)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'EXPLAIN SELECT 1 FROM t1  WHERE 1 > ALL((SELECT 1 FROM t1 RIGHT OUTER JOIN t1 a  ON (MATCH(t1.f1) AGAINST (""))  WHERE t1.f1 GROUP BY t1.f1))'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'EXPLAIN SELECT 1 FROM t1  WHERE 1 > ALL((SELECT 1 FROM t1 JOIN t1 a  ON (MATCH(t1.f1) AGAINST (""))  WHERE t1.f1 GROUP BY t1.f1))'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1  UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1  UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1  UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1  UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1  UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1  UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1
+--Result--
+[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE url=1
+--Result--
+[('1',)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE url>3
+--Result--
+[('4',), ('5',)]
++--------------------+
+--Query--
+PREPARE s FROM  'EXPLAIN SELECT SUBSTRING(1, (SELECT 1 FROM t1 a1 RIGHT OUTER JOIN t1 ON 0)) AS d FROM t1 WHERE 0 > ANY (SELECT @a FROM t1)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE s
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 WHERE a<>a
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a<>a FROM t1
+--Result--
+[(0,), (None,)]
++--------------------+
+--Query--
+SELECT a>a FROM t1
+--Result--
+[(0,), (None,)]
++--------------------+
+--Query--
+SELECT a<a FROM t1
+--Result--
+[(0,), (None,)]
++--------------------+
+--Query--
+SELECT a<=>a FROM t1
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT a<=a FROM t1
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+SELECT a>=a FROM t1
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+SELECT a=a FROM t1
+--Result--
+[(1,), (None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a= 1 OR a<>a)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a=1 AND a<>a)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a=1 OR a<>a)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE (a=1 AND a<>a)
+--Result--
+[]
++--------------------+

@@ -1,0 +1,7 @@
+SELECT likelihood(9223372036854775807, 0.5);
+SELECT quote(likelihood(x'010203000405', 0.5));
+SELECT unlikely(9223372036854775807);
+SELECT likely(CAST(1 AS INT))=='1';
+SELECT unlikely(CAST(1 AS INT))=='1';
+SELECT likelihood(CAST(1 AS INT),0.5)=='1';
+SELECT likely(9223372036854775807);

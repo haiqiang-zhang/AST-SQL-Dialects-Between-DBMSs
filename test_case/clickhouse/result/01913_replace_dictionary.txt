@@ -1,0 +1,15 @@
+--Query--
+SELECT * FROM 01913_db.test_dictionary
+--Result--
+[(0, 'Value0')]
++--------------------+
+--Query--
+REPLACE DICTIONARY 01913_db.test_dictionary (     id UInt64,     value_1 String ) PRIMARY KEY id LAYOUT(HASHED()) SOURCE(CLICKHOUSE(DB '01913_db' TABLE 'test_source_table_2')) LIFETIME(0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM 01913_db.test_dictionary
+--Result--
+[(0, 'Value1')]
++--------------------+

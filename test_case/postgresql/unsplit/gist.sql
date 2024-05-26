@@ -33,11 +33,6 @@ order by p <-> point(0.201, 0.201);
 select p from gist_tbl where p <@ box(point(0,0), point(0.5, 0.5))
 order by p <-> point(0.201, 0.201);
 explain (costs off)
-select p from gist_tbl where p <@ box(point(0,0), point(0.5, 0.5))
-order by point(0.101, 0.101) <-> p;
-select p from gist_tbl where p <@ box(point(0,0), point(0.5, 0.5))
-order by point(0.101, 0.101) <-> p;
-explain (costs off)
 select p from
   (values (box(point(0,0), point(0.5,0.5))),
           (box(point(0.5,0.5), point(0.75,0.75))),
@@ -55,16 +50,6 @@ create index gist_tbl_box_index on gist_tbl using gist (b);
 explain (costs off)
 select b from gist_tbl where b <@ box(point(5,5), point(6,6));
 select b from gist_tbl where b <@ box(point(5,5), point(6,6));
-explain (costs off)
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by b <-> point(5.2, 5.91);
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by b <-> point(5.2, 5.91);
-explain (costs off)
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by point(5.2, 5.91) <-> b;
-select b from gist_tbl where b <@ box(point(5,5), point(6,6))
-order by point(5.2, 5.91) <-> b;
 drop index gist_tbl_box_index;
 create index gist_tbl_multi_index on gist_tbl using gist (p, c);
 explain (costs off)

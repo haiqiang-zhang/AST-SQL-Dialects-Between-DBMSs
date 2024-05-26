@@ -1,0 +1,85 @@
+--Query--
+select t1.* from t1
+--Result--
+[(1, 2, 3), (11, 22, 33)]
++--------------------+
+--Query--
+select t2.* from t2
+--Result--
+[(99,)]
++--------------------+
+--Query--
+select t1.*, t1.* from t1
+--Result--
+[(1, 2, 3, 1, 2, 3), (11, 22, 33, 11, 22, 33)]
++--------------------+
+--Query--
+select t1.*, a, t1.* from t1
+--Result--
+[(1, 2, 3, 1, 1, 2, 3), (11, 22, 33, 11, 11, 22, 33)]
++--------------------+
+--Query--
+select a, t1.* from t1
+--Result--
+[(1, 1, 2, 3), (11, 11, 22, 33)]
++--------------------+
+--Query--
+select t1.*, a from t1
+--Result--
+[(1, 2, 3, 1), (11, 22, 33, 11)]
++--------------------+
+--Query--
+select a, t1.*, b from t1
+--Result--
+[(1, 1, 2, 3, 2), (11, 11, 22, 33, 22)]
++--------------------+
+--Query--
+select (select d from t2 where d > a), t1.* from t1
+--Result--
+[(99, 1, 2, 3), (99, 11, 22, 33)]
++--------------------+
+--Query--
+select t1.*, (select a from t2 where d > a) from t1
+--Result--
+[(1, 2, 3, 1), (11, 22, 33, 11)]
++--------------------+
+--Query--
+select a as 'x', t1.* from t1
+--Result--
+[(1, 1, 2, 3), (11, 11, 22, 33)]
++--------------------+
+--Query--
+select t1.*, a as 'x' from t1
+--Result--
+[(1, 2, 3, 1), (11, 22, 33, 11)]
++--------------------+
+--Query--
+select a as 'x', t1.*, b as 'x' from t1
+--Result--
+[(1, 1, 2, 3, 2), (11, 11, 22, 33, 22)]
++--------------------+
+--Query--
+select (select d from t2 where d > a) as 'x', t1.* from t1
+--Result--
+[(99, 1, 2, 3), (99, 11, 22, 33)]
++--------------------+
+--Query--
+select t1.*, (select a from t2 where d > a) as 'x' from t1
+--Result--
+[(1, 2, 3, 1), (11, 22, 33, 11)]
++--------------------+
+--Query--
+select (select t2.* from t2) from t1
+--Result--
+[(99,), (99,)]
++--------------------+
+--Query--
+select a, (select t2.* from t2) from t1
+--Result--
+[(1, 99), (11, 99)]
++--------------------+
+--Query--
+select t1.*, (select t2.* from t2) from t1
+--Result--
+[(1, 2, 3, 99), (11, 22, 33, 99)]
++--------------------+

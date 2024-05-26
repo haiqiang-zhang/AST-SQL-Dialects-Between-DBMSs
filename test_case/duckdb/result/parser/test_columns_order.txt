@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM tbl ORDER BY COLUMNS('col1|col3')
+--Result--
+[(1, 200, 10), (2, 100, 20), (3, 200, 0)]
++--------------------+
+--Query--
+SELECT * FROM tbl ORDER BY COLUMNS('col2|col3')
+--Result--
+[(2, 100, 20), (3, 200, 0), (1, 200, 10)]
++--------------------+
+--Query--
+SELECT * FROM tbl ORDER BY COLUMNS('col2|col3') DESC
+--Result--
+[(1, 200, 10), (3, 200, 0), (2, 100, 20)]
++--------------------+
+--Query--
+SELECT * FROM tbl ORDER BY COLUMNS('col2') DESC, COLUMNS('col3') ASC
+--Result--
+[(3, 200, 0), (1, 200, 10), (2, 100, 20)]
++--------------------+
+--Query--
+SELECT * FROM tbl ORDER BY COLUMNS(x -> x[-1] IN ('2', '3'))
+--Result--
+[(2, 100, 20), (3, 200, 0), (1, 200, 10)]
++--------------------+
+--Query--
+FROM tbl UNION FROM tbl ORDER BY COLUMNS('col2|col3') DESC
+--Result--
+[(1, 200, 10), (3, 200, 0), (2, 100, 20)]
++--------------------+

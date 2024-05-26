@@ -1,0 +1,45 @@
+--Query--
+select 'basic'
+--Result--
+[('basic',)]
++--------------------+
+--Query--
+select countMatches('', 'foo')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 'case sensitive'
+--Result--
+[('case sensitive',)]
++--------------------+
+--Query--
+select countMatches(concat(toString(number), 'foofoo'), 'foo') from numbers(2)
+--Result--
+[(2,), (2,)]
++--------------------+
+--Query--
+select 'case insensitive'
+--Result--
+[('case insensitive',)]
++--------------------+
+--Query--
+select countMatchesCaseInsensitive('foobarfoo', 'FOo')
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select countMatchesCaseInsensitive(concat(toString(number), 'Foofoo'), 'foo') from numbers(2)
+--Result--
+[(2,), (2,)]
++--------------------+
+--Query--
+select 'errors'
+--Result--
+[('errors',)]
++--------------------+
+--Query--
+select 'FixedString'
+--Result--
+[('FixedString',)]
++--------------------+

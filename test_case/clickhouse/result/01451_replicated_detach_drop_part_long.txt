@@ -1,0 +1,25 @@
+--Query--
+SELECT name FROM system.detached_parts WHERE table = 'replica2' AND database = currentDatabase()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name FROM system.detached_parts WHERE table = 'replica2' AND database = currentDatabase()
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-- drop part --'
+--Result--
+[('-- drop part --',)]
++--------------------+
+--Query--
+SELECT '-- resume merges --'
+--Result--
+[('-- resume merges --',)]
++--------------------+
+--Query--
+SELECT name FROM system.parts WHERE table = 'replica2' AND active AND database = currentDatabase()
+--Result--
+[]
++--------------------+

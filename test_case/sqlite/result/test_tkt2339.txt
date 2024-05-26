@@ -1,0 +1,45 @@
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC LIMIT 2)     UNION     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC LIMIT 2)
+--Result--
+[(3,), (4,), (13,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC LIMIT 2)     UNION ALL     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC LIMIT 2)
+--Result--
+[(4,), (3,), (14,), (13,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC)     UNION ALL     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC LIMIT 2)
+--Result--
+[(4,), (3,), (2,), (1,), (14,), (13,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC LIMIT 2)     UNION ALL     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC)
+--Result--
+[(4,), (3,), (14,), (13,), (12,), (11,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC LIMIT 2)     UNION     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC)
+--Result--
+[(3,), (4,), (11,), (12,), (13,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC LIMIT 2)     EXCEPT     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC)
+--Result--
+[(3,), (4,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 LIMIT 2)     UNION     SELECT * FROM (SELECT * FROM t2 ORDER BY num DESC LIMIT 2)
+--Result--
+[(1,), (2,), (13,), (14,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 LIMIT 2)     UNION     SELECT * FROM (SELECT * FROM t2 LIMIT 2)
+--Result--
+[(1,), (2,), (11,), (12,)]
++--------------------+
+--Query--
+SELECT * FROM (SELECT * FROM t1 ORDER BY num DESC LIMIT 2)     UNION     SELECT * FROM (SELECT * FROM t2 LIMIT 2)
+--Result--
+[(3,), (4,), (11,), (12,)]
++--------------------+

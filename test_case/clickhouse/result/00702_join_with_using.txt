@@ -1,0 +1,35 @@
+--Query--
+SELECT * FROM using1 ALL LEFT JOIN (SELECT * FROM using2) js2 USING (a, b) ORDER BY a
+--Result--
+[(1, 1), (2, 2), (3, 3)]
++--------------------+
+--Query--
+select * from persons all inner join children using id order by id, name, childName
+--Result--
+[('1', 'John', 'Robert'), ('1', 'John', 'Susan'), ('3', 'Daniel', 'Sarah'), ('4', 'James', 'David'), ('4', 'James', 'Joseph'), ('5', 'Amanda', 'Robert')]
++--------------------+
+--Query--
+select * from persons all inner join (select * from children) as j using id order by id, name, childName
+--Result--
+[('1', 'John', 'Robert'), ('1', 'John', 'Susan'), ('3', 'Daniel', 'Sarah'), ('4', 'James', 'David'), ('4', 'James', 'Joseph'), ('5', 'Amanda', 'Robert')]
++--------------------+
+--Query--
+select * from (select * from persons) as s all inner join (select * from children ) as j using id order by id, name, childName
+--Result--
+[('1', 'John', 'Robert'), ('1', 'John', 'Susan'), ('3', 'Daniel', 'Sarah'), ('4', 'James', 'David'), ('4', 'James', 'Joseph'), ('5', 'Amanda', 'Robert')]
++--------------------+
+--Query--
+select * from persons all inner join (select * from children) using id order by id, name, childName
+--Result--
+[('1', 'John', 'Robert'), ('1', 'John', 'Susan'), ('3', 'Daniel', 'Sarah'), ('4', 'James', 'David'), ('4', 'James', 'Joseph'), ('5', 'Amanda', 'Robert')]
++--------------------+
+--Query--
+select * from (select * from persons) all inner join (select * from children) using id order by id, name, childName
+--Result--
+[('1', 'John', 'Robert'), ('1', 'John', 'Susan'), ('3', 'Daniel', 'Sarah'), ('4', 'James', 'David'), ('4', 'James', 'Joseph'), ('5', 'Amanda', 'Robert')]
++--------------------+
+--Query--
+select * from (select * from persons) as s all inner join (select * from children) using id order by id, name, childName
+--Result--
+[('1', 'John', 'Robert'), ('1', 'John', 'Susan'), ('3', 'Daniel', 'Sarah'), ('4', 'James', 'David'), ('4', 'James', 'Joseph'), ('5', 'Amanda', 'Robert')]
++--------------------+

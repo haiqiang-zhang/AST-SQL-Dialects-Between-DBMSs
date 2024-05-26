@@ -1,0 +1,175 @@
+--Query--
+select 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.COLUMN_PRIVILEGES  WHERE GRANTEE = '''mysqltest_3''@''localhost'''  ORDER BY TABLE_NAME,COLUMN_NAME,PRIVILEGE_TYPE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM INFORMATION_SCHEMA.TABLE_PRIVILEGES  WHERE GRANTEE = '''mysqltest_3''@''localhost'''  ORDER BY TABLE_NAME,PRIVILEGE_TYPE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from INFORMATION_SCHEMA.SCHEMA_PRIVILEGES  WHERE GRANTEE = '''mysqltest_3''@''localhost'''  ORDER BY TABLE_SCHEMA,PRIVILEGE_TYPE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * from INFORMATION_SCHEMA.USER_PRIVILEGES  WHERE GRANTEE = '''mysqltest_3''@''localhost'''  ORDER BY TABLE_CATALOG,PRIVILEGE_TYPE
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.schema_privileges where grantee like "'mysqltest_8'%"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.schema_privileges where grantee like "'mysqltest_8'%"
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.column_privileges
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.column_privileges
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.table_privileges where table_schema NOT IN ('sys','mysql')
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.table_privileges where table_schema NOT IN ('sys','mysql')
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.user_privileges where grantee like "'mysqltest_8'%"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from  information_schema.user_privileges where grantee like "'mysqltest_8'%"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT USER()
+--Result--
+[('tester@localhost',)]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'SHOW TABLES FROM mysqltest1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CURRENT_USER()
+--Result--
+[('tester@localhost',)]
++--------------------+
+--Query--
+PREPARE s1 FROM 'SELECT b FROM t1'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s2 FROM 'SELECT a FROM t2'
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE s3 FROM 'SHOW TABLES FROM mysqltest2'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT b FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT SUM(b) OVER () FROM t1
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT a FROM t2
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT @@GLOBAL.sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+SELECT @@SESSION.sql_mode
+--Result--
+[('ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',)]
++--------------------+
+--Query--
+SELECT user(), current_user()
+--Result--
+[('tester@localhost', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+PREPARE stmt FROM 'CREATE TABLE db8657.t2 (i INT)'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT view_definition   FROM information_schema.views   WHERE table_schema='mysqltest_1' AND table_name='v1'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT view_definition FROM information_schema.views   WHERE table_schema='mysqltest_1' AND table_name='v1'
+--Result--
+[]
++--------------------+

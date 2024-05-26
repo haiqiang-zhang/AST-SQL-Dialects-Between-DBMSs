@@ -17,10 +17,6 @@ SELECT 1;
 CREATE PROCEDURE ptest10(OUT a int, IN b int, IN c int)
 LANGUAGE SQL AS $$ SELECT b - c $$;
 CALL ptest10(null, 7, 4);
-CALL ptest10(a => null, b => 8, c => 2);
-CALL ptest10(null, 7, c => 2);
-CALL ptest10(null, c => 4, b => 11);
-CALL ptest10(b => 8, c => 2, a => 0);
 CREATE PROCEDURE ptest11(a OUT int, VARIADIC b int[]) LANGUAGE SQL
   AS $$ SELECT b[1] + b[2] $$;
 CALL ptest11(null, 11, 12, 13);

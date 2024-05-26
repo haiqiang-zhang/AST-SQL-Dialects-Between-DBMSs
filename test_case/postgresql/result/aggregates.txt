@@ -14,21 +14,6 @@ SELECT any_value(v) FROM (VALUES (1), (2), (3)) AS v (v)
 [(1,)]
 +--------------------+
 --Query--
-SELECT any_value(v) FROM (VALUES (NULL)) AS v (v)
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT any_value(v) FROM (VALUES (NULL), (1), (2)) AS v (v)
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT any_value(v) FROM (VALUES (array['hello', 'world'])) AS v (v)
---Result--
-[(['hello', 'world'],)]
-+--------------------+
---Query--
 SELECT avg(b)::numeric(10,3) AS avg_107_943 FROM aggtest
 --Result--
 [(None,)]
@@ -74,26 +59,6 @@ SELECT var_samp(b) FROM aggtest
 [(None,)]
 +--------------------+
 --Query--
-SELECT stddev_pop(b::numeric) FROM aggtest
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT stddev_samp(b::numeric) FROM aggtest
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT var_pop(b::numeric) FROM aggtest
---Result--
-[(None,)]
-+--------------------+
---Query--
-SELECT var_samp(b::numeric) FROM aggtest
---Result--
-[(None,)]
-+--------------------+
---Query--
 SELECT var_pop(1.0::float8), var_samp(2.0::float8)
 --Result--
 [(0.0, None)]
@@ -104,102 +69,7 @@ SELECT stddev_pop(3.0::float8), stddev_samp(4.0::float8)
 [(0.0, None)]
 +--------------------+
 --Query--
-SELECT var_pop('inf'::float8), var_samp('inf'::float8)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT stddev_pop('inf'::float8), stddev_samp('inf'::float8)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT var_pop('nan'::float8), var_samp('nan'::float8)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT stddev_pop('nan'::float8), stddev_samp('nan'::float8)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT var_pop(1.0::float4), var_samp(2.0::float4)
---Result--
-[(0.0, None)]
-+--------------------+
---Query--
-SELECT stddev_pop(3.0::float4), stddev_samp(4.0::float4)
---Result--
-[(0.0, None)]
-+--------------------+
---Query--
-SELECT var_pop('inf'::float4), var_samp('inf'::float4)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT stddev_pop('inf'::float4), stddev_samp('inf'::float4)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT var_pop('nan'::float4), var_samp('nan'::float4)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT stddev_pop('nan'::float4), stddev_samp('nan'::float4)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT var_pop(1.0::numeric), var_samp(2.0::numeric)
---Result--
-[(0.0, None)]
-+--------------------+
---Query--
-SELECT stddev_pop(3.0::numeric), stddev_samp(4.0::numeric)
---Result--
-[(0.0, None)]
-+--------------------+
---Query--
-SELECT var_pop('inf'::numeric), var_samp('inf'::numeric)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT stddev_pop('inf'::numeric), stddev_samp('inf'::numeric)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT var_pop('nan'::numeric), var_samp('nan'::numeric)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT stddev_pop('nan'::numeric), stddev_samp('nan'::numeric)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
 select sum(null::int4) from generate_series(1,3)
---Result--
-[(None,)]
-+--------------------+
---Query--
-select sum(null::int8) from generate_series(1,3)
---Result--
-[(None,)]
-+--------------------+
---Query--
-select sum(null::numeric) from generate_series(1,3)
---Result--
-[(None,)]
-+--------------------+
---Query--
-select sum(null::float8) from generate_series(1,3)
 --Result--
 [(None,)]
 +--------------------+
@@ -209,89 +79,14 @@ select avg(null::int4) from generate_series(1,3)
 [(None,)]
 +--------------------+
 --Query--
-select avg(null::int8) from generate_series(1,3)
---Result--
-[(None,)]
-+--------------------+
---Query--
-select avg(null::numeric) from generate_series(1,3)
---Result--
-[(None,)]
-+--------------------+
---Query--
-select avg(null::float8) from generate_series(1,3)
---Result--
-[(None,)]
-+--------------------+
---Query--
-select sum('NaN'::numeric) from generate_series(1,3)
---Result--
-[(nan,)]
-+--------------------+
---Query--
-select avg('NaN'::numeric) from generate_series(1,3)
---Result--
-[(nan,)]
-+--------------------+
---Query--
 SELECT sum(x::float8), avg(x::float8), var_pop(x::float8) FROM (VALUES ('1'), ('infinity')) v(x)
 --Result--
 [(inf, inf, nan)]
 +--------------------+
 --Query--
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8) FROM (VALUES ('infinity'), ('1')) v(x)
---Result--
-[(inf, inf, nan)]
-+--------------------+
---Query--
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8) FROM (VALUES ('infinity'), ('infinity')) v(x)
---Result--
-[(inf, inf, nan)]
-+--------------------+
---Query--
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8) FROM (VALUES ('-infinity'), ('infinity')) v(x)
---Result--
-[(nan, nan, nan)]
-+--------------------+
---Query--
-SELECT sum(x::float8), avg(x::float8), var_pop(x::float8) FROM (VALUES ('-infinity'), ('-infinity')) v(x)
---Result--
-[(-inf, -inf, nan)]
-+--------------------+
---Query--
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric) FROM (VALUES ('1'), ('infinity')) v(x)
---Result--
-[(inf, inf, nan)]
-+--------------------+
---Query--
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric) FROM (VALUES ('infinity'), ('1')) v(x)
---Result--
-[(inf, inf, nan)]
-+--------------------+
---Query--
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric) FROM (VALUES ('infinity'), ('infinity')) v(x)
---Result--
-[(inf, inf, nan)]
-+--------------------+
---Query--
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric) FROM (VALUES ('-infinity'), ('infinity')) v(x)
---Result--
-[(nan, nan, nan)]
-+--------------------+
---Query--
-SELECT sum(x::numeric), avg(x::numeric), var_pop(x::numeric) FROM (VALUES ('-infinity'), ('-infinity')) v(x)
---Result--
-[(-inf, -inf, nan)]
-+--------------------+
---Query--
 SELECT avg(x::float8), var_pop(x::float8) FROM (VALUES (100000003), (100000004), (100000006), (100000007)) v(x)
 --Result--
 [(100000005.0, 2.5)]
-+--------------------+
---Query--
-SELECT avg(x::float8), var_pop(x::float8) FROM (VALUES (7000000000005), (7000000000007)) v(x)
---Result--
-[(7000000000006.0, 1.0)]
 +--------------------+
 --Query--
 SELECT regr_count(b, a) FROM aggtest
@@ -339,29 +134,9 @@ SELECT corr(b, a) FROM aggtest
 [(None,)]
 +--------------------+
 --Query--
-SELECT covar_pop(1::float8,2::float8), covar_samp(3::float8,4::float8)
---Result--
-[(0.0, None)]
-+--------------------+
---Query--
-SELECT covar_pop(1::float8,'inf'::float8), covar_samp(3::float8,'inf'::float8)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
-SELECT covar_pop(1::float8,'nan'::float8), covar_samp(3::float8,'nan'::float8)
---Result--
-[(nan, None)]
-+--------------------+
---Query--
 SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x) FROM regr_test WHERE x IN (10,20,30,80)
 --Result--
 [(4, 140.0, 2900.0, 1290.0, 83075.0, 15050.0)]
-+--------------------+
---Query--
-SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x) FROM regr_test
---Result--
-[(5, 240.0, 6280.0, 1490.0, 95080.0, 8680.0)]
 +--------------------+
 --Query--
 SELECT float8_accum('{4,140,2900}'::float8[], 100)
@@ -374,44 +149,14 @@ SELECT float8_regr_accum('{4,140,2900,1290,83075,15050}'::float8[], 200, 100)
 [([5.0, 240.0, 6280.0, 1490.0, 95080.0, 8680.0],)]
 +--------------------+
 --Query--
-SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x) FROM regr_test WHERE x IN (10,20,30)
---Result--
-[(3, 60.0, 200.0, 750.0, 20000.0, 2000.0)]
-+--------------------+
---Query--
-SELECT count(*), sum(x), regr_sxx(y,x), sum(y),regr_syy(y,x), regr_sxy(y,x) FROM regr_test WHERE x IN (80,100)
---Result--
-[(2, 180.0, 200.0, 740.0, 57800.0, -3400.0)]
-+--------------------+
---Query--
 SELECT float8_combine('{3,60,200}'::float8[], '{0,0,0}'::float8[])
 --Result--
 [([3.0, 60.0, 200.0],)]
 +--------------------+
 --Query--
-SELECT float8_combine('{0,0,0}'::float8[], '{2,180,200}'::float8[])
---Result--
-[([2.0, 180.0, 200.0],)]
-+--------------------+
---Query--
-SELECT float8_combine('{3,60,200}'::float8[], '{2,180,200}'::float8[])
---Result--
-[([5.0, 240.0, 6280.0],)]
-+--------------------+
---Query--
 SELECT float8_regr_combine('{3,60,200,750,20000,2000}'::float8[],                            '{0,0,0,0,0,0}'::float8[])
 --Result--
 [([3.0, 60.0, 200.0, 750.0, 20000.0, 2000.0],)]
-+--------------------+
---Query--
-SELECT float8_regr_combine('{0,0,0,0,0,0}'::float8[],                            '{2,180,200,740,57800,-3400}'::float8[])
---Result--
-[([2.0, 180.0, 200.0, 740.0, 57800.0, -3400.0],)]
-+--------------------+
---Query--
-SELECT float8_regr_combine('{3,60,200,750,20000,2000}'::float8[],                            '{2,180,200,740,57800,-3400}'::float8[])
---Result--
-[([5.0, 240.0, 6280.0, 1490.0, 95080.0, 8680.0],)]
 +--------------------+
 --Query--
 explain (verbose, costs off) select s1, s2, sm from generate_series(1, 3) s1,      lateral (select s2, sum(s1 + s2) sm               from generate_series(1, 3) s2 group by s2) ss order by 1, 2
@@ -470,16 +215,6 @@ explain (costs off)   select min(f1), max(f1) from minmaxtest
 +--------------------+
 --Query--
 select min(f1), max(f1) from minmaxtest
---Result--
-[(11, 18)]
-+--------------------+
---Query--
-explain (costs off)   select distinct min(f1), max(f1) from minmaxtest
---Result--
-[('Unique',), ('  InitPlan 1 (returns $0)',), ('    ->  Limit',), ('          ->  Merge Append',), ('                Sort Key: minmaxtest.f1',), ('                ->  Index Only Scan using minmaxtesti on minmaxtest minmaxtest_1',), ('                      Index Cond: (f1 IS NOT NULL)',), ('                ->  Index Only Scan using minmaxtest1i on minmaxtest1 minmaxtest_2',), ('                      Index Cond: (f1 IS NOT NULL)',), ('                ->  Index Only Scan Backward using minmaxtest2i on minmaxtest2 minmaxtest_3',), ('                      Index Cond: (f1 IS NOT NULL)',), ('                ->  Index Only Scan using minmaxtest3i on minmaxtest3 minmaxtest_4',), ('  InitPlan 2 (returns $1)',), ('    ->  Limit',), ('          ->  Merge Append',), ('                Sort Key: minmaxtest_5.f1 DESC',), ('                ->  Index Only Scan Backward using minmaxtesti on minmaxtest minmaxtest_6',), ('                      Index Cond: (f1 IS NOT NULL)',), ('                ->  Index Only Scan Backward using minmaxtest1i on minmaxtest1 minmaxtest_7',), ('                      Index Cond: (f1 IS NOT NULL)',), ('                ->  Index Only Scan using minmaxtest2i on minmaxtest2 minmaxtest_8',), ('                      Index Cond: (f1 IS NOT NULL)',), ('                ->  Index Only Scan Backward using minmaxtest3i on minmaxtest3 minmaxtest_9',), ('  ->  Sort',), ('        Sort Key: ($0), ($1)',), ('        ->  Result',)]
-+--------------------+
---Query--
-select distinct min(f1), max(f1) from minmaxtest
 --Result--
 [(11, 18)]
 +--------------------+
@@ -544,11 +279,6 @@ select f1, count(*) from t1 x(x0,x1) left join (t1 left join t2 using(f1)) on (x
 []
 +--------------------+
 --Query--
-select f2, count(*) from t1 x(x0,x1) left join (t1 left join t2 using(f2)) on (x0 = 0) group by f2
---Result--
-[]
-+--------------------+
---Query--
 select array_agg(distinct val) from (select null as val from generate_series(1, 2))
 --Result--
 [([None],)]
@@ -557,41 +287,6 @@ select array_agg(distinct val) from (select null as val from generate_series(1, 
 select array_agg(a order by b)   from (values (1,4),(2,3),(3,1),(4,2)) v(a,b)
 --Result--
 [([3, 4, 2, 1],)]
-+--------------------+
---Query--
-select array_agg(a order by a)   from (values (1,4),(2,3),(3,1),(4,2)) v(a,b)
---Result--
-[([1, 2, 3, 4],)]
-+--------------------+
---Query--
-select array_agg(a order by a desc)   from (values (1,4),(2,3),(3,1),(4,2)) v(a,b)
---Result--
-[([4, 3, 2, 1],)]
-+--------------------+
---Query--
-select array_agg(b order by a desc)   from (values (1,4),(2,3),(3,1),(4,2)) v(a,b)
---Result--
-[([2, 1, 3, 4],)]
-+--------------------+
---Query--
-select array_agg(distinct a)   from (values (1),(2),(1),(3),(null),(2)) v(a)
---Result--
-[([1, 2, 3, None],)]
-+--------------------+
---Query--
-select array_agg(distinct a order by a)   from (values (1),(2),(1),(3),(null),(2)) v(a)
---Result--
-[([1, 2, 3, None],)]
-+--------------------+
---Query--
-select array_agg(distinct a order by a desc)   from (values (1),(2),(1),(3),(null),(2)) v(a)
---Result--
-[([None, 3, 2, 1],)]
-+--------------------+
---Query--
-select array_agg(distinct a order by a desc nulls last)   from (values (1),(2),(1),(3),(null),(2)) v(a)
---Result--
-[([3, 2, 1, None],)]
 +--------------------+
 --Query--
 select     string_agg(distinct 'a', ','),     sum((         select sum(1)         from (values(1)) b(id)         where a.id = b.id )) from unnest(array[1]) a(id)
@@ -604,44 +299,9 @@ select string_agg(a,',') from (values('aaaa'),('bbbb'),('cccc')) g(a)
 [('aaaa,bbbb,cccc',)]
 +--------------------+
 --Query--
-select string_agg(a,',') from (values('aaaa'),(null),('bbbb'),('cccc')) g(a)
---Result--
-[('aaaa,bbbb,cccc',)]
-+--------------------+
---Query--
-select string_agg(a,'AB') from (values(null),(null),('bbbb'),('cccc')) g(a)
---Result--
-[('bbbbABcccc',)]
-+--------------------+
---Query--
-select string_agg(a,',') from (values(null),(null)) g(a)
---Result--
-[(None,)]
-+--------------------+
---Query--
 select string_agg(v, '') from bytea_test_table
 --Result--
 [(None,)]
-+--------------------+
---Query--
-select string_agg(v, '') from bytea_test_table
---Result--
-[(<memory at 0x13b5777c0>,)]
-+--------------------+
---Query--
-select string_agg(v, '') from bytea_test_table
---Result--
-[(<memory at 0x13b577940>,)]
-+--------------------+
---Query--
-select string_agg(v, NULL) from bytea_test_table
---Result--
-[(<memory at 0x13b577b80>,)]
-+--------------------+
---Query--
-select string_agg(v, decode('ee', 'hex')) from bytea_test_table
---Result--
-[(<memory at 0x13b577c40>,)]
 +--------------------+
 --Query--
 select * from v_pagg_test order by y
@@ -674,21 +334,6 @@ select (select count(*)         from (values (1)) t0(inner_c)) from (values (2),
 [(1,), (1,)]
 +--------------------+
 --Query--
-select (select count(*) filter (where outer_c <> 0)         from (values (1)) t0(inner_c)) from (values (2),(3)) t1(outer_c)
---Result--
-[(2,)]
-+--------------------+
---Query--
-select (select count(inner_c) filter (where outer_c <> 0)         from (values (1)) t0(inner_c)) from (values (2),(3)) t1(outer_c)
---Result--
-[(1,), (1,)]
-+--------------------+
---Query--
-select max(0) filter (where b1) from bool_test
---Result--
-[(None,)]
-+--------------------+
---Query--
 select (select max(0) filter (where b1)) from bool_test
 --Result--
 [(None,)]
@@ -709,26 +354,6 @@ select percentile_cont(0.5) within group (order by b), sum(b) from aggtest
 [(None, None)]
 +--------------------+
 --Query--
-select rank(3) within group (order by x) from (values (1),(1),(2),(2),(3),(3),(4)) v(x)
---Result--
-[(5,)]
-+--------------------+
---Query--
-select cume_dist(3) within group (order by x) from (values (1),(1),(2),(2),(3),(3),(4)) v(x)
---Result--
-[(0.875,)]
-+--------------------+
---Query--
-select percent_rank(3) within group (order by x) from (values (1),(1),(2),(2),(3),(3),(4),(5)) v(x)
---Result--
-[(0.5,)]
-+--------------------+
---Query--
-select dense_rank(3) within group (order by x) from (values (1),(1),(2),(2),(3),(3),(4)) v(x)
---Result--
-[(3,)]
-+--------------------+
---Query--
 select percentile_cont(array[0,1,0.25,0.75,0.5,1,0.3,0.32,0.35,0.38,0.4]) within group (order by x) from generate_series(1,6) x
 --Result--
 [([1.0, 6.0, 2.25, 4.75, 3.5, 6.0, 2.5, 2.6, 2.75, 2.9, 3.0],)]
@@ -742,11 +367,6 @@ select percentile_disc(array[0.25,0.5,0.75]) within group (order by x) from unne
 select pg_collation_for(percentile_disc(1) within group (order by x collate "POSIX"))   from (values ('fred'),('jim')) v(x)
 --Result--
 [('"POSIX"',)]
-+--------------------+
---Query--
-select rank('adam'::varchar) within group (order by x) from (values ('fred'),('jim')) v(x)
---Result--
-[(1,)]
 +--------------------+
 --Query--
 select rank('3') within group (order by x) from generate_series(1,5) x
@@ -767,31 +387,6 @@ ANALYZE btg
 EXPLAIN (COSTS OFF) SELECT count(*) FROM btg GROUP BY y, x
 --Result--
 [('GroupAggregate',), ('  Group Key: y, x',), ('  ->  Sort',), ('        Sort Key: y, x',), ('        ->  Index Only Scan using btg_x_y_idx on btg',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM btg GROUP BY z, y, w, x
---Result--
-[('GroupAggregate',), ('  Group Key: z, y, w, x',), ('  ->  Sort',), ('        Sort Key: z, y, w, x',), ('        ->  Seq Scan on btg',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM (SELECT * FROM btg ORDER BY x, y, w, z) AS q1 GROUP BY w, x, z, y
---Result--
-[('GroupAggregate',), ('  Group Key: q1.w, q1.x, q1.z, q1.y',), ('  ->  Sort',), ('        Sort Key: q1.w, q1.x, q1.z, q1.y',), ('        ->  Subquery Scan on q1',), ('              ->  Incremental Sort',), ('                    Sort Key: btg.x, btg.y, btg.w, btg.z',), ('                    Presorted Key: btg.x, btg.y',), ('                    ->  Index Scan using btg_x_y_idx on btg',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*)   FROM btg t1 JOIN btg t2 ON t1.z = t2.z AND t1.w = t2.w AND t1.x = t2.x   GROUP BY t1.x, t1.y, t1.z, t1.w
---Result--
-[('GroupAggregate',), ('  Group Key: t1.x, t1.y, t1.z, t1.w',), ('  ->  Incremental Sort',), ('        Sort Key: t1.x, t1.y, t1.z, t1.w',), ('        Presorted Key: t1.x',), ('        ->  Merge Join',), ('              Merge Cond: ((t1.x = t2.x) AND (t1.z = t2.z) AND (t1.w = t2.w))',), ('              ->  Sort',), ('                    Sort Key: t1.x, t1.z, t1.w',), ('                    ->  Index Scan using btg_x_y_idx on btg t1',), ('              ->  Sort',), ('                    Sort Key: t2.x, t2.z, t2.w',), ('                    ->  Index Scan using btg_x_y_idx on btg t2',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM btg GROUP BY w, x, z, y ORDER BY y, x, z, w
---Result--
-[('GroupAggregate',), ('  Group Key: y, x, z, w',), ('  ->  Sort',), ('        Sort Key: y, x, z, w',), ('        ->  Seq Scan on btg',)]
-+--------------------+
---Query--
-EXPLAIN (COSTS OFF) SELECT count(*) FROM btg GROUP BY w, x, y, z ORDER BY x*x, z
---Result--
-[('Sort',), ('  Sort Key: ((x * x)), z',), ('  ->  GroupAggregate',), ('        Group Key: w, x, y, z',), ('        ->  Sort',), ('              Sort Key: w, x, y, z',), ('              ->  Seq Scan on btg',)]
 +--------------------+
 --Query--
 EXPLAIN (VERBOSE, COSTS OFF) SELECT y, x, array_agg(distinct w)   FROM btg WHERE y < 0 GROUP BY x, y
@@ -819,19 +414,9 @@ ANALYZE agg_sort_order
 []
 +--------------------+
 --Query--
-EXPLAIN (COSTS OFF) SELECT array_agg(c1 ORDER BY c2),c2 FROM agg_sort_order WHERE c2 < 100 GROUP BY c1 ORDER BY 2
---Result--
-[('Sort',), ('  Sort Key: c2',), ('  ->  GroupAggregate',), ('        Group Key: c1',), ('        ->  Incremental Sort',), ('              Sort Key: c1, c2',), ('              Presorted Key: c1',), ('              ->  Index Scan using agg_sort_order_pkey on agg_sort_order',), ('                    Filter: (c2 < 100)',)]
-+--------------------+
---Query--
 SELECT eatarray(rwagg(ARRAY[1.0::real])), eatarray(rwagg(ARRAY[1.0::real]))
 --Result--
 [([2.0, 1.0, 1.0, 1.0], [2.0, 1.0, 1.0, 1.0])]
-+--------------------+
---Query--
-SELECT dense_rank(x) WITHIN GROUP (ORDER BY x) FROM (VALUES (1),(1),(2),(2),(3),(3)) v(x) GROUP BY (x) ORDER BY 1
---Result--
-[(1,), (1,), (1,)]
 +--------------------+
 --Query--
 SELECT min(x ORDER BY y) FROM (VALUES(1, NULL)) AS d(x,y)
@@ -839,17 +424,7 @@ SELECT min(x ORDER BY y) FROM (VALUES(1, NULL)) AS d(x,y)
 [(1,)]
 +--------------------+
 --Query--
-SELECT min(x ORDER BY y) FROM (VALUES(1, 2)) AS d(x,y)
---Result--
-[(1,)]
-+--------------------+
---Query--
 select v||'a', case v||'a' when 'aa' then 1 else 0 end, count(*)   from unnest(array['a','b']) u(v)  group by v||'a' order by 1
---Result--
-[('aa', 1, 1), ('ba', 0, 1)]
-+--------------------+
---Query--
-select v||'a', case when v||'a' = 'aa' then 1 else 0 end, count(*)   from unnest(array['a','b']) u(v)  group by v||'a' order by 1
 --Result--
 [('aa', 1, 1), ('ba', 0, 1)]
 +--------------------+

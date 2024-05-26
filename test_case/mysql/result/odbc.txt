@@ -1,0 +1,55 @@
+--Query--
+select {fn length("hello")}, { date "1997-10-20" }
+--Result--
+[(5, '1997-10-20')]
++--------------------+
+--Query--
+select * from t1 where a is null and b=2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where a is null
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, last_insert_id() FROM t1 WHERE a IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2 LEFT JOIN t1 ON a=b WHERE a IS NULL
+--Result--
+[(2, None), (3, None), (4, None)]
++--------------------+
+--Query--
+SELECT * FROM t2 LEFT JOIN t1 ON a=b WHERE a IS NULL
+--Result--
+[(3, None), (4, None)]
++--------------------+
+--Query--
+SELECT * FROM t1 HAVING a IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a, a IS NULL FROM t1 WHERE a IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IS NULL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a IS NULL
+--Result--
+[]
++--------------------+

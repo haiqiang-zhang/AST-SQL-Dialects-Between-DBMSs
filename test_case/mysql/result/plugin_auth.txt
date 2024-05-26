@@ -1,0 +1,80 @@
+--Query--
+select USER(),CURRENT_USER()
+--Result--
+[('tester@localhost', 'tester@localhost')]
++--------------------+
+--Query--
+SELECT @@global.check_proxy_users
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.mysql_native_password_proxy_users
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@global.sha256_password_proxy_users
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT @@LOCAL.proxy_user
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @@LOCAL.proxy_user
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @@LOCAL.proxy_user
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @@LOCAL.external_user
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @@LOCAL.external_user
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT @@LOCAL.external_user
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT user(),current_user(),@@proxy_user
+--Result--
+[('tester@localhost', 'tester@localhost', None)]
++--------------------+
+--Query--
+SELECT IS_NULLABLE, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE   COLUMN_NAME IN ('authentication_string', 'plugin') AND   TABLE_NAME='user' AND   TABLE_SCHEMA='mysql' ORDER BY COLUMN_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT IS_NULLABLE, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_SCHEMA= 'mysql' AND TABLE_NAME= 'user' AND     COLUMN_NAME IN ('plugin', 'authentication_string')   ORDER BY COLUMN_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT IS_NULLABLE, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS   WHERE TABLE_SCHEMA= 'mysql' AND TABLE_NAME= 'user' AND     COLUMN_NAME IN ('plugin', 'authentication_string')   ORDER BY COLUMN_NAME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT USER(), CURRENT_USER, @@PROXY_USER
+--Result--
+[('tester@localhost', 'tester@localhost', None)]
++--------------------+
+--Query--
+SELECT CURRENT_USER()
+--Result--
+[('tester@localhost',)]
++--------------------+

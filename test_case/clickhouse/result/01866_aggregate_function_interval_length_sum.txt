@@ -1,0 +1,10 @@
+--Query--
+SELECT id, intervalLengthSum(start, end), toTypeName(intervalLengthSum(start, end)) FROM interval GROUP BY id ORDER BY id
+--Result--
+[('a', 5, 'UInt64'), ('b', 8, 'UInt64'), ('c', 3, 'UInt64')]
++--------------------+
+--Query--
+SELECT id, 3.4 < intervalLengthSum(start, end) AND intervalLengthSum(start, end) < 3.6, toTypeName(intervalLengthSum(start, end)) FROM fl_interval GROUP BY id ORDER BY id
+--Result--
+[('a', 1, 'Float64')]
++--------------------+

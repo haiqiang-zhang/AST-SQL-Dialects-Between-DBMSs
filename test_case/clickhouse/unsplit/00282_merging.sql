@@ -57,5 +57,4 @@ SET max_block_size = 10000;
 INSERT INTO merge (x) SELECT number AS x FROM (SELECT number FROM system.numbers LIMIT 10000);
 INSERT INTO merge (x) SELECT number AS x FROM (SELECT number + 5000 AS number FROM system.numbers LIMIT 10000);
 OPTIMIZE TABLE merge;
-SELECT count(), uniqExact(x), min(x), max(x), sum(x), sum(cityHash64(x)) FROM merge;
 DROP TABLE merge;

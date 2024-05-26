@@ -1,0 +1,15 @@
+--Query--
+SELECT COUNT(*) FROM t1
+--Result--
+[(3072,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1 FORCE INDEX(idx_b, idx_c)   WHERE (c >= '2007-01-02' AND c <= '2007-01-03') OR b >= 1
+--Result--
+[(3072,)]
++--------------------+
+--Query--
+SELECT * from t1 WHERE topic IN (SELECT topic FROM t1 GROUP BY topic HAVING topic < 2000) LIMIT 2
+--Result--
+[]
++--------------------+

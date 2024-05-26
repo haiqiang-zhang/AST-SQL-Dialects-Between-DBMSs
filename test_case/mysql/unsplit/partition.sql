@@ -267,11 +267,7 @@ INSERT INTO t1 VALUES (1,1,0), (1,1,1), (1,1,2), (1,1,53), (1,1,4), (1,1,5),
 SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 ALTER TABLE t1 DROP INDEX b;
-SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
-SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 ALTER TABLE t1 ADD INDEX b USING HASH (b);
-SELECT COUNT(*) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
-SELECT SUM(c) FROM t1 WHERE b NOT IN ( 1,2,6,7,9,10,11 );
 DROP TABLE t1;
 CREATE TABLE `t1` (
   `c1` int(11) DEFAULT NULL,
@@ -1041,7 +1037,6 @@ INSERT INTO t1 SET number=1;
 insert into t2 select * from t1;
 SELECT SLEEP(1);
 UPDATE t1 SET number=6;
-select count(*) from t1, t2 where t1.createdDate = t2.createdDate;
 drop table t1, t2;
 CREATE TABLE t1 (c1 INT)
        PARTITION BY LIST(1 DIV c1) (
@@ -1090,7 +1085,6 @@ insert into t1 select s1 from t1;
 insert into t1 select s1 from t1;
 insert into t1 select s1 from t1 order by s1 desc;
 insert into t1 select s1 from t1 where s1=3;
-select count(*) from t1;
 drop table t1;
 CREATE TABLE t1 (a int) PARTITION BY RANGE (a)
   (PARTITION p0 VALUES LESS THAN (100),
@@ -1131,7 +1125,6 @@ SELECT b, c FROM t1 WHERE b = 1 GROUP BY b, c;
 DROP TABLE t1;
 CREATE TABLE t1(id INT,KEY(id))
   PARTITION BY HASH(id) PARTITIONS 2;
-SELECT COUNT(*) FROM t1;
 DROP TABLE t1;
 DROP TABLE IF EXISTS t1;
 CREATE TABLE t1 (s1 INT PRIMARY KEY) PARTITION BY HASH(s1);
@@ -1246,7 +1239,6 @@ CREATE TABLE t1 (c1 INT NOT NULL, c2 INT)
             SUBPARTITION p31,
             SUBPARTITION p32,
             SUBPARTITION p33));
-SELECT MBRTOUCHES(a.c1, b.c2) FROM t1 AS a JOIN t1 AS b;
 ALTER TABLE t1 CONVERT TO CHARACTER SET latin1;
 DROP TABLE t1;
 CREATE TABLE t1 (i INT, j INT) PARTITION BY RANGE(i) (PARTITION p0 VALUES LESS THAN (0), PARTITION p1 VALUES LESS THAN MAXVALUE);

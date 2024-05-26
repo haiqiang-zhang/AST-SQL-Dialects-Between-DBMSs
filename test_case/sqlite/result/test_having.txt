@@ -1,0 +1,20 @@
+--Query--
+SELECT a, sum(b) FROM t1 GROUP BY a HAVING a=2
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT x,y FROM (     SELECT a AS x, sum(b) AS y FROM t1      GROUP BY a   ) WHERE x BETWEEN 2 AND 9999
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT x,y FROM (     SELECT a AS x, sum(b) AS y FROM t1      WHERE x BETWEEN 2 AND 9999      GROUP BY a   )
+--Result--
+[(2, 12)]
++--------------------+
+--Query--
+SELECT EXISTS (     SELECT * FROM (       SELECT * FROM (         SELECT 1       ) WHERE Col0 = 1   GROUP BY 1     )   WHERE 0   )   FROM (SELECT 1 Col0)   GROUP BY 1
+--Result--
+[(0,)]
++--------------------+

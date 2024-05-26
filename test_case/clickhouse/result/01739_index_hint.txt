@@ -1,0 +1,30 @@
+--Query--
+select * from tbl WHERE indexHint(t = 1) order by t
+--Result--
+[(0, 0, 0.0), (0, 1, 0.0)]
++--------------------+
+--Query--
+select * from tbl WHERE indexHint(t in (select toInt64(number) + 2 from numbers(3))) order by t
+--Result--
+[(0, 1, 0.0), (0, 2, 0.0), (0, 3, 0.0), (1, 4, 0.0)]
++--------------------+
+--Query--
+select * from tbl WHERE indexHint(p = 2) order by t
+--Result--
+[(2, 8, 0.0), (2, 9, 0.0), (2, 10, 0.0), (2, 11, 0.0)]
++--------------------+
+--Query--
+select * from tbl WHERE indexHint(p in (select toInt64(number) - 2 from numbers(3))) order by t
+--Result--
+[(0, 0, 0.0), (0, 1, 0.0), (0, 2, 0.0), (0, 3, 0.0)]
++--------------------+
+--Query--
+SELECT sum(t) FROM XXXX WHERE indexHint(t = 42)
+--Result--
+[(487680,)]
++--------------------+
+--Query--
+SELECT count() FROM XXXX WHERE indexHint(t = toDateTime(0)) SETTINGS optimize_use_implicit_projections = 1
+--Result--
+[(100000,)]
++--------------------+

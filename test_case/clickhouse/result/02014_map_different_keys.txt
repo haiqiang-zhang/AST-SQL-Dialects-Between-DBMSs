@@ -1,0 +1,65 @@
+--Query--
+SELECT '...const maps...'
+--Result--
+[('...const maps...',)]
++--------------------+
+--Query--
+WITH map(1, 2, 3, 4) AS m SELECT m[number] FROM numbers(5)
+--Result--
+[(0,), (2,), (0,), (4,), (0,)]
++--------------------+
+--Query--
+WITH map(1, 2, 3, 4) AS m SELECT m[3]
+--Result--
+[(4,)]
++--------------------+
+--Query--
+WITH map('1', 2, '3', 4) AS m SELECT m['3']
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT '...int keys...'
+--Result--
+[('...int keys...',)]
++--------------------+
+--Query--
+SELECT m1[i1], m2[i1], m3[i1] FROM t_map_02014
+--Result--
+[('foo', 'bar', 'bar')]
++--------------------+
+--Query--
+SELECT m1[i2], m2[i2], m3[i2] FROM t_map_02014
+--Result--
+[('', 'foo', 'foo')]
++--------------------+
+--Query--
+SELECT '...string keys...'
+--Result--
+[('...string keys...',)]
++--------------------+
+--Query--
+SELECT m1['aaa'], m2['aaa'] FROM t_map_02014
+--Result--
+[('foo', 'foo')]
++--------------------+
+--Query--
+SELECT m1['aaa'::FixedString(3)], m2['aaa'::FixedString(3)] FROM t_map_02014
+--Result--
+[('foo', 'foo')]
++--------------------+
+--Query--
+SELECT m1[s], m2[s] FROM t_map_02014
+--Result--
+[('foo', 'foo')]
++--------------------+
+--Query--
+SELECT m1[fs], m2[fs] FROM t_map_02014
+--Result--
+[('bar', 'bar')]
++--------------------+
+--Query--
+SELECT length(m2['aaa'::FixedString(4)]) FROM t_map_02014
+--Result--
+[(0,)]
++--------------------+

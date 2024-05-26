@@ -1,0 +1,110 @@
+--Query--
+SELECT 'Array min ', (arrayMin(array(1,2,3,4,5,6)))
+--Result--
+[('Array min ', 1)]
++--------------------+
+--Query--
+SELECT 'Array max ', (arrayMax(array(1,2,3,4,5,6)))
+--Result--
+[('Array max ', 6)]
++--------------------+
+--Query--
+SELECT 'Array sum ', (arraySum(array(1,2,3,4,5,6)))
+--Result--
+[('Array sum ', 21)]
++--------------------+
+--Query--
+SELECT 'Array avg ', (arrayAvg(array(1,2,3,4,5,6)))
+--Result--
+[('Array avg ', 3.5)]
++--------------------+
+--Query--
+SELECT 'Table array int min'
+--Result--
+[('Table array int min',)]
++--------------------+
+--Query--
+SELECT arrayMin(x) FROM test_aggregation
+--Result--
+[(1,), (0,), (1,)]
++--------------------+
+--Query--
+SELECT 'Table array int max'
+--Result--
+[('Table array int max',)]
++--------------------+
+--Query--
+SELECT arrayMax(x) FROM test_aggregation
+--Result--
+[(6,), (0,), (3,)]
++--------------------+
+--Query--
+SELECT 'Table array int sum'
+--Result--
+[('Table array int sum',)]
++--------------------+
+--Query--
+SELECT arraySum(x) FROM test_aggregation
+--Result--
+[(21,), (0,), (6,)]
++--------------------+
+--Query--
+SELECT 'Table array int avg'
+--Result--
+[('Table array int avg',)]
++--------------------+
+--Query--
+SELECT arrayAvg(x) FROM test_aggregation
+--Result--
+[(3.5,), (0.0,), (2.0,)]
++--------------------+
+--Query--
+SELECT 'Table array decimal min'
+--Result--
+[('Table array decimal min',)]
++--------------------+
+--Query--
+SELECT 'Table array decimal max'
+--Result--
+[('Table array decimal max',)]
++--------------------+
+--Query--
+SELECT 'Table array decimal sum'
+--Result--
+[('Table array decimal sum',)]
++--------------------+
+--Query--
+SELECT 'Table array decimal avg'
+--Result--
+[('Table array decimal avg',)]
++--------------------+
+--Query--
+WITH ['2023-04-05 00:25:23', '2023-04-05 00:25:24']::Array(DateTime) AS dt SELECT arrayMax(dt), arrayMin(dt), arrayDifference(dt)
+--Result--
+[(datetime.datetime(2023, 4, 5, 0, 25, 24), datetime.datetime(2023, 4, 5, 0, 25, 23), [0, 1])]
++--------------------+
+--Query--
+SELECT 'Types of aggregation result array min'
+--Result--
+[('Types of aggregation result array min',)]
++--------------------+
+--Query--
+SELECT toTypeName(arrayMin([toInt8(0)])), toTypeName(arrayMin([toInt16(0)])), toTypeName(arrayMin([toInt32(0)])), toTypeName(arrayMin([toInt64(0)]))
+--Result--
+[('Int8', 'Int16', 'Int32', 'Int64')]
++--------------------+
+--Query--
+SELECT 'Types of aggregation result array max'
+--Result--
+[('Types of aggregation result array max',)]
++--------------------+
+--Query--
+SELECT 'Types of aggregation result array summ'
+--Result--
+[('Types of aggregation result array summ',)]
++--------------------+
+--Query--
+SELECT 'Types of aggregation result array avg'
+--Result--
+[('Types of aggregation result array avg',)]
++--------------------+

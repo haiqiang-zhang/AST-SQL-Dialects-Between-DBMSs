@@ -1,0 +1,25 @@
+--Query--
+SELECT * FROM numbers(2) AS n1 JOIN numbers(3) AS n2 ON n1.number = n2.number, numbers(4) AS n3 ORDER BY n1.number, n2.number, n3.number
+--Result--
+[(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 0, 3), (1, 1, 0), (1, 1, 1), (1, 1, 2), (1, 1, 3)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM numbers(3) AS n1, numbers(2) AS n2 LEFT JOIN numbers(2) AS n3 ON n1.number = n3.number ORDER BY n1.number, n2.number, n3.number
+--Result--
+[(0, 0, 0), (0, 1, 0), (1, 0, 1), (1, 1, 1), (2, 0, None), (2, 1, None)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM numbers(2) AS n1, numbers(3) AS n2 RIGHT JOIN numbers(4) AS n3 ON n2.number = n3.number ORDER BY n1.number, n2.number, n3.number
+--Result--
+[(0, 0, 0), (0, 1, 1), (0, 2, 2), (1, 0, 0), (1, 1, 1), (1, 2, 2), (None, None, 3)]
++--------------------+

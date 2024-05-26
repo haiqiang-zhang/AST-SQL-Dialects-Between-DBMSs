@@ -1,0 +1,80 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[('abc',)]
++--------------------+
+--Query--
+prepare st_1180 from 'SELECT * FROM t1 WHERE ?="1111" and session_id = "abc"'
+--Result--
+[]
++--------------------+
+--Query--
+prepare st_1644 from 'insert into t1 values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+prepare st_1676 from 'select a.cola, a.colb, a.cold from t1 a, t2 b where a.cola = ? and a.colb = ? and a.cold = ? and b.cola = a.cola and b.colb = a.colb and b.colc = a.cold'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 where 3 in (select (1+1) union select 1)
+--Result--
+[]
++--------------------+
+--Query--
+prepare st_18492 from 'select * from t1 where 3 in (select (1+1) union select 1)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt1 from 'insert into t1 (a, b) values (?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt2 from 'insert into t2 (a, b) values (?, ?)'
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt FROM 'select 1 from `t1` where `a` = any (select (@@tmpdir))'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt
+--Result--
+[]
++--------------------+
+--Query--
+SELECT CONCAT(@@sort_buffer_size)
+--Result--
+[('262144',)]
++--------------------+
+--Query--
+SELECT LEFT("12345", @@ft_boolean_syntax)
+--Result--
+[('',)]
++--------------------+
+--Query--
+prepare s from 'select a<cast(? as signed) from t6'
+--Result--
+[]
++--------------------+

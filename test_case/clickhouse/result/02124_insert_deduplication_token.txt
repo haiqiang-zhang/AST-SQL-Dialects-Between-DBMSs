@@ -1,0 +1,45 @@
+--Query--
+select 'create and check deduplication'
+--Result--
+[('create and check deduplication',)]
++--------------------+
+--Query--
+select 'two inserts with exact data, one inserted, one deduplicated by data digest'
+--Result--
+[('two inserts with exact data, one inserted, one deduplicated by data digest',)]
++--------------------+
+--Query--
+SELECT * FROM insert_dedup_token ORDER BY id
+--Result--
+[(0, 1000)]
++--------------------+
+--Query--
+select 'two inserts with the same dedup token, one inserted, one deduplicated by the token'
+--Result--
+[('two inserts with the same dedup token, one inserted, one deduplicated by the token',)]
++--------------------+
+--Query--
+SELECT * FROM insert_dedup_token ORDER BY id
+--Result--
+[(0, 1000), (1, 1001)]
++--------------------+
+--Query--
+select 'update dedup token, two inserts with the same dedup token, one inserted, one deduplicated by the token'
+--Result--
+[('update dedup token, two inserts with the same dedup token, one inserted, one deduplicated by the token',)]
++--------------------+
+--Query--
+SELECT * FROM insert_dedup_token ORDER BY id
+--Result--
+[(0, 1000), (1, 1001), (1, 1001)]
++--------------------+
+--Query--
+select 'reset deduplication token and insert new row'
+--Result--
+[('reset deduplication token and insert new row',)]
++--------------------+
+--Query--
+SELECT * FROM insert_dedup_token ORDER BY id
+--Result--
+[(0, 1000), (1, 1001), (1, 1001), (2, 1002)]
++--------------------+

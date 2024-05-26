@@ -1,0 +1,75 @@
+--Query--
+SELECT 'on'
+--Result--
+[('on',)]
++--------------------+
+--Query--
+SELECT 'n rj n', t1.x, t2.x FROM nt AS t1 RIGHT JOIN nt AS t2 ON t1.x = t2.x ORDER BY t1.x
+--Result--
+[('n rj n', '1', '1'), ('n rj n', 'id', 'id'), ('n rj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n fj n', t1.x, t2.x FROM nt AS t1 FULL JOIN nt AS t2 ON t1.x = t2.x ORDER BY t1.x
+--Result--
+[('n fj n', '1', '1'), ('n fj n', 'id', 'id'), ('n fj n', None, None), ('n fj n', None, None)]
++--------------------+
+--Query--
+SELECT 't rj n', t1.x, t2.x FROM t AS t1 RIGHT JOIN nt AS t2 ON t1.x = t2.x ORDER BY t1.x
+--Result--
+[('t rj n', '1', '1'), ('t rj n', 'id', 'id'), ('t rj n', None, None)]
++--------------------+
+--Query--
+SELECT 't fj n', t1.x, t2.x FROM t AS t1 FULL JOIN nt AS t2 ON t1.x = t2.x ORDER BY t1.x
+--Result--
+[('t fj n', '1', '1'), ('t fj n', 'id', 'id'), ('t fj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n rj t', t1.x, t2.x FROM nt AS t1 RIGHT JOIN t AS t2 ON t1.x = t2.x ORDER BY t1.x
+--Result--
+[('n rj t', '1', '1'), ('n rj t', 'id', 'id')]
++--------------------+
+--Query--
+SELECT 'n fj t', t1.x, t2.x FROM nt AS t1 FULL JOIN t AS t2 ON t1.x = t2.x ORDER BY t1.x
+--Result--
+[('n fj t', '1', '1'), ('n fj t', 'id', 'id'), ('n fj t', None, None)]
++--------------------+
+--Query--
+SELECT 'using'
+--Result--
+[('using',)]
++--------------------+
+--Query--
+SELECT 'n rj n', t1.x, t2.x FROM nt AS t1 RIGHT JOIN nt AS t2 USING(x) ORDER BY t1.x
+--Result--
+[('n rj n', '1', '1'), ('n rj n', 'id', 'id'), ('n rj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n fj n', t1.x, t2.x FROM nt AS t1 FULL JOIN nt AS t2 USING(x) ORDER BY t1.x
+--Result--
+[('n fj n', '1', '1'), ('n fj n', 'id', 'id'), ('n fj n', None, None), ('n fj n', None, None)]
++--------------------+
+--Query--
+SELECT 't rj n', t1.x, t2.x FROM t AS t1 RIGHT JOIN nt AS t2 USING(x) ORDER BY t1.x
+--Result--
+[('t rj n', '1', '1'), ('t rj n', 'id', 'id'), ('t rj n', None, None)]
++--------------------+
+--Query--
+SELECT 't fj n', t1.x, t2.x FROM t AS t1 FULL JOIN nt AS t2 USING(x) ORDER BY t1.x
+--Result--
+[('t fj n', '1', '1'), ('t fj n', 'id', 'id'), ('t fj n', None, None)]
++--------------------+
+--Query--
+SELECT 'n rj t', t1.x, t2.x FROM nt AS t1 RIGHT JOIN t AS t2 USING(x) ORDER BY t1.x
+--Result--
+[('n rj t', '1', '1'), ('n rj t', 'id', 'id')]
++--------------------+
+--Query--
+SELECT 'n fj t', t1.x, t2.x FROM nt AS t1 FULL JOIN t AS t2 USING(x) ORDER BY t1.x
+--Result--
+[('n fj t', '1', '1'), ('n fj t', 'id', 'id'), ('n fj t', None, None)]
++--------------------+
+--Query--
+SELECT sum(isNull(t1.x)), count(t1.x) FROM nt AS t1 INNER JOIN nt AS t2 ON t1.x = t2.x
+--Result--
+[(0, 2)]
++--------------------+

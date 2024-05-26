@@ -1,0 +1,210 @@
+--Query--
+SELECT x99 FROM manycol
+--Result--
+[('99',)]
++--------------------+
+--Query--
+SELECT x0, x10, x25, x50, x75 FROM manycol
+--Result--
+[('0', '10', '25', '50', '75')]
++--------------------+
+--Query--
+SELECT x50 FROM manycol ORDER BY x80+0
+--Result--
+[('50',), ('150',), ('250',), ('350',), ('450',), ('550',), ('650',), ('750',), ('850',), ('950',), ('1050',)]
++--------------------+
+--Query--
+SELECT x50 FROM manycol ORDER BY x80
+--Result--
+[('1050',), ('150',), ('250',), ('350',), ('450',), ('550',), ('650',), ('750',), ('50',), ('850',), ('950',)]
++--------------------+
+--Query--
+SELECT x75 FROM manycol WHERE x50=350
+--Result--
+[('375',)]
++--------------------+
+--Query--
+SELECT x50 FROM manycol WHERE x99=599
+--Result--
+[('550',)]
++--------------------+
+--Query--
+SELECT x50 FROM manycol WHERE x99=899
+--Result--
+[('850',)]
++--------------------+
+--Query--
+SELECT count(*) FROM manycol
+--Result--
+[(11,)]
++--------------------+
+--Query--
+SELECT sum(one), two, four FROM agger            GROUP BY two, four ORDER BY sum(one) desc
+--Result--
+[(8, 'two', 'no'), (6, 'one', 'yes'), (4, 'two', 'yes'), (3, 'thr', 'yes')]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1
+--Result--
+[(1, 'hi')]
++--------------------+
+--Query--
+SELECT * FROM t3 ORDER BY a
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)]
++--------------------+
+--Query--
+SELECT abort+asc,max(key,pragma,temp) FROM t4
+--Result--
+[(3, 17)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY a
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t5 ORDER BY a
+--Result--
+[(0, 2, 4), (1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('a', 1234567890123456789), ('b', 1234567891123456789), ('c', 1234567892123456789)]
++--------------------+
+--Query--
+SELECT x1 FROM manycol WHERE x0=100
+--Result--
+[('101',)]
++--------------------+
+--Query--
+SELECT x1 FROM manycol WHERE x0=100
+--Result--
+[('102',)]
++--------------------+
+--Query--
+SELECT x1 FROM manycol WHERE x0=100
+--Result--
+[('103',)]
++--------------------+
+--Query--
+SELECT '0'=='0.0'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '0'==0.0
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT '12345678901234567890'=='12345678901234567891'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(0, '0.0')]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(0, '0.0')]
++--------------------+
+--Query--
+SELECT * FROM t6
+--Result--
+[(0, '0.0'), ('y', '0')]
++--------------------+
+--Query--
+SELECT DISTINCT x, y FROM t7 ORDER BY z
+--Result--
+[(0, '0'), (0, '0.0')]
++--------------------+
+--Query--
+SELECT min(z), max(z), count(z) FROM t7 GROUP BY x ORDER BY 1
+--Result--
+[(1, 4, 4)]
++--------------------+
+--Query--
+SELECT y FROM t9        WHERE x=(SELECT x FROM t9 WHERE y=1)           OR x=(SELECT x FROM t9 WHERE y=2)           OR x=(SELECT x FROM t9 WHERE y=3)           OR x=(SELECT x FROM t9 WHERE y=4)           OR x=(SELECT x FROM t9 WHERE y=5)           OR x=(SELECT x FROM t9 WHERE y=6)           OR x=(SELECT x FROM t9 WHERE y=7)           OR x=(SELECT x FROM t9 WHERE y=8)           OR x=(SELECT x FROM t9 WHERE y=9)           OR x=(SELECT x FROM t9 WHERE y=10)           OR x=(SELECT x FROM t9 WHERE y=11)           OR x=(SELECT x FROM t9 WHERE y=12)           OR x=(SELECT x FROM t9 WHERE y=13)           OR x=(SELECT x FROM t9 WHERE y=14)
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,), (11,)]
++--------------------+
+--Query--
+SELECT name FROM sqlite_master LIMIT 1
+--Result--
+[('manycol',)]
++--------------------+
+--Query--
+SELECT rowid, a FROM test
+--Result--
+[(1, 1)]
++--------------------+
+--Query--
+SELECT rowid, a FROM test
+--Result--
+[(1, 1), (5, 5)]
++--------------------+
+--Query--
+SELECT rowid, a FROM test
+--Result--
+[(1, 1), (5, 5), (6, 6)]
++--------------------+
+--Query--
+SELECT TestString FROM RealTable ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t19
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT * FROM t19b
+--Result--
+[(4, 5, 6)]
++--------------------+
+--Query--
+SELECT x, typeof(x) FROM t19d
+--Result--
+[(1234, 'integer')]
++--------------------+
+--Query--
+REPLACE INTO t0(x) VALUES('')
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid, quote(x) FROM t0
+--Result--
+[(1, "''")]
++--------------------+
+--Query--
+SELECT ''+3 FROM (SELECT ''+5)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT a,b,c FROM dup1
+--Result--
+[(1, 2, 3)]
++--------------------+
+--Query--
+SELECT a,b,c FROM dup1
+--Result--
+[(10, 11, 12)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('ay', 1234567890123456789), ('by', 1234567891123456789), ('cy', 1234567892123456789)]
++--------------------+

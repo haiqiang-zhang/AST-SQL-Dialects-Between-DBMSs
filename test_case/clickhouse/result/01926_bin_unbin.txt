@@ -1,0 +1,60 @@
+--Query--
+select bin('')
+--Result--
+[('',)]
++--------------------+
+--Query--
+select unbin('')
+--Result--
+[('',)]
++--------------------+
+--Query--
+select unbin('0') == '\0'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select unbin(bin('')) == ''
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select bin(unbin('')) == ''
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select bin(unbin('0')) == '00000000'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select hex('') == bin('')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select unhex('') == unbin('')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select unhex('0') == unbin('0')
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select hex(sumState(number)) == hex(toString(sumState(number))) from numbers(10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select hex(avgState(number)) from numbers(10)
+--Result--
+[('2D000000000000000A',)]
++--------------------+
+--Query--
+select bin(avgState(number)) from numbers(10)
+--Result--
+[('001011010000000000000000000000000000000000000000000000000000000000001010',)]
++--------------------+

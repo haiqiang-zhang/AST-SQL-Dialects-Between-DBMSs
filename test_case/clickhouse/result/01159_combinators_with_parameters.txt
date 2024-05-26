@@ -1,0 +1,20 @@
+--Query--
+SELECT toTypeName(topKArrayState(10)([toString(number)])) FROM numbers(100)
+--Result--
+[('AggregateFunction(topKArray(10), Array(String))',)]
++--------------------+
+--Query--
+SELECT toTypeName(topKMergeState(10)(state)) FROM (SELECT topKState(10)(toString(number)) as state FROM numbers(100))
+--Result--
+[('AggregateFunction(topK(10), String)',)]
++--------------------+
+--Query--
+SELECT round(quantileArrayMerge(0.10)((*,).1)) FROM t0
+--Result--
+[(10.0,)]
++--------------------+
+--Query--
+SELECT arrayMap(x -> round(x), quantileForEachMerge(0.10)((*,).1)) FROM t2
+--Result--
+[([10.0],)]
++--------------------+

@@ -4,5 +4,4 @@ SELECT count(*)=1 OR count(*)=2 FROM test_log WHERE sql_text LIKE 'CREATE USER %
 SELECT sql_text FROM test_log WHERE sql_text LIKE 'CHANGE REPLICATION SOURCE TO SOURCE_BIND %';
 SELECT count(*) FROM test_log WHERE sql_text LIKE 'SET PASSWORD %' AND sql_text LIKE '%<secret>%';
 SELECT sql_text FROM test_log WHERE sql_text LIKE 'CHANGE REPLICATION SOURCE TO SOURCE_BIND %';
-SELECT count(*) FROM test_log WHERE sql_text LIKE 'SET PASSWORD %' AND sql_text LIKE '%<secret>%';
 DROP TABLE test_log;

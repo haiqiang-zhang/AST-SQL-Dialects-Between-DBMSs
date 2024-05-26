@@ -1,0 +1,10 @@
+--Query--
+SELECT sumIf( 1, if( 1, toDateTime('2020-01-01 00:00:00', 'UTC'), toDateTime('1970-01-01 00:00:00', 'UTC')) > t ) FROM e JOIN ( SELECT 1 joinKey) AS da ON joinKey = a WHERE  t >= toDateTime('2021-07-19T13:00:00', 'UTC') AND t <= toDateTime('2021-07-19T13:59:59', 'UTC')
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT any( toDateTime('2020-01-01T00:00:00', 'UTC')) FROM e JOIN ( SELECT 1 joinKey) AS da ON joinKey = a PREWHERE t >= toDateTime('2021-07-19T13:00:00', 'UTC')
+--Result--
+[(datetime.datetime(1970, 1, 1, 0, 0, tzinfo=<UTC>),)]
++--------------------+

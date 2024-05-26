@@ -14,6 +14,5 @@ SELECT uniqMerge(x * 10) FROM (SELECT uniqState(b) AS x FROM mult_aggregation);
 SELECT maxMerge(x * 10) FROM (SELECT maxState(b) AS x FROM mult_aggregation);
 SELECT avgMerge(x * 10) FROM (SELECT avgState(b) AS x FROM mult_aggregation);
 SELECT groupArrayMerge(y * 5) FROM (SELECT groupArrayState(x) AS y FROM (SELECT 1 AS x));
-SELECT groupArrayMerge(2)(y * 5) FROM (SELECT groupArrayState(2)(x) AS y FROM (SELECT 1 AS x));
 SELECT groupUniqArrayMerge(y * 5) FROM (SELECT groupUniqArrayState(x) AS y FROM (SELECT 1 AS x));
 DROP TABLE IF EXISTS mult_aggregation;

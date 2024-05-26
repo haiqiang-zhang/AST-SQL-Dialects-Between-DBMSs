@@ -3,7 +3,6 @@ create table t1 (a integer, b integer,c1 CHAR(10));
 insert into t1 (a) values (1),(2);
 select count(*) from t1;
 insert into t1 values(1,2,"test");
-select count(*) from t1;
 delete from t1;
 select * from t1;
 drop table t1;

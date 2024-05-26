@@ -1,0 +1,50 @@
+--Query--
+SELECT * FROM t1 WHERE a='abc'
+--Result--
+[('abc', 1, 2)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT * FROM t1 WHERE a='abc'
+--Result--
+[(2, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+SELECT a, typeof(a), b, c FROM t1 WHERE a=5
+--Result--
+[('5', 'text', 4, 3)]
++--------------------+
+--Query--
+SELECT x, a, b, c FROM t2 LEFT JOIN t1 ON (a=5 AND b=x)
+--Result--
+[('v', None, None, None)]
++--------------------+
+--Query--
+SELECT x, a, b, c FROM t2 RIGHT JOIN t1 ON (t1.a=5 AND t1.b=t2.x)
+--Result--
+[(None, 'abc', 1, 2), (None, '5', 4, 3)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN    SELECT x, a, b, c FROM t2 RIGHT JOIN t1 ON (t1.a=5 AND t1.b=t2.x)
+--Result--
+[(7, 0, 0, 'SCAN t2'), (9, 0, 0, 'SEARCH t1 USING INDEX i2 (b=?)'), (30, 0, 0, 'RIGHT-JOIN t1'), (33, 30, 0, 'SCAN t1')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('abc', 1, 2), ('5', 4, 3)]
++--------------------+
+--Query--
+ANALYZE
+--Result--
+[]
++--------------------+
+--Query--
+ANALYZE sqlite_schema
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE b=4
+--Result--
+[('1', 4, 1), ('2', 4, 2), ('5', 4, 3)]
++--------------------+

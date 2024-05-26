@@ -1,0 +1,100 @@
+--Query--
+select 1 == any (select number from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 == any (select number from numbers(2, 10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 != all (select 1 from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 != all (select number from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 == all (select 1 from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 == all (select number from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 != any (select 1 from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 != any (select number from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select number as a from numbers(10) where a == any (select number from numbers(3, 3))
+--Result--
+[(3,), (4,), (5,)]
++--------------------+
+--Query--
+select 1 < any (select 1 from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 1 <= any (select 1 from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 < any (select number from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 > any (select number from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 >= any (select number from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 11 > all (select number from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 11 <= all (select number from numbers(11))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 11 < all (select 11 from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 11 > all (select 11 from numbers(10))
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select 11 >= all (select 11 from numbers(10))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 == any (1)
+--Result--
+[(1,)]
++--------------------+

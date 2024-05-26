@@ -1,0 +1,15 @@
+--Query--
+EXPLAIN SYNTAX SELECT * FROM n, r WHERE n.k = r.k AND r.name = 'A'
+--Result--
+[('SELECT',), ('    k,',), ('    r.k,',), ('    name',), ('FROM n',), ('ALL INNER JOIN r ON k = r.k',), ("WHERE (k = r.k) AND (name = 'A')",)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM n, r WHERE n.k = r.k AND r.name LIKE 'A%'
+--Result--
+[('SELECT',), ('    k,',), ('    r.k,',), ('    name',), ('FROM n',), ('ALL INNER JOIN r ON k = r.k',), ("WHERE (k = r.k) AND (name LIKE 'A%')",)]
++--------------------+
+--Query--
+EXPLAIN SYNTAX SELECT * FROM n, r WHERE n.k = r.k AND r.name NOT LIKE 'A%'
+--Result--
+[('SELECT',), ('    k,',), ('    r.k,',), ('    name',), ('FROM n',), ('ALL INNER JOIN r ON k = r.k',), ("WHERE (k = r.k) AND (name NOT LIKE 'A%')",)]
++--------------------+

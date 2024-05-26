@@ -6,14 +6,4 @@ ENGINE = MergeTree
 PRIMARY KEY n ORDER BY n SETTINGS index_granularity = 8192, index_granularity_bytes = '10Mi';
 INSERT INTO test_table SELECT number, concat('some string ', CAST(number, 'String')) FROM numbers(1000000);
 SELECT count(1) FROM test_table;
-SELECT count(1) FROM test_table PREWHERE (n % 8192) < 4000;
-SELECT count(1) FROM test_table WHERE (n % 8192) < 4000;
-SELECT count(1) FROM test_table PREWHERE (n % 8192) < 4000 WHERE (n % 33) == 0;
-SELECT count(1) FROM test_table;
-SELECT count(1) FROM test_table PREWHERE (n % 8192) < 4000;
-SELECT count(1) FROM test_table WHERE (n % 8192) < 4000;
-SELECT count(1) FROM test_table PREWHERE (n % 8192) < 4000 WHERE (n % 33) == 0;
-SELECT count(1) FROM test_table PREWHERE 7 / (n % 5) > 2;
-SELECT count(1) FROM test_table WHERE 7 / (n % 5) > 2;
-SELECT count(1) FROM test_table PREWHERE 7 / (n % 5) > 2 WHERE (n % 33) == 0;
 DROP TABLE test_table;

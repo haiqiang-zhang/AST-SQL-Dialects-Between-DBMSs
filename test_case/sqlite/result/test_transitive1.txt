@@ -1,0 +1,180 @@
+--Query--
+SELECT * FROM t1 WHERE a=b AND c=b AND c='DEF'
+--Result--
+[('def', 'def', 'def')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=b AND c=b AND c>='DEF' ORDER BY +a
+--Result--
+[('def', 'def', 'def'), ('ghi', 'ghi', 'GHI')]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a=b AND c=b AND c<='DEF' ORDER BY +a
+--Result--
+[('abc', 'abc', 'Abc'), ('def', 'def', 'def')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a=b AND c=b AND c=20
+--Result--
+[(20, 20, '20')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a=b AND c=b AND c>=20 ORDER BY +a
+--Result--
+[(3, 3, '3'), (20, 20, '20')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE a=b AND c=b AND c<=20 ORDER BY +a
+--Result--
+[(20, 20, '20'), (100, 100, '100')]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302    WHERE w=y AND y IS NOT NULL    ORDER BY +w
+--Result--
+[(1, 2, 1, 3), (3, 4, 3, 6), (5, 6, 5, 7)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302    WHERE w=y AND y IS NOT NULL    ORDER BY w
+--Result--
+[(1, 2, 1, 3), (3, 4, 3, 6), (5, 6, 5, 7)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302    WHERE w IS y AND y IS NOT NULL    ORDER BY w
+--Result--
+[(1, 2, 1, 3), (3, 4, 3, 6), (5, 6, 5, 7)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302 ON w=y    WHERE y>1    ORDER BY +w
+--Result--
+[(3, 4, 3, 6), (5, 6, 5, 7)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302 ON w=y    WHERE y>1    ORDER BY w
+--Result--
+[(3, 4, 3, 6), (5, 6, 5, 7)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302 ON w=y    WHERE y>1    ORDER BY w DESC
+--Result--
+[(5, 6, 5, 7), (3, 4, 3, 6)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302 ON w=y    WHERE y BETWEEN 2 AND 4
+--Result--
+[(3, 4, 3, 6)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302 ON w=y    WHERE y BETWEEN 1 AND 4    ORDER BY w
+--Result--
+[(1, 2, 1, 3), (3, 4, 3, 6)]
++--------------------+
+--Query--
+SELECT *     FROM t301 CROSS JOIN t302 ON w=y    WHERE y BETWEEN 1 AND 4    ORDER BY w DESC
+--Result--
+[(3, 4, 3, 6), (1, 2, 1, 3)]
++--------------------+
+--Query--
+SELECT '1-row' FROM t401 LEFT JOIN t402 ON b=a JOIN t403 ON c=a
+--Result--
+[('1-row',)]
++--------------------+
+--Query--
+SELECT '1-row' FROM t401 LEFT JOIN t402 ON b IS a JOIN t403 ON c=a
+--Result--
+[('1-row',)]
++--------------------+
+--Query--
+SELECT '1-row' FROM t401 LEFT JOIN t402 ON b=a JOIN t403 ON c IS a
+--Result--
+[('1-row',)]
++--------------------+
+--Query--
+SELECT '1-row' FROM t401 LEFT JOIN t402 ON b IS a JOIN t403 ON c IS a
+--Result--
+[('1-row',)]
++--------------------+
+--Query--
+SELECT     episodeview.c12,     path.strPath,     tvshowview.c00,     tvshowview.c01,     tvshowview.c05,     tvshowview.c08,     tvshowview.c14,     tvshowview.c13,     seasons.idSeason,     count(1),     count(files.playCount)   FROM episodeview       JOIN tvshowview ON tvshowview.idShow = episodeview.idShow       JOIN seasons ON (seasons.idShow = tvshowview.idShow                        AND seasons.season = episodeview.c12)       JOIN files ON files.idFile = episodeview.idFile       JOIN tvshowlinkpath ON tvshowlinkpath.idShow = tvshowview.idShow       JOIN path ON path.idPath = tvshowlinkpath.idPath   WHERE tvshowview.idShow = 1   GROUP BY episodeview.c12
+--Result--
+[('1', '/tmp/tvshows/The.Big.Bang.Theory/', 'The Big Bang Theory', 'Leonard Hofstadter and Sheldon Cooper are brilliant physicists, the kind of "beautiful minds" that understand how the universe works. But none of that genius helps them interact with people, especially women. All this begins to change when a free-spirited beauty named Penny moves in next door. Sheldon, Leonard\'s roommate, is quite content spending his nights playing Klingon Boggle with their socially dysfunctional friends, fellow CalTech scientists Howard Wolowitz and Raj Koothrappali. However, Leonard sees in Penny a whole new universe of possibilities... including love.', '2007-09-24', 'Comedy', 'CBS', 'TV-PG', 3, 1, 0)]
++--------------------+
+--Query--
+SELECT * FROM x WHERE x.y>='1' AND x.y<'2' AND x.i=x.y
+--Result--
+[(10, '10')]
++--------------------+
+--Query--
+SELECT * FROM t3 WHERE i=t AND t = '10 '
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM u1 WHERE x=y AND y=z AND z='013'
+--Result--
+[('00013', 13, '013')]
++--------------------+
+--Query--
+SELECT * FROM b1 WHERE (x=y COLLATE nocase) AND y='ABC'
+--Result--
+[('abc', 'ABC')]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE x=y AND y=z AND z='abc'
+--Result--
+[('ABC', 'ABC', 'abc')]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE x=y AND y=z AND z='abc'
+--Result--
+[('ABC', 'ABC', 'abc')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM c1 WHERE x=y AND y=z AND z='abc'
+--Result--
+[(2, 0, 0, 'SCAN c1')]
++--------------------+
+--Query--
+SELECT * FROM c1 WHERE x=y AND z=y AND z='abc'
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT * FROM c1 WHERE x=y AND z=y AND z='abc'
+--Result--
+[(3, 0, 0, 'SEARCH c1 USING INDEX c1x (x=?)')]
++--------------------+
+--Query--
+SELECT ALL * FROM t1 NATURAL JOIN t0 WHERE (t1.c0=t0.c1)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ALL * FROM t1 NATURAL JOIN t0 WHERE (likely(t1.c0=t0.c1))
+--Result--
+[]
++--------------------+
+--Query--
+SELECT ALL * FROM t1,t0 WHERE (likely(t1.c0=t0.c1) AND t1.c0=t0.c0)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2 WHERE c=a AND b IS a)
+--Result--
+[(1,), (0,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2 WHERE a=c AND a IS b)
+--Result--
+[(1,), (0,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2 WHERE a=c AND b IS a)
+--Result--
+[(1,), (0,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2 WHERE c=a AND a IS b)
+--Result--
+[(1,), (0,), (3,)]
++--------------------+

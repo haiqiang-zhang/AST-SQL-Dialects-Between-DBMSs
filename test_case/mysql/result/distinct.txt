@@ -1,0 +1,380 @@
+--Query--
+select id from t1 group by id
+--Result--
+[(None,), (-1,), (0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,)]
++--------------------+
+--Query--
+select * from t1 order by id
+--Result--
+[(None, None), (-1, ''), (0, ''), (1, '/L'), (2, 'A01'), (3, 'ANC'), (4, 'F01'), (5, 'FBX'), (6, 'MT'), (7, 'P'), (8, 'RV'), (9, 'SRV'), (10, 'VMT')]
++--------------------+
+--Query--
+select id-5,facility from t1 order by "id-5"
+--Result--
+[(None, None), (-6, ''), (-5, ''), (-4, '/L'), (-3, 'A01'), (-2, 'ANC'), (-1, 'F01'), (0, 'FBX'), (1, 'MT'), (2, 'P'), (3, 'RV'), (4, 'SRV'), (5, 'VMT')]
++--------------------+
+--Query--
+select id >= 0 and id <= 5 as grp,count(*) from t1 group by grp
+--Result--
+[(None, 1), (0, 6), (1, 6)]
++--------------------+
+--Query--
+SELECT DISTINCT FACILITY FROM t1
+--Result--
+[(None,), ('',), ('/L',), ('A01',), ('ANC',), ('F01',), ('FBX',), ('MT',), ('P',), ('RV',), ('SRV',), ('VMT',)]
++--------------------+
+--Query--
+SELECT FACILITY FROM t2
+--Result--
+[(None,), ('',), ('/L',), ('A01',), ('ANC',), ('F01',), ('FBX',), ('MT',), ('P',), ('RV',), ('SRV',), ('VMT',)]
++--------------------+
+--Query--
+SELECT UserId FROM t1 WHERE Userid=22
+--Result--
+[]
++--------------------+
+--Query--
+SELECT UserId FROM t1 WHERE UserId=22 group by Userid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT UserId FROM t1 WHERE UserId=22 group by Userid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT UserId FROM t1 WHERE UserId=22
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT t3.b FROM t3,t2,t1 WHERE t3.a=t1.b AND t1.a=t2.a
+--Result--
+[('1',)]
++--------------------+
+--Query--
+SELECT distinct t3.a FROM t3,t2,t1 WHERE t3.a=t1.b AND t1.a=t2.a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select distinct t1.a from t1,t3 where t1.a=t3.a
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+select distinct 1 from t1,t3 where t1.a=t3.a
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT DISTINCT * FROM t1 LIMIT 2
+--Result--
+[('aa',), ('ab',)]
++--------------------+
+--Query--
+SELECT DISTINCT name FROM t1 LIMIT 2
+--Result--
+[('aa',), ('ab',)]
++--------------------+
+--Query--
+SELECT DISTINCT 1 FROM t1 LIMIT 2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT DISTINCT     t2.id AS key_link_id,     t2.name AS link FROM t1 LEFT JOIN t2 ON t1.link_id=t2.id GROUP BY t1.id ORDER BY link
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT DISTINCT     t1.id from     t1     straight_join     t2     straight_join     t3     straight_join     t1 as j_lj_t2 left join t2 as t2_lj         on j_lj_t2.id=t2_lj.id     straight_join     t1 as j_lj_t3 left join t3 as t3_lj         on j_lj_t3.id=t3_lj.id WHERE     ((t1.id=j_lj_t2.id AND t2_lj.id IS NULL) OR (t1.id=t2.id AND t2.idx=2))     AND ((t1.id=j_lj_t3.id AND t3_lj.id IS NULL) OR (t1.id=t3.id AND t3.idx=2))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT DISTINCT     t1.id from     t1     straight_join     t2     straight_join     t3     straight_join     t1 as j_lj_t2 left join t2 as t2_lj         on j_lj_t2.id=t2_lj.id     straight_join     t1 as j_lj_t3 left join t3 as t3_lj         on j_lj_t3.id=t3_lj.id WHERE     ((t1.id=j_lj_t2.id AND t2_lj.id IS NULL) OR (t1.id=t2.id AND t2.idx=2))     AND ((t1.id=j_lj_t3.id AND t3_lj.id IS NULL) OR (t1.id=t3.id AND t3.idx=2))
+--Result--
+[(2,)]
++--------------------+
+--Query--
+select a,sec_to_time(sum(time_to_sec(t))) from t1 group by a,b
+--Result--
+[(1, datetime.timedelta(seconds=375)), (1, datetime.timedelta(seconds=2190)), (1, datetime.timedelta(seconds=2190))]
++--------------------+
+--Query--
+select distinct a from t1 group by b,a having a > 2 order by a desc
+--Result--
+[(4,), (3,)]
++--------------------+
+--Query--
+select distinct a,c from t1 group by b,c,a having a > 2 order by a desc
+--Result--
+[(4, None), (3, None)]
++--------------------+
+--Query--
+select * from t1 where a >= '1'
+--Result--
+[('1',), ('1',)]
++--------------------+
+--Query--
+select distinct a from t1 order by a desc
+--Result--
+[('1',)]
++--------------------+
+--Query--
+select distinct a from t1 where a >= '1' order by a desc
+--Result--
+[('1',)]
++--------------------+
+--Query--
+SELECT DISTINCTROW email, shipcode FROM t1, t2 WHERE t1.infoID=t2.infoID
+--Result--
+[('test1@testdomain.com', 'Z001'), ('test2@testdomain.com', 'Z001'), ('test2@testdomain.com', 'R002'), ('test3@testdomain.com', 'Z001')]
++--------------------+
+--Query--
+select distinct left(name,1) as name from t1
+--Result--
+[('a',), ('e',)]
++--------------------+
+--Query--
+SELECT DISTINCT     t2.id AS key_link_id,     t2.name AS link FROM t1 LEFT JOIN t2 ON t1.link_id=t2.id GROUP BY t1.id ORDER BY link
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT DISTINCT a, 1 FROM t1
+--Result--
+[(1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]
++--------------------+
+--Query--
+SELECT DISTINCT 1, a FROM t1
+--Result--
+[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5)]
++--------------------+
+--Query--
+SELECT DISTINCT a, b, 2 FROM t2
+--Result--
+[(1, 1, 2), (2, 2, 2), (2, 3, 2), (2, 4, 2), (3, 5, 2)]
++--------------------+
+--Query--
+SELECT DISTINCT 2, a, b FROM t2
+--Result--
+[(2, 1, 1), (2, 2, 2), (2, 2, 3), (2, 2, 4), (2, 3, 5)]
++--------------------+
+--Query--
+SELECT DISTINCT a, 2, b FROM t2
+--Result--
+[(1, 2, 1), (2, 2, 2), (2, 2, 3), (2, 2, 4), (3, 2, 5)]
++--------------------+
+--Query--
+select distinct id, IFNULL(dsc, '-') from t1
+--Result--
+[(1, 'line number one'), (2, 'line number two'), (3, 'line number three')]
++--------------------+
+--Query--
+SELECT DISTINCT a, b FROM t1 ORDER BY b
+--Result--
+[(1, 1), (3, 2), (2, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT a,a FROM t1 WHERE b < 12 ORDER BY a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT fruit_id, fruit_name INTO @v1, @v2 FROM t1 WHERE fruit_name =  'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v1, @v2
+--Result--
+[(2, 'APPLE')]
++--------------------+
+--Query--
+SELECT DISTINCT fruit_id, fruit_name INTO @v3, @v4 FROM t1 GROUP BY fruit_id,  fruit_name HAVING fruit_name = 'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v3, @v4
+--Result--
+[(2, 'APPLE')]
++--------------------+
+--Query--
+SELECT DISTINCT @v5:= fruit_id, @v6:= fruit_name INTO @v7, @v8 FROM t1 WHERE  fruit_name = 'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v5, @v6, @v7, @v8
+--Result--
+[(2, 'APPLE', 2, 'APPLE')]
++--------------------+
+--Query--
+SELECT DISTINCT @v5 + fruit_id, CONCAT(@v6, fruit_name) INTO @v9, @v10 FROM t1  WHERE fruit_name = 'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v5, @v6, @v7, @v8, @v9, @v10
+--Result--
+[(2, 'APPLE', 2, 'APPLE', 4, 'APPLEAPPLE')]
++--------------------+
+--Query--
+SELECT DISTINCT @v11:= @v5 + fruit_id, @v12:= CONCAT(@v6, fruit_name) INTO  @v13, @v14 FROM t1 WHERE fruit_name = 'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v11, @v12, @v13, @v14
+--Result--
+[(4, 'APPLEAPPLE', 4, 'APPLEAPPLE')]
++--------------------+
+--Query--
+SELECT DISTINCT @v13, @v14 INTO @v15, @v16 FROM t1 WHERE fruit_name = 'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v15, @v16
+--Result--
+[(4, 'APPLEAPPLE')]
++--------------------+
+--Query--
+SELECT DISTINCT 2 + 2, 'Bob' INTO @v17, @v18 FROM t1 WHERE fruit_name =  'APPLE'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT @v17, @v18
+--Result--
+[(4, 'Bob')]
++--------------------+
+--Query--
+SELECT @v19, @v20
+--Result--
+[(None, None)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t1 WHERE a=0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT a FROM t1 WHERE a=0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM (SELECT DISTINCT a FROM t2) dt
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT DISTINCT a FROM t1
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT a FROM t1 GROUP BY a
+--Result--
+[(None,), (1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+SELECT DISTINCT a, b FROM t1
+--Result--
+[(1, 1), (1, 2), (1, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT a, a, b FROM t1
+--Result--
+[(1, 1, 1), (1, 1, 2), (1, 1, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT a, b, d, c FROM t1
+--Result--
+[(1, 1, 0, 1), (1, 1, 0, 2), (1, 1, 0, 3), (1, 2, 0, 1), (1, 2, 0, 2), (1, 2, 0, 3)]
++--------------------+
+--Query--
+SELECT DISTINCT CONCAT(a,b) AS c FROM t1 ORDER BY 1
+--Result--
+[('11112222',), ('33334444',)]
++--------------------+
+--Query--
+SELECT DISTINCT subselect.b FROM t1 LEFT JOIN       (SELECT it_b.* FROM t1 as it_a LEFT JOIN t1 as it_b ON true) AS subselect       ON t1.a = subselect.b
+--Result--
+[(None,), (3,)]
++--------------------+
+--Query--
+SELECT DISTINCT t3.a AS t3_date FROM t1      LEFT JOIN t2 ON false      LEFT JOIN t3 ON t2.b = t3.b LIMIT 1
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT DISTINCT (COUNT(DISTINCT b) + 1) AS c FROM t1 GROUP BY a
+--Result--
+[(4,), (3,)]
++--------------------+
+--Query--
+SELECT  LEAST(1,COUNT(DISTINCT a)) FROM t GROUP BY a
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT DISTINCT table1.pk FROM t1 AS table1 LEFT JOIN t1 AS table2 ON table1.f2=table2.f3 WHERE table2.f1 IS NULL
+--Result--
+[(14,), (16,), (23,)]
++--------------------+
+--Query--
+SELECT /*+JOIN_ORDER(t2,t3,t1) */ DISTINCT t2.pk FROM t1 LEFT JOIN t2 RIGHT OUTER JOIN t3 ON t2.f1 = t3.f3 ON t1.pk = t3.f2 WHERE t3.pk <> t2.pk
+--Result--
+[(12,)]
++--------------------+
+--Query--
+SELECT DISTINCT COUNT(*) AS num FROM t1 GROUP BY f HAVING num=1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT DISTINCT b FROM t1 GROUP BY a, b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT f1, LENGTH(F2) FROM t1 GROUP BY f1,LENGTH(F2) ORDER BY 1,2
+--Result--
+[(1, 3), (1, 4)]
++--------------------+
+--Query--
+SELECT DISTINCT t1.a   FROM t1, t2, t3   WHERE t1.a = t2.a AND t2.a IS NULL   HAVING t1.a = 8   ORDER BY t1.a
+--Result--
+[]
++--------------------+
+--Query--
+SELECT DISTINCT f1 FROM t1 GROUP BY f1 WITH ROLLUP ORDER BY f1, ANY_VALUE(GROUPING(f1))
+--Result--
+[(None,), (1,)]
++--------------------+
+--Query--
+SELECT SQL_SMALL_RESULT DISTINCT t1.f1/t1.f2 FROM t1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT SQL_BIG_RESULT DISTINCT t1.f1/t1.f2 FROM t1
+--Result--
+[(0.0,)]
++--------------------+
+--Query--
+SELECT SQL_SMALL_RESULT DISTINCT CAST(v AS FLOAT) FROM t1
+--Result--
+[(-2007570000.0,), (-2007570000.0,), (-2007570000.0,), (2007570000.0,), (2007570000.0,), (2007570000.0,)]
++--------------------+

@@ -1,0 +1,960 @@
+--Query--
+select variable_value from   performance_schema.session_status where   variable_name='com_stmt_reprepare'   into @reprepare_count
+--Result--
+[]
++--------------------+
+--Query--
+select '' as "SUCCESS"
+--Result--
+[('',)]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select a from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) value (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) value (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) value (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) value (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) value (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from t1 order by a
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) values (?)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1(a) values (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @var
+--Result--
+[(None,)]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) values (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t3
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) values (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 join t2 on (t1.a=t2.a) join t3 on (t2.a=t3.a)
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 join t2 on (t1.a=t2.a) join t4 on (t2.a=t4.a)
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t1 (a) values (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 join t2 on (t1.a=t2.a) join t4 on (t2.a=t4.a)
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 join t2 on (t1.a=t2.a) join t3 on (t2.a=t3.a)
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1 join t2 on (t1.a=t2.a) join t4 on (t2.a=t4.a)
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from 'select count(*) from t1'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select count(*) from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select a from t1"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(10, 20, 30), (20, 40, 60), (30, 60, 90)]
++--------------------+
+--Query--
+prepare stmt from "select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(10, 20, 50), (20, 40, 100), (30, 60, 150)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(10, 30, 40), (20, 60, 80), (30, 90, 120)]
++--------------------+
+--Query--
+lock tables t1 read, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read, t2 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read, v1 read
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from 'select * from v1'
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read, v1 read
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from 'select * from v1'
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+lock tables t1 read
+--Result--
+[]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from v1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into v1 (a) values (?)"
+--Result--
+[]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select @message
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[(4,), (5,), (6,)]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from  "select ROUTINE_SCHEMA, ROUTINE_NAME, ROUTINE_TYPE  from INFORMATION_SCHEMA.ROUTINES where  routine_name='p1'"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from v1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "alter table t1 add column b int"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show create procedure p1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show create function f1"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show create trigger t1_bi"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select a from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from v_27420"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from  "select oref, a, a in (select a from t_27430_1 where oref=t_27430_2.oref) Z from t_27430_2"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select * from v_27690_1, v_27690_2"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "select 1 as res from dual where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from 'create table t2 as select * from t1'
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "create temporary table if not exists t2 as select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "create table t2 like t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "update t2 set a=a+1 where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t2 set a=((1) in (select * from t1))"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "insert into t2 select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "replace t2 set a=((1) in (select * from t1))"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "replace t2 select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "delete from t2 where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "delete t2, t3 from t2, t3 where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "update t2, t3 set t3.a=t2.a, t2.a=null where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show databases where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show tables where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show fields from t1 where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show keys from t1 where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show variables where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show status where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show charset where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show collation where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show table status where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show triggers where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show open tables where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show procedure status where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show function status where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "show events where (1) in (select * from t1)"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "set @a=((1) in (select * from t1))"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "do ((1) in (select * from t1))"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "call p1((1) in (select * from t1))"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "create view v1 as select * from t1"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt1 FROM 'INSERT INTO t1 VALUES (1)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt1
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt2 FROM 'CREATE TEMPORARY TABLE tm (i INT) ENGINE=InnoDB UNION=(t1)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt2
+--Result--
+[]
++--------------------+
+--Query--
+PREPARE stmt3 FROM 'ALTER TABLE tm UNION=(t1)'
+--Result--
+[]
++--------------------+
+--Query--
+DEALLOCATE PREPARE stmt3
+--Result--
+[]
++--------------------+

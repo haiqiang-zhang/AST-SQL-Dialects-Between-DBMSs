@@ -1,0 +1,190 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.timedelta(seconds=40953, microseconds=123000), 112233.123), (datetime.timedelta(days=-1, seconds=45446, microseconds=876543), -112233.123457)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(101100, datetime.timedelta(seconds=36659, microseconds=500000)), (101011, datetime.timedelta(seconds=36610, microseconds=500000)), (101010, datetime.timedelta(seconds=36610, microseconds=499999))]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3661), '01:01:01')]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=3661, microseconds=900000), datetime.timedelta(seconds=3661, microseconds=990000), datetime.timedelta(seconds=3661, microseconds=999000), datetime.timedelta(seconds=3661, microseconds=999900), datetime.timedelta(seconds=3661, microseconds=999990), datetime.timedelta(seconds=3661, microseconds=999999), datetime.timedelta(seconds=3662))]
++--------------------+
+--Query--
+SELECT hour, minute, second, MAKETIME(hour, minute, second) AS MAKETIME FROM t1
+--Result--
+[(836, 59, 59.999999, datetime.timedelta(days=34, seconds=75599, microseconds=999999)), (836, 59, 59.999999, datetime.timedelta(days=34, seconds=75599, microseconds=999999)), (836, 59, 59.9999991, datetime.timedelta(days=34, seconds=75599, microseconds=999999)), (836, 59, 59.9999992, datetime.timedelta(days=34, seconds=75599, microseconds=999999)), (836, 59, 59.9999993, datetime.timedelta(days=34, seconds=75599, microseconds=999999)), (836, 59, 59.9999995, datetime.timedelta(days=34, seconds=75600)), (836, 59, 59.9999996, datetime.timedelta(days=34, seconds=75600)), (836, 59, 59.9999997, datetime.timedelta(days=34, seconds=75600)), (836, 59, 59.9999998, datetime.timedelta(days=34, seconds=75600)), (836, 59, 59.9999999, datetime.timedelta(days=34, seconds=75600))]
++--------------------+
+--Query--
+SELECT hour + 1, minute, second, MAKETIME(hour + 1, minute, second) AS MAKETIME FROM t1
+--Result--
+[(837, 59, 59.999999, datetime.timedelta(days=34, seconds=79199, microseconds=999999)), (837, 59, 59.999999, datetime.timedelta(days=34, seconds=79199, microseconds=999999)), (837, 59, 59.9999991, datetime.timedelta(days=34, seconds=79199, microseconds=999999)), (837, 59, 59.9999992, datetime.timedelta(days=34, seconds=79199, microseconds=999999)), (837, 59, 59.9999993, datetime.timedelta(days=34, seconds=79199, microseconds=999999)), (837, 59, 59.9999995, datetime.timedelta(days=34, seconds=79200)), (837, 59, 59.9999996, datetime.timedelta(days=34, seconds=79200)), (837, 59, 59.9999997, datetime.timedelta(days=34, seconds=79200)), (837, 59, 59.9999998, datetime.timedelta(days=34, seconds=79200)), (837, 59, 59.9999999, datetime.timedelta(days=34, seconds=79200))]
++--------------------+
+--Query--
+SELECT -hour, minute, second, MAKETIME(-hour, minute, second) AS MAKETIME FROM t1
+--Result--
+[(-836, 59, 59.999999, datetime.timedelta(days=-35, seconds=10800, microseconds=1)), (-836, 59, 59.999999, datetime.timedelta(days=-35, seconds=10800, microseconds=1)), (-836, 59, 59.9999991, datetime.timedelta(days=-35, seconds=10800, microseconds=1)), (-836, 59, 59.9999992, datetime.timedelta(days=-35, seconds=10800, microseconds=1)), (-836, 59, 59.9999993, datetime.timedelta(days=-35, seconds=10800, microseconds=1)), (-836, 59, 59.9999995, datetime.timedelta(days=-35, seconds=10800)), (-836, 59, 59.9999996, datetime.timedelta(days=-35, seconds=10800)), (-836, 59, 59.9999997, datetime.timedelta(days=-35, seconds=10800)), (-836, 59, 59.9999998, datetime.timedelta(days=-35, seconds=10800)), (-836, 59, 59.9999999, datetime.timedelta(days=-35, seconds=10800))]
++--------------------+
+--Query--
+SELECT -hour - 1, minute, second, MAKETIME(-hour - 1, minute, second) AS MAKETIME FROM t1
+--Result--
+[(-837, 59, 59.999999, datetime.timedelta(days=-35, seconds=7200, microseconds=1)), (-837, 59, 59.999999, datetime.timedelta(days=-35, seconds=7200, microseconds=1)), (-837, 59, 59.9999991, datetime.timedelta(days=-35, seconds=7200, microseconds=1)), (-837, 59, 59.9999992, datetime.timedelta(days=-35, seconds=7200, microseconds=1)), (-837, 59, 59.9999993, datetime.timedelta(days=-35, seconds=7200, microseconds=1)), (-837, 59, 59.9999995, datetime.timedelta(days=-35, seconds=7200)), (-837, 59, 59.9999996, datetime.timedelta(days=-35, seconds=7200)), (-837, 59, 59.9999997, datetime.timedelta(days=-35, seconds=7200)), (-837, 59, 59.9999998, datetime.timedelta(days=-35, seconds=7200)), (-837, 59, 59.9999999, datetime.timedelta(days=-35, seconds=7200))]
++--------------------+
+--Query--
+SELECT MAKETIME(838, 59, 59.0000005) AS MAKETIME
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT MAKETIME(838, 59, 59.00000056) AS MAKETIME
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT MAKETIME(838, 59, 59.000000567) AS MAKETIME
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT MAKETIME(838, 59, 59.0000005678) AS MAKETIME
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT MAKETIME(838, 59, 59.00000056789) AS MAKETIME
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 0, 0, 123457),), (datetime.datetime(2001, 3, 1, 0, 0),), (datetime.datetime(2001, 1, 1, 10, 0, 0, 123457),), (datetime.datetime(2001, 3, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 10, 11),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(20010101101100, datetime.datetime(2001, 1, 1, 10, 10, 59, 500000)), (20010101101011, datetime.datetime(2001, 1, 1, 10, 10, 10, 500000)), (20010101101010, datetime.datetime(2001, 1, 1, 10, 10, 10, 499999))]
++--------------------+
+--Query--
+SELECT a, MICROSECOND(a) FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 12, 13, 2), 2), (datetime.datetime(2001, 1, 1, 11, 12, 13, 100002), 100002), (datetime.datetime(2001, 1, 1, 11, 12, 14), 0)]
++--------------------+
+--Query--
+SELECT a, EXTRACT(MICROSECOND FROM a) AS b FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 12, 13, 2), 2), (datetime.datetime(2001, 1, 1, 11, 12, 13, 100002), 100002), (datetime.datetime(2001, 1, 1, 11, 12, 14), 0)]
++--------------------+
+--Query--
+SELECT MICROSECOND(CAST(20010101235959.456 AS DATETIME(6))) AS a
+--Result--
+[(456000,)]
++--------------------+
+--Query--
+SELECT EXTRACT(MICROSECOND FROM CAST(20010101235959.456 AS DATETIME(6))) AS a
+--Result--
+[(456000,)]
++--------------------+
+--Query--
+SELECT a, CAST(a AS DATETIME(5)) FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 10, 10, 999999), datetime.datetime(2001, 1, 1, 10, 10, 11)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999998), datetime.datetime(2001, 1, 1, 10, 10, 11)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999997), datetime.datetime(2001, 1, 1, 10, 10, 11)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999996), datetime.datetime(2001, 1, 1, 10, 10, 11)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999995), datetime.datetime(2001, 1, 1, 10, 10, 11)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999994), datetime.datetime(2001, 1, 1, 10, 10, 10, 999990)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999993), datetime.datetime(2001, 1, 1, 10, 10, 10, 999990)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999992), datetime.datetime(2001, 1, 1, 10, 10, 10, 999990)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999991), datetime.datetime(2001, 1, 1, 10, 10, 10, 999990)), (datetime.datetime(2001, 1, 1, 10, 10, 10, 999990), datetime.datetime(2001, 1, 1, 10, 10, 10, 999990))]
++--------------------+
+--Query--
+SELECT t0 FROM t1 WHERE t6='2001-01-01 00:00:00.9999998'
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT t6 FROM t1 WHERE t6='2001-01-01 00:00:00.9999998'
+--Result--
+[(datetime.datetime(2001, 1, 1, 0, 0, 1),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2001, 1, 1, 10, 10, 11),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(20010101101100, datetime.datetime(2001, 1, 1, 10, 10, 59, 500000)), (20010101101011, datetime.datetime(2001, 1, 1, 10, 10, 10, 500000)), (20010101101010, datetime.datetime(2001, 1, 1, 10, 10, 10, 499999))]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36610, microseconds=999999), None)]
++--------------------+
+--Query--
+SELECT * FROM t1, t2 WHERE a=b
+--Result--
+[(datetime.datetime(2001, 1, 1, 11, 22, 33), 20010101112233.0), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123000), 20010101112233.12), (datetime.datetime(2001, 1, 1, 11, 22, 33, 123457), 20010101112233.125)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2038, 1, 19, 3, 14, 8),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(2038, 1, 19, 3, 14, 8),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1000, 1, 1, 0, 0),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.datetime(1000, 1, 1, 0, 0),)]
++--------------------+

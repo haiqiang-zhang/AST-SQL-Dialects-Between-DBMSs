@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM or_bug WHERE (key = 1) OR false OR false
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM or_bug WHERE (key = 1) OR false
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM or_bug WHERE (key = 1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select * from forms where text_field like '%this%' or 0 = 1 or 0 = 1
+--Result--
+[('5840ead423829c1eab29fa97', 'this is a test')]
++--------------------+
+--Query--
+select * from forms where text_field like '%this%' or 0 = 1
+--Result--
+[('5840ead423829c1eab29fa97', 'this is a test')]
++--------------------+
+--Query--
+select * from forms where text_field like '%this%'
+--Result--
+[('5840ead423829c1eab29fa97', 'this is a test')]
++--------------------+

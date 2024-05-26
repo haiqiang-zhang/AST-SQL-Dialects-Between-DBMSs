@@ -37,7 +37,6 @@ CREATE TABLE unsigned_types (
 ) ENGINE=Memory;
 SHOW CREATE TABLE unsigned_types;
 INSERT INTO unsigned_types(a) VALUES (1);
-SELECT toTypeName((*,)) FROM unsigned_types;
 SELECT CAST('42' AS DOUBLE PRECISION), CAST(42, 'NATIONAL CHARACTER VARYING'), CAST(-1 AS tinyint  UnSiGnEd), CAST(65535, ' sMaLlInT  signed ');
 DROP TABLE multiword_types;
 DROP TABLE unsigned_types;

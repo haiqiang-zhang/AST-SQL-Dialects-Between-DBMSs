@@ -1,0 +1,25 @@
+--Query--
+SELECT 'defaults'
+--Result--
+[('defaults',)]
++--------------------+
+--Query--
+SELECT count(1) FROM (     SELECT materialize(1) as k, n FROM numbers(10) nums     JOIN (SELECT materialize(1) AS k, number n FROM numbers(1000000)) j     USING k)
+--Result--
+[(10000000,)]
++--------------------+
+--Query--
+SELECT count(1), uniqExact(n) FROM (     SELECT materialize(1) as k, n FROM numbers(1000000) nums     JOIN (SELECT materialize(1) AS k, number n FROM numbers(10)) j     USING k)
+--Result--
+[(10000000, 10)]
++--------------------+
+--Query--
+SELECT 'max_joined_block_size_rows = 2000'
+--Result--
+[('max_joined_block_size_rows = 2000',)]
++--------------------+
+--Query--
+SELECT 'max_rows_in_join = 1000'
+--Result--
+[('max_rows_in_join = 1000',)]
++--------------------+

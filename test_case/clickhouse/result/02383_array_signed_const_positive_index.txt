@@ -1,0 +1,140 @@
+--Query--
+SELECT materialize([[13]])[1::Int8]
+--Result--
+[([13],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello']])[1::Int8]
+--Result--
+[(['Hello'],)]
++--------------------+
+--Query--
+SELECT materialize([13])[1::Int8]
+--Result--
+[(13,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello'])[1::Int8]
+--Result--
+[('Hello',)]
++--------------------+
+--Query--
+SELECT materialize([[13], [14]])[2::Int8]
+--Result--
+[([14],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello'], ['world']])[2::Int8]
+--Result--
+[(['world'],)]
++--------------------+
+--Query--
+SELECT materialize([13, 14])[2::Int8]
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello', 'world'])[2::Int8]
+--Result--
+[('world',)]
++--------------------+
+--Query--
+SELECT materialize([[13], [14]])[3::Int8]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello'], ['world']])[3::Int8]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([13, 14])[3::Int8]
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello', 'world'])[3::Int8]
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT materialize([[13], [14]])[0::Int8]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello'], ['world']])[0::Int8]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([13, 14])[0::Int8]
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello', 'world'])[0::Int8]
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT materialize([[13], [14]])[-1]
+--Result--
+[([14],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello'], ['world']])[-1]
+--Result--
+[(['world'],)]
++--------------------+
+--Query--
+SELECT materialize([13, 14])[-1]
+--Result--
+[(14,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello', 'world'])[-1]
+--Result--
+[('world',)]
++--------------------+
+--Query--
+SELECT materialize([[13], [14]])[-9223372036854775808]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello'], ['world']])[-9223372036854775808]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([13, 14])[-9223372036854775808]
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello', 'world'])[-9223372036854775808]
+--Result--
+[('',)]
++--------------------+
+--Query--
+SELECT materialize([[toNullable(13)], [14]])[-9223372036854775808]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([['Hello'], [toNullable('world')]])[-9223372036854775808]
+--Result--
+[([],)]
++--------------------+
+--Query--
+SELECT materialize([13, toNullable(14)])[-9223372036854775808]
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT materialize(['Hello', toLowCardinality('world')])[-9223372036854775808]
+--Result--
+[('',)]
++--------------------+

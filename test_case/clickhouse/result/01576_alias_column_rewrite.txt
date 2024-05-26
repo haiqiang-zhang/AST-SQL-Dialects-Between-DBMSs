@@ -1,0 +1,155 @@
+--Query--
+SELECT 'test-partition-prune'
+--Result--
+[('test-partition-prune',)]
++--------------------+
+--Query--
+SELECT COUNT() = 10 FROM test_table WHERE day = '2020-01-01' SETTINGS max_rows_to_read = 10
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT t = '2020-01-03' FROM (SELECT day AS t FROM test_table WHERE t = '2020-01-03' GROUP BY t SETTINGS max_rows_to_read = 10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT() = 10 FROM test_table WHERE day = '2020-01-01' UNION ALL SELECT 1 FROM numbers(1) SETTINGS max_rows_to_read = 11
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT  COUNT() = 0 FROM (SELECT  toDate('2019-01-01') AS  day, day AS t   FROM test_table PREWHERE t = '2020-01-03'  WHERE t  = '2020-01-03' GROUP BY t )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'test-join'
+--Result--
+[('test-join',)]
++--------------------+
+--Query--
+SELECT day = '2020-01-03' FROM (  SELECT toDate('2020-01-03') AS day  FROM numbers(1) ) AS a INNER JOIN (  SELECT day  FROM test_table  WHERE day = '2020-01-03'  GROUP BY day ) AS b ON a.day = b.day SETTINGS max_rows_to_read = 11
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT day = '2020-01-01' FROM (  SELECT day  FROM test_table  WHERE day = '2020-01-01'  GROUP BY day ) AS a INNER JOIN (  SELECT toDate('2020-01-01') AS day  FROM numbers(1) ) AS b ON a.day = b.day SETTINGS max_rows_to_read = 11
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'alias2alias'
+--Result--
+[('alias2alias',)]
++--------------------+
+--Query--
+SELECT COUNT() = 10 FROM test_table WHERE day1 = '2020-01-02' SETTINGS max_rows_to_read = 10
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT t = '2020-01-03' FROM (SELECT day1 AS t FROM test_table WHERE t = '2020-01-03' GROUP BY t SETTINGS max_rows_to_read = 10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT t = '2020-01-03' FROM (SELECT day2 AS t FROM test_table WHERE t = '2020-01-03' GROUP BY t SETTINGS max_rows_to_read = 10)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT() = 10 FROM test_table WHERE day1 = '2020-01-03' UNION ALL SELECT 1 FROM numbers(1) SETTINGS max_rows_to_read = 11
+--Result--
+[(1,), (1,)]
++--------------------+
+--Query--
+SELECT  COUNT() = 0 FROM (SELECT  toDate('2019-01-01') AS  day1, day1 AS t   FROM test_table PREWHERE t = '2020-01-03'  WHERE t  = '2020-01-03' GROUP BY t )
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT day1 = '2020-01-04' FROM test_table PREWHERE day1 = '2020-01-04'  WHERE day1 = '2020-01-04' GROUP BY day1 SETTINGS max_rows_to_read = 10
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'array-join'
+--Result--
+[('array-join',)]
++--------------------+
+--Query--
+SELECT count() == 10 FROM test_table WHERE day = '2020-01-01'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(struct.key) == 30, sum(struct.value) == 30 FROM (SELECT struct.key, struct.value FROM test_table array join struct WHERE day = '2020-01-01')
+--Result--
+[(0, 0)]
++--------------------+
+--Query--
+SELECT 'lambda'
+--Result--
+[('lambda',)]
++--------------------+
+--Query--
+SELECT count() == 10 FROM test_table WHERE  arrayMap((day) -> day + 1, [1,2,3]) [1] = 2 AND day = '2020-01-03'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT 'optimize_read_in_order'
+--Result--
+[('optimize_read_in_order',)]
++--------------------+
+--Query--
+EXPLAIN description = 0 SELECT day AS s FROM test_table ORDER BY s LIMIT 1 SETTINGS optimize_read_in_order = 0
+--Result--
+[('Expression',), ('  Limit',), ('    Sorting',), ('      Expression',), ('        ReadFromMergeTree',)]
++--------------------+
+--Query--
+EXPLAIN description = 0 SELECT day AS s FROM test_table ORDER BY s LIMIT 1 SETTINGS optimize_read_in_order = 1
+--Result--
+[('Expression',), ('  Limit',), ('    Sorting',), ('      Expression',), ('        ReadFromMergeTree',)]
++--------------------+
+--Query--
+EXPLAIN description = 0 SELECT toDate(timestamp) AS s FROM test_table ORDER BY toDate(timestamp) LIMIT 1 SETTINGS optimize_read_in_order = 1
+--Result--
+[('Expression',), ('  Limit',), ('    Sorting',), ('      Expression',), ('        ReadFromMergeTree',)]
++--------------------+
+--Query--
+SELECT 'optimize_aggregation_in_order'
+--Result--
+[('optimize_aggregation_in_order',)]
++--------------------+
+--Query--
+EXPLAIN description = 0 SELECT day, count() AS s FROM test_table GROUP BY day SETTINGS optimize_aggregation_in_order = 0
+--Result--
+[('Expression',), ('  Aggregating',), ('    Expression',), ('      ReadFromMergeTree',)]
++--------------------+
+--Query--
+EXPLAIN description = 0 SELECT day, count() AS s FROM test_table GROUP BY day SETTINGS optimize_aggregation_in_order = 1
+--Result--
+[('Expression',), ('  Aggregating',), ('    Expression',), ('      ReadFromMergeTree',)]
++--------------------+
+--Query--
+SELECT 'second-index'
+--Result--
+[('second-index',)]
++--------------------+
+--Query--
+SELECT COUNT() == 1 FROM test_index WHERE key_uint32 = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT() == 1 FROM test_index WHERE toUInt32(key_string) = 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select sum(x), sum(y) from t
+--Result--
+[(1, 1)]
++--------------------+

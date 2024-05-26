@@ -1,0 +1,35 @@
+--Query--
+SELECT 'const column'
+--Result--
+[('const column',)]
++--------------------+
+--Query--
+WITH 	CAST(1234567891011 AS Int64) AS i64, 	'UTC' AS tz SELECT 	tz, 	i64, 	fromUnixTimestamp64Milli(i64, tz), 	fromUnixTimestamp64Micro(i64, tz), 	fromUnixTimestamp64Nano(i64, tz) as dt64, 	toTypeName(dt64)
+--Result--
+[('UTC', 1234567891011, datetime.datetime(2009, 2, 13, 23, 31, 31, 11000, tzinfo=<UTC>), datetime.datetime(1970, 1, 15, 6, 56, 7, 891011, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 20, 34, 567891, tzinfo=<UTC>), "DateTime64(9, 'UTC')")]
++--------------------+
+--Query--
+SELECT 'non-const column'
+--Result--
+[('non-const column',)]
++--------------------+
+--Query--
+WITH 	CAST(1234567891011 AS Int64) AS i64, 	'UTC' AS tz SELECT 	i64, 	fromUnixTimestamp64Milli(i64, tz), 	fromUnixTimestamp64Micro(i64, tz), 	fromUnixTimestamp64Nano(i64, tz) as dt64
+--Result--
+[(1234567891011, datetime.datetime(2009, 2, 13, 23, 31, 31, 11000, tzinfo=<UTC>), datetime.datetime(1970, 1, 15, 6, 56, 7, 891011, tzinfo=<UTC>), datetime.datetime(1970, 1, 1, 0, 20, 34, 567891, tzinfo=<UTC>))]
++--------------------+
+--Query--
+SELECT 'upper range bound'
+--Result--
+[('upper range bound',)]
++--------------------+
+--Query--
+WITH     10413688942 AS timestamp,     CAST(10413688942123 AS Int64) AS milli,     CAST(10413688942123456 AS Int64) AS micro,     CAST(10413688942123456789 AS Int64) AS nano,     'UTC' AS tz SELECT     timestamp,     fromUnixTimestamp64Milli(milli, tz),     fromUnixTimestamp64Micro(micro, tz),     fromUnixTimestamp64Nano(nano, tz)
+--Result--
+[(10413688942, datetime.datetime(2299, 12, 30, 19, 22, 22, 122999, tzinfo=<UTC>), datetime.datetime(2299, 12, 30, 19, 22, 22, 123455, tzinfo=<UTC>), datetime.datetime(1715, 6, 11, 19, 47, 48, 413905, tzinfo=<UTC>))]
++--------------------+
+--Query--
+SELECT 'lower range bound'
+--Result--
+[('lower range bound',)]
++--------------------+

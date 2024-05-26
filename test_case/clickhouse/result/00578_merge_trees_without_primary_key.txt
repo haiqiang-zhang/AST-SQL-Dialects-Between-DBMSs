@@ -1,0 +1,55 @@
+--Query--
+SELECT '*** MergeTree ***'
+--Result--
+[('*** MergeTree ***',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE unsorted PARTITION tuple() FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM unsorted
+--Result--
+[(1, 'a'), (5, 'b'), (2, 'c'), (4, 'd'), (3, 'e')]
++--------------------+
+--Query--
+SELECT '*** ReplacingMergeTree ***'
+--Result--
+[('*** ReplacingMergeTree ***',)]
++--------------------+
+--Query--
+SELECT * FROM unsorted_replacing FINAL
+--Result--
+[(1, 'a', 5)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM unsorted_replacing
+--Result--
+[(3, 'e', 1), (2, 'c', 3), (1, 'a', 5)]
++--------------------+
+--Query--
+SELECT '*** CollapsingMergeTree ***'
+--Result--
+[('*** CollapsingMergeTree ***',)]
++--------------------+
+--Query--
+SELECT * FROM unsorted_collapsing FINAL
+--Result--
+[(3, 'c', 1)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT * FROM unsorted_collapsing
+--Result--
+[(2, 'b', -1), (3, 'c', 1), (1, 'a', 1), (1, 'a', -1), (2, 'b', 1)]
++--------------------+

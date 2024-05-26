@@ -1,0 +1,40 @@
+--Query--
+SELECT timezone(), timezoneOf(now()) SETTINGS session_timezone = 'Pacific/Pitcairn'
+--Result--
+[('Pacific/Pitcairn', 'Pacific/Pitcairn')]
++--------------------+
+--Query--
+SELECT timezone(), timezoneOf(now())
+--Result--
+[('Asia/Novosibirsk', 'Asia/Novosibirsk')]
++--------------------+
+--Query--
+SELECT toDateTime(toDateTime('2022-12-12 23:23:23'), 'Europe/Zurich')
+--Result--
+[(datetime.datetime(2022, 12, 12, 17, 23, 23, tzinfo=<DstTzInfo 'Europe/Zurich' CET+1:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT toDateTime64(toDateTime64('2022-12-12 23:23:23.123', 3), 3, 'Europe/Zurich') SETTINGS session_timezone = 'America/Denver'
+--Result--
+[(datetime.datetime(2022, 12, 13, 7, 23, 23, 123000, tzinfo=<DstTzInfo 'Europe/Zurich' CET+1:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT toDateTime('2002-12-12 23:23:23') AS dt, toString(dt) SETTINGS session_timezone = 'Asia/Phnom_Penh'
+--Result--
+[(datetime.datetime(2002, 12, 12, 17, 23, 23), '2002-12-12 23:23:23')]
++--------------------+
+--Query--
+SELECT toDateTime64('2002-12-12 23:23:23.123', 3) AS dt64, toString(dt64) SETTINGS session_timezone = 'Asia/Phnom_Penh'
+--Result--
+[(datetime.datetime(2002, 12, 12, 17, 23, 23, 123000), '2002-12-12 23:23:23.123')]
++--------------------+
+--Query--
+SELECT d FROM test_tz_setting WHERE d == '2000-01-01 01:00:00'
+--Result--
+[(datetime.datetime(2000, 1, 1, 1, 0, tzinfo=<UTC>),)]
++--------------------+
+--Query--
+SELECT d FROM test_tz_setting WHERE d == toDateTime('2000-01-01 02:00:00')
+--Result--
+[]
++--------------------+

@@ -3,8 +3,4 @@ select toTypeName(generateRandomStructure(5, 42));
 select toColumnTypeName(generateRandomStructure(5, 42));
 SELECT * FROM generateRandom(generateRandomStructure(5, 42), 42) LIMIT 1;
 desc generateRandom(10000000);
-select * from generateRandom(10000000) limit 1;
-select * from generateRandom(10000000, 2) limit 1;
-select * from generateRandom(10000000, 2, 2) limit 1;
 set allow_suspicious_low_cardinality_types=1;
-select generateRandomStructure(5, 4);

@@ -1,0 +1,80 @@
+--Query--
+system stop merges page_cache_03055
+--Result--
+[]
++--------------------+
+--Query--
+select * from events_diff
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+
+--Query--
+system start merges page_cache_03055
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+
+--Query--
+select * from events_diff where event not in ('PageCacheChunkDataHits')
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+
+--Query--
+select * from events_diff
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+
+--Query--
+system drop page cache
+--Result--
+[]
++--------------------+
+--Query--
+select event, if(event in ('PageCacheChunkMisses', 'ReadBufferFromS3Bytes'), diff >= 1, diff) from events_diff where event not in ('PageCacheChunkDataHits', 'PageCacheBytesUnpinnedRoundedToPages', 'PageCacheBytesUnpinnedRoundedToHugePages')
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+
+--Query--
+select * from events_diff where event not in ('PageCacheChunkDataHits')
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+
+--Query--
+select * from events_diff
+--Result--
+[]
++--------------------+
+--Query--
+truncate table events_snapshot
+--Result--
+[]
++--------------------+

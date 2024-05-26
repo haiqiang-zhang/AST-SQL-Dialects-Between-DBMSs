@@ -15,10 +15,6 @@ create table morton_numbers_02457(
 SELECT '----- CONST -----';
 select mortonEncode(1,2,3,4);
 select mortonDecode(4, 2149);
-select mortonEncode(65534, 65533);
-select mortonDecode(2, 4294967286);
-select mortonEncode(4294967286);
-select mortonDecode(1, 4294967286);
 SELECT '----- 256, 8 -----';
 insert into morton_numbers_02457
 select n1.number, n2.number, n3.number, n4.number, n5.number, n6.number, n7.number, n8.number

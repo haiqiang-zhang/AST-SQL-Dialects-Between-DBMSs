@@ -1,0 +1,15 @@
+--Query--
+select 'events_logs_tests' as outside_event
+--Result--
+[('events_logs_tests',)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.processlist   WHERE user = 'event_scheduler' AND command = 'Daemon'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where db='events_test' and command = 'Connect' and user=current_user()
+--Result--
+[(1,)]
++--------------------+

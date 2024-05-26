@@ -1,0 +1,5 @@
+--Query--
+SELECT DISTINCT   (IF( LOCATE( 'year=\"', dyninfo ) = 1,    SUBSTRING( dyninfo, 6+1, LOCATE('\"\r',dyninfo) - 6 -1),    IF( LOCATE( '\nyear=\"', dyninfo ),    SUBSTRING( dyninfo, LOCATE( '\nyear=\"', dyninfo ) + 7,    LOCATE( '\"\r', SUBSTRING( dyninfo, LOCATE( '\nyear=\"', dyninfo ) +7 )) - 1), '' ))) AS year  FROM t1 HAVING year != '' ORDER BY year
+--Result--
+[]
++--------------------+

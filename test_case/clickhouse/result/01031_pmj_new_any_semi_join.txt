@@ -1,0 +1,100 @@
+--Query--
+SELECT 'any left'
+--Result--
+[('any left',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 ANY LEFT JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(0, 'a1', 0, ''), (1, 'a2', 0, ''), (2, 'a3', 2, 'b1'), (3, 'a4', 0, ''), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'any left (rev)'
+--Result--
+[('any left (rev)',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t2 ANY LEFT JOIN t1 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(0, '', 5, 'b4'), (2, 'a3', 2, 'b1'), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'any inner'
+--Result--
+[('any inner',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 ANY INNER JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(2, 'a3', 2, 'b1'), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'any inner (rev)'
+--Result--
+[('any inner (rev)',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t2 ANY INNER JOIN t1 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(2, 'a3', 2, 'b1'), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'any right'
+--Result--
+[('any right',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 ANY RIGHT JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(0, '', 5, 'b4'), (2, 'a3', 2, 'b1'), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'any right (rev)'
+--Result--
+[('any right (rev)',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t2 ANY RIGHT JOIN t1 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(0, 'a1', 0, ''), (1, 'a2', 0, ''), (2, 'a3', 2, 'b1'), (3, 'a4', 0, ''), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'semi left'
+--Result--
+[('semi left',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 SEMI LEFT JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(2, 'a3', 2, 'b1'), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'semi right'
+--Result--
+[('semi right',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 SEMI RIGHT JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(2, 'a3', 2, 'b1'), (4, 'a5', 4, 'b2')]
++--------------------+
+--Query--
+SELECT 'anti left'
+--Result--
+[('anti left',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 ANTI LEFT JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(0, 'a1', 0, ''), (1, 'a2', 1, ''), (3, 'a4', 3, '')]
++--------------------+
+--Query--
+SELECT 'anti right'
+--Result--
+[('anti right',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 ANTI RIGHT JOIN t2 USING(x) ORDER BY t1.x, t2.x
+--Result--
+[(0, '', 5, 'b4')]
++--------------------+

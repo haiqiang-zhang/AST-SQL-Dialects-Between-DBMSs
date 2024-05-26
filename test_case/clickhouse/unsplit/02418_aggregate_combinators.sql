@@ -16,6 +16,5 @@ truncate table test;
 drop table test;
 create table test (x Array(Array(Map(UInt8, AggregateFunction(uniq, UInt64))))) engine=Memory;
 insert into test select uniqStateMapForEachResample(30, 75, 30)([map(1, number)], 30) from numbers(10);
-select arrayMap(x -> arrayMap(x -> mapApply(k, v -> (k, finalizeAggregation(v)), x), x), x) from test;
 truncate table test;
 drop table test;

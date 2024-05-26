@@ -1,0 +1,740 @@
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'ABC' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'aBc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'ABC' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'aBc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x MATCH '*abc*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x MATCH 'abc*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t1'), (12, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'a' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'a' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'ab' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'ab' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abcd' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abcd' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abcde' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abcde' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'a_c' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'a_c' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'ab%d' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'ab%d' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'a_c%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'a_c%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE '%bcd' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE '%bcd' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'a[bc]d' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'a[bc]d' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'a' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'a' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abcd' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'abcd' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x GLOB 'abcde' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x GLOB 'abcde' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE +x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE +x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE ('ab' || 'c%') ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE ('ab' || 'c%') ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'abc%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t2 USING COVERING INDEX i2')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x GLOB 'abc*' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t2 USING COVERING INDEX i2')]
++--------------------+
+--Query--
+SELECT x FROM t1 WHERE x LIKE 'ABC%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t1 WHERE x LIKE 'ABC%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t1 USING COVERING INDEX i1')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'ABC%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'ABC%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'ABC%' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'ABC%' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t2 USING COVERING INDEX i2')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x GLOB 'ABC*' ORDER BY 1
+--Result--
+[]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x GLOB 'ABC*' ORDER BY 1
+--Result--
+[(3, 0, 0, 'SCAN t2 USING COVERING INDEX i2')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'zz%'
+--Result--
+[('zz-lower-lower',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('ZZ-upper-upper',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'zz%'
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'zZ%'
+--Result--
+[('zz-lower-lower',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('ZZ-upper-upper',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'zZ%'
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'Zz%'
+--Result--
+[('zz-lower-lower',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('ZZ-upper-upper',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'Zz%'
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT x FROM t2 WHERE x LIKE 'ZZ%'
+--Result--
+[('zz-lower-lower',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('ZZ-upper-upper',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT x FROM t2 WHERE x LIKE 'ZZ%'
+--Result--
+[(2, 0, 0, 'SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT * FROM t2 WHERE x LIKE '''a%'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT rowid, * FROM t1 WHERE rowid GLOB '1*' ORDER BY rowid
+--Result--
+[]
++--------------------+
+--Query--
+SELECT a FROM t10 WHERE b LIKE '12%' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10 WHERE c LIKE '12%' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10 WHERE d LIKE '12%' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10 WHERE e LIKE '12%' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10 WHERE f LIKE '12%' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10 WHERE a LIKE '12%' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10b WHERE b GLOB '12*' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10b WHERE c GLOB '12*' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10b WHERE d GLOB '12*' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10b WHERE e GLOB '12*' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10b WHERE f GLOB '12*' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT a FROM t10b WHERE a GLOB '12*' ORDER BY +a
+--Result--
+[(12,), (123,)]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a
+--Result--
+[(3, 0, 0, 'SCAN t11')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a
+--Result--
+[(3, 0, 0, 'SCAN t11')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a
+--Result--
+[(3, 0, 0, 'SCAN t11')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT b FROM t11 WHERE b GLOB 'abc*' ORDER BY +a
+--Result--
+[('abc',), ('abcd',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT b FROM t11 WHERE b GLOB 'abc*' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT c FROM t11 WHERE c LIKE 'abc%' ORDER BY +a
+--Result--
+[('abc',), ('abcd',), ('ABC',), ('ABCD',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT c FROM t11 WHERE c LIKE 'abc%' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT c FROM t11 WHERE c GLOB 'abc*' ORDER BY +a
+--Result--
+[('abc',), ('abcd',)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN      SELECT c FROM t11 WHERE c GLOB 'abc*' ORDER BY +a
+--Result--
+[(3, 0, 0, 'SCAN t11'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT id FROM t12nc WHERE x LIKE 'abc%' ORDER BY +id
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT id FROM t12b WHERE x LIKE 'abc%' ORDER BY +id
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id
+--Result--
+[(1,), (3,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT id FROM t12nc WHERE x LIKE 'abc%' ORDER BY +id
+--Result--
+[(4, 0, 0, 'SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT id FROM t12b WHERE x LIKE 'abc%' ORDER BY +id
+--Result--
+[(3, 0, 0, 'SCAN t12b'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id
+--Result--
+[(4, 0, 0, 'SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id
+--Result--
+[(3, 0, 0, 'SCAN t12b'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id
+--Result--
+[(4, 0, 0, 'SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id
+--Result--
+[(3, 0, 0, 'SCAN t12b'), (13, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT char(0x304d) LIKE char(0x306d)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT char(0x4d) LIKE char(0x306d)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT char(0x304d) LIKE char(0x6d)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT char(0x4d) LIKE char(0x6d)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE '/'
+--Result--
+[(2,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE '/'
+--Result--
+[(3, 0, 0, 'SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE '//'
+--Result--
+[(2, 0, 0, 'SCAN t15')]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE ''
+--Result--
+[(2, 0, 0, 'SCAN t15')]
++--------------------+
+--Query--
+SELECT y FROM t15 WHERE x LIKE 'abcdx%%' ESCAPE 'x'
+--Result--
+[(32,)]
++--------------------+
+--Query--
+SELECT y FROM t15 WHERE x LIKE 'abx%%' ESCAPE 'x' ORDER BY +y
+--Result--
+[(2,), (41,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT y FROM t15 WHERE x LIKE 'abx%%' ESCAPE 'x' ORDER BY +y
+--Result--
+[(4, 0, 0, 'SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)'), (21, 0, 0, 'USE TEMP B-TREE FOR ORDER BY')]
++--------------------+
+--Query--
+SELECT y FROM t15 WHERE x LIKE '/%bc%' ESCAPE '/'
+--Result--
+[(22,)]
++--------------------+
+--Query--
+EXPLAIN QUERY PLAN   SELECT y FROM t15 WHERE x LIKE '/%bc%' ESCAPE '/'
+--Result--
+[(3, 0, 0, 'SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)')]
++--------------------+
+--Query--
+SELECT id FROM t1 WHERE x LIKE 'abc%%' ESCAPE '%'
+--Result--
+[(4,)]
++--------------------+
+--Query--
+SELECT id FROM t1 WHERE x LIKE 'abc__' ESCAPE '_'
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT 'x' LIKE '%' ESCAPE '_'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('ZZ-upper-upper',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('zz-lower-lower',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('ZZ-upper-upper',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('zz-lower-lower',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[('ZZ-upper-upper',), ('zZ-lower-upper',), ('Zz-upper-lower',), ('zz-lower-lower',)]
++--------------------+

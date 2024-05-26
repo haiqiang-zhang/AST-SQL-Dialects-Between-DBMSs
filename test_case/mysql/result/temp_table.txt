@@ -1,0 +1,125 @@
+--Query--
+select * from t1
+--Result--
+[(1, ''), (2, 'a'), (3, 'b')]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[(4, 'e'), (5, 'f'), (6, 'g')]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(4, 'e'), (5, 'f'), (6, 'g')]
++--------------------+
+--Query--
+select * from t2
+--Result--
+[(4, 'e'), (5, 'f'), (6, 'g')]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, ''), (2, 'a'), (3, 'b')]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(1, '', 2), (2, 'a', 2), (3, 'b', 2)]
++--------------------+
+--Query--
+SELECT CONCAT_WS(pkCrash, strCrash) FROM t1
+--Result--
+[('1',)]
++--------------------+
+--Query--
+select one.id, two.val, elt(two.val,'one','two') from t1 one, t2 two where two.id=one.id order by one.id
+--Result--
+[(1, 1, 'one'), (2, 1, 'one'), (4, 2, 'two')]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('This is temp. table',)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('This is temp. table',)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('This is temp. table',)]
++--------------------+
+--Query--
+select * from v1
+--Result--
+[('This is view again',)]
++--------------------+
+--Query--
+select d, c from t1 left join t2 on b = c where a = 3 order by d
+--Result--
+[('bar', 2), ('foo', 1)]
++--------------------+
+--Query--
+LOCK TABLE t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT AVG( c ) FROM t1 UNION SELECT 1
+--Result--
+[(12139.0,), (1.0,)]
++--------------------+
+--Query--
+SELECT 1 UNION SELECT * FROM t2 UNION SELECT 1
+--Result--
+[(1,), (123456,)]
++--------------------+
+--Query--
+SELECT c/1 FROM t1 UNION SELECT 1
+--Result--
+[(12139.0,), (1.0,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(4711,)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(4711,), (42,)]
++--------------------+
+--Query--
+SELECT count(*) FROM t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM (SELECT COUNT(DISTINCT t1.a), t1.b FROM t1 RIGHT JOIN t2 ON t1.a=t2.a GROUP BY t1.b) as tt
+--Result--
+[(0, None), (1, 2)]
++--------------------+
+--Query--
+SELECT (EXISTS (SELECT 1 FROM t1 GROUP BY (NOT EXISTS (SELECT 1 FROM (SELECT 1 FROM t1 GROUP BY a)r)))) FROM t1
+--Result--
+[]
++--------------------+

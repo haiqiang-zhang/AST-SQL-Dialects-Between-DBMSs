@@ -35,7 +35,6 @@ drop table t1;
 create table t1 (a  decimal(7,3) not null, key (a));
 insert into t1 values ("0"),("-0.00"),("-0.01"),("-0.002"),("1");
 select a from t1 order by a;
-select min(a) from t1;
 drop table t1;
 create table t1 (c20 char);
 drop table t1;

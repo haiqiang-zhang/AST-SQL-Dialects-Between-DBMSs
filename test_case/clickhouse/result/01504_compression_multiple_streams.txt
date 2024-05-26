@@ -1,0 +1,100 @@
+--Query--
+SELECT * FROM columns_with_multiple_streams
+--Result--
+[(1, 1, [[1]], (1, [1]))]
++--------------------+
+--Query--
+DETACH TABLE columns_with_multiple_streams
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE columns_with_multiple_streams
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams
+--Result--
+[(1, 1, [[1]], (1, [1]))]
++--------------------+
+--Query--
+SHOW CREATE TABLE columns_with_multiple_streams
+--Result--
+[('CREATE TABLE test.columns_with_multiple_streams\n(\n    `field0` Nullable(Int64) CODEC(Delta(2), LZ4),\n    `field1` Nullable(UInt8) CODEC(Delta(8), LZ4),\n    `field2` Array(Array(Int64)) CODEC(Delta(8), LZ4),\n    `field3` Tuple(UInt32, Array(UInt64)) CODEC(T64, Default)\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_rows_for_wide_part = 0, min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams ORDER BY field0
+--Result--
+[(1, 1, [[1]], (1, [1])), (2, 2, [[2]], (2, [2]))]
++--------------------+
+--Query--
+SHOW CREATE TABLE columns_with_multiple_streams
+--Result--
+[('CREATE TABLE test.columns_with_multiple_streams\n(\n    `field0` Nullable(Int64) CODEC(Delta(2), LZ4),\n    `field1` Nullable(UInt8) CODEC(Delta(8), LZ4),\n    `field2` Array(Array(Int64)) CODEC(Delta(8), LZ4),\n    `field3` Tuple(UInt32, Array(UInt64)) CODEC(Delta, Default)\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_rows_for_wide_part = 0, min_bytes_for_wide_part = 0, index_granularity = 8192',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE columns_with_multiple_streams FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams ORDER BY field0
+--Result--
+[(1, 1, [[1]], (1, [1])), (2, 2, [[2]], (2, [2])), (3, 3, [[3]], (3, [3]))]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams_compact
+--Result--
+[(1, 1, [[1]], (1, [1]))]
++--------------------+
+--Query--
+DETACH TABLE columns_with_multiple_streams_compact
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE columns_with_multiple_streams_compact
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams_compact
+--Result--
+[(1, 1, [[1]], (1, [1]))]
++--------------------+
+--Query--
+SHOW CREATE TABLE columns_with_multiple_streams_compact
+--Result--
+[('CREATE TABLE test.columns_with_multiple_streams_compact\n(\n    `field0` Nullable(Int64) CODEC(Delta(2), LZ4),\n    `field1` Nullable(UInt8) CODEC(Delta(8), LZ4),\n    `field2` Array(Array(Int64)) CODEC(Delta(8), LZ4),\n    `field3` Tuple(UInt32, Array(UInt64)) CODEC(Delta, Default)\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_rows_for_wide_part = 100000, min_bytes_for_wide_part = 100000, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams_compact ORDER BY field0
+--Result--
+[(1, 1, [[1]], (1, [1])), (2, 2, [[2]], (2, [2]))]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams_compact ORDER BY field0
+--Result--
+[(1, 1, [[1]], (1, [1])), (2, 2, [[2]], (2, [2]))]
++--------------------+
+--Query--
+SHOW CREATE TABLE columns_with_multiple_streams_compact
+--Result--
+[('CREATE TABLE test.columns_with_multiple_streams_compact\n(\n    `field0` Nullable(Int64) CODEC(Delta(2), LZ4),\n    `field1` Nullable(UInt8) CODEC(Delta(8), LZ4),\n    `field2` Array(Array(Int64)) CODEC(Delta(8), LZ4),\n    `field3` Tuple(UInt32, Array(UInt64)) CODEC(Delta, Default)\n)\nENGINE = MergeTree\nORDER BY tuple()\nSETTINGS min_rows_for_wide_part = 100000, min_bytes_for_wide_part = 100000, index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams_compact ORDER BY field0
+--Result--
+[(1, 1, [[1]], (1, [1])), (2, 2, [[2]], (2, [2])), (3, 3, [[3]], (3, [3]))]
++--------------------+
+--Query--
+OPTIMIZE TABLE columns_with_multiple_streams_bad_case FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM columns_with_multiple_streams_bad_case ORDER BY field0
+--Result--
+[(1,), (2,), (3,)]
++--------------------+

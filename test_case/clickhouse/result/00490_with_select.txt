@@ -1,0 +1,25 @@
+--Query--
+with pow(2,2) as four select pow(four, 2), 2 as two, pow(two, 2)
+--Result--
+[(16.0, 2, 4.0)]
++--------------------+
+--Query--
+select `pow(four, 2)`, `pow(two, 2)` from (with pow(2,2) as four select pow(four, 2), 2 as two, pow(two, 2))
+--Result--
+[(16.0, 4.0)]
++--------------------+
+--Query--
+select `pow(four, 2)`, `pow(two, 2)` from (with (select pow(2,2)) as four select pow(four, 2), 2 as two, pow(two, 2))
+--Result--
+[(16.0, 4.0)]
++--------------------+
+--Query--
+with 'string' as str select str || '_abc'
+--Result--
+[('string_abc',)]
++--------------------+
+--Query--
+select `concat(str, \'_abc\')` from (with 'string' as str select str || '_abc')
+--Result--
+[('string_abc',)]
++--------------------+

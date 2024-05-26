@@ -1,0 +1,70 @@
+--Query--
+SELECT count(*) FROM tbl2
+--Result--
+[(30000,)]
++--------------------+
+--Query--
+SELECT f1 FROM tbl2 WHERE 1000=f2
+--Result--
+[(500,)]
++--------------------+
+--Query--
+SELECT f1 FROM tbl2 WHERE 1000=f2
+--Result--
+[(500,)]
++--------------------+
+--Query--
+SELECT f1 FROM tbl2 WHERE f2=1000
+--Result--
+[(500,)]
++--------------------+
+--Query--
+SELECT * FROM tbl2 WHERE 1000=f2
+--Result--
+[(500, 1000, 1500)]
++--------------------+
+--Query--
+SELECT * FROM tbl2 WHERE f2=1000
+--Result--
+[(500, 1000, 1500)]
++--------------------+
+--Query--
+SELECT f1 FROM tbl2 WHERE f2==2000
+--Result--
+[(1000,)]
++--------------------+
+--Query--
+SELECT * FROM aa, bb WHERE max(a,b)>2
+--Result--
+[(1, 4), (3, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM aa CROSS JOIN bb WHERE b
+--Result--
+[(1, 2), (1, 4), (3, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM aa CROSS JOIN bb WHERE NOT b
+--Result--
+[(1, 0), (3, 0)]
++--------------------+
+--Query--
+SELECT * FROM aa, bb WHERE min(a,b)
+--Result--
+[(1, 2), (1, 4), (3, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM aa, bb WHERE NOT min(a,b)
+--Result--
+[(1, 0), (3, 0)]
++--------------------+
+--Query--
+SELECT * FROM aa, bb WHERE CASE WHEN a=b-1 THEN 1 END
+--Result--
+[(1, 2), (3, 4)]
++--------------------+
+--Query--
+SELECT * FROM aa, bb WHERE CASE WHEN a=b-1 THEN 0 ELSE 1 END
+--Result--
+[(1, 4), (1, 0), (3, 2), (3, 0)]
++--------------------+

@@ -1,0 +1,25 @@
+--Query--
+SELECT * FROM compression_codec ORDER BY id
+--Result--
+[(1, 'hello', datetime.date(2018, 12, 14), 1.1, 'aaa', 5), (2, 'world', datetime.date(2018, 12, 15), 2.2, 'bbb', 6), (3, '!', datetime.date(2018, 12, 16), 3.3, 'ccc', 7)]
++--------------------+
+--Query--
+OPTIMIZE TABLE compression_codec FINAL
+--Result--
+[]
++--------------------+
+--Query--
+DETACH TABLE compression_codec
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE compression_codec
+--Result--
+[]
++--------------------+
+--Query--
+SELECT count(*) FROM compression_codec WHERE id = 2 GROUP BY id
+--Result--
+[(2,)]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+SELECT COUNT(*) FROM PARQUET_SCAN('__TEST_DIR__/per_thread_output/*.parquet')
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+SELECT STR_SPLIT(REPLACE(file, '\','/'), '/')[-1]  f FROM GLOB('__TEST_DIR__/per_thread_output/*.parquet') ORDER BY f
+--Result--
+[('data_0.parquet',), ('data_1.parquet',), ('data_2.parquet',), ('data_3.parquet',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM read_csv('__TEST_DIR__/per_thread_output_csv/*.csv', columns={'col_a': 'INT', 'col_b' : 'INT'})
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+SELECT STR_SPLIT(REPLACE(file, '\','/'), '/')[-1]  f FROM GLOB('__TEST_DIR__/per_thread_output_csv/*.csv') ORDER BY f
+--Result--
+[('data_0.csv',), ('data_1.csv',), ('data_2.csv',), ('data_3.csv',)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM PARQUET_SCAN('__TEST_DIR__/per_thread_output2/*.parquet')
+--Result--
+[(10000,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM PARQUET_SCAN('__TEST_DIR__/per_thread_output2/*.parquet')
+--Result--
+[(10000,)]
++--------------------+

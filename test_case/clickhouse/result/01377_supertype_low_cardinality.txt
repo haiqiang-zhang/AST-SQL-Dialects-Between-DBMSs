@@ -1,0 +1,235 @@
+--Query--
+SELECT 'hello' UNION ALL SELECT toLowCardinality('hello')
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT toTypeName(x) FROM (SELECT 'hello' AS x UNION ALL SELECT toLowCardinality('hello'))
+--Result--
+[('String',), ('String',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+select a from t1 union all select a from t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x FROM a
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT x FROM b
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT x FROM c
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT x FROM d
+--Result--
+[('hello',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM b
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM c
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM b UNION ALL SELECT x FROM a
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM b UNION ALL SELECT x FROM c
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM b UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM c UNION ALL SELECT x FROM a
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM c UNION ALL SELECT x FROM b
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM c UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM d UNION ALL SELECT x FROM a
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM d UNION ALL SELECT x FROM c
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM d UNION ALL SELECT x FROM b
+--Result--
+[('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x FROM b UNION ALL SELECT x FROM c UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM c UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM b UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM b UNION ALL SELECT x FROM c
+--Result--
+[('hello',), ('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT x FROM a UNION ALL SELECT x FROM b UNION ALL SELECT x FROM c UNION ALL SELECT x FROM d
+--Result--
+[('hello',), ('hello',), ('hello',), ('hello',)]
++--------------------+
+--Query--
+SELECT '---'
+--Result--
+[('---',)]
++--------------------+
+--Query--
+SELECT [CAST('abc' AS LowCardinality(String)), CAST('def' AS Nullable(String))]
+--Result--
+[(['abc', 'def'],)]
++--------------------+
+--Query--
+SELECT [CAST('abc' AS LowCardinality(String)), CAST('def' AS FixedString(3))]
+--Result--
+[(['abc', 'def'],)]
++--------------------+
+--Query--
+SELECT [CAST('abc' AS LowCardinality(String)), CAST('def' AS LowCardinality(FixedString(3)))]
+--Result--
+[(['abc', 'def'],)]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+SELECT 'Test the default index granularity for vector search indexes (CREATE TABLE AND ALTER TABLE), should be 100 million for Annoy and USearch'
+--Result--
+[('Test the default index granularity for vector search indexes (CREATE TABLE AND ALTER TABLE), should be 100 million for Annoy and USearch',)]
++--------------------+
+--Query--
+SELECT '- Annoy'
+--Result--
+[('- Annoy',)]
++--------------------+
+--Query--
+SELECT granularity FROM system.data_skipping_indices WHERE database = currentDatabase() AND table = 'tab' AND name = 'idx'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT granularity FROM system.data_skipping_indices WHERE database = currentDatabase() AND table = 'tab' AND name = 'idx'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '- Usearch'
+--Result--
+[('- Usearch',)]
++--------------------+
+--Query--
+SELECT granularity FROM system.data_skipping_indices WHERE database = currentDatabase() AND table = 'tab' AND name = 'idx'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT granularity FROM system.data_skipping_indices WHERE database = currentDatabase() AND table = 'tab' AND name = 'idx'
+--Result--
+[(100000000,)]
++--------------------+

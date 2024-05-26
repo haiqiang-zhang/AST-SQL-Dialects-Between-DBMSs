@@ -1,0 +1,65 @@
+--Query--
+SELECT * FROM alter_compression_codec ORDER BY id
+--Result--
+[(datetime.date(2018, 1, 1), 1), (datetime.date(2018, 1, 1), 2)]
++--------------------+
+--Query--
+SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'alter_compression_codec' AND name = 'alter_column'
+--Result--
+[('CODEC(ZSTD(1))',)]
++--------------------+
+--Query--
+SELECT * FROM alter_compression_codec ORDER BY id
+--Result--
+[(datetime.date(2018, 1, 1), 1, 'default_value'), (datetime.date(2018, 1, 1), 2, 'default_value'), (datetime.date(2018, 1, 1), 3, '3'), (datetime.date(2018, 1, 1), 4, '4')]
++--------------------+
+--Query--
+SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'alter_compression_codec' AND name = 'alter_column'
+--Result--
+[('CODEC(NONE)',)]
++--------------------+
+--Query--
+SELECT * FROM alter_compression_codec ORDER BY id
+--Result--
+[(datetime.date(2018, 1, 1), 1, 'default_value'), (datetime.date(2018, 1, 1), 2, 'default_value'), (datetime.date(2018, 1, 1), 3, '3'), (datetime.date(2018, 1, 1), 4, '4'), (datetime.date(2018, 1, 1), 5, '5'), (datetime.date(2018, 1, 1), 6, '6')]
++--------------------+
+--Query--
+OPTIMIZE TABLE alter_compression_codec FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM alter_compression_codec ORDER BY id
+--Result--
+[(datetime.date(2018, 1, 1), 1, 'default_value'), (datetime.date(2018, 1, 1), 2, 'default_value'), (datetime.date(2018, 1, 1), 3, '3'), (datetime.date(2018, 1, 1), 4, '4'), (datetime.date(2018, 1, 1), 5, '5'), (datetime.date(2018, 1, 1), 6, '6')]
++--------------------+
+--Query--
+SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'alter_compression_codec' AND name = 'alter_column'
+--Result--
+[('CODEC(ZSTD(1), LZ4HC(0), LZ4, LZ4, NONE)',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE alter_compression_codec FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM alter_compression_codec ORDER BY id
+--Result--
+[(datetime.date(2018, 1, 1), 1, 'default_value'), (datetime.date(2018, 1, 1), 2, 'default_value'), (datetime.date(2018, 1, 1), 3, '3'), (datetime.date(2018, 1, 1), 4, '4'), (datetime.date(2018, 1, 1), 5, '5'), (datetime.date(2018, 1, 1), 6, '6'), (datetime.date(2018, 1, 1), 7, '7'), (datetime.date(2018, 1, 1), 8, '8')]
++--------------------+
+--Query--
+SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'alter_compression_codec' AND name = 'alter_column'
+--Result--
+[('CODEC(ZSTD(1), LZ4HC(0), LZ4, LZ4, NONE)',)]
++--------------------+
+--Query--
+SELECT compression_codec FROM system.columns WHERE database = currentDatabase() AND table = 'large_alter_table_00804' AND name = 'data'
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(hash) FROM store_of_hash_00804
+--Result--
+[(0,)]
++--------------------+

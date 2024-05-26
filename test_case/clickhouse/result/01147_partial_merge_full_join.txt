@@ -1,0 +1,410 @@
+--Query--
+SELECT 't join none using'
+--Result--
+[('t join none using',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t0 USING (x) ORDER BY x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL JOIN t0 USING (x) ORDER BY x
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+SELECT 't join none on'
+--Result--
+[('t join none on',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t0 ON t1.x = t0.x ORDER BY x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL JOIN t0 ON t1.x = t0.x ORDER BY x
+--Result--
+[(0, 0, 0, 0)]
++--------------------+
+--Query--
+SELECT 'none join t using'
+--Result--
+[('none join t using',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 RIGHT JOIN t1 USING (x)
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 FULL JOIN t1 USING (x)
+--Result--
+[(0, 0, 0)]
++--------------------+
+--Query--
+SELECT 'none join t on'
+--Result--
+[('none join t on',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 RIGHT JOIN t1 ON t1.x = t0.x
+--Result--
+[(0, 0, 0, 0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 FULL JOIN t1 ON t1.x = t0.x
+--Result--
+[(0, 0, 0, 0)]
++--------------------+
+--Query--
+SELECT '/none'
+--Result--
+[('/none',)]
++--------------------+
+--Query--
+SELECT 't join none using'
+--Result--
+[('t join none using',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t0 USING (x) ORDER BY x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL JOIN t0 USING (x) ORDER BY x
+--Result--
+[(0, 0, None)]
++--------------------+
+--Query--
+SELECT 't join none on'
+--Result--
+[('t join none on',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 RIGHT JOIN t0 ON t1.x = t0.x ORDER BY x
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t1 FULL JOIN t0 ON t1.x = t0.x ORDER BY x
+--Result--
+[(0, 0, None, None)]
++--------------------+
+--Query--
+SELECT 'none join t using'
+--Result--
+[('none join t using',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 RIGHT JOIN t1 USING (x)
+--Result--
+[(0, None, 0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 FULL JOIN t1 USING (x)
+--Result--
+[(0, None, 0)]
++--------------------+
+--Query--
+SELECT 'none join t on'
+--Result--
+[('none join t on',)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 RIGHT JOIN t1 ON t1.x = t0.x
+--Result--
+[(None, None, 0, 0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT * FROM t0 FULL JOIN t1 ON t1.x = t0.x
+--Result--
+[(None, None, 0, 0)]
++--------------------+
+--Query--
+SELECT '/none'
+--Result--
+[('/none',)]
++--------------------+
+--Query--
+SELECT 'all right'
+--Result--
+[('all right',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 5, 50), (2, 20, 2, 21), (2, 20, 2, 22), (4, 40, 4, 41), (4, 40, 4, 42)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 2, 21), (0, 0, 2, 22), (0, 0, 4, 41), (0, 0, 4, 42), (0, 0, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x AND t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 2, 21), (0, 0, 2, 22), (0, 0, 4, 41), (0, 0, 4, 42), (0, 0, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x AND toUInt32(intDiv(t1.y,10)) = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 5, 50), (2, 20, 2, 21), (2, 20, 2, 22), (4, 40, 4, 41), (4, 40, 4, 42)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x AND toUInt64(t1.x) = intDiv(t2.y,10) ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 5, 50), (2, 20, 2, 21), (2, 20, 2, 22), (4, 40, 4, 41), (4, 40, 4, 42)]
++--------------------+
+--Query--
+SELECT 'all full'
+--Result--
+[('all full',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 5, 50), (1, 10, 0, 0), (2, 20, 2, 21), (2, 20, 2, 22), (3, 30, 0, 0), (4, 40, 4, 41), (4, 40, 4, 42)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 2, 21), (0, 0, 2, 22), (0, 0, 4, 41), (0, 0, 4, 42), (0, 0, 5, 50), (1, 10, 0, 0), (2, 20, 0, 0), (3, 30, 0, 0), (4, 40, 0, 0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x AND t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 2, 21), (0, 0, 2, 22), (0, 0, 4, 41), (0, 0, 4, 42), (0, 0, 5, 50), (1, 10, 0, 0), (2, 20, 0, 0), (3, 30, 0, 0), (4, 40, 0, 0)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x AND toUInt32(intDiv(t1.y,10)) = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 5, 50), (1, 10, 0, 0), (2, 20, 2, 21), (2, 20, 2, 22), (3, 30, 0, 0), (4, 40, 4, 41), (4, 40, 4, 42)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x AND toUInt64(t1.x) = intDiv(t2.y,10) ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (0, 0, 5, 50), (1, 10, 0, 0), (2, 20, 2, 21), (2, 20, 2, 22), (3, 30, 0, 0), (4, 40, 4, 41), (4, 40, 4, 42)]
++--------------------+
+--Query--
+SELECT 'all right'
+--Result--
+[('all right',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (2, 20, 2, 21), (2, 20, 2, 22), (4, 40, 4, 41), (4, 40, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (None, None, 2, 21), (None, None, 2, 22), (None, None, 4, 41), (None, None, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x AND t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (None, None, 2, 21), (None, None, 2, 22), (None, None, 4, 41), (None, None, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x AND toUInt32(intDiv(t1.y,10)) = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (2, 20, 2, 21), (2, 20, 2, 22), (4, 40, 4, 41), (4, 40, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 RIGHT JOIN t2 ON t1.x = t2.x AND toUInt64(t1.x) = intDiv(t2.y,10) ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (2, 20, 2, 21), (2, 20, 2, 22), (4, 40, 4, 41), (4, 40, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT 'all full'
+--Result--
+[('all full',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (1, 10, None, None), (2, 20, 2, 21), (2, 20, 2, 22), (3, 30, None, None), (4, 40, 4, 41), (4, 40, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (1, 10, None, None), (2, 20, None, None), (3, 30, None, None), (4, 40, None, None), (None, None, 2, 21), (None, None, 2, 22), (None, None, 4, 41), (None, None, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x AND t1.y = t2.y ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (1, 10, None, None), (2, 20, None, None), (3, 30, None, None), (4, 40, None, None), (None, None, 2, 21), (None, None, 2, 22), (None, None, 4, 41), (None, None, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x AND toUInt32(intDiv(t1.y,10)) = t2.x ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (1, 10, None, None), (2, 20, 2, 21), (2, 20, 2, 22), (3, 30, None, None), (4, 40, 4, 41), (4, 40, 4, 42), (None, None, 5, 50)]
++--------------------+
+--Query--
+SELECT '-'
+--Result--
+[('-',)]
++--------------------+
+--Query--
+SELECT t1.*, t2.* FROM t1 FULL JOIN t2 ON t1.x = t2.x AND toUInt64(t1.x) = intDiv(t2.y,10) ORDER BY x, t2.y
+--Result--
+[(0, 0, 0, 0), (1, 10, None, None), (2, 20, 2, 21), (2, 20, 2, 22), (3, 30, None, None), (4, 40, 4, 41), (4, 40, 4, 42), (None, None, 5, 50)]
++--------------------+

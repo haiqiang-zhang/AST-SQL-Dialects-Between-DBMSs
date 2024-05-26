@@ -1,0 +1,10 @@
+--Query--
+SELECT length(groupUniqArrayIf(d, d != hex(0))) FROM arena GROUP BY k
+--Result--
+[(999,), (999,), (999,), (999,), (999,), (999,), (999,), (999,), (999,), (999,)]
++--------------------+
+--Query--
+SELECT min(x), max(x) FROM (SELECT length(arrayReduce('groupUniqArray', [hex(number), hex(number+1), hex(number)])) AS x FROM system.numbers LIMIT 100000)
+--Result--
+[(2, 2)]
++--------------------+

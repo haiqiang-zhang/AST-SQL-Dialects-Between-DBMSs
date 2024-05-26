@@ -1,0 +1,25 @@
+--Query--
+ATTACH DATABASE ':memory:' AS new_database
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM new_database.integers ORDER BY i
+--Result--
+[(42,), (84,)]
++--------------------+
+--Query--
+SELECT * FROM new_database.main.integers ORDER BY i
+--Result--
+[(42,), (84,)]
++--------------------+
+--Query--
+SELECT * FROM new_database.integers ORDER BY new_database.integers.i
+--Result--
+[(42,), (84,)]
++--------------------+
+--Query--
+SELECT * FROM new_database.main.integers ORDER BY new_database.main.integers.i
+--Result--
+[(42,), (84,)]
++--------------------+

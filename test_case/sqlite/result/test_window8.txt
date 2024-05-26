@@ -1,0 +1,245 @@
+--Query--
+SELECT a, b, sum(c) OVER (ORDER BY a  GROUPS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING ) FROM t3 ORDER BY 1, 2, 3
+--Result--
+[('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'bb', None), ('AA', 'bb', None), ('AA', 'bb', None), ('AA', 'bb', None), ('BB', 'aa', 4685), ('BB', 'aa', 4685), ('BB', 'aa', 4685), ('BB', 'aa', 4685), ('BB', 'aa', 4685), ('BB', 'aa', 4685), ('BB', 'bb', 4685), ('BB', 'bb', 4685), ('BB', 'bb', 4685), ('BB', 'bb', 4685), ('BB', 'bb', 4685), ('BB', 'bb', 4685), ('CC', 'aa', 12025), ('CC', 'aa', 12025), ('CC', 'aa', 12025), ('CC', 'aa', 12025), ('CC', 'bb', 12025), ('CC', 'bb', 12025), ('DD', 'aa', 15147), ('DD', 'aa', 15147), ('DD', 'aa', 15147), ('DD', 'bb', 15147), ('DD', 'bb', 15147), ('DD', 'bb', 15147), ('DD', 'bb', 15147), ('EE', 'aa', 19179), ('EE', 'aa', 19179), ('EE', 'bb', 19179), ('EE', 'bb', 19179), ('EE', 'bb', 19179), ('FF', 'aa', 21718), ('FF', 'aa', 21718), ('FF', 'aa', 21718), ('FF', 'aa', 21718), ('FF', 'bb', 21718), ('FF', 'bb', 21718), ('FF', 'bb', 21718), ('FF', 'bb', 21718), ('FF', 'bb', 21718), ('FF', 'bb', 21718), ('GG', 'aa', 27386), ('GG', 'aa', 27386), ('GG', 'aa', 27386), ('GG', 'aa', 27386), ('GG', 'bb', 27386), ('GG', 'bb', 27386), ('GG', 'bb', 27386), ('GG', 'bb', 27386), ('HH', 'aa', 31854), ('HH', 'aa', 31854), ('HH', 'aa', 31854), ('HH', 'bb', 31854), ('HH', 'bb', 31854), ('HH', 'bb', 31854), ('HH', 'bb', 31854), ('HH', 'bb', 31854), ('HH', 'bb', 31854), ('II', 'aa', 37297), ('II', 'aa', 37297), ('II', 'bb', 37297), ('II', 'bb', 37297), ('II', 'bb', 37297), ('II', 'bb', 37297), ('II', 'bb', 37297), ('JJ', 'aa', 40937), ('JJ', 'aa', 40937), ('JJ', 'aa', 40937), ('JJ', 'aa', 40937), ('JJ', 'bb', 40937), ('JJ', 'bb', 40937), ('JJ', 'bb', 40937), ('JJ', 'bb', 40937)]
++--------------------+
+--Query--
+SELECT a, b, rank() OVER (ORDER BY a  GROUPS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING ) FROM t3 ORDER BY 1, 2, 3
+--Result--
+[('AA', 'aa', 1), ('AA', 'aa', 1), ('AA', 'aa', 1), ('AA', 'aa', 1), ('AA', 'bb', 1), ('AA', 'bb', 1), ('AA', 'bb', 1), ('AA', 'bb', 1), ('BB', 'aa', 9), ('BB', 'aa', 9), ('BB', 'aa', 9), ('BB', 'aa', 9), ('BB', 'aa', 9), ('BB', 'aa', 9), ('BB', 'bb', 9), ('BB', 'bb', 9), ('BB', 'bb', 9), ('BB', 'bb', 9), ('BB', 'bb', 9), ('BB', 'bb', 9), ('CC', 'aa', 21), ('CC', 'aa', 21), ('CC', 'aa', 21), ('CC', 'aa', 21), ('CC', 'bb', 21), ('CC', 'bb', 21), ('DD', 'aa', 27), ('DD', 'aa', 27), ('DD', 'aa', 27), ('DD', 'bb', 27), ('DD', 'bb', 27), ('DD', 'bb', 27), ('DD', 'bb', 27), ('EE', 'aa', 34), ('EE', 'aa', 34), ('EE', 'bb', 34), ('EE', 'bb', 34), ('EE', 'bb', 34), ('FF', 'aa', 39), ('FF', 'aa', 39), ('FF', 'aa', 39), ('FF', 'aa', 39), ('FF', 'bb', 39), ('FF', 'bb', 39), ('FF', 'bb', 39), ('FF', 'bb', 39), ('FF', 'bb', 39), ('FF', 'bb', 39), ('GG', 'aa', 49), ('GG', 'aa', 49), ('GG', 'aa', 49), ('GG', 'aa', 49), ('GG', 'bb', 49), ('GG', 'bb', 49), ('GG', 'bb', 49), ('GG', 'bb', 49), ('HH', 'aa', 57), ('HH', 'aa', 57), ('HH', 'aa', 57), ('HH', 'bb', 57), ('HH', 'bb', 57), ('HH', 'bb', 57), ('HH', 'bb', 57), ('HH', 'bb', 57), ('HH', 'bb', 57), ('II', 'aa', 66), ('II', 'aa', 66), ('II', 'bb', 66), ('II', 'bb', 66), ('II', 'bb', 66), ('II', 'bb', 66), ('II', 'bb', 66), ('JJ', 'aa', 73), ('JJ', 'aa', 73), ('JJ', 'aa', 73), ('JJ', 'aa', 73), ('JJ', 'bb', 73), ('JJ', 'bb', 73), ('JJ', 'bb', 73), ('JJ', 'bb', 73)]
++--------------------+
+--Query--
+SELECT a, b, max(c) OVER (ORDER BY a,b  GROUPS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING ) FROM t3 ORDER BY 1, 2, 3
+--Result--
+[('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'bb', 934), ('AA', 'bb', 934), ('AA', 'bb', 934), ('AA', 'bb', 934), ('BB', 'aa', 934), ('BB', 'aa', 934), ('BB', 'aa', 934), ('BB', 'aa', 934), ('BB', 'aa', 934), ('BB', 'aa', 934), ('BB', 'bb', 934), ('BB', 'bb', 934), ('BB', 'bb', 934), ('BB', 'bb', 934), ('BB', 'bb', 934), ('BB', 'bb', 934), ('CC', 'aa', 934), ('CC', 'aa', 934), ('CC', 'aa', 934), ('CC', 'aa', 934), ('CC', 'bb', 934), ('CC', 'bb', 934), ('DD', 'aa', 934), ('DD', 'aa', 934), ('DD', 'aa', 934), ('DD', 'bb', 934), ('DD', 'bb', 934), ('DD', 'bb', 934), ('DD', 'bb', 934), ('EE', 'aa', 959), ('EE', 'aa', 959), ('EE', 'bb', 959), ('EE', 'bb', 959), ('EE', 'bb', 959), ('FF', 'aa', 959), ('FF', 'aa', 959), ('FF', 'aa', 959), ('FF', 'aa', 959), ('FF', 'bb', 959), ('FF', 'bb', 959), ('FF', 'bb', 959), ('FF', 'bb', 959), ('FF', 'bb', 959), ('FF', 'bb', 959), ('GG', 'aa', 959), ('GG', 'aa', 959), ('GG', 'aa', 959), ('GG', 'aa', 959), ('GG', 'bb', 959), ('GG', 'bb', 959), ('GG', 'bb', 959), ('GG', 'bb', 959), ('HH', 'aa', 959), ('HH', 'aa', 959), ('HH', 'aa', 959), ('HH', 'bb', 979), ('HH', 'bb', 979), ('HH', 'bb', 979), ('HH', 'bb', 979), ('HH', 'bb', 979), ('HH', 'bb', 979), ('II', 'aa', 979), ('II', 'aa', 979), ('II', 'bb', 979), ('II', 'bb', 979), ('II', 'bb', 979), ('II', 'bb', 979), ('II', 'bb', 979), ('JJ', 'aa', 979), ('JJ', 'aa', 979), ('JJ', 'aa', 979), ('JJ', 'aa', 979), ('JJ', 'bb', 979), ('JJ', 'bb', 979), ('JJ', 'bb', 979), ('JJ', 'bb', 979)]
++--------------------+
+--Query--
+SELECT a, b, min(c) OVER (ORDER BY a,b  GROUPS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING ) FROM t3 ORDER BY 1, 2, 3
+--Result--
+[('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'aa', None), ('AA', 'bb', 223), ('AA', 'bb', 223), ('AA', 'bb', 223), ('AA', 'bb', 223), ('BB', 'aa', 223), ('BB', 'aa', 223), ('BB', 'aa', 223), ('BB', 'aa', 223), ('BB', 'aa', 223), ('BB', 'aa', 223), ('BB', 'bb', 223), ('BB', 'bb', 223), ('BB', 'bb', 223), ('BB', 'bb', 223), ('BB', 'bb', 223), ('BB', 'bb', 223), ('CC', 'aa', 223), ('CC', 'aa', 223), ('CC', 'aa', 223), ('CC', 'aa', 223), ('CC', 'bb', 158), ('CC', 'bb', 158), ('DD', 'aa', 158), ('DD', 'aa', 158), ('DD', 'aa', 158), ('DD', 'bb', 158), ('DD', 'bb', 158), ('DD', 'bb', 158), ('DD', 'bb', 158), ('EE', 'aa', 158), ('EE', 'aa', 158), ('EE', 'bb', 113), ('EE', 'bb', 113), ('EE', 'bb', 113), ('FF', 'aa', 113), ('FF', 'aa', 113), ('FF', 'aa', 113), ('FF', 'aa', 113), ('FF', 'bb', 113), ('FF', 'bb', 113), ('FF', 'bb', 113), ('FF', 'bb', 113), ('FF', 'bb', 113), ('FF', 'bb', 113), ('GG', 'aa', 102), ('GG', 'aa', 102), ('GG', 'aa', 102), ('GG', 'aa', 102), ('GG', 'bb', 102), ('GG', 'bb', 102), ('GG', 'bb', 102), ('GG', 'bb', 102), ('HH', 'aa', 102), ('HH', 'aa', 102), ('HH', 'aa', 102), ('HH', 'bb', 102), ('HH', 'bb', 102), ('HH', 'bb', 102), ('HH', 'bb', 102), ('HH', 'bb', 102), ('HH', 'bb', 102), ('II', 'aa', 102), ('II', 'aa', 102), ('II', 'bb', 102), ('II', 'bb', 102), ('II', 'bb', 102), ('II', 'bb', 102), ('II', 'bb', 102), ('JJ', 'aa', 102), ('JJ', 'aa', 102), ('JJ', 'aa', 102), ('JJ', 'aa', 102), ('JJ', 'bb', 102), ('JJ', 'bb', 102), ('JJ', 'bb', 102), ('JJ', 'bb', 102)]
++--------------------+
+--Query--
+SELECT row_number() OVER win      FROM t3     WINDOW win AS (       ORDER BY c, b, a       ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING  EXCLUDE NO OTHERS      )
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,), (11,), (12,), (13,), (14,), (15,), (16,), (17,), (18,), (19,), (20,), (21,), (22,), (23,), (24,), (25,), (26,), (27,), (28,), (29,), (30,), (31,), (32,), (33,), (34,), (35,), (36,), (37,), (38,), (39,), (40,), (41,), (42,), (43,), (44,), (45,), (46,), (47,), (48,), (49,), (50,), (51,), (52,), (53,), (54,), (55,), (56,), (57,), (58,), (59,), (60,), (61,), (62,), (63,), (64,), (65,), (66,), (67,), (68,), (69,), (70,), (71,), (72,), (73,), (74,), (75,), (76,), (77,), (78,), (79,), (80,)]
++--------------------+
+--Query--
+SELECT nth_value(c, 14) OVER win      FROM t3     WINDOW win AS (       ORDER BY c, b, a       ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING  EXCLUDE NO OTHERS      )
+--Result--
+[(247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,), (247,)]
++--------------------+
+--Query--
+SELECT min(c) OVER win, max(c) OVER win, sum(c) OVER win FROM t3     WINDOW win AS (       ORDER BY c, b, a       ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW  EXCLUDE NO OTHERS      ) ORDER BY a, b, c
+--Result--
+[(102, 223, 1358), (102, 239, 2293), (102, 911, 38097), (102, 934, 39960), (102, 309, 4159), (102, 572, 10643), (102, 627, 13069), (102, 870, 35417), (102, 247, 2540), (102, 393, 6608), (102, 399, 7405), (102, 412, 7817), (102, 660, 16277), (102, 762, 24077), (102, 633, 14331), (102, 705, 19673), (102, 711, 20384), (102, 786, 27176), (102, 792, 28758), (102, 840, 32858), (102, 158, 767), (102, 430, 8668), (102, 607, 11824), (102, 759, 23315), (102, 346, 5506), (102, 822, 31179), (102, 224, 1582), (102, 256, 3298), (102, 845, 34547), (102, 238, 2054), (102, 716, 21100), (102, 794, 29552), (102, 959, 42795), (102, 113, 215), (102, 777, 26390), (102, 252, 3042), (102, 629, 13698), (102, 768, 25613), (102, 208, 1135), (102, 618, 12442), (102, 667, 16944), (102, 670, 17614), (102, 102, 102), (102, 295, 3850), (102, 574, 11217), (102, 726, 21826), (102, 870, 36287), (102, 938, 40898), (102, 148, 609), (102, 335, 4824), (102, 480, 9591), (102, 634, 14965), (102, 160, 927), (102, 844, 33702), (102, 929, 39026), (102, 938, 41836), (102, 480, 10071), (102, 790, 27966), (102, 979, 44737), (102, 133, 461), (102, 330, 4489), (102, 355, 6215), (102, 683, 18968), (102, 730, 22556), (102, 963, 43758), (102, 398, 7006), (102, 652, 15617), (102, 250, 2790), (102, 421, 8238), (102, 443, 9111), (102, 671, 18285), (102, 805, 30357), (102, 113, 328), (102, 234, 1816), (102, 768, 24845), (102, 899, 37186), (102, 257, 3555), (102, 336, 5160), (102, 354, 5860), (102, 839, 32018)]
++--------------------+
+--Query--
+SELECT CAST(a AS INTEGER), sum(b) OVER win FROM t1 WINDOW win AS ( ORDER BY a RANGE BETWEEN 5 PRECEDING AND 5 FOLLOWING )
+--Result--
+[(5, 30), (10, 112), (13, 102), (13, 102), (15, 142), (20, 150), (22, 120), (30, 90)]
++--------------------+
+--Query--
+SELECT max(c) OVER win,              min(c) OVER win,              count(a) OVER win       FROM t3       WINDOW win AS (  RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING   EXCLUDE NO OTHERS  )       ORDER BY 1 NULLS FIRST, 2 NULLS FIRST, 3 NULLS FIRST
+--Result--
+[(979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83), (979, 102, 83)]
++--------------------+
+--Query--
+SELECT sum(c) FILTER (WHERE (c%2)!=0) OVER win,              rank() OVER win,              dense_rank() OVER win       FROM t3       WINDOW win AS (  RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING   EXCLUDE NO OTHERS  )       ORDER BY 1 NULLS FIRST, 2 NULLS FIRST, 3 NULLS FIRST
+--Result--
+[(23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1), (23155, 1, 1)]
++--------------------+
+--Query--
+SELECT group_concat(a, '.') OVER (     ORDER BY b NULLS FIRST RANGE BETWEEN 7 PRECEDING AND 2 PRECEDING   )   FROM t2
+--Result--
+[('A.B',), ('A.B',), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 6 FOLLOWING AND UNBOUNDED FOLLOWING   )
+--Result--
+[(9,), (9,), (9,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (None,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1000 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (1,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1000 PRECEDING AND 2000 PRECEDING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 6 FOLLOWING AND UNBOUNDED FOLLOWING   )
+--Result--
+[(2,), (2,), (2,), (2,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (None,), (2,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (2,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(2,), (2,), (2,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(2,), (2,), (2,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1000 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (1,), (2,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (2,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1000 PRECEDING AND 2000 PRECEDING   )
+--Result--
+[(2,), (2,), (2,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT min (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(2,), (2,), (2,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 6 FOLLOWING AND UNBOUNDED FOLLOWING   )
+--Result--
+[(9,), (9,), (9,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (None,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1000 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (1,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (9,), (9,), (9,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1000 PRECEDING AND 2000 PRECEDING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT sum (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(9,), (9,), (9,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 6 FOLLOWING AND UNBOUNDED FOLLOWING   )
+--Result--
+[(4,), (4,), (4,), (4,), (4,), (4,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (None,), (4,), (4,), (4,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (4,), (4,), (4,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(4,), (4,), (4,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2 FOLLOWING AND 1 FOLLOWING   )
+--Result--
+[(4,), (4,), (4,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 1000 PRECEDING AND 2 PRECEDING   )
+--Result--
+[(None,), (None,), (1,), (4,), (4,), (4,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS LAST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(None,), (None,), (None,), (4,), (4,), (4,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 1000 PRECEDING AND 2000 PRECEDING   )
+--Result--
+[(4,), (4,), (4,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+SELECT max (a) OVER win FROM t2   WINDOW win AS (       ORDER BY b NULLS FIRST RANGE BETWEEN 2000 FOLLOWING AND 1000 FOLLOWING   )
+--Result--
+[(4,), (4,), (4,), (None,), (None,), (None,)]
++--------------------+
+--Query--
+WITH map2 AS (     SELECT * FROM map   )   SELECT sum(a) OVER (     PARTITION BY (       SELECT t FROM map2 WHERE v=a     ) ORDER BY a   ) FROM tx
+--Result--
+[(2,), (6,), (12,), (1,), (4,), (9,)]
++--------------------+
+--Query--
+SELECT (     SELECT max(a) OVER ( ORDER BY (SELECT sum(a) FROM t1) )          + min(a) OVER()    )   FROM t1
+--Result--
+[]
++--------------------+

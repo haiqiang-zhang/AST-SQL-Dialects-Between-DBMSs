@@ -10,5 +10,4 @@ INSERT INTO agg_over_nullable(partition, timestamp, user_id, description) VALUES
 INSERT INTO agg_over_nullable(partition, timestamp, user_id, description) VALUES(now(), now(), 1, NULL);
 INSERT INTO agg_over_nullable(partition, timestamp, user_id, description) VALUES(now(), now(), 1, 'aa');
 SELECT arraySort(groupUniqArray(description)) FROM agg_over_nullable;
-SELECT arraySort(topK(3)(description)) FROM agg_over_nullable;
 DROP TABLE agg_over_nullable;

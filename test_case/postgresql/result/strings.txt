@@ -44,71 +44,6 @@ SELECT 'tricky' AS U&"\" UESCAPE '!'
 [('tricky',)]
 +--------------------+
 --Query--
-SELECT E'\\xDeAdBeEf'::bytea
---Result--
-[(<memory at 0x104cedb40>,)]
-+--------------------+
---Query--
-SELECT E'\\x De Ad Be Ef '::bytea
---Result--
-[(<memory at 0x13b577dc0>,)]
-+--------------------+
---Query--
-SELECT E'\\xDe00BeEf'::bytea
---Result--
-[(<memory at 0x13b577ac0>,)]
-+--------------------+
---Query--
-SELECT E'DeAdBeEf'::bytea
---Result--
-[(<memory at 0x13b5777c0>,)]
-+--------------------+
---Query--
-SELECT E'De\\000dBeEf'::bytea
---Result--
-[(<memory at 0x13b577580>,)]
-+--------------------+
---Query--
-SELECT E'De\123dBeEf'::bytea
---Result--
-[(<memory at 0x13b577a00>,)]
-+--------------------+
---Query--
-SELECT E'De\\123dBeEf'::bytea
---Result--
-[(<memory at 0x13b577940>,)]
-+--------------------+
---Query--
-SELECT E'\\xDeAdBeEf'::bytea
---Result--
-[(<memory at 0x13b577f40>,)]
-+--------------------+
---Query--
-SELECT E'\\x De Ad Be Ef '::bytea
---Result--
-[(<memory at 0x13b577e80>,)]
-+--------------------+
---Query--
-SELECT E'\\xDe00BeEf'::bytea
---Result--
-[(<memory at 0x13b764040>,)]
-+--------------------+
---Query--
-SELECT E'DeAdBeEf'::bytea
---Result--
-[(<memory at 0x13b764100>,)]
-+--------------------+
---Query--
-SELECT E'De\\000dBeEf'::bytea
---Result--
-[(<memory at 0x13b7641c0>,)]
-+--------------------+
---Query--
-SELECT E'De\\123dBeEf'::bytea
---Result--
-[(<memory at 0x13b764280>,)]
-+--------------------+
---Query--
 SELECT pg_input_is_valid(E'\\xDeAdBeE', 'bytea')
 --Result--
 [(False,)]
@@ -117,16 +52,6 @@ SELECT pg_input_is_valid(E'\\xDeAdBeE', 'bytea')
 SELECT * FROM pg_input_error_info(E'\\xDeAdBeE', 'bytea')
 --Result--
 [('invalid hexadecimal data: odd number of digits', None, None, '22023')]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info(E'\\xDeAdBeEx', 'bytea')
---Result--
-[('invalid hexadecimal digit: "x"', None, None, '22023')]
-+--------------------+
---Query--
-SELECT * FROM pg_input_error_info(E'foo\\99bar', 'bytea')
---Result--
-[('invalid input syntax for type bytea', None, None, '22P02')]
 +--------------------+
 --Query--
 SELECT CAST(name 'namefield' AS text) AS "text(name)"
@@ -199,21 +124,6 @@ SELECT SUBSTRING('abcdefg' SIMILAR '#"(b_d)#"%' ESCAPE '#') IS NULL AS "True"
 [(True,)]
 +--------------------+
 --Query--
-SELECT SUBSTRING('abcdefg' SIMILAR '%' ESCAPE NULL) IS NULL AS "True"
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT SUBSTRING(NULL SIMILAR '%' ESCAPE '#') IS NULL AS "True"
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT SUBSTRING('abcdefg' SIMILAR NULL ESCAPE '#') IS NULL AS "True"
---Result--
-[(True,)]
-+--------------------+
---Query--
 SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%#"g' ESCAPE '#') AS "bcdef"
 --Result--
 [('bcdef',)]
@@ -259,11 +169,6 @@ SELECT SUBSTRING('abcdefg' FROM 'b(.*)f') AS "cde"
 [('cde',)]
 +--------------------+
 --Query--
-SELECT SUBSTRING('foo' FROM 'foo(bar)?') IS NULL AS t
---Result--
-[(True,)]
-+--------------------+
---Query--
 SELECT 'abcdefg' SIMILAR TO '_bcd%' AS true
 --Result--
 [(True,)]
@@ -304,127 +209,12 @@ SELECT regexp_replace('1112223333', E'(\\d{3})(\\d{3})(\\d{4})', E'(\\1) \\2-\\3
 [('(111) 222-3333',)]
 +--------------------+
 --Query--
-SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\&Y', 'g')
---Result--
-[('fXooYbaXrrYbaXzzY',)]
-+--------------------+
---Query--
-SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\\\Y', 'g')
---Result--
-[('fX\\YbaX\\YbaX\\Y',)]
-+--------------------+
---Query--
-SELECT regexp_replace('foobarrbazz', E'(.)\\1', E'X\\Y\\1Z\\')
---Result--
-[('fX\\YoZ\\barrbazz',)]
-+--------------------+
---Query--
-SELECT regexp_replace('AAA   BBB   CCC   ', E'\\s+', ' ', 'g')
---Result--
-[('AAA BBB CCC ',)]
-+--------------------+
---Query--
-SELECT regexp_replace('AAA', '^|$', 'Z', 'g')
---Result--
-[('ZAAAZ',)]
-+--------------------+
---Query--
-SELECT regexp_replace('AAA aaa', 'A+', 'Z', 'gi')
---Result--
-[('Z Z',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'A|e|i|o|u', 'X', 1)
---Result--
-[('X PostgreSQL function',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'A|e|i|o|u', 'X', 1, 2)
---Result--
-[('A PXstgreSQL function',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 0, 'i')
---Result--
-[('X PXstgrXSQL fXnctXXn',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 1, 'i')
---Result--
-[('X PostgreSQL function',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 2, 'i')
---Result--
-[('A PXstgreSQL function',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 3, 'i')
---Result--
-[('A PostgrXSQL function',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 9, 'i')
---Result--
-[('A PostgreSQL function',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'A|e|i|o|u', 'X', 7, 0, 'i')
---Result--
-[('A PostgrXSQL fXnctXXn',)]
-+--------------------+
---Query--
-SELECT regexp_replace('A PostgreSQL function', 'a|e|i|o|u', 'X', 1, 1, 'g')
---Result--
-[('A PXstgreSQL function',)]
-+--------------------+
---Query--
 SELECT regexp_count('123123123123123', '(12)3')
 --Result--
 [(5,)]
 +--------------------+
 --Query--
-SELECT regexp_count('123123123123', '123', 1)
---Result--
-[(4,)]
-+--------------------+
---Query--
-SELECT regexp_count('123123123123', '123', 3)
---Result--
-[(3,)]
-+--------------------+
---Query--
-SELECT regexp_count('123123123123', '123', 33)
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT regexp_count('ABCABCABCABC', 'Abc', 1, '')
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT regexp_count('ABCABCABCABC', 'Abc', 1, 'i')
---Result--
-[(4,)]
-+--------------------+
---Query--
 SELECT regexp_like('Steven', '^Ste(v|ph)en$')
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT regexp_like('a'||CHR(10)||'d', 'a.d', 'n')
---Result--
-[(False,)]
-+--------------------+
---Query--
-SELECT regexp_like('a'||CHR(10)||'d', 'a.d', 's')
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT regexp_like('abc', ' a . c ', 'x')
 --Result--
 [(True,)]
 +--------------------+
@@ -434,229 +224,14 @@ SELECT regexp_instr('abcdefghi', 'd.f')
 [(4,)]
 +--------------------+
 --Query--
-SELECT regexp_instr('abcdefghi', 'd.q')
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT regexp_instr('abcabcabc', 'a.c')
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT regexp_instr('abcabcabc', 'a.c', 2)
---Result--
-[(4,)]
-+--------------------+
---Query--
-SELECT regexp_instr('abcabcabc', 'a.c', 1, 3)
---Result--
-[(7,)]
-+--------------------+
---Query--
-SELECT regexp_instr('abcabcabc', 'a.c', 1, 4)
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT regexp_instr('abcabcabc', 'A.C', 1, 2, 0, 'i')
---Result--
-[(4,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 0)
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 1)
---Result--
-[(1,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 2)
---Result--
-[(4,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 3)
---Result--
-[(5,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 4)
---Result--
-[(7,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 5)
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 0)
---Result--
-[(9,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 1)
---Result--
-[(4,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 2)
---Result--
-[(9,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 3)
---Result--
-[(7,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 4)
---Result--
-[(9,)]
-+--------------------+
---Query--
-SELECT regexp_instr('1234567890', '(123)(4(56)(78))', 1, 1, 1, 'i', 5)
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT regexp_instr('foo', 'foo(bar)?', 1, 1, 0, '', 1)
---Result--
-[(0,)]
-+--------------------+
---Query--
 SELECT regexp_substr('abcdefghi', 'd.f')
 --Result--
 [('def',)]
 +--------------------+
 --Query--
-SELECT regexp_substr('abcdefghi', 'd.q') IS NULL AS t
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT regexp_substr('abcabcabc', 'a.c')
---Result--
-[('abc',)]
-+--------------------+
---Query--
-SELECT regexp_substr('abcabcabc', 'a.c', 2)
---Result--
-[('abc',)]
-+--------------------+
---Query--
-SELECT regexp_substr('abcabcabc', 'a.c', 1, 3)
---Result--
-[('abc',)]
-+--------------------+
---Query--
-SELECT regexp_substr('abcabcabc', 'a.c', 1, 4) IS NULL AS t
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT regexp_substr('abcabcabc', 'A.C', 1, 2, 'i')
---Result--
-[('abc',)]
-+--------------------+
---Query--
-SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 0)
---Result--
-[('12345678',)]
-+--------------------+
---Query--
-SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 1)
---Result--
-[('123',)]
-+--------------------+
---Query--
-SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 2)
---Result--
-[('45678',)]
-+--------------------+
---Query--
-SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 3)
---Result--
-[('56',)]
-+--------------------+
---Query--
-SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 4)
---Result--
-[('78',)]
-+--------------------+
---Query--
-SELECT regexp_substr('1234567890', '(123)(4(56)(78))', 1, 1, 'i', 5) IS NULL AS t
---Result--
-[(True,)]
-+--------------------+
---Query--
-SELECT regexp_substr('foo', 'foo(bar)?', 1, 1, '', 1) IS NULL AS t
---Result--
-[(True,)]
-+--------------------+
---Query--
 SELECT regexp_matches('foobarbequebaz', $re$(bar)(beque)$re$)
 --Result--
 [(['bar', 'beque'],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foObARbEqUEbAz', $re$(bar)(beque)$re$, 'i')
---Result--
-[(['bAR', 'bEqUE'],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foobarbequebazilbarfbonk', $re$(b[^b]+)(b[^b]+)$re$, 'g')
---Result--
-[(['bar', 'beque'],), (['bazil', 'barf'],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foobarbequebaz', $re$(bar)(.*)(beque)$re$)
---Result--
-[(['bar', '', 'beque'],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foobarbequebaz', $re$(bar)(.+)(beque)$re$)
---Result--
-[]
-+--------------------+
---Query--
-SELECT regexp_matches('foobarbequebaz', $re$(bar)(.+)?(beque)$re$)
---Result--
-[(['bar', None, 'beque'],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foobarbequebaz', $re$barbeque$re$)
---Result--
-[(['barbeque'],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foo' || chr(10) || 'bar' || chr(10) || 'bequq' || chr(10) || 'baz', '^', 'mg')
---Result--
-[([''],), ([''],), ([''],), ([''],)]
-+--------------------+
---Query--
-SELECT regexp_matches('foo' || chr(10) || 'bar' || chr(10) || 'bequq' || chr(10) || 'baz', '$', 'mg')
---Result--
-[([''],), ([''],), ([''],), ([''],)]
-+--------------------+
---Query--
-SELECT regexp_matches('1' || chr(10) || '2' || chr(10) || '3' || chr(10) || '4' || chr(10), '^.?', 'mg')
---Result--
-[(['1'],), (['2'],), (['3'],), (['4'],), ([''],)]
-+--------------------+
---Query--
-SELECT regexp_matches(chr(10) || '1' || chr(10) || '2' || chr(10) || '3' || chr(10) || '4' || chr(10), '.?$', 'mg')
---Result--
-[([''],), (['1'],), ([''],), (['2'],), ([''],), (['3'],), ([''],), (['4'],), ([''],), ([''],)]
-+--------------------+
---Query--
-SELECT regexp_matches(chr(10) || '1' || chr(10) || '2' || chr(10) || '3' || chr(10) || '4', '.?$', 'mg')
---Result--
-[([''],), (['1'],), ([''],), (['2'],), ([''],), (['3'],), ([''],), (['4'],), ([''],)]
 +--------------------+
 --Query--
 SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', $re$\s+$re$) AS foo
@@ -667,76 +242,6 @@ SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps ov
 SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', $re$\s+$re$)
 --Result--
 [(['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'the', 'lazy', 'dog'],)]
-+--------------------+
---Query--
-SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', $re$\s*$re$) AS foo
---Result--
-[('t', 1), ('h', 1), ('e', 1), ('q', 1), ('u', 1), ('i', 1), ('c', 1), ('k', 1), ('b', 1), ('r', 1), ('o', 1), ('w', 1), ('n', 1), ('f', 1), ('o', 1), ('x', 1), ('j', 1), ('u', 1), ('m', 1), ('p', 1), ('s', 1), ('o', 1), ('v', 1), ('e', 1), ('r', 1), ('t', 1), ('h', 1), ('e', 1), ('l', 1), ('a', 1), ('z', 1), ('y', 1), ('d', 1), ('o', 1), ('g', 1)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', $re$\s*$re$)
---Result--
-[(['t', 'h', 'e', 'q', 'u', 'i', 'c', 'k', 'b', 'r', 'o', 'w', 'n', 'f', 'o', 'x', 'j', 'u', 'm', 'p', 's', 'o', 'v', 'e', 'r', 't', 'h', 'e', 'l', 'a', 'z', 'y', 'd', 'o', 'g'],)]
-+--------------------+
---Query--
-SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', '') AS foo
---Result--
-[('t', 1), ('h', 1), ('e', 1), (' ', 1), ('q', 1), ('u', 1), ('i', 1), ('c', 1), ('k', 1), (' ', 1), ('b', 1), ('r', 1), ('o', 1), ('w', 1), ('n', 1), (' ', 1), ('f', 1), ('o', 1), ('x', 1), (' ', 1), ('j', 1), ('u', 1), ('m', 1), ('p', 1), ('s', 1), (' ', 1), ('o', 1), ('v', 1), ('e', 1), ('r', 1), (' ', 1), ('t', 1), ('h', 1), ('e', 1), (' ', 1), ('l', 1), ('a', 1), ('z', 1), ('y', 1), (' ', 1), ('d', 1), ('o', 1), ('g', 1)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', '')
---Result--
-[(['t', 'h', 'e', ' ', 'q', 'u', 'i', 'c', 'k', ' ', 'b', 'r', 'o', 'w', 'n', ' ', 'f', 'o', 'x', ' ', 'j', 'u', 'm', 'p', 's', ' ', 'o', 'v', 'e', 'r', ' ', 't', 'h', 'e', ' ', 'l', 'a', 'z', 'y', ' ', 'd', 'o', 'g'],)]
-+--------------------+
---Query--
-SELECT foo, length(foo) FROM regexp_split_to_table('thE QUick bROWn FOx jUMPs ovEr The lazy dOG', 'e', 'i') AS foo
---Result--
-[('th', 2), (' QUick bROWn FOx jUMPs ov', 25), ('r Th', 4), (' lazy dOG', 9)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('thE QUick bROWn FOx jUMPs ovEr The lazy dOG', 'e', 'i')
---Result--
-[(['th', ' QUick bROWn FOx jUMPs ov', 'r Th', ' lazy dOG'],)]
-+--------------------+
---Query--
-SELECT foo, length(foo) FROM regexp_split_to_table('the quick brown fox jumps over the lazy dog', 'nomatch') AS foo
---Result--
-[('the quick brown fox jumps over the lazy dog', 43)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('the quick brown fox jumps over the lazy dog', 'nomatch')
---Result--
-[(['the quick brown fox jumps over the lazy dog'],)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('123456','1')
---Result--
-[(['', '23456'],)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('123456','6')
---Result--
-[(['12345', ''],)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('123456','.')
---Result--
-[(['', '', '', '', '', '', ''],)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('123456','')
---Result--
-[(['1', '2', '3', '4', '5', '6'],)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('123456','(?:)')
---Result--
-[(['1', '2', '3', '4', '5', '6'],)]
-+--------------------+
---Query--
-SELECT regexp_split_to_array('1','')
---Result--
-[(['1'],)]
 +--------------------+
 --Query--
 SELECT POSITION('4' IN '1234567890') = '4' AS "4"
@@ -1134,16 +639,6 @@ SELECT substr(f1, -1, 5) from toasttest
 [('123',), ('123',), ('123',), ('123',)]
 +--------------------+
 --Query--
-SELECT substr(f1, 99995) from toasttest
---Result--
-[('567890',), ('567890',), ('567890',), ('567890',)]
-+--------------------+
---Query--
-SELECT substr(f1, 99995, 10) from toasttest
---Result--
-[('567890',), ('567890',), ('567890',), ('567890',)]
-+--------------------+
---Query--
 TRUNCATE TABLE toasttest
 --Result--
 []
@@ -1162,26 +657,6 @@ TRUNCATE TABLE toasttest
 SELECT pg_relation_size(reltoastrelid) = 0 AS is_empty   FROM pg_class where relname = 'toasttest'
 --Result--
 [(True,)]
-+--------------------+
---Query--
-SELECT substr(f1, -1, 5) from toasttest
---Result--
-[(<memory at 0x13b577d00>,), (<memory at 0x13b577b80>,), (<memory at 0x13b577c40>,), (<memory at 0x13b764340>,)]
-+--------------------+
---Query--
-SELECT substr(f1, 99995) from toasttest
---Result--
-[(<memory at 0x13b764400>,), (<memory at 0x13b7644c0>,), (<memory at 0x13b764580>,), (<memory at 0x13b764640>,)]
-+--------------------+
---Query--
-SELECT substr(f1, 99995, 10) from toasttest
---Result--
-[(<memory at 0x13b764700>,), (<memory at 0x13b7647c0>,), (<memory at 0x13b764880>,), (<memory at 0x13b764940>,)]
-+--------------------+
---Query--
-SELECT length(c), c::text FROM toasttest
---Result--
-[(1, 'x')]
 +--------------------+
 --Query--
 SELECT c FROM toasttest
@@ -1334,74 +809,9 @@ select to_hex(256::bigint*256::bigint*256::bigint*256::bigint - 1) AS "ffffffff"
 [('ffffffff',)]
 +--------------------+
 --Query--
-SELECT sha224('')
---Result--
-[(<memory at 0x13b764a00>,)]
-+--------------------+
---Query--
-SELECT sha224('The quick brown fox jumps over the lazy dog.')
---Result--
-[(<memory at 0x13b764ac0>,)]
-+--------------------+
---Query--
-SELECT sha256('')
---Result--
-[(<memory at 0x13b764b80>,)]
-+--------------------+
---Query--
-SELECT sha256('The quick brown fox jumps over the lazy dog.')
---Result--
-[(<memory at 0x13b764c40>,)]
-+--------------------+
---Query--
-SELECT sha384('')
---Result--
-[(<memory at 0x13b764d00>,)]
-+--------------------+
---Query--
-SELECT sha384('The quick brown fox jumps over the lazy dog.')
---Result--
-[(<memory at 0x13b764dc0>,)]
-+--------------------+
---Query--
-SELECT sha512('')
---Result--
-[(<memory at 0x13b764e80>,)]
-+--------------------+
---Query--
-SELECT sha512('The quick brown fox jumps over the lazy dog.')
---Result--
-[(<memory at 0x13b764f40>,)]
-+--------------------+
---Query--
 SELECT encode('\x1234567890abcdef00', 'hex')
 --Result--
 [('1234567890abcdef00',)]
-+--------------------+
---Query--
-SELECT decode('1234567890abcdef00', 'hex')
---Result--
-[(<memory at 0x13b765000>,)]
-+--------------------+
---Query--
-SELECT encode(('\x' || repeat('1234567890abcdef0001', 7))::bytea, 'base64')
---Result--
-[('EjRWeJCrze8AARI0VniQq83vAAESNFZ4kKvN7wABEjRWeJCrze8AARI0VniQq83vAAESNFZ4kKvN\n7wABEjRWeJCrze8AAQ==',)]
-+--------------------+
---Query--
-SELECT decode(encode(('\x' || repeat('1234567890abcdef0001', 7))::bytea,                      'base64'), 'base64')
---Result--
-[(<memory at 0x13b7650c0>,)]
-+--------------------+
---Query--
-SELECT encode('\x1234567890abcdef00', 'escape')
---Result--
-[('\x124Vx\\220\\253\\315\\357\\000',)]
-+--------------------+
---Query--
-SELECT decode(encode('\x1234567890abcdef00', 'escape'), 'escape')
---Result--
-[(<memory at 0x13b765180>,)]
 +--------------------+
 --Query--
 SELECT get_bit('\x1234567890abcdef00'::bytea, 43)
@@ -1409,19 +819,9 @@ SELECT get_bit('\x1234567890abcdef00'::bytea, 43)
 [(1,)]
 +--------------------+
 --Query--
-SELECT set_bit('\x1234567890abcdef00'::bytea, 43, 0)
---Result--
-[(<memory at 0x13b765240>,)]
-+--------------------+
---Query--
 SELECT get_byte('\x1234567890abcdef00'::bytea, 3)
 --Result--
 [(120,)]
-+--------------------+
---Query--
-SELECT set_byte('\x1234567890abcdef00'::bytea, 7, 11)
---Result--
-[(<memory at 0x13b765300>,)]
 +--------------------+
 --Query--
 show escape_string_warning
@@ -1474,49 +874,9 @@ SELECT lpad('hi', 5, 'xy')
 [('xyxhi',)]
 +--------------------+
 --Query--
-SELECT lpad('hi', 5)
---Result--
-[('   hi',)]
-+--------------------+
---Query--
-SELECT lpad('hi', -5, 'xy')
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT lpad('hello', 2)
---Result--
-[('he',)]
-+--------------------+
---Query--
-SELECT lpad('hi', 5, '')
---Result--
-[('hi',)]
-+--------------------+
---Query--
 SELECT rpad('hi', 5, 'xy')
 --Result--
 [('hixyx',)]
-+--------------------+
---Query--
-SELECT rpad('hi', 5)
---Result--
-[('hi   ',)]
-+--------------------+
---Query--
-SELECT rpad('hi', -5, 'xy')
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT rpad('hello', 2)
---Result--
-[('he',)]
-+--------------------+
---Query--
-SELECT rpad('hi', 5, '')
---Result--
-[('hi',)]
 +--------------------+
 --Query--
 SELECT ltrim('zzzytrim', 'xyz')
@@ -1529,24 +889,9 @@ SELECT translate('', '14', 'ax')
 [('',)]
 +--------------------+
 --Query--
-SELECT translate('12345', '14', 'ax')
---Result--
-[('a23x5',)]
-+--------------------+
---Query--
-SELECT translate('12345', '134', 'a')
---Result--
-[('a25',)]
-+--------------------+
---Query--
 SELECT ascii('x')
 --Result--
 [(120,)]
-+--------------------+
---Query--
-SELECT ascii('')
---Result--
-[(0,)]
 +--------------------+
 --Query--
 SELECT chr(65)
@@ -1559,76 +904,6 @@ SELECT repeat('Pg', 4)
 [('PgPgPgPg',)]
 +--------------------+
 --Query--
-SELECT repeat('Pg', -4)
---Result--
-[('',)]
-+--------------------+
---Query--
-SELECT SUBSTRING('1234567890'::bytea FROM 3) "34567890"
---Result--
-[(<memory at 0x13b7653c0>,)]
-+--------------------+
---Query--
-SELECT SUBSTRING('1234567890'::bytea FROM 4 FOR 3) AS "456"
---Result--
-[(<memory at 0x13b765480>,)]
-+--------------------+
---Query--
-SELECT SUBSTRING('string'::bytea FROM 2 FOR 2147483646) AS "tring"
---Result--
-[(<memory at 0x13b765540>,)]
-+--------------------+
---Query--
-SELECT SUBSTRING('string'::bytea FROM -10 FOR 2147483646) AS "string"
---Result--
-[(<memory at 0x13b765600>,)]
-+--------------------+
---Query--
-SELECT trim(E'\\000'::bytea from E'\\000Tom\\000'::bytea)
---Result--
-[(<memory at 0x13b7656c0>,)]
-+--------------------+
---Query--
-SELECT trim(leading E'\\000'::bytea from E'\\000Tom\\000'::bytea)
---Result--
-[(<memory at 0x13b765780>,)]
-+--------------------+
---Query--
-SELECT trim(trailing E'\\000'::bytea from E'\\000Tom\\000'::bytea)
---Result--
-[(<memory at 0x13b765840>,)]
-+--------------------+
---Query--
-SELECT btrim(E'\\000trim\\000'::bytea, E'\\000'::bytea)
---Result--
-[(<memory at 0x13b765900>,)]
-+--------------------+
---Query--
-SELECT btrim(''::bytea, E'\\000'::bytea)
---Result--
-[(<memory at 0x13b7659c0>,)]
-+--------------------+
---Query--
-SELECT btrim(E'\\000trim\\000'::bytea, ''::bytea)
---Result--
-[(<memory at 0x13b765a80>,)]
-+--------------------+
---Query--
-SELECT encode(overlay(E'Th\\000omas'::bytea placing E'Th\\001omas'::bytea from 2),'escape')
---Result--
-[('TTh\x01omas',)]
-+--------------------+
---Query--
-SELECT encode(overlay(E'Th\\000omas'::bytea placing E'\\002\\003'::bytea from 8),'escape')
---Result--
-[('Th\\000omas\x02\x03',)]
-+--------------------+
---Query--
-SELECT encode(overlay(E'Th\\000omas'::bytea placing E'\\002\\003'::bytea from 5 for 3),'escape')
---Result--
-[('Th\\000o\x02\x03',)]
-+--------------------+
---Query--
 SELECT bit_count('\x1234567890'::bytea)
 --Result--
 [(15,)]
@@ -1637,14 +912,4 @@ SELECT bit_count('\x1234567890'::bytea)
 SELECT unistr('\0064at\+0000610')
 --Result--
 [('data0',)]
-+--------------------+
---Query--
-SELECT unistr('d\u0061t\U000000610')
---Result--
-[('data0',)]
-+--------------------+
---Query--
-SELECT unistr('a\\b')
---Result--
-[('a\\b',)]
 +--------------------+

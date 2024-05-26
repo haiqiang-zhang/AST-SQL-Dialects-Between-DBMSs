@@ -1,0 +1,30 @@
+--Query--
+SELECT JSONExtract('{"string_value":null}', 'string_value', 'Nullable(String)') as x, toTypeName(x)
+--Result--
+[(None, 'Nullable(String)')]
++--------------------+
+--Query--
+SELECT JSONExtractString('["a", "b", "c", "d", "e"]', idx) FROM (SELECT arrayJoin([2, NULL, 2147483646, 65535, 65535, 3]) AS idx)
+--Result--
+[('b',), (None,), ('',), ('',), ('',), ('c',)]
++--------------------+
+--Query--
+SELECT JSONExtractInt('[1]', toNullable(1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT JSONExtractBool('[1]', toNullable(1))
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT JSONExtractFloat('[1]', toNullable(1))
+--Result--
+[(1.0,)]
++--------------------+
+--Query--
+SELECT JSONExtract('[1]', toNullable(1), 'Nullable(Int)')
+--Result--
+[(1,)]
++--------------------+

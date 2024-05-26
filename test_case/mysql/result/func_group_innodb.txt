@@ -1,0 +1,45 @@
+--Query--
+select count(*) + MAX_REQ - MAX_REQ + MAX_REQ - MAX_REQ + MAX_REQ - MAX_REQ + MAX_REQ - MAX_REQ + MAX_REQ - MAX_REQ from t1 group by MAX_REQ
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select Case When Count(*) < MAX_REQ Then 1 Else 0 End from t1 where t1.USR_ID = 1 group by MAX_REQ
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select min(a) from t1m
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select max(a) from t1m
+--Result--
+[(None,)]
++--------------------+
+--Query--
+select count(*), min(7), max(7) from t1m, t1i
+--Result--
+[(0, None, None)]
++--------------------+
+--Query--
+SELECT straight_join BIT_AND(c.pk) FROM   bb, c   WHERE c.col_varchar_key='ABC' ORDER BY c.pk
+--Result--
+[(18446744073709551615,)]
++--------------------+
+--Query--
+SELECT t1.* FROM t1  JOIN t2 ON t1.c=t2.c WHERE t1.pk=1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT BIT_OR(t1.b)  FROM t1 JOIN t2 ON t1.c=t2.c WHERE t1.pk=1
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT BIT_XOR(t1.b) FROM t1 JOIN t2 ON t1.c=t2.c WHERE t1.pk=1
+--Result--
+[(0,)]
++--------------------+

@@ -1,0 +1,125 @@
+--Query--
+LOCK TABLES t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t3
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t1 WRITE, t2 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLE t4 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t4
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+LOCK TABLES t2 WRITE, t1 WRITE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT(TABLE_NAME) FROM INFORMATION_SCHEMA.TABLES   WHERE TABLE_SCHEMA='test' AND TABLE_NAME like '#sql%'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select count(*) = 1 from information_schema.processlist     where state = "Waiting for table metadata lock" and           info = "insert into t1 values (1, 1, 1)"
+--Result--
+[(0,)]
++--------------------+

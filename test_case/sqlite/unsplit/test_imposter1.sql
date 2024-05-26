@@ -1,0 +1,13 @@
+CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c, d NOT NULL);
+CREATE INDEX t1b ON t1(b);
+CREATE UNIQUE INDEX t1c ON t1(c);
+WITH RECURSIVE c(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM c WHERE i<30)
+      INSERT INTO t1(a,b,c,d) SELECT i,1000+i,2000+i,3000+i FROM c;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+PRAGMA integrity_check;
+DELETE FROM t1;
+PRAGMA integrity_check;
+DELETE FROM t1;
+SELECT c FROM t1 ORDER BY c;
+PRAGMA integrity_check;

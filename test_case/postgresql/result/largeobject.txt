@@ -19,16 +19,6 @@ SELECT lo_lseek(fd, 104, 0) FROM lotest_stash_values
 [(104,)]
 +--------------------+
 --Query--
-SELECT loread(fd, 28) FROM lotest_stash_values
---Result--
-[(<memory at 0x13b577f40>,)]
-+--------------------+
---Query--
-SELECT lo_lseek(fd, -19, 1) FROM lotest_stash_values
---Result--
-[(85,)]
-+--------------------+
---Query--
 SELECT lowrite(fd, 'n') FROM lotest_stash_values
 --Result--
 [(1,)]
@@ -36,7 +26,7 @@ SELECT lowrite(fd, 'n') FROM lotest_stash_values
 --Query--
 SELECT lo_tell(fd) FROM lotest_stash_values
 --Result--
-[(86,)]
+[(105,)]
 +--------------------+
 --Query--
 SELECT lo_open(loid, x'40000'::int) from lotest_stash_values
@@ -54,46 +44,6 @@ SELECT lo_truncate(fd, 11) FROM lotest_stash_values
 [(0,)]
 +--------------------+
 --Query--
-SELECT loread(fd, 15) FROM lotest_stash_values
---Result--
-[(<memory at 0x13b577e80>,)]
-+--------------------+
---Query--
-SELECT lo_truncate(fd, 10000) FROM lotest_stash_values
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT loread(fd, 10) FROM lotest_stash_values
---Result--
-[(<memory at 0x13b577dc0>,)]
-+--------------------+
---Query--
-SELECT lo_lseek(fd, 0, 2) FROM lotest_stash_values
---Result--
-[(10000,)]
-+--------------------+
---Query--
-SELECT lo_tell(fd) FROM lotest_stash_values
---Result--
-[(10000,)]
-+--------------------+
---Query--
-SELECT lo_truncate(fd, 5000) FROM lotest_stash_values
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT lo_lseek(fd, 0, 2) FROM lotest_stash_values
---Result--
-[(5000,)]
-+--------------------+
---Query--
-SELECT lo_tell(fd) FROM lotest_stash_values
---Result--
-[(5000,)]
-+--------------------+
---Query--
 SELECT lo_close(fd) FROM lotest_stash_values
 --Result--
 [(0,)]
@@ -104,62 +54,12 @@ SELECT lo_lseek64(fd, 4294967296, 0) FROM lotest_stash_values
 [(4294967296,)]
 +--------------------+
 --Query--
-SELECT lowrite(fd, 'offset:4GB') FROM lotest_stash_values
---Result--
-[(10,)]
-+--------------------+
---Query--
-SELECT lo_tell64(fd) FROM lotest_stash_values
---Result--
-[(4294967306,)]
-+--------------------+
---Query--
-SELECT lo_lseek64(fd, -10, 1) FROM lotest_stash_values
---Result--
-[(4294967296,)]
-+--------------------+
---Query--
 SELECT lo_tell64(fd) FROM lotest_stash_values
 --Result--
 [(4294967296,)]
-+--------------------+
---Query--
-SELECT loread(fd, 10) FROM lotest_stash_values
---Result--
-[(<memory at 0x13b577d00>,)]
 +--------------------+
 --Query--
 SELECT lo_truncate64(fd, 5000000000) FROM lotest_stash_values
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT lo_lseek64(fd, 0, 2) FROM lotest_stash_values
---Result--
-[(5000000000,)]
-+--------------------+
---Query--
-SELECT lo_tell64(fd) FROM lotest_stash_values
---Result--
-[(5000000000,)]
-+--------------------+
---Query--
-SELECT lo_truncate64(fd, 3000000000) FROM lotest_stash_values
---Result--
-[(0,)]
-+--------------------+
---Query--
-SELECT lo_lseek64(fd, 0, 2) FROM lotest_stash_values
---Result--
-[(3000000000,)]
-+--------------------+
---Query--
-SELECT lo_tell64(fd) FROM lotest_stash_values
---Result--
-[(3000000000,)]
-+--------------------+
---Query--
-SELECT lo_close(fd) FROM lotest_stash_values
 --Result--
 [(0,)]
 +--------------------+
@@ -174,52 +74,7 @@ TRUNCATE lotest_stash_values
 []
 +--------------------+
 --Query--
-SELECT lo_lseek(fd, 0, 2) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lo_lseek(fd, 2030, 0) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
 SELECT loread(fd, 36) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lo_tell(fd) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lo_lseek(fd, -26, 1) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lowrite(fd, 'abcdefghijklmnop') FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lo_lseek(fd, 2030, 0) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT loread(fd, 36) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lo_close(fd) FROM lotest_stash_values
---Result--
-[]
-+--------------------+
---Query--
-SELECT lo_unlink(loid) FROM lotest_stash_values
 --Result--
 []
 +--------------------+
@@ -229,24 +84,9 @@ TRUNCATE lotest_stash_values
 []
 +--------------------+
 --Query--
-SELECT lo_create(2121)
---Result--
-[(2121,)]
-+--------------------+
---Query--
-COMMENT ON LARGE OBJECT 2121 IS 'testing comments'
---Result--
-[]
-+--------------------+
---Query--
 START TRANSACTION READ ONLY
 --Result--
 []
-+--------------------+
---Query--
-SELECT lo_open(2121, x'40000'::int)
---Result--
-[(0,)]
 +--------------------+
 --Query--
 START TRANSACTION READ ONLY

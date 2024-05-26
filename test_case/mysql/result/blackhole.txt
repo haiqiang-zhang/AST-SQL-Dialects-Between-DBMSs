@@ -1,0 +1,20 @@
+--Query--
+SELECT 1 FROM t1 WHERE a = ANY (SELECT a FROM t2)
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 0 FROM t1 FORCE INDEX FOR GROUP BY(a) WHERE a = 0 OR b = 0 AND c = 0
+--Result--
+[]
++--------------------+
+--Query--
+SELECT MATCH (a) AGAINST ('abc') AS score FROM t
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 1 FROM t WHERE MATCH (a) AGAINST ('abc')
+--Result--
+[]
++--------------------+

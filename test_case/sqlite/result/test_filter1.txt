@@ -1,0 +1,35 @@
+--Query--
+SELECT sum(a) FROM t1
+--Result--
+[(45,)]
++--------------------+
+--Query--
+SELECT sum(a) FILTER( WHERE a<5 ) FROM t1
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT max(a) FILTER (WHERE (a % 2)==0) FROM t1
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT min(a) FILTER (WHERE a>4) FROM t1
+--Result--
+[(5,)]
++--------------------+
+--Query--
+SELECT count(*) FILTER (WHERE a!=5) FROM t1
+--Result--
+[(8,)]
++--------------------+
+--Query--
+SELECT * FROM vv
+--Result--
+[(None, 9, 17, 24, 30, 35, 39, 42, 44, 45)]
++--------------------+
+--Query--
+SELECT (SELECT COUNT(a) FROM t2) FROM t1
+--Result--
+[(5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,)]
++--------------------+

@@ -1,0 +1,30 @@
+--Query--
+SELECT '== Only last version remains after OPTIMIZE W/ CLEANUP =='
+--Result--
+[('== Only last version remains after OPTIMIZE W/ CLEANUP ==',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 1, 0), ('d5', 1, 0), ('d6', 3, 0)]
++--------------------+
+--Query--
+SELECT '== OPTIMIZE W/ CLEANUP (remove d6) =='
+--Result--
+[('== OPTIMIZE W/ CLEANUP (remove d6) ==',)]
++--------------------+
+--Query--
+OPTIMIZE TABLE test FINAL CLEANUP
+--Result--
+[]
++--------------------+
+--Query--
+select * from test order by uid
+--Result--
+[('d1', 5, 0), ('d2', 1, 0), ('d3', 1, 0), ('d4', 1, 0), ('d5', 1, 0)]
++--------------------+

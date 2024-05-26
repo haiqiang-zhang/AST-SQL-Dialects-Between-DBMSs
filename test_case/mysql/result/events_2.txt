@@ -1,0 +1,100 @@
+--Query--
+select  event_definition, definer, convert_tz(execute_at, 'UTC', 'SYSTEM'), on_completion from information_schema.events
+--Result--
+[('set @a = 5', 'tester@localhost', None, 'NOT PRESERVE')]
++--------------------+
+--Query--
+select definer, event_name from information_schema.events
+--Result--
+[]
++--------------------+
+--Query--
+select get_lock("test_lock1", 20)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select definer, event_name from information_schema.events
+--Result--
+[]
++--------------------+
+--Query--
+select /*1*/ user, host, db, command, state, info   from information_schema.processlist   where (user='event_scheduler')   order by info
+--Result--
+[('event_scheduler', 'localhost', None, 'Daemon', 'Waiting for next activation', None)]
++--------------------+
+--Query--
+select release_lock("test_lock1")
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select count(*) from information_schema.events
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select /*2*/ user, host, db, command, state, info   from information_schema.processlist   where (info like "select get_lock%" OR user='event_scheduler')   order by info
+--Result--
+[('event_scheduler', 'localhost', None, 'Daemon', 'Waiting for next activation', None)]
++--------------------+
+--Query--
+select /*3*/ user, host, db, command, state, info   from information_schema.processlist   where (info like "select get_lock%" OR user='event_scheduler')   order by info
+--Result--
+[('event_scheduler', 'localhost', None, 'Daemon', 'Waiting for next activation', None)]
++--------------------+
+--Query--
+select /*4*/ user, host, db, command, state, info   from information_schema.processlist   where (info like "select get_lock%" OR user='event_scheduler')   order by info
+--Result--
+[('event_scheduler', 'localhost', None, 'Daemon', 'Waiting for next activation', None)]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where db='events_test' and command = 'Connect' and user=current_user()
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select event_schema, event_name, definer, event_definition from information_schema.events where event_name='white_space'
+--Result--
+[('test_db', 'white_space', 'tester@localhost', 'select 1')]
++--------------------+
+--Query--
+select event_schema, event_name, definer, event_definition from information_schema.events where event_name='white_space'
+--Result--
+[('test_db', 'white_space', 'tester@localhost', 'select 2')]
++--------------------+
+--Query--
+select event_schema, event_name, definer, event_definition from information_schema.events where event_name='white_space'
+--Result--
+[('test_db', 'white_space', 'tester@localhost', 'select 3')]
++--------------------+
+--Query--
+lock table t1 read
+--Result--
+[]
++--------------------+
+--Query--
+select event_name from information_schema.events
+--Result--
+[('e1',)]
++--------------------+
+--Query--
+unlock tables
+--Result--
+[]
++--------------------+
+--Query--
+select event_name from information_schema.events
+--Result--
+[]
++--------------------+
+--Query--
+select EVENT_NAME from information_schema.events where event_schema='test'
+--Result--
+[]
++--------------------+
+--Query--
+select count(*) = 0 from information_schema.processlist   where db='events_test' and command = 'Connect' and user=current_user()
+--Result--
+[(1,)]
++--------------------+

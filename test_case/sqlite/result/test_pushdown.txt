@@ -1,0 +1,35 @@
+--Query--
+SELECT v1.a, quote(v1.b), t0.c0 AS cd FROM t0 LEFT JOIN v0 ON v0.c0!=0,v1
+--Result--
+[(1, "'one'", 0), (2, '0', 0)]
++--------------------+
+--Query--
+SELECT * FROM v3 WHERE a=2 AND b=200
+--Result--
+[(2, 200, 'def'), (2, 200, 'xyz')]
++--------------------+
+--Query--
+SELECT count(*) FROM v3
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT * FROM  t1 JOIN t2 ON false RIGHT JOIN t3 ON true CROSS JOIN v6
+--Result--
+[(None, None, None, None, None, None, 3, None, 5)]
++--------------------+
+--Query--
+SELECT * FROM v6 JOIN t5 ON false RIGHT JOIN t3 ON true
+--Result--
+[(None, None, None, 3)]
++--------------------+
+--Query--
+SELECT * FROM t1 JOIN t2 ON false JOIN v6 ON true RIGHT JOIN t3 ON true
+--Result--
+[(None, None, None, None, None, None, None, None, 3)]
++--------------------+
+--Query--
+SELECT *     FROM t1 JOIN t2 ON null RIGHT JOIN t3 ON true           LEFT JOIN (t4 JOIN t5 ON d+1=e) ON d=4    WHERE e>0
+--Result--
+[(None, None, None, None, None, None, 3, 4, 5), (None, None, None, None, None, None, 3, 4, 5), (None, None, None, None, None, None, 3, 4, 5), (None, None, None, None, None, None, 3, 4, 5)]
++--------------------+

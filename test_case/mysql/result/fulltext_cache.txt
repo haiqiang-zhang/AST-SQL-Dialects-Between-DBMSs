@@ -1,0 +1,20 @@
+--Query--
+SELECT t1.q, t2.item, t2.id, round(MATCH t2.item AGAINST ('sushi'),6) as x FROM t1, t2 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id
+--Result--
+[('aaaaaaaaa dsaass de', 'sushi', 1, 0.815572), ('aaaaaaaaa dsaass de', 'Bolo de Chocolate', 2, 0.0), ('aaaaaaaaa dsaass de', 'Feijoada', 3, 0.0), ('aaaaaaaaa dsaass de', 'Mousse de Chocolate', 4, 0.0), ('ssde df s fsda sad er', 'um copo de Vodka', 5, 0.0), ('ssde df s fsda sad er', 'um chocolate Snickers', 6, 0.0), ('aaaaaaaaa dsaass de', 'Bife', 7, 0.0), ('aaaaaaaaa dsaass de', 'Pizza de Salmao', 8, 0.0)]
++--------------------+
+--Query--
+SELECT t1.q, t2.item, t2.id, MATCH t2.item AGAINST ('sushi' IN BOOLEAN MODE) as x FROM t1, t2 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id
+--Result--
+[('aaaaaaaaa dsaass de', 'sushi', 1, 0.8155715465545654), ('aaaaaaaaa dsaass de', 'Bolo de Chocolate', 2, 0.0), ('aaaaaaaaa dsaass de', 'Feijoada', 3, 0.0), ('aaaaaaaaa dsaass de', 'Mousse de Chocolate', 4, 0.0), ('ssde df s fsda sad er', 'um copo de Vodka', 5, 0.0), ('ssde df s fsda sad er', 'um chocolate Snickers', 6, 0.0), ('aaaaaaaaa dsaass de', 'Bife', 7, 0.0), ('aaaaaaaaa dsaass de', 'Pizza de Salmao', 8, 0.0)]
++--------------------+
+--Query--
+SELECT t1.q, t2.item, t2.id, round(MATCH t2.item AGAINST ('sushi'),6) as x FROM t2, t1 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id
+--Result--
+[('aaaaaaaaa dsaass de', 'sushi', 1, 0.815572), ('aaaaaaaaa dsaass de', 'Bolo de Chocolate', 2, 0.0), ('aaaaaaaaa dsaass de', 'Feijoada', 3, 0.0), ('aaaaaaaaa dsaass de', 'Mousse de Chocolate', 4, 0.0), ('ssde df s fsda sad er', 'um copo de Vodka', 5, 0.0), ('ssde df s fsda sad er', 'um chocolate Snickers', 6, 0.0), ('aaaaaaaaa dsaass de', 'Bife', 7, 0.0), ('aaaaaaaaa dsaass de', 'Pizza de Salmao', 8, 0.0)]
++--------------------+
+--Query--
+SELECT t1.q, t2.item, t2.id, MATCH t2.item AGAINST ('sushi' IN BOOLEAN MODE) as x FROM t2, t1 WHERE (t2.id2 = t1.id) ORDER BY x DESC,t2.id
+--Result--
+[('aaaaaaaaa dsaass de', 'sushi', 1, 0.8155715465545654), ('aaaaaaaaa dsaass de', 'Bolo de Chocolate', 2, 0.0), ('aaaaaaaaa dsaass de', 'Feijoada', 3, 0.0), ('aaaaaaaaa dsaass de', 'Mousse de Chocolate', 4, 0.0), ('ssde df s fsda sad er', 'um copo de Vodka', 5, 0.0), ('ssde df s fsda sad er', 'um chocolate Snickers', 6, 0.0), ('aaaaaaaaa dsaass de', 'Bife', 7, 0.0), ('aaaaaaaaa dsaass de', 'Pizza de Salmao', 8, 0.0)]
++--------------------+

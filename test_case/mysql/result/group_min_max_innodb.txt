@@ -1,0 +1,85 @@
+--Query--
+select distinct a1 from t4 where pk_col not in (1,2,3,4)
+--Result--
+[('a',), ('b',), ('c',), ('d',)]
++--------------------+
+--Query--
+select distinct a from t1
+--Result--
+[]
++--------------------+
+--Query--
+select a, count(a) from t1 group by a with rollup
+--Result--
+[(1, 1), (None, 1)]
++--------------------+
+--Query--
+select distinct pk from v1
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+select distinct pk from v1
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,), (7,)]
++--------------------+
+--Query--
+SELECT COUNT(DISTINCT a) FROM t1 WHERE b = 'b'
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT TRACE RLIKE 'minmax_keypart_in_disjunctive_query' AS OK FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT c1, max(i2) FROM t1 WHERE (c1 = 'C' AND i2 = 17) OR ( c1 = 'F') GROUP BY c1
+--Result--
+[('C', 17), ('F', 30)]
++--------------------+
+--Query--
+SELECT DISTINCT a1 FROM t1 WHERE (pk_col = 2 OR pk_col = 22) AND a1 = 'a'
+--Result--
+[('a',)]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1 WHERE EXISTS (SELECT *               FROM DUAL               WHERE (c2 = 2))
+--Result--
+[(2,), (10,)]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1 WHERE 1 IN (2,             (SELECT 1             FROM DUAL             WHERE (c2 = 2)),             3)
+--Result--
+[(2,), (10,)]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1 WHERE c2 = 2
+--Result--
+[(2,), (10,)]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1 IGNORE INDEX (c1_c2_idx) WHERE EXISTS (SELECT *               FROM DUAL               WHERE (c2 = 2))
+--Result--
+[(2,), (10,)]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1 IGNORE INDEX (c1_c2_idx) WHERE 1 IN (2,             (SELECT 1             FROM DUAL             WHERE (c2 = 2)),             3)
+--Result--
+[(2,), (10,)]
++--------------------+
+--Query--
+SELECT TRACE INTO @trace FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE pk = 1 OR pk = 231
+--Result--
+[(1, '1', 1)]
++--------------------+
+--Query--
+SELECT DISTINCT c1 FROM t1 FORCE INDEX(ukey) WHERE pk IN (1,231) and c1 IS NOT NULL
+--Result--
+[('1',)]
++--------------------+

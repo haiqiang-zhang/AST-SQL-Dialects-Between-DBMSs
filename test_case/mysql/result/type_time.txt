@@ -1,0 +1,250 @@
+--Query--
+select * from t1
+--Result--
+[(datetime.timedelta(seconds=37353),), (datetime.timedelta(seconds=45297),), (datetime.timedelta(seconds=10),), (datetime.timedelta(seconds=754),), (datetime.timedelta(seconds=45297),), (datetime.timedelta(days=5, seconds=13560),), (datetime.timedelta(seconds=1),), (datetime.timedelta(seconds=4980),), (datetime.timedelta(seconds=5025),), (datetime.timedelta(seconds=10),), (datetime.timedelta(days=-11, seconds=81447),), (datetime.timedelta(days=20, seconds=37353),), (datetime.timedelta(seconds=74014),), (datetime.timedelta(seconds=30),), (datetime.timedelta(seconds=750),), (datetime.timedelta(seconds=750),), (datetime.timedelta(seconds=45000),), (datetime.timedelta(seconds=45035),), (datetime.timedelta(days=1, seconds=45031),)]
++--------------------+
+--Query--
+select * from t1
+--Result--
+[(datetime.timedelta(seconds=37353),), (datetime.timedelta(seconds=45297),), (datetime.timedelta(seconds=10),), (datetime.timedelta(seconds=754),), (datetime.timedelta(seconds=45297),), (datetime.timedelta(days=5, seconds=13560),), (datetime.timedelta(seconds=1),), (datetime.timedelta(seconds=4980),), (datetime.timedelta(seconds=5025),), (datetime.timedelta(seconds=10),), (datetime.timedelta(days=-11, seconds=81447),), (datetime.timedelta(days=20, seconds=37353),), (datetime.timedelta(seconds=74014),), (datetime.timedelta(seconds=30),), (datetime.timedelta(seconds=750),), (datetime.timedelta(seconds=750),), (datetime.timedelta(seconds=45000),), (datetime.timedelta(seconds=45035),), (datetime.timedelta(days=1, seconds=45031),)]
++--------------------+
+--Query--
+select t, time_to_sec(t),sec_to_time(time_to_sec(t)) from t1
+--Result--
+[(datetime.timedelta(seconds=32400), 32400, datetime.timedelta(seconds=32400)), (datetime.timedelta(seconds=46800), 46800, datetime.timedelta(seconds=46800)), (datetime.timedelta(seconds=70714), 70714, datetime.timedelta(seconds=70714)), (datetime.timedelta(seconds=46800), 46800, datetime.timedelta(seconds=46800)), (datetime.timedelta(seconds=32400), 32400, datetime.timedelta(seconds=32400)), (datetime.timedelta(seconds=32400), 32400, datetime.timedelta(seconds=32400)), (datetime.timedelta(seconds=46800), 46800, datetime.timedelta(seconds=46800)), (datetime.timedelta(seconds=46800), 46800, datetime.timedelta(seconds=46800)), (datetime.timedelta(seconds=46800), 46800, datetime.timedelta(seconds=46800)), (datetime.timedelta(seconds=32400), 32400, datetime.timedelta(seconds=32400))]
++--------------------+
+--Query--
+select sec_to_time(time_to_sec(t)) from t1
+--Result--
+[(datetime.timedelta(seconds=32400),), (datetime.timedelta(seconds=46800),), (datetime.timedelta(seconds=70714),), (datetime.timedelta(seconds=46800),), (datetime.timedelta(seconds=32400),), (datetime.timedelta(seconds=32400),), (datetime.timedelta(seconds=46800),), (datetime.timedelta(seconds=46800),), (datetime.timedelta(seconds=46800),), (datetime.timedelta(seconds=32400),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=10),), (datetime.timedelta(seconds=10),), (datetime.timedelta(seconds=10),), (datetime.timedelta(days=-1, seconds=86390),), (datetime.timedelta(days=-1, seconds=86390),), (datetime.timedelta(days=-1, seconds=86390),)]
++--------------------+
+--Query--
+SELECT CAST(235959.123456 AS TIME)
+--Result--
+[(datetime.timedelta(seconds=86399),)]
++--------------------+
+--Query--
+select cast('100:55:50' as time) < cast('24:00:00' as time)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select cast('100:55:50' as time) < cast('024:00:00' as time)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select cast('300:55:50' as time) < cast('240:00:00' as time)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+select cast('100:55:50' as time) > cast('24:00:00' as time)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select cast('100:55:50' as time) > cast('024:00:00' as time)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select cast('300:55:50' as time) > cast('240:00:00' as time)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select cast('24:00:00' as time) = (select f1 from t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+select 1 from t1 where cast('100:00:00' as time) between f1 and f2
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT sum(f3) FROM t1 where f2='2007-07-01 00:00:00' group by f2
+--Result--
+[(3.0,)]
++--------------------+
+--Query--
+SELECT TIMESTAMP(f1,'1') FROM t1
+--Result--
+[(datetime.datetime(2024, 5, 26, 23, 38, 58),)]
++--------------------+
+--Query--
+SELECT      '24:00:00' = (SELECT f1 FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('24:00:00' AS TIME) = (SELECT f1 FROM t1)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT CAST('-24:00:00' AS TIME) = (SELECT f1 FROM t1)
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a<=>'19:20:30'
+--Result--
+[(datetime.timedelta(seconds=69630),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a<=>TIME'19:20:30'
+--Result--
+[(datetime.timedelta(seconds=69630),)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a<=>192030
+--Result--
+[(datetime.timedelta(seconds=69630),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(datetime.timedelta(seconds=36611),), (datetime.timedelta(seconds=36611),), (datetime.timedelta(seconds=36611),), (datetime.timedelta(seconds=36611),)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[]
++--------------------+
+--Query--
+SELECT TIME('1000009:10:10')
+--Result--
+[(datetime.timedelta(days=34, seconds=82799),)]
++--------------------+
+--Query--
+SELECT COALESCE(TIME(NULL))
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT * FROM t1 WHERE a NOT IN (TIME'20:20:20',TIME'10:10:10')
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare stmt from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+deallocate prepare stmt
+--Result--
+[]
++--------------------+
+--Query--
+prepare ps from "SELECT TIME'01:01:01' = ?"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "INSERT INTO t1 VALUES (?)"
+--Result--
+[]
++--------------------+
+--Query--
+prepare s from "INSERT INTO t VALUES(?)"
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t
+--Result--
+[(datetime.timedelta(seconds=3600),), (datetime.timedelta(seconds=3600),)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = TIME'01:02:03'
+--Result--
+[('01:02:03',)]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = b and b = TIME'01:02:03'
+--Result--
+[('01:02:03', '01:02:03')]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = CURRENT_TIME
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = CURRENT_TIMESTAMP
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM t WHERE a = CURRENT_DATE
+--Result--
+[]
++--------------------+

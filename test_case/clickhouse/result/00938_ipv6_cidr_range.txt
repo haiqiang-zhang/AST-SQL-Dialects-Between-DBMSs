@@ -1,0 +1,35 @@
+--Query--
+SELECT 'check invalid params'
+--Result--
+[('check invalid params',)]
++--------------------+
+--Query--
+SELECT 'tests'
+--Result--
+[('tests',)]
++--------------------+
+--Query--
+WITH IPv6CIDRToRange(IPv6StringToNum('2001:0db8:0000:85a3:0000:0000:ac1f:8001'), 32) as ip_range SELECT COUNT(*) FROM ipv6_range WHERE ip BETWEEN tupleElement(ip_range, 1) AND tupleElement(ip_range, 2)
+--Result--
+[(3,)]
++--------------------+
+--Query--
+SELECT IPv6NumToString(ip), cidr, IPv6CIDRToRange(ip, cidr) FROM ipv6_range
+--Result--
+[('2001:db8:0:85a3::ac1f:8001', 0, (IPv6Address('::'), IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))), ('2001:db8:0:85a3:ffff:ffff:ffff:ffff', 32, (IPv6Address('2001:db8::'), IPv6Address('2001:db8:ffff:ffff:ffff:ffff:ffff:ffff'))), ('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 16, (IPv6Address('ffff::'), IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))), ('2001:df8:0:85a3::ac1f:8001', 32, (IPv6Address('2001:df8::'), IPv6Address('2001:df8:ffff:ffff:ffff:ffff:ffff:ffff'))), ('2001:db8:85a3:85a3::ac1f:8001', 16, (IPv6Address('2001::'), IPv6Address('2001:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))), ('::', 8, (IPv6Address('::'), IPv6Address('ff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))), ('ffff::', 4, (IPv6Address('f000::'), IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff')))]
++--------------------+
+--Query--
+SELECT IPv6CIDRToRange(IPv6StringToNum('2001:0db8:0000:85a3:0000:0000:ac1f:8001'), 0)
+--Result--
+[((IPv6Address('::'), IPv6Address('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff')),)]
++--------------------+
+--Query--
+SELECT IPv6CIDRToRange(IPv6StringToNum('2001:0db8:0000:85a3:0000:0000:ac1f:8001'), 128) = IPv6CIDRToRange(IPv6StringToNum('2001:0db8:0000:85a3:0000:0000:ac1f:8001'), 200)
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT IPv6CIDRToRange(IPv6StringToNum('2001:0db8:0000:85a3:0000:0000:ac1f:8001'), toUInt8(128 - number)) FROM numbers(2)
+--Result--
+[((IPv6Address('2001:db8:0:85a3::ac1f:8001'), IPv6Address('2001:db8:0:85a3::ac1f:8001')),), ((IPv6Address('2001:db8:0:85a3::ac1f:8000'), IPv6Address('2001:db8:0:85a3::ac1f:8001')),)]
++--------------------+

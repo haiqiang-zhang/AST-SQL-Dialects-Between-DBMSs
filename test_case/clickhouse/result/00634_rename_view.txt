@@ -1,0 +1,10 @@
+--Query--
+rename table v_test1 to v_test11, v_test2 to v_test22
+--Result--
+[]
++--------------------+
+--Query--
+SELECT name, engine FROM system.tables WHERE name IN ('v_test1', 'v_test2', 'v_test11', 'v_test22') AND database = currentDatabase() ORDER BY name
+--Result--
+[('v_test11', 'View'), ('v_test22', 'View')]
++--------------------+

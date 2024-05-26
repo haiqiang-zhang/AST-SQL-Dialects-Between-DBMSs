@@ -1,0 +1,20 @@
+--Query--
+SELECT CURRENT_SETTING('log_query_path')
+--Result--
+[(None,)]
++--------------------+
+--Query--
+SELECT CURRENT_SETTING('log_query_path')
+--Result--
+[('__TEST_DIR__/query_log.txt',)]
++--------------------+
+--Query--
+SELECT 42
+--Result--
+[(42,)]
++--------------------+
+--Query--
+SELECT * FROM read_csv('__TEST_DIR__/query_log.txt', columns={'sql': 'VARCHAR'}, auto_detect=false)
+--Result--
+[("SELECT CURRENT_SETTING('log_query_path')",), ("PRAGMA log_query_path=''",)]
++--------------------+

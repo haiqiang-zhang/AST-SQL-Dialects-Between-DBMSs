@@ -1,0 +1,115 @@
+--Query--
+SELECT DISTINCT a, b FROM t1
+--Result--
+[('A', 'B'), ('a', 'b')]
++--------------------+
+--Query--
+SELECT DISTINCT b, a FROM t1
+--Result--
+[('B', 'A'), ('b', 'a')]
++--------------------+
+--Query--
+SELECT DISTINCT a, b, c FROM t1
+--Result--
+[('A', 'B', 'C'), ('a', 'b', 'c')]
++--------------------+
+--Query--
+SELECT DISTINCT a, b, c FROM t1 ORDER BY a, b, c
+--Result--
+[('A', 'B', 'C'), ('a', 'b', 'c')]
++--------------------+
+--Query--
+SELECT DISTINCT b FROM t1 WHERE a = 'a'
+--Result--
+[('b',)]
++--------------------+
+--Query--
+SELECT DISTINCT b FROM t1 ORDER BY +b COLLATE binary
+--Result--
+[('B',), ('b',)]
++--------------------+
+--Query--
+SELECT DISTINCT a FROM t1
+--Result--
+[('A',), ('a',)]
++--------------------+
+--Query--
+SELECT DISTINCT b COLLATE nocase FROM t1
+--Result--
+[('b',)]
++--------------------+
+--Query--
+SELECT DISTINCT b COLLATE nocase FROM t1 ORDER BY b COLLATE nocase
+--Result--
+[('b',)]
++--------------------+
+--Query--
+SELECT (SELECT DISTINCT o.a FROM t1 AS i) FROM t1 AS o ORDER BY rowid
+--Result--
+[('a',), ('A',), ('a',), ('A',)]
++--------------------+
+--Query--
+SELECT quote(x) FROM t2 ORDER BY 1
+--Result--
+[("'xyzzy'",), ("X'0000000000'",)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM t1 ORDER BY x ASC
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM t1 ORDER BY x DESC
+--Result--
+[(6,), (5,), (4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM t1 ORDER BY x
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM t1 ORDER BY x ASC
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM t1 ORDER BY x DESC
+--Result--
+[(6,), (5,), (4,), (3,), (2,), (1,)]
++--------------------+
+--Query--
+SELECT DISTINCT x FROM t1 ORDER BY x
+--Result--
+[(1,), (2,), (3,), (4,), (5,), (6,)]
++--------------------+
+--Query--
+SELECT (SELECT 'mmm' UNION SELECT DISTINCT max(name) ORDER BY 1)      FROM sqlite_master
+--Result--
+[('mmm',)]
++--------------------+
+--Query--
+SELECT (SELECT 'mmm' UNION SELECT DISTINCT max(name) ORDER BY 1)      FROM sqlite_master
+--Result--
+[('mmm',)]
++--------------------+
+--Query--
+SELECT DISTINCT pid FROM person where pid = 10
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT  DISTINCT     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1   ORDER  BY    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x'
+--Result--
+[(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)]
++--------------------+
+--Query--
+EXPLAIN   SELECT  DISTINCT     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1,  1,  1,  1,  1,  1,     1,  1,  1,  1,  1   ORDER  BY    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x','x','x','x','x','x','x',    'x','x','x','x'
+--Result--
+[(0, 'Init', 0, 208, 0, None, 0, None), (1, 'SorterOpen', 0, 130, 0, 'k(64,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B)', 0, None), (2, 'OpenEphemeral', 1, 0, 0, 'k(65,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B)', 8, None), (3, 'Integer', 1, 65, 0, None, 0, None), (4, 'Integer', 1, 66, 0, None, 0, None), (5, 'Integer', 1, 67, 0, None, 0, None), (6, 'Integer', 1, 68, 0, None, 0, None), (7, 'Integer', 1, 69, 0, None, 0, None), (8, 'Integer', 1, 70, 0, None, 0, None), (9, 'Integer', 1, 71, 0, None, 0, None), (10, 'Integer', 1, 72, 0, None, 0, None), (11, 'Integer', 1, 73, 0, None, 0, None), (12, 'Integer', 1, 74, 0, None, 0, None), (13, 'Integer', 1, 75, 0, None, 0, None), (14, 'Integer', 1, 76, 0, None, 0, None), (15, 'Integer', 1, 77, 0, None, 0, None), (16, 'Integer', 1, 78, 0, None, 0, None), (17, 'Integer', 1, 79, 0, None, 0, None), (18, 'Integer', 1, 80, 0, None, 0, None), (19, 'Integer', 1, 81, 0, None, 0, None), (20, 'Integer', 1, 82, 0, None, 0, None), (21, 'Integer', 1, 83, 0, None, 0, None), (22, 'Integer', 1, 84, 0, None, 0, None), (23, 'Integer', 1, 85, 0, None, 0, None), (24, 'Integer', 1, 86, 0, None, 0, None), (25, 'Integer', 1, 87, 0, None, 0, None), (26, 'Integer', 1, 88, 0, None, 0, None), (27, 'Integer', 1, 89, 0, None, 0, None), (28, 'Integer', 1, 90, 0, None, 0, None), (29, 'Integer', 1, 91, 0, None, 0, None), (30, 'Integer', 1, 92, 0, None, 0, None), (31, 'Integer', 1, 93, 0, None, 0, None), (32, 'Integer', 1, 94, 0, None, 0, None), (33, 'Integer', 1, 95, 0, None, 0, None), (34, 'Integer', 1, 96, 0, None, 0, None), (35, 'Integer', 1, 97, 0, None, 0, None), (36, 'Integer', 1, 98, 0, None, 0, None), (37, 'Integer', 1, 99, 0, None, 0, None), (38, 'Integer', 1, 100, 0, None, 0, None), (39, 'Integer', 1, 101, 0, None, 0, None), (40, 'Integer', 1, 102, 0, None, 0, None), (41, 'Integer', 1, 103, 0, None, 0, None), (42, 'Integer', 1, 104, 0, None, 0, None), (43, 'Integer', 1, 105, 0, None, 0, None), (44, 'Integer', 1, 106, 0, None, 0, None), (45, 'Integer', 1, 107, 0, None, 0, None), (46, 'Integer', 1, 108, 0, None, 0, None), (47, 'Integer', 1, 109, 0, None, 0, None), (48, 'Integer', 1, 110, 0, None, 0, None), (49, 'Integer', 1, 111, 0, None, 0, None), (50, 'Integer', 1, 112, 0, None, 0, None), (51, 'Integer', 1, 113, 0, None, 0, None), (52, 'Integer', 1, 114, 0, None, 0, None), (53, 'Integer', 1, 115, 0, None, 0, None), (54, 'Integer', 1, 116, 0, None, 0, None), (55, 'Integer', 1, 117, 0, None, 0, None), (56, 'Integer', 1, 118, 0, None, 0, None), (57, 'Integer', 1, 119, 0, None, 0, None), (58, 'Integer', 1, 120, 0, None, 0, None), (59, 'Integer', 1, 121, 0, None, 0, None), (60, 'Integer', 1, 122, 0, None, 0, None), (61, 'Integer', 1, 123, 0, None, 0, None), (62, 'Integer', 1, 124, 0, None, 0, None), (63, 'Integer', 1, 125, 0, None, 0, None), (64, 'Integer', 1, 126, 0, None, 0, None), (65, 'Integer', 1, 127, 0, None, 0, None), (66, 'Integer', 1, 128, 0, None, 0, None), (67, 'Integer', 1, 129, 0, None, 0, None), (68, 'Found', 1, 137, 65, '65', 0, None), (69, 'MakeRecord', 65, 65, 130, None, 0, None), (70, 'IdxInsert', 1, 130, 65, '65', 16, None), (71, 'String8', 0, 1, 0, 'x', 0, None), (72, 'String8', 0, 2, 0, 'x', 0, None), (73, 'String8', 0, 3, 0, 'x', 0, None), (74, 'String8', 0, 4, 0, 'x', 0, None), (75, 'String8', 0, 5, 0, 'x', 0, None), (76, 'String8', 0, 6, 0, 'x', 0, None), (77, 'String8', 0, 7, 0, 'x', 0, None), (78, 'String8', 0, 8, 0, 'x', 0, None), (79, 'String8', 0, 9, 0, 'x', 0, None), (80, 'String8', 0, 10, 0, 'x', 0, None), (81, 'String8', 0, 11, 0, 'x', 0, None), (82, 'String8', 0, 12, 0, 'x', 0, None), (83, 'String8', 0, 13, 0, 'x', 0, None), (84, 'String8', 0, 14, 0, 'x', 0, None), (85, 'String8', 0, 15, 0, 'x', 0, None), (86, 'String8', 0, 16, 0, 'x', 0, None), (87, 'String8', 0, 17, 0, 'x', 0, None), (88, 'String8', 0, 18, 0, 'x', 0, None), (89, 'String8', 0, 19, 0, 'x', 0, None), (90, 'String8', 0, 20, 0, 'x', 0, None), (91, 'String8', 0, 21, 0, 'x', 0, None), (92, 'String8', 0, 22, 0, 'x', 0, None), (93, 'String8', 0, 23, 0, 'x', 0, None), (94, 'String8', 0, 24, 0, 'x', 0, None), (95, 'String8', 0, 25, 0, 'x', 0, None), (96, 'String8', 0, 26, 0, 'x', 0, None), (97, 'String8', 0, 27, 0, 'x', 0, None), (98, 'String8', 0, 28, 0, 'x', 0, None), (99, 'String8', 0, 29, 0, 'x', 0, None), (100, 'String8', 0, 30, 0, 'x', 0, None), (101, 'String8', 0, 31, 0, 'x', 0, None), (102, 'String8', 0, 32, 0, 'x', 0, None), (103, 'String8', 0, 33, 0, 'x', 0, None), (104, 'String8', 0, 34, 0, 'x', 0, None), (105, 'String8', 0, 35, 0, 'x', 0, None), (106, 'String8', 0, 36, 0, 'x', 0, None), (107, 'String8', 0, 37, 0, 'x', 0, None), (108, 'String8', 0, 38, 0, 'x', 0, None), (109, 'String8', 0, 39, 0, 'x', 0, None), (110, 'String8', 0, 40, 0, 'x', 0, None), (111, 'String8', 0, 41, 0, 'x', 0, None), (112, 'String8', 0, 42, 0, 'x', 0, None), (113, 'String8', 0, 43, 0, 'x', 0, None), (114, 'String8', 0, 44, 0, 'x', 0, None), (115, 'String8', 0, 45, 0, 'x', 0, None), (116, 'String8', 0, 46, 0, 'x', 0, None), (117, 'String8', 0, 47, 0, 'x', 0, None), (118, 'String8', 0, 48, 0, 'x', 0, None), (119, 'String8', 0, 49, 0, 'x', 0, None), (120, 'String8', 0, 50, 0, 'x', 0, None), (121, 'String8', 0, 51, 0, 'x', 0, None), (122, 'String8', 0, 52, 0, 'x', 0, None), (123, 'String8', 0, 53, 0, 'x', 0, None), (124, 'String8', 0, 54, 0, 'x', 0, None), (125, 'String8', 0, 55, 0, 'x', 0, None), (126, 'String8', 0, 56, 0, 'x', 0, None), (127, 'String8', 0, 57, 0, 'x', 0, None), (128, 'String8', 0, 58, 0, 'x', 0, None), (129, 'String8', 0, 59, 0, 'x', 0, None), (130, 'String8', 0, 60, 0, 'x', 0, None), (131, 'String8', 0, 61, 0, 'x', 0, None), (132, 'String8', 0, 62, 0, 'x', 0, None), (133, 'String8', 0, 63, 0, 'x', 0, None), (134, 'String8', 0, 64, 0, 'x', 0, None), (135, 'MakeRecord', 1, 129, 131, None, 0, None), (136, 'SorterInsert', 0, 131, 1, '129', 0, None), (137, 'OpenPseudo', 2, 132, 130, None, 0, None), (138, 'SorterSort', 0, 207, 0, None, 0, None), (139, 'SorterData', 0, 132, 2, None, 0, None), (140, 'Column', 2, 128, 129, None, 0, None), (141, 'Column', 2, 127, 128, None, 0, None), (142, 'Column', 2, 126, 127, None, 0, None), (143, 'Column', 2, 125, 126, None, 0, None), (144, 'Column', 2, 124, 125, None, 0, None), (145, 'Column', 2, 123, 124, None, 0, None), (146, 'Column', 2, 122, 123, None, 0, None), (147, 'Column', 2, 121, 122, None, 0, None), (148, 'Column', 2, 120, 121, None, 0, None), (149, 'Column', 2, 119, 120, None, 0, None), (150, 'Column', 2, 118, 119, None, 0, None), (151, 'Column', 2, 117, 118, None, 0, None), (152, 'Column', 2, 116, 117, None, 0, None), (153, 'Column', 2, 115, 116, None, 0, None), (154, 'Column', 2, 114, 115, None, 0, None), (155, 'Column', 2, 113, 114, None, 0, None), (156, 'Column', 2, 112, 113, None, 0, None), (157, 'Column', 2, 111, 112, None, 0, None), (158, 'Column', 2, 110, 111, None, 0, None), (159, 'Column', 2, 109, 110, None, 0, None), (160, 'Column', 2, 108, 109, None, 0, None), (161, 'Column', 2, 107, 108, None, 0, None), (162, 'Column', 2, 106, 107, None, 0, None), (163, 'Column', 2, 105, 106, None, 0, None), (164, 'Column', 2, 104, 105, None, 0, None), (165, 'Column', 2, 103, 104, None, 0, None), (166, 'Column', 2, 102, 103, None, 0, None), (167, 'Column', 2, 101, 102, None, 0, None), (168, 'Column', 2, 100, 101, None, 0, None), (169, 'Column', 2, 99, 100, None, 0, None), (170, 'Column', 2, 98, 99, None, 0, None), (171, 'Column', 2, 97, 98, None, 0, None), (172, 'Column', 2, 96, 97, None, 0, None), (173, 'Column', 2, 95, 96, None, 0, None), (174, 'Column', 2, 94, 95, None, 0, None), (175, 'Column', 2, 93, 94, None, 0, None), (176, 'Column', 2, 92, 93, None, 0, None), (177, 'Column', 2, 91, 92, None, 0, None), (178, 'Column', 2, 90, 91, None, 0, None), (179, 'Column', 2, 89, 90, None, 0, None), (180, 'Column', 2, 88, 89, None, 0, None), (181, 'Column', 2, 87, 88, None, 0, None), (182, 'Column', 2, 86, 87, None, 0, None), (183, 'Column', 2, 85, 86, None, 0, None), (184, 'Column', 2, 84, 85, None, 0, None), (185, 'Column', 2, 83, 84, None, 0, None), (186, 'Column', 2, 82, 83, None, 0, None), (187, 'Column', 2, 81, 82, None, 0, None), (188, 'Column', 2, 80, 81, None, 0, None), (189, 'Column', 2, 79, 80, None, 0, None), (190, 'Column', 2, 78, 79, None, 0, None), (191, 'Column', 2, 77, 78, None, 0, None), (192, 'Column', 2, 76, 77, None, 0, None), (193, 'Column', 2, 75, 76, None, 0, None), (194, 'Column', 2, 74, 75, None, 0, None), (195, 'Column', 2, 73, 74, None, 0, None), (196, 'Column', 2, 72, 73, None, 0, None), (197, 'Column', 2, 71, 72, None, 0, None), (198, 'Column', 2, 70, 71, None, 0, None), (199, 'Column', 2, 69, 70, None, 0, None), (200, 'Column', 2, 68, 69, None, 0, None), (201, 'Column', 2, 67, 68, None, 0, None), (202, 'Column', 2, 66, 67, None, 0, None), (203, 'Column', 2, 65, 66, None, 0, None), (204, 'Column', 2, 64, 65, None, 0, None), (205, 'ResultRow', 65, 65, 0, None, 0, None), (206, 'SorterNext', 0, 139, 0, None, 0, None), (207, 'Halt', 0, 0, 0, None, 0, None), (208, 'Goto', 0, 1, 0, None, 0, None)]
++--------------------+
+--Query--
+SELECT count(*) FROM t0
+--Result--
+[(1,)]
++--------------------+

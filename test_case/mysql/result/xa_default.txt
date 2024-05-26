@@ -1,0 +1,160 @@
+--Query--
+SELECT * FROM t1
+--Result--
+[(10,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(10,), (20,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(10,), (20,), (30,), (40,), (42,)]
++--------------------+
+--Query--
+SELECT COUNT(*) FROM t1
+--Result--
+[(2,)]
++--------------------+
+--Query--
+SELECT @@autocommit
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,), (2,), (2,)]
++--------------------+
+--Query--
+SELECT a FROM t2 WHERE a=1 FOR SHARE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT COUNT(*) = 1 FROM information_schema.innodb_trx   WHERE trx_query = 'SELECT a FROM t1 WHERE a=1 FOR UPDATE' AND   trx_operation_state = 'starting index read' AND   trx_state = 'LOCK WAIT'
+--Result--
+[(0,)]
++--------------------+
+--Query--
+SELECT a FROM t2 WHERE a=1 FOR UPDATE
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SELECT * FROM t1 ORDER BY i
+--Result--
+[(1,), (2,), (3,), (4,)]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+UNLOCK TABLES
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM temp1
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',), ('Inserted by xa7',)]
++--------------------+
+--Query--
+SELECT * FROM t2
+--Result--
+[(1, None), (2, None), (3, None), (4, 4), (5, 5)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',), ('Inserted by xa7',), ('Inserted by xa8',), ('Inserted by normal transaction',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',), ('Inserted by xa7',), ('Inserted by xa8',), ('Inserted by normal transaction',), ('Inserted by xa10',), ('Inserted in savepoint s1',), ('Inserted by normal transaction',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',), ('Inserted by xa7',), ('Inserted by xa8',), ('Inserted by normal transaction',), ('Inserted by xa10',), ('Inserted in savepoint s1',), ('Inserted by normal transaction',), ('Inserted by xa11',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',), ('Inserted by xa7',), ('Inserted by xa8',), ('Inserted by normal transaction',), ('Inserted by xa10',), ('Inserted in savepoint s1',), ('Inserted by normal transaction',), ('Inserted by xa11',), ('Inserted by xa3',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Inserted by xa1',), ('Inserted by xa2',), ('Inserted by xa5',), ('Inserted by xa6',), ('Inserted after prepare',), ('Inserted by xa7',), ('Inserted by xa8',), ('Inserted by normal transaction',), ('Inserted by xa10',), ('Inserted in savepoint s1',), ('Inserted by normal transaction',), ('Inserted by xa11',), ('Inserted by xa3',), ('Inserted by xa4',)]
++--------------------+
+--Query--
+SELECT * FROM t1
+--Result--
+[('Row 1',), ('Row 2',)]
++--------------------+
+--Query--
+SELECT d FROM t1
+--Result--
+[('Row 1',), ('Row 2',)]
++--------------------+
+--Query--
+SELECT * FROM t7
+--Result--
+[(1,), (2,), (3,)]
++--------------------+
+--Query--
+SELECT * FROM t8
+--Result--
+[(1,), (2,), (3,)]
++--------------------+

@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS 01686_test;
 CREATE TABLE 01686_test (key UInt64, value String) Engine=EmbeddedRocksDB PRIMARY KEY(key);
 SELECT value FROM system.rocksdb WHERE database = currentDatabase() and table = '01686_test' and name = 'number.keys.written';

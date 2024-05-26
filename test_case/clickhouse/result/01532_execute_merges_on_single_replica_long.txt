@@ -1,0 +1,85 @@
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** emulate normal feature operation - merges are distributed between replicas'
+--Result--
+[('*** emulate normal feature operation - merges are distributed between replicas',)]
++--------------------+
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** emulate execute_merges_on_single_replica_time_threshold timeout'
+--Result--
+[('*** emulate execute_merges_on_single_replica_time_threshold timeout',)]
++--------------------+
+--Query--
+SYSTEM STOP REPLICATION QUEUES execute_on_single_replica_r2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** timeout not exceeded, r1 waits for r2'
+--Result--
+[('*** timeout not exceeded, r1 waits for r2',)]
++--------------------+
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** timeout exceeded, r1 failed to get the merged part from r2 and did the merge by its own'
+--Result--
+[('*** timeout exceeded, r1 failed to get the merged part from r2 and did the merge by its own',)]
++--------------------+
+--Query--
+SYSTEM START REPLICATION QUEUES execute_on_single_replica_r2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** queue unfreeze'
+--Result--
+[('*** queue unfreeze',)]
++--------------------+
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** disable the feature'
+--Result--
+[('*** disable the feature',)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '****************************'
+--Result--
+[('****************************',)]
++--------------------+
+--Query--
+SELECT '*** part_log'
+--Result--
+[('*** part_log',)]
++--------------------+

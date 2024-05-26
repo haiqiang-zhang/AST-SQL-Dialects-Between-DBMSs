@@ -1,0 +1,35 @@
+--Query--
+WITH 8.5 AS a, 2.5 AS b SELECT a % b, -a % b, a % -b, -a % -b
+--Result--
+[(1.0, -1.0, 1.0, -1.0)]
++--------------------+
+--Query--
+WITH 10.125 AS a, 2.5 AS b SELECT a % b, -a % b, a % -b, -a % -b
+--Result--
+[(0.125, -0.125, 0.125, -0.125)]
++--------------------+
+--Query--
+WITH 8.5 AS a, 2.5 AS b SELECT mod(a, b), MOD(-a, b), modulo(a, -b), moduloOrZero(-a, -b)
+--Result--
+[(1.0, -1.0, 1.0, -1.0)]
++--------------------+
+--Query--
+WITH 8.5 AS a, 2.5 AS b SELECT a MOD b, -a MOD b, a MOD -b, -a MOD -b
+--Result--
+[(1.0, -1.0, 1.0, -1.0)]
++--------------------+
+--Query--
+WITH 10.125 AS a, 2.5 AS b SELECT a MOD b, -a MOD b, a MOD -b, -a MOD -b
+--Result--
+[(0.125, -0.125, 0.125, -0.125)]
++--------------------+
+--Query--
+SELECT 3.5 % 0
+--Result--
+[(nan,)]
++--------------------+
+--Query--
+SELECT 3.5 MOD 0
+--Result--
+[(nan,)]
++--------------------+

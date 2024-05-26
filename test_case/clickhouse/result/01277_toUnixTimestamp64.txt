@@ -1,0 +1,15 @@
+--Query--
+SELECT 'const column'
+--Result--
+[('const column',)]
++--------------------+
+--Query--
+WITH toDateTime64('2019-09-16 19:20:12.345678910', 3, 'Asia/Istanbul') AS dt64 SELECT dt64, toUnixTimestamp64Milli(dt64), toUnixTimestamp64Micro(dt64), toUnixTimestamp64Nano(dt64)
+--Result--
+[(datetime.datetime(2019, 9, 16, 19, 20, 12, 345000, tzinfo=<DstTzInfo 'Asia/Istanbul' +03+3:00:00 STD>), 1568650812345, 1568650812345000, 1568650812345000000)]
++--------------------+
+--Query--
+SELECT 'non-const column'
+--Result--
+[('non-const column',)]
++--------------------+

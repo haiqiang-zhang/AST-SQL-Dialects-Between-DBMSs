@@ -1,0 +1,25 @@
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_columns_clear' AND active ORDER BY column
+--Result--
+[('arr', 'Default'), ('v', 'Sparse')]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_columns_clear' AND active ORDER BY column
+--Result--
+[('arr', 'Default')]
++--------------------+
+--Query--
+OPTIMIZE TABLE t_sparse_columns_clear FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT column, serialization_kind FROM system.parts_columns WHERE database = currentDatabase() AND table = 't_sparse_columns_clear' AND active ORDER BY column
+--Result--
+[('arr', 'Default'), ('v', 'Sparse')]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

@@ -1,0 +1,35 @@
+--Query--
+SELECT '-- Negative tests'
+--Result--
+[('-- Negative tests',)]
++--------------------+
+--Query--
+SELECT '-- Const arrays'
+--Result--
+[('-- Const arrays',)]
++--------------------+
+--Query--
+SELECT arrayFold( acc,x -> acc+x*2,  [1, 2, 3, 4], toInt64(3))
+--Result--
+[(23,)]
++--------------------+
+--Query--
+SELECT '-- Non-const arrays'
+--Result--
+[('-- Non-const arrays',)]
++--------------------+
+--Query--
+SELECT '-- Bug 57458'
+--Result--
+[('-- Bug 57458',)]
++--------------------+
+--Query--
+SELECT     line,     splitByNonAlpha(line),     arrayFold(         (acc, str) -> position(line, str),         splitByNonAlpha(line),         0::UInt64     ) FROM     tab
+--Result--
+[('xxx..yyy..', ['xxx', 'yyy'], 6), ('..........', [], 0), ('..xx..yyy.', ['xx', 'yyy'], 7), ('..........', [], 0), ('xxx.......', ['xxx'], 1)]
++--------------------+
+--Query--
+SELECT ' -- Bug 57816'
+--Result--
+[(' -- Bug 57816',)]
++--------------------+

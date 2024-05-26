@@ -1,0 +1,55 @@
+--Query--
+SELECT '----- START -----'
+--Result--
+[('----- START -----',)]
++--------------------+
+--Query--
+SELECT '----- CONST -----'
+--Result--
+[('----- CONST -----',)]
++--------------------+
+--Query--
+select mortonEncode((1,2,3,1), 1,2,3,4)
+--Result--
+[(4205569,)]
++--------------------+
+--Query--
+select mortonDecode((1, 2, 3, 1), 4205569)
+--Result--
+[((1, 2, 3, 4),)]
++--------------------+
+--Query--
+SELECT '----- (1,2,1,2) -----'
+--Result--
+[('----- (1,2,1,2) -----',)]
++--------------------+
+--Query--
+(     select * from morton_numbers_mask_02457     union distinct     select * from morton_numbers_mask_1_02457 ) except (     select * from morton_numbers_mask_02457     intersect     select * from morton_numbers_mask_1_02457 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '----- (1,4) -----'
+--Result--
+[('----- (1,4) -----',)]
++--------------------+
+--Query--
+(     select * from morton_numbers_mask_02457     union distinct     select * from morton_numbers_mask_2_02457 ) except (     select * from morton_numbers_mask_02457                       intersect         select * from morton_numbers_mask_2_02457 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '----- (1,1,2) -----'
+--Result--
+[('----- (1,1,2) -----',)]
++--------------------+
+--Query--
+(     select * from morton_numbers_mask_02457     union distinct     select * from morton_numbers_mask_3_02457 ) except (     select * from morton_numbers_mask_02457     intersect     select * from morton_numbers_mask_3_02457 )
+--Result--
+[]
++--------------------+
+--Query--
+SELECT '----- END -----'
+--Result--
+[('----- END -----',)]
++--------------------+

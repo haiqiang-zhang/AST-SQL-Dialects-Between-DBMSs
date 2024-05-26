@@ -1,0 +1,70 @@
+--Query--
+SELECT '**** constant-constant comparisons ****'
+--Result--
+[('**** constant-constant comparisons ****',)]
++--------------------+
+--Query--
+SELECT 'ab\0c' < 'ab\0d', 'ab\0c' > 'ab\0d'
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+SELECT 'a' < 'a\0b', 'a' > 'a\0b'
+--Result--
+[(1, 0)]
++--------------------+
+--Query--
+SELECT 'a\0\0\0\0' < 'a\0\0\0', 'a\0\0\0\0' > 'a\0\0\0'
+--Result--
+[(0, 1)]
++--------------------+
+--Query--
+SELECT '**** vector-vector comparisons ****'
+--Result--
+[('**** vector-vector comparisons ****',)]
++--------------------+
+--Query--
+SELECT x < y, x > y FROM strings_00469
+--Result--
+[(0, 1), (1, 0), (1, 0), (0, 1), (0, 1), (0, 0)]
++--------------------+
+--Query--
+SELECT '**** vector-constant comparisons ****'
+--Result--
+[('**** vector-constant comparisons ****',)]
++--------------------+
+--Query--
+SELECT x < 'aa', x > 'aa' FROM strings_00469
+--Result--
+[(0, 1), (0, 1), (0, 0), (1, 0), (1, 0), (1, 0)]
++--------------------+
+--Query--
+SELECT '****'
+--Result--
+[('****',)]
++--------------------+
+--Query--
+SELECT x < 'a\0', x > 'a\0' FROM strings_00469
+--Result--
+[(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (1, 0)]
++--------------------+
+--Query--
+SELECT '**** single-column sort ****'
+--Result--
+[('**** single-column sort ****',)]
++--------------------+
+--Query--
+SELECT * FROM strings_00469 ORDER BY x
+--Result--
+[('a', 'a'), ('a\x00\x00', 'a\x00'), ('a\x00\x00\x00\x00', 'a\x00\x00\x00'), ('aa', 'aa\x00'), ('aa\x00a', 'aa\x00b'), ('abcde\x00', 'abcde')]
++--------------------+
+--Query--
+SELECT '**** multi-column sort ****'
+--Result--
+[('**** multi-column sort ****',)]
++--------------------+
+--Query--
+SELECT * FROM strings_00469 ORDER BY x, y
+--Result--
+[('a', 'a'), ('a\x00\x00', 'a\x00'), ('a\x00\x00\x00\x00', 'a\x00\x00\x00'), ('aa', 'aa\x00'), ('aa\x00a', 'aa\x00b'), ('abcde\x00', 'abcde')]
++--------------------+

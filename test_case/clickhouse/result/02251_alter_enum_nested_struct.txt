@@ -1,0 +1,30 @@
+--Query--
+SELECT * FROM alter_enum_array ORDER BY Key
+--Result--
+[(1, ['Option2', 'Option1']), (2, ['Option1']), (3, ['Option1', 'Option3'])]
++--------------------+
+--Query--
+DETACH TABLE alter_enum_array
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE alter_enum_array
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM alter_enum_array ORDER BY Key
+--Result--
+[(1, ['Option2', 'Option1']), (2, ['Option1']), (3, ['Option1', 'Option3'])]
++--------------------+
+--Query--
+OPTIMIZE TABLE alter_enum_array FINAL
+--Result--
+[]
++--------------------+
+--Query--
+SELECT COUNT() FROM system.mutations where table='alter_enum_array' and database=currentDatabase()
+--Result--
+[(0,)]
++--------------------+

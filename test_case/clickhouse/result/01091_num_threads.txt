@@ -1,0 +1,30 @@
+--Query--
+WITH 01091 AS id SELECT 1
+--Result--
+[(1,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+with 01091 as id select sum(number) from numbers(1000000)
+--Result--
+[(499999500000,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+
+--Query--
+with 01091 as id select sum(number) from numbers_mt(1000000)
+--Result--
+[(499999500000,)]
++--------------------+
+--Query--
+SYSTEM FLUSH LOGS
+--Result--
+[]
++--------------------+

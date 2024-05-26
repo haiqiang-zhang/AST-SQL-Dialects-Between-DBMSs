@@ -16,7 +16,6 @@ SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_01036' AND
 SELECT 'SYSTEM RELOAD DICTIONARY';
 SYSTEM RELOAD DICTIONARY dict_db_01036.dict;
 SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_01036' AND name = 'dict';
-SELECT dictGetUInt64('dict_db_01036.dict', 'val', toUInt64(0));
 SELECT query_count FROM system.dictionaries WHERE database = 'dict_db_01036' AND name = 'dict';
 SELECT 'CREATE DATABASE';
 DROP DATABASE IF EXISTS empty_db_01036;

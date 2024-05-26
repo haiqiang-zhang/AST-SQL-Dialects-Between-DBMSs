@@ -1,0 +1,105 @@
+--Query--
+print '-- mv-expand --'
+--Result--
+[('-- mv-expand --',)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand c --'
+--Result--
+[('-- mv_expand_test_table | mv-expand c --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand c
+--Result--
+[(1, ['Salmon', 'Steak', 'Chicken'], 1, [5, 6, 7, 8]), (1, ['Salmon', 'Steak', 'Chicken'], 2, [5, 6, 7, 8]), (1, ['Salmon', 'Steak', 'Chicken'], 3, [5, 6, 7, 8]), (1, ['Salmon', 'Steak', 'Chicken'], 4, [5, 6, 7, 8])]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand c, d --'
+--Result--
+[('-- mv_expand_test_table | mv-expand c, d --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand c, d
+--Result--
+[(1, ['Salmon', 'Steak', 'Chicken'], 1, 5), (1, ['Salmon', 'Steak', 'Chicken'], 2, 6), (1, ['Salmon', 'Steak', 'Chicken'], 3, 7), (1, ['Salmon', 'Steak', 'Chicken'], 4, 8)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand b | mv-expand c --'
+--Result--
+[('-- mv_expand_test_table | mv-expand b | mv-expand c --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand b | mv-expand c
+--Result--
+[(1, 'Salmon', 1, [5, 6, 7, 8]), (1, 'Salmon', 2, [5, 6, 7, 8]), (1, 'Salmon', 3, [5, 6, 7, 8]), (1, 'Salmon', 4, [5, 6, 7, 8]), (1, 'Steak', 1, [5, 6, 7, 8]), (1, 'Steak', 2, [5, 6, 7, 8]), (1, 'Steak', 3, [5, 6, 7, 8]), (1, 'Steak', 4, [5, 6, 7, 8]), (1, 'Chicken', 1, [5, 6, 7, 8]), (1, 'Chicken', 2, [5, 6, 7, 8]), (1, 'Chicken', 3, [5, 6, 7, 8]), (1, 'Chicken', 4, [5, 6, 7, 8])]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand with_itemindex=index b, c, d --'
+--Result--
+[('-- mv_expand_test_table | mv-expand with_itemindex=index b, c, d --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand with_itemindex=index b, c, d
+--Result--
+[(0, 1, 'Salmon', 1, 5), (1, 1, 'Steak', 2, 6), (2, 1, 'Chicken', 3, 7), (3, 1, '', 4, 8)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand array_concat(c,d) --'
+--Result--
+[('-- mv_expand_test_table | mv-expand array_concat(c,d) --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand array_concat(c,d)
+--Result--
+[(1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 1), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 2), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 3), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 4), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 5), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 6), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 7), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 8)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand x = c, y = d --'
+--Result--
+[('-- mv_expand_test_table | mv-expand x = c, y = d --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand x = c, y = d
+--Result--
+[(1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 1, 5), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 2, 6), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 3, 7), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 4, 8)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand xy = array_concat(c, d) --'
+--Result--
+[('-- mv_expand_test_table | mv-expand xy = array_concat(c, d) --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand xy = array_concat(c, d)
+--Result--
+[(1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 1), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 2), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 3), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 4), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 5), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 6), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 7), (1, ['Salmon', 'Steak', 'Chicken'], [1, 2, 3, 4], [5, 6, 7, 8], 8)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand xy = array_concat(c, d) limit 2| summarize count() by xy --'
+--Result--
+[('-- mv_expand_test_table | mv-expand xy = array_concat(c, d) limit 2| summarize count() by xy --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand xy = array_concat(c, d) limit 2| summarize count() by xy
+--Result--
+[(1, 1), (2, 1)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand with_itemindex=index c,d to typeof(bool) --'
+--Result--
+[('-- mv_expand_test_table | mv-expand with_itemindex=index c,d to typeof(bool) --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand with_itemindex=index c,d to typeof(bool)
+--Result--
+[(0, 1, ['Salmon', 'Steak', 'Chicken'], 1, True), (1, 1, ['Salmon', 'Steak', 'Chicken'], 2, True), (2, 1, ['Salmon', 'Steak', 'Chicken'], 3, True), (3, 1, ['Salmon', 'Steak', 'Chicken'], 4, True)]
++--------------------+
+--Query--
+print '-- mv_expand_test_table | mv-expand c to typeof(bool) --'
+--Result--
+[('-- mv_expand_test_table | mv-expand c to typeof(bool) --',)]
++--------------------+
+--Query--
+mv_expand_test_table | mv-expand c to typeof(bool)
+--Result--
+[(1, ['Salmon', 'Steak', 'Chicken'], [5, 6, 7, 8], True), (1, ['Salmon', 'Steak', 'Chicken'], [5, 6, 7, 8], True), (1, ['Salmon', 'Steak', 'Chicken'], [5, 6, 7, 8], True), (1, ['Salmon', 'Steak', 'Chicken'], [5, 6, 7, 8], True)]
++--------------------+

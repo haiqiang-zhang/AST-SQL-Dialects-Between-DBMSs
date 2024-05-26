@@ -1,0 +1,30 @@
+--Query--
+SELECT 'insert to two replicas works'
+--Result--
+[('insert to two replicas works',)]
++--------------------+
+--Query--
+SELECT 'insert to single replica works'
+--Result--
+[('insert to single replica works',)]
++--------------------+
+--Query--
+SELECT 'deduplication works'
+--Result--
+[('deduplication works',)]
++--------------------+
+--Query--
+SYSTEM STOP FETCHES r2
+--Result--
+[]
++--------------------+
+--Query--
+SYSTEM START FETCHES r2
+--Result--
+[]
++--------------------+
+--Query--
+SELECT 'insert happened'
+--Result--
+[('insert happened',)]
++--------------------+

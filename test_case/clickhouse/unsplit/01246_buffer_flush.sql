@@ -10,7 +10,6 @@ create table buffer_01256 as system.numbers Engine=Buffer(currentDatabase(), dat
 );
 insert into buffer_01256 select * from system.numbers limit 5;
 select count() from data_01256;
-select count() from data_01256;
 drop table buffer_01256;
 select 'max';
 create table buffer_01256 as system.numbers Engine=Buffer(currentDatabase(), data_01256, 1,
@@ -19,8 +18,6 @@ create table buffer_01256 as system.numbers Engine=Buffer(currentDatabase(), dat
     0,   1e6  /* bytes */
 );
 insert into buffer_01256 select * from system.numbers limit 5;
-select count() from data_01256;
-select count() from data_01256;
 drop table buffer_01256;
 select 'direct';
 create table buffer_01256 as system.numbers Engine=Buffer(currentDatabase(), data_01256, 1,
@@ -29,9 +26,7 @@ create table buffer_01256 as system.numbers Engine=Buffer(currentDatabase(), dat
     0,   1e6  /* bytes */
 );
 insert into buffer_01256 select * from system.numbers limit 10;
-select count() from data_01256;
 select 'drop';
 insert into buffer_01256 select * from system.numbers limit 10;
 drop table if exists buffer_01256;
-select count() from data_01256;
 drop table data_01256;

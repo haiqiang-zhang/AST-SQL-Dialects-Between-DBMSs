@@ -1,0 +1,85 @@
+--Query--
+SELECT addMonths(toDateTime('2017-11-05 08:07:47', 'Asia/Istanbul'), 1, 'Asia/Kolkata')
+--Result--
+[(datetime.datetime(2017, 12, 5, 10, 37, 47, tzinfo=<DstTzInfo 'Asia/Kolkata' IST+5:30:00 STD>),)]
++--------------------+
+--Query--
+SELECT toUnixTimestamp('2017-11-05 08:07:47', 'Asia/Istanbul')
+--Result--
+[(1509858467,)]
++--------------------+
+--Query--
+SELECT toDateTime('2017-11-05 08:07:47', 'Asia/Istanbul')
+--Result--
+[(datetime.datetime(2017, 11, 5, 8, 7, 47, tzinfo=<DstTzInfo 'Asia/Istanbul' +03+3:00:00 STD>),)]
++--------------------+
+--Query--
+SELECT toTimeZone(toDateTime('2017-11-05 08:07:47', 'Asia/Istanbul'), 'Asia/Kolkata')
+--Result--
+[(datetime.datetime(2017, 11, 5, 10, 37, 47, tzinfo=<DstTzInfo 'Asia/Kolkata' IST+5:30:00 STD>),)]
++--------------------+
+--Query--
+SELECT toString(toDateTime('2017-11-05 08:07:47', 'Asia/Istanbul'))
+--Result--
+[('2017-11-05 08:07:47',)]
++--------------------+
+--Query--
+SELECT '-- Test const timezone arguments --'
+--Result--
+[('-- Test const timezone arguments --',)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE now(tz) != toDateTime('2000-01-01 00:00:00') ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE now64(9, tz) != toDateTime64('2000-01-01 00:00:00', 6) ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE nowInBlock(tz) != toDateTime('2000-01-01 00:00:00') ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE toTimeZone(toDateTime(val), tz) != toDateTime('2023-06-11 14:14:14') ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE fromUnixTimestamp64Milli(val, tz) != toDateTime64('2023-06-11 14:14:14', 6) ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE fromUnixTimestamp64Micro(val, tz) != toDateTime64('2023-06-11 14:14:14', 6) ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE fromUnixTimestamp64Nano(val, tz) != toDateTime64('2023-06-11 14:14:14', 6) ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE snowflakeToDateTime(val, tz) != toDateTime('2023-06-11 14:14:14') ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+SELECT val FROM tab WHERE snowflakeToDateTime64(val, tz) != toDateTime64('2023-06-11 14:14:14', 6) ORDER BY val SETTINGS allow_nonconst_timezone_arguments = 1
+--Result--
+[(42,), (43,)]
++--------------------+
+--Query--
+DETACH TABLE tab
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE tab
+--Result--
+[]
++--------------------+

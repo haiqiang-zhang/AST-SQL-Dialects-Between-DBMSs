@@ -1,5 +1,3 @@
-
-
 select 'disable AUTO_INCREMENT compatibility mode';
 set compatibility_ignore_auto_increment_in_create_table=false;
 select 'create table failed, column +type +AUTO_INCREMENT, compatibility disabled';

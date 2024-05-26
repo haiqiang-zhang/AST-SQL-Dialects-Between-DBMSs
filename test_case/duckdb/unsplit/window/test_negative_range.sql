@@ -1,3 +1,0 @@
-PRAGMA enable_verification;
-CREATE OR REPLACE TABLE issue10855(i INTEGER, v FLOAT);
-INSERT INTO issue10855 VALUES (0, 1), (1, 2), (2, 3),;

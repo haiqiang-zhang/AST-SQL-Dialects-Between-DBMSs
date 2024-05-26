@@ -1,0 +1,30 @@
+--Query--
+SELECT quantilesExactExclusive(0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999)(x) FROM (SELECT number AS x FROM num)
+--Result--
+[([249.25, 499.5, 749.75, 899.9, 949.9499999999999, 989.99, 998.999],)]
++--------------------+
+--Query--
+SELECT quantilesExactInclusive(0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999)(x) FROM (SELECT number AS x FROM num)
+--Result--
+[([249.75, 499.5, 749.25, 899.1, 949.05, 989.01, 998.001],)]
++--------------------+
+--Query--
+SELECT quantilesExact(0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999)(x) FROM (SELECT number AS x FROM num)
+--Result--
+[([250, 500, 750, 900, 950, 990, 999],)]
++--------------------+
+--Query--
+SELECT quantileExactExclusive(0.6)(x) FROM (SELECT number AS x FROM num)
+--Result--
+[(599.6,)]
++--------------------+
+--Query--
+SELECT quantileExactInclusive(0.6)(x) FROM (SELECT number AS x FROM num)
+--Result--
+[(599.4,)]
++--------------------+
+--Query--
+SELECT quantileExact(0.6)(x) FROM (SELECT number AS x FROM num)
+--Result--
+[(600,)]
++--------------------+

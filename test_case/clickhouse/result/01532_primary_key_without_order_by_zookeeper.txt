@@ -1,0 +1,60 @@
+--Query--
+SHOW CREATE TABLE merge_tree_pk
+--Result--
+[('CREATE TABLE test.merge_tree_pk\n(\n    `key` UInt64,\n    `value` String\n)\nENGINE = ReplacingMergeTree\nPRIMARY KEY key\nORDER BY key\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_pk ORDER BY key, value
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+DETACH TABLE merge_tree_pk
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE merge_tree_pk
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_pk FINAL ORDER BY key, value
+--Result--
+[(1, 'c'), (2, 'b')]
++--------------------+
+--Query--
+SHOW CREATE TABLE merge_tree_pk_sql
+--Result--
+[('CREATE TABLE test.merge_tree_pk_sql\n(\n    `key` UInt64,\n    `value` String\n)\nENGINE = ReplacingMergeTree\nPRIMARY KEY key\nORDER BY key\nSETTINGS index_granularity = 8192',)]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_pk_sql ORDER BY key, value
+--Result--
+[(1, 'a'), (2, 'b')]
++--------------------+
+--Query--
+DETACH TABLE merge_tree_pk_sql
+--Result--
+[]
++--------------------+
+--Query--
+ATTACH TABLE merge_tree_pk_sql
+--Result--
+[]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_pk_sql FINAL ORDER BY key, value
+--Result--
+[(1, 'c'), (2, 'b')]
++--------------------+
+--Query--
+SELECT * FROM merge_tree_pk_sql FINAL ORDER BY key, value
+--Result--
+[(1, 'c', 0), (2, 'b', 0), (2, 'e', 555)]
++--------------------+
+--Query--
+SHOW CREATE TABLE merge_tree_pk_sql
+--Result--
+[('CREATE TABLE test.merge_tree_pk_sql\n(\n    `key` UInt64,\n    `value` String,\n    `key2` UInt64\n)\nENGINE = ReplacingMergeTree\nPRIMARY KEY key\nORDER BY (key, key2)\nSETTINGS index_granularity = 8192',)]
++--------------------+

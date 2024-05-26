@@ -1,4 +1,3 @@
-
 WITH
     extractKeyValuePairs('name:neymar, age:31 team:psg,nationality:brazil') AS s_map,
     CAST(
@@ -59,7 +58,6 @@ WITH
         ) AS x
 SELECT
     x;
-
 WITH
     extractKeyValuePairs('name:"neymar", "age":31 "team":"psg"') AS s_map,
         CAST(
@@ -130,7 +128,6 @@ WITH
         ) AS x
 SELECT
     x;
-
 WITH
     extractKeyValuePairs('name:"neymar", "age":31 "team":"psg"', ':', ', ', '"') AS s_map,
     CAST(

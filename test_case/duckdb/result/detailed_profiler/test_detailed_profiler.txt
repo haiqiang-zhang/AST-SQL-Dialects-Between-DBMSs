@@ -1,0 +1,25 @@
+--Query--
+SELECT min (i + i) FROM integers
+--Result--
+[(6,)]
++--------------------+
+--Query--
+SELECT min (a + a ) FROM exprtest
+--Result--
+[(84,)]
++--------------------+
+--Query--
+SELECT a FROM exprtest WHERE a BETWEEN 43 AND 44
+--Result--
+[(43,)]
++--------------------+
+--Query--
+SELECT CASE a WHEN 42 THEN 100 WHEN 43 THEN 200 ELSE 300 END FROM exprtest
+--Result--
+[(100,), (200,), (300,), (300,)]
++--------------------+
+--Query--
+SELECT COUNT(*) > 0 FROM read_csv('__TEST_DIR__/test.json', columns={'c': 'VARCHAR'}, delim=NULL, header=0, quote=NULL, escape=NULL, auto_detect = false) WHERE contains(c, 'Optimizer')
+--Result--
+[(True,)]
++--------------------+
