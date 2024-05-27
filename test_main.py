@@ -193,7 +193,7 @@ for dbms in os.listdir(test_case_path):
         for filename in sorted(filenames):
             if filename.endswith('.sql'):
                 test_paths = os.path.join(dirpath, filename)
-                setup_paths = test_paths.replace(f"/{dbms}/{test_case_folder_name}", f"/{dbms}/setup")
+                # setup_paths = test_paths.replace(f"/{dbms}/{test_case_folder_name}", f"/{dbms}/setup")
 
                 if os.path.getsize(test_paths) == 0:
                     continue
@@ -201,7 +201,7 @@ for dbms in os.listdir(test_case_path):
                 df_verbose_all_result = pd.DataFrame(columns=['DBMS_Base', 'DBMS_Tested', 'SQL_Query', 'SQL_Type', 'SQL_File_Name', 'Result', 'ERROR_Type', 'Message'])
                 
                 try:
-                    df_one_file, df_verbose_all_result_one_file = run_test_in_all_dbms(test_paths, filename, setup_paths=setup_paths)
+                    df_one_file, df_verbose_all_result_one_file = run_test_in_all_dbms(test_paths, filename)
                     for i in range(len(df_one_file)):
                         # check DBMS_Base = dbms, DBMS_Tested = df_one_file[i]['DBMS'] exist or not
                         if df[(df['DBMS_Base'] == dbms) & (df['DBMS_Tested'] == df_one_file.iloc[i]['DBMS'])].empty:
